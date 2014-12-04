@@ -92,7 +92,8 @@ class Entity:
         for prehension in self.prehensions:
             func(prehension.prehended_entity)
         for prehension in self.prehensions:
-            prehension.prehended_entity.walk_graph_breadth_first(func, False)
+            prehension.prehended_entity.walk_graph_breadth_first(func, 
+                                                  False)
 
 
     def add_prehension(self, pre):
@@ -101,11 +102,13 @@ class Entity:
 
     def print_prehensions(self):
         for prehension in self.prehensions:
-            print(prehension.prehended_entity.name + " is my " + prehension.name)
+            print(prehension.prehended_entity.name 
+                + " is my " + prehension.name)
 
 
     def pprint(self):
-        for key, value in self.__dict__.items(): print(key + " = " + str(value))
+        for key, value in self.__dict__.items():
+            print(key + " = " + str(value))
 
 
 class Agent(Entity):
@@ -177,7 +180,7 @@ class Environment(Entity):
         print("Choose one and press Enter:")
         choice = input(
             "(r)un; (s)tep; (v)isualize; (i)nspect agent; (l)ist agents; (c)ode; (d)ebug; (q)uit: ")
-        return self.keymap.get(choice.strip(), PASS_MODE)
+        return self.keymap.get(choice.strip(), STEP_MODE)
 
 
     def run(self, resume=False):

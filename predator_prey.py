@@ -3,6 +3,7 @@ Filename: predator_prey.py
 Author: Gene Callahan
 """
 
+import copy
 import math
 import cmath
 import time
@@ -16,8 +17,10 @@ import spatial_agent as spagnt
 import display_methods as disp
 
 
-EAT       = "eat"
-REPRODUCE = "reproduce"
+EAT          = "eat"
+REPRODUCE    = "reproduce"
+NUM_ZOMBIES  = 10
+MAX_ZERO_PER = 8
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -262,28 +265,35 @@ class PredPreyEnv(spagnt.SpatialEnvironment):
     """ This class creates an environment for predators
         to chase and eat prey """
 
+    repop = True
 
     def __init__(self, name, length, height):
         super().__init__(name, length, height,
 		    preact=True, postact=True)
-        self.populations = {}
-        self.pop_hist    = {}
+        self.species = {}
 
 
     def add_creature(self, creature):
-        species = self.get_class_name(type(creature))
+        s = self.get_class_name(type(creature))
         logging.info("Adding " + creature.__str__()
-                + " of species " + species)
-        if species in self.populations:
-            self.populations[species] += 1
+                + " of species " + s)
+
+        if s in self.species:
+            self.species[s]["pop"] += 1
+            if len(self.species[s]["zombies"]) < NUM_ZOMBIES:
+                self.species[s]["zombies"].append(
+                    copy.deepcopy(creature))
         else:
-            self.populations[species] = 1
+            self.species[s] = {"pop": 1,
+                           "pop_hist": [],
+                           "zombies": [creature],
+                           "zero_per": 0}
 
         super().add_agent(creature)
 
 
     def contains(self, creat_type):
-        return creat_type.__name__ in self.populations
+        return creat_type.__name__ in self.species
 
 
     def keep_running(self):
@@ -295,26 +305,39 @@ class PredPreyEnv(spagnt.SpatialEnvironment):
             print("Too little data to display")
             return
 
-        disp.display_line_graph('Populations in ' + self.name,
-                                self.pop_hist, self.period)
+        pop_hist = {}
+        for s in self.species:
+            pop_hist[s] = self.species[s]["pop_hist"]
+
+        disp.display_line_graph('Populations in '
+                                + self.name,
+                                pop_hist,
+                                self.period)
 
 
-    def get_pop(self, species):
-        return self.populations[species]
+    def get_pop(self, s):
+        return self.species[s]["pop"]
 
 
-    def census(self, period):
-        print("Populations in period " + str(period) + ":")
-        for species, pop in self.populations.items():
-            print(species + ": " + str(pop))
-            if species in self.pop_hist:
-                self.pop_hist[species].append(pop)
+    def census(self):
+        print("Populations in period " + str(self.period) + ":")
+        for s in self.species:
+            pop = self.get_pop(s)
+            print(s + ": " + str(pop))
+            if s in self.species:
+                self.species[s]["pop_hist"].append(pop)
             else:
-                self.pop_hist[species] = [ pop ]
+                self.species[s]["pop_hist"] = [ pop ]
+            if pop == 0:
+                self.species[s]["zero_per"] += 1
+                if self.species[s]["zero_per"] >= MAX_ZERO_PER:
+                    for creature in self.species[s]["zombies"]:
+                        self.add_creature(copy.deepcopy(creature))
+                    self.species[s]["zero_per"] = 0
 
 
     def step(self, delay=0):
-        self.census(self.period)
+        self.census()
 
         super().step()
 
@@ -337,9 +360,10 @@ class PredPreyEnv(spagnt.SpatialEnvironment):
 
 
     def cull(self, creature):
-        species = self.get_class_name(type(creature))
-        assert self.populations[species] > 0
-        self.populations[species] -= 1
+        s = self.get_class_name(type(creature))
+#        print("Trying to cull a " + s + "; pop = " + str(self.species[s]["pop"]))
+        assert self.species[s]["pop"] > 0
+        self.species[s]["pop"] -= 1
         self.agents.remove(creature)
 
 
