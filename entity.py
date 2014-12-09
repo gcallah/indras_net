@@ -236,14 +236,14 @@ class Environment(Entity):
 
 # there might be state-setting to do before acting
         if(self.preact):
-            self.pre_act_loop()
+            self.preact_loop()
 
 # now have everyone act in random order
         self.act_loop()
         
 # there might be cleanup to do after acting
         if(self.postact):
-            self.post_act_loop()
+            self.postact_loop()
         
     
     def act_loop(self):
@@ -253,12 +253,12 @@ class Environment(Entity):
             self.agents[i].act()
 
 
-    def pre_act_loop(self):
+    def preact_loop(self):
         for agent in self.agents:
             agent.preact()
 
 
-    def post_act_loop(self):
+    def postact_loop(self):
         for agent in self.agents:
             agent.postact()
 

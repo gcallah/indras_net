@@ -67,16 +67,16 @@ class Creature(spagnt.SpatialAgent):
             if offspring != None:
                 d, i = math.modf(self.age)
                 offspring.age += d
-                self.env.add_creature(offspring)
+                self.env.add_agent(offspring)
         self.life_force -= self.decay_rate
 
     def reproduce(self):
         return None
 
-    def eat(self, creature):
-        logging.info(self.name + " is about to eat " + creature.name)
-        self.life_force += creature.get_life_force()
-        creature.be_eaten()
+    def eat(self, prey):
+        logging.info(self.name + " is about to eat " + prey.name)
+        self.life_force += prey.get_life_force()
+        prey.be_eaten()
 
     def be_eaten(self):
         self.life_force = 0
@@ -267,24 +267,24 @@ class PredPreyEnv(spagnt.SpatialEnvironment):
 
     repop = True
 
-    def __init__(self, name, length, height):
-        super().__init__(name, length, height,
-		    preact=True, postact=True)
-        self.species = {}
+    def __init__(self, name, length, height, preact=True,
+                    postact=True):
+        super().__init__(name, length, height, preact, postact)
+        self.varieties = {}
 
 
-    def add_creature(self, creature):
+    def add_agent(self, creature):
         s = self.get_class_name(type(creature))
         logging.info("Adding " + creature.__str__()
-                + " of species " + s)
+                + " of varieties " + s)
 
-        if s in self.species:
-            self.species[s]["pop"] += 1
-            if len(self.species[s]["zombies"]) < NUM_ZOMBIES:
-                self.species[s]["zombies"].append(
+        if s in self.varieties:
+            self.varieties[s]["pop"] += 1
+            if len(self.varieties[s]["zombies"]) < NUM_ZOMBIES:
+                self.varieties[s]["zombies"].append(
                     copy.deepcopy(creature))
         else:
-            self.species[s] = {"pop": 1,
+            self.varieties[s] = {"pop": 1,
                            "pop_hist": [],
                            "zombies": [creature],
                            "zero_per": 0}
@@ -293,7 +293,7 @@ class PredPreyEnv(spagnt.SpatialEnvironment):
 
 
     def contains(self, creat_type):
-        return creat_type.__name__ in self.species
+        return creat_type.__name__ in self.varieties
 
 
     def keep_running(self):
@@ -306,8 +306,8 @@ class PredPreyEnv(spagnt.SpatialEnvironment):
             return
 
         pop_hist = {}
-        for s in self.species:
-            pop_hist[s] = self.species[s]["pop_hist"]
+        for s in self.varieties:
+            pop_hist[s] = self.varieties[s]["pop_hist"]
 
         disp.display_line_graph('Populations in '
                                 + self.name,
@@ -316,24 +316,21 @@ class PredPreyEnv(spagnt.SpatialEnvironment):
 
 
     def get_pop(self, s):
-        return self.species[s]["pop"]
+        return self.varieties[s]["pop"]
 
 
     def census(self):
         print("Populations in period " + str(self.period) + ":")
-        for s in self.species:
+        for s in self.varieties:
             pop = self.get_pop(s)
             print(s + ": " + str(pop))
-            if s in self.species:
-                self.species[s]["pop_hist"].append(pop)
-            else:
-                self.species[s]["pop_hist"] = [ pop ]
+            self.varieties[s]["pop_hist"].append(pop)
             if pop == 0:
-                self.species[s]["zero_per"] += 1
-                if self.species[s]["zero_per"] >= MAX_ZERO_PER:
-                    for creature in self.species[s]["zombies"]:
-                        self.add_creature(copy.deepcopy(creature))
-                    self.species[s]["zero_per"] = 0
+                self.varieties[s]["zero_per"] += 1
+                if self.varieties[s]["zero_per"] >= MAX_ZERO_PER:
+                    for creature in self.varieties[s]["zombies"]:
+                        self.add_agent(copy.deepcopy(creature))
+                    self.varieties[s]["zero_per"] = 0
 
 
     def step(self, delay=0):
@@ -342,7 +339,7 @@ class PredPreyEnv(spagnt.SpatialEnvironment):
         super().step()
 
 
-    def pre_act_loop(self):
+    def preact_loop(self):
         for creature in self.agents:
             if isinstance(creature, MobileCreature):
                 if creature.is_wandering():
@@ -352,7 +349,7 @@ class PredPreyEnv(spagnt.SpatialEnvironment):
                     creature.pursue_prey()
 
 
-    def post_act_loop(self):
+    def postact_loop(self):
 # since we will be culling let's walk list in reverse
         for creature in reversed(self.agents):
             if not creature.is_alive():
@@ -361,9 +358,8 @@ class PredPreyEnv(spagnt.SpatialEnvironment):
 
     def cull(self, creature):
         s = self.get_class_name(type(creature))
-#        print("Trying to cull a " + s + "; pop = " + str(self.species[s]["pop"]))
-        assert self.species[s]["pop"] > 0
-        self.species[s]["pop"] -= 1
+        assert self.varieties[s]["pop"] > 0
+        self.varieties[s]["pop"] -= 1
         self.agents.remove(creature)
 
 
