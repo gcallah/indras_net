@@ -18,7 +18,6 @@ import spatial_agent as spagnt
 import predator_prey as prdpry
 import display_methods as disp
 
-BE_DIFF = "be different"
 
 fashions = ["blue", "red"]
 
@@ -44,7 +43,8 @@ class Fashionista(prdpry.MobileCreature):
         pass
 
 
-class Follower(Fashionista):
+
+class Follower(Fashionista, prdpry.Predator):
 
     """ This class describes the followers in Adam Smith's
         fashion model """
@@ -61,7 +61,7 @@ class Follower(Fashionista):
 
     def eat(self, prey):
         if self.fashion != prey.fashion:
-            print("About to eat: my fashion is " 
+            logging.info("About to eat: my fashion is " 
                 + fashions[self.fashion] +
                 " my fashion will be " + fashions[prey.fashion])
             logging.info("Eating: " + fashions[prey.fashion])
@@ -69,20 +69,27 @@ class Follower(Fashionista):
             self.env.record_fashion_change(self)
 
 
-class TrendSetter(Fashionista):
+class TrendSetter(Fashionista, prdpry.MobilePrey):
 
     """ This class describes the trendsetters in Adam Smith's
         fashion model """
 
     def __init__(self, name, life_force=20, repro_age=1000,
             decay_rate=1.0, max_move=10.0, max_detect=10.0,
-            goal=BE_DIFF):
+            goal=prdpry.AVOID):
+
+        print("Creating trend setter with goal of "
+                + goal)
 
         super().__init__(name, life_force, repro_age,
             decay_rate, max_move, max_detect,
-            goal)
+            goal=goal)
 
         self.fashion = INIT_TRND
+
+
+    def avoid_predator(self):
+        print("Avoiding predator")
 
 
 class SocietyEnv(prdpry.PredPreyEnv):
@@ -127,7 +134,6 @@ class SocietyEnv(prdpry.PredPreyEnv):
             self.varieties[a]["pop"] += 1
         else:
             self.varieties[a]["pop"] -= 1        
-
 
 
     def census(self):

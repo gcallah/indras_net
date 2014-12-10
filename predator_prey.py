@@ -18,6 +18,7 @@ import display_methods as disp
 
 
 EAT          = "eat"
+AVOID        = "avoid"
 REPRODUCE    = "reproduce"
 NUM_ZOMBIES  = 10
 MAX_ZERO_PER = 8
@@ -40,7 +41,8 @@ class Creature(spagnt.SpatialAgent):
 
         super().__init__(name, goal, max_move, max_detect)
 
-        self.life_force = random.uniform(life_force * .8, life_force * 1.2)
+        self.life_force = random.uniform(life_force * .8,
+                    life_force * 1.2)
         self.orig_force = self.life_force
         self.decay_rate = decay_rate
         self.repro_age  = repro_age
@@ -70,13 +72,16 @@ class Creature(spagnt.SpatialAgent):
                 self.env.add_agent(offspring)
         self.life_force -= self.decay_rate
 
+
     def reproduce(self):
         return None
+
 
     def eat(self, prey):
         logging.info(self.name + " is about to eat " + prey.name)
         self.life_force += prey.get_life_force()
         prey.be_eaten()
+
 
     def be_eaten(self):
         self.life_force = 0
@@ -129,24 +134,26 @@ class MobileCreature(Creature):
         return self.max_move
 
 
-    def scan_env(self):
-        eats = entity.Entity.get_universal_instances(
-                prehender=type(self), universal=EAT)
-        if not eats == None:
-            for food_type in eats:
-                if self.env.contains(food_type):
-                    prey = self.env.closest_x(self.pos, food_type)
-                    if self.in_detect_range(prey):
+    def scan_env(self, universal):
+        print("scanning env for " + universal)
+        prehends = entity.Entity.get_universal_instances(
+                prehender=type(self), universal=universal)
+        if not prehends == None:
+            for pre_type in prehends:
+                if self.env.contains(pre_type):
+                    prehended = self.env.closest_x(self.pos, pre_type)
+                    if self.in_detect_range(prehended):
                         self.wandering = False
-                        self.target    = prey
-                        logging.info(self.name + " has spotted prey: "
-                                + prey.name)
-                        return prey
+                        self.target    = prehended
+                        logging.info(self.name
+                                + " has spotted prehension: "
+                                + prehended.name)
+                        return prehended
         return None
 
 
-    def in_detect_range(self, prey):
-        return self.in_range(prey, self.max_detect)
+    def in_detect_range(self, prehended):
+        return self.in_range(prehended, self.max_detect)
 
 
     def in_gobble_range(self):
@@ -165,6 +172,12 @@ class MobileCreature(Creature):
 
     def is_wandering(self):
         return self.wandering
+
+
+class Predator(MobileCreature):
+
+    def detect_behavior(self):
+        self.pursue_prey()
 
 
     def pursue_prey(self):
@@ -191,7 +204,28 @@ class MobileCreature(Creature):
             self.target    = None
 
 
-class Fox(MobileCreature):
+class MobilePrey(MobileCreature):
+
+    def __init__(self, name, life_force, repro_age, 
+            decay_rate, max_move=0.0, max_detect=10.0,
+            max_eat=2.0, goal=AVOID, rand_age=False):
+
+        super().__init__(name, life_force, repro_age, 
+                decay_rate, max_move, max_detect,
+                goal=goal, rand_age=rand_age)
+
+
+    def detect_behavior(self):
+        self.avoid_predator()
+        print("Trying to avoid predator")
+
+
+    def avoid_predator(self):
+        pass
+
+
+
+class Fox(Predator):
 
     """ This class defines foxes, a type of predator """
 
@@ -212,7 +246,7 @@ class Fox(MobileCreature):
                 self.max_detect)
 
 
-class Mouse(MobileCreature):
+class Mouse(MobilePrey):
 
     """ This class defines mice, a type of herbivore
         and a likely prey creature """
@@ -236,7 +270,7 @@ class Mouse(MobileCreature):
                 self.repro_age, self.decay_rate, self.max_move)
 
 
-class Rabbit(MobileCreature):
+class Rabbit(MobilePrey):
 
     """ This class defines rabbits, a type of herbivore and a likely prey creature """
 
@@ -245,7 +279,7 @@ class Rabbit(MobileCreature):
     count      = 0
 
     def __init__(self, name, life_force, repro_age, decay_rate,
-            max_move, max_detect=10.0, goal=EAT, rand_age=False):
+            max_move, max_detect=10.0, goal=AVOID, rand_age=False):
 
         super().__init__(name, life_force, repro_age, decay_rate,
                 max_move, max_detect, goal=goal, rand_age=rand_age)
@@ -256,8 +290,8 @@ class Rabbit(MobileCreature):
     def reproduce(self):
 # revert to mean:
         force = (self.orig_force + self.AVG_RABBIT_FORCE) / 2.0
-        return Rabbit("bunny" + str(Rabbit.count), force, self.repro_age,
-                self.decay_rate, self.max_move)
+        return Rabbit("bunny" + str(Rabbit.count), force,
+                self.repro_age, self.decay_rate, self.max_move)
 
 
 class PredPreyEnv(spagnt.SpatialEnvironment):
@@ -344,9 +378,12 @@ class PredPreyEnv(spagnt.SpatialEnvironment):
             if isinstance(creature, MobileCreature):
                 if creature.is_wandering():
                     creature.pos = self.get_new_wander_pos(creature)
-                    creature.scan_env()
+                    print("We are about to scan the env for "
+                        + creature.name + " which has a goal of "
+                        + creature.goal)
+                    creature.scan_env(creature.goal)
                 else:
-                    creature.pursue_prey()
+                    creature.detect_behavior()
 
 
     def postact_loop(self):

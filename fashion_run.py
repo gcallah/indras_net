@@ -22,8 +22,9 @@ for i in range(FOLLOWERS):
 for i in range(TREND_SETTERS):
     env.add_agent(TrendSetter(name="hipster" + str(i),
         life_force=20.0, repro_age=1000.0, decay_rate=0.0,
-        max_move=4.0))
+        max_move=4.0, max_detect=16.0))
 
 entity.Entity.add_universal(Follower, prdpry.EAT, TrendSetter)
+entity.Entity.add_universal(TrendSetter, prdpry.AVOID, Follower)
 
 env.run()

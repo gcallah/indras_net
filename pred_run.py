@@ -2,7 +2,8 @@ import logging
 import predator_prey
 
 
-logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO, filemode='w', filename="log.txt")
+logging.basicConfig(format='%(levelname)s:%(message)s',
+            level=logging.INFO, filemode='w', filename="pred_log.txt")
 
 logging.info("Starting program")
 
@@ -12,8 +13,8 @@ FOXES   = 6
 env = PredPreyEnv("meadow", 50.0, 50.0)
 
 for i in range(FOXES):
-    env.add_agent(Fox(name="brer" + str(i), life_force=39.0, 
-        repro_age=10, decay_rate=5.6, max_move=40.0, max_detect=60.0,
+    env.add_agent(Fox(name="brer" + str(i), life_force=37.0, 
+        repro_age=11, decay_rate=5.8, max_move=40.0, max_detect=60.0,
         rand_age=True))
 
 for i in range(RABBITS):
