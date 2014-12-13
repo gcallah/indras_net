@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 import entity
 import spatial_agent as spagnt
 import display_methods as disp
+from collections import deque
 
 
 EAT          = "eat"
@@ -22,6 +23,7 @@ AVOID        = "avoid"
 REPRODUCE    = "reproduce"
 NUM_ZOMBIES  = 10
 MAX_ZERO_PER = 8
+MAX_EXCLUDE  = 10
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -53,7 +55,8 @@ class Creature(spagnt.SpatialAgent):
 
 
     def __str__(self):
-        return self.name + " with " + str(self.life_force) + " life force"
+        return(self.name + " with " + str(self.life_force)
+                    + " life force")
 
     def get_life_force(self):
         return self.life_force
@@ -78,9 +81,9 @@ class Creature(spagnt.SpatialAgent):
 
 
     def eat(self, prey):
-        logging.info(self.name + " is about to eat " + prey.name)
         self.life_force += prey.get_life_force()
         prey.be_eaten()
+        logging.info(self.name + " has eaten " + prey.name)
 
 
     def be_eaten(self):
@@ -97,7 +100,8 @@ class Grass(Creature):
     count = 0
 
     def __init__(self, name, life_force, repro_age, decay_rate,
-            max_move=0.0, max_detect=0.0, goal=REPRODUCE, rand_age=False):
+            max_move=0.0, max_detect=0.0, goal=REPRODUCE,
+            rand_age=False):
 
         super().__init__(name, life_force, repro_age, decay_rate,
                 max_move=max_move, max_detect=max_detect,
@@ -115,7 +119,9 @@ class Grass(Creature):
 
 class MobileCreature(Creature):
 
-    """ This class is the parent of all creatures that can move around. """
+    """ This class is the parent of all creatures
+        that can move around.
+    """
 
     def __init__(self, name, life_force, repro_age, 
             decay_rate, max_move=0.0, max_detect=10.0,
@@ -127,7 +133,8 @@ class MobileCreature(Creature):
 
         self.max_eat    = max_eat
         self.wandering  = True
-        self.target     = None
+        self.focus      = None
+        self.exclude    = deque(maxlen=MAX_EXCLUDE)
 
 
     def get_max_move(self):
@@ -135,16 +142,17 @@ class MobileCreature(Creature):
 
 
     def scan_env(self, universal):
-        print("scanning env for " + universal)
+        logging.info("scanning env for " + universal)
         prehends = entity.Entity.get_universal_instances(
                 prehender=type(self), universal=universal)
         if not prehends == None:
             for pre_type in prehends:
                 if self.env.contains(pre_type):
-                    prehended = self.env.closest_x(self.pos, pre_type)
+                    prehended = self.env.closest_x(self.pos, pre_type,
+                            self.exclude)
                     if self.in_detect_range(prehended):
                         self.wandering = False
-                        self.target    = prehended
+                        self.focus     = prehended
                         logging.info(self.name
                                 + " has spotted prehension: "
                                 + prehended.name)
@@ -157,7 +165,7 @@ class MobileCreature(Creature):
 
 
     def in_gobble_range(self):
-        return self.in_range(self.target, self.max_eat)
+        return self.in_range(self.focus, self.max_eat)
 
 
     def in_range(self, prey, dist):
@@ -181,27 +189,22 @@ class Predator(MobileCreature):
 
 
     def pursue_prey(self):
-        target = self.target
-        logging.info(self.name + " is pursuing " + target.name)
-        if target.is_alive():
-            if self.pos == target.pos:
-                self.eat(target)
-                return self.pos
+        prey = self.focus
+        logging.info(self.name + " is pursuing " + prey.name)
+        if prey.is_alive():
+            new_pos = self.pos
+            vector = prey.pos - self.pos
+            dist   = abs(vector)
+            if dist < self.max_move:
+                new_pos = prey.pos
             else:
-                new_pos = self.pos
-                vector = target.pos - self.pos
-                dist   = abs(vector)
-                if dist < self.max_move:
-                    new_pos = target.pos
-                else:
-                    new_pos += (vector / dist) * self.max_move
+                new_pos += (vector / dist) * self.max_move
 
-                self.pos = new_pos
-                if self.in_gobble_range():
-                    self.eat(self.target)
-        else:
-            self.wandering = True
-            self.target    = None
+            self.pos = new_pos
+            if self.in_gobble_range():
+                self.eat(prey)
+                self.wandering = True
+                self.focus = None
 
 
 class MobilePrey(MobileCreature):
@@ -217,7 +220,6 @@ class MobilePrey(MobileCreature):
 
     def detect_behavior(self):
         self.avoid_predator()
-        print("Trying to avoid predator")
 
 
     def avoid_predator(self):
@@ -302,8 +304,9 @@ class PredPreyEnv(spagnt.SpatialEnvironment):
     repop = True
 
     def __init__(self, name, length, height, preact=True,
-                    postact=True):
-        super().__init__(name, length, height, preact, postact)
+                    postact=True, logfile=None):
+        super().__init__(name, length, height, preact, postact,
+                            logfile)
         self.varieties = {}
 
 
@@ -378,7 +381,7 @@ class PredPreyEnv(spagnt.SpatialEnvironment):
             if isinstance(creature, MobileCreature):
                 if creature.is_wandering():
                     creature.pos = self.get_new_wander_pos(creature)
-                    print("We are about to scan the env for "
+                    logging.info("We are about to scan the env for "
                         + creature.name + " which has a goal of "
                         + creature.goal)
                     creature.scan_env(creature.goal)

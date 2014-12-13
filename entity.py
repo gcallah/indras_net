@@ -8,6 +8,7 @@ import logging
 import pprint
 import pdb
 import random
+from collections import deque
 
 
 RUN_MODE  = 0
@@ -19,6 +20,7 @@ DBUG_MODE = 5
 LIST_MODE = 6
 QUIT_MODE = 7
 PASS_MODE = 8
+EXMN_MODE = 9
 
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -51,14 +53,16 @@ class Entity:
         print("Trying to add a universal!")
         if universal not in cls.universals:
             cls.universals[universal] = \
-                {prehender_type_name: cls.create_first_prehension(prehended)}
+                {prehender_type_name:
+                    cls.create_first_prehension(prehended)}
             logging.info(pp.pformat(cls.universals))
         elif prehender not in cls.universals[universal]:
             cls.universals[universal][prehender_type_name] = \
                 cls.create_first_prehension(prehended)
             logging.info(pp.pformat(cls.universals))
         else:
-            cls.universals[universal][prehender_type_name].append(prehended)
+            cls.universals[universal][prehender_type_name].append(
+                        prehended)
 
 
     @classmethod
@@ -132,7 +136,9 @@ class Agent(Entity):
 
 class Environment(Entity):
 
-    """ A basic environment allowing starting, stopping, stepping, etc. """
+    """ A basic environment allowing starting, 
+         stopping, stepping, etc.
+    """
 
     prev_period = 0  # in case we need to restore state
 
@@ -143,25 +149,31 @@ class Environment(Entity):
                "v": VISL_MODE,
                "c": CODE_MODE,
                "d": DBUG_MODE,
+               "e": EXMN_MODE,
                "q": QUIT_MODE,
                "p": PASS_MODE}
 
 
-    def __init__(self, name, preact = False, postact = False):
+    def __init__(self, name, preact = False, postact = False,
+                    logfile=None):
         super().__init__(name)
         self.agents   = []
         self.womb = []
         self.period = 0
         self.preact = preact
         self.postact = postact
+        self.logfile = logfile
+
 
     def add_agent(self, agent):
         self.agents.append(agent)
         agent.add_env(self)
     
+
     def add_child(self, agent):
         self.womb.append(agent)
         agent.add_env(self)
+
 
     def find_agent(self, name):
         for agent in self.agents:
@@ -179,7 +191,15 @@ class Environment(Entity):
         print("Running in " + self.name + ".")
         print("Choose one and press Enter:")
         choice = input(
-            "(r)un; (s)tep; (v)isualize; (i)nspect agent; (l)ist agents; (c)ode; (d)ebug; (q)uit: ")
+            "(c)ode; "\
+            "(d)ebug; "\
+            "(e)xamine log file; "\
+            "(i)nspect agent;\n"\
+            "(l)ist agents; "\
+            "(r)un; "\
+            "(s)tep; "\
+            "(v)isualize;\n"\
+            "(q)uit: ")
         return self.keymap.get(choice.strip(), STEP_MODE)
 
 
@@ -215,6 +235,8 @@ class Environment(Entity):
                 code = eval(input("Type a line of code to run: "))
             elif mode == DBUG_MODE:
                 pdb.set_trace()
+            elif mode == EXMN_MODE:
+                self.disp_log(self.logfile)
             elif mode == PASS_MODE:
                 pass
 
@@ -223,6 +245,25 @@ class Environment(Entity):
         Environment.prev_period = self.period
 
         print("Returning to run-time environment")
+
+
+    def disp_log(self, logfile):
+
+        MAX_LINES = 16
+
+        if logfile == None:
+            print("No log file to examine!")
+
+        last_n_lines = deque(maxlen=MAX_LINES) # for now hard-coded
+
+        with open(logfile, 'rt') as log:
+            for line in log:
+                last_n_lines.append(line)
+
+        print("Displaying the last " + str(MAX_LINES)
+                + " lines of logfile " + logfile)
+        for line in last_n_lines:
+            print(line.strip())
 
 
     def step(self, delay=0):

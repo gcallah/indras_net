@@ -15,7 +15,9 @@ import entity
 
 
 def rand_complex(initPos, radius):
-    """Generates a random complex number uniformly picked from a disk of radius."""
+    """Generates a random complex number 
+        uniformly picked from a disk of radius.
+    """
     radius = math.sqrt(radius * random.uniform(0.0, radius))
     theta  = random.random() * 2 * math.pi
     return initPos + cmath.rect(radius, theta)
@@ -27,7 +29,9 @@ def pos_to_str(pos):
 
 class SpatialAgent(entity.Agent):
 
-    """ This class is the parent of all entities that are located in space (and might or might not move in it) """
+    """ This class is the parent of all entities that are
+        located in space (and might or might not move in it)
+    """
 
     @classmethod
     def add_new(cls):
@@ -59,8 +63,8 @@ class SpatialEnvironment(entity.Environment):
 
 
     def __init__(self, name, length, height,
-	            preact=False, postact=False):
-        super().__init__(name, preact, postact)
+	            preact=False, postact=False, logfile=None):
+        super().__init__(name, preact, postact, logfile)
         self.length   = length
         self.height   = height
         self.max_dist = self.length * self.height
@@ -80,16 +84,17 @@ class SpatialEnvironment(entity.Environment):
         return None
 
 
-    def closest_x(self, pos, target_type):
+    def closest_x(self, pos, target_type, exclude):
         x = self.max_dist
         close_target = None
         for entity in self.agents:
             if isinstance(entity, target_type):
-                p_pos = entity.pos
-                d     = self.get_distance(pos, p_pos)
-                if d < x:
-                    x = d
-                    close_target = entity
+                if (not exclude == None) and (not entity in exclude):
+                    p_pos = entity.pos
+                    d     = self.get_distance(pos, p_pos)
+                    if d < x:
+                        x = d
+                        close_target = entity
         return close_target
 
 

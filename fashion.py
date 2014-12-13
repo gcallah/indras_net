@@ -17,7 +17,7 @@ import entity
 import spatial_agent as spagnt
 import predator_prey as prdpry
 import display_methods as disp
-
+from collections import deque
 
 fashions = ["blue", "red"]
 
@@ -25,22 +25,65 @@ INIT_FLWR = 0
 INIT_TRND = 1
 
 FSHN_TO_TRACK = 0
+FSHN_F_RATIO = 1.1
+FSHN_T_RATIO = 1.8
+
+RCNT_FLWR_HIST = 3
+RCNT_TRND_HIST = 9
 
 
 class Fashionista(prdpry.MobileCreature):
 
     def __init__(self, name, life_force=20, repro_age=1000,
             decay_rate=1.0, max_move=10.0, max_detect=10.0,
-            max_eat=10.0, goal="", rand_age=False):
+            max_eat=10.0, goal="", rand_age=False, recent_hist=3):
 
         super().__init__(name, life_force, repro_age,
             decay_rate, max_move, max_detect, max_eat,
             goal, rand_age)
 
         self.fashion = None
+        self.recent_focus = deque(maxlen=recent_hist)
+        self.recent_hist = recent_hist
+
 
     def act(self):
         pass
+
+
+    def respond_to_trends(self, gt, fshn_ratio):
+        focus = self.focus
+        if not focus in self.recent_focus:
+            self.recent_focus.append(focus)
+            logging.info(self.name + " just appended "
+                    + focus.name
+                    + " to recent; recent len = "
+                    + str(len(self.recent_focus)))
+        self.wandering = True
+        self.focus = None
+        if len(self.recent_focus) >= self.recent_hist:
+            has_my_fashion = 0
+            not_my_fashion = 0
+            for recent in self.recent_focus:
+                if recent.fashion == self.fashion:
+                    has_my_fashion += 1
+                else:
+                    not_my_fashion += 1 
+            if(gt == True and
+                has_my_fashion > not_my_fashion * fshn_ratio):
+                self.change_fashion()
+            elif has_my_fashion * fshn_ratio < not_my_fashion:
+                self.change_fashion()
+
+
+
+    def change_fashion(self):
+        if self.fashion == 1:
+            self.fashion = 0
+        else:
+            self.fashion = 1
+        self.env.record_fashion_change(self)
+        logging.info(self.name + " is changing fashions")
 
 
 
@@ -55,18 +98,14 @@ class Follower(Fashionista, prdpry.Predator):
 
         super().__init__(name, life_force, repro_age,
             decay_rate, max_move, max_detect,
-            max_eat, goal)
+            max_eat, goal, recent_hist=RCNT_FLWR_HIST)
 
         self.fashion = INIT_FLWR
 
+
     def eat(self, prey):
-        if self.fashion != prey.fashion:
-            logging.info("About to eat: my fashion is " 
-                + fashions[self.fashion] +
-                " my fashion will be " + fashions[prey.fashion])
-            logging.info("Eating: " + fashions[prey.fashion])
-            self.fashion = prey.fashion
-            self.env.record_fashion_change(self)
+        self.respond_to_trends(False, FSHN_F_RATIO)
+
 
 
 class TrendSetter(Fashionista, prdpry.MobilePrey):
@@ -78,18 +117,15 @@ class TrendSetter(Fashionista, prdpry.MobilePrey):
             decay_rate=1.0, max_move=10.0, max_detect=10.0,
             goal=prdpry.AVOID):
 
-        print("Creating trend setter with goal of "
-                + goal)
-
         super().__init__(name, life_force, repro_age,
             decay_rate, max_move, max_detect,
-            goal=goal)
+            goal=goal, recent_hist=RCNT_TRND_HIST)
 
         self.fashion = INIT_TRND
 
 
     def avoid_predator(self):
-        print("Avoiding predator")
+        self.respond_to_trends(True, FSHN_T_RATIO)
 
 
 class SocietyEnv(prdpry.PredPreyEnv):
@@ -97,9 +133,9 @@ class SocietyEnv(prdpry.PredPreyEnv):
     """ This is the society in which our fashionistas
         will adopt fashions """
 
-    def __init__(self, name, length, height):
+    def __init__(self, name, length, height, logfile=None):
         super().__init__(name, length, height,
-            preact=True, postact=False)
+            preact=True, postact=False, logfile=logfile)
 
         self.varieties = {}
     
@@ -156,7 +192,9 @@ class SocietyEnv(prdpry.PredPreyEnv):
             pop_hist[a] = self.varieties[a]["pop_hist"]
 
         disp.display_line_graph('Populations in '
-                                + self.name,
+                                + self.name
+                                + " adopting fashion "
+                                + fashions[FSHN_TO_TRACK],
                                 pop_hist,
                                 self.period)
 
