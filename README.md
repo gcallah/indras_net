@@ -5,8 +5,12 @@ This is a project building an agent-based modeling system in Python. The ultimat
 
 basic_run.py creates a barebones environment of agents that just print their names. It can be the basis for your own run file.
 
-fashion.py is Adam Smith's fashion model.
+entity.py contains the basic agent class, and basic environment, as well as some plumbing for connecting them.
 
-height.py is Thomas Schelling's genetic engineered height model.
+fashion.py is Adam Smith's fashion model. fashion_run.py sets some parameters, and then runs the model.
 
-predator_prey.py is the core of a family of predator prey models, of which Smith's fashion model is the first.
+height.py is Thomas Schelling's genetic engineered height model. height_run.py runs the model.
+
+predator_prey.py is the core of a family of predator prey models, of which Smith's fashion model is the first. pred-run.py runs this model.
+
+spatial_agent.py contains an agent sub-class and environment sub-class that position agents in space.
