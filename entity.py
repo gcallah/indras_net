@@ -19,7 +19,7 @@ CODE_MODE = 4
 DBUG_MODE = 5
 LIST_MODE = 6
 QUIT_MODE = 7
-PASS_MODE = 8
+PLOT_MODE = 8
 EXMN_MODE = 9
 
 
@@ -150,8 +150,8 @@ class Environment(Entity):
                "c": CODE_MODE,
                "d": DBUG_MODE,
                "e": EXMN_MODE,
-               "q": QUIT_MODE,
-               "p": PASS_MODE}
+               "p": PLOT_MODE,
+               "q": QUIT_MODE}
 
 
     def __init__(self, name, preact = False, postact = False,
@@ -182,11 +182,6 @@ class Environment(Entity):
         return None
 
 
-    def list_agents(self):
-        for agent in self.agents:
-            print(agent.name + " with a goal of " + agent.goal)
-   
-
     def menu(self):
         print("Running in " + self.name + ".")
         print("Choose one and press Enter:")
@@ -196,12 +191,18 @@ class Environment(Entity):
             "(e)xamine log file; "\
             "(i)nspect agent;\n"\
             "(l)ist agents; "\
+            "(p)lot locations; "\
             "(r)un; "\
-            "(s)tep; "\
+            "(s)tep (default); "\
             "(v)isualize;\n"\
             "(q)uit: ")
         return self.keymap.get(choice.strip(), STEP_MODE)
 
+
+    def list_agents(self):
+        for agent in self.agents:
+            print(agent.name + " with a goal of " + agent.goal)
+   
 
     def run(self, resume=False):
         if resume: self.period = Environment.prev_period
@@ -226,8 +227,6 @@ class Environment(Entity):
                 entity = self.find_agent(name.strip())
                 if entity == None: print("No such agent")
                 else: entity.pprint()
-            elif mode == VISL_MODE:
-                self.display()
             elif mode == LIST_MODE:
                 print("Active agents in environment:")
                 self.list_agents()
@@ -237,8 +236,10 @@ class Environment(Entity):
                 pdb.set_trace()
             elif mode == EXMN_MODE:
                 self.disp_log(self.logfile)
-            elif mode == PASS_MODE:
-                pass
+            elif mode == VISL_MODE:
+                self.display()
+            elif mode == PLOT_MODE:
+                self.plot()
 
             mode = self.menu()
 
@@ -309,6 +310,10 @@ class Environment(Entity):
 
 
     def display(self):
+        pass
+
+
+    def plot(self):
         pass
 
 

@@ -8,8 +8,8 @@ logging.basicConfig(format='%(levelname)s:%(message)s',
 
 logging.info("Starting program")
 
-RABBITS = 12
-FOXES   = 6
+RABBITS = 4
+FOXES   = 2
 
 env = PredPreyEnv("meadow", 50.0, 50.0, logfile=PRED_LOG)
 

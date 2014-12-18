@@ -3,7 +3,6 @@ Filename: predator_prey.py
 Author: Gene Callahan
 """
 
-import copy
 import math
 import cmath
 import time
@@ -21,8 +20,6 @@ from collections import deque
 EAT          = "eat"
 AVOID        = "avoid"
 REPRODUCE    = "reproduce"
-NUM_ZOMBIES  = 10
-MAX_ZERO_PER = 8
 MAX_EXCLUDE  = 10
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -141,7 +138,7 @@ class MobileCreature(Creature):
         return self.max_move
 
 
-    def scan_env(self, universal):
+    def survey_env(self, universal):
         logging.info("scanning env for " + universal)
         prehends = entity.Entity.get_universal_instances(
                 prehender=type(self), universal=universal)
@@ -176,10 +173,6 @@ class MobileCreature(Creature):
             return True
         else:
             return False
-
-
-    def is_wandering(self):
-        return self.wandering
 
 
 class Predator(MobileCreature):
@@ -307,30 +300,7 @@ class PredPreyEnv(spagnt.SpatialEnvironment):
                     postact=True, logfile=None):
         super().__init__(name, length, height, preact, postact,
                             logfile)
-        self.varieties = {}
-
-
-    def add_agent(self, creature):
-        s = self.get_class_name(type(creature))
-        logging.info("Adding " + creature.__str__()
-                + " of varieties " + s)
-
-        if s in self.varieties:
-            self.varieties[s]["pop"] += 1
-            if len(self.varieties[s]["zombies"]) < NUM_ZOMBIES:
-                self.varieties[s]["zombies"].append(
-                    copy.deepcopy(creature))
-        else:
-            self.varieties[s] = {"pop": 1,
-                           "pop_hist": [],
-                           "zombies": [creature],
-                           "zero_per": 0}
-
-        super().add_agent(creature)
-
-
-    def contains(self, creat_type):
-        return creat_type.__name__ in self.varieties
+        self.num_zombies = 10
 
 
     def keep_running(self):
@@ -355,38 +325,6 @@ class PredPreyEnv(spagnt.SpatialEnvironment):
     def get_pop(self, s):
         return self.varieties[s]["pop"]
 
-
-    def census(self):
-        print("Populations in period " + str(self.period) + ":")
-        for s in self.varieties:
-            pop = self.get_pop(s)
-            print(s + ": " + str(pop))
-            self.varieties[s]["pop_hist"].append(pop)
-            if pop == 0:
-                self.varieties[s]["zero_per"] += 1
-                if self.varieties[s]["zero_per"] >= MAX_ZERO_PER:
-                    for creature in self.varieties[s]["zombies"]:
-                        self.add_agent(copy.deepcopy(creature))
-                    self.varieties[s]["zero_per"] = 0
-
-
-    def step(self, delay=0):
-        self.census()
-
-        super().step()
-
-
-    def preact_loop(self):
-        for creature in self.agents:
-            if isinstance(creature, MobileCreature):
-                if creature.is_wandering():
-                    creature.pos = self.get_new_wander_pos(creature)
-                    logging.info("We are about to scan the env for "
-                        + creature.name + " which has a goal of "
-                        + creature.goal)
-                    creature.scan_env(creature.goal)
-                else:
-                    creature.detect_behavior()
 
 
     def postact_loop(self):

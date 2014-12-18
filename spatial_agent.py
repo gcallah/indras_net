@@ -3,6 +3,7 @@ Filename: spatial_agent.py
 Author: Gene Callahan
 """
 
+import copy
 import math
 import cmath
 import time
@@ -12,6 +13,9 @@ import pprint
 import numpy as np
 import matplotlib.pyplot as plt
 import entity
+import display_methods as disp
+
+MAX_ZERO_PER = 8
 
 
 def rand_complex(initPos, radius):
@@ -46,10 +50,29 @@ class SpatialAgent(entity.Agent):
         self.max_move   = max_move
         self.max_detect = max_detect
         self.pos = None
+        self.wandering = False
 
 
     def add_env(self, env):
         self.env = env
+
+
+    def survey_env(self, universal):
+        logging.info("surveying env for " + universal)
+        prehended_list = []
+        prehends = entity.Entity.get_universal_instances(
+                prehender=type(self), universal=universal)
+        if not prehends == None:
+            for pre_type in prehends:
+                for prehended in self.env.agents:
+                    if(self.in_detect_range(prehended)
+                        and type(prehended) == pre_type):
+                        prehended_list.append(prehended)
+        return prehended_list
+
+
+    def detect_behavior(self):
+        pass
 
 
 class SpatialEnvironment(entity.Environment):
@@ -64,10 +87,14 @@ class SpatialEnvironment(entity.Environment):
 
     def __init__(self, name, length, height,
 	            preact=False, postact=False, logfile=None):
+
         super().__init__(name, preact, postact, logfile)
+
         self.length   = length
         self.height   = height
         self.max_dist = self.length * self.height
+        self.num_zombies = 0
+        self.varieties = {}
 
 
     def add_agent(self, agent):
@@ -76,40 +103,100 @@ class SpatialEnvironment(entity.Environment):
         y = random.uniform(0, self.height - 1)
         agent.pos = complex(x, y)
 
+        v = self.get_class_name(type(agent))
+        logging.info("Adding " + agent.__str__()
+                + " of variety " + v)
 
-    def get_entity_pos(self, entity):
-        for this_entity in self.agents:
-            if entity == this_entity:
-                return entity.pos
-        return None
+        if v in self.varieties:
+            self.varieties[v]["pop"] += 1
+        else:
+            self.varieties[v] = {"pop": 1,
+                           "pop_of_note": 0,
+                           "pop_hist": [],
+                           "zombies": [],
+                           "zero_per": 0}
+        if len(self.varieties[v]["zombies"]) < self.num_zombies:
+            self.varieties[v]["zombies"].append(copy.copy(agent))
+
+
+    def step(self, delay=0):
+        self.census()
+        super().step()
+
+
+    def contains(self, agent_type):
+        return agent_type.__name__ in self.varieties
+
+
+    def census(self):
+        print("Populations in period " + str(self.period) + ":")
+        for v in self.varieties:
+            pop = self.get_pop(v)
+            print(v + ": " + str(pop))
+            var = self.varieties[v]
+            var["pop_hist"].append(pop)
+            if pop == 0:
+                var["zero_per"] += 1
+                if var["zero_per"] >= MAX_ZERO_PER:
+                    for agent in var["zombies"]:
+                        self.add_agent(copy.copy(agent))
+                    var["zero_per"] = 0
+
+
+    def preact_loop(self):
+        for agent in self.agents:
+            if agent.wandering:
+                agent.pos = self.get_new_wander_pos(agent)
+                logging.info("We are about to survey the "
+                    "env for "
+                    + agent.name + " which has a goal of "
+                    + agent.goal)
+                agent.survey_env(agent.goal)
+            else:
+                agent.detect_behavior()
 
 
     def closest_x(self, pos, target_type, exclude):
         x = self.max_dist
         close_target = None
-        for entity in self.agents:
-            if isinstance(entity, target_type):
-                if (not exclude == None) and (not entity in exclude):
-                    p_pos = entity.pos
+        for agent in self.agents:
+            if isinstance(agent, target_type):
+                if (not exclude == None) and (not agent in exclude):
+                    p_pos = agent.pos
                     d     = self.get_distance(pos, p_pos)
                     if d < x:
                         x = d
-                        close_target = entity
+                        close_target = agent
         return close_target
 
 
     def get_new_wander_pos(self, agent):
         new_pos = rand_complex(agent.pos, agent.get_max_move())
-        len = new_pos.real
-        ht  = new_pos.imag
-        if len < 0.0:
-            len = 0.0
-        if ht  < 0.0:
-            ht  = 0.0
-        if len > self.length:
-            len = self.length
-        if ht  > self.height:
-            ht  = self.height
-        return complex(len, ht)
+        x = new_pos.real
+        y  = new_pos.imag
+        if x < 0.0:
+            x = 0.0
+        if y  < 0.0:
+            y  = 0.0
+        if x > self.length:
+            x = self.length
+        if y  > self.height:
+            y  = self.height
+        return complex(x, y)
+
+
+    def plot(self):
+        data = {}
+        for v in self.varieties:
+            data[v] = {"x": [], "y": []}
+            for a in self.agents:
+                if type(a).__name__ == v:
+                    pos = a.pos
+                    x = pos.real
+                    y = pos.imag
+                    data[v]["x"].append(x)
+                    data[v]["y"].append(y)
+                
+        disp.display_scatter_plot("Agent Positions", data)
 
 
