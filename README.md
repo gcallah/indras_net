@@ -13,4 +13,6 @@ height.py is Thomas Schelling's genetic engineered height model. height_run.py r
 
 predator_prey.py is the core of a family of predator prey models, of which Smith's fashion model is the first. pred-run.py runs this model.
 
+prop_args.py is the start of a property manager.
+
 spatial_agent.py contains an agent sub-class and environment sub-class that position agents in space.
