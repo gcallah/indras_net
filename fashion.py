@@ -13,6 +13,7 @@ import logging
 import pprint
 import numpy as np
 import matplotlib.pyplot as plt
+import prop_args
 import entity
 import spatial_agent as spagnt
 import predator_prey as prdpry
@@ -24,29 +25,23 @@ INIT_FLWR = 0
 INIT_TRND = 1
 
 FSHN_TO_TRACK = 0
-FSHN_F_RATIO = 1.3
-FSHN_T_RATIO = 1.5
 
-FLWR_OTHERS = 3
-TRND_OTHERS = 5
-
-MIN_ADVERSE_PERIODS = 7
+PROG_NM = "fashion.py"
 
 
 class Fashionista(prdpry.MobileCreature):
 
+
     def __init__(self, name, life_force=20, repro_age=1000,
-            decay_rate=1.0, max_move=10.0, max_detect=10.0,
-            max_eat=10.0, goal="", rand_age=False,
-            min_others=FLWR_OTHERS):
+            decay_rate=0.0, max_move=10.0, max_detect=10.0,
+            max_eat=10.0, goal="", rand_age=False):
 
         super().__init__(name, life_force, repro_age,
             decay_rate, max_move, max_detect, max_eat,
             goal, rand_age)
 
         self.fashion = None
-        self.min_others = min_others
-        self.adverse_periods = 0
+        self.adv_periods = 0
 
 
     def act(self):
@@ -57,8 +52,9 @@ class Fashionista(prdpry.MobileCreature):
         return spagnt.SpatialAgent.survey_env(self, goal)
 
 
-    def respond_to_trends(self, prehended, gt, fshn_ratio):
-        if len(prehended) >= self.min_others:
+    def respond_to_trends(self, prehended, gt, fshn_ratio,
+                            min_others):
+        if len(prehended) >= min_others:
             has_my_fashion = 0
             not_my_fashion = 0
             for preh in prehended:
@@ -74,9 +70,9 @@ class Fashionista(prdpry.MobileCreature):
 
 
     def adverse_response(self):
-        self.adverse_periods += 1
-        if self.adverse_periods >= MIN_ADVERSE_PERIODS:
-            self.adverse_periods = 0
+        self.adv_periods += 1
+        if self.adv_periods >= self.env.min_adv_periods:
+            self.adv_periods = 0
             self.change_fashion()
         
 
@@ -97,12 +93,12 @@ class Follower(Fashionista, prdpry.Predator):
         fashion model """
 
     def __init__(self, name, life_force=20, repro_age=1000,
-            decay_rate=1.0, max_move=10.0, max_detect=10.0,
+            decay_rate=0.0, max_move=10.0, max_detect=10.0,
             max_eat=10.0, goal=prdpry.EAT):
 
         super().__init__(name, life_force, repro_age,
             decay_rate, max_move, max_detect,
-            max_eat, goal, min_others=FLWR_OTHERS)
+            max_eat, goal)
 
         self.fashion = INIT_FLWR
 
@@ -110,8 +106,8 @@ class Follower(Fashionista, prdpry.Predator):
     def act(self):
         prehended = super().act()
         if(prehended != None and len(prehended) > 0):
-            self.respond_to_trends(prehended,
-                        False, FSHN_F_RATIO)
+            self.respond_to_trends(prehended, False,
+                    self.env.fshn_f_ratio, self.env.flwr_others)
 
 
 class TrendSetter(Fashionista, prdpry.MobilePrey):
@@ -120,12 +116,12 @@ class TrendSetter(Fashionista, prdpry.MobilePrey):
         fashion model """
 
     def __init__(self, name, life_force=20, repro_age=1000,
-            decay_rate=1.0, max_move=10.0, max_detect=10.0,
+            decay_rate=0.0, max_move=10.0, max_detect=10.0,
             goal=prdpry.AVOID):
 
         super().__init__(name, life_force, repro_age,
             decay_rate, max_move, max_detect,
-            goal=goal, min_others=TRND_OTHERS)
+            goal=goal)
 
         self.fashion = INIT_TRND
 
@@ -134,7 +130,8 @@ class TrendSetter(Fashionista, prdpry.MobilePrey):
         prehended = super().act()
         if(prehended != None and len(prehended) > 0):
             self.respond_to_trends(prehended,
-                    True, FSHN_T_RATIO)
+                    True, self.env.fshn_t_ratio,
+                    self.env.trnd_others)
 
 
 
@@ -148,13 +145,23 @@ class SocietyEnv(spagnt.SpatialEnvironment):
             preact=True, postact=False, logfile=logfile)
 
         self.varieties = {}
-    
 
-    def get_agent_type(self, agent):
-        return(self.get_class_name(type(agent)))
+        self.props = prop_args.PropArgs.get_props("fashion.py")
+
+        self.fshn_f_ratio = self.props.get("fshn_f_ratio",
+                                default = 1.3)
+        self.fshn_t_ratio = self.props.get("fshn_t_ratio",
+                                default = 1.5)
+        
+        self.flwr_others = self.props.get("flwr_others",
+                                default = 3)
+        self.trnd_others = self.props.get("trnd_others",
+                                default = 5)
+
+        self.min_adv_periods = self.props.get("min_adv_periods",
+                                default = 6)
 
 
-            
     def add_agent(self, agent):
         spagnt.SpatialEnvironment.add_agent(self, agent)
 

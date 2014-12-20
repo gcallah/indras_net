@@ -43,6 +43,6 @@ def display_scatter_plot(title, varieties):
     ax.set_title(title)
     plt.grid(True)
     
-    plt.show()
+    plt.show(block=False)
 
 

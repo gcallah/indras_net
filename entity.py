@@ -47,6 +47,12 @@ class Entity:
 
 
     @classmethod
+    def get_agent_type(self, agent):
+        return(self.get_class_name(type(agent)))
+
+            
+
+    @classmethod
     def add_universal(cls, prehender, universal, prehended):
         prehender_type_name = cls.get_class_name(prehender)
         prehended_type_name = cls.get_class_name(prehended)
