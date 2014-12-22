@@ -1,5 +1,5 @@
 import logging
-import predator_prey
+import predprey_model
 
 PRED_LOG = "pred_log.txt"
 

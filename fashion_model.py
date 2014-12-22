@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 import prop_args
 import entity
 import spatial_agent as spagnt
-import predator_prey as prdpry
+import predprey_model as prdpry
 import display_methods as disp
 
 fashions = ["blue", "red"]

@@ -3,6 +3,7 @@ Filename: entity.py
 Author: Gene Callahan and Brandon Logan
 """
 
+from abc import ABCMeta, abstractmethod
 import time
 import logging
 import pprint
@@ -130,8 +131,9 @@ class Agent(Entity):
         super().__init__(name)
         self.goal = goal
 
+    @abstractmethod
     def act(self):
-        print("Agent " + self.name + " trying to achieve " + self.goal)
+        pass
 
     def preact(self):
         pass

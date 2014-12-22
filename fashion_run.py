@@ -1,7 +1,7 @@
 import logging
 import prop_args as pa
-import predator_prey as prdpry
-import fashion
+import predprey_model as prdpry
+import fashion_model
 
 MODEL_NM = "fashion"
 PROG_NM  = MODEL_NM + ".py"
