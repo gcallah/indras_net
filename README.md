@@ -4,7 +4,9 @@ Indra
 This is a project building an agent-based modeling system in Python. The ultimate goal is to build a GUI front-end that will allow non-coders to build models, while at the same time permitting coders to use Python for more flexibility in model creation.
 
 IMPORTANT NOTE: We have established a standard for models and parameter files that run them. For model X, we should have
+
 X_model.py: implements the model
+
 X_run.py: runs it
 
 basic_model.py is an simple agent and environment. Cloning this allows you to get going more easily.
