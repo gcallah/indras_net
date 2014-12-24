@@ -23,7 +23,7 @@ fashion_run.py sets some parameters for fashion_model.py, and then runs the mode
 
 height.py is Thomas Schelling's genetic engineered height model. height_run.py runs the model.
 
-predator_prey.py is the core of a family of predator prey models, of which Smith's fashion model is the first. pred_run.py runs this model.
+predator_prey.py is the core of a family of predator prey models, of which Smith's fashion model is the first descendant model. pred_run.py runs this model.
 
 prop_args.py is the start of a property manager.
 
