@@ -299,7 +299,7 @@ class PredPreyEnv(spagnt.SpatialEnvironment):
     def __init__(self, name, length, height, preact=True,
                     postact=True, logfile=None):
         super().__init__(name, length, height, preact, postact,
-                            logfile)
+                            logfile=logfile, model_nm=model_nm)
         self.num_zombies = 10
 
 

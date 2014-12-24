@@ -1,6 +1,7 @@
 """
 Filename: entity.py
 Author: Gene Callahan and Brandon Logan
+This module contains the base classes for agent-based modeling in Indra.
 """
 
 from abc import ABCMeta, abstractmethod
@@ -10,6 +11,7 @@ import pprint
 import pdb
 import random
 from collections import deque
+import prop_args as pa
 
 
 RUN_MODE  = 0
@@ -22,6 +24,7 @@ LIST_MODE = 6
 QUIT_MODE = 7
 PLOT_MODE = 8
 EXMN_MODE = 9
+WRIT_MODE = 10
 
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -31,9 +34,11 @@ def join_entities(prehender, rel, prehended):
 
 
 class Entity:
+    """
+    This is the base class of all agents AND environments.
+    """
 
     universals  = {}
-    
     
     @classmethod
     def create_first_prehension(cls, prehended):
@@ -124,12 +129,14 @@ class Entity:
 
 class Agent(Entity):
 
-    """ This class adds a goal to an entity 
-        and is the base for all other agents. """
+    """
+    This class adds a goal to an entity and is the base for all other agents.
+    """
 
     def __init__(self, name, goal=None):
         super().__init__(name)
         self.goal = goal
+
 
     @abstractmethod
     def act(self):
@@ -144,26 +151,27 @@ class Agent(Entity):
 
 class Environment(Entity):
 
-    """ A basic environment allowing starting, 
-         stopping, stepping, etc.
+    """
+    A basic environment allowing starting, stopping, stepping, etc.
     """
 
     prev_period = 0  # in case we need to restore state
 
-    keymap = { "r": RUN_MODE,
-               "s": STEP_MODE,
-               "i": INSP_MODE,
-               "l": LIST_MODE,
-               "v": VISL_MODE,
-               "c": CODE_MODE,
+    keymap = { "c": CODE_MODE,
                "d": DBUG_MODE,
                "e": EXMN_MODE,
+               "i": INSP_MODE,
+               "l": LIST_MODE,
                "p": PLOT_MODE,
-               "q": QUIT_MODE}
+               "q": QUIT_MODE,
+               "r": RUN_MODE,
+               "s": STEP_MODE,
+               "v": VISL_MODE,
+               "w": WRIT_MODE}
 
 
     def __init__(self, name, preact = False, postact = False,
-                    logfile=None):
+                    logfile=None, model_nm=None):
         super().__init__(name)
         self.agents   = []
         self.womb = []
@@ -171,6 +179,11 @@ class Environment(Entity):
         self.preact = preact
         self.postact = postact
         self.logfile = logfile
+        self.model_nm = model_nm
+        if model_nm is not None:
+            self.props = pa.PropArgs.get_props(model_nm)
+        else:
+            self.props = None
 
 
     def add_agent(self, agent):
@@ -203,6 +216,7 @@ class Environment(Entity):
             "(r)un; "\
             "(s)tep (default); "\
             "(v)isualize;\n"\
+            "(w)rite properties; "\
             "(q)uit: ")
         return self.keymap.get(choice.strip(), STEP_MODE)
 
@@ -248,12 +262,20 @@ class Environment(Entity):
                 self.display()
             elif mode == PLOT_MODE:
                 self.plot()
+            elif mode == WRIT_MODE:
+                file_nm = input("Choose file name: ")
+                self.write_props(file_nm)
 
             mode = self.menu()
 
         Environment.prev_period = self.period
 
         print("Returning to run-time environment")
+
+
+    def write_props(self, file_nm):
+        if self.props is not None:
+            self.props.write(file_nm)
 
 
     def disp_log(self, logfile):

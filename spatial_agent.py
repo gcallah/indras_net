@@ -86,9 +86,9 @@ class SpatialEnvironment(entity.Environment):
 
 
     def __init__(self, name, length, height,
-	            preact=False, postact=False, logfile=None):
+	            preact=False, postact=False, logfile=None, model_nm=None):
 
-        super().__init__(name, preact, postact, logfile)
+        super().__init__(name, preact, postact, logfile=logfile, model_nm=model_nm)
 
         self.length   = length
         self.height   = height

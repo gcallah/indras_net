@@ -26,8 +26,6 @@ INIT_TRND = 1
 
 FSHN_TO_TRACK = 0
 
-PROG_NM = "fashion.py"
-
 
 class Fashionista(prdpry.MobileCreature):
 
@@ -140,13 +138,11 @@ class SocietyEnv(spagnt.SpatialEnvironment):
     """ This is the society in which our fashionistas
         will adopt fashions """
 
-    def __init__(self, name, length, height, logfile=None):
+    def __init__(self, name, length, height, logfile=None, model_nm=None):
         super().__init__(name, length, height,
-            preact=True, postact=False, logfile=logfile)
+            preact=True, postact=False, logfile=logfile, model_nm=model_nm)
 
         self.varieties = {}
-
-        self.props = prop_args.PropArgs.get_props("fashion.py")
 
         self.fshn_f_ratio = self.props.get("fshn_f_ratio",
                                 default = 1.3)

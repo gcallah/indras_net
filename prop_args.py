@@ -1,24 +1,32 @@
+import json
 
-class PropArgs:
+
+class PropArgs():
 
     prop_sets = {}
 
 
     @staticmethod
-    def get_props(prog_nm):
-        if prog_nm in PropArgs.prop_sets:
-            print("Found " + prog_nm + " in prop_sets")
-            return PropArgs.prop_sets[prog_nm]
-        else:
-            print("Did not find " + prog_nm + " in prop_sets")
-            return(PropArgs(prog_nm))
+    def get_props(model_nm, props={}):
+        if model_nm in PropArgs.prop_sets:
+            return PropArgs.prop_sets[model_nm]
 
 
-    def __init__(self, prog_nm):
-        self.prog_nm = prog_nm
-# store this instance as the value in the dict for 'prog_nm'
-        PropArgs.prop_sets[prog_nm] = self
-        self.props = {}
+    def create_props(model_nm, props={}):
+        return(PropArgs(model_nm, props))
+
+    
+    @staticmethod
+    def read_props(model_nm, file_nm):
+        props = json.load(open(file_nm))
+        return PropArgs.create_props(model_nm, props)
+
+    
+    def __init__(self, model_nm, props={}):
+        self.model_nm = model_nm
+# store this instance as the value in the dict for 'model_nm'
+        PropArgs.prop_sets[model_nm] = self
+        self.props = props
 
 
     def set(self, nm, val):
@@ -30,4 +38,7 @@ class PropArgs:
             self.props[nm] = default
         return self.props[nm]
 
+
+    def write(self, file_nm):
+        json.dump(self.props, open(file_nm, 'w'))
 
