@@ -10,6 +10,7 @@ import logging
 import pprint
 import pdb
 import random
+import getpass
 from collections import deque
 import prop_args as pa
 
@@ -62,7 +63,6 @@ class Entity:
     def add_universal(cls, prehender, universal, prehended):
         prehender_type_name = cls.get_class_name(prehender)
         prehended_type_name = cls.get_class_name(prehended)
-        print("Trying to add a universal!")
         if universal not in cls.universals:
             cls.universals[universal] = \
                 {prehender_type_name:
@@ -149,6 +149,30 @@ class Agent(Entity):
         pass
     
 
+class User(Entity):
+    """
+    We will represent the user to the system as another entity.
+    """
+
+    # user types
+    IPYTHON = "iPython"
+
+
+    def __init__(self, nm, type):
+        super().__init__(nm)
+        self.type = type
+
+
+    def tell(self, msg):
+        if self.type == User.IPYTHON:
+            print(msg)
+
+
+    def ask(self, msg):
+        if self.type == User.IPYTHON:
+            return(input(msg))
+
+
 class Environment(Entity):
 
     """
@@ -170,20 +194,23 @@ class Environment(Entity):
                "w": WRIT_MODE}
 
 
-    def __init__(self, name, preact = False, postact = False,
-                    logfile=None, model_nm=None):
+    def __init__(self, name, preact = False, postact = False, model_nm=None):
         super().__init__(name)
         self.agents   = []
         self.womb = []
         self.period = 0
         self.preact = preact
         self.postact = postact
-        self.logfile = logfile
         self.model_nm = model_nm
         if model_nm is not None:
             self.props = pa.PropArgs.get_props(model_nm)
         else:
             self.props = None
+
+        user_nm = getpass.getuser()
+        self.props.set("user_name", user_nm)
+        user_type = self.props.get("user_type", User.IPYTHON)
+        self.user = User(user_nm, user_type)
 
 
     def add_agent(self, agent):
@@ -204,9 +231,9 @@ class Environment(Entity):
 
 
     def menu(self):
-        print("Running in " + self.name + ".")
-        print("Choose one and press Enter:")
-        choice = input(
+        self.user.tell("Running in " + self.name + ".")
+        self.user.tell("Choose one and press Enter:")
+        choice = self.user.ask(
             "(c)ode; "\
             "(d)ebug; "\
             "(e)xamine log file; "\
@@ -223,17 +250,18 @@ class Environment(Entity):
 
     def list_agents(self):
         for agent in self.agents:
-            print(agent.name + " with a goal of " + agent.goal)
+            self.user.tell(agent.name + " with a goal of " + agent.goal)
    
 
     def run(self, resume=False):
         if resume: self.period = Environment.prev_period
         else:      self.period = 0
 
+        self.user.tell("Welcome, " + self.user.name)
         mode = self.menu()
         while mode != QUIT_MODE:
             if mode == RUN_MODE:
-                print("Running continously; press Ctrl-c to halt!")
+                self.user.tell("Running continously; press Ctrl-c to halt!")
                 time.sleep(3)
                 try:
                     while self.keep_running():
@@ -245,32 +273,32 @@ class Environment(Entity):
                 self.period += 1
                 self.step(delay=0)
             elif mode == INSP_MODE:
-                name = input("Type the name of the agent to inspect: ")
+                name = self.user.ask("Type the name of the agent to inspect: ")
                 entity = self.find_agent(name.strip())
-                if entity == None: print("No such agent")
+                if entity == None: self.user.tell("No such agent")
                 else: entity.pprint()
             elif mode == LIST_MODE:
-                print("Active agents in environment:")
+                self.user.tell("Active agents in environment:")
                 self.list_agents()
             elif mode == CODE_MODE:
-                code = eval(input("Type a line of code to run: "))
+                code = eval(self.user.ask("Type a line of code to run: "))
             elif mode == DBUG_MODE:
                 pdb.set_trace()
             elif mode == EXMN_MODE:
-                self.disp_log(self.logfile)
+                self.disp_log(self.props.get("logfile", None))
             elif mode == VISL_MODE:
                 self.display()
             elif mode == PLOT_MODE:
                 self.plot()
             elif mode == WRIT_MODE:
-                file_nm = input("Choose file name: ")
+                file_nm = self.user.ask("Choose file name: ")
                 self.write_props(file_nm)
 
             mode = self.menu()
 
         Environment.prev_period = self.period
 
-        print("Returning to run-time environment")
+        self.user.tell("Returning to run-time environment")
 
 
     def write_props(self, file_nm):
@@ -282,8 +310,8 @@ class Environment(Entity):
 
         MAX_LINES = 16
 
-        if logfile == None:
-            print("No log file to examine!")
+        if logfile is None:
+            self.user.tell("No log file to examine!")
 
         last_n_lines = deque(maxlen=MAX_LINES) # for now hard-coded
 
@@ -291,10 +319,10 @@ class Environment(Entity):
             for line in log:
                 last_n_lines.append(line)
 
-        print("Displaying the last " + str(MAX_LINES)
+        self.user.tell("Displaying the last " + str(MAX_LINES)
                 + " lines of logfile " + logfile)
         for line in last_n_lines:
-            print(line.strip())
+            self.user.tell(line.strip())
 
 
     def step(self, delay=0):

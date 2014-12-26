@@ -20,7 +20,6 @@ class BasicEnv(entity.Environment):
     This environment doesn't really do anything.
     """
 
-    def __init__(self, logfile=None, model_nm=None):
-        super().__init__("a basic environment to get you going",
-                    logfile=logfile, model_nm=model_nm)
+    def __init__(self, model_nm=None):
+        super().__init__("a basic environment to get you going", model_nm=model_nm)
 

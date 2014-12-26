@@ -10,17 +10,17 @@ LOG_FILE = MODEL_NM + ".txt"
 
 
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO, filemode='w', filename=LOG_FILE)
-
 logging.info("Starting program")
 
-for i in range(len(sys.argv)):
-    print(sys.argv[i])
+read_props = False
 
-# props = pa.PropArgs(MODEL_NM)
+if read_props:
+    props = pa.PropArgs.read_props(MODEL_NM, "basic_props.txt")
+else:
+    props = pa.PropArgs(MODEL_NM)
+    props.set("num_agents", 12)
+    props.set("logfile", LOG_FILE)
 
-# props.set("num_agents", 12)
-
-props = pa.PropArgs.read_props(MODEL_NM, "basic_props.txt")
 
 env = BasicEnv(model_nm=MODEL_NM)
 

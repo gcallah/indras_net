@@ -138,9 +138,9 @@ class SocietyEnv(spagnt.SpatialEnvironment):
     """ This is the society in which our fashionistas
         will adopt fashions """
 
-    def __init__(self, name, length, height, logfile=None, model_nm=None):
+    def __init__(self, name, length, height, model_nm=None):
         super().__init__(name, length, height,
-            preact=True, postact=False, logfile=logfile, model_nm=model_nm)
+            preact=True, postact=False, model_nm=model_nm)
 
         self.varieties = {}
 

@@ -27,8 +27,10 @@ pa.set("trnd_others", 5)
 
 pa.set("min_adv_periods", 8)
 
+pa.set("logfile", LOG_FILE)
 
-env = SocietyEnv("society", 50.0, 50.0, logfile=LOG_FILE, model_nm=MODEL_NM)
+
+env = SocietyEnv("society", 50.0, 50.0, model_nm=MODEL_NM)
 
 for i in range(pa.get("num_flwr")):
     env.add_agent(Follower(name="prole" + str(i),
