@@ -3,7 +3,7 @@ import prop_args as pa
 import predprey_model as prdpry
 import fashion_model
 
-MODEL_NM = "fashion"
+MODEL_NM = "fashion_model"
 PROG_NM  = MODEL_NM + ".py"
 LOG_FILE = MODEL_NM + "_log.txt"
 

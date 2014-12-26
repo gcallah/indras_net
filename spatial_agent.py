@@ -57,6 +57,20 @@ class SpatialAgent(entity.Agent):
         self.env = env
 
 
+    def in_detect_range(self, prehended):
+        return self.in_range(prehended, self.max_detect)
+
+
+    def in_range(self, prey, dist):
+        if prey == None:
+            return False
+
+        if SpatialEnvironment.get_distance(self.pos, prey.pos) < dist:
+            return True
+        else:
+            return False
+
+
     def survey_env(self, universal):
         logging.info("surveying env for " + universal)
         prehended_list = []
@@ -65,9 +79,10 @@ class SpatialAgent(entity.Agent):
         if not prehends == None:
             for pre_type in prehends:
                 for prehended in self.env.agents:
-                    if(self.in_detect_range(prehended)
-                        and type(prehended) == pre_type):
-                        prehended_list.append(prehended)
+                    if prehended is not self:
+                        if(self.in_detect_range(prehended)
+                                and type(prehended) == pre_type):
+                            prehended_list.append(prehended)
         return prehended_list
 
 
@@ -94,6 +109,7 @@ class SpatialEnvironment(entity.Environment):
         self.max_dist = self.length * self.height
         self.num_zombies = 0
         self.varieties = {}
+        self.census = True
 
 
     def add_agent(self, agent):
@@ -119,7 +135,8 @@ class SpatialEnvironment(entity.Environment):
 
 
     def step(self, delay=0):
-        self.census()
+        if self.census: 
+            self.census()
         super().step()
 
 
@@ -142,6 +159,10 @@ class SpatialEnvironment(entity.Environment):
                     var["zero_per"] = 0
 
 
+    def get_pop(self, s):
+        return self.varieties[s]["pop"]
+
+
     def preact_loop(self):
         for agent in self.agents:
             if agent.wandering:
@@ -155,17 +176,18 @@ class SpatialEnvironment(entity.Environment):
                 agent.detect_behavior()
 
 
-    def closest_x(self, pos, target_type, exclude):
+    def closest_x(self, seeker, pos, target_type, exclude):
         x = self.max_dist
         close_target = None
         for agent in self.agents:
-            if isinstance(agent, target_type):
-                if (not exclude == None) and (not agent in exclude):
-                    p_pos = agent.pos
-                    d     = self.get_distance(pos, p_pos)
-                    if d < x:
-                        x = d
-                        close_target = agent
+            if seeker is not agent: # don't locate me!
+                if isinstance(agent, target_type):
+                    if (not exclude == None) and (not agent in exclude):
+                        p_pos = agent.pos
+                        d     = self.get_distance(pos, p_pos)
+                        if d < x:
+                            x = d
+                            close_target = agent
         return close_target
 
 

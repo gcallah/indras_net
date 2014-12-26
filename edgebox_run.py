@@ -2,7 +2,7 @@ import sys
 import logging
 import prop_args as pa
 import entity
-import edgebox_model
+import edgebox_model as ebm
 
 MODEL_NM = "edgebox_model"
 PROG_NM  = MODEL_NM + ".py"
@@ -13,20 +13,22 @@ logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO, file
 
 logging.info("Starting program")
 
-for i in range(len(sys.argv)):
-    print(sys.argv[i])
 
-props = pa.PropArgs(MODEL_NM)
+read_props = False
 
-props.set("logfile", LOG_FILE)
+if read_props:
+    props = pa.PropArgs.read_props(MODEL_NM, "edgebox_props.txt")
+else:
+    props = pa.PropArgs(MODEL_NM)
+    props.set("logfile", LOG_FILE)
 
 
-# props = pa.PropArgs.read_props(MODEL_NM, "edgebox_props.txt")
-
-env = EdgeboxEnv(model_nm=MODEL_NM)
+env = EdgeboxEnv(50.0, 50.0, model_nm=MODEL_NM)
 
 env.add_agent(EdgeboxAgent(name="Albert"))
 env.add_agent(EdgeboxAgent(name="Beatrice"))
+
+entity.Entity.add_universal(EdgeboxAgent, ebm.TRADE, EdgeboxAgent)
 
 env.run()
 

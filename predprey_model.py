@@ -145,7 +145,7 @@ class MobileCreature(Creature):
         if not prehends == None:
             for pre_type in prehends:
                 if self.env.contains(pre_type):
-                    prehended = self.env.closest_x(self.pos, pre_type,
+                    prehended = self.env.closest_x(self, self.pos, pre_type,
                             self.exclude)
                     if self.in_detect_range(prehended):
                         self.wandering = False
@@ -157,22 +157,8 @@ class MobileCreature(Creature):
         return None
 
 
-    def in_detect_range(self, prehended):
-        return self.in_range(prehended, self.max_detect)
-
-
     def in_gobble_range(self):
         return self.in_range(self.focus, self.max_eat)
-
-
-    def in_range(self, prey, dist):
-        if prey == None:
-            return False
-
-        if PredPreyEnv.get_distance(self.pos, prey.pos) < dist:
-            return True
-        else:
-            return False
 
 
 class Predator(MobileCreature):
@@ -296,7 +282,8 @@ class PredPreyEnv(spagnt.SpatialEnvironment):
 
     repop = True
 
-    def __init__(self, name, length, height, preact=True, postact=True):
+    def __init__(self, name, length, height, preact=True,
+            postact=True, model_nm="predprey_model"):
         super().__init__(name, length, height, preact, postact, model_nm=model_nm)
         self.num_zombies = 10
 
@@ -318,11 +305,6 @@ class PredPreyEnv(spagnt.SpatialEnvironment):
                                 + self.name,
                                 pop_hist,
                                 self.period)
-
-
-    def get_pop(self, s):
-        return self.varieties[s]["pop"]
-
 
 
     def postact_loop(self):
