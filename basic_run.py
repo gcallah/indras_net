@@ -1,4 +1,3 @@
-import sys
 import logging
 import prop_args as pa
 import entity
@@ -8,19 +7,15 @@ MODEL_NM = "basic_model"
 PROG_NM  = MODEL_NM + ".py"
 LOG_FILE = MODEL_NM + ".txt"
 
-
-logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO, filemode='w', filename=LOG_FILE)
-logging.info("Starting program")
-
 read_props = False
 
 if read_props:
     props = pa.PropArgs.read_props(MODEL_NM, "basic_props.txt")
 else:
-    props = pa.PropArgs(MODEL_NM)
+    props = pa.PropArgs(MODEL_NM, logfile=LOG_FILE)
     props.set("num_agents", 12)
-    props.set("logfile", LOG_FILE)
 
+logging.info("Starting program " + PROG_NM)
 
 env = BasicEnv(model_nm=MODEL_NM)
 

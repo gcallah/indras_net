@@ -14,6 +14,7 @@ class EdgeboxAgent(spatial_agent.SpatialAgent):
 
     def __init__(self, name, goal=TRADE):
         super().__init__(name, goal, max_detect=1000.0)
+        self.goods = {}
 
 
     def act(self):

@@ -7,38 +7,42 @@ MODEL_NM = "fashion_model"
 PROG_NM  = MODEL_NM + ".py"
 LOG_FILE = MODEL_NM + "_log.txt"
 
-logging.basicConfig(format='%(levelname)s:%(message)s',
-            level=logging.INFO, filemode='w',
-            filename=LOG_FILE)
+
+read_props = False
+
+if read_props:
+    props = pa.PropArgs.read_props(MODEL_NM, "fashion_props.txt")
+else:
+    pa = pa.PropArgs(MODEL_NM, LOG_FILE)
+    
+    pa.set("num_trndstr", 20)
+    pa.set("num_flwr", 80)
+    
+    pa.set("fshn_f_ratio", 1.3)
+    pa.set("fshn_t_ratio", 1.5)
+    
+    pa.set("flwr_others", 3)
+    pa.set("trnd_others", 5)
+    
+    pa.set("flwr_max_detect", 20.0)
+    pa.set("trnd_max_detect", 20.0)
+
+    pa.set("min_adv_periods", 8)
+
 
 logging.info("Starting program")
-
-
-pa = pa.PropArgs(MODEL_NM)
-
-pa.set("num_trndstr", 20)
-pa.set("num_flwr", 80)
-
-pa.set("fshn_f_ratio", 1.3)
-pa.set("fshn_t_ratio", 1.5)
-
-pa.set("flwr_others", 3)
-pa.set("trnd_others", 5)
-
-pa.set("min_adv_periods", 8)
-
-pa.set("logfile", LOG_FILE)
-
 
 env = SocietyEnv("society", 50.0, 50.0, model_nm=MODEL_NM)
 
 for i in range(pa.get("num_flwr")):
-    env.add_agent(Follower(name="prole" + str(i),
-        max_move=20.0, max_detect=20.0))
+    env.add_agent(
+            Follower(name="prole" + str(i),
+                max_detect=pa.get("flwr_max_detect")))
 
 for i in range(pa.get("num_trndstr")):
-    env.add_agent(TrendSetter(name="hipster" + str(i),
-        max_move=20.0, max_detect=20.0))
+    env.add_agent(
+            TrendSetter(name="hipster" + str(i),
+                max_detect=pa.get("trnd_max_detect")))
 
 entity.Entity.add_universal(Follower, prdpry.EAT, TrendSetter)
 entity.Entity.add_universal(TrendSetter, prdpry.AVOID, Follower)

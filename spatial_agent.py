@@ -109,7 +109,7 @@ class SpatialEnvironment(entity.Environment):
         self.max_dist = self.length * self.height
         self.num_zombies = 0
         self.varieties = {}
-        self.census = True
+        self.do_census = True
 
 
     def add_agent(self, agent):
@@ -135,7 +135,7 @@ class SpatialEnvironment(entity.Environment):
 
 
     def step(self, delay=0):
-        if self.census: 
+        if self.do_census: 
             self.census()
         super().step()
 

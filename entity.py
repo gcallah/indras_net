@@ -285,7 +285,7 @@ class Environment(Entity):
             elif mode == DBUG_MODE:
                 pdb.set_trace()
             elif mode == EXMN_MODE:
-                self.disp_log(self.props.get("logfile", None))
+                self.disp_log(self.props.get_logfile())
             elif mode == VISL_MODE:
                 self.display()
             elif mode == PLOT_MODE:

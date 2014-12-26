@@ -1,7 +1,12 @@
+import logging
 import json
 
 
 class PropArgs():
+
+    """
+    This class holds sets of named properties for program-wide values.
+    """
 
     prop_sets = {}
 
@@ -22,11 +27,12 @@ class PropArgs():
         return PropArgs.create_props(model_nm, props)
 
     
-    def __init__(self, model_nm, props={}):
+    def __init__(self, model_nm, logfile=None, props={}):
         self.model_nm = model_nm
 # store this instance as the value in the dict for 'model_nm'
         PropArgs.prop_sets[model_nm] = self
         self.props = props
+        self.logger = Logger(self, logfile=logfile)
 
 
     def set(self, nm, val):
@@ -38,7 +44,32 @@ class PropArgs():
             self.props[nm] = default
         return self.props[nm]
 
+    """
+    Special get function for logfile name
+    """
+    def get_logfile(self):
+        return self.props.get("log_fname")
+
 
     def write(self, file_nm):
         json.dump(self.props, open(file_nm, 'w'))
+
+
+class Logger():
+
+    DEF_FORMAT   = '%(levelname)s:%(message)s'
+    DEF_LEVEL    = logging.INFO
+    DEF_FILEMODE = 'w'
+    DEF_FILENAME = 'log.txt'
+
+    def __init__(self, props, logfile=None):
+        if logfile is None:
+            logfile = DEF_FILENAME
+        fmt = props.get("log_format", Logger.DEF_FORMAT)
+        lvl = props.get("log_level", Logger.DEF_LEVEL)
+        fmd = props.get("log_fmode", Logger.DEF_FILEMODE)
+        fnm = props.get("log_fname", logfile)
+
+        logging.basicConfig(format=fmt, level=lvl, filemode=fmd, filename=fnm)
+
 

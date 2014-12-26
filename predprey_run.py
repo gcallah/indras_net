@@ -6,15 +6,11 @@ MODEL_NM = "predprey_model"
 PROG_NM  = MODEL_NM + ".py"
 LOG_FILE = MODEL_NM + "_log.txt"
 
-logging.basicConfig(format='%(levelname)s:%(message)s',
-            level=logging.INFO, filemode='w', filename=PRED_LOG)
-
-logging.info("Starting program")
-
-pa = pa.PropArgs(MODEL_NM)
+pa = pa.PropArgs(MODEL_NM, logfile=LOG_FILE)
 pa.set("num_foxes", 2)
 pa.set("num_rabbits", 4)
-pa.set("logfile", LOG_FILE)
+
+logging.info("Starting program")
 
 env = PredPreyEnv("meadow", 50.0, 50.0)
 

@@ -29,9 +29,8 @@ FSHN_TO_TRACK = 0
 
 class Fashionista(prdpry.MobileCreature):
 
-
     def __init__(self, name, life_force=20, repro_age=1000,
-            decay_rate=0.0, max_move=10.0, max_detect=10.0,
+            decay_rate=0.0, max_move=20.0, max_detect=20.0,
             max_eat=10.0, goal="", rand_age=False):
 
         super().__init__(name, life_force, repro_age,
@@ -91,7 +90,7 @@ class Follower(Fashionista, prdpry.Predator):
         fashion model """
 
     def __init__(self, name, life_force=20, repro_age=1000,
-            decay_rate=0.0, max_move=10.0, max_detect=10.0,
+            decay_rate=0.0, max_move=20.0, max_detect=20.0,
             max_eat=10.0, goal=prdpry.EAT):
 
         super().__init__(name, life_force, repro_age,
@@ -114,7 +113,7 @@ class TrendSetter(Fashionista, prdpry.MobilePrey):
         fashion model """
 
     def __init__(self, name, life_force=20, repro_age=1000,
-            decay_rate=0.0, max_move=10.0, max_detect=10.0,
+            decay_rate=0.0, max_move=20.0, max_detect=20.0,
             goal=prdpry.AVOID):
 
         super().__init__(name, life_force, repro_age,
@@ -194,7 +193,7 @@ class SocietyEnv(spagnt.SpatialEnvironment):
         for a in self.varieties:
             pop_hist[a] = self.varieties[a]["pop_hist"]
 
-        disp.display_line_graph('Populations in '
+        disp.display_line_graph("Adam Smith's fashion model: Populations in "
                                 + self.name
                                 + " adopting fashion "
                                 + fashions[FSHN_TO_TRACK],
