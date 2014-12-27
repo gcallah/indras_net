@@ -266,12 +266,18 @@ class Environment(Entity):
                 try:
                     while self.keep_running():
                         self.period += 1
-                        self.step(delay=.3)
+                        step_msg = self.step(delay=.3)
+                        if step_msg is not None:
+                            self.user.tell(step_msg)
+                            break
                 except KeyboardInterrupt:
                     pass
             elif mode == STEP_MODE:
                 self.period += 1
-                self.step(delay=0)
+                step_msg = self.step(delay=0)
+                if step_msg is not None:
+                    self.user.tell(step_msg)
+                    break
             elif mode == INSP_MODE:
                 name = self.user.ask("Type the name of the agent to inspect: ")
                 entity = self.find_agent(name.strip())
