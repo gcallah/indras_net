@@ -15,12 +15,13 @@ GAIN = 1
 LOSE = -1
 
 Accept = True
-Refuse = False
+Reject = False
 
 
 def util_func(qty):
     """
-    Later, we want to be able to pass in arbitrary util funcs for each good-trader combo.
+    Later, we want to be able to pass in arbitrary 
+    util funcs for each good-trader combo.
     """
     return 10 - .5 * qty
 
@@ -52,8 +53,10 @@ class EdgeboxAgent(spatial_agent.SpatialAgent):
                     + "): " + t.name)
             for g in self.goods:
                 if self.goods[g]["endow"] > 0:
-                    logging.info(self.name + " is offering " + g + " to " + t.name)
-                    t.rec_offer(g, 1, self)
+                    logging.info(self.name + " is offering " 
+                            + g + " to " + t.name)
+                    if t.rec_offer(g, 1, self):
+                        break
 
 
     def endow(self, good, endow):
@@ -92,6 +95,7 @@ class EdgeboxAgent(spatial_agent.SpatialAgent):
                             offer_good, amt, g, 1, self) is Accept):
                         self.trade(g, counterparty, offer_good)
                         return Accept
+        return Reject
 
 
     def rec_reply(self, my_good, my_amt, his_good, his_amt, counterparty):
@@ -105,10 +109,11 @@ class EdgeboxAgent(spatial_agent.SpatialAgent):
 
 
     def list_goods(self):
-        goods_list = []
+        goods_descr = ""
         for g in self.goods:
-            goods_list.append(g)
-        return goods_list
+            goods_descr = (goods_descr + g + ": " 
+                            + str(self.goods[g]["endow"]) + ", ")
+        return goods_descr.strip()
 
 
     def trade(self, my_good, counterparty, his_good):
@@ -116,7 +121,8 @@ class EdgeboxAgent(spatial_agent.SpatialAgent):
         We actual swap goods, and record the trade in the environment
         """
 
-        logging.info(self.name + " going to trade " + my_good + " for " + his_good)
+        logging.info(self.name + " going to trade " + my_good 
+                    + " for " + his_good)
 
         self.__gain_lose_good(my_good, LOSE)
         self.__gain_lose_good(his_good, GAIN)
@@ -163,9 +169,11 @@ class EdgeboxEnv(spatial_agent.SpatialEnvironment):
         super().step(delay=delay)
         self.user.tell("Trades this period: " + str(self.trades_this_turn))
         for a in self.agents:
-            print(a.name + " has gained " + str(a.util_gain()))
+            print(a.name + " has gained " + str(a.util_gain())
+                    + " utils and now has: " + a.list_goods())
 
-# any return other than "None" from the step function breaks the interactive loop
+# any return other than "None" from the step function 
+# breaks the interactive loop
         if self.trades_this_turn <= 0:
             return("We've reached equilibrium.")
 
