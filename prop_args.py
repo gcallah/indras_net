@@ -28,6 +28,7 @@ class PropArgs():
 
     
     def __init__(self, model_nm, logfile=None, props={}):
+        print("Creating new props for " + model_nm)
         self.model_nm = model_nm
 # store this instance as the value in the dict for 'model_nm'
         PropArgs.prop_sets[model_nm] = self

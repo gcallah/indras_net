@@ -1,5 +1,5 @@
 import logging
-import prop_args as pa
+import prop_args as props
 import predprey_model as prdpry
 import fashion_model
 
@@ -11,9 +11,9 @@ LOG_FILE = MODEL_NM + "_log.txt"
 read_props = False
 
 if read_props:
-    props = pa.PropArgs.read_props(MODEL_NM, "fashion_props.txt")
+    pa = props.PropArgs.read_props(MODEL_NM, "fashion_props.txt")
 else:
-    pa = pa.PropArgs(MODEL_NM, LOG_FILE)
+    pa = props.PropArgs(MODEL_NM, LOG_FILE)
     
     pa.set("num_trndstr", 20)
     pa.set("num_flwr", 80)

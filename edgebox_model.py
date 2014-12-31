@@ -20,8 +20,7 @@ Reject = False
 
 def util_func(qty):
     """
-    Later, we want to be able to pass in arbitrary 
-    util funcs for each good-trader combo.
+    A default util func: we can pass in others
     """
     return 10 - .5 * qty
 
@@ -59,12 +58,16 @@ class EdgeboxAgent(spatial_agent.SpatialAgent):
                         break
 
 
-    def endow(self, good, endow):
+    def endow(self, good, endow, util_func=None):
         if good not in self.goods:
             self.__add_good(good)
-        self.goods[good]["endow"] = endow
+
+        g = self.goods[good]
+        g["endow"] = endow
+        if util_func is not None:
+            g["util_func"] = util_func
         for i in range(1, endow):
-            self.utils += self.goods[good]["util_func"](i)
+            self.utils += g["util_func"](i)
 
         self.pretrade_utils = self.utils
 

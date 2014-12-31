@@ -63,7 +63,7 @@ class Creature(spagnt.SpatialAgent):
 
     def act(self):
         self.age += 1.0
-        if (int(math.floor(self.age)) % self.repro_age) == 0:
+        if (int(math.floor(self.age)) % self.repro_age) < 1:
             offspring = self.reproduce()
             assert self.env  != None
             if offspring != None:

@@ -5,6 +5,7 @@ Filename: display_methods.py Author: Gene Callahan
 import numpy as np
 from numpy.random import rand
 import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 
 
 colors = ['b', 'r', 'g', 'y', 'm', 'c']
@@ -26,7 +27,7 @@ def display_line_graph(title, data, data_points):
     plt.show()
 
 
-def display_scatter_plot(title, varieties):
+def display_scatter_plot(title, varieties, anim=False, anim_func=None):
 
     fig, ax = plt.subplots()
     
