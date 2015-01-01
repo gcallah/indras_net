@@ -14,15 +14,15 @@ read_props = False
 if read_props:
     pa = props.PropArgs.read_props(MODEL_NM, "edgebox.props")
 else:
-    pa = props.PropArgs(MODEL_NM, LOG_FILE)
+    pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
     pa.set("al_cheese", 20)
-    pa.set("al_cutil", "10 - .5 * (qty / 10)**2")
+    pa.set("al_cutil", "10 - .5 * qty")
     pa.set("al_wine", 0)
-    pa.set("al_wutil", "10 - .5 * qty")
-    pa.set("bea_cheese", 0)
-    pa.set("bea_cutil", "10 - .5 * qty")
+    pa.set("al_wutil", "10 - .25 * qty")
     pa.set("bea_wine", 20)
     pa.set("bea_wutil", "10 - .5 * qty")
+    pa.set("bea_cheese", 0)
+    pa.set("bea_cutil", "10 - .25 * qty")
 
 
 logging.info("Starting program")

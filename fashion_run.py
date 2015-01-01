@@ -11,9 +11,9 @@ LOG_FILE = MODEL_NM + "_log.txt"
 read_props = False
 
 if read_props:
-    pa = props.PropArgs.read_props(MODEL_NM, "fashion_props.txt")
+    pa = props.PropArgs.read_props(MODEL_NM, "fashion.props")
 else:
-    pa = props.PropArgs(MODEL_NM, LOG_FILE)
+    pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
     
     pa.set("num_trndstr", 20)
     pa.set("num_flwr", 80)

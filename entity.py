@@ -15,17 +15,17 @@ from collections import deque
 import prop_args as pa
 
 
-RUN_MODE  = 0
-STEP_MODE = 1
-INSP_MODE = 2
-VISL_MODE = 3
-CODE_MODE = 4
-DBUG_MODE = 5
-LIST_MODE = 6
-QUIT_MODE = 7
-PLOT_MODE = 8
-EXMN_MODE = 9
-WRIT_MODE = 10
+RUN_MODE  = "r"
+STEP_MODE = "s"
+INSP_MODE = "i"
+VISL_MODE = "v"
+CODE_MODE = "c"
+DBUG_MODE = "d"
+LIST_MODE = "l"
+QUIT_MODE = "q"
+PLOT_MODE = "p"
+EXMN_MODE = "e"
+WRIT_MODE = "w"
 
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -181,20 +181,9 @@ class Environment(Entity):
 
     prev_period = 0  # in case we need to restore state
 
-    keymap = { "c": CODE_MODE,
-               "d": DBUG_MODE,
-               "e": EXMN_MODE,
-               "i": INSP_MODE,
-               "l": LIST_MODE,
-               "p": PLOT_MODE,
-               "q": QUIT_MODE,
-               "r": RUN_MODE,
-               "s": STEP_MODE,
-               "v": VISL_MODE,
-               "w": WRIT_MODE}
 
-
-    def __init__(self, name, preact = False, postact = False, model_nm=None):
+    def __init__(self, name, preact = False, 
+                    postact = False, model_nm=None):
         super().__init__(name)
         self.agents   = []
         self.womb = []
@@ -245,12 +234,7 @@ class Environment(Entity):
             "(v)isualize;\n"\
             "(w)rite properties; "\
             "(q)uit: ")
-        return self.keymap.get(choice.strip(), STEP_MODE)
-
-
-    def list_agents(self):
-        for agent in self.agents:
-            self.user.tell(agent.name + " with a goal of " + agent.goal)
+        return choice.strip()
    
 
     def run(self, resume=False):
@@ -261,44 +245,28 @@ class Environment(Entity):
         mode = self.menu()
         while mode != QUIT_MODE:
             if mode == RUN_MODE:
-                self.user.tell("Running continously; press Ctrl-c to halt!")
-                time.sleep(3)
-                try:
-                    while self.keep_running():
-                        self.period += 1
-                        step_msg = self.step(delay=.3)
-                        if step_msg is not None:
-                            self.user.tell(step_msg)
-                            break
-                except KeyboardInterrupt:
-                    pass
+                self.cont_run()
             elif mode == STEP_MODE:
-                self.period += 1
                 step_msg = self.step(delay=0)
                 if step_msg is not None:
                     self.user.tell(step_msg)
                     break
             elif mode == INSP_MODE:
-                name = self.user.ask("Type the name of the agent to inspect: ")
-                entity = self.find_agent(name.strip())
-                if entity == None: self.user.tell("No such agent")
-                else: entity.pprint()
+                self.inspect()
             elif mode == LIST_MODE:
-                self.user.tell("Active agents in environment:")
                 self.list_agents()
             elif mode == CODE_MODE:
-                code = eval(self.user.ask("Type a line of code to run: "))
+                self.eval_code()
             elif mode == DBUG_MODE:
-                pdb.set_trace()
+                self.debug()
             elif mode == EXMN_MODE:
-                self.disp_log(self.props.get_logfile())
+                self.disp_log()
             elif mode == VISL_MODE:
                 self.display()
             elif mode == PLOT_MODE:
                 self.plot()
             elif mode == WRIT_MODE:
-                file_nm = self.user.ask("Choose file name: ")
-                self.write_props(file_nm)
+                self.pwrite()
 
             mode = self.menu()
 
@@ -307,14 +275,57 @@ class Environment(Entity):
         self.user.tell("Returning to run-time environment")
 
 
+    def debug(self):
+        pdb.set_trace()
+
+    def eval_code(self):
+        eval(self.user.ask("Type a line of code to run: "))
+
+
+    def list_agents(self):
+        self.user.tell("Active agents in environment:")
+        for agent in self.agents:
+            self.user.tell(agent.name 
+                        + " with a goal of " + agent.goal)
+
+
+    def inspect(self):
+        name = self.user.ask(
+            "Type the name of the agent to inspect: ")
+        entity = self.find_agent(name.strip())
+        if entity == None: self.user.tell("No such agent")
+        else: entity.pprint()
+
+
+    def cont_run(self):
+        self.user.tell(
+            "Running continously; press Ctrl-c to halt!")
+        time.sleep(3)
+        try:
+            while self.keep_running():
+                step_msg = self.step(delay=.3)
+                if step_msg is not None:
+                    self.user.tell(step_msg)
+                    break
+        except KeyboardInterrupt:
+            pass
+
+
+    def pwrite(self):
+        file_nm = self.user.ask("Choose file name: ")
+        self.write_props(file_nm)
+
+
     def write_props(self, file_nm):
         if self.props is not None:
             self.props.write(file_nm)
 
 
-    def disp_log(self, logfile):
+    def disp_log(self):
 
         MAX_LINES = 16
+
+        logfile = self.props.get_logfile()
 
         if logfile is None:
             self.user.tell("No log file to examine!")
@@ -332,6 +343,7 @@ class Environment(Entity):
 
 
     def step(self, delay=0):
+        self.period += 1
         if delay > 0: time.sleep(delay)
 
 # agents might be waiting to be born       
@@ -370,7 +382,7 @@ class Environment(Entity):
 
 
     def keep_running(self):
-        return False
+        return True
 
 
     def display(self):

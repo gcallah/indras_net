@@ -14,9 +14,13 @@ class PropArgs():
     @staticmethod
     def get_props(model_nm, props={}):
         if model_nm in PropArgs.prop_sets:
+            logging.info("fetching props for "
+                    + model_nm + ": "
+                    + str(PropArgs.prop_sets[model_nm].props))
             return PropArgs.prop_sets[model_nm]
 
 
+    @staticmethod
     def create_props(model_nm, props={}):
         return(PropArgs(model_nm, props))
 
@@ -27,12 +31,15 @@ class PropArgs():
         return PropArgs.create_props(model_nm, props)
 
     
-    def __init__(self, model_nm, logfile=None, props={}):
-        print("Creating new props for " + model_nm)
+    def __init__(self, model_nm, logfile=None, props=None):
+        logging.info("Creating new props for " + model_nm)
         self.model_nm = model_nm
 # store this instance as the value in the dict for 'model_nm'
         PropArgs.prop_sets[model_nm] = self
-        self.props = props
+        if props is None:
+            self.props = {}
+        else:
+            self.props = props
         self.logger = Logger(self, logfile=logfile)
 
 
@@ -71,6 +78,7 @@ class Logger():
         fmd = props.get("log_fmode", Logger.DEF_FILEMODE)
         fnm = props.get("log_fname", logfile)
 
-        logging.basicConfig(format=fmt, level=lvl, filemode=fmd, filename=fnm)
+        logging.basicConfig(format=fmt, level=lvl,
+                        filemode=fmd, filename=fnm)
 
 

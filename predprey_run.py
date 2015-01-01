@@ -11,7 +11,7 @@ read_props = False
 if read_props:
     pa = props.PropArgs.read_props(MODEL_NM, "predprey.props")
 else:
-    pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE)
+    pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
     pa.set("num_foxes", 12)
     pa.set("num_rabbits", 80)
     pa.set("fox_repro_age", 12)

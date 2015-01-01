@@ -12,7 +12,7 @@ read_props = False
 if read_props:
     pa = props.PropArgs.read_props(MODEL_NM, "basic.props")
 else:
-    pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE)
+    pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
     pa.set("num_agents", 12)
 
 logging.info("Starting program " + PROG_NM)
