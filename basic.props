@@ -1,0 +1,1 @@
+{"log_fmode": "w", "log_level": 20, "log_format": "%(levelname)s:%(message)s", "user_name": "gcallah", "log_fname": "basic_model.txt", "num_agents": 12, "user_type": "iPython"}
