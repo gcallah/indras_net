@@ -11,7 +11,7 @@ import pprint
 import pdb
 import random
 import getpass
-from collections import deque
+from collections import deque, OrderedDict
 import prop_args as pa
 
 
@@ -24,7 +24,7 @@ DBUG_MODE = "d"
 LIST_MODE = "l"
 QUIT_MODE = "q"
 PLOT_MODE = "p"
-EXMN_MODE = "e"
+EXMN_MODE = "x"
 WRIT_MODE = "w"
 
 
@@ -90,7 +90,7 @@ class Entity:
 
 
     def __init__(self, name):
-        self.name        = name
+        self.name = name
         self.prehensions = []
         self.env = None
         
@@ -200,6 +200,7 @@ class Environment(Entity):
         self.props.set("user_name", user_nm)
         user_type = self.props.get("user_type", User.IPYTHON)
         self.user = User(user_nm, user_type)
+        self.menu = Menu(self)
 
 
     def add_agent(self, agent):
@@ -219,56 +220,15 @@ class Environment(Entity):
         return None
 
 
-    def menu(self):
-        self.user.tell("Running in " + self.name + ".")
-        self.user.tell("Choose one and press Enter:")
-        choice = self.user.ask(
-            "(c)ode; "\
-            "(d)ebug; "\
-            "(e)xamine log file; "\
-            "(i)nspect agent;\n"\
-            "(l)ist agents; "\
-            "(p)lot locations; "\
-            "(r)un; "\
-            "(s)tep (default); "\
-            "(v)isualize;\n"\
-            "(w)rite properties; "\
-            "(q)uit: ")
-        return choice.strip()
-   
-
     def run(self, resume=False):
         if resume: self.period = Environment.prev_period
         else:      self.period = 0
 
         self.user.tell("Welcome, " + self.user.name)
-        mode = self.menu()
-        while mode != QUIT_MODE:
-            if mode == RUN_MODE:
-                self.cont_run()
-            elif mode == STEP_MODE:
-                step_msg = self.step(delay=0)
-                if step_msg is not None:
-                    self.user.tell(step_msg)
-                    break
-            elif mode == INSP_MODE:
-                self.inspect()
-            elif mode == LIST_MODE:
-                self.list_agents()
-            elif mode == CODE_MODE:
-                self.eval_code()
-            elif mode == DBUG_MODE:
-                self.debug()
-            elif mode == EXMN_MODE:
-                self.disp_log()
-            elif mode == VISL_MODE:
-                self.display()
-            elif mode == PLOT_MODE:
-                self.plot()
-            elif mode == WRIT_MODE:
-                self.pwrite()
-
-            mode = self.menu()
+        msg = self.menu.display()
+        while msg is None:
+            msg = self.menu.display()
+            print("In menu loop; msg = " + str(msg))
 
         Environment.prev_period = self.period
 
@@ -303,7 +263,7 @@ class Environment(Entity):
         time.sleep(3)
         try:
             while self.keep_running():
-                step_msg = self.step(delay=.3)
+                step_msg = self.step()
                 if step_msg is not None:
                     self.user.tell(step_msg)
                     break
@@ -342,9 +302,8 @@ class Environment(Entity):
             self.user.tell(line.strip())
 
 
-    def step(self, delay=0):
+    def step(self):
         self.period += 1
-        if delay > 0: time.sleep(delay)
 
 # agents might be waiting to be born       
         if self.womb != None:
@@ -386,11 +345,14 @@ class Environment(Entity):
 
 
     def display(self):
-        pass
+        self.user.tell("Visualize not implemented in this model")
 
 
     def plot(self):
-        pass
+        self.user.tell("Plot not implemented in this model")
+
+    def quit(self):
+        return "Returning to runtime environment."
 
 
 class Prehension():
@@ -400,5 +362,61 @@ class Prehension():
         self.weight = 1.0;
         self.prehended_entity = entity
 
+
+class Menu(Entity):
+
+    def __init__(self, env):
+        super().__init__("Main Menu")
+        self.env = env
+        self.choices = {}
+        self.submenus = OrderedDict()
+        self.submenus["File"] = {}
+        self.submenus["Edit"] = {}
+        self.submenus["View"] = {}
+        self.submenus["Tools"] = {}
+
+        e = self.env
+
+# add default menu items:
+        self.add_menu_item("File", WRIT_MODE, "(w)rite properties",
+                e.write_props)
+        self.add_menu_item("File", EXMN_MODE, "e(x)amine log file",
+                e.disp_log)
+        self.add_menu_item("File", QUIT_MODE, "(q)uit", e.quit)
+        self.add_menu_item("Edit", CODE_MODE, "(c)ode", e.eval_code)
+        self.add_menu_item("View", VISL_MODE, "(v)isualize", e.display)
+        self.add_menu_item("View", PLOT_MODE, "(p)lot agents", e.plot)
+        self.add_menu_item("View", LIST_MODE, "(l)ist agents", e.list_agents)
+        self.add_menu_item("View", INSP_MODE, "(i)nspect agent", e.inspect)
+        self.add_menu_item("Tools", STEP_MODE, "(s)tep", e.step)
+        self.add_menu_item("Tools", RUN_MODE, "(r)un", e.run)
+        self.add_menu_item("Tools", DBUG_MODE, "(d)ebug", e.debug)
+
+
+    def add_menu_item(self, submenu, letter, text, func):
+        if submenu in self.submenus:
+            self.submenus[submenu][text] = {
+                    "letter": letter,
+                    "func": func
+                }
+            self.choices[letter] = func
+
+
+    def display(self):
+        for subm in self.submenus:
+            disp = subm + ": "
+            for item in self.submenus[subm]:
+                disp = disp + item + " | "
+# remove the final menu item separator:
+            disp.rstrip("| ")
+            self.env.user.tell(disp)
+        choice = self.env.user.ask(
+            "Choose one of the above and press Enter:")
+        letter = choice.strip()
+        if len(letter) == 0:
+            letter = STEP_MODE
+        ret = self.choices[letter]()
+        print("menu display returning " + str(ret))
+        return ret
 
 
