@@ -110,6 +110,8 @@ class SpatialEnvironment(entity.Environment):
         self.num_zombies = 0
         self.varieties = {}
         self.do_census = True
+# it only makes sense to plot agents in a spatial env, so add this here:
+        self.add_menu_item("View", "p", "(p)lot agents", self.plot)
 
 
     def add_agent(self, agent):

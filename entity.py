@@ -15,19 +15,6 @@ from collections import deque, OrderedDict
 import prop_args as pa
 
 
-RUN_MODE  = "r"
-STEP_MODE = "s"
-INSP_MODE = "i"
-VISL_MODE = "v"
-CODE_MODE = "c"
-DBUG_MODE = "d"
-LIST_MODE = "l"
-QUIT_MODE = "q"
-PLOT_MODE = "p"
-EXMN_MODE = "x"
-WRIT_MODE = "w"
-
-
 pp = pprint.PrettyPrinter(indent=4)
 
 def join_entities(prehender, rel, prehended):
@@ -228,15 +215,23 @@ class Environment(Entity):
         msg = self.menu.display()
         while msg is None:
             msg = self.menu.display()
-            print("In menu loop; msg = " + str(msg))
 
         Environment.prev_period = self.period
 
         self.user.tell("Returning to run-time environment")
 
 
+    def add_menu_item(self, submenu, letter, text, func):
+        """
+        This func exists to screen the menu class from outside objects:
+        no need for them to know more than the env
+        """
+        self.menu.add_menu_item(submenu, letter, text, func)
+
+
     def debug(self):
         pdb.set_trace()
+
 
     def eval_code(self):
         eval(self.user.ask("Type a line of code to run: "))
@@ -363,6 +358,19 @@ class Prehension():
         self.prehended_entity = entity
 
 
+RUN_MODE  = "r"
+STEP_MODE = "s"
+INSP_MODE = "i"
+VISL_MODE = "v"
+CODE_MODE = "c"
+DBUG_MODE = "d"
+LIST_MODE = "l"
+QUIT_MODE = "q"
+PLOT_MODE = "p"
+EXMN_MODE = "x"
+WRIT_MODE = "w"
+
+
 class Menu(Entity):
 
     def __init__(self, env):
@@ -370,10 +378,10 @@ class Menu(Entity):
         self.env = env
         self.choices = {}
         self.submenus = OrderedDict()
-        self.submenus["File"] = {}
-        self.submenus["Edit"] = {}
-        self.submenus["View"] = {}
-        self.submenus["Tools"] = {}
+        self.submenus["File"] = OrderedDict()
+        self.submenus["Edit"] = OrderedDict()
+        self.submenus["View"] = OrderedDict()
+        self.submenus["Tools"] = OrderedDict()
 
         e = self.env
 
@@ -384,11 +392,10 @@ class Menu(Entity):
                 e.disp_log)
         self.add_menu_item("File", QUIT_MODE, "(q)uit", e.quit)
         self.add_menu_item("Edit", CODE_MODE, "(c)ode", e.eval_code)
-        self.add_menu_item("View", VISL_MODE, "(v)isualize", e.display)
-        self.add_menu_item("View", PLOT_MODE, "(p)lot agents", e.plot)
         self.add_menu_item("View", LIST_MODE, "(l)ist agents", e.list_agents)
+        self.add_menu_item("View", VISL_MODE, "(v)isualize", e.display)
         self.add_menu_item("View", INSP_MODE, "(i)nspect agent", e.inspect)
-        self.add_menu_item("Tools", STEP_MODE, "(s)tep", e.step)
+        self.add_menu_item("Tools", STEP_MODE, "(s)tep (default)", e.step)
         self.add_menu_item("Tools", RUN_MODE, "(r)un", e.run)
         self.add_menu_item("Tools", DBUG_MODE, "(d)ebug", e.debug)
 
