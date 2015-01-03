@@ -212,6 +212,7 @@ class Environment(Entity):
         else:      self.period = 0
 
         self.user.tell("Welcome, " + self.user.name)
+        self.user.tell("Running in " + self.name)
         msg = self.menu.display()
         while msg is None:
             msg = self.menu.display()
@@ -415,7 +416,7 @@ class Menu(Entity):
             for item in self.submenus[subm]:
                 disp = disp + item + " | "
 # remove the final menu item separator:
-            disp.rstrip("| ")
+            disp = disp.rstrip("| ")
             self.env.user.tell(disp)
         choice = self.env.user.ask(
             "Choose one of the above and press Enter:")
