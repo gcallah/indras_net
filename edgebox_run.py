@@ -18,11 +18,11 @@ else:
     pa.set("al_cheese", 20)
     pa.set("al_cutil", "10 - .5 * qty")
     pa.set("al_wine", 0)
-    pa.set("al_wutil", "10 - .25 * qty")
+    pa.set("al_wutil", "10 - .75 * qty")
     pa.set("bea_wine", 20)
     pa.set("bea_wutil", "10 - .5 * qty")
     pa.set("bea_cheese", 0)
-    pa.set("bea_cutil", "10 - .25 * qty")
+    pa.set("bea_cutil", "10 - .75 * qty")
 
 
 logging.info("Starting program")
