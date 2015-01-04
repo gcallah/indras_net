@@ -15,6 +15,7 @@ if read_props:
     pa = props.PropArgs.read_props(MODEL_NM, "edgebox.props")
 else:
     pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
+    pa.set("user_type", ent.User.IPYTHON_NB)
     pa.set("al_cheese", 20)
     pa.set("al_cutil", "10 - .5 * qty")
     pa.set("al_wine", 0)

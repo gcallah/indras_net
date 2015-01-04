@@ -143,6 +143,7 @@ class User(Entity):
 
     # user types
     IPYTHON = "iPython"
+    IPYTHON_NB = "iPython Notebook"
 
 
     def __init__(self, nm, type):
@@ -151,12 +152,12 @@ class User(Entity):
 
 
     def tell(self, msg):
-        if self.type == User.IPYTHON:
+        if self.type in [User.IPYTHON, User.IPYTHON_NB]:
             print(msg)
 
 
     def ask(self, msg):
-        if self.type == User.IPYTHON:
+        if self.type in [User.IPYTHON, User.IPYTHON_NB]:
             return(input(msg))
 
 
@@ -416,7 +417,11 @@ class Menu(Entity):
                 disp = disp + item + " | "
 # remove the final menu item separator:
             disp = disp.rstrip("| ")
+            if self.env.user.type == User.IPYTHON_NB:
+                pass
+#                disp = "<strong>" + disp + "</strong>"
             self.env.user.tell(disp)
+
         choice = self.env.user.ask(
             "Choose one of the above and press Enter:")
         letter = choice.strip()
