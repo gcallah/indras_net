@@ -28,9 +28,9 @@ else:
 logging.info("Starting program")
 
 
-env = EdgeboxEnv(50.0, 50.0, model_nm=MODEL_NM)
+env = ebm.EdgeboxEnv(50.0, 50.0, model_nm=MODEL_NM)
 
-albert = EdgeboxAgent(name="Albert")
+albert = ebm.EdgeboxAgent(name="Albert")
 env.add_agent(albert)
 albert.endow(ebm.CHEESE,
                 pa.get("al_cheese"),
@@ -39,7 +39,7 @@ albert.endow(ebm.WINE,
                 pa.get("al_wine"),
                 util_func=eval("lambda qty: " + pa.get("al_wutil")))
 
-beatrice = EdgeboxAgent(name="Beatrice")
+beatrice = ebm.EdgeboxAgent(name="Beatrice")
 env.add_agent(beatrice)
 beatrice.endow(ebm.WINE,
                 pa.get("bea_wine"),
@@ -48,7 +48,7 @@ beatrice.endow(ebm.CHEESE,
                 pa.get("bea_cheese"),
                 util_func=eval("lambda qty: " + pa.get("bea_cutil")))
 
-entity.Entity.add_universal(EdgeboxAgent, ebm.TRADE, EdgeboxAgent)
+entity.Entity.add_universal(ebm.EdgeboxAgent, ebm.TRADE, ebm.EdgeboxAgent)
 
 env.run()
 

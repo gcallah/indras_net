@@ -1,6 +1,8 @@
 import logging
+import entity as ent
 import prop_args as props
-import predprey_model
+import predprey_model as ppm
+
 
 MODEL_NM = "predprey_model"
 PROG_NM  = MODEL_NM + ".py"
@@ -26,10 +28,10 @@ else:
 
 logging.info("Starting program")
 
-env = PredPreyEnv("meadow", 50.0, 50.0)
+env = ppm.PredPreyEnv("meadow", 50.0, 50.0)
 
 for i in range(pa.get("num_foxes")):
-    env.add_agent(Fox(name="brer" + str(i),
+    env.add_agent(ppm.Fox(name="brer" + str(i),
         life_force=pa.get("fox_life_force"), 
         repro_age=pa.get("fox_repro_age"),
         decay_rate=pa.get("fox_decay_rate"),
@@ -38,13 +40,13 @@ for i in range(pa.get("num_foxes")):
         rand_age=True))
 
 for i in range(pa.get("num_rabbits")):
-    env.add_agent(Rabbit(name="bunny" + str(i),
+    env.add_agent(ppm.Rabbit(name="bunny" + str(i),
         life_force=pa.get("rabbit_life_force"),
         repro_age=pa.get("rabbit_repro_age"),
         decay_rate=pa.get("rabbit_decay_rate"),
         max_move=pa.get("rabbit_max_move"),
         rand_age=True))
 
-entity.Entity.add_universal(Fox, EAT, Rabbit)
+ent.Entity.add_universal(ppm.Fox, ppm.EAT, ppm.Rabbit)
 
 env.run()

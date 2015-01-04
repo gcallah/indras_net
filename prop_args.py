@@ -60,7 +60,7 @@ class PropArgs():
 
 
     def write(self, file_nm):
-        json.dump(self.props, open(file_nm, 'w'))
+        json.dump(self.props, open(file_nm, 'w'), indent=4)
 
 
 class Logger():

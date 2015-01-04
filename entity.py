@@ -228,7 +228,6 @@ class Environment(Entity):
         msg = self.menu.display()
         while msg is None:
             msg = self.menu.display()
-            print("In menu loop; msg = " + str(msg))
 
         Environment.prev_period = self.period
 
@@ -237,6 +236,7 @@ class Environment(Entity):
 
     def debug(self):
         pdb.set_trace()
+
 
     def eval_code(self):
         eval(self.user.ask("Type a line of code to run: "))
@@ -379,7 +379,7 @@ class Menu(Entity):
 
 # add default menu items:
         self.add_menu_item("File", WRIT_MODE, "(w)rite properties",
-                e.write_props)
+                e.pwrite)
         self.add_menu_item("File", EXMN_MODE, "e(x)amine log file",
                 e.disp_log)
         self.add_menu_item("File", QUIT_MODE, "(q)uit", e.quit)
@@ -416,7 +416,6 @@ class Menu(Entity):
         if len(letter) == 0:
             letter = STEP_MODE
         ret = self.choices[letter]()
-        print("menu display returning " + str(ret))
         return ret
 
 
