@@ -219,6 +219,7 @@ class Environment(Entity):
 
         Environment.prev_period = self.period
 
+        self.user.tell(msg)
         self.user.tell("Returning to run-time environment")
 
 
@@ -339,10 +340,8 @@ class Environment(Entity):
     def keep_running(self):
         return True
 
-
     def display(self):
         self.user.tell("Visualize not implemented in this model")
-
 
     def plot(self):
         self.user.tell("Plot not implemented in this model")

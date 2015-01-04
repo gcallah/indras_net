@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import logging
 import prop_args as props
-import entity
 import basic_model as bm
 
 MODEL_NM = "basic_model"

@@ -1,1 +1,16 @@
-{"bea_cutil": "10 - .25 * qty", "log_fmode": "w", "log_level": 20, "bea_cheese": 0, "user_name": "gcallah", "al_wutil": "10 - .25 * qty", "bea_wutil": "10 - .5 * qty", "user_type": "iPython", "log_format": "%(levelname)s:%(message)s", "al_cheese": 20, "log_fname": "edgebox_model.txt", "bea_wine": 20, "al_wine": 0, "al_cutil": "10 - .5 * qty"}
+{
+    "user_name": "gcallah", 
+    "bea_wine": 20, 
+    "log_level": 20, 
+    "log_fname": "edgebox_model.txt", 
+    "al_cheese": 20, 
+    "bea_cutil": "10 - .25 * qty", 
+    "log_fmode": "w", 
+    "user_type": "iPython", 
+    "al_wutil": "10 - .25 * qty", 
+    "al_wine": 0, 
+    "al_cutil": "10 - .5 * qty", 
+    "bea_cheese": 0, 
+    "bea_wutil": "10 - .5 * qty", 
+    "log_format": "%(levelname)s:%(message)s"
+}

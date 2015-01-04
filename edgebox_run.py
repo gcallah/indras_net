@@ -1,7 +1,7 @@
 import sys
 import logging
 import prop_args as props
-import entity
+import entity as ent
 import edgebox_model as ebm
 
 MODEL_NM = "edgebox_model"
@@ -48,7 +48,7 @@ beatrice.endow(ebm.CHEESE,
                 pa.get("bea_cheese"),
                 util_func=eval("lambda qty: " + pa.get("bea_cutil")))
 
-entity.Entity.add_universal(ebm.EdgeboxAgent, ebm.TRADE, ebm.EdgeboxAgent)
+ent.Entity.add_universal(ebm.EdgeboxAgent, ebm.TRADE, ebm.EdgeboxAgent)
 
 env.run()
 

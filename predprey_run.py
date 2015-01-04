@@ -50,3 +50,4 @@ for i in range(pa.get("num_rabbits")):
 ent.Entity.add_universal(ppm.Fox, ppm.EAT, ppm.Rabbit)
 
 env.run()
+
