@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import logging
 import prop_args as props
+import entity as ent
 import basic_model as bm
 
 MODEL_NM = "basic_model"
@@ -16,6 +17,7 @@ if read_props:
 else:
     pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
     pa.set("num_agents", 10)
+    pa.set("user_type", ent.User.TERMINAL)
 
 logging.info("Starting program " + PROG_NM)
 

@@ -11,6 +11,7 @@ import pprint
 import pdb
 import random
 import getpass
+import IPython
 from collections import deque, OrderedDict
 import prop_args as pa
 
@@ -142,6 +143,7 @@ class User(Entity):
     """
 
     # user types
+    TERMINAL = "terminal"
     IPYTHON = "iPython"
     IPYTHON_NB = "iPython Notebook"
 
@@ -152,12 +154,12 @@ class User(Entity):
 
 
     def tell(self, msg):
-        if self.type in [User.IPYTHON, User.IPYTHON_NB]:
+        if self.type in [User.TERMINAL, User.IPYTHON, User.IPYTHON_NB]:
             print(msg)
 
 
     def ask(self, msg):
-        if self.type in [User.IPYTHON, User.IPYTHON_NB]:
+        if self.type in [User.TERMINAL, User.IPYTHON, User.IPYTHON_NB]:
             return(input(msg))
 
 
@@ -236,6 +238,10 @@ class Environment(Entity):
         pdb.set_trace()
 
 
+    def ipython(self):
+        IPython.start_ipython(argv=[])
+
+
     def eval_code(self):
         eval(self.user.ask("Type a line of code to run: "))
 
@@ -253,6 +259,12 @@ class Environment(Entity):
         entity = self.find_agent(name.strip())
         if entity == None: self.user.tell("No such agent")
         else: entity.pprint()
+        y_n = self.user.ask("Change an agent value in " + entity.name
+                + "? (y/n) ")
+        if y_n in ["Y", "y"]:
+            field = self.user.ask("Which value? ")
+            nval = self.user.ask("Enter new value for " + field + ": ")
+            entity.__dict__[field] = nval
 
 
     def cont_run(self):
@@ -271,10 +283,6 @@ class Environment(Entity):
 
     def pwrite(self):
         file_nm = self.user.ask("Choose file name: ")
-        self.write_props(file_nm)
-
-
-    def write_props(self, file_nm):
         if self.props is not None:
             self.props.write(file_nm)
 
@@ -370,6 +378,7 @@ QUIT_MODE = "q"
 PLOT_MODE = "p"
 EXMN_MODE = "x"
 WRIT_MODE = "w"
+IPYN_MODE = "y"
 
 
 class Menu(Entity):
@@ -392,13 +401,14 @@ class Menu(Entity):
         self.add_menu_item("File", EXMN_MODE, "e(x)amine log file",
                 e.disp_log)
         self.add_menu_item("File", QUIT_MODE, "(q)uit", e.quit)
-        self.add_menu_item("Edit", CODE_MODE, "(c)ode", e.eval_code)
+        self.add_menu_item("Edit", INSP_MODE, "(i)nspect agent", e.inspect)
         self.add_menu_item("View", LIST_MODE, "(l)ist agents", e.list_agents)
         self.add_menu_item("View", VISL_MODE, "(v)isualize", e.display)
-        self.add_menu_item("View", INSP_MODE, "(i)nspect agent", e.inspect)
         self.add_menu_item("Tools", STEP_MODE, "(s)tep (default)", e.step)
         self.add_menu_item("Tools", RUN_MODE, "(r)un", e.run)
         self.add_menu_item("Tools", DBUG_MODE, "(d)ebug", e.debug)
+        if e.user.type == User.TERMINAL:
+            self.add_menu_item("Tools", IPYN_MODE, "iP(y)thon", e.ipython)
 
 
     def add_menu_item(self, submenu, letter, text, func):
@@ -423,7 +433,7 @@ class Menu(Entity):
             self.env.user.tell(disp)
 
         choice = self.env.user.ask(
-            "Choose one of the above and press Enter:")
+            "Choose one of the above and press Enter: ")
         letter = choice.strip()
         if len(letter) == 0:
             letter = STEP_MODE
