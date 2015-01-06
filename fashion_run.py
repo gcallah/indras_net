@@ -15,6 +15,8 @@ if read_props:
     pa = props.PropArgs.read_props(MODEL_NM, "fashion.props")
 else:
     pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
+
+    pa.set("model", MODEL_NM)
     
     pa.set("num_trndstr", 20)
     pa.set("num_flwr", 80)
@@ -34,6 +36,7 @@ else:
 logging.info("Starting program")
 
 env = fm.SocietyEnv("society", 50.0, 50.0, model_nm=MODEL_NM)
+pa.set("env", env)
 
 for i in range(pa.get("num_flwr")):
     env.add_agent(

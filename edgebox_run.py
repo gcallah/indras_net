@@ -15,7 +15,8 @@ if read_props:
     pa = props.PropArgs.read_props(MODEL_NM, "edgebox.props")
 else:
     pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
-    pa.set("user_type", ent.User.IPYTHON_NB)
+#    pa.set("user_type", ent.User.IPYTHON_NB)
+    pa.set("model", MODEL_NM)
     pa.set("al_cheese", 20)
     pa.set("al_cutil", "10 - .5 * qty")
     pa.set("al_wine", 0)
@@ -30,6 +31,7 @@ logging.info("Starting program")
 
 
 env = ebm.EdgeboxEnv(50.0, 50.0, model_nm=MODEL_NM)
+pa.set("env", env)
 
 albert = ebm.EdgeboxAgent(name="Albert")
 env.add_agent(albert)

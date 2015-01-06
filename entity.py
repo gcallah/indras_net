@@ -253,6 +253,15 @@ class Environment(Entity):
                         + " with a goal of " + agent.goal)
 
 
+    def add(self):
+        exec("import " + self.props.get("model") 
+                + " as m")
+        constr = self.user.ask(
+                    "Enter constructor for agent to add: ")
+        new_agent = eval("m." + constr)
+        self.add_agent(new_agent)
+
+
     def inspect(self):
         name = self.user.ask(
             "Type the name of the agent to inspect: ")
@@ -367,17 +376,18 @@ class Prehension():
         self.prehended_entity = entity
 
 
-RUN_MODE  = "r"
-STEP_MODE = "s"
-INSP_MODE = "i"
-VISL_MODE = "v"
+ADD_MODE  = "a"
 CODE_MODE = "c"
 DBUG_MODE = "d"
+INSP_MODE = "i"
 LIST_MODE = "l"
 QUIT_MODE = "q"
 PLOT_MODE = "p"
-EXMN_MODE = "x"
+RUN_MODE  = "r"
+STEP_MODE = "s"
+VISL_MODE = "v"
 WRIT_MODE = "w"
+EXMN_MODE = "x"
 IPYN_MODE = "y"
 
 
@@ -401,6 +411,7 @@ class Menu(Entity):
         self.add_menu_item("File", EXMN_MODE, "e(x)amine log file",
                 e.disp_log)
         self.add_menu_item("File", QUIT_MODE, "(q)uit", e.quit)
+        self.add_menu_item("Edit", ADD_MODE, "(a)dd agent to env", e.add)
         self.add_menu_item("Edit", INSP_MODE, "(i)nspect agent", e.inspect)
         self.add_menu_item("View", LIST_MODE, "(l)ist agents", e.list_agents)
         self.add_menu_item("View", VISL_MODE, "(v)isualize", e.display)

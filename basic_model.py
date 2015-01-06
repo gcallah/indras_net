@@ -15,11 +15,34 @@ class BasicAgent(entity.Agent):
         print("Agent " + self.name + " with a goal of " + self.goal)
 
 
+class Gozer(BasicAgent):
+    """
+    A silly agent that destroys others, for demo purposes
+    """
+
+    def __init__(self):
+        super().__init__(name="Gozer", goal="Destroy!")
+
+
+    def postact(self):
+        e = self.env
+        if len(e.agents) == 1:
+            print("Gozer the destructor has destroyed all!!")
+        else:
+            for agent in e.agents:
+                if agent is not self:
+                    e.agents.remove(agent)
+                    print("Gozer has destroyed "
+                            + agent.name + "!")
+                    return
+
+
 class BasicEnv(entity.Environment):
     """
     This environment doesn't really do anything.
     """
 
     def __init__(self, model_nm=None):
-        super().__init__("a basic environment to get you going", model_nm=model_nm)
+        super().__init__("a basic environment to get you going",
+                    model_nm=model_nm, postact=True)
 

@@ -16,12 +16,14 @@ if read_props:
     pa = props.PropArgs.read_props(MODEL_NM, "basic.props")
 else:
     pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
+    pa.set("model", MODEL_NM)
     pa.set("num_agents", 10)
-    pa.set("user_type", ent.User.TERMINAL)
+    pa.set("user_type", ent.User.IPYTHON)
 
 logging.info("Starting program " + PROG_NM)
 
 env = bm.BasicEnv(model_nm=MODEL_NM)
+pa.set("env", env)
 
 for i in range(pa.get("num_agents")):
     env.add_agent(
