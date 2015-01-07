@@ -30,7 +30,7 @@ else:
 logging.info("Starting program")
 
 
-env = ebm.EdgeboxEnv(50.0, 50.0, model_nm=MODEL_NM)
+env = ebm.EdgeboxEnv("An Edgeworth Box", 50.0, 50.0, model_nm=MODEL_NM)
 pa.set("env", env)
 
 albert = ebm.EdgeboxAgent(name="Albert")

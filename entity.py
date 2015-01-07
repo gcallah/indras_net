@@ -24,7 +24,8 @@ def join_entities(prehender, rel, prehended):
 
 class Entity:
     """
-    This is the base class of all agents AND environments.
+    This is the base class of all agents, environments,
+    and objects contained in an environment.
     """
 
     universals  = {}
@@ -81,6 +82,7 @@ class Entity:
         self.name = name
         self.prehensions = []
         self.env = None
+
         
     def add_env(self, env):
         self.env = env
@@ -166,7 +168,8 @@ class User(Entity):
 class Environment(Entity):
 
     """
-    A basic environment allowing starting, stopping, stepping, etc.
+    A basic environment allowing starting, stopping,
+    stepping, inspection and editing of key objects,  etc.
     """
 
     prev_period = 0  # in case we need to restore state
@@ -211,6 +214,10 @@ class Environment(Entity):
 
 
     def run(self, resume=False):
+        """
+        This is the main menu loop for all models
+        """
+
         if resume: self.period = Environment.prev_period
         else:      self.period = 0
 
@@ -223,7 +230,6 @@ class Environment(Entity):
         Environment.prev_period = self.period
 
         self.user.tell(msg)
-        self.user.tell("Returning to run-time environment")
 
 
     def add_menu_item(self, submenu, letter, text, func):
@@ -262,16 +268,25 @@ class Environment(Entity):
         self.add_agent(new_agent)
 
 
-    def inspect(self):
+    def agnt_inspect(self):
         name = self.user.ask(
             "Type the name of the agent to inspect: ")
-        entity = self.find_agent(name.strip())
-        if entity == None: self.user.tell("No such agent")
-        else: entity.pprint()
-        y_n = self.user.ask("Change an agent value in " + entity.name
+        agent = self.find_agent(name.strip())
+        if agent == None: self.user.tell("No such agent")
+        else: agent.pprint()
+        self.edit_field(agent)
+
+
+    def env_inspect(self):
+        self.pprint()
+        self.edit_field(self)
+
+
+    def edit_field(self, entity):
+        y_n = self.user.ask("Change a field's value in " + entity.name
                 + "? (y/n) ")
         if y_n in ["Y", "y"]:
-            field = self.user.ask("Which value? ")
+            field = self.user.ask("Which field? ")
             nval = self.user.ask("Enter new value for " + field + ": ")
             entity.__dict__[field] = nval
 
@@ -379,6 +394,7 @@ class Prehension():
 ADD_MODE  = "a"
 CODE_MODE = "c"
 DBUG_MODE = "d"
+ENV_MODE  = "e"
 INSP_MODE = "i"
 LIST_MODE = "l"
 QUIT_MODE = "q"
@@ -407,19 +423,27 @@ class Menu(Entity):
 
 # add default menu items:
         self.add_menu_item("File", WRIT_MODE, "(w)rite properties",
-                e.pwrite)
+                            e.pwrite)
         self.add_menu_item("File", EXMN_MODE, "e(x)amine log file",
-                e.disp_log)
+                            e.disp_log)
         self.add_menu_item("File", QUIT_MODE, "(q)uit", e.quit)
-        self.add_menu_item("Edit", ADD_MODE, "(a)dd agent to env", e.add)
-        self.add_menu_item("Edit", INSP_MODE, "(i)nspect agent", e.inspect)
-        self.add_menu_item("View", LIST_MODE, "(l)ist agents", e.list_agents)
-        self.add_menu_item("View", VISL_MODE, "(v)isualize", e.display)
-        self.add_menu_item("Tools", STEP_MODE, "(s)tep (default)", e.step)
+        self.add_menu_item("Edit", ADD_MODE, "(a)dd agent to env",
+                            e.add)
+        self.add_menu_item("Edit", INSP_MODE, "(i)nspect agent",
+                            e.agnt_inspect)
+        self.add_menu_item("Edit", ENV_MODE, "inspect (e)nvironment",
+                            e.env_inspect)
+        self.add_menu_item("View", LIST_MODE, "(l)ist agents",
+                            e.list_agents)
+        self.add_menu_item("View", VISL_MODE, "(v)isualize",
+                            e.display)
+        self.add_menu_item("Tools", STEP_MODE, "(s)tep (default)",
+                            e.step)
         self.add_menu_item("Tools", RUN_MODE, "(r)un", e.run)
         self.add_menu_item("Tools", DBUG_MODE, "(d)ebug", e.debug)
         if e.user.type == User.TERMINAL:
-            self.add_menu_item("Tools", IPYN_MODE, "iP(y)thon", e.ipython)
+            self.add_menu_item("Tools", IPYN_MODE, "iP(y)thon",
+                                e.ipython)
 
 
     def add_menu_item(self, submenu, letter, text, func):

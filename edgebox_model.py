@@ -162,8 +162,8 @@ class EdgeboxEnv(spatial_agent.SpatialEnvironment):
     Contains goods and agents who exchange them.
     """
 
-    def __init__(self, length, height, model_nm=None):
-        super().__init__("An Edgeworth Box", length, height, model_nm=model_nm)
+    def __init__(self, name, length, height, model_nm=None):
+        super().__init__(name, length, height, model_nm=model_nm)
         self.do_census = False
         self.trades_this_turn = 0
 

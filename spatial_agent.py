@@ -100,7 +100,8 @@ class SpatialEnvironment(entity.Environment):
         return abs(p1 - p2)
 
 
-    def __init__(self, name, length, height, preact=False, postact=False, model_nm=None):
+    def __init__(self, name, length, height, preact=False,
+                    postact=False, model_nm=None):
 
         super().__init__(name, preact, postact, model_nm=model_nm)
 
