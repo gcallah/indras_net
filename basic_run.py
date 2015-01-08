@@ -8,7 +8,9 @@ MODEL_NM = "basic_model"
 PROG_NM  = MODEL_NM + ".py"
 LOG_FILE = MODEL_NM + ".txt"
 
-# print('globals:', globals())
+#logging.basicConfig(format='%(levelname)s:%(message)s',
+#        level=logging.INFO, filemode='w', filename=LOG_FILE)
+
 
 read_props = False
 
@@ -20,7 +22,6 @@ else:
     pa.set("num_agents", 10)
     pa.set("user_type", ent.User.IPYTHON)
 
-logging.info("Starting program " + PROG_NM)
 
 env = bm.BasicEnv(model_nm=MODEL_NM)
 pa.set("env", env)
@@ -30,5 +31,6 @@ for i in range(pa.get("num_agents")):
             bm.BasicAgent(name="agent" + str(i),
             goal="acting up!"))
 
+logging.info("Starting program " + PROG_NM)
 env.run()
 

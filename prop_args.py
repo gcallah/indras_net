@@ -14,9 +14,6 @@ class PropArgs():
     @staticmethod
     def get_props(model_nm, props={}):
         if model_nm in PropArgs.prop_sets:
-            logging.info("fetching props for "
-                    + model_nm + ": "
-                    + str(PropArgs.prop_sets[model_nm].props))
             return PropArgs.prop_sets[model_nm]
 
 
@@ -32,7 +29,6 @@ class PropArgs():
 
     
     def __init__(self, model_nm, logfile=None, props=None):
-        logging.info("Creating new props for " + model_nm)
         self.model_nm = model_nm
 # store this instance as the value in the dict for 'model_nm'
         PropArgs.prop_sets[model_nm] = self
@@ -65,7 +61,7 @@ class PropArgs():
 
 class Logger():
 
-    DEF_FORMAT   = '%(levelname)s:%(message)s'
+    DEF_FORMAT   = '%(asctime)s:%(levelname)s:%(message)s'
     DEF_LEVEL    = logging.INFO
     DEF_FILEMODE = 'w'
     DEF_FILENAME = 'log.txt'
@@ -77,8 +73,10 @@ class Logger():
         lvl = props.get("log_level", Logger.DEF_LEVEL)
         fmd = props.get("log_fmode", Logger.DEF_FILEMODE)
         fnm = props.get("log_fname", logfile)
-
-        logging.basicConfig(format=fmt, level=lvl,
-                        filemode=fmd, filename=fnm)
+        logging.basicConfig(format=fmt,
+                        level=lvl,
+                        filemode=fmd,
+                        filename=fnm)
+        logging.info("Logging initialized.")
 
 

@@ -139,18 +139,19 @@ class MobileCreature(Creature):
 
 
     def survey_env(self, universal):
-        logging.info("scanning env for " + universal)
+        logging.debug("scanning env for " + universal)
         prehends = entity.Entity.get_universal_instances(
                 prehender=type(self), universal=universal)
         if not prehends == None:
             for pre_type in prehends:
                 if self.env.contains(pre_type):
-                    prehended = self.env.closest_x(self, self.pos, pre_type,
+                    prehended = self.env.closest_x(self,
+                                    self.pos, pre_type,
                             self.exclude)
                     if self.in_detect_range(prehended):
                         self.wandering = False
                         self.focus     = prehended
-                        logging.info(self.name
+                        logging.debug(self.name
                                 + " has spotted prehension: "
                                 + prehended.name)
                         return prehended

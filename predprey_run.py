@@ -6,7 +6,7 @@ import predprey_model as ppm
 
 MODEL_NM = "predprey_model"
 PROG_NM  = MODEL_NM + ".py"
-LOG_FILE = MODEL_NM + "_log.txt"
+LOG_FILE = MODEL_NM + ".txt"
 
 read_props = False
 
@@ -26,8 +26,6 @@ else:
     pa.set("fox_decay_rate", 5.8)
     pa.set("rabbit_decay_rate", 3.98)
     pa.set("fox_max_detect", 60.0)
-
-logging.info("Starting program")
 
 env = ppm.PredPreyEnv("meadow", 50.0, 50.0)
 pa.set("env", env)
@@ -51,5 +49,6 @@ for i in range(pa.get("num_rabbits")):
 
 ent.Entity.add_universal(ppm.Fox, ppm.EAT, ppm.Rabbit)
 
+logging.info("Starting program")
 env.run()
 

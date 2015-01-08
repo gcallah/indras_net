@@ -29,7 +29,8 @@ class EdgeboxAgent(spatial_agent.SpatialAgent):
     """
     Agents who attempt to trade goods to achieve greater utility.
     We are descending this from SpatialAgent, because later on we want 
-    traders who can detect local prices but may not know about distant ones
+    traders who can detect local prices but may not
+    know about distant ones
     """
 
     def __init__(self, name, goal=TRADE):
@@ -40,19 +41,15 @@ class EdgeboxAgent(spatial_agent.SpatialAgent):
 
     def act(self):
         """
-        Act is called in an interactive loop by code in the base framework
+        Act is called in an interactive loop by code
+        in the base framework
         """
 
         potential_traders = self.survey_env(TRADE)        
         for t in potential_traders:
-            logging.info("Potential trader for " 
-                    + self.name 
-                    + " (who has " + " ".join(self.list_goods())
-                    + " and utils of " + str(self.utils)
-                    + "): " + t.name)
             for g in self.goods:
                 if self.goods[g]["endow"] > 0:
-                    logging.info(self.name + " is offering " 
+                    logging.debug(self.name + " is offering " 
                             + g + " to " + t.name)
                     if t.rec_offer(g, 1, self):
                         break
@@ -75,12 +72,14 @@ class EdgeboxAgent(spatial_agent.SpatialAgent):
 # for the moment all offers are of 1 unit!
     def rec_offer(self, offer_good, amt, counterparty):
         """
-        Agent has received an offer of a good, and loops over her goods to 
-        see if there is a profitable trade. If 'yes,' make a counter-offer.
+        Agent has received an offer of a good,
+        and loops over her goods to 
+        see if there is a profitable trade.
+        If 'yes,' make a counter-offer.
         """
 
         util_gain = self.__marginal_util(offer_good, amt, GAIN)
-        logging.info(self.name
+        logging.debug(self.name
                 + " is looking at a util gain of "
                 + str(util_gain)
                 + " for good "
@@ -88,7 +87,7 @@ class EdgeboxAgent(spatial_agent.SpatialAgent):
         for g in self.goods:
             if (g != offer_good) and (self.goods[g]["endow"] > 0):
                 util_loss = self.__marginal_util(g, 1, LOSE)
-                logging.info(self.name
+                logging.debug(self.name
                      + " is looking at a util loss of "
                      + str(util_loss)
                      + " for good "
@@ -101,7 +100,8 @@ class EdgeboxAgent(spatial_agent.SpatialAgent):
         return Reject
 
 
-    def rec_reply(self, my_good, my_amt, his_good, his_amt, counterparty):
+    def rec_reply(self, my_good, my_amt,
+                his_good, his_amt, counterparty):
         """
         This is a response to a trade offer this agent has initiated
         """
@@ -125,8 +125,8 @@ class EdgeboxAgent(spatial_agent.SpatialAgent):
         """
 
         logging.info(self.name + " going to trade " + my_good 
-                    + " for " + his_good)
-
+                    + " for " + his_good
+                    + " with " + counterparty.name)
         self.__gain_lose_good(my_good, LOSE)
         self.__gain_lose_good(his_good, GAIN)
         counterparty.__gain_lose_good(his_good, LOSE)

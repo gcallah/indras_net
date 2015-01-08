@@ -8,7 +8,6 @@ MODEL_NM = "edgebox_model"
 PROG_NM  = MODEL_NM + ".py"
 LOG_FILE = MODEL_NM + ".txt"
 
-
 read_props = False
 
 if read_props:
@@ -25,10 +24,6 @@ else:
     pa.set("bea_wutil", "10 - .5 * qty")
     pa.set("bea_cheese", 0)
     pa.set("bea_cutil", "10 - .75 * qty")
-
-
-logging.info("Starting program")
-
 
 env = ebm.EdgeboxEnv("An Edgeworth Box", 50.0, 50.0, model_nm=MODEL_NM)
 pa.set("env", env)
@@ -53,5 +48,6 @@ beatrice.endow(ebm.CHEESE,
 
 ent.Entity.add_universal(ebm.EdgeboxAgent, ebm.TRADE, ebm.EdgeboxAgent)
 
+logging.info("Starting program")
 env.run()
 

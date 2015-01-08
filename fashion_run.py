@@ -6,8 +6,7 @@ import fashion_model as fm
 
 MODEL_NM = "fashion_model"
 PROG_NM  = MODEL_NM + ".py"
-LOG_FILE = MODEL_NM + "_log.txt"
-
+LOG_FILE = MODEL_NM + ".txt"
 
 read_props = False
 
@@ -32,9 +31,6 @@ else:
 
     pa.set("min_adv_periods", 8)
 
-
-logging.info("Starting program")
-
 env = fm.SocietyEnv("society", 50.0, 50.0, model_nm=MODEL_NM)
 pa.set("env", env)
 
@@ -51,4 +47,5 @@ for i in range(pa.get("num_trndstr")):
 ent.Entity.add_universal(fm.Follower, ppm.EAT, fm.TrendSetter)
 ent.Entity.add_universal(fm.TrendSetter, ppm.AVOID, fm.Follower)
 
+logging.info("Starting program")
 env.run()

@@ -72,7 +72,7 @@ class SpatialAgent(entity.Agent):
 
 
     def survey_env(self, universal):
-        logging.info("surveying env for " + universal)
+        logging.debug("surveying env for " + universal)
         prehended_list = []
         prehends = entity.Entity.get_universal_instances(
                 prehender=type(self), universal=universal)
@@ -122,7 +122,7 @@ class SpatialEnvironment(entity.Environment):
         agent.pos = complex(x, y)
 
         v = self.get_class_name(type(agent))
-        logging.info("Adding " + agent.__str__()
+        logging.debug("Adding " + agent.__str__()
                 + " of variety " + v)
 
         if v in self.varieties:
@@ -170,7 +170,7 @@ class SpatialEnvironment(entity.Environment):
         for agent in self.agents:
             if agent.wandering:
                 agent.pos = self.get_new_wander_pos(agent)
-                logging.info("We are about to survey the "
+                logging.debug("We are about to survey the "
                     "env for "
                     + agent.name + " which has a goal of "
                     + agent.goal)
