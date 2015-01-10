@@ -14,6 +14,8 @@ CHEESE = "cheese"
 GAIN = 1
 LOSE = -1
 
+GLOBAL_KNOWLEDGE = 1000.0
+
 Accept = True
 Reject = False
 
@@ -33,8 +35,8 @@ class EdgeboxAgent(spatial_agent.SpatialAgent):
     know about distant ones
     """
 
-    def __init__(self, name, goal=TRADE):
-        super().__init__(name, goal, max_detect=1000.0)
+    def __init__(self, name, goal=TRADE, max_detect=GLOBAL_KNOWLEDGE):
+        super().__init__(name, goal, max_detect=max_detect)
         self.goods = {}
         self.utils = 0
 
@@ -48,11 +50,13 @@ class EdgeboxAgent(spatial_agent.SpatialAgent):
         potential_traders = self.survey_env(TRADE)        
         for t in potential_traders:
             for g in self.goods:
-                if self.goods[g]["endow"] > 0:
+                amt = 1
+                while self.goods[g]["endow"] >= amt:
                     logging.debug(self.name + " is offering " 
                             + g + " to " + t.name)
-                    if t.rec_offer(g, 1, self):
+                    if t.rec_offer(g, amt, self):
                         break
+                    amt += 1
 
 
     def endow(self, good, endow, util_func=None):

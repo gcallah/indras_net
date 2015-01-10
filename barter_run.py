@@ -19,6 +19,7 @@ else:
     pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE,
                         props=None)
     pa.set("model", MODEL_NM)
+    pa.set("max_detect", 1000.0)
 
 env = bm.BarterEnv("A barter market", 50.0, 50.0,
                     model_nm=MODEL_NM)

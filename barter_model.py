@@ -25,8 +25,9 @@ class BarterAgent(ebm.EdgeboxAgent):
     Agents who attempt to trade goods to achieve greater utility.
     """
 
-    def __init__(self, name, goal=TRADE):
-        super().__init__(name, goal=goal)
+    def __init__(self, name, goal=TRADE,
+                    max_detect=ebm.GLOBAL_KNOWLEDGE):
+        super().__init__(name, goal=goal, max_detect=max_detect)
 
 
     def act(self):
@@ -44,18 +45,17 @@ class BarterEnv(ebm.EdgeboxEnv):
 
 
     def fetch_agents_from_file(self, filenm):
+        max_detect = self.props.get("max_detect",
+                                ebm.GLOBAL_KNOWLEDGE)
+        print("max detect = " + str(max_detect))
         with open(filenm) as f:
             reader = csv.reader(f)
             for row in reader:
-#                print(row)
-                agent = BarterAgent(row[0])
+                agent = BarterAgent(row[0], max_detect=max_detect)
                 self.add_agent(agent)
                 for i in range(1, len(row) - 2, STEP):
                     agent.endow(row[i], 
                                 int(row[i + 1]),
                                 eval("lambda qty: "
                                     + row[i + 2]))
-#                    print(row[i] + ": "
-#                            + row[i + 1] + ", "
-#                            + row[i + 2])
 
