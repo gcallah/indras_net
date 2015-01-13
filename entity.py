@@ -12,6 +12,7 @@ import pdb
 import random
 import getpass
 import IPython
+import networkx as nx
 from collections import deque, OrderedDict
 import prop_args as pa
 
@@ -21,8 +22,10 @@ pp = pprint.PrettyPrinter(indent=4)
 def join_entities(prehender, rel, prehended):
     prehender.add_prehension(Prehension(rel, prehended))
 
+indras_net = nx.Graph()
 
-class Entity:
+
+class Entity():
     """
     This is the base class of all agents, environments,
     and objects contained in an environment.
@@ -82,6 +85,7 @@ class Entity:
         self.name = name
         self.prehensions = []
         self.env = None
+        indras_net.add_node(self)
 
         
     def add_env(self, env):
@@ -178,7 +182,7 @@ class Environment(Entity):
     def __init__(self, name, preact = False, 
                     postact = False, model_nm=None):
         super().__init__(name)
-        self.agents   = []
+        self.agents = []
         self.womb = []
         self.period = 0
         self.preact = preact
@@ -193,11 +197,14 @@ class Environment(Entity):
         self.props.set("user_name", user_nm)
         user_type = self.props.get("user_type", User.IPYTHON)
         self.user = User(user_nm, user_type)
+        indras_net.add_edge(self, self.user)
         self.menu = Menu(self)
+        indras_net.add_edge(self, self.menu)
 
 
     def add_agent(self, agent):
         self.agents.append(agent)
+        indras_net.add_edge(self, agent)
         agent.add_env(self)
     
 
@@ -217,6 +224,8 @@ class Environment(Entity):
         """
         This is the main menu loop for all models
         """
+
+        print(indras_net.edges())
 
         if resume: self.period = Environment.prev_period
         else:      self.period = 0
