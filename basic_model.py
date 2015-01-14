@@ -43,6 +43,6 @@ class BasicEnv(entity.Environment):
     """
 
     def __init__(self, model_nm=None):
-        super().__init__("a basic environment to get you going",
+        super().__init__("Basic environment",
                     model_nm=model_nm, postact=True)
 

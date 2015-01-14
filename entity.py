@@ -12,6 +12,7 @@ import pdb
 import random
 import getpass
 import IPython
+import matplotlib.pyplot as plt
 import networkx as nx
 from collections import deque, OrderedDict
 import prop_args as pa
@@ -85,15 +86,16 @@ class Entity():
         self.name = name
         self.prehensions = []
         self.env = None
-        indras_net.add_node(self)
-
-        
-    def add_env(self, env):
-        self.env = env
+# every entity is potentially a graph itself
+        self.graph = None
 
 
     def __str__(self):
         return self.name
+
+        
+    def add_env(self, env):
+        self.env = env
 
 
     def walk_graph_breadth_first(self, func, top):
@@ -173,11 +175,14 @@ class User(Entity):
 class AgentPop(Entity):
 
     """
-    Holds our collection of agents
+    Holds our collection of agents and a sub-graph
+    of their relationships.
     """
 
-    def __init__(self):
+    def __init__(self, name):
+        super().__init__(name)
         self.agents = []
+        self.graph = nx.Graph()
 
 
     def __iter__(self):
@@ -190,12 +195,15 @@ class AgentPop(Entity):
 
     def append(self, agent):
         self.agents.append(agent)
-        indras_net.add_edge(self, agent)
+# we link each agent to the name
+#  just so we can show their relationship 
+#  to this object
+        self.graph.add_edge(self, agent)
 
 
     def remove(self, agent):
         self.agents.remove(agent)
-        indras_net.remove_edge(self, agent)
+        self.graph.remove_edge(self, agent)
         print("Removing edge between AgentPop and "
                 + agent.name)
 
@@ -220,7 +228,11 @@ class Environment(Entity):
     def __init__(self, name, preact=False, 
                     postact=False, model_nm=None):
         super().__init__(name)
-        self.agents = AgentPop()
+        pop_name = ""
+        if model_nm:
+            pop_name += model_nm + " "
+        pop_name += "Agents" 
+        self.agents = AgentPop(pop_name)
         indras_net.add_edge(self, self.agents)
         self.womb = []
         self.period = 0
@@ -414,6 +426,12 @@ class Environment(Entity):
             agent.postact()
 
 
+    def draw_graph(self):
+        print("In draw_graph()")
+        nx.draw_networkx(indras_net)
+        plt.show()
+
+
     def keep_running(self):
         return True
 
@@ -439,10 +457,11 @@ ADD_MODE  = "a"
 CODE_MODE = "c"
 DBUG_MODE = "d"
 ENV_MODE  = "e"
+GRPH_MODE = "g"
 INSP_MODE = "i"
 LIST_MODE = "l"
-QUIT_MODE = "q"
 PLOT_MODE = "p"
+QUIT_MODE = "q"
 RUN_MODE  = "r"
 STEP_MODE = "s"
 VISL_MODE = "v"
@@ -479,6 +498,8 @@ class Menu(Entity):
                             e.env_inspect)
         self.add_menu_item("View", LIST_MODE, "(l)ist agents",
                             e.list_agents)
+        self.add_menu_item("View", GRPH_MODE, "(g)raph components",
+                            e.draw_graph)
         self.add_menu_item("View", VISL_MODE, "(v)isualize",
                             e.display)
         self.add_menu_item("Tools", STEP_MODE, "(s)tep (default)",
