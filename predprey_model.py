@@ -12,7 +12,7 @@ import pprint
 import numpy as np
 import matplotlib.pyplot as plt
 import entity
-import spatial_agent as spagnt
+import spatial_agent as sa
 import display_methods as disp
 from collections import deque
 
@@ -29,7 +29,7 @@ def print_creature(creature):
     print(creature.__str__())
 
 
-class Creature(spagnt.SpatialAgent):
+class Creature(sa.SpatialAgent):
 
     """ This class is the parent of all things that:
         1) eat; 2) age; and 3) reproduce """
@@ -114,7 +114,7 @@ class Grass(Creature):
         else: return None
 
 
-class MobileCreature(Creature):
+class MobileCreature(Creature, sa.MobileAgent):
 
     """ This class is the parent of all creatures
         that can move around.
@@ -134,10 +134,6 @@ class MobileCreature(Creature):
         self.exclude    = deque(maxlen=MAX_EXCLUDE)
 
 
-    def get_max_move(self):
-        return self.max_move
-
-
     def survey_env(self, universal):
         logging.debug("scanning env for " + universal)
         prehends = entity.Entity.get_universal_instances(
@@ -150,7 +146,7 @@ class MobileCreature(Creature):
                             self.exclude)
                     if self.in_detect_range(prehended):
                         self.wandering = False
-                        self.focus     = prehended
+                        self.focus = prehended
                         logging.debug(self.name
                                 + " has spotted prehension: "
                                 + prehended.name)
@@ -254,7 +250,9 @@ class Mouse(MobilePrey):
 
 class Rabbit(MobilePrey):
 
-    """ This class defines rabbits, a type of herbivore and a likely prey creature """
+    """ This class defines rabbits, a type of herbivore
+    and a likely prey creature
+    """
 
     AVG_RABBIT_FORCE = 20.0
 
@@ -276,7 +274,7 @@ class Rabbit(MobilePrey):
                 self.repro_age, self.decay_rate, self.max_move)
 
 
-class PredPreyEnv(spagnt.SpatialEnvironment):
+class PredPreyEnv(sa.SpatialEnvironment):
 
     """ This class creates an environment for predators
         to chase and eat prey """
@@ -285,7 +283,8 @@ class PredPreyEnv(spagnt.SpatialEnvironment):
 
     def __init__(self, name, length, height, preact=True,
             postact=True, model_nm="predprey_model"):
-        super().__init__(name, length, height, preact, postact, model_nm=model_nm)
+        super().__init__(name, length, height, preact,
+                        postact, model_nm=model_nm)
         self.num_zombies = 10
 
 

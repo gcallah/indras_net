@@ -45,6 +45,7 @@ class SpatialAgent(entity.Agent):
     def get_count(cls):
         return cls.count
 
+
     def __init__(self, name, goal, max_move=0.0, max_detect=0.0):
         super().__init__(name, goal)
         self.max_move   = max_move
@@ -90,6 +91,22 @@ class SpatialAgent(entity.Agent):
         pass
 
 
+class MobileAgent(SpatialAgent):
+    """
+    Agents that can move in the env
+    """
+
+
+    def __init__(self, name, goal, max_move=20.0, max_detect=20.0):
+        super().__init__(name, goal, 
+                    max_move=max_move, max_detect=max_detect)
+        self.wandering = True
+
+
+    def get_max_move(self):
+        return self.max_move
+
+
 class SpatialEnvironment(entity.Environment):
 
     """ Extends the base Environment with entities located in the 
@@ -100,10 +117,11 @@ class SpatialEnvironment(entity.Environment):
         return abs(p1 - p2)
 
 
-    def __init__(self, name, length, height, preact=False,
+    def __init__(self, name, length, height, preact=True,
                     postact=False, model_nm=None):
 
-        super().__init__(name, preact, postact, model_nm=model_nm)
+        super().__init__(name, preact=preact,
+                        postact=postact, model_nm=model_nm)
 
         self.length   = length
         self.height   = height
@@ -148,10 +166,11 @@ class SpatialEnvironment(entity.Environment):
 
 
     def census(self):
-        print("Populations in period " + str(self.period) + ":")
+        self.user.tell("Populations in period "
+                        + str(self.period) + ":")
         for v in self.varieties:
             pop = self.get_pop(v)
-            print(v + ": " + str(pop))
+            self.user.tell(v + ": " + str(pop))
             var = self.varieties[v]
             var["pop_hist"].append(pop)
             if pop == 0:
@@ -167,9 +186,12 @@ class SpatialEnvironment(entity.Environment):
 
 
     def preact_loop(self):
+        logging.debug("Calling preact_loop()")
         for agent in self.agents:
             if agent.wandering:
                 agent.pos = self.get_new_wander_pos(agent)
+                logging.debug(
+                    "In preact_loop, getting new agent pos")
                 logging.debug("We are about to survey the "
                     "env for "
                     + agent.name + " which has a goal of "
@@ -194,6 +216,14 @@ class SpatialEnvironment(entity.Environment):
         return close_target
 
 
+    def pos_msg(self, agent, pos):
+        x = pos.real
+        y = pos.imag
+        return("New position for " + 
+                    agent.name + " is "
+                    + str(int(x)) + ", "
+                    + str(int(y)))
+
     def get_new_wander_pos(self, agent):
         new_pos = rand_complex(agent.pos, agent.get_max_move())
         x = new_pos.real
@@ -206,7 +236,9 @@ class SpatialEnvironment(entity.Environment):
             x = self.length
         if y  > self.height:
             y  = self.height
-        return complex(x, y)
+        pos = complex(x, y)
+        logging.debug(self.pos_msg(agent, pos))
+        return pos
 
 
     def plot(self):

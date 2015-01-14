@@ -124,7 +124,8 @@ class Entity():
 class Agent(Entity):
 
     """
-    This class adds a goal to an entity and is the base for all other agents.
+    This class adds a goal to an entity
+    and is the base for all other agents.
     """
 
     def __init__(self, name, goal=None):
@@ -169,6 +170,43 @@ class User(Entity):
             return(input(msg))
 
 
+class AgentPop(Entity):
+
+    """
+    Holds our collection of agents
+    """
+
+    def __init__(self):
+        self.agents = []
+
+
+    def __iter__(self):
+        return iter(self.agents)
+
+
+    def __len__(self):
+        return len(self.agents)
+
+
+    def append(self, agent):
+        self.agents.append(agent)
+        indras_net.add_edge(self, agent)
+
+
+    def remove(self, agent):
+        self.agents.remove(agent)
+        indras_net.remove_edge(self, agent)
+        print("Removing edge between AgentPop and "
+                + agent.name)
+
+
+    def random_loop(self):
+        indices = list(range(len(self.agents)))
+        random.shuffle(indices)
+        for i in indices:
+            self.agents[i].act()
+
+
 class Environment(Entity):
 
     """
@@ -179,10 +217,11 @@ class Environment(Entity):
     prev_period = 0  # in case we need to restore state
 
 
-    def __init__(self, name, preact = False, 
-                    postact = False, model_nm=None):
+    def __init__(self, name, preact=False, 
+                    postact=False, model_nm=None):
         super().__init__(name)
-        self.agents = []
+        self.agents = AgentPop()
+        indras_net.add_edge(self, self.agents)
         self.womb = []
         self.period = 0
         self.preact = preact
@@ -204,7 +243,6 @@ class Environment(Entity):
 
     def add_agent(self, agent):
         self.agents.append(agent)
-        indras_net.add_edge(self, agent)
         agent.add_env(self)
     
 
@@ -363,10 +401,7 @@ class Environment(Entity):
         
     
     def act_loop(self):
-        indices = list(range(len(self.agents)))
-        random.shuffle(indices)
-        for i in indices:
-            self.agents[i].act()
+        self.agents.random_loop()
 
 
     def preact_loop(self):
