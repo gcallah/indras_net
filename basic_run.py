@@ -38,5 +38,3 @@ logging.info("Starting program " + PROG_NM)
 # And now we set things running!
 env.run()
 
-print(ent.indras_net.edges())
-

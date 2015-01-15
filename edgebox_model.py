@@ -136,7 +136,7 @@ class EdgeboxAgent(spatial_agent.SpatialAgent):
         counterparty.__gain_lose_good(his_good, LOSE)
         counterparty.__gain_lose_good(my_good, GAIN)
 
-        self.env.record_trade(1)
+        self.env.record_trade(self, counterparty, 1)
 
 
     def util_gain(self):
@@ -174,9 +174,11 @@ class EdgeboxEnv(spatial_agent.SpatialEnvironment):
 
     def step(self, delay=0):
         super().step(delay=delay)
-        self.user.tell("Trades this period: " + str(self.trades_this_turn))
+        self.user.tell("Trades this period: "
+                    + str(self.trades_this_turn))
         for a in self.agents:
-            print(a.name + " has gained " + str(a.util_gain())
+            self.user.tell(a.name + " has gained "
+                    + str(a.util_gain())
                     + " utils and now has: " + a.list_goods())
 
 # any return other than "None" from the step function 
@@ -187,7 +189,8 @@ class EdgeboxEnv(spatial_agent.SpatialEnvironment):
         self.trades_this_turn = 0
 
     
-    def record_trade(self, amt):
+    def record_trade(self, a1, a2, amt):
         self.trades_this_turn += amt
+        self.join_agents(a1, a2)
 
 

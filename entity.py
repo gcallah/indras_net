@@ -26,14 +26,38 @@ def join_entities(prehender, rel, prehended):
 indras_net = nx.Graph()
 
 
-class Entity():
+class Node():
+
+    def __init__(self, name):
+        self.name = name
+
+
+class Universals(Node):
+
+    def __init__(self):
+        self.name = "Universals"
+        self.unis = {}
+        self.graph = nx.MultiDiGraph()
+
+
+    def add_universal(self, uni):
+        self.unis[uni] = [] # a list of prehensions
+
+
+    def add_prehension(self, prehender, uni, prehended):
+        if uni not in self.unis:
+            self.add_universal(uni)
+
+
+universals = Universals()
+
+
+class Entity(Node):
     """
     This is the base class of all agents, environments,
     and objects contained in an environment.
     """
 
-    universals  = {}
-    
     @classmethod
     def create_first_prehension(cls, prehended):
         vals = []
@@ -47,9 +71,8 @@ class Entity():
 
 
     @classmethod
-    def get_agent_type(self, agent):
+    def get_agent_type(cls, agent):
         return(self.get_class_name(type(agent)))
-
             
 
     @classmethod
@@ -83,11 +106,17 @@ class Entity():
 
 
     def __init__(self, name):
-        self.name = name
+        super().__init__(name)
         self.prehensions = []
         self.env = None
 # every entity is potentially a graph itself
         self.graph = None
+
+
+    def draw(self):
+        if self.graph is not None:
+            nx.draw_networkx(self.graph)
+            plt.show()
 
 
     def __str__(self):
@@ -166,6 +195,9 @@ class User(Entity):
         if self.type in [User.TERMINAL, User.IPYTHON, User.IPYTHON_NB]:
             print(msg)
 
+    def ask_for_ltr(self, msg):
+        choice = self.ask(msg)
+        return choice.strip()
 
     def ask(self, msg):
         if self.type in [User.TERMINAL, User.IPYTHON, User.IPYTHON_NB]:
@@ -207,6 +239,9 @@ class AgentPop(Entity):
         print("Removing edge between AgentPop and "
                 + agent.name)
 
+    def join_agents(self, a1, a2):
+        self.graph.add_edge(a1, a2)
+
 
     def random_loop(self):
         indices = list(range(len(self.agents)))
@@ -228,12 +263,14 @@ class Environment(Entity):
     def __init__(self, name, preact=False, 
                     postact=False, model_nm=None):
         super().__init__(name)
+        self.graph = nx.Graph()
+        indras_net.add_node(self)
         pop_name = ""
         if model_nm:
             pop_name += model_nm + " "
         pop_name += "Agents" 
         self.agents = AgentPop(pop_name)
-        indras_net.add_edge(self, self.agents)
+        self.graph.add_edge(self, self.agents)
         self.womb = []
         self.period = 0
         self.preact = preact
@@ -248,15 +285,20 @@ class Environment(Entity):
         self.props.set("user_name", user_nm)
         user_type = self.props.get("user_type", User.IPYTHON)
         self.user = User(user_nm, user_type)
-        indras_net.add_edge(self, self.user)
+        self.graph.add_edge(self, self.user)
         self.menu = Menu(self)
-        indras_net.add_edge(self, self.menu)
+        self.graph.add_edge(self, self.menu)
+        self.graph.add_edge(self, universals)
 
 
     def add_agent(self, agent):
         self.agents.append(agent)
         agent.add_env(self)
     
+    
+    def join_agents(self, a1, a2):
+        self.agents.join_agents(a1, a2)
+
 
     def add_child(self, agent):
         self.womb.append(agent)
@@ -274,8 +316,6 @@ class Environment(Entity):
         """
         This is the main menu loop for all models
         """
-
-        print(indras_net.edges())
 
         if resume: self.period = Environment.prev_period
         else:      self.period = 0
@@ -427,9 +467,12 @@ class Environment(Entity):
 
 
     def draw_graph(self):
-        print("In draw_graph()")
-        nx.draw_networkx(indras_net)
-        plt.show()
+        choice = self.user.ask_for_ltr(
+                "Draw graph for (a)gents; (e)nvironment?")
+        if choice == "a":
+            self.agents.draw()
+        else:
+            self.draw()
 
 
     def keep_running(self):
@@ -532,12 +575,11 @@ class Menu(Entity):
 #                disp = "<strong>" + disp + "</strong>"
             self.env.user.tell(disp)
 
-        choice = self.env.user.ask(
+        choice = self.env.user.ask_for_ltr(
             "Choose one of the above and press Enter: ")
-        letter = choice.strip()
-        if len(letter) == 0:
-            letter = STEP_MODE
-        ret = self.choices[letter]()
+        if len(choice) == 0:
+            choice = STEP_MODE
+        ret = self.choices[choice]()
         return ret
 
 
