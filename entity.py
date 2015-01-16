@@ -18,10 +18,10 @@ from collections import deque, OrderedDict
 import prop_args as pa
 
 
+UNIVERSAL = "universal"
+
 pp = pprint.PrettyPrinter(indent=4)
 
-def join_entities(prehender, rel, prehended):
-    prehender.add_prehension(Prehension(rel, prehended))
 
 indras_net = nx.Graph()
 
@@ -30,6 +30,12 @@ class Node():
 
     def __init__(self, name):
         self.name = name
+        self.graph = None
+
+    def draw(self):
+        if self.graph is not None:
+            nx.draw_networkx(self.graph)
+            plt.show()
 
 
 class Universals(Node):
@@ -41,12 +47,38 @@ class Universals(Node):
 
 
     def add_universal(self, uni):
+        """
+        We want to be able to view all
+        univeral relationships at a glance,
+        so we will store them here
+        """
         self.unis[uni] = [] # a list of prehensions
 
 
     def add_prehension(self, prehender, uni, prehended):
+        """
+        Adds a universal relationship between two classes
+        """
+
         if uni not in self.unis:
             self.add_universal(uni)
+        self.unis[uni].append([prehender, prehended])
+        self.graph.add_edge(prehender, prehended,
+                            universal=uni)
+
+
+    def get_prehensions(self, prehender, uni):
+        prehensions = []
+        for etuple in self.graph.edges_iter(data=True):
+            prehender = etuple[0]
+            prehended = etuple[1]
+            dict = etuple[2]
+            prehension = dict[UNIVERSAL]
+            if uni == prehension:
+                print("Found our universal: " + uni)
+                prehensions.append(prehended)
+        print("prehensions = " + str(prehensions))
+        return prehensions
 
 
 universals = Universals()
@@ -59,50 +91,25 @@ class Entity(Node):
     """
 
     @classmethod
-    def create_first_prehension(cls, prehended):
-        vals = []
-        vals.append(prehended)
-        return vals
-
-
-    @classmethod
     def get_class_name(cls, genera):
         return genera.__name__
 
 
     @classmethod
     def get_agent_type(cls, agent):
-        return(self.get_class_name(type(agent)))
+        return(cls.get_class_name(type(agent)))
             
 
     @classmethod
     def add_universal(cls, prehender, universal, prehended):
-        prehender_type_name = cls.get_class_name(prehender)
-        prehended_type_name = cls.get_class_name(prehended)
-        if universal not in cls.universals:
-            cls.universals[universal] = \
-                {prehender_type_name:
-                    cls.create_first_prehension(prehended)}
-            logging.info(pp.pformat(cls.universals))
-        elif prehender not in cls.universals[universal]:
-            cls.universals[universal][prehender_type_name] = \
-                cls.create_first_prehension(prehended)
-            logging.info(pp.pformat(cls.universals))
-        else:
-            cls.universals[universal][prehender_type_name].append(
-                        prehended)
+        prnr_name = cls.get_class_name(prehender)
+        prnd_name = cls.get_class_name(prehended)
+        universals.add_prehension(prnr_name, universal, prnd_name)
 
 
     @classmethod
     def get_universal_instances(cls, prehender, universal):
-        if universal in cls.universals:
-            prehnder_cls = cls.get_class_name(prehender)
-            if prehnder_cls in cls.universals[universal]:
-                return cls.universals[universal][prehnder_cls]
-            else:
-                return None
-        else:
-            return None
+        return universals.get_prehensions(prehender, universal)
 
 
     def __init__(self, name):
@@ -111,12 +118,6 @@ class Entity(Node):
         self.env = None
 # every entity is potentially a graph itself
         self.graph = None
-
-
-    def draw(self):
-        if self.graph is not None:
-            nx.draw_networkx(self.graph)
-            plt.show()
 
 
     def __str__(self):
@@ -135,10 +136,6 @@ class Entity(Node):
         for prehension in self.prehensions:
             prehension.prehended_entity.walk_graph_breadth_first(func, 
                                                   False)
-
-
-    def add_prehension(self, pre):
-        self.prehensions.append(pre)
 
 
     def print_prehensions(self):
@@ -288,7 +285,7 @@ class Environment(Entity):
         self.graph.add_edge(self, self.user)
         self.menu = Menu(self)
         self.graph.add_edge(self, self.menu)
-        self.graph.add_edge(self, universals)
+#        self.graph.add_edge(self, univesals)
 
 
     def add_agent(self, agent):

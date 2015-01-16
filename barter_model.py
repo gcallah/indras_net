@@ -4,8 +4,6 @@ An barter market model where several agents trade goods.
 """
 import logging
 import csv
-import entity
-import spatial_agent
 import edgebox_model as ebm
 
 TRADE = "trade"
@@ -45,6 +43,11 @@ class BarterEnv(ebm.EdgeboxEnv):
 
 
     def fetch_agents_from_file(self, filenm):
+
+        """
+        Read in a list of bartering agents from a csv file
+        """
+
         max_detect = self.props.get("max_detect",
                                 ebm.GLOBAL_KNOWLEDGE)
         print("max detect = " + str(max_detect))

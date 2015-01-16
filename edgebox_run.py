@@ -1,4 +1,3 @@
-import sys
 import logging
 import prop_args as props
 import entity as ent
