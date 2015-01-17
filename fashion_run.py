@@ -44,8 +44,8 @@ for i in range(pa.get("num_trndstr")):
             fm.TrendSetter(name="hipster" + str(i),
                 max_detect=pa.get("trnd_max_detect")))
 
-ent.Entity.add_universal(fm.Follower, ppm.EAT, fm.TrendSetter)
-ent.Entity.add_universal(fm.TrendSetter, ppm.AVOID, fm.Follower)
+ent.add_prehension(fm.Follower, ppm.EAT, fm.TrendSetter)
+ent.add_prehension(fm.TrendSetter, ppm.AVOID, fm.Follower)
 
 logging.info("Starting program")
 env.run()

@@ -9,10 +9,9 @@ import cmath
 import time
 import random
 import logging
-import pprint
 import numpy as np
 import matplotlib.pyplot as plt
-import entity
+import entity as ent
 import display_methods as disp
 
 MAX_ZERO_PER = 8
@@ -31,19 +30,11 @@ def pos_to_str(pos):
     return str(int(pos.real)) + " , " + str(int(pos.imag))
 
 
-class SpatialAgent(entity.Agent):
+class SpatialAgent(ent.Agent):
 
     """ This class is the parent of all entities that are
         located in space (and might or might not move in it)
     """
-
-    @classmethod
-    def add_new(cls):
-        cls.count += 1
-
-    @classmethod
-    def get_count(cls):
-        return cls.count
 
 
     def __init__(self, name, goal, max_move=0.0, max_detect=0.0):
@@ -75,15 +66,18 @@ class SpatialAgent(entity.Agent):
     def survey_env(self, universal):
         logging.debug("surveying env for " + universal)
         prehended_list = []
-        prehends = entity.Entity.get_universal_instances(
+        prehends = ent.get_prehensions(
                 prehender=type(self), universal=universal)
         if not prehends == None:
             for pre_type in prehends:
-                for prehended in self.env.agents:
-                    if prehended is not self:
-                        if(self.in_detect_range(prehended)
-                                and type(prehended) == pre_type):
-                            prehended_list.append(prehended)
+# this loop over all agents must be eliminated
+#  before we do huge simulations!
+                for agent in self.env.agents:
+                    agent_type = ent.get_agent_type(agent)
+                    if agent is not self:
+                        if(self.in_detect_range(agent)
+                                and agent_type == pre_type):
+                            prehended_list.append(agent)
         return prehended_list
 
 
@@ -107,7 +101,7 @@ class MobileAgent(SpatialAgent):
         return self.max_move
 
 
-class SpatialEnvironment(entity.Environment):
+class SpatialEnvironment(ent.Environment):
 
     """ Extends the base Environment with entities located in the 
         complex plane """
@@ -139,7 +133,7 @@ class SpatialEnvironment(entity.Environment):
         y = random.uniform(0, self.height - 1)
         agent.pos = complex(x, y)
 
-        v = self.get_class_name(type(agent))
+        v = ent.get_agent_type(agent)
         logging.debug("Adding " + agent.__str__()
                 + " of variety " + v)
 
@@ -162,7 +156,7 @@ class SpatialEnvironment(entity.Environment):
 
 
     def contains(self, agent_type):
-        return agent_type.__name__ in self.varieties
+        return agent_type in self.varieties
 
 
     def census(self):
@@ -206,7 +200,7 @@ class SpatialEnvironment(entity.Environment):
         close_target = None
         for agent in self.agents:
             if seeker is not agent: # don't locate me!
-                if isinstance(agent, target_type):
+                if ent.get_agent_type(agent) == target_type:
                     if (not exclude == None) and (not agent in exclude):
                         p_pos = agent.pos
                         d     = self.get_distance(pos, p_pos)

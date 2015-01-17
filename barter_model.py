@@ -50,7 +50,6 @@ class BarterEnv(ebm.EdgeboxEnv):
 
         max_detect = self.props.get("max_detect",
                                 ebm.GLOBAL_KNOWLEDGE)
-        print("max detect = " + str(max_detect))
         with open(filenm) as f:
             reader = csv.reader(f)
             for row in reader:

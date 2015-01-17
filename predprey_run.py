@@ -17,7 +17,7 @@ else:
     pa.set("model", MODEL_NM)
     pa.set("num_foxes", 12)
     pa.set("num_rabbits", 80)
-    pa.set("fox_repro_age", 12)
+    pa.set("fox_repro_age", 11)
     pa.set("rabbit_repro_age", 3.6)
     pa.set("fox_life_force", 38.8)
     pa.set("rabbit_life_force", 23)
@@ -47,7 +47,7 @@ for i in range(pa.get("num_rabbits")):
         max_move=pa.get("rabbit_max_move"),
         rand_age=True))
 
-ent.Entity.add_universal(ppm.Fox, ppm.EAT, ppm.Rabbit)
+ent.add_prehension(ppm.Fox, ppm.EAT, ppm.Rabbit)
 
 logging.info("Starting program")
 env.run()

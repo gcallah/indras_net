@@ -11,7 +11,7 @@ import logging
 import pprint
 import numpy as np
 import matplotlib.pyplot as plt
-import entity
+import entity as ent
 import spatial_agent as sa
 import display_methods as disp
 from collections import deque
@@ -136,7 +136,7 @@ class MobileCreature(Creature, sa.MobileAgent):
 
     def survey_env(self, universal):
         logging.debug("scanning env for " + universal)
-        prehends = entity.Entity.get_universal_instances(
+        prehends = ent.get_prehensions(
                 prehender=type(self), universal=universal)
         if not prehends == None:
             for pre_type in prehends:
@@ -315,7 +315,7 @@ class PredPreyEnv(sa.SpatialEnvironment):
 
 
     def cull(self, creature):
-        s = self.get_class_name(type(creature))
+        s = ent.get_agent_type(creature)
         assert self.varieties[s]["pop"] > 0
         self.varieties[s]["pop"] -= 1
         self.agents.remove(creature)

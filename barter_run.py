@@ -26,7 +26,7 @@ env = bm.BarterEnv("A barter market", 50.0, 50.0,
 pa.set("env", env)
 env.fetch_agents_from_file(CSV_FILE)
 
-ent.Entity.add_universal(bm.BarterAgent, bm.TRADE, bm.BarterAgent)
+ent.add_prehension(bm.BarterAgent, bm.TRADE, bm.BarterAgent)
 
 logging.info("Starting program")
 env.run()

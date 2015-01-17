@@ -26,6 +26,24 @@ pp = pprint.PrettyPrinter(indent=4)
 indras_net = nx.Graph()
 
 
+def get_class_name(genera):
+    return genera.__name__
+
+
+def get_agent_type(agent):
+    return get_class_name(type(agent))
+
+
+def get_prehensions(prehender, universal):
+    return universals.get_prehensions(prehender, universal)
+
+
+def add_prehension(prehender, universal, prehended):
+    prnr_name = get_class_name(prehender)
+    prnd_name = get_class_name(prehended)
+    universals.add_prehension(prnr_name, universal, prnd_name)
+
+
 class Node():
 
     def __init__(self, name):
@@ -69,15 +87,16 @@ class Universals(Node):
 
     def get_prehensions(self, prehender, uni):
         prehensions = []
+        logging.debug("edges = " + str(self.graph.edges()))
         for etuple in self.graph.edges_iter(data=True):
             prehender = etuple[0]
             prehended = etuple[1]
-            dict = etuple[2]
-            prehension = dict[UNIVERSAL]
+            edge_data = etuple[2]
+            prehension = edge_data[UNIVERSAL]
             if uni == prehension:
-                print("Found our universal: " + uni)
+                logging.debug("Found our universal: " + uni)
                 prehensions.append(prehended)
-        print("prehensions = " + str(prehensions))
+        logging.debug("prehensions = " + str(prehensions))
         return prehensions
 
 
@@ -89,28 +108,6 @@ class Entity(Node):
     This is the base class of all agents, environments,
     and objects contained in an environment.
     """
-
-    @classmethod
-    def get_class_name(cls, genera):
-        return genera.__name__
-
-
-    @classmethod
-    def get_agent_type(cls, agent):
-        return(cls.get_class_name(type(agent)))
-            
-
-    @classmethod
-    def add_universal(cls, prehender, universal, prehended):
-        prnr_name = cls.get_class_name(prehender)
-        prnd_name = cls.get_class_name(prehended)
-        universals.add_prehension(prnr_name, universal, prnd_name)
-
-
-    @classmethod
-    def get_universal_instances(cls, prehender, universal):
-        return universals.get_prehensions(prehender, universal)
-
 
     def __init__(self, name):
         super().__init__(name)
@@ -222,6 +219,10 @@ class AgentPop(Entity):
         return len(self.agents)
 
 
+    def __reversed__(self):
+        return reversed(self.agents)
+
+
     def append(self, agent):
         self.agents.append(agent)
 # we link each agent to the name
@@ -233,7 +234,7 @@ class AgentPop(Entity):
     def remove(self, agent):
         self.agents.remove(agent)
         self.graph.remove_edge(self, agent)
-        print("Removing edge between AgentPop and "
+        logging.debug("Removing edge between AgentPop and "
                 + agent.name)
 
     def join_agents(self, a1, a2):

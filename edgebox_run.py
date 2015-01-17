@@ -45,7 +45,7 @@ beatrice.endow(ebm.CHEESE,
                 pa.get("bea_cheese"),
                 util_func=eval("lambda qty: " + pa.get("bea_cutil")))
 
-ent.Entity.add_universal(ebm.EdgeboxAgent, ebm.TRADE, ebm.EdgeboxAgent)
+ent.add_prehension(ebm.EdgeboxAgent, ebm.TRADE, ebm.EdgeboxAgent)
 
 logging.info("Starting program")
 env.run()

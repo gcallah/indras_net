@@ -14,7 +14,7 @@ import pprint
 import numpy as np
 import matplotlib.pyplot as plt
 import prop_args
-import entity
+import entity as ent
 import spatial_agent as spagnt
 import predprey_model as prdpry
 import display_methods as disp
@@ -160,14 +160,14 @@ class SocietyEnv(spagnt.SpatialEnvironment):
     def add_agent(self, agent):
         spagnt.SpatialEnvironment.add_agent(self, agent)
 
-        a = self.get_agent_type(agent)
+        var = ent.get_agent_type(agent)
 
         if agent.fashion == FSHN_TO_TRACK:
-            self.varieties[a]["pop_of_note"] += 1
+            self.varieties[var]["pop_of_note"] += 1
 
     
     def record_fashion_change(self, agent):
-        a = self.get_agent_type(agent)
+        a = ent.get_agent_type(agent)
         if agent.fashion == FSHN_TO_TRACK:
             self.varieties[a]["pop_of_note"] += 1
         else:
