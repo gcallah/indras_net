@@ -4,15 +4,7 @@ Filename: fashion.py
 Author: Gene Callahan
 """
 
-import copy
-import math
-import cmath
-import time
-import random
 import logging
-import pprint
-import numpy as np
-import matplotlib.pyplot as plt
 import prop_args
 import entity as ent
 import spatial_agent as spagnt

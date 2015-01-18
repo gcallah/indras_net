@@ -1,3 +1,8 @@
+"""
+fashion_run.py: A script to run fashion+model.py,
+which implements Adam Smith's fashion model.
+"""
+
 import logging
 import entity as ent
 import prop_args as props

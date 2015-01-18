@@ -1,3 +1,8 @@
+"""
+edgebox_run.py
+The script to run our Edgeworth Box model.
+"""
+
 import logging
 import prop_args as props
 import entity as ent

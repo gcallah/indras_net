@@ -1,9 +1,11 @@
 """
-Filename: display_methods.py Author: Gene Callahan
+Filename: display_methods.py
+Author: Gene Callahan
+A collection of convenience functions 
+for using matplotlib.
 """
 
 import numpy as np
-from numpy.random import rand
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
@@ -13,6 +15,13 @@ NUM_COLORS = 6
 
 
 def display_line_graph(title, data, data_points):
+    """
+    Display a simple matplotlib line graph.
+    The data is a dictionary with the label
+    as the key and a list of numbers as the
+    thing to graph.
+    data_points is the length of the x-axis.
+    """
 
     fig, ax = plt.subplots()
     x = np.arange(0, data_points)
@@ -27,7 +36,16 @@ def display_line_graph(title, data, data_points):
     plt.show()
 
 
-def display_scatter_plot(title, varieties, anim=False, anim_func=None):
+def display_scatter_plot(title, varieties, anim=False,
+                            anim_func=None):
+    """
+    Display a scatter plot. We plan to
+    add animation soon, thus the unused
+    anim params.
+    varieties is the different types of 
+    entities to show in the plot, which
+    will get assigned different colors
+    """
 
     fig, ax = plt.subplots()
     

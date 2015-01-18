@@ -1,4 +1,7 @@
-import sys
+"""
+A script to run our barter model.
+"""
+
 import logging
 import prop_args as props
 import entity as ent

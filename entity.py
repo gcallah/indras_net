@@ -39,9 +39,21 @@ def get_prehensions(prehender, universal):
 
 
 def add_prehension(prehender, universal, prehended):
+    """
+    Add a prehension between classes
+    """
+
     prnr_name = get_class_name(prehender)
     prnd_name = get_class_name(prehended)
     universals.add_prehension(prnr_name, universal, prnd_name)
+
+
+def add_ent_prehension(prehender, universal, prehended):
+    """
+    Add a prehension between entities.
+    """
+
+    universals.add_prehension(prehender, universal, prehended)
 
 
 class Node():
@@ -466,9 +478,12 @@ class Environment(Entity):
 
     def draw_graph(self):
         choice = self.user.ask_for_ltr(
-                "Draw graph for (a)gents; (e)nvironment?")
+                "Draw graph for (a)gents; (e)nvironment; "
+                + "(u)niversals?")
         if choice == "a":
             self.agents.draw()
+        elif choice == "u":
+            universals.draw()
         else:
             self.draw()
 

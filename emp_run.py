@@ -1,24 +1,54 @@
-import logging
+"""
+emp_run.py
+A script to run our simple employee model,
+demonstrating heirarchical graphing.
+"""
 
-logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO, filemode='w', filename="log.txt")
+import logging
+import entity as ent
+import prop_args as props
+import emp_model as em
+
+# set up some file names:
+MODEL_NM = "emp_model"
+PROG_NM  = MODEL_NM + ".py"
+LOG_FILE = MODEL_NM + ".txt"
+
+# We store basic parameters in a
+# "property" file; this allows us to save
+#  multiple parameter sets, which is important in simulation work.
+#  We can read these in from file or set them here.
+read_props = False
+if read_props:
+    pa = props.PropArgs.read_props(MODEL_NM, "emp.props")
+else:
+    pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
+    pa.set("model", MODEL_NM)
+    pa.set("user_type", ent.User.TERMINAL)
+
+# Now we create a minimal environment for our agents to act within:
+env = em.EmpEnv(model_nm=MODEL_NM)
+# And put the environment in the properties object:
+pa.set("env", env)
+
+
+linda = em.EmpAgent("Linda")
+suzanne = em.EmpAgent("Suzanne")
+sandy = em.EmpAgent("Sandy")
+connie = em.EmpAgent("Connie")
+rich = em.EmpAgent("Rich")
+gene = em.EmpAgent("Gene")
+shruti = em.EmpAgent("Shruti")
+cedric = em.EmpAgent("Cedric")
+
+env.employs(sandy, gene)
+env.employs(sandy, shruti)
+env.employs(sandy, cedric)
+env.employs(linda, connie)
+env.employs(linda, sandy)
+env.employs(suzanne, linda)
+env.employs(suzanne, rich)
 
 logging.info("Starting program")
-
-ronnie = EconAgent("manager", 10000.00, "Ronnie")
-suzanne = EconAgent("manager", 20000.0, "Suzanne")
-sandy = EconAgent("manager", 10000.00, "Sandy")
-connie = EconAgent("manager", 10000.00, "Connie")
-rich = EconAgent("manager", 10000.00, "Rich")
-gene = EconAgent("worker", 10.00, "Gene")
-shruti = EconAgent("worker", 10.00, "Shruti")
-cedric = EconAgent("worker", 10.00, "Cedric")
-sandy.add_employee(gene)
-sandy.add_employee(shruti)
-sandy.add_employee(cedric)
-ronnie.add_employee(connie)
-ronnie.add_employee(sandy)
-suzanne.add_employee(ronnie)
-suzanne.add_employee(rich)
-
-suzanne.walk_graph_breadth_first(print_econ_agent, True)
+env.run()
 

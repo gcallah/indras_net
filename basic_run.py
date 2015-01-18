@@ -1,4 +1,10 @@
 #!/usr/bin/env python3
+"""
+This is a simple test script. It can be cloned to
+create new run scripts, and should be run to test
+the system after library changes.
+"""
+
 import logging
 import prop_args as props
 import entity as ent
@@ -9,7 +15,8 @@ MODEL_NM = "basic_model"
 PROG_NM  = MODEL_NM + ".py"
 LOG_FILE = MODEL_NM + ".txt"
 
-# We store basic parameters in a "property" file; this allows us to save
+# We store basic parameters in a
+# "property" file; this allows us to save
 #  multiple parameter sets, which is important in simulation work.
 #  We can read these in from file or set them here.
 read_props = False
@@ -26,7 +33,8 @@ env = bm.BasicEnv(model_nm=MODEL_NM)
 # And put the environment in the properties object:
 pa.set("env", env)
 
-# Now we loop creating multiple agents with numbered names based on the loop variable:
+# Now we loop creating multiple agents
+#  with numbered names based on the loop variable:
 for i in range(pa.get("num_agents")):
     env.add_agent(
             bm.BasicAgent(name="agent" + str(i),

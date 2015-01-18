@@ -6,15 +6,26 @@ Author: Gene Callahan
 import copy
 import math
 import cmath
-import time
 import random
 import logging
-import numpy as np
-import matplotlib.pyplot as plt
 import entity as ent
 import display_methods as disp
 
 MAX_ZERO_PER = 8
+
+
+def pos_msg(agent, pos):
+    """
+    A convenience function for displaying 
+    an entity's position.
+    """
+
+    x = pos.real
+    y = pos.imag
+    return("New position for " + 
+                agent.name + " is "
+                + str(int(x)) + ", "
+                + str(int(y)))
 
 
 def rand_complex(initPos, radius):
@@ -26,7 +37,15 @@ def rand_complex(initPos, radius):
     return initPos + cmath.rect(radius, theta)
 
 
+def get_distance(p1, p2):
+    return abs(p1 - p2)
+
+
 def pos_to_str(pos):
+    """
+    Convert a complex position to a string rep.
+    """
+
     return str(int(pos.real)) + " , " + str(int(pos.imag))
 
 
@@ -50,20 +69,32 @@ class SpatialAgent(ent.Agent):
 
 
     def in_detect_range(self, prehended):
+        """
+        Can we see the prehended with our limited view?
+        """
+
         return self.in_range(prehended, self.max_detect)
 
 
     def in_range(self, prey, dist):
+        """
+        Is one agent in range of another in some sense?
+        """
+
         if prey == None:
             return False
 
-        if SpatialEnvironment.get_distance(self.pos, prey.pos) < dist:
+        if get_distance(self.pos, prey.pos) < dist:
             return True
         else:
             return False
 
 
     def survey_env(self, universal):
+        """
+        Look for prehensions of type 'universal' in env.
+        """
+
         logging.debug("surveying env for " + universal)
         prehended_list = []
         prehends = ent.get_prehensions(
@@ -82,6 +113,10 @@ class SpatialAgent(ent.Agent):
 
 
     def detect_behavior(self):
+        """
+        What to do on detecting a prehension.
+        """
+
         pass
 
 
@@ -97,19 +132,10 @@ class MobileAgent(SpatialAgent):
         self.wandering = True
 
 
-    def get_max_move(self):
-        return self.max_move
-
-
 class SpatialEnvironment(ent.Environment):
 
     """ Extends the base Environment with entities located in the 
         complex plane """
-
-    @staticmethod
-    def get_distance(p1, p2):
-        return abs(p1 - p2)
-
 
     def __init__(self, name, length, height, preact=True,
                     postact=False, model_nm=None):
@@ -149,17 +175,25 @@ class SpatialEnvironment(ent.Environment):
             self.varieties[v]["zombies"].append(copy.copy(agent))
 
 
-    def step(self, delay=0):
+    def step(self):
         if self.do_census: 
             self.census()
         super().step()
 
 
     def contains(self, agent_type):
+        """
+        Do we have this sort of thing in our env?
+        """
+
         return agent_type in self.varieties
 
 
     def census(self):
+        """
+        Take a census of what is in the env.
+        """
+
         self.user.tell("Populations in period "
                         + str(self.period) + ":")
         for v in self.varieties:
@@ -176,6 +210,10 @@ class SpatialEnvironment(ent.Environment):
 
 
     def get_pop(self, s):
+        """
+        Return the population of variety 's'
+        """
+
         return self.varieties[s]["pop"]
 
 
@@ -196,6 +234,10 @@ class SpatialEnvironment(ent.Environment):
 
 
     def closest_x(self, seeker, pos, target_type, exclude):
+        """
+        What is the closest entity of target_type?
+        """
+
         x = self.max_dist
         close_target = None
         for agent in self.agents:
@@ -203,23 +245,21 @@ class SpatialEnvironment(ent.Environment):
                 if ent.get_agent_type(agent) == target_type:
                     if (not exclude == None) and (not agent in exclude):
                         p_pos = agent.pos
-                        d     = self.get_distance(pos, p_pos)
+                        d = get_distance(pos, p_pos)
                         if d < x:
                             x = d
                             close_target = agent
         return close_target
 
 
-    def pos_msg(self, agent, pos):
-        x = pos.real
-        y = pos.imag
-        return("New position for " + 
-                    agent.name + " is "
-                    + str(int(x)) + ", "
-                    + str(int(y)))
-
     def get_new_wander_pos(self, agent):
-        new_pos = rand_complex(agent.pos, agent.get_max_move())
+        """
+        If an agent is wandering in the env,
+        this assigns it a new, random position
+        based on its current position
+        """
+
+        new_pos = rand_complex(agent.pos, agent.max_move)
         x = new_pos.real
         y  = new_pos.imag
         if x < 0.0:
@@ -231,7 +271,7 @@ class SpatialEnvironment(ent.Environment):
         if y  > self.height:
             y  = self.height
         pos = complex(x, y)
-        logging.debug(self.pos_msg(agent, pos))
+        logging.debug(pos_msg(agent, pos))
         return pos
 
 
