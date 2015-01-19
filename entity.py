@@ -14,108 +14,12 @@ import getpass
 import IPython
 import matplotlib.pyplot as plt
 import networkx as nx
+import node
 from collections import deque, OrderedDict
 import prop_args as pa
 
 
-UNIVERSAL = "universal"
-
-pp = pprint.PrettyPrinter(indent=4)
-
-
-indras_net = nx.Graph()
-
-
-def get_class_name(genera):
-    return genera.__name__
-
-
-def get_agent_type(agent):
-    return get_class_name(type(agent))
-
-
-def get_prehensions(prehender, universal):
-    return universals.get_prehensions(prehender, universal)
-
-
-def add_prehension(prehender, universal, prehended):
-    """
-    Add a prehension between classes
-    """
-
-    prnr_name = get_class_name(prehender)
-    prnd_name = get_class_name(prehended)
-    universals.add_prehension(prnr_name, universal, prnd_name)
-
-
-def add_ent_prehension(prehender, universal, prehended):
-    """
-    Add a prehension between entities.
-    """
-
-    universals.add_prehension(prehender, universal, prehended)
-
-
-class Node():
-
-    def __init__(self, name):
-        self.name = name
-        self.graph = None
-
-    def draw(self):
-        if self.graph is not None:
-            nx.draw_networkx(self.graph)
-            plt.show()
-
-
-class Universals(Node):
-
-    def __init__(self):
-        self.name = "Universals"
-        self.unis = {}
-        self.graph = nx.MultiDiGraph()
-
-
-    def add_universal(self, uni):
-        """
-        We want to be able to view all
-        univeral relationships at a glance,
-        so we will store them here
-        """
-        self.unis[uni] = [] # a list of prehensions
-
-
-    def add_prehension(self, prehender, uni, prehended):
-        """
-        Adds a universal relationship between two classes
-        """
-
-        if uni not in self.unis:
-            self.add_universal(uni)
-        self.unis[uni].append([prehender, prehended])
-        self.graph.add_edge(prehender, prehended,
-                            universal=uni)
-
-
-    def get_prehensions(self, prehender, uni):
-        prehensions = []
-        logging.debug("edges = " + str(self.graph.edges()))
-        for etuple in self.graph.edges_iter(data=True):
-            prehender = etuple[0]
-            prehended = etuple[1]
-            edge_data = etuple[2]
-            prehension = edge_data[UNIVERSAL]
-            if uni == prehension:
-                logging.debug("Found our universal: " + uni)
-                prehensions.append(prehended)
-        logging.debug("prehensions = " + str(prehensions))
-        return prehensions
-
-
-universals = Universals()
-
-
-class Entity(Node):
+class Entity(node.Node):
     """
     This is the base class of all agents, environments,
     and objects contained in an environment.
@@ -137,22 +41,6 @@ class Entity(Node):
         self.env = env
 
 
-    def walk_graph_breadth_first(self, func, top):
-        if top:
-            func(self)
-        for prehension in self.prehensions:
-            func(prehension.prehended_entity)
-        for prehension in self.prehensions:
-            prehension.prehended_entity.walk_graph_breadth_first(func, 
-                                                  False)
-
-
-    def print_prehensions(self):
-        for prehension in self.prehensions:
-            print(prehension.prehended_entity.name 
-                + " is my " + prehension.name)
-
-
     def pprint(self):
         for key, value in self.__dict__.items():
             print(key + " = " + str(value))
@@ -172,12 +60,21 @@ class Agent(Entity):
 
     @abstractmethod
     def act(self):
+        """
+        What agents do.
+        """
         pass
 
     def preact(self):
+        """
+        What agents do before they act.
+        """
         pass
     
     def postact(self):
+        """
+        What agents do after they act.
+        """
         pass
     
 
@@ -192,21 +89,31 @@ class User(Entity):
     IPYTHON_NB = "iPython Notebook"
 
 
-    def __init__(self, nm, type):
+    def __init__(self, nm, utype):
         super().__init__(nm)
-        self.type = type
+        self.utype = utype
 
 
     def tell(self, msg):
-        if self.type in [User.TERMINAL, User.IPYTHON, User.IPYTHON_NB]:
+        """
+        Screen the details of output from models.
+        """
+        if self.utype in [User.TERMINAL, User.IPYTHON,
+                        User.IPYTHON_NB]:
             print(msg)
 
     def ask_for_ltr(self, msg):
+        """
+        Screen the details of input from models.
+        """
         choice = self.ask(msg)
         return choice.strip()
 
     def ask(self, msg):
-        if self.type in [User.TERMINAL, User.IPYTHON, User.IPYTHON_NB]:
+        """
+        Screen the details of input from models.
+        """
+        if self.utype in [User.TERMINAL, User.IPYTHON, User.IPYTHON_NB]:
             return(input(msg))
 
 
@@ -215,6 +122,7 @@ class AgentPop(Entity):
     """
     Holds our collection of agents and a sub-graph
     of their relationships.
+    This should implement list functions.
     """
 
     def __init__(self, name):
@@ -236,6 +144,9 @@ class AgentPop(Entity):
 
 
     def append(self, agent):
+        """
+        Appends to agent list.
+        """
         self.agents.append(agent)
 # we link each agent to the name
 #  just so we can show their relationship 
@@ -244,16 +155,25 @@ class AgentPop(Entity):
 
 
     def remove(self, agent):
+        """
+        Removes from agent list.
+        """
         self.agents.remove(agent)
         self.graph.remove_edge(self, agent)
         logging.debug("Removing edge between AgentPop and "
                 + agent.name)
 
     def join_agents(self, a1, a2):
+        """
+        Add a graph edge between agents.
+        """
         self.graph.add_edge(a1, a2)
 
 
     def random_loop(self):
+        """
+        Loop through agents in random order.
+        """
         indices = list(range(len(self.agents)))
         random.shuffle(indices)
         for i in indices:
@@ -274,7 +194,6 @@ class Environment(Entity):
                     postact=False, model_nm=None):
         super().__init__(name)
         self.graph = nx.Graph()
-        indras_net.add_node(self)
         pop_name = ""
         if model_nm:
             pop_name += model_nm + " "
@@ -298,19 +217,28 @@ class Environment(Entity):
         self.graph.add_edge(self, self.user)
         self.menu = Menu(self)
         self.graph.add_edge(self, self.menu)
-#        self.graph.add_edge(self, univesals)
+        self.graph.add_edge(self, node.universals)
 
 
     def add_agent(self, agent):
+        """
+        Add an agent to pop.
+        """
         self.agents.append(agent)
         agent.add_env(self)
     
     
     def join_agents(self, a1, a2):
+        """
+        Relate two agents.
+        """
         self.agents.join_agents(a1, a2)
 
 
     def add_child(self, agent):
+        """
+        Put a child agent in the womb.
+        """
         self.womb.append(agent)
         agent.add_env(self)
 
@@ -327,8 +255,10 @@ class Environment(Entity):
         This is the main menu loop for all models
         """
 
-        if resume: self.period = Environment.prev_period
-        else:      self.period = 0
+        if resume:
+            self.period = Environment.prev_period
+        else:
+            self.period = 0
 
         self.user.tell("Welcome, " + self.user.name)
         self.user.tell("Running in " + self.name)
@@ -378,6 +308,9 @@ class Environment(Entity):
 
 
     def agnt_inspect(self):
+        """
+        View (and possibly alter) an agent's data.
+        """
         name = self.user.ask(
             "Type the name of the agent to inspect: ")
         agent = self.find_agent(name.strip())
@@ -392,12 +325,25 @@ class Environment(Entity):
 
 
     def edit_field(self, entity):
-        y_n = self.user.ask("Change a field's value in " + entity.name
-                + "? (y/n) ")
-        if y_n in ["Y", "y"]:
-            field = self.user.ask("Which field? ")
-            nval = self.user.ask("Enter new value for " + field + ": ")
-            entity.__dict__[field] = nval
+        while True:
+            y_n = self.user.ask(
+                    "Change a field's value in " 
+                    + entity.name
+                    + "? (y/n) "
+                    + "(Only str, float, and int supported.)")
+            if y_n in ["Y", "y"]:
+                field = self.user.ask("Which field? ")
+                nval = self.user.ask(
+                        "Enter new value for " + field + ": ")
+                fld_type = type(entity.__dict__[field])
+                if fld_type is int:
+                    entity.__dict__[field] = int(nval)
+                elif fld_type is float:
+                    entity.__dict__[field] = float(nval)
+                else:
+                    entity.__dict__[field] = nval
+            else:
+                break
 
 
     def cont_run(self):
@@ -415,12 +361,18 @@ class Environment(Entity):
 
 
     def pwrite(self):
+        """
+        Write out the properties to a file.
+        """
         file_nm = self.user.ask("Choose file name: ")
         if self.props is not None:
             self.props.write(file_nm)
 
 
     def disp_log(self):
+        """
+        Display last 16 lines of log file.
+        """
 
         MAX_LINES = 16
 
@@ -477,36 +429,43 @@ class Environment(Entity):
 
 
     def draw_graph(self):
+        """
+        Draw a graph!
+        """
         choice = self.user.ask_for_ltr(
                 "Draw graph for (a)gents; (e)nvironment; "
                 + "(u)niversals?")
         if choice == "a":
             self.agents.draw()
         elif choice == "u":
-            universals.draw()
+            node.universals.draw()
         else:
             self.draw()
 
 
     def keep_running(self):
+        """
+        Placeholder
+        """
         return True
 
     def display(self):
+        """
+        Show some visual representation of model.
+        """
         self.user.tell("Visualize not implemented in this model")
 
     def plot(self):
+        """
+        Placeholder
+        """
         self.user.tell("Plot not implemented in this model")
 
     def quit(self):
+        """
+        Leave this run.
+        """
         return "Returning to runtime environment."
-
-
-class Prehension():
-
-    def __init__(self, name, entity):
-        self.name   = name
-        self.weight = 1.0;
-        self.prehended_entity = entity
 
 
 ADD_MODE  = "a"
@@ -527,6 +486,10 @@ IPYN_MODE = "y"
 
 
 class Menu(Entity):
+    """
+    Implements our basic menu: intended for text or GUI
+    use.
+    """
 
     def __init__(self, env):
         super().__init__("Main Menu")
@@ -562,12 +525,15 @@ class Menu(Entity):
                             e.step)
         self.add_menu_item("Tools", RUN_MODE, "(r)un", e.run)
         self.add_menu_item("Tools", DBUG_MODE, "(d)ebug", e.debug)
-        if e.user.type == User.TERMINAL:
+        if e.user.utype == User.TERMINAL:
             self.add_menu_item("Tools", IPYN_MODE, "iP(y)thon",
                                 e.ipython)
 
 
     def add_menu_item(self, submenu, letter, text, func):
+        """
+        Add an item to the main menu.
+        """
         if submenu in self.submenus:
             self.submenus[submenu][text] = {
                     "letter": letter,
@@ -577,13 +543,16 @@ class Menu(Entity):
 
 
     def display(self):
+        """
+        Display the menu.
+        """
         for subm in self.submenus:
             disp = subm + ": "
             for item in self.submenus[subm]:
                 disp = disp + item + " | "
 # remove the final menu item separator:
             disp = disp.rstrip("| ")
-            if self.env.user.type == User.IPYTHON_NB:
+            if self.env.user.utype == User.IPYTHON_NB:
                 pass
 #                disp = "<strong>" + disp + "</strong>"
             self.env.user.tell(disp)

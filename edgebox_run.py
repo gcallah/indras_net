@@ -5,6 +5,7 @@ The script to run our Edgeworth Box model.
 
 import logging
 import prop_args as props
+import node
 import entity as ent
 import edgebox_model as ebm
 
@@ -50,7 +51,7 @@ beatrice.endow(ebm.CHEESE,
                 pa.get("bea_cheese"),
                 util_func=eval("lambda qty: " + pa.get("bea_cutil")))
 
-ent.add_prehension(ebm.EdgeboxAgent, ebm.TRADE, ebm.EdgeboxAgent)
+node.add_prehension(ebm.EdgeboxAgent, ebm.TRADE, ebm.EdgeboxAgent)
 
 logging.info("Starting program")
 env.run()

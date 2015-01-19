@@ -1,7 +1,9 @@
 """
 basic_model.py
-You can clone this file and its companion basic_run.py to easily get started on a new model.
-It also is a handy tool to have around for testing new features added to the base system.
+You can clone this file and its companion basic_run.py
+to easily get started on a new model.
+It also is a handy tool to have around
+for testing new features added to the base system.
 """
 import entity
 

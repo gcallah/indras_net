@@ -1,8 +1,9 @@
 import logging
 import json
+import node
 
 
-class PropArgs():
+class PropArgs(node.Node):
 
     """
     This class holds sets of named properties for program-wide values.
@@ -29,6 +30,7 @@ class PropArgs():
 
     
     def __init__(self, model_nm, logfile=None, props=None):
+        super().__init__("Properties")
         self.model_nm = model_nm
 # store this instance as the value in the dict for 'model_nm'
         PropArgs.prop_sets[model_nm] = self
@@ -48,10 +50,10 @@ class PropArgs():
             self.props[nm] = default
         return self.props[nm]
 
-    """
-    Special get function for logfile name
-    """
     def get_logfile(self):
+        """
+        Special get function for logfile name
+        """
         return self.props.get("log_fname")
 
 
@@ -59,7 +61,7 @@ class PropArgs():
         json.dump(self.props, open(file_nm, 'w'), indent=4)
 
 
-class Logger():
+class Logger(node.Node):
 
     DEF_FORMAT   = '%(asctime)s:%(levelname)s:%(message)s'
     DEF_LEVEL    = logging.INFO
@@ -67,6 +69,7 @@ class Logger():
     DEF_FILENAME = 'log.txt'
 
     def __init__(self, props, logfile=None):
+        super().__init__("Logger")
         if logfile is None:
             logfile = DEF_FILENAME
         fmt = props.get("log_format", Logger.DEF_FORMAT)

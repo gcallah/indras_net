@@ -4,8 +4,9 @@ which implements Adam Smith's fashion model.
 """
 
 import logging
-import entity as ent
+import node
 import prop_args as props
+import entity as ent
 import predprey_model as ppm
 import fashion_model as fm
 
@@ -49,8 +50,8 @@ for i in range(pa.get("num_trndstr")):
             fm.TrendSetter(name="hipster" + str(i),
                 max_detect=pa.get("trnd_max_detect")))
 
-ent.add_prehension(fm.Follower, ppm.EAT, fm.TrendSetter)
-ent.add_prehension(fm.TrendSetter, ppm.AVOID, fm.Follower)
+node.add_prehension(fm.Follower, ppm.EAT, fm.TrendSetter)
+node.add_prehension(fm.TrendSetter, ppm.AVOID, fm.Follower)
 
 logging.info("Starting program")
 env.run()

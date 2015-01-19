@@ -11,6 +11,7 @@ import logging
 import pprint
 import numpy as np
 import matplotlib.pyplot as plt
+import node
 import entity as ent
 import spatial_agent as sa
 import display_methods as disp
@@ -94,7 +95,6 @@ class Grass(Creature):
 
     MAX_GRASS = 200
 
-    count = 0
 
     def __init__(self, name, life_force, repro_age, decay_rate,
             max_move=0.0, max_detect=0.0, goal=REPRODUCE,
@@ -103,13 +103,12 @@ class Grass(Creature):
         super().__init__(name, life_force, repro_age, decay_rate,
                 max_move=max_move, max_detect=max_detect,
                 goal=goal, rand_age=rand_age)
-        
-        self.add_new()
 
 
     def reproduce(self):
-        if self.env.get_pop("Grass") < self.MAX_GRASS:
-            return Grass("herb" + str(Grass.count), self.orig_force, 
+        my_pop = self.env.get_my_pop(self)
+        if my_pop < self.MAX_GRASS:
+            return Grass("herb" + str(my_pop), self.orig_force, 
                     self.repro_age, self.decay_rate)
         else: return None
 
@@ -136,7 +135,7 @@ class MobileCreature(Creature, sa.MobileAgent):
 
     def survey_env(self, universal):
         logging.debug("scanning env for " + universal)
-        prehends = ent.get_prehensions(
+        prehends = node.get_prehensions(
                 prehender=type(self), universal=universal)
         if not prehends == None:
             for pre_type in prehends:
@@ -205,9 +204,9 @@ class MobilePrey(MobileCreature):
 
 class Fox(Predator):
 
-    """ This class defines foxes, a type of predator """
-
-    count      = 0
+    """
+    This class defines foxes, a type of predator.
+    """
 
     def __init__(self, name, life_force, repro_age, decay_rate,
             max_move=10.0, max_detect=10.0, goal=EAT, rand_age=False):
@@ -215,12 +214,11 @@ class Fox(Predator):
         super().__init__(name, life_force, repro_age, decay_rate,
                 max_move, max_detect, goal=goal, rand_age=rand_age)
 
-        self.add_new()
-
 
     def reproduce(self):
-        return Fox("brer" + str(Fox.count), self.orig_force,
-                self.repro_age, self.decay_rate, self.max_move,
+        return Fox("brer" + str(self.env.get_my_pop(self)),
+                self.orig_force, self.repro_age,
+                self.decay_rate, self.max_move,
                 self.max_detect)
 
 
@@ -231,7 +229,6 @@ class Mouse(MobilePrey):
 
     AVG_MOUSE_FORCE = 10.0
 
-    count      = 0
 
     def __init__(self, name, life_force, repro_age, decay_rate,
             max_move, max_detect=10.0, goal=EAT, rand_age=False):
@@ -239,13 +236,13 @@ class Mouse(MobilePrey):
         super().__init__(name, life_force, repro_age, decay_rate,
                 max_move, max_detect, goal=goal, rand_age=rand_age)
 
-        self.add_new()
 
     def reproduce(self):
 # revert to mean:
         force = (self.orig_force + self.AVG_MOUSE_FORCE) / 2.0
-        return Mouse("mickey" + str(Mouse.count), force,
-                self.repro_age, self.decay_rate, self.max_move)
+        return Mouse("mickey" + str(self.env.get_my_pop(self)),
+                    force, self.repro_age, self.decay_rate,
+                    self.max_move)
 
 
 class Rabbit(MobilePrey):
@@ -256,7 +253,6 @@ class Rabbit(MobilePrey):
 
     AVG_RABBIT_FORCE = 20.0
 
-    count      = 0
 
     def __init__(self, name, life_force, repro_age, decay_rate,
             max_move, max_detect=10.0, goal=AVOID, rand_age=False):
@@ -264,14 +260,13 @@ class Rabbit(MobilePrey):
         super().__init__(name, life_force, repro_age, decay_rate,
                 max_move, max_detect, goal=goal, rand_age=rand_age)
 
-        self.add_new()
-
 
     def reproduce(self):
 # revert to mean:
         force = (self.orig_force + self.AVG_RABBIT_FORCE) / 2.0
-        return Rabbit("bunny" + str(Rabbit.count), force,
-                self.repro_age, self.decay_rate, self.max_move)
+        return Rabbit("bunny" + str(self.env.get_my_pop(self)),
+                force, self.repro_age,
+                self.decay_rate, self.max_move)
 
 
 class PredPreyEnv(sa.SpatialEnvironment):
@@ -315,7 +310,7 @@ class PredPreyEnv(sa.SpatialEnvironment):
 
 
     def cull(self, creature):
-        s = ent.get_agent_type(creature)
+        s = node.get_node_type(creature)
         assert self.varieties[s]["pop"] > 0
         self.varieties[s]["pop"] -= 1
         self.agents.remove(creature)

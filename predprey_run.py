@@ -1,6 +1,7 @@
 import logging
-import entity as ent
+import node
 import prop_args as props
+import entity as ent
 import predprey_model as ppm
 
 
@@ -47,7 +48,7 @@ for i in range(pa.get("num_rabbits")):
         max_move=pa.get("rabbit_max_move"),
         rand_age=True))
 
-ent.add_prehension(ppm.Fox, ppm.EAT, ppm.Rabbit)
+node.add_prehension(ppm.Fox, ppm.EAT, ppm.Rabbit)
 
 logging.info("Starting program")
 env.run()

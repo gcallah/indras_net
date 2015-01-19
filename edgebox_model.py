@@ -20,7 +20,7 @@ Accept = True
 Reject = False
 
 
-def util_func(qty):
+def gen_util_func(qty):
     """
     A default util func: we can pass in others
     """
@@ -158,7 +158,7 @@ class EdgeboxAgent(spatial_agent.SpatialAgent):
 
 
     def __add_good(self, good):
-        self.goods[good] = {"endow": 0, "util_func": util_func}
+        self.goods[good] = {"endow": 0, "util_func": gen_util_func}
 
 
 class EdgeboxEnv(spatial_agent.SpatialEnvironment):
@@ -172,8 +172,8 @@ class EdgeboxEnv(spatial_agent.SpatialEnvironment):
         self.trades_this_turn = 0
 
 
-    def step(self, delay=0):
-        super().step(delay=delay)
+    def step(self):
+        super().step()
         self.user.tell("Trades this period: "
                     + str(self.trades_this_turn))
         for a in self.agents:

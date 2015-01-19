@@ -1,10 +1,13 @@
 
 """
-Filename: fashion.py
+Filename: fashion_model.py
 Author: Gene Callahan
+Implements Adam Smith's fashion model of
+trend-setters and followers.
 """
 
 import logging
+import node
 import prop_args
 import entity as ent
 import spatial_agent as spagnt
@@ -20,6 +23,10 @@ FSHN_TO_TRACK = 0
 
 
 class Fashionista(prdpry.MobileCreature):
+
+    """
+    The base class for trend-setters and followers.
+    """
 
     def __init__(self, name, life_force=20, repro_age=1000,
             decay_rate=0.0, max_move=20.0, max_detect=20.0,
@@ -43,6 +50,10 @@ class Fashionista(prdpry.MobileCreature):
 
     def respond_to_trends(self, prehended, gt, fshn_ratio,
                             min_others):
+        """
+        What an agent does based on trends around her,
+        """
+
         if len(prehended) >= min_others:
             has_my_fashion = 0
             not_my_fashion = 0
@@ -59,6 +70,10 @@ class Fashionista(prdpry.MobileCreature):
 
 
     def adverse_response(self):
+        """
+        What an agent does when he doesn't like the trend.
+        """
+
         self.adv_periods += 1
         if self.adv_periods >= self.env.min_adv_periods:
             self.adv_periods = 0
@@ -67,6 +82,10 @@ class Fashionista(prdpry.MobileCreature):
 
 
     def change_fashion(self):
+        """
+        Switch my fashion.
+        """
+
         if self.fashion == 1:
             self.fashion = 0
         else:
@@ -152,14 +171,18 @@ class SocietyEnv(spagnt.SpatialEnvironment):
     def add_agent(self, agent):
         spagnt.SpatialEnvironment.add_agent(self, agent)
 
-        var = ent.get_agent_type(agent)
+        var = node.get_node_type(agent)
 
         if agent.fashion == FSHN_TO_TRACK:
             self.varieties[var]["pop_of_note"] += 1
 
     
     def record_fashion_change(self, agent):
-        a = ent.get_agent_type(agent)
+        """
+        Track the fashions in our env.
+        """
+
+        a = node.get_node_type(agent)
         if agent.fashion == FSHN_TO_TRACK:
             self.varieties[a]["pop_of_note"] += 1
         else:
@@ -185,7 +208,8 @@ class SocietyEnv(spagnt.SpatialEnvironment):
         for a in self.varieties:
             pop_hist[a] = self.varieties[a]["pop_hist"]
 
-        disp.display_line_graph("Adam Smith's fashion model: Populations in "
+        disp.display_line_graph(
+                "Adam Smith's fashion model: Populations in "
                                 + self.name
                                 + " adopting fashion "
                                 + fashions[FSHN_TO_TRACK],

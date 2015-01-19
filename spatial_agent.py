@@ -9,6 +9,7 @@ import cmath
 import random
 import logging
 import entity as ent
+import node
 import display_methods as disp
 
 MAX_ZERO_PER = 8
@@ -97,14 +98,14 @@ class SpatialAgent(ent.Agent):
 
         logging.debug("surveying env for " + universal)
         prehended_list = []
-        prehends = ent.get_prehensions(
+        prehends = node.get_prehensions(
                 prehender=type(self), universal=universal)
         if not prehends == None:
             for pre_type in prehends:
 # this loop over all agents must be eliminated
 #  before we do huge simulations!
                 for agent in self.env.agents:
-                    agent_type = ent.get_agent_type(agent)
+                    agent_type = node.get_node_type(agent)
                     if agent is not self:
                         if(self.in_detect_range(agent)
                                 and agent_type == pre_type):
@@ -159,7 +160,7 @@ class SpatialEnvironment(ent.Environment):
         y = random.uniform(0, self.height - 1)
         agent.pos = complex(x, y)
 
-        v = ent.get_agent_type(agent)
+        v = node.get_node_type(agent)
         logging.debug("Adding " + agent.__str__()
                 + " of variety " + v)
 
@@ -209,12 +210,19 @@ class SpatialEnvironment(ent.Environment):
                     var["zero_per"] = 0
 
 
-    def get_pop(self, s):
+    def get_pop(self, var):
         """
-        Return the population of variety 's'
+        Return the population of variety 'var'
         """
+        return self.varieties[var]["pop"]
 
-        return self.varieties[s]["pop"]
+
+    def get_my_pop(self, agent):
+        """
+        Return the population of agent's type
+        """
+        var = node.get_node_type(agent)
+        return self.get_pop(var)
 
 
     def preact_loop(self):
@@ -242,7 +250,7 @@ class SpatialEnvironment(ent.Environment):
         close_target = None
         for agent in self.agents:
             if seeker is not agent: # don't locate me!
-                if ent.get_agent_type(agent) == target_type:
+                if node.get_node_type(agent) == target_type:
                     if (not exclude == None) and (not agent in exclude):
                         p_pos = agent.pos
                         d = get_distance(pos, p_pos)
