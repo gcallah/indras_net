@@ -1,0 +1,137 @@
+"""
+node.py
+A very basic class implementing some thing at the bottom of our
+net of objects
+"""
+
+import logging
+import matplotlib.pyplot as plt
+import networkx as nx
+
+
+UNIVERSAL = "universal"
+
+
+indras_net = nx.Graph()
+
+
+def get_class_name(genera):
+    """
+    A convenience function to get this field.
+    """
+
+    return genera.__name__
+
+
+def get_node_type(agent):
+    """
+    A convenience function to get type of node.
+    """
+    return get_class_name(type(agent))
+
+
+def get_prehensions(prehender, universal):
+    """
+    Find prehensions for a prehender.
+    """
+
+    return universals.get_prehensions(prehender, universal)
+
+
+def add_prehension(prehender, universal, prehended):
+    """
+    Add a prehension between classes
+    """
+
+    prnr_name = get_class_name(prehender)
+    prnd_name = get_class_name(prehended)
+    universals.add_prehension(prnr_name, universal, prnd_name)
+
+
+def add_ent_prehension(prehender, universal, prehended):
+    """
+    Add a prehension between entities.
+    """
+
+    universals.add_prehension(prehender, universal, prehended)
+
+
+class Node():
+    """
+    Contains a name and a graph.
+    """
+
+    def __init__(self, name):
+        self.name = name
+        self.graph = None
+
+
+    def draw(self):
+        """
+        Every node should have some way to draw itself.
+        """
+        if self.graph is not None:
+            nx.draw_networkx(self.graph)
+            plt.show()
+
+    def display(self):
+        """
+        Every node should have some way to display itself.
+        The difference between draw and display:
+        Display makes the object show up on screen.
+        Draw reveals the object's structure (such
+        as graphing its components).
+        """
+        pass
+
+
+class Universals(Node):
+    """
+    Our universals, the things which relate instances
+    or classes.
+    """
+
+    def __init__(self):
+        super().__init__("Universals")
+        self.unis = {}
+        self.graph = nx.MultiDiGraph()
+
+
+    def add_universal(self, uni):
+        """
+        We want to be able to view all
+        univeral relationships at a glance,
+        so we will store them here
+        """
+        self.unis[uni] = [] # a list of prehensions
+
+
+    def add_prehension(self, prehender, uni, prehended):
+        """
+        Adds a universal relationship between two classes
+        """
+
+        if uni not in self.unis:
+            self.add_universal(uni)
+        self.unis[uni].append([prehender, prehended])
+        self.graph.add_edge(prehender, prehended,
+                            universal=uni)
+
+
+    def get_prehensions(self, prehender, uni):
+        prehensions = []
+        logging.debug("edges = " + str(self.graph.edges()))
+        for etuple in self.graph.edges_iter(data=True):
+            prehender = etuple[0]
+            prehended = etuple[1]
+            edge_data = etuple[2]
+            prehension = edge_data[UNIVERSAL]
+            if uni == prehension:
+                logging.debug("Found our universal: " + uni)
+                prehensions.append(prehended)
+        logging.debug("prehensions = " + str(prehensions))
+        return prehensions
+
+
+universals = Universals()
+
