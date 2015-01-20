@@ -155,6 +155,9 @@ class SpatialEnvironment(ent.Environment):
 
 
     def add_agent(self, agent):
+        """
+        Add a spatial agent to env
+        """
         super().add_agent(agent)
         x = random.uniform(0, self.length - 1)
         y = random.uniform(0, self.height - 1)
@@ -177,6 +180,9 @@ class SpatialEnvironment(ent.Environment):
 
 
     def step(self):
+        """
+        Step through one period.
+        """
         if self.do_census: 
             self.census()
         super().step()
@@ -226,6 +232,9 @@ class SpatialEnvironment(ent.Environment):
 
 
     def preact_loop(self):
+        """
+        Before acting, get agent's new location.
+        """
         logging.debug("Calling preact_loop()")
         for agent in self.agents:
             if agent.wandering:
@@ -284,6 +293,9 @@ class SpatialEnvironment(ent.Environment):
 
 
     def plot(self):
+        """
+        Show where agents are in graphical form.
+        """
         data = {}
         for v in self.varieties:
             data[v] = {"x": [], "y": []}

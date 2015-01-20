@@ -56,13 +56,17 @@ class Creature(sa.SpatialAgent):
         return(self.name + " with " + str(self.life_force)
                     + " life force")
 
-    def get_life_force(self):
-        return self.life_force
-
     def is_alive(self):
+        """
+        Boolean: is this critter alive or not?
+        """
         return self.life_force > 0
 
+
     def act(self):
+        """
+        Reproduce if it is time!
+        """
         self.age += 1.0
         if (int(math.floor(self.age)) % self.repro_age) < 1:
             offspring = self.reproduce()
@@ -79,12 +83,18 @@ class Creature(sa.SpatialAgent):
 
 
     def eat(self, prey):
-        self.life_force += prey.get_life_force()
+        """
+        Eat another critter and gain its life force.
+        """
+        self.life_force += prey.life_force
         prey.be_eaten()
         logging.info(self.name + " has eaten " + prey.name)
 
 
     def be_eaten(self):
+        """
+        Be eaten; life force goes to 0.
+        """
         self.life_force = 0
 
 
@@ -106,6 +116,9 @@ class Grass(Creature):
 
 
     def reproduce(self):
+        """
+        Make new grass.
+        """
         my_pop = self.env.get_my_pop(self)
         if my_pop < self.MAX_GRASS:
             return Grass("herb" + str(my_pop), self.orig_force, 
@@ -154,6 +167,10 @@ class MobileCreature(Creature, sa.MobileAgent):
 
 
     def in_gobble_range(self):
+        """
+        Are we close enough to eat the thing we are
+        focused on?
+        """
         return self.in_range(self.focus, self.max_eat)
 
 
@@ -216,7 +233,10 @@ class Fox(Predator):
 
 
     def reproduce(self):
-        return Fox("brer" + str(self.env.get_my_pop(self)),
+        """
+        Make a new fox
+        """
+        return Fox("brer" + self.env.new_name_suffix(self),
                 self.orig_force, self.repro_age,
                 self.decay_rate, self.max_move,
                 self.max_detect)
@@ -238,9 +258,11 @@ class Mouse(MobilePrey):
 
 
     def reproduce(self):
-# revert to mean:
+        """
+        Make a new mouse; life force reverts towards mean.
+        """
         force = (self.orig_force + self.AVG_MOUSE_FORCE) / 2.0
-        return Mouse("mickey" + str(self.env.get_my_pop(self)),
+        return Mouse("mickey" + self.env.new_name_suffix(self),
                     force, self.repro_age, self.decay_rate,
                     self.max_move)
 
@@ -262,9 +284,11 @@ class Rabbit(MobilePrey):
 
 
     def reproduce(self):
-# revert to mean:
+        """
+        Make a new rabbit; life force reverts towards mean.
+        """
         force = (self.orig_force + self.AVG_RABBIT_FORCE) / 2.0
-        return Rabbit("bunny" + str(self.env.get_my_pop(self)),
+        return Rabbit("bunny" + self.env.new_name_suffix(self),
                 force, self.repro_age,
                 self.decay_rate, self.max_move)
 
@@ -284,10 +308,16 @@ class PredPreyEnv(sa.SpatialEnvironment):
 
 
     def keep_running(self):
+        """
+        Run as long as there are agents left.
+        """
         return len(self.agents) > 0
 
 
     def display(self):
+        """
+        Graph our population levels.
+        """
         if self.period < 4:
             print("Too little data to display")
             return
@@ -303,16 +333,30 @@ class PredPreyEnv(sa.SpatialEnvironment):
 
 
     def postact_loop(self):
-# since we will be culling let's walk list in reverse
+        """
+        After acting, we cull dead creatures.
+        Since we will be culling let's walk list in reverse.
+        """
         for creature in reversed(self.agents):
             if not creature.is_alive():
                 self.cull(creature)
 
 
     def cull(self, creature):
+        """
+        Eliminate creatures who have died.
+        """
         s = node.get_node_type(creature)
         assert self.varieties[s]["pop"] > 0
         self.varieties[s]["pop"] -= 1
         self.agents.remove(creature)
+
+
+    def new_name_suffix(self, creature):
+        """
+        Generate unique names for new critters.
+        """
+        pop = self.get_my_pop(creature)
+        return "." + str(self.period) + "." + str(pop)
 
 

@@ -63,7 +63,12 @@ class Node():
 
     def __init__(self, name):
         self.name = name
+# every node is potentially a graph itself
         self.graph = None
+
+
+    def __str__(self):
+        return self.name
 
 
     def draw(self):

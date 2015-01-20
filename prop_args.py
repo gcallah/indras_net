@@ -1,4 +1,11 @@
+"""
+prop_args.py
+Set, read, and write program-wide properties in one
+location. Includes logging.
+"""
+
 import logging
+import networkx as nx
 import json
 import node
 
@@ -25,6 +32,9 @@ class PropArgs(node.Node):
     
     @staticmethod
     def read_props(model_nm, file_nm):
+        """
+        Create a new PropArgs object from a json file
+        """
         props = json.load(open(file_nm))
         return PropArgs.create_props(model_nm, props)
 
@@ -34,21 +44,43 @@ class PropArgs(node.Node):
         self.model_nm = model_nm
 # store this instance as the value in the dict for 'model_nm'
         PropArgs.prop_sets[model_nm] = self
+        self.graph = nx.Graph()
         if props is None:
             self.props = {}
         else:
             self.props = props
         self.logger = Logger(self, logfile=logfile)
+        self.graph.add_edge(self, self.logger)
+
+
+    def display(self):
+        """
+        How to represent the properties on screen.
+        """
+        ret = "Properties for " + self.model_nm + "\n"
+        for prop in self.props:
+            ret += "\t" + prop + ": " + str(self.props[prop]) + "\n"
+
+        return ret
 
 
     def set(self, nm, val):
+        """
+        Set a property value.
+        """
         self.props[nm] = val
 
 
     def get(self, nm, default=None):
+        """
+        Get a property value, with a default
+        that gets stored if the property is not there
+        at the time of the call.
+        """
         if nm not in self.props:
             self.props[nm] = default
         return self.props[nm]
+
 
     def get_logfile(self):
         """
@@ -58,6 +90,10 @@ class PropArgs(node.Node):
 
 
     def write(self, file_nm):
+        """
+        Write properties to json file.
+        Useful for storing interesting parameter sets.
+        """
         json.dump(self.props, open(file_nm, 'w'), indent=4)
 
 

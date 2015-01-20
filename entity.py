@@ -29,12 +29,6 @@ class Entity(node.Node):
         super().__init__(name)
         self.prehensions = []
         self.env = None
-# every entity is potentially a graph itself
-        self.graph = None
-
-
-    def __str__(self):
-        return self.name
 
         
     def add_env(self, env):
@@ -128,6 +122,7 @@ class AgentPop(Entity):
     def __init__(self, name):
         super().__init__(name)
         self.agents = []
+        self.varieties = {}
         self.graph = nx.Graph()
 
 
@@ -148,6 +143,18 @@ class AgentPop(Entity):
         Appends to agent list.
         """
         self.agents.append(agent)
+        v = node.get_node_type(agent)
+        logging.debug("Adding " + agent.__str__()
+                + " of variety " + v)
+
+        if v in self.varieties:
+            self.varieties[v]["pop"] += 1
+        else:
+            self.varieties[v] = {"pop": 1,
+                           "pop_of_note": 0,
+                           "pop_hist": [],
+                           "zombies": [],
+                           "zero_per": 0}
 # we link each agent to the name
 #  just so we can show their relationship 
 #  to this object
@@ -217,6 +224,7 @@ class Environment(Entity):
         self.graph.add_edge(self, self.user)
         self.menu = Menu(self)
         self.graph.add_edge(self, self.menu)
+        self.graph.add_edge(self, self.props)
         self.graph.add_edge(self, node.universals)
 
 
@@ -320,11 +328,17 @@ class Environment(Entity):
 
 
     def env_inspect(self):
+        """
+        Have a look at (and possibly alter) the environment.
+        """
         self.pprint()
         self.edit_field(self)
 
 
     def edit_field(self, entity):
+        """
+        Edit a field in an entity.
+        """
         while True:
             y_n = self.user.ask(
                     "Change a field's value in " 
@@ -347,6 +361,9 @@ class Environment(Entity):
 
 
     def cont_run(self):
+        """
+        Run continuously.
+        """
         self.user.tell(
             "Running continously; press Ctrl-c to halt!")
         time.sleep(3)
@@ -367,6 +384,13 @@ class Environment(Entity):
         file_nm = self.user.ask("Choose file name: ")
         if self.props is not None:
             self.props.write(file_nm)
+
+
+    def disp_props(self):
+        """
+        Display current system properties.
+        """
+        self.user.tell(self.props.display())
 
 
     def disp_log(self):
@@ -475,6 +499,7 @@ ENV_MODE  = "e"
 GRPH_MODE = "g"
 INSP_MODE = "i"
 LIST_MODE = "l"
+PROP_MODE = "o"
 PLOT_MODE = "p"
 QUIT_MODE = "q"
 RUN_MODE  = "r"
@@ -519,10 +544,12 @@ class Menu(Entity):
                             e.list_agents)
         self.add_menu_item("View", GRPH_MODE, "(g)raph components",
                             e.draw_graph)
-        self.add_menu_item("View", VISL_MODE, "(v)isualize",
+        self.add_menu_item("View", VISL_MODE, "(v)isualize data",
                             e.display)
         self.add_menu_item("Tools", STEP_MODE, "(s)tep (default)",
                             e.step)
+        self.add_menu_item("View", PROP_MODE, "view pr(o)perties",
+                            e.disp_props)
         self.add_menu_item("Tools", RUN_MODE, "(r)un", e.run)
         self.add_menu_item("Tools", DBUG_MODE, "(d)ebug", e.debug)
         if e.user.utype == User.TERMINAL:
