@@ -4,6 +4,7 @@ A script to run our barter model.
 
 import logging
 import prop_args as props
+import node
 import entity as ent
 import barter_model as bm
 
@@ -29,7 +30,7 @@ env = bm.BarterEnv("A barter market", 50.0, 50.0,
 pa.set("env", env)
 env.fetch_agents_from_file(CSV_FILE)
 
-ent.add_prehension(bm.BarterAgent, bm.TRADE, bm.BarterAgent)
+node.add_prehension(bm.BarterAgent, bm.TRADE, bm.BarterAgent)
 
 logging.info("Starting program")
 env.run()
