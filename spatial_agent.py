@@ -147,8 +147,6 @@ class SpatialEnvironment(ent.Environment):
         self.length   = length
         self.height   = height
         self.max_dist = self.length * self.height
-        self.num_zombies = 0
-        self.varieties = {}
         self.do_census = True
 # it only makes sense to plot agents in a spatial env, so add this here:
         self.add_menu_item("View", "p", "(p)lot agents", self.plot)
@@ -167,17 +165,6 @@ class SpatialEnvironment(ent.Environment):
         logging.debug("Adding " + agent.__str__()
                 + " of variety " + v)
 
-        if v in self.varieties:
-            self.varieties[v]["pop"] += 1
-        else:
-            self.varieties[v] = {"pop": 1,
-                           "pop_of_note": 0,
-                           "pop_hist": [],
-                           "zombies": [],
-                           "zero_per": 0}
-        if len(self.varieties[v]["zombies"]) < self.num_zombies:
-            self.varieties[v]["zombies"].append(copy.copy(agent))
-
 
     def step(self):
         """
@@ -186,49 +173,6 @@ class SpatialEnvironment(ent.Environment):
         if self.do_census: 
             self.census()
         super().step()
-
-
-    def contains(self, agent_type):
-        """
-        Do we have this sort of thing in our env?
-        """
-
-        return agent_type in self.varieties
-
-
-    def census(self):
-        """
-        Take a census of what is in the env.
-        """
-
-        self.user.tell("Populations in period "
-                        + str(self.period) + ":")
-        for v in self.varieties:
-            pop = self.get_pop(v)
-            self.user.tell(v + ": " + str(pop))
-            var = self.varieties[v]
-            var["pop_hist"].append(pop)
-            if pop == 0:
-                var["zero_per"] += 1
-                if var["zero_per"] >= MAX_ZERO_PER:
-                    for agent in var["zombies"]:
-                        self.add_agent(copy.copy(agent))
-                    var["zero_per"] = 0
-
-
-    def get_pop(self, var):
-        """
-        Return the population of variety 'var'
-        """
-        return self.varieties[var]["pop"]
-
-
-    def get_my_pop(self, agent):
-        """
-        Return the population of agent's type
-        """
-        var = node.get_node_type(agent)
-        return self.get_pop(var)
 
 
     def preact_loop(self):
@@ -297,7 +241,7 @@ class SpatialEnvironment(ent.Environment):
         Show where agents are in graphical form.
         """
         data = {}
-        for v in self.varieties:
+        for v in self.agents.varieties_iter():
             data[v] = {"x": [], "y": []}
             for a in self.agents:
                 if type(a).__name__ == v:

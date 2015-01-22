@@ -152,7 +152,7 @@ class SocietyEnv(spagnt.SpatialEnvironment):
         super().__init__(name, length, height,
             preact=True, postact=False, model_nm=model_nm)
 
-        self.varieties = {}
+        self.fashionistas = {}
 
         self.fshn_f_ratio = self.props.get("fshn_f_ratio",
                                 default = 1.3)
@@ -174,39 +174,41 @@ class SocietyEnv(spagnt.SpatialEnvironment):
         var = node.get_node_type(agent)
 
         if agent.fashion == FSHN_TO_TRACK:
-            self.varieties[var]["pop_of_note"] += 1
+            self.fashionistas[var]["pop_of_note"] += 1
 
     
     def record_fashion_change(self, agent):
         """
         Track the fashions in our env.
         """
-
         a = node.get_node_type(agent)
         if agent.fashion == FSHN_TO_TRACK:
-            self.varieties[a]["pop_of_note"] += 1
+            self.fashionistas[a]["pop_of_note"] += 1
         else:
-            self.varieties[a]["pop_of_note"] -= 1        
+            self.fashionistas[a]["pop_of_note"] -= 1        
 
 
     def census(self):
-        print("Populations in period " + str(self.period) +
+        self.user.tell("Populations in period " + str(self.period) +
                 " adopting " + 
                 fashions[FSHN_TO_TRACK] + ":")
-        for a in self.varieties:
-            pop = self.varieties[a]["pop_of_note"]
-            print(a + ": " +  str(pop))
-            self.varieties[a]["pop_hist"].append(pop)
+        for a in self.fashionistas:
+            pop = self.fashionistas[a]["pop_of_note"]
+            self.user.tell(a + ": " +  str(pop))
+            self.fashionistas[a]["pop_hist"].append(pop)
 
 
     def display(self):
+        """
+
+        """
         if self.period < 4:
-            print("Too little data to display")
+            self.user.tell("Too little data to display")
             return
 
         pop_hist = {}
-        for a in self.varieties:
-            pop_hist[a] = self.varieties[a]["pop_hist"]
+        for a in self.fashionistas:
+            pop_hist[a] = self.fashionistas[a]["pop_hist"]
 
         disp.display_line_graph(
                 "Adam Smith's fashion model: Populations in "

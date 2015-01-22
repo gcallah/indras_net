@@ -124,6 +124,7 @@ class AgentPop(Entity):
         self.agents = []
         self.varieties = {}
         self.graph = nx.Graph()
+        self.num_zombies = 0
 
 
     def __iter__(self):
@@ -136,6 +137,13 @@ class AgentPop(Entity):
 
     def __reversed__(self):
         return reversed(self.agents)
+
+
+    def varieties_iter(self):
+        """
+        Allows iteration over the varieties of agents.
+        """
+        return iter(self.varieties)
 
 
     def append(self, agent):
@@ -155,6 +163,8 @@ class AgentPop(Entity):
                            "pop_hist": [],
                            "zombies": [],
                            "zero_per": 0}
+        if len(self.varieties[v]["zombies"]) < self.num_zombies:
+            self.varieties[v]["zombies"].append(copy.copy(agent))
 # we link each agent to the name
 #  just so we can show their relationship 
 #  to this object
@@ -169,6 +179,10 @@ class AgentPop(Entity):
         self.graph.remove_edge(self, agent)
         logging.debug("Removing edge between AgentPop and "
                 + agent.name)
+        s = node.get_node_type(agent)
+        assert self.varieties[s]["pop"] > 0
+        self.varieties[s]["pop"] -= 1
+
 
     def join_agents(self, a1, a2):
         """
@@ -185,6 +199,52 @@ class AgentPop(Entity):
         random.shuffle(indices)
         for i in indices:
             self.agents[i].act()
+
+
+    def contains(self, agent_type):
+        """
+        Do we have this sort of thing in our env?
+        """
+        return agent_type in self.varieties
+
+
+    def get_pop(self, var):
+        """
+        Return the population of variety 'var'
+        """
+        return self.varieties[var]["pop"]
+
+
+    def get_my_pop(self, agent):
+        """
+        Return the population of agent's type
+        """
+        var = node.get_node_type(agent)
+        return self.get_pop(var)
+
+
+    def get_pop_hist(pop_hist):
+        for s in self.varieties:
+            pop_hist[s] = self.varieties[s]["pop_hist"]
+
+
+    def census(self):
+        """
+        Take a census of agents by variety.
+        """
+        ret = ""
+        for v in self.varieties:
+            pop = self.get_pop(v)
+            ret += v + ": " + str(pop) + "\n"
+            var = self.varieties[v]
+            var["pop_hist"].append(pop)
+            if pop == 0:
+                var["zero_per"] += 1
+                if var["zero_per"] >= MAX_ZERO_PER:
+                    for agent in var["zombies"]:
+                        self.add_agent(copy.copy(agent))
+                    var["zero_per"] = 0
+        return ret
 
 
 class Environment(Entity):
@@ -473,11 +533,23 @@ class Environment(Entity):
         """
         return True
 
+        
     def display(self):
         """
-        Show some visual representation of model.
+        Default: Graph our population levels.
         """
-        self.user.tell("Visualize not implemented in this model")
+        if self.period < 4:
+            print("Too little data to display")
+            return
+
+        pop_hist = {}
+        agents.get_pop_hist(pop_hist)
+
+        disp.display_line_graph('Populations in '
+                                + self.name,
+                                pop_hist,
+                                self.period)
+
 
     def plot(self):
         """
@@ -485,11 +557,42 @@ class Environment(Entity):
         """
         self.user.tell("Plot not implemented in this model")
 
+
     def quit(self):
         """
         Leave this run.
         """
         return "Returning to runtime environment."
+
+
+    def contains(self, agent_type):
+        """
+        Do we have this sort of thing in our env?
+        """
+        return self.agents.contains(agent_type)
+
+
+    def census(self):
+        """
+        Take a census of what is in the env.
+        """
+        self.user.tell("Populations in period "
+                        + str(self.period) + ":")
+        self.user.tell(self.agents.census())
+
+
+    def get_pop(self, var):
+        """
+        Return the population of variety 'var'
+        """
+        return self.agents.get_pop()
+
+
+    def get_my_pop(self, agent):
+        """
+        Return the population of agent's type
+        """
+        return self.agents.get_my_pop()
 
 
 ADD_MODE  = "a"

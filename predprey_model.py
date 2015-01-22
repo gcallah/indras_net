@@ -314,24 +314,6 @@ class PredPreyEnv(sa.SpatialEnvironment):
         return len(self.agents) > 0
 
 
-    def display(self):
-        """
-        Graph our population levels.
-        """
-        if self.period < 4:
-            print("Too little data to display")
-            return
-
-        pop_hist = {}
-        for s in self.varieties:
-            pop_hist[s] = self.varieties[s]["pop_hist"]
-
-        disp.display_line_graph('Populations in '
-                                + self.name,
-                                pop_hist,
-                                self.period)
-
-
     def postact_loop(self):
         """
         After acting, we cull dead creatures.
@@ -346,9 +328,6 @@ class PredPreyEnv(sa.SpatialEnvironment):
         """
         Eliminate creatures who have died.
         """
-        s = node.get_node_type(creature)
-        assert self.varieties[s]["pop"] > 0
-        self.varieties[s]["pop"] -= 1
         self.agents.remove(creature)
 
 
