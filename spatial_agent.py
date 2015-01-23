@@ -3,7 +3,6 @@ Filename: spatial_agent.py
 Author: Gene Callahan
 """
 
-import copy
 import math
 import cmath
 import random
@@ -11,8 +10,6 @@ import logging
 import entity as ent
 import node
 import display_methods as disp
-
-MAX_ZERO_PER = 8
 
 
 def pos_msg(agent, pos):
@@ -30,8 +27,9 @@ def pos_msg(agent, pos):
 
 
 def rand_complex(initPos, radius):
-    """Generates a random complex number 
-        uniformly picked from a disk of radius.
+    """
+    Generates a random complex number 
+        uniformly picked from a disk of radius 'radius'.
     """
     radius = math.sqrt(radius * random.uniform(0.0, radius))
     theta  = random.random() * 2 * math.pi

@@ -4,17 +4,11 @@ Author: Gene Callahan
 """
 
 import math
-import cmath
-import time
 import random
 import logging
 import pprint
-import numpy as np
-import matplotlib.pyplot as plt
 import node
-import entity as ent
 import spatial_agent as sa
-import display_methods as disp
 from collections import deque
 
 
@@ -72,13 +66,16 @@ class Creature(sa.SpatialAgent):
             offspring = self.reproduce()
             assert self.env  != None
             if offspring != None:
-                d, i = math.modf(self.age)
+                d, _i = math.modf(self.age)
                 offspring.age += d
                 self.env.add_agent(offspring)
         self.life_force -= self.decay_rate
 
 
     def reproduce(self):
+        """
+        The default reproduce does nothing.
+        """
         return None
 
 
@@ -175,12 +172,22 @@ class MobileCreature(Creature, sa.MobileAgent):
 
 
 class Predator(MobileCreature):
+    """
+    The ancestor of all creatures that eat other mobile
+    creatures.
+    """
 
     def detect_behavior(self):
+        """
+        On detecting prey, predators pursue it.
+        """
         self.pursue_prey()
 
 
     def pursue_prey(self):
+        """
+        Chase down the prey we have spotted.
+        """
         prey = self.focus
         logging.info(self.name + " is pursuing " + prey.name)
         if prey.is_alive():
@@ -200,6 +207,9 @@ class Predator(MobileCreature):
 
 
 class MobilePrey(MobileCreature):
+    """
+    Prey that moves around.
+    """
 
     def __init__(self, name, life_force, repro_age, 
             decay_rate, max_move=0.0, max_detect=10.0,
@@ -215,6 +225,10 @@ class MobilePrey(MobileCreature):
 
 
     def avoid_predator(self):
+        """
+        The default avoid_predator does nothing.
+        We may want to do something here later.
+        """
         pass
 
 

@@ -6,7 +6,6 @@ which implements Adam Smith's fashion model.
 import logging
 import node
 import prop_args as props
-import entity as ent
 import predprey_model as ppm
 import fashion_model as fm
 
@@ -38,7 +37,6 @@ else:
     pa.set("min_adv_periods", 8)
 
 env = fm.SocietyEnv("society", 50.0, 50.0, model_nm=MODEL_NM)
-pa.set("env", env)
 
 for i in range(pa.get("num_flwr")):
     env.add_agent(

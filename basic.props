@@ -1,9 +1,10 @@
 {
-    "log_format": "%(levelname)s:%(message)s", 
-    "log_fname": "basic_model.txt", 
-    "user_type": "terminal", 
-    "log_level": 20, 
-    "num_agents": 10, 
-    "log_fmode": "w", 
-    "user_name": "gcallah"
+    "log_format": "%(asctime)s:%(levelname)s:%(message)s",
+    "log_fmode": "w",
+    "num_agents": 10,
+    "log_fname": "basic_model.txt",
+    "user_type": "iPython Notebook",
+    "env": ame": "gcallah",
+    "log_level": 20,
+    "model": "basic_model"
 }

@@ -1,7 +1,10 @@
+"""
+predprey_run.py
+Script to run our predator-prey model.
+"""
 import logging
 import node
 import prop_args as props
-import entity as ent
 import predprey_model as ppm
 
 
@@ -29,7 +32,6 @@ else:
     pa.set("fox_max_detect", 40.0)
 
 env = ppm.PredPreyEnv("meadow", 50.0, 50.0)
-pa.set("env", env)
 
 for i in range(pa.get("num_foxes")):
     env.add_agent(ppm.Fox(name="brer" + str(i),

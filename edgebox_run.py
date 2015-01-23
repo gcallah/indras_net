@@ -6,7 +6,6 @@ The script to run our Edgeworth Box model.
 import logging
 import prop_args as props
 import node
-import entity as ent
 import edgebox_model as ebm
 
 MODEL_NM = "edgebox_model"
@@ -31,7 +30,6 @@ else:
     pa.set("bea_cutil", "10 - .75 * qty")
 
 env = ebm.EdgeboxEnv("An Edgeworth Box", 50.0, 50.0, model_nm=MODEL_NM)
-pa.set("env", env)
 
 albert = ebm.EdgeboxAgent(name="Albert")
 env.add_agent(albert)

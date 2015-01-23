@@ -5,7 +5,6 @@ A script to run our barter model.
 import logging
 import prop_args as props
 import node
-import entity as ent
 import barter_model as bm
 
 MODEL_NM = "barter_model"
@@ -27,7 +26,6 @@ else:
 
 env = bm.BarterEnv("A barter market", 50.0, 50.0,
                     model_nm=MODEL_NM)
-pa.set("env", env)
 env.fetch_agents_from_file(CSV_FILE)
 
 node.add_prehension(bm.BarterAgent, bm.TRADE, bm.BarterAgent)

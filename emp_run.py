@@ -5,6 +5,7 @@ demonstrating heirarchical graphing.
 """
 
 import logging
+import matplotlib as plt
 import entity as ent
 import prop_args as props
 import emp_model as em
@@ -28,9 +29,6 @@ else:
 
 # Now we create a minimal environment for our agents to act within:
 env = em.EmpEnv(model_nm=MODEL_NM)
-# And put the environment in the properties object:
-pa.set("env", env)
-
 
 linda = em.EmpAgent("Linda")
 suzanne = em.EmpAgent("Suzanne")

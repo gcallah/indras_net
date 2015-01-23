@@ -39,6 +39,7 @@ class EdgeboxAgent(spatial_agent.SpatialAgent):
         super().__init__(name, goal, max_detect=max_detect)
         self.goods = {}
         self.utils = 0
+        self.pretrade_utils = 0
 
 
     def act(self):
@@ -60,6 +61,9 @@ class EdgeboxAgent(spatial_agent.SpatialAgent):
 
 
     def endow(self, good, endow, util_func=None):
+        """
+        Endow an agent with some amount of some good.
+        """
         if good not in self.goods:
             self.__add_good(good)
 
@@ -98,14 +102,14 @@ class EdgeboxAgent(spatial_agent.SpatialAgent):
                      + g)
                 if (util_gain + util_loss) > 0:
                     if(counterparty.rec_reply(
-                            offer_good, amt, g, 1, self) is Accept):
+                            offer_good, amt, g, 1) is Accept):
                         self.trade(g, counterparty, offer_good)
                         return Accept
         return Reject
 
 
     def rec_reply(self, my_good, my_amt,
-                his_good, his_amt, counterparty):
+                his_good, his_amt):
         """
         This is a response to a trade offer this agent has initiated
         """
@@ -116,6 +120,9 @@ class EdgeboxAgent(spatial_agent.SpatialAgent):
 
 
     def list_goods(self):
+        """
+        List the goods an agent possesses.
+        """
         goods_descr = ""
         for g in self.goods:
             goods_descr = (goods_descr + g + ": " 
@@ -140,6 +147,9 @@ class EdgeboxAgent(spatial_agent.SpatialAgent):
 
 
     def util_gain(self):
+        """
+        Calculate our utility gain.
+        """
         return self.utils - self.pretrade_utils
 
 

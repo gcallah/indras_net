@@ -5,6 +5,8 @@ This module contains the base classes for agent-based modeling in Indra.
 """
 
 from abc import ABCMeta, abstractmethod
+from collections import deque, OrderedDict
+import copy
 import time
 import logging
 import pprint
@@ -15,8 +17,10 @@ import IPython
 import matplotlib.pyplot as plt
 import networkx as nx
 import node
-from collections import deque, OrderedDict
 import prop_args as pa
+import display_methods as disp
+
+MAX_ZERO_PER = 8
 
 
 class Entity(node.Node):
@@ -32,10 +36,16 @@ class Entity(node.Node):
 
         
     def add_env(self, env):
+        """
+        Note our environment.
+        """
         self.env = env
 
 
     def pprint(self):
+        """
+        Print out me in a nice format.
+        """
         for key, value in self.__dict__.items():
             print(key + " = " + str(value))
 
@@ -201,11 +211,11 @@ class AgentPop(Entity):
             self.agents[i].act()
 
 
-    def contains(self, agent_type):
+    def contains(self, var):
         """
         Do we have this sort of thing in our env?
         """
-        return agent_type in self.varieties
+        return var in self.varieties
 
 
     def get_pop(self, var):
@@ -223,9 +233,36 @@ class AgentPop(Entity):
         return self.get_pop(var)
 
 
-    def get_pop_hist(pop_hist):
-        for s in self.varieties:
-            pop_hist[s] = self.varieties[s]["pop_hist"]
+    def get_pop_hist(self):
+        """
+        Make a list containing the population history
+        for each var in varieties.
+        """
+        pop_hist = {}
+        for var in self.varieties:
+            pop_hist[var] = self.varieties[var]["pop_hist"]
+        return pop_hist
+
+
+    def get_pop_of_note(self, var):
+        """
+        Return the value of pop_of_note for 'var'.
+        """
+        return self.varieties[var]["pop_of_note"]
+
+
+    def change_pop_of_note(self, var, change):
+        """
+        Change the value of pop_of_note by 'change.'
+        """
+        self.varieties[var]["pop_of_note"] += change
+
+
+    def append_pop_hist(self, var, pop):
+        """
+        Add the most recent pop to pop_hist.
+        """
+        self.varieties[var]["pop_hist"].append(pop)
 
 
     def census(self):
@@ -242,7 +279,7 @@ class AgentPop(Entity):
                 var["zero_per"] += 1
                 if var["zero_per"] >= MAX_ZERO_PER:
                     for agent in var["zombies"]:
-                        self.add_agent(copy.copy(agent))
+                        self.append(copy.copy(agent))
                     var["zero_per"] = 0
         return ret
 
@@ -312,6 +349,9 @@ class Environment(Entity):
 
 
     def find_agent(self, name):
+        """
+        Find an agent by name.
+        """
         for agent in self.agents:
             if agent.name == name:
                 return agent
@@ -348,18 +388,30 @@ class Environment(Entity):
 
 
     def debug(self):
+        """
+        Invoke the python debugger.
+        """
         pdb.set_trace()
 
 
     def ipython(self):
+        """
+        Kick off iPython.
+        """
         IPython.start_ipython(argv=[])
 
 
     def eval_code(self):
+        """
+        Evaluate a line of code.
+        """
         eval(self.user.ask("Type a line of code to run: "))
 
 
     def list_agents(self):
+        """
+        List all agents in env.
+        """
         self.user.tell("Active agents in environment:")
         for agent in self.agents:
             self.user.tell(agent.name 
@@ -367,6 +419,9 @@ class Environment(Entity):
 
 
     def add(self):
+        """
+        Add a new agent to the env.
+        """
         exec("import " + self.props.get("model") 
                 + " as m")
         constr = self.user.ask(
@@ -382,8 +437,10 @@ class Environment(Entity):
         name = self.user.ask(
             "Type the name of the agent to inspect: ")
         agent = self.find_agent(name.strip())
-        if agent == None: self.user.tell("No such agent")
-        else: agent.pprint()
+        if agent == None:
+            self.user.tell("No such agent")
+        else:
+            agent.pprint()
         self.edit_field(agent)
 
 
@@ -478,6 +535,9 @@ class Environment(Entity):
 
 
     def step(self):
+        """
+        Step period-by-period through agent actions.
+        """
         self.period += 1
 
 # agents might be waiting to be born       
@@ -499,15 +559,24 @@ class Environment(Entity):
         
     
     def act_loop(self):
+        """
+        Loop through agents calling their act() func.
+        """
         self.agents.random_loop()
 
 
     def preact_loop(self):
+        """
+        Loop through agents calling their preact() func.
+        """
         for agent in self.agents:
             agent.preact()
 
 
     def postact_loop(self):
+        """
+        Loop through agents calling their postact() func.
+        """
         for agent in self.agents:
             agent.postact()
 
@@ -542,8 +611,7 @@ class Environment(Entity):
             print("Too little data to display")
             return
 
-        pop_hist = {}
-        agents.get_pop_hist(pop_hist)
+        pop_hist = self.agents.get_pop_hist()
 
         disp.display_line_graph('Populations in '
                                 + self.name,
@@ -585,14 +653,14 @@ class Environment(Entity):
         """
         Return the population of variety 'var'
         """
-        return self.agents.get_pop()
+        return self.agents.get_pop(var)
 
 
     def get_my_pop(self, agent):
         """
         Return the population of agent's type
         """
-        return self.agents.get_my_pop()
+        return self.agents.get_my_pop(agent)
 
 
 ADD_MODE  = "a"
@@ -677,15 +745,15 @@ class Menu(Entity):
         Display the menu.
         """
         for subm in self.submenus:
-            disp = subm + ": "
+            disp_text = subm + ": "
             for item in self.submenus[subm]:
-                disp = disp + item + " | "
+                disp_text = disp_text + item + " | "
 # remove the final menu item separator:
-            disp = disp.rstrip("| ")
+            disp_text = disp_text.rstrip("| ")
             if self.env.user.utype == User.IPYTHON_NB:
                 pass
-#                disp = "<strong>" + disp + "</strong>"
-            self.env.user.tell(disp)
+#                disp_text = "<strong>" + disp_text + "</strong>"
+            self.env.user.tell(disp_text)
 
         choice = self.env.user.ask_for_ltr(
             "Choose one of the above and press Enter: ")

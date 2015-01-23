@@ -8,8 +8,6 @@ trend-setters and followers.
 
 import logging
 import node
-import prop_args
-import entity as ent
 import spatial_agent as spagnt
 import predprey_model as prdpry
 import display_methods as disp
@@ -152,8 +150,6 @@ class SocietyEnv(spagnt.SpatialEnvironment):
         super().__init__(name, length, height,
             preact=True, postact=False, model_nm=model_nm)
 
-        self.fashionistas = {}
-
         self.fshn_f_ratio = self.props.get("fshn_f_ratio",
                                 default = 1.3)
         self.fshn_t_ratio = self.props.get("fshn_t_ratio",
@@ -174,41 +170,42 @@ class SocietyEnv(spagnt.SpatialEnvironment):
         var = node.get_node_type(agent)
 
         if agent.fashion == FSHN_TO_TRACK:
-            self.fashionistas[var]["pop_of_note"] += 1
+            self.agents.change_pop_of_note(var, 1)
 
     
     def record_fashion_change(self, agent):
         """
         Track the fashions in our env.
         """
-        a = node.get_node_type(agent)
+        var = node.get_node_type(agent)
         if agent.fashion == FSHN_TO_TRACK:
-            self.fashionistas[a]["pop_of_note"] += 1
+            self.agents.change_pop_of_note(var, 1)
         else:
-            self.fashionistas[a]["pop_of_note"] -= 1        
+            self.agents.change_pop_of_note(var, -1)
 
 
     def census(self):
+        """
+        Take a census of our pops.
+        """
         self.user.tell("Populations in period " + str(self.period) +
                 " adopting " + 
                 fashions[FSHN_TO_TRACK] + ":")
-        for a in self.fashionistas:
-            pop = self.fashionistas[a]["pop_of_note"]
-            self.user.tell(a + ": " +  str(pop))
-            self.fashionistas[a]["pop_hist"].append(pop)
+        for var in self.agents.varieties_iter():
+            pop = self.agents.get_pop_of_note(var)
+            self.user.tell(var + ": " +  str(pop))
+            self.agents.append_pop_hist(var, pop)
 
 
     def display(self):
         """
-
+        Draw a graph of our changing pops.
         """
         if self.period < 4:
             self.user.tell("Too little data to display")
             return
 
-        pop_hist = {}
-        for a in self.fashionistas:
-            pop_hist[a] = self.fashionistas[a]["pop_hist"]
+        pop_hist = self.agents.get_pop_hist()
 
         disp.display_line_graph(
                 "Adam Smith's fashion model: Populations in "

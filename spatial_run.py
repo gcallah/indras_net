@@ -28,8 +28,6 @@ else:
 # Now we create a minimal environment for our agents to act within:
 env = sa.SpatialEnvironment("Test spatial env", 100.0, 100.0,
                             model_nm=MODEL_NM)
-# And put the environment in the properties object:
-pa.set("env", env)
 
 # Now we loop creating multiple agents with numbered names
 # based on the loop variable:

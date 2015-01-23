@@ -3,7 +3,9 @@ emp_model.py
 A simple text of creating a heirarchical network.
 """
 import networkx as nx
+import matplotlib as plt
 #import pygraphviz as pgv
+import node
 import entity as ent
 
 EMPLOYS = "employs"
@@ -26,7 +28,7 @@ class EmpAgent(ent.Agent):
 class EmpEnv(ent.Environment):
     """
     An environment for creating a heirarchical graph
-    and sisplaying it.
+    and displaying it.
     """
 
     def __init__(self, model_nm=None):
@@ -35,7 +37,11 @@ class EmpEnv(ent.Environment):
 
 
     def employs(self, employer, employee):
-        ent.add_ent_prehension(employer, EMPLOYS, employee)
+        """
+        Add an employment rel between 'employer' and
+        'employee'
+        """
+        node.add_ent_prehension(employer, EMPLOYS, employee)
 
 
     def draw(self):

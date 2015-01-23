@@ -20,13 +20,19 @@ class PropArgs(node.Node):
 
 
     @staticmethod
-    def get_props(model_nm, props={}):
+    def get_props(model_nm):
+        """
+        Get properties for model 'model_nm'.
+        """
         if model_nm in PropArgs.prop_sets:
             return PropArgs.prop_sets[model_nm]
 
 
     @staticmethod
     def create_props(model_nm, props={}):
+        """
+        Create a property object with values in 'props'.
+        """
         return(PropArgs(model_nm, props))
 
     
@@ -98,6 +104,9 @@ class PropArgs(node.Node):
 
 
 class Logger(node.Node):
+    """
+    A class to track how we are logging.
+    """
 
     DEF_FORMAT   = '%(asctime)s:%(levelname)s:%(message)s'
     DEF_LEVEL    = logging.INFO
@@ -107,7 +116,7 @@ class Logger(node.Node):
     def __init__(self, props, logfile=None):
         super().__init__("Logger")
         if logfile is None:
-            logfile = DEF_FILENAME
+            logfile = Logger.DEF_FILENAME
         fmt = props.get("log_format", Logger.DEF_FORMAT)
         lvl = props.get("log_level", Logger.DEF_LEVEL)
         fmd = props.get("log_fmode", Logger.DEF_FILEMODE)
