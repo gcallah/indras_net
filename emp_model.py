@@ -11,6 +11,16 @@ import entity as ent
 EMPLOYS = "employs"
 
 
+
+
+def employs(employer, employee):
+    """
+    Add an employment rel between 'employer' and
+    'employee'
+    """
+    node.add_ent_prehension(employer, EMPLOYS, employee)
+        
+        
 class EmpAgent(ent.Agent):
     """
     An agent that exists in an heirarchical organization.
@@ -34,14 +44,6 @@ class EmpEnv(ent.Environment):
     def __init__(self, model_nm=None):
         super().__init__("Employee environment",
                     model_nm=model_nm)
-
-
-    def employs(self, employer, employee):
-        """
-        Add an employment rel between 'employer' and
-        'employee'
-        """
-        node.add_ent_prehension(employer, EMPLOYS, employee)
 
 
     def draw(self):

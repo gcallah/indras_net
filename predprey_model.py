@@ -20,10 +20,6 @@ MAX_EXCLUDE  = 10
 pp = pprint.PrettyPrinter(indent=4)
 
 
-def print_creature(creature):
-    print(creature.__str__())
-
-
 class Creature(sa.SpatialAgent):
 
     """ This class is the parent of all things that:
@@ -42,8 +38,10 @@ class Creature(sa.SpatialAgent):
         self.repro_age  = repro_age
         self.env        = None
 
-        if not rand_age: self.age = 0
-        else           : self.age = random.uniform(0, self.repro_age)
+        if not rand_age:
+            self.age = 0
+        else:
+            self.age = random.uniform(0, self.repro_age)
 
 
     def __str__(self):
@@ -141,26 +139,6 @@ class MobileCreature(Creature, sa.MobileAgent):
         self.wandering  = True
         self.focus      = None
         self.exclude    = deque(maxlen=MAX_EXCLUDE)
-
-
-    def survey_env(self, universal):
-        logging.debug("scanning env for " + universal)
-        prehends = node.get_prehensions(
-                prehender=type(self), universal=universal)
-        if not prehends == None:
-            for pre_type in prehends:
-                if self.env.contains(pre_type):
-                    prehended = self.env.closest_x(self,
-                                    self.pos, pre_type,
-                            self.exclude)
-                    if self.in_detect_range(prehended):
-                        self.wandering = False
-                        self.focus = prehended
-                        logging.debug(self.name
-                                + " has spotted prehension: "
-                                + prehended.name)
-                        return prehended
-        return None
 
 
     def in_gobble_range(self):
@@ -281,7 +259,7 @@ class Mouse(MobilePrey):
                     self.max_move)
 
 
-class Rabbit(MobilePrey):
+class Rabbit(Predator):
 
     """ This class defines rabbits, a type of herbivore
     and a likely prey creature
@@ -291,7 +269,7 @@ class Rabbit(MobilePrey):
 
 
     def __init__(self, name, life_force, repro_age, decay_rate,
-            max_move, max_detect=10.0, goal=AVOID, rand_age=False):
+            max_move, max_detect=10.0, goal=EAT, rand_age=False):
 
         super().__init__(name, life_force, repro_age, decay_rate,
                 max_move, max_detect, goal=goal, rand_age=rand_age)

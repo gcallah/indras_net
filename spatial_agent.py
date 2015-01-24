@@ -90,25 +90,25 @@ class SpatialAgent(ent.Agent):
 
 
     def survey_env(self, universal):
-        """
-        Look for prehensions of type 'universal' in env.
-        """
-
-        logging.debug("surveying env for " + universal)
-        prehended_list = []
+        logging.debug("scanning env for " + universal)
         prehends = node.get_prehensions(
-                prehender=type(self), universal=universal)
+                prehender=node.get_node_type(self),
+                universal=universal)
         if not prehends == None:
             for pre_type in prehends:
-# this loop over all agents must be eliminated
-#  before we do huge simulations!
-                for agent in self.env.agents:
-                    agent_type = node.get_node_type(agent)
-                    if agent is not self:
-                        if(self.in_detect_range(agent)
-                                and agent_type == pre_type):
-                            prehended_list.append(agent)
-        return prehended_list
+                if self.env.contains(pre_type):
+                    prehended = self.env.closest_x(self,
+                                    self.pos, pre_type,
+                                    self.exclude)
+                    if self.in_detect_range(prehended):
+                        self.wandering = False
+                        self.focus = prehended
+                        # print(self.name
+                        logging.debug(self.name
+                                + " has spotted prehension: "
+                                + prehended.name)
+                        return prehended
+        return None
 
 
     def detect_behavior(self):
@@ -200,9 +200,10 @@ class SpatialEnvironment(ent.Environment):
         x = self.max_dist
         close_target = None
         for agent in self.agents:
-            if seeker is not agent: # don't locate me!
+            if True: # seeker is not agent: # don't locate me!
                 if node.get_node_type(agent) == target_type:
-                    if (not exclude == None) and (not agent in exclude):
+                    if((not exclude == None)
+                            and (not agent in exclude)):
                         p_pos = agent.pos
                         d = get_distance(pos, p_pos)
                         if d < x:

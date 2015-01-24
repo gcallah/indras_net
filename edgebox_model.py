@@ -3,7 +3,6 @@ edgebox_model.py
 An Edgeworth Box model where two agents trade goods.
 """
 import logging
-import entity
 import spatial_agent
 
 TRADE = "trade"
@@ -154,11 +153,19 @@ class EdgeboxAgent(spatial_agent.SpatialAgent):
 
 
     def __gain_lose_good(self, good, gain_or_lose):
+        """
+        We are about to add or give up a good.
+        Record the change in possessions and utility.
+        """
         self.utils += self.__marginal_util(good, 1, gain_or_lose)
         self.goods[good]["endow"] += gain_or_lose
 
 
     def __marginal_util(self, good, amt, gain_or_lose):
+        """
+        What is the marginal utility gained or lost
+        from our current trade?
+        """
         g = self.goods[good]
         if gain_or_lose == GAIN:
 # we are calling a function stored in a dictionary here:
@@ -168,6 +175,10 @@ class EdgeboxAgent(spatial_agent.SpatialAgent):
 
 
     def __add_good(self, good):
+        """
+        Add a new good this agent 'knows' about
+        and has a utility function for.
+        """
         self.goods[good] = {"endow": 0, "util_func": gen_util_func}
 
 
@@ -200,6 +211,9 @@ class EdgeboxEnv(spatial_agent.SpatialEnvironment):
 
     
     def record_trade(self, a1, a2, amt):
+        """
+        Record the fact a trade has occured.
+        """
         self.trades_this_turn += amt
         self.join_agents(a1, a2)
 

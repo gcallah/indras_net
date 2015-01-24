@@ -19,8 +19,8 @@ if read_props:
 else:
     pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
     pa.set("model", MODEL_NM)
-    pa.set("num_foxes", 12)
-    pa.set("num_rabbits", 60)
+    pa.set("num_foxes", 2)
+    pa.set("num_rabbits", 6)
     pa.set("fox_repro_age", 11)
     pa.set("rabbit_repro_age", 3.6)
     pa.set("fox_life_force", 32.8)
@@ -48,9 +48,15 @@ for i in range(pa.get("num_rabbits")):
         repro_age=pa.get("rabbit_repro_age"),
         decay_rate=pa.get("rabbit_decay_rate"),
         max_move=pa.get("rabbit_max_move"),
+        goal=ppm.EAT,
         rand_age=True))
 
+for i in range(20):
+    env.add_agent(ppm.Grass("grass" + str(i), 100.0, 10.0, 10.0))
+
 node.add_prehension(ppm.Fox, ppm.EAT, ppm.Rabbit)
+node.add_prehension(ppm.Rabbit, ppm.AVOID, ppm.Fox)
+node.add_prehension(ppm.Rabbit, ppm.EAT, ppm.Grass)
 
 logging.info("Starting program")
 env.run()

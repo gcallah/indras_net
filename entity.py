@@ -4,17 +4,15 @@ Author: Gene Callahan and Brandon Logan
 This module contains the base classes for agent-based modeling in Indra.
 """
 
-from abc import ABCMeta, abstractmethod
+from abc import abstractmethod
 from collections import deque, OrderedDict
 import copy
 import time
 import logging
-import pprint
 import pdb
 import random
 import getpass
 import IPython
-import matplotlib.pyplot as plt
 import networkx as nx
 import node
 import prop_args as pa
@@ -106,12 +104,14 @@ class User(Entity):
                         User.IPYTHON_NB]:
             print(msg)
 
+
     def ask_for_ltr(self, msg):
         """
         Screen the details of input from models.
         """
         choice = self.ask(msg)
         return choice.strip()
+
 
     def ask(self, msg):
         """

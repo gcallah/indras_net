@@ -5,7 +5,6 @@ demonstrating heirarchical graphing.
 """
 
 import logging
-import matplotlib as plt
 import entity as ent
 import prop_args as props
 import emp_model as em
@@ -39,13 +38,13 @@ gene = em.EmpAgent("Gene")
 shruti = em.EmpAgent("Shruti")
 cedric = em.EmpAgent("Cedric")
 
-env.employs(sandy, gene)
-env.employs(sandy, shruti)
-env.employs(sandy, cedric)
-env.employs(linda, connie)
-env.employs(linda, sandy)
-env.employs(suzanne, linda)
-env.employs(suzanne, rich)
+em.employs(sandy, gene)
+em.employs(sandy, shruti)
+em.employs(sandy, cedric)
+em.employs(linda, connie)
+em.employs(linda, sandy)
+em.employs(suzanne, linda)
+em.employs(suzanne, rich)
 
 logging.info("Starting program")
 env.run()

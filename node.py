@@ -19,22 +19,20 @@ def get_class_name(genera):
     """
     A convenience function to get this field.
     """
-
     return genera.__name__
 
 
-def get_node_type(agent):
+def get_node_type(node):
     """
     A convenience function to get type of node.
     """
-    return get_class_name(type(agent))
+    return get_class_name(type(node))
 
 
 def get_prehensions(prehender, universal):
     """
     Find prehensions for a prehender.
     """
-
     return universals.get_prehensions(prehender, universal)
 
 
@@ -42,10 +40,9 @@ def add_prehension(prehender, universal, prehended):
     """
     Add a prehension between classes
     """
-
-    prnr_name = get_class_name(prehender)
-    prnd_name = get_class_name(prehended)
-    universals.add_prehension(prnr_name, universal, prnd_name)
+    prnr_type = get_class_name(prehender)
+    prnd_type = get_class_name(prehended)
+    universals.add_prehension(prnr_type, universal, prnd_type)
 
 
 def add_ent_prehension(prehender, universal, prehended):
@@ -127,13 +124,17 @@ class Universals(Node):
         prehensions = []
         logging.debug("edges = " + str(self.graph.edges()))
         for etuple in self.graph.edges_iter(data=True):
-            prehender = etuple[0]
-            prehended = etuple[1]
+            hender = etuple[0]
+            hended = etuple[1]
             edge_data = etuple[2]
             prehension = edge_data[UNIVERSAL]
-            if uni == prehension:
+            logging.debug("Comparing hender = "
+                    + hender
+                    + " with prehender = "
+                    + prehender)
+            if uni == prehension and hender == prehender:
                 logging.debug("Found our universal: " + uni)
-                prehensions.append(prehended)
+                prehensions.append(hended)
         logging.debug("prehensions = " + str(prehensions))
         return prehensions
 
