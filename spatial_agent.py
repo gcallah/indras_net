@@ -6,10 +6,13 @@ Author: Gene Callahan
 import math
 import cmath
 import random
+from collections import deque
 import logging
 import entity as ent
 import node
 import display_methods as disp
+
+MAX_EXCLUDE  = 10
 
 
 def pos_msg(agent, pos):
@@ -61,6 +64,7 @@ class SpatialAgent(ent.Agent):
         self.max_detect = max_detect
         self.pos = None
         self.wandering = False
+        self.exclude = deque(maxlen=MAX_EXCLUDE)
 
 
     def add_env(self, env):
@@ -89,33 +93,10 @@ class SpatialAgent(ent.Agent):
             return False
 
 
-    def survey_env(self, universal):
-        logging.debug("scanning env for " + universal)
-        prehends = node.get_prehensions(
-                prehender=node.get_node_type(self),
-                universal=universal)
-        if not prehends == None:
-            for pre_type in prehends:
-                if self.env.contains(pre_type):
-                    prehended = self.env.closest_x(self,
-                                    self.pos, pre_type,
-                                    self.exclude)
-                    if self.in_detect_range(prehended):
-                        self.wandering = False
-                        self.focus = prehended
-                        # print(self.name
-                        logging.debug(self.name
-                                + " has spotted prehension: "
-                                + prehended.name)
-                        return prehended
-        return None
-
-
     def detect_behavior(self):
         """
         What to do on detecting a prehension.
         """
-
         pass
 
 
@@ -187,29 +168,39 @@ class SpatialEnvironment(ent.Environment):
                     "env for "
                     + agent.name + " which has a goal of "
                     + agent.goal)
-                agent.survey_env(agent.goal)
+                prehensions = agent.survey_env(agent.goal)
+                self.address_prehensions(agent, prehensions)
             else:
                 agent.detect_behavior()
 
 
-    def closest_x(self, seeker, pos, target_type, exclude):
+    def address_prehensions(self, agent, prehensions):
+        if len(prehensions) > 0:
+            agent.focus = self.closest_x(agent, prehensions)
+            print("Targ = " + str(agent.focus))
+            agent.wandering = False
+
+
+    def closest_x(self, seeker, prehensions):
         """
         What is the closest entity of target_type?
         """
-
+        pos = seeker.pos
         x = self.max_dist
-        close_target = None
-        for agent in self.agents:
-            if True: # seeker is not agent: # don't locate me!
-                if node.get_node_type(agent) == target_type:
-                    if((not exclude == None)
-                            and (not agent in exclude)):
-                        p_pos = agent.pos
-                        d = get_distance(pos, p_pos)
-                        if d < x:
-                            x = d
-                            close_target = agent
-        return close_target
+        closest_target = None
+        print("About to search for closest, among "
+                + str(len(prehensions)))
+        for agent in prehensions:
+            if seeker is not agent: # don't locate me!
+                if((seeker.exclude == None)
+                        or (not agent in seeker.exclude)):
+                    p_pos = agent.pos
+                    d = get_distance(pos, p_pos)
+                    if d < x:
+                        x = d
+                        closest_target = agent
+        print("Going to return closest = " + str(closest_target))
+        return closest_target
 
 
     def get_new_wander_pos(self, agent):

@@ -78,6 +78,23 @@ class Agent(Entity):
         What agents do after they act.
         """
         pass
+
+
+    def survey_env(self, universal):
+        """
+        Return a list of all prehended entities
+        in env.
+        """
+        logging.debug("scanning env for " + universal)
+        prehended = []
+        prehends = node.get_prehensions(
+                prehender=node.get_node_type(self),
+                universal=universal)
+        if not prehends == None:
+            for pre_type in prehends:
+                some_pres = self.env.get_agents_of_var(pre_type)
+                prehended.extend(some_pres)
+        return prehended
     
 
 class User(Entity):
@@ -117,7 +134,8 @@ class User(Entity):
         """
         Screen the details of input from models.
         """
-        if self.utype in [User.TERMINAL, User.IPYTHON, User.IPYTHON_NB]:
+        if(self.utype in [User.TERMINAL, User.IPYTHON,
+                User.IPYTHON_NB]):
             return(input(msg))
 
 
@@ -216,6 +234,22 @@ class AgentPop(Entity):
         Do we have this sort of thing in our env?
         """
         return var in self.varieties
+
+
+    def get_agents_of_var(self, var):
+        """
+        Return all agents of type var.
+        """
+        agents_of_var = []
+        for agent in self.agents:
+            v = node.get_node_type(agent)
+            logging.debug("going to compare "
+                    + var + " with " + v)
+            if v == var:
+                logging.debug("Appending " + str(agent)
+                    + " to get list")
+                agents_of_var.append(agent)
+        return agents_of_var
 
 
     def get_pop(self, var):
@@ -356,6 +390,13 @@ class Environment(Entity):
             if agent.name == name:
                 return agent
         return None
+
+
+    def get_agents_of_var(self, var):
+        """
+        Return all agents of type 'var'.
+        """
+        return self.agents.get_agents_of_var(var)
 
 
     def run(self, resume=False):

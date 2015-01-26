@@ -51,12 +51,12 @@ for i in range(pa.get("num_rabbits")):
         goal=ppm.EAT,
         rand_age=True))
 
-for i in range(20):
-    env.add_agent(ppm.Grass("grass" + str(i), 100.0, 10.0, 10.0))
+#for i in range(20):
+#    env.add_agent(ppm.Grass("grass" + str(i), 100.0, 10.0, 10.0))
 
 node.add_prehension(ppm.Fox, ppm.EAT, ppm.Rabbit)
 node.add_prehension(ppm.Rabbit, ppm.AVOID, ppm.Fox)
-node.add_prehension(ppm.Rabbit, ppm.EAT, ppm.Grass)
+#node.add_prehension(ppm.Rabbit, ppm.EAT, ppm.Grass)
 
 logging.info("Starting program")
 env.run()

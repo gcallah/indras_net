@@ -15,7 +15,6 @@ from collections import deque
 EAT          = "eat"
 AVOID        = "avoid"
 REPRODUCE    = "reproduce"
-MAX_EXCLUDE  = 10
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -138,7 +137,6 @@ class MobileCreature(Creature, sa.MobileAgent):
         self.max_eat    = max_eat
         self.wandering  = True
         self.focus      = None
-        self.exclude    = deque(maxlen=MAX_EXCLUDE)
 
 
     def in_gobble_range(self):
