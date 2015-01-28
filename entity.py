@@ -32,7 +32,7 @@ class Entity(node.Node):
         self.prehensions = []
         self.env = None
 
-        
+
     def add_env(self, env):
         """
         Note our environment.
@@ -72,7 +72,7 @@ class Agent(Entity):
         What agents do before they act.
         """
         pass
-    
+
     def postact(self):
         """
         What agents do after they act.
@@ -87,15 +87,14 @@ class Agent(Entity):
         """
         logging.debug("scanning env for " + universal)
         prehended = []
-        prehends = node.get_prehensions(
-                prehender=node.get_node_type(self),
-                universal=universal)
+        prehends = node.get_prehensions(prehender=node.get_node_type(self),
+                                        universal=universal)
         if not prehends == None:
             for pre_type in prehends:
                 some_pres = self.env.get_agents_of_var(pre_type)
                 prehended.extend(some_pres)
         return prehended
-    
+
 
 class User(Entity):
     """
@@ -118,7 +117,7 @@ class User(Entity):
         Screen the details of output from models.
         """
         if self.utype in [User.TERMINAL, User.IPYTHON,
-                        User.IPYTHON_NB]:
+                          User.IPYTHON_NB]:
             print(msg)
 
 
@@ -135,8 +134,8 @@ class User(Entity):
         Screen the details of input from models.
         """
         if(self.utype in [User.TERMINAL, User.IPYTHON,
-                User.IPYTHON_NB]):
-            return(input(msg))
+                          User.IPYTHON_NB]):
+            return input(msg)
 
 
 class AgentPop(Entity):
@@ -150,7 +149,7 @@ class AgentPop(Entity):
     def __init__(self, name):
         super().__init__(name)
         self.agents = []
-        self.varieties = {}
+        self.varieties = OrderedDict()
         self.graph = nx.Graph()
         self.num_zombies = 0
 
@@ -179,22 +178,23 @@ class AgentPop(Entity):
         Appends to agent list.
         """
         self.agents.append(agent)
-        v = node.get_node_type(agent)
+        var = node.get_node_type(agent)
         logging.debug("Adding " + agent.__str__()
-                + " of variety " + v)
+                      + " of variety " + var)
 
-        if v in self.varieties:
-            self.varieties[v]["pop"] += 1
+        if var in self.varieties:
+            self.varieties[var]["agents"].append(agent)
         else:
-            self.varieties[v] = {"pop": 1,
-                           "pop_of_note": 0,
-                           "pop_hist": [],
-                           "zombies": [],
-                           "zero_per": 0}
-        if len(self.varieties[v]["zombies"]) < self.num_zombies:
-            self.varieties[v]["zombies"].append(copy.copy(agent))
+            self.varieties[var] = {"agents": [agent],
+                                   "pop_of_note": 0,
+                                   "pop_hist": [],
+                                   "zombies": [],
+                                   "zero_per": 0}
+
+        if len(self.varieties[var]["zombies"]) < self.num_zombies:
+            self.varieties[var]["zombies"].append(copy.copy(agent))
 # we link each agent to the name
-#  just so we can show their relationship 
+#  just so we can show their relationship
 #  to this object
         self.graph.add_edge(self, agent)
 
@@ -206,10 +206,9 @@ class AgentPop(Entity):
         self.agents.remove(agent)
         self.graph.remove_edge(self, agent)
         logging.debug("Removing edge between AgentPop and "
-                + agent.name)
-        s = node.get_node_type(agent)
-        assert self.varieties[s]["pop"] > 0
-        self.varieties[s]["pop"] -= 1
+                      + agent.name)
+        var = node.get_node_type(agent)
+        self.varieties[var]["agents"].remove(agent)
 
 
     def join_agents(self, a1, a2):
@@ -240,23 +239,17 @@ class AgentPop(Entity):
         """
         Return all agents of type var.
         """
-        agents_of_var = []
-        for agent in self.agents:
-            v = node.get_node_type(agent)
-            logging.debug("going to compare "
-                    + var + " with " + v)
-            if v == var:
-                logging.debug("Appending " + str(agent)
-                    + " to get list")
-                agents_of_var.append(agent)
-        return agents_of_var
+        if var in self.varieties:
+            return self.varieties[var]["agents"]
+        else:
+            return None
 
 
     def get_pop(self, var):
         """
         Return the population of variety 'var'
         """
-        return self.varieties[var]["pop"]
+        return len(self.varieties[var]["agents"])
 
 
     def get_my_pop(self, agent):
@@ -328,14 +321,14 @@ class Environment(Entity):
     prev_period = 0  # in case we need to restore state
 
 
-    def __init__(self, name, preact=False, 
-                    postact=False, model_nm=None):
+    def __init__(self, name, preact=False,
+                 postact=False, model_nm=None):
         super().__init__(name)
         self.graph = nx.Graph()
         pop_name = ""
         if model_nm:
             pop_name += model_nm + " "
-        pop_name += "Agents" 
+        pop_name += "Agents"
         self.agents = AgentPop(pop_name)
         self.graph.add_edge(self, self.agents)
         self.womb = []
@@ -365,8 +358,8 @@ class Environment(Entity):
         """
         self.agents.append(agent)
         agent.add_env(self)
-    
-    
+
+
     def join_agents(self, a1, a2):
         """
         Relate two agents.
@@ -455,18 +448,18 @@ class Environment(Entity):
         """
         self.user.tell("Active agents in environment:")
         for agent in self.agents:
-            self.user.tell(agent.name 
-                        + " with a goal of " + agent.goal)
+            self.user.tell(agent.name
+                           + " with a goal of "
+                           + agent.goal)
 
 
     def add(self):
         """
         Add a new agent to the env.
         """
-        exec("import " + self.props.get("model") 
-                + " as m")
-        constr = self.user.ask(
-                    "Enter constructor for agent to add: ")
+        exec("import " + self.props.get("model")
+             + " as m")
+        constr = self.user.ask("Enter constructor for agent to add: ")
         new_agent = eval("m." + constr)
         self.add_agent(new_agent)
 
@@ -498,15 +491,14 @@ class Environment(Entity):
         Edit a field in an entity.
         """
         while True:
-            y_n = self.user.ask(
-                    "Change a field's value in " 
-                    + entity.name
-                    + "? (y/n) "
-                    + "(Only str, float, and int supported.)")
+            y_n = self.user.ask("Change a field's value in "
+                                + entity.name
+                                + "? (y/n) "
+                                + "(Only str, float, and int supported.)")
             if y_n in ["Y", "y"]:
                 field = self.user.ask("Which field? ")
-                nval = self.user.ask(
-                        "Enter new value for " + field + ": ")
+                nval = self.user.ask("Enter new value for "
+                                     + field + ": ")
                 fld_type = type(entity.__dict__[field])
                 if fld_type is int:
                     entity.__dict__[field] = int(nval)
@@ -570,7 +562,7 @@ class Environment(Entity):
                 last_n_lines.append(line)
 
         self.user.tell("Displaying the last " + str(MAX_LINES)
-                + " lines of logfile " + logfile)
+                       + " lines of logfile " + logfile)
         for line in last_n_lines:
             self.user.tell(line.strip())
 
@@ -581,24 +573,24 @@ class Environment(Entity):
         """
         self.period += 1
 
-# agents might be waiting to be born       
+# agents might be waiting to be born
         if self.womb != None:
             for agent in self.womb:
                 self.add_agent(agent)
-            del self.womb[:]  
+            del self.womb[:]
 
 # there might be state-setting to do before acting
-        if(self.preact):
+        if self.preact:
             self.preact_loop()
 
 # now have everyone act in random order
         self.act_loop()
-        
+
 # there might be cleanup to do after acting
-        if(self.postact):
+        if self.postact:
             self.postact_loop()
-        
-    
+ 
+
     def act_loop(self):
         """
         Loop through agents calling their act() func.
@@ -626,9 +618,9 @@ class Environment(Entity):
         """
         Draw a graph!
         """
-        choice = self.user.ask_for_ltr(
-                "Draw graph for (a)gents; (e)nvironment; "
-                + "(u)niversals?")
+        choice = self.user.ask_for_ltr("Draw graph for "
+                                       + "(a)gents; (e)nvironment; "
+                                       + "(u)niversals?")
         if choice == "a":
             self.agents.draw()
         elif choice == "u":
@@ -643,7 +635,7 @@ class Environment(Entity):
         """
         return True
 
-        
+
     def display(self):
         """
         Default: Graph our population levels.
@@ -686,7 +678,7 @@ class Environment(Entity):
         Take a census of what is in the env.
         """
         self.user.tell("Populations in period "
-                        + str(self.period) + ":")
+                       + str(self.period) + ":")
         self.user.tell(self.agents.census())
 
 
@@ -704,17 +696,17 @@ class Environment(Entity):
         return self.agents.get_my_pop(agent)
 
 
-ADD_MODE  = "a"
+ADD_MODE = "a"
 CODE_MODE = "c"
 DBUG_MODE = "d"
-ENV_MODE  = "e"
+ENV_MODE = "e"
 GRPH_MODE = "g"
 INSP_MODE = "i"
 LIST_MODE = "l"
 PROP_MODE = "o"
 PLOT_MODE = "p"
 QUIT_MODE = "q"
-RUN_MODE  = "r"
+RUN_MODE = "r"
 STEP_MODE = "s"
 VISL_MODE = "v"
 WRIT_MODE = "w"
@@ -742,31 +734,31 @@ class Menu(Entity):
 
 # add default menu items:
         self.add_menu_item("File", WRIT_MODE, "(w)rite properties",
-                            e.pwrite)
+                           e.pwrite)
         self.add_menu_item("File", EXMN_MODE, "e(x)amine log file",
-                            e.disp_log)
+                           e.disp_log)
         self.add_menu_item("File", QUIT_MODE, "(q)uit", e.quit)
         self.add_menu_item("Edit", ADD_MODE, "(a)dd agent to env",
-                            e.add)
+                           e.add)
         self.add_menu_item("Edit", INSP_MODE, "(i)nspect agent",
-                            e.agnt_inspect)
+                           e.agnt_inspect)
         self.add_menu_item("Edit", ENV_MODE, "inspect (e)nvironment",
-                            e.env_inspect)
+                           e.env_inspect)
         self.add_menu_item("View", LIST_MODE, "(l)ist agents",
-                            e.list_agents)
+                           e.list_agents)
         self.add_menu_item("View", GRPH_MODE, "(g)raph components",
-                            e.draw_graph)
+                           e.draw_graph)
         self.add_menu_item("View", VISL_MODE, "(v)isualize data",
-                            e.display)
+                           e.display)
         self.add_menu_item("Tools", STEP_MODE, "(s)tep (default)",
-                            e.step)
+                           e.step)
         self.add_menu_item("View", PROP_MODE, "view pr(o)perties",
-                            e.disp_props)
+                           e.disp_props)
         self.add_menu_item("Tools", RUN_MODE, "(r)un", e.run)
         self.add_menu_item("Tools", DBUG_MODE, "(d)ebug", e.debug)
         if e.user.utype == User.TERMINAL:
             self.add_menu_item("Tools", IPYN_MODE, "iP(y)thon",
-                                e.ipython)
+                               e.ipython)
 
 
     def add_menu_item(self, submenu, letter, text, func):

@@ -12,7 +12,7 @@ import basic_model as bm
 
 # set up some file names:
 MODEL_NM = "basic_model"
-PROG_NM  = MODEL_NM + ".py"
+PROG_NM = MODEL_NM + ".py"
 LOG_FILE = MODEL_NM + ".txt"
 
 # We store basic parameters in a
@@ -34,9 +34,8 @@ env = bm.BasicEnv(model_nm=MODEL_NM)
 # Now we loop creating multiple agents
 #  with numbered names based on the loop variable:
 for i in range(pa.get("num_agents")):
-    env.add_agent(
-            bm.BasicAgent(name="agent" + str(i),
-            goal="acting up!"))
+    env.add_agent(bm.BasicAgent(name="agent" + str(i),
+                                goal="acting up!"))
 
 # Logging is automatically set up for the modeler:
 logging.info("Starting program " + PROG_NM)

@@ -19,8 +19,8 @@ def employs(employer, employee):
     'employee'
     """
     node.add_ent_prehension(employer, EMPLOYS, employee)
-        
-        
+
+ 
 class EmpAgent(ent.Agent):
     """
     An agent that exists in an heirarchical organization.
@@ -32,7 +32,7 @@ class EmpAgent(ent.Agent):
         """
 
         print("Agent " + self.name + " with a goal of "
-                + self.goal)
+              + self.goal)
 
 
 class EmpEnv(ent.Environment):
@@ -43,10 +43,13 @@ class EmpEnv(ent.Environment):
 
     def __init__(self, model_nm=None):
         super().__init__("Employee environment",
-                    model_nm=model_nm)
+                         model_nm=model_nm)
 
 
     def draw(self):
+        """
+        Draw a network graph of the employee relationship.
+        """
         if self.graph is not None:
             nx.draw_networkx(self.graph)
             plt.show()

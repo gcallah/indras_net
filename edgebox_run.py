@@ -34,20 +34,20 @@ env = ebm.EdgeboxEnv("An Edgeworth Box", 50.0, 50.0, model_nm=MODEL_NM)
 albert = ebm.EdgeboxAgent(name="Albert")
 env.add_agent(albert)
 albert.endow(ebm.CHEESE,
-                pa.get("al_cheese"),
-                util_func=eval("lambda qty: " + pa.get("al_cutil")))
+             pa.get("al_cheese"),
+             util_func=eval("lambda qty: " + pa.get("al_cutil")))
 albert.endow(ebm.WINE,
-                pa.get("al_wine"),
-                util_func=eval("lambda qty: " + pa.get("al_wutil")))
+             pa.get("al_wine"),
+             util_func=eval("lambda qty: " + pa.get("al_wutil")))
 
 beatrice = ebm.EdgeboxAgent(name="Beatrice")
 env.add_agent(beatrice)
 beatrice.endow(ebm.WINE,
-                pa.get("bea_wine"),
-                util_func=eval("lambda qty: " + pa.get("bea_wutil")))
+               pa.get("bea_wine"),
+               util_func=eval("lambda qty: " + pa.get("bea_wutil")))
 beatrice.endow(ebm.CHEESE,
-                pa.get("bea_cheese"),
-                util_func=eval("lambda qty: " + pa.get("bea_cutil")))
+               pa.get("bea_cheese"),
+               util_func=eval("lambda qty: " + pa.get("bea_cutil")))
 
 node.add_prehension(ebm.EdgeboxAgent, ebm.TRADE, ebm.EdgeboxAgent)
 

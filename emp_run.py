@@ -11,7 +11,7 @@ import emp_model as em
 
 # set up some file names:
 MODEL_NM = "emp_model"
-PROG_NM  = MODEL_NM + ".py"
+PROG_NM = MODEL_NM + ".py"
 LOG_FILE = MODEL_NM + ".txt"
 
 # We store basic parameters in a

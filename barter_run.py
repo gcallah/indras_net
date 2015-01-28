@@ -3,12 +3,12 @@ A script to run our barter model.
 """
 
 import logging
-import prop_args as props
 import node
+import prop_args as props
 import barter_model as bm
 
 MODEL_NM = "barter_model"
-PROG_NM  = MODEL_NM + ".py"
+PROG_NM = MODEL_NM + ".py"
 LOG_FILE = MODEL_NM + ".txt"
 CSV_FILE = MODEL_NM + "02.csv"
 PROPS_FILE = MODEL_NM + ".props"
@@ -25,7 +25,7 @@ else:
     pa.set("max_detect", 1000.0)
 
 env = bm.BarterEnv("A barter market", 50.0, 50.0,
-                    model_nm=MODEL_NM)
+                   model_nm=MODEL_NM)
 env.fetch_agents_from_file(CSV_FILE)
 
 node.add_prehension(bm.BarterAgent, bm.TRADE, bm.BarterAgent)

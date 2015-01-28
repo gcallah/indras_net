@@ -169,16 +169,21 @@ class SpatialEnvironment(ent.Environment):
                     + agent.name + " which has a goal of "
                     + agent.goal)
                 prehensions = agent.survey_env(agent.goal)
-                self.address_prehensions(agent, prehensions)
+                return self.address_prehensions(agent, prehensions)
             else:
                 agent.detect_behavior()
+                return None
 
 
     def address_prehensions(self, agent, prehensions):
+        """
+        Process prehensions list if needed.
+        """
         if len(prehensions) > 0:
             agent.focus = self.closest_x(agent, prehensions)
-            print("Targ = " + str(agent.focus))
+            logging.debug("Targ = " + str(agent.focus))
             agent.wandering = False
+        return [agent.focus]
 
 
     def closest_x(self, seeker, prehensions):
@@ -188,18 +193,18 @@ class SpatialEnvironment(ent.Environment):
         pos = seeker.pos
         x = self.max_dist
         closest_target = None
-        print("About to search for closest, among "
-                + str(len(prehensions)))
+        logging.debug("About to search for closest, among "
+                      + str(len(prehensions)))
         for agent in prehensions:
             if seeker is not agent: # don't locate me!
                 if((seeker.exclude == None)
-                        or (not agent in seeker.exclude)):
+                   or (not agent in seeker.exclude)):
                     p_pos = agent.pos
                     d = get_distance(pos, p_pos)
                     if d < x:
                         x = d
                         closest_target = agent
-        print("Going to return closest = " + str(closest_target))
+        logging.debug("Going to return closest = " + str(closest_target))
         return closest_target
 
 

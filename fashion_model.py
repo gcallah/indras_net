@@ -27,12 +27,12 @@ class Fashionista(prdpry.MobileCreature):
     """
 
     def __init__(self, name, life_force=20, repro_age=1000,
-            decay_rate=0.0, max_move=20.0, max_detect=20.0,
-            max_eat=10.0, goal="", rand_age=False):
+                 decay_rate=0.0, max_move=20.0, max_detect=20.0,
+                 max_eat=10.0, goal="", rand_age=False):
 
         super().__init__(name, life_force, repro_age,
-            decay_rate, max_move, max_detect, max_eat,
-            goal, rand_age)
+                         decay_rate, max_move, max_detect,
+                         max_eat, goal, rand_age)
 
         self.fashion = None
         self.adv_periods = 0
@@ -47,11 +47,10 @@ class Fashionista(prdpry.MobileCreature):
 
 
     def respond_to_trends(self, prehended, gt, fshn_ratio,
-                            min_others):
+                          min_others):
         """
         What an agent does based on trends around her,
         """
-
         if len(prehended) >= min_others:
             has_my_fashion = 0
             not_my_fashion = 0
@@ -59,9 +58,9 @@ class Fashionista(prdpry.MobileCreature):
                 if preh.fashion == self.fashion:
                     has_my_fashion += 1
                 else:
-                    not_my_fashion += 1 
+                    not_my_fashion += 1
             if(gt == True and
-                has_my_fashion > not_my_fashion * fshn_ratio):
+               has_my_fashion > not_my_fashion * fshn_ratio):
                 self.adverse_response()
             elif has_my_fashion * fshn_ratio < not_my_fashion:
                 self.adverse_response()
@@ -71,19 +70,16 @@ class Fashionista(prdpry.MobileCreature):
         """
         What an agent does when he doesn't like the trend.
         """
-
         self.adv_periods += 1
         if self.adv_periods >= self.env.min_adv_periods:
             self.adv_periods = 0
             self.change_fashion()
-        
 
 
     def change_fashion(self):
         """
         Switch my fashion.
         """
-
         if self.fashion == 1:
             self.fashion = 0
         else:
@@ -92,76 +88,79 @@ class Fashionista(prdpry.MobileCreature):
         logging.info(self.name + " is changing fashions")
 
 
-
 class Follower(Fashionista, prdpry.Predator):
 
     """ This class describes the followers in Adam Smith's
         fashion model """
 
     def __init__(self, name, life_force=20, repro_age=1000,
-            decay_rate=0.0, max_move=20.0, max_detect=20.0,
-            max_eat=10.0, goal=prdpry.EAT):
+                 decay_rate=0.0, max_move=20.0, max_detect=20.0,
+                 max_eat=10.0, goal=prdpry.EAT):
 
         super().__init__(name, life_force, repro_age,
-            decay_rate, max_move, max_detect,
-            max_eat, goal)
+                         decay_rate, max_move, max_detect,
+                         max_eat, goal)
 
         self.fashion = INIT_FLWR
 
-    
+
     def act(self):
         prehended = super().act()
-        if(prehended != None and len(prehended) > 0):
+        if prehended != None and len(prehended) > 0:
             self.respond_to_trends(prehended, False,
-                    self.env.fshn_f_ratio, self.env.flwr_others)
+                                   self.env.fshn_f_ratio,
+                                   self.env.flwr_others)
 
 
 class TrendSetter(Fashionista, prdpry.MobilePrey):
-
-    """ This class describes the trendsetters in Adam Smith's
-        fashion model """
+    """
+    This class describes the trendsetters in Adam Smith's
+    fashion model
+    """
 
     def __init__(self, name, life_force=20, repro_age=1000,
-            decay_rate=0.0, max_move=20.0, max_detect=20.0,
-            goal=prdpry.AVOID):
+                 decay_rate=0.0, max_move=20.0, max_detect=20.0,
+                 goal=prdpry.AVOID):
 
         super().__init__(name, life_force, repro_age,
-            decay_rate, max_move, max_detect,
-            goal=goal)
+                         decay_rate, max_move, max_detect,
+                         goal=goal)
 
         self.fashion = INIT_TRND
 
     
     def act(self):
         prehended = super().act()
-        if(prehended != None and len(prehended) > 0):
+        if prehended != None and len(prehended) > 0:
             self.respond_to_trends(prehended,
-                    True, self.env.fshn_t_ratio,
-                    self.env.trnd_others)
-
+                                   True,
+                                   self.env.fshn_t_ratio,
+                                   self.env.trnd_others)
 
 
 class SocietyEnv(spagnt.SpatialEnvironment):
-
-    """ This is the society in which our fashionistas
-        will adopt fashions """
+    """
+    This is the society in which our fashionistas
+    will adopt fashions
+    """
 
     def __init__(self, name, length, height, model_nm=None):
         super().__init__(name, length, height,
-            preact=True, postact=False, model_nm=model_nm)
+                         preact=True, postact=False,
+                         model_nm=model_nm)
 
         self.fshn_f_ratio = self.props.get("fshn_f_ratio",
-                                default = 1.3)
+                                           default=1.3)
         self.fshn_t_ratio = self.props.get("fshn_t_ratio",
-                                default = 1.5)
+                                           default=1.5)
         
         self.flwr_others = self.props.get("flwr_others",
-                                default = 3)
+                                          default=3)
         self.trnd_others = self.props.get("trnd_others",
-                                default = 5)
+                                          default=5)
 
         self.min_adv_periods = self.props.get("min_adv_periods",
-                                default = 6)
+                                              default=6)
 
 
     def add_agent(self, agent):
@@ -189,12 +188,20 @@ class SocietyEnv(spagnt.SpatialEnvironment):
         Take a census of our pops.
         """
         self.user.tell("Populations in period " + str(self.period) +
-                " adopting " + 
-                fashions[FSHN_TO_TRACK] + ":")
+                       " adopting " + 
+                       fashions[FSHN_TO_TRACK] + ":")
         for var in self.agents.varieties_iter():
             pop = self.agents.get_pop_of_note(var)
             self.user.tell(var + ": " +  str(pop))
             self.agents.append_pop_hist(var, pop)
+
+
+    def address_prehensions(self, agent, prehensions):
+        """
+        Process prehensions list if needed.
+        """
+        print("In fashion address_prehensions!")
+        return prehensions
 
 
     def display(self):
@@ -207,8 +214,8 @@ class SocietyEnv(spagnt.SpatialEnvironment):
 
         pop_hist = self.agents.get_pop_hist()
 
-        disp.display_line_graph(
-                "Adam Smith's fashion model: Populations in "
+        disp.display_line_graph("Adam Smith's fashion model: "
+                                + "Populations in "
                                 + self.name
                                 + " adopting fashion "
                                 + fashions[FSHN_TO_TRACK],

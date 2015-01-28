@@ -13,7 +13,17 @@ class BasicAgent(entity.Agent):
     An agent that just prints that it is around when asked to act
     """
 
+    def __init__(self, name, goal):
+        """
+        A very basic init.
+        """
+        super().__init__(name, goal)
+
+
     def act(self):
+        """
+        Just print my name and goal!
+        """
         print("Agent " + self.name + " with a goal of " + self.goal)
 
 
@@ -23,10 +33,16 @@ class Gozer(BasicAgent):
     """
 
     def __init__(self):
+        """
+        Init Gozer with slightly different params.
+        """
         super().__init__(name="Gozer", goal="Destroy!")
 
 
     def postact(self):
+        """
+        Check to see if we have wiped everyone out.
+        """
         e = self.env
         if len(e.agents) == 1:
             print("Gozer the destructor has destroyed all!!")
@@ -35,7 +51,7 @@ class Gozer(BasicAgent):
                 if agent is not self:
                     e.agents.remove(agent)
                     print("Gozer has destroyed "
-                            + agent.name + "!")
+                          + agent.name + "!")
                     return
 
 
@@ -46,5 +62,5 @@ class BasicEnv(entity.Environment):
 
     def __init__(self, model_nm=None):
         super().__init__("Basic environment",
-                    model_nm=model_nm, postact=True)
+                         model_nm=model_nm, postact=True)
 
