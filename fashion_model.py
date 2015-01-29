@@ -39,10 +39,16 @@ class Fashionista(prdpry.MobileCreature):
 
 
     def act(self):
+        """
+        Take a look around and see who is wearing what!
+        """
         return self.survey_env(self.goal)
 
 
     def survey_env(self, goal):
+        """
+        Take a look around and see who is wearing what!
+        """
         return spagnt.SpatialAgent.survey_env(self, goal)
 
 
@@ -164,6 +170,9 @@ class SocietyEnv(spagnt.SpatialEnvironment):
 
 
     def add_agent(self, agent):
+        """
+        Add a new fashion agent to the env.
+        """
         spagnt.SpatialEnvironment.add_agent(self, agent)
 
         var = node.get_node_type(agent)
@@ -199,8 +208,8 @@ class SocietyEnv(spagnt.SpatialEnvironment):
     def address_prehensions(self, agent, prehensions):
         """
         Process prehensions list if needed.
+        Here we don't have to.
         """
-        print("In fashion address_prehensions!")
         return prehensions
 
 

@@ -7,14 +7,12 @@ import math
 import random
 import logging
 import pprint
-import node
 import spatial_agent as sa
-from collections import deque
 
 
-EAT          = "eat"
-AVOID        = "avoid"
-REPRODUCE    = "reproduce"
+EAT = "eat"
+AVOID = "avoid"
+REPRODUCE = "reproduce"
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -25,17 +23,17 @@ class Creature(sa.SpatialAgent):
         1) eat; 2) age; and 3) reproduce """
 
     def __init__(self, name, life_force, repro_age,
-            decay_rate, max_move=0.0, max_detect=10.0,
-            goal=EAT, rand_age=False):
+                 decay_rate, max_move=0.0, max_detect=10.0,
+                 goal=EAT, rand_age=False):
 
         super().__init__(name, goal, max_move, max_detect)
 
         self.life_force = random.uniform(life_force * .8,
-                    life_force * 1.2)
+                                         life_force * 1.2)
         self.orig_force = self.life_force
         self.decay_rate = decay_rate
-        self.repro_age  = repro_age
-        self.env        = None
+        self.repro_age = repro_age
+        self.env = None
 
         if not rand_age:
             self.age = 0
@@ -44,8 +42,8 @@ class Creature(sa.SpatialAgent):
 
 
     def __str__(self):
-        return(self.name + " with " + str(self.life_force)
-                    + " life force")
+        return(self.name)
+
 
     def is_alive(self):
         """
@@ -61,7 +59,7 @@ class Creature(sa.SpatialAgent):
         self.age += 1.0
         if (int(math.floor(self.age)) % self.repro_age) < 1:
             offspring = self.reproduce()
-            assert self.env  != None
+            assert self.env != None
             if offspring != None:
                 d, _i = math.modf(self.age)
                 offspring.age += d
@@ -93,20 +91,21 @@ class Creature(sa.SpatialAgent):
 
 
 class Grass(Creature):
-
-    """ This class defines grass, a type of herb 
-        and a likely prey creature """
+    """
+    This class defines grass, a type of herb
+    and a likely prey creature
+    """
 
     MAX_GRASS = 200
 
 
     def __init__(self, name, life_force, repro_age, decay_rate,
-            max_move=0.0, max_detect=0.0, goal=REPRODUCE,
-            rand_age=False):
+                 max_move=0.0, max_detect=0.0, goal=REPRODUCE,
+                 rand_age=False):
 
         super().__init__(name, life_force, repro_age, decay_rate,
-                max_move=max_move, max_detect=max_detect,
-                goal=goal, rand_age=rand_age)
+                         max_move=max_move, max_detect=max_detect,
+                         goal=goal, rand_age=rand_age)
 
 
     def reproduce(self):
@@ -115,28 +114,28 @@ class Grass(Creature):
         """
         my_pop = self.env.get_my_pop(self)
         if my_pop < self.MAX_GRASS:
-            return Grass("herb" + str(my_pop), self.orig_force, 
-                    self.repro_age, self.decay_rate)
+            return Grass("herb" + str(my_pop), self.orig_force,
+                         self.repro_age, self.decay_rate)
         else: return None
 
 
 class MobileCreature(Creature, sa.MobileAgent):
-
-    """ This class is the parent of all creatures
-        that can move around.
+    """
+    This class is the parent of all creatures
+    that can move around.
     """
 
     def __init__(self, name, life_force, repro_age, 
-            decay_rate, max_move=0.0, max_detect=10.0,
-            max_eat=2.0, goal=EAT, rand_age=False):
+                 decay_rate, max_move=0.0, max_detect=10.0,
+                 max_eat=2.0, goal=EAT, rand_age=False):
 
         super().__init__(name, life_force, repro_age, 
-                decay_rate, max_move, max_detect,
-                goal=goal, rand_age=rand_age)
+                         decay_rate, max_move, max_detect,
+                         goal=goal, rand_age=rand_age)
 
-        self.max_eat    = max_eat
-        self.wandering  = True
-        self.focus      = None
+        self.max_eat = max_eat
+        self.wandering = True
+        self.focus = None
 
 
     def in_gobble_range(self):
@@ -169,7 +168,7 @@ class Predator(MobileCreature):
         if prey.is_alive():
             new_pos = self.pos
             vector = prey.pos - self.pos
-            dist   = abs(vector)
+            dist = abs(vector)
             if dist < self.max_move:
                 new_pos = prey.pos
             else:
@@ -188,12 +187,12 @@ class MobilePrey(MobileCreature):
     """
 
     def __init__(self, name, life_force, repro_age, 
-            decay_rate, max_move=0.0, max_detect=10.0,
-            max_eat=2.0, goal=AVOID, rand_age=False):
+                 decay_rate, max_move=0.0, max_detect=10.0,
+                 max_eat=2.0, goal=AVOID, rand_age=False):
 
         super().__init__(name, life_force, repro_age, 
-                decay_rate, max_move, max_detect,
-                goal=goal, rand_age=rand_age)
+                         decay_rate, max_move, max_detect,
+                         goal=goal, rand_age=rand_age)
 
 
     def detect_behavior(self):
@@ -210,16 +209,16 @@ class MobilePrey(MobileCreature):
 
 
 class Fox(Predator):
-
     """
     This class defines foxes, a type of predator.
     """
 
     def __init__(self, name, life_force, repro_age, decay_rate,
-            max_move=10.0, max_detect=10.0, goal=EAT, rand_age=False):
+                 max_move=10.0, max_detect=10.0, goal=EAT, rand_age=False):
 
         super().__init__(name, life_force, repro_age, decay_rate,
-                max_move, max_detect, goal=goal, rand_age=rand_age)
+                         max_move, max_detect, goal=goal,
+                         rand_age=rand_age)
 
 
     def reproduce(self):
@@ -227,24 +226,26 @@ class Fox(Predator):
         Make a new fox
         """
         return Fox("brer" + self.env.new_name_suffix(self),
-                self.orig_force, self.repro_age,
-                self.decay_rate, self.max_move,
-                self.max_detect)
+                   self.orig_force, self.repro_age,
+                   self.decay_rate, self.max_move,
+                   self.max_detect)
 
 
 class Mouse(MobilePrey):
-
-    """ This class defines mice, a type of herbivore
-        and a likely prey creature """
+    """
+    This class defines mice, a type of herbivore
+    and a likely prey creature
+    """
 
     AVG_MOUSE_FORCE = 10.0
 
 
     def __init__(self, name, life_force, repro_age, decay_rate,
-            max_move, max_detect=10.0, goal=EAT, rand_age=False):
+                 max_move, max_detect=10.0, goal=EAT, rand_age=False):
 
         super().__init__(name, life_force, repro_age, decay_rate,
-                max_move, max_detect, goal=goal, rand_age=rand_age)
+                         max_move, max_detect, goal=goal,
+                         rand_age=rand_age)
 
 
     def reproduce(self):
@@ -253,24 +254,27 @@ class Mouse(MobilePrey):
         """
         force = (self.orig_force + self.AVG_MOUSE_FORCE) / 2.0
         return Mouse("mickey" + self.env.new_name_suffix(self),
-                    force, self.repro_age, self.decay_rate,
-                    self.max_move)
+                     force, self.repro_age, self.decay_rate,
+                     self.max_move)
 
 
 class Rabbit(Predator):
 
-    """ This class defines rabbits, a type of herbivore
-    and a likely prey creature
+    """
+    This class defines rabbits, a type of herbivore
+    and a likely prey creature.
     """
 
     AVG_RABBIT_FORCE = 20.0
 
 
     def __init__(self, name, life_force, repro_age, decay_rate,
-            max_move, max_detect=10.0, goal=EAT, rand_age=False):
+                 max_move, max_detect=10.0, goal=EAT,
+                 rand_age=False):
 
         super().__init__(name, life_force, repro_age, decay_rate,
-                max_move, max_detect, goal=goal, rand_age=rand_age)
+                         max_move, max_detect, goal=goal,
+                         rand_age=rand_age)
 
 
     def reproduce(self):
@@ -279,8 +283,8 @@ class Rabbit(Predator):
         """
         force = (self.orig_force + self.AVG_RABBIT_FORCE) / 2.0
         return Rabbit("bunny" + self.env.new_name_suffix(self),
-                force, self.repro_age,
-                self.decay_rate, self.max_move)
+                      force, self.repro_age,
+                      self.decay_rate, self.max_move)
 
 
 class PredPreyEnv(sa.SpatialEnvironment):
@@ -291,9 +295,9 @@ class PredPreyEnv(sa.SpatialEnvironment):
     repop = True
 
     def __init__(self, name, length, height, preact=True,
-            postact=True, model_nm="predprey_model"):
+                 postact=True, model_nm="predprey_model"):
         super().__init__(name, length, height, preact,
-                        postact, model_nm=model_nm)
+                         postact, model_nm=model_nm)
         self.num_zombies = 10
 
 

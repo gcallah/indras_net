@@ -12,34 +12,36 @@ import entity as ent
 import node
 import display_methods as disp
 
-MAX_EXCLUDE  = 10
+MAX_EXCLUDE = 10
 
 
 def pos_msg(agent, pos):
     """
-    A convenience function for displaying 
+    A convenience function for displaying
     an entity's position.
     """
-
     x = pos.real
     y = pos.imag
     return("New position for " + 
-                agent.name + " is "
-                + str(int(x)) + ", "
-                + str(int(y)))
+           agent.name + " is "
+           + str(int(x)) + ", "
+           + str(int(y)))
 
 
 def rand_complex(initPos, radius):
     """
-    Generates a random complex number 
-        uniformly picked from a disk of radius 'radius'.
+    Generates a random complex number
+    uniformly picked from a disk of radius 'radius'.
     """
     radius = math.sqrt(radius * random.uniform(0.0, radius))
-    theta  = random.random() * 2 * math.pi
+    theta = random.random() * 2 * math.pi
     return initPos + cmath.rect(radius, theta)
 
 
 def get_distance(p1, p2):
+    """
+    Return the distance between two complex numbers.
+    """
     return abs(p1 - p2)
 
 
@@ -52,30 +54,24 @@ def pos_to_str(pos):
 
 
 class SpatialAgent(ent.Agent):
-
-    """ This class is the parent of all entities that are
-        located in space (and might or might not move in it)
     """
-
+    This class is the parent of all entities that are
+    located in space (and might or might not move in it)
+    """
 
     def __init__(self, name, goal, max_move=0.0, max_detect=0.0):
         super().__init__(name, goal)
-        self.max_move   = max_move
+        self.max_move = max_move
         self.max_detect = max_detect
         self.pos = None
         self.wandering = False
         self.exclude = deque(maxlen=MAX_EXCLUDE)
 
 
-    def add_env(self, env):
-        self.env = env
-
-
     def in_detect_range(self, prehended):
         """
         Can we see the prehended with our limited view?
         """
-
         return self.in_range(prehended, self.max_detect)
 
 
@@ -105,26 +101,27 @@ class MobileAgent(SpatialAgent):
     Agents that can move in the env
     """
 
-
     def __init__(self, name, goal, max_move=20.0, max_detect=20.0):
         super().__init__(name, goal, 
-                    max_move=max_move, max_detect=max_detect)
+                         max_move=max_move,
+                         max_detect=max_detect)
         self.wandering = True
 
 
 class SpatialEnvironment(ent.Environment):
-
-    """ Extends the base Environment with entities located in the 
-        complex plane """
+    """
+    Extends the base Environment with entities located in the 
+    complex plane.
+    """
 
     def __init__(self, name, length, height, preact=True,
-                    postact=False, model_nm=None):
+                 postact=False, model_nm=None):
 
         super().__init__(name, preact=preact,
-                        postact=postact, model_nm=model_nm)
+                         postact=postact, model_nm=model_nm)
 
-        self.length   = length
-        self.height   = height
+        self.length = length
+        self.height = height
         self.max_dist = self.length * self.height
         self.do_census = True
 # it only makes sense to plot agents in a spatial env, so add this here:
@@ -142,14 +139,14 @@ class SpatialEnvironment(ent.Environment):
 
         v = node.get_node_type(agent)
         logging.debug("Adding " + agent.__str__()
-                + " of variety " + v)
+                      + " of variety " + v)
 
 
     def step(self):
         """
         Step through one period.
         """
-        if self.do_census: 
+        if self.do_census:
             self.census()
         super().step()
 
@@ -162,12 +159,10 @@ class SpatialEnvironment(ent.Environment):
         for agent in self.agents:
             if agent.wandering:
                 agent.pos = self.get_new_wander_pos(agent)
-                logging.debug(
-                    "In preact_loop, getting new agent pos")
                 logging.debug("We are about to survey the "
-                    "env for "
-                    + agent.name + " which has a goal of "
-                    + agent.goal)
+                              "env for "
+                              + agent.name + " which has a goal of "
+                              + agent.goal)
                 prehensions = agent.survey_env(agent.goal)
                 return self.address_prehensions(agent, prehensions)
             else:
@@ -225,7 +220,7 @@ class SpatialEnvironment(ent.Environment):
         if x > self.length:
             x = self.length
         if y  > self.height:
-            y  = self.height
+            y = self.height
         pos = complex(x, y)
         logging.debug(pos_msg(agent, pos))
         return pos
@@ -238,8 +233,7 @@ class SpatialEnvironment(ent.Environment):
         data = {}
         for v in self.agents.varieties_iter():
             data[v] = {"x": [], "y": []}
-            for a in self.agents:
-                if type(a).__name__ == v:
+            for a in self.agents.variety_iter(v):
                     pos = a.pos
                     x = pos.real
                     y = pos.imag

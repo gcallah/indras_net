@@ -6,6 +6,7 @@ This module contains the base classes for agent-based modeling in Indra.
 
 from abc import abstractmethod
 from collections import deque, OrderedDict
+import itertools
 import copy
 import time
 import logging
@@ -148,22 +149,27 @@ class AgentPop(Entity):
 
     def __init__(self, name):
         super().__init__(name)
-        self.agents = []
         self.varieties = OrderedDict()
         self.graph = nx.Graph()
         self.num_zombies = 0
 
 
     def __iter__(self):
-        return iter(self.agents)
+        alists = []
+        for var in self.varieties_iter():
+            alists.append(self.varieties[var]["agents"])
+        return itertools.chain(*alists)
 
 
     def __len__(self):
-        return len(self.agents)
+        l = 0
+        for var in self.varieties_iter():
+            l += len(self.varieties[var]["agents"])
+        return l
 
 
     def __reversed__(self):
-        return reversed(self.agents)
+        return reversed(list(self.__iter__()))
 
 
     def varieties_iter(self):
@@ -173,11 +179,17 @@ class AgentPop(Entity):
         return iter(self.varieties)
 
 
+    def variety_iter(self, var):
+        """
+        Allows iteration over the agents of one variety
+        """
+        return iter(self.varieties[var]["agents"])
+
+
     def append(self, agent):
         """
         Appends to agent list.
         """
-        self.agents.append(agent)
         var = node.get_node_type(agent)
         logging.debug("Adding " + agent.__str__()
                       + " of variety " + var)
@@ -190,25 +202,24 @@ class AgentPop(Entity):
                                    "pop_hist": [],
                                    "zombies": [],
                                    "zero_per": 0}
+            self.graph.add_edge(self, var)
 
         if len(self.varieties[var]["zombies"]) < self.num_zombies:
             self.varieties[var]["zombies"].append(copy.copy(agent))
-# we link each agent to the name
-#  just so we can show their relationship
-#  to this object
-        self.graph.add_edge(self, agent)
+# we link each agent to the variety
+# so we can show their relationship
+        self.graph.add_edge(var, agent)
 
 
     def remove(self, agent):
         """
         Removes from agent list.
         """
-        self.agents.remove(agent)
-        self.graph.remove_edge(self, agent)
         logging.debug("Removing edge between AgentPop and "
                       + agent.name)
         var = node.get_node_type(agent)
         self.varieties[var]["agents"].remove(agent)
+        self.graph.remove_edge(var, agent)
 
 
     def join_agents(self, a1, a2):
@@ -218,15 +229,14 @@ class AgentPop(Entity):
         self.graph.add_edge(a1, a2)
 
 
-    def random_loop(self):
+    def agent_random_iter(self):
         """
         Loop through agents in random order.
         """
-        indices = list(range(len(self.agents)))
-        random.shuffle(indices)
-        for i in indices:
-            self.agents[i].act()
-
+        agents = list(self.__iter__())
+        random.shuffle(agents)
+        return iter(agents)
+        
 
     def contains(self, var):
         """
@@ -593,9 +603,10 @@ class Environment(Entity):
 
     def act_loop(self):
         """
-        Loop through agents calling their act() func.
+        Loop through randomly through agents calling their act() func.
         """
-        self.agents.random_loop()
+        for agent in self.agents.agent_random_iter():
+            agent.act()
 
 
     def preact_loop(self):

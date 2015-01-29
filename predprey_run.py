@@ -35,21 +35,21 @@ env = ppm.PredPreyEnv("meadow", 50.0, 50.0)
 
 for i in range(pa.get("num_foxes")):
     env.add_agent(ppm.Fox(name="brer" + str(i),
-        life_force=pa.get("fox_life_force"), 
-        repro_age=pa.get("fox_repro_age"),
-        decay_rate=pa.get("fox_decay_rate"),
-        max_move=pa.get("fox_max_move"),
-        max_detect=pa.get("fox_max_detect"),
-        rand_age=True))
+                          life_force=pa.get("fox_life_force"), 
+                          repro_age=pa.get("fox_repro_age"),
+                          decay_rate=pa.get("fox_decay_rate"),
+                          max_move=pa.get("fox_max_move"),
+                          max_detect=pa.get("fox_max_detect"),
+                          rand_age=True))
 
 for i in range(pa.get("num_rabbits")):
     env.add_agent(ppm.Rabbit(name="bunny" + str(i),
-        life_force=pa.get("rabbit_life_force"),
-        repro_age=pa.get("rabbit_repro_age"),
-        decay_rate=pa.get("rabbit_decay_rate"),
-        max_move=pa.get("rabbit_max_move"),
-        goal=ppm.EAT,
-        rand_age=True))
+                             life_force=pa.get("rabbit_life_force"),
+                             repro_age=pa.get("rabbit_repro_age"),
+                             decay_rate=pa.get("rabbit_decay_rate"),
+                             max_move=pa.get("rabbit_max_move"),
+                             goal=ppm.EAT,
+                             rand_age=True))
 
 #for i in range(20):
 #    env.add_agent(ppm.Grass("grass" + str(i), 100.0, 10.0, 10.0))

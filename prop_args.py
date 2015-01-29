@@ -33,9 +33,9 @@ class PropArgs(node.Node):
         """
         Create a property object with values in 'props'.
         """
-        return(PropArgs(model_nm, props))
+        return PropArgs(model_nm, props)
 
-    
+
     @staticmethod
     def read_props(model_nm, file_nm):
         """
@@ -108,8 +108,8 @@ class Logger(node.Node):
     A class to track how we are logging.
     """
 
-    DEF_FORMAT   = '%(asctime)s:%(levelname)s:%(message)s'
-    DEF_LEVEL    = logging.INFO
+    DEF_FORMAT = '%(asctime)s:%(levelname)s:%(message)s'
+    DEF_LEVEL = logging.INFO
     DEF_FILEMODE = 'w'
     DEF_FILENAME = 'log.txt'
 
@@ -122,9 +122,9 @@ class Logger(node.Node):
         fmd = props.get("log_fmode", Logger.DEF_FILEMODE)
         fnm = props.get("log_fname", logfile)
         logging.basicConfig(format=fmt,
-                        level=lvl,
-                        filemode=fmd,
-                        filename=fnm)
+                            level=lvl,
+                            filemode=fmd,
+                            filename=fnm)
         logging.info("Logging initialized.")
 
 

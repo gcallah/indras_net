@@ -112,7 +112,6 @@ class Universals(Node):
         """
         Adds a universal relationship between two classes
         """
-
         if uni not in self.unis:
             self.add_universal(uni)
         self.unis[uni].append([prehender, prehended])
@@ -121,6 +120,9 @@ class Universals(Node):
 
 
     def get_prehensions(self, prehender, uni):
+        """
+        Find all prehensions for some prehender.
+        """
         prehensions = []
         logging.debug("edges = " + str(self.graph.edges()))
         for etuple in self.graph.edges_iter(data=True):
@@ -129,9 +131,9 @@ class Universals(Node):
             edge_data = etuple[2]
             prehension = edge_data[UNIVERSAL]
             logging.debug("Comparing hender = "
-                    + hender
-                    + " with prehender = "
-                    + prehender)
+                          + hender
+                          + " with prehender = "
+                          + prehender)
             if uni == prehension and hender == prehender:
                 logging.debug("Found our universal: " + uni)
                 prehensions.append(hended)

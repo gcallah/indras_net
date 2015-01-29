@@ -39,14 +39,12 @@ else:
 env = fm.SocietyEnv("society", 50.0, 50.0, model_nm=MODEL_NM)
 
 for i in range(pa.get("num_flwr")):
-    env.add_agent(
-            fm.Follower(name="prole" + str(i),
-                max_detect=pa.get("flwr_max_detect")))
+    env.add_agent(fm.Follower(name="prole" + str(i),
+                  max_detect=pa.get("flwr_max_detect")))
 
 for i in range(pa.get("num_trndstr")):
-    env.add_agent(
-            fm.TrendSetter(name="hipster" + str(i),
-                max_detect=pa.get("trnd_max_detect")))
+    env.add_agent(fm.TrendSetter(name="hipster" + str(i),
+                  max_detect=pa.get("trnd_max_detect")))
 
 node.add_prehension(fm.Follower, ppm.EAT, fm.TrendSetter)
 node.add_prehension(fm.TrendSetter, ppm.AVOID, fm.Follower)
