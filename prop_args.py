@@ -45,7 +45,8 @@ class PropArgs(node.Node):
         return PropArgs.create_props(model_nm, props)
 
     
-    def __init__(self, model_nm, logfile=None, props=None):
+    def __init__(self, model_nm, logfile=None, props=None,
+                 loglevel=logging.INFO):
         super().__init__("Properties")
         self.model_nm = model_nm
 # store this instance as the value in the dict for 'model_nm'
@@ -113,7 +114,8 @@ class Logger(node.Node):
     DEF_FILEMODE = 'w'
     DEF_FILENAME = 'log.txt'
 
-    def __init__(self, props, logfile=None):
+    def __init__(self, props, logfile=None,
+                 loglevel=logging.INFO):
         super().__init__("Logger")
         if logfile is None:
             logfile = Logger.DEF_FILENAME

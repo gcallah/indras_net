@@ -86,10 +86,12 @@ class Agent(Entity):
         Return a list of all prehended entities
         in env.
         """
-        logging.debug("scanning env for " + universal)
+        #logging.debug("scanning env for " + universal)
+        print("scanning env for " + universal)
         prehended = []
         prehends = node.get_prehensions(prehender=node.get_node_type(self),
                                         universal=universal)
+        print("Got prehends of: " + str(prehends))
         if not prehends == None:
             for pre_type in prehends:
                 some_pres = self.env.get_agents_of_var(pre_type)

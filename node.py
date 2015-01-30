@@ -42,6 +42,10 @@ def add_prehension(prehender, universal, prehended):
     """
     prnr_type = get_class_name(prehender)
     prnd_type = get_class_name(prehended)
+    print("Going to add prehension from "
+          + prnr_type
+          + " to "
+          + prnd_type)
     universals.add_prehension(prnr_type, universal, prnd_type)
 
 
@@ -124,13 +128,15 @@ class Universals(Node):
         Find all prehensions for some prehender.
         """
         prehensions = []
-        logging.debug("edges = " + str(self.graph.edges()))
+        #logging.debug("edges = " + str(self.graph.edges()))
+        print("edges = " + str(self.graph.edges()))
         for etuple in self.graph.edges_iter(data=True):
             hender = etuple[0]
             hended = etuple[1]
             edge_data = etuple[2]
             prehension = edge_data[UNIVERSAL]
-            logging.debug("Comparing hender = "
+            #logging.debug("Comparing hender = "
+            print("Comparing hender = "
                           + hender
                           + " with prehender = "
                           + prehender)

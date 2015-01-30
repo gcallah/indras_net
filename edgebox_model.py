@@ -209,8 +209,8 @@ class EdgeboxEnv(spatial_agent.SpatialEnvironment):
 
 # any return other than "None" from the step function
 # breaks the interactive loop
-        if self.trades_this_turn <= 0:
-            return "We've reached equilibrium."
+#        if self.trades_this_turn <= 0:
+#            return "We've reached equilibrium."
 
 
     def record_trade(self, a1, a2, amt):

@@ -159,7 +159,8 @@ class SpatialEnvironment(ent.Environment):
         for agent in self.agents:
             if agent.wandering:
                 agent.pos = self.get_new_wander_pos(agent)
-                logging.debug("We are about to survey the "
+                #logging.debug("We are about to survey the "
+                print("We are about to survey the "
                               "env for "
                               + agent.name + " which has a goal of "
                               + agent.goal)
@@ -176,7 +177,8 @@ class SpatialEnvironment(ent.Environment):
         """
         if len(prehensions) > 0:
             agent.focus = self.closest_x(agent, prehensions)
-            logging.debug("Targ = " + str(agent.focus))
+            #logging.debug("Targ = " + str(agent.focus))
+            print("Targ = " + str(agent.focus))
             agent.wandering = False
         return [agent.focus]
 
