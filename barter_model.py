@@ -43,13 +43,14 @@ class BarterEnv(ebm.EdgeboxEnv):
     Contains goods and agents who exchange them.
     """
 
-    def __init__(self, name, length, height, model_nm=None):
+    def __init__(self, name, length, height, model_nm=None,
+                 preact=False):
         super().__init__(name, length, height,
-                         model_nm=model_nm)
+                         model_nm=model_nm, preact=preact)
+        self.goods = []
 
 
-    def fetch_agents_from_file(self, filenm):
-
+    def fetch_agents_from_file(self, filenm, agent_type):
         """
         Read in a list of bartering agents from a csv file
         """
@@ -59,11 +60,15 @@ class BarterEnv(ebm.EdgeboxEnv):
         with open(filenm) as f:
             reader = csv.reader(f)
             for row in reader:
-                agent = BarterAgent(row[0], max_detect=max_detect)
+                agent = agent_type(row[0], max_detect=max_detect)
                 self.add_agent(agent)
                 for i in range(1, len(row) - 2, STEP):
-                    agent.endow(row[i],
+                    good = row[i]
+                    if good not in self.goods:
+                        self.goods.append(good)
+                    agent.endow(good,
                                 int(row[i + 1]),
                                 eval("lambda qty: "
                                      + row[i + 2]))
+        print("Goods = " + str(self.goods))
 

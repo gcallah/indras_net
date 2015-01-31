@@ -28,13 +28,13 @@ else:
     pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE,
                         loglevel=logging.DEBUG, props=None)
     pa.set("model", MODEL_NM)
-    pa.set("num_agents", 10)
     pa.set("user_type", ent.User.TERMINAL)
 
 # Now we create an environment for our agents to act within:
 env = mm.MengerEnv("Menger's money model", 50.0, 50.0,
                    model_nm=MODEL_NM)
-env.fetch_agents_from_file(CSV_FILE)
+env.fetch_agents_from_file(CSV_FILE, mm.MengerAgent)
+env.add_prod_goods()
 
 node.add_prehension(mm.MengerAgent, bm.TRADE, mm.MengerAgent)
 

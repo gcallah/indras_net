@@ -67,7 +67,7 @@ class EdgeboxAgent(spatial_agent.SpatialAgent):
             self.__add_good(good)
 
         g = self.goods[good]
-        g["endow"] = endow
+        g["endow"] += endow
         if util_func is not None:
             g["util_func"] = util_func
         for i in range(1, endow):
@@ -188,8 +188,10 @@ class EdgeboxEnv(spatial_agent.SpatialEnvironment):
     Contains goods and agents who exchange them.
     """
 
-    def __init__(self, name, length, height, model_nm=None):
-        super().__init__(name, length, height, model_nm=model_nm)
+    def __init__(self, name, length, height, model_nm=None,
+                 preact=False):
+        super().__init__(name, length, height, model_nm=model_nm,
+                         preact=preact)
         self.do_census = False
         self.trades_this_turn = 0
 

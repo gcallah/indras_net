@@ -86,12 +86,10 @@ class Agent(Entity):
         Return a list of all prehended entities
         in env.
         """
-        #logging.debug("scanning env for " + universal)
-        print("scanning env for " + universal)
+        logging.debug("scanning env for " + universal)
         prehended = []
         prehends = node.get_prehensions(prehender=node.get_node_type(self),
                                         universal=universal)
-        print("Got prehends of: " + str(prehends))
         if not prehends == None:
             for pre_type in prehends:
                 some_pres = self.env.get_agents_of_var(pre_type)
@@ -654,7 +652,7 @@ class Environment(Entity):
         Default: Graph our population levels.
         """
         if self.period < 4:
-            print("Too little data to display")
+            self.user.tell("Too little data to display")
             return
 
         pop_hist = self.agents.get_pop_hist()

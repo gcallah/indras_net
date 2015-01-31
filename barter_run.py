@@ -26,7 +26,7 @@ else:
 
 env = bm.BarterEnv("A barter market", 50.0, 50.0,
                    model_nm=MODEL_NM)
-env.fetch_agents_from_file(CSV_FILE)
+env.fetch_agents_from_file(CSV_FILE, bm.BarterAgent)
 
 node.add_prehension(bm.BarterAgent, bm.TRADE, bm.BarterAgent)
 

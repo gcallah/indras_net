@@ -3,7 +3,10 @@ menger_model.py
 The aim of this model is to get money to arise
 in a barter economy.
 """
-import entity
+import logging
+import random
+import entity as ent
+import edgebox_model as ebm
 import barter_model as bm
 
 
@@ -13,17 +16,20 @@ class MengerAgent(bm.BarterAgent):
     and whom we hope will start to use money to trade them.
     """
 
-    def __init__(self, name, goal):
-        """
-        A very basic init.
-        """
-        super().__init__(name, goal)
+    def __init__(self, name, goal=bm.TRADE,
+                 max_detect=ebm.GLOBAL_KNOWLEDGE ):
+        super().__init__(name, goal=goal, max_detect=max_detect)
+        self.prod_good = None
+        self.prod_amt = 1
 
 
     def act(self):
         """
-        Trade.
+        Trade, but first, produce our good..
         """
+        if self.prod_good is not None:
+            print("Endowing da agent wid some " + self.prod_good)
+            self.endow(self.prod_good, self.prod_amt)
         super().act()
 
 
@@ -35,5 +41,13 @@ class MengerEnv(bm.BarterEnv):
     def __init__(self, name, length, height, model_nm=None):
         super().__init__("Menger environment",
                          length, height,
-                         model_nm=model_nm)
+                         model_nm=model_nm,
+                         preact=True)
+
+
+    def add_prod_goods(self):
+        print("In add_prod_goods")
+        for agent in self.agents:
+            print("Adding prod goods to agents")
+            agent.prod_good = random.choice(self.goods)
 
