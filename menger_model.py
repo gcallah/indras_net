@@ -28,7 +28,8 @@ class MengerAgent(bm.BarterAgent):
         Trade, but first, produce our good..
         """
         if self.prod_good is not None:
-            print("Endowing da agent wid some " + self.prod_good)
+            print("Endowing da agent "
+                  + self.name + " wid some " + self.prod_good)
             self.endow(self.prod_good, self.prod_amt)
         super().act()
 
@@ -46,8 +47,15 @@ class MengerEnv(bm.BarterEnv):
 
 
     def add_prod_goods(self):
+        """
+        Add who produces which good, and
+        make them a vendor of that good in the market.
+        """
         print("In add_prod_goods")
         for agent in self.agents:
             print("Adding prod goods to agents")
-            agent.prod_good = random.choice(self.goods)
+            good = random.choice(list(self.market.keys()))
+            agent.prod_good = good
+            self.market.add_vendor(good, agent)
+        print("Market = " + str(self.market))
 

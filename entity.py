@@ -356,7 +356,7 @@ class Environment(Entity):
         user_type = self.props.get("user_type", User.IPYTHON)
         self.user = User(user_nm, user_type)
         self.graph.add_edge(self, self.user)
-        self.menu = Menu(self)
+        self.menu = MainMenu(self)
         self.graph.add_edge(self, self.menu)
         self.graph.add_edge(self, self.props)
         self.graph.add_edge(self, node.universals)
@@ -639,6 +639,26 @@ class Environment(Entity):
         else:
             self.draw()
 
+    def graph_agents(self):
+        """
+        Draw a graph of the agent relationships.
+        """
+        self.agents.draw()
+
+
+    def graph_env(self):
+        """
+        Draw a graph of the env's relationships.
+        """
+        self.draw()
+
+
+    def graph_unv(self):
+        """
+        Draw a graph of the universal relationships.
+        """
+        node.universals.draw()
+
 
     def keep_running(self):
         """
@@ -674,7 +694,8 @@ class Environment(Entity):
         """
         Leave this run.
         """
-        return "Returning to runtime environment."
+        self.user.tell("Returning to runtime environment.")
+        exit(0)
 
 
     def contains(self, agent_type):
@@ -727,6 +748,112 @@ IPYN_MODE = "y"
 
 class Menu(Entity):
     """
+    Menu items off the main menu or a sub-menu.
+    """
+
+    def __init__(self, name, env):
+        super().__init__(name)
+        self.env = env
+        self.choices = {}
+        self.menu_items = OrderedDict()
+    
+
+    def add_menu_item(self, letter, item):
+        """
+        Add an item to the this menu.
+        """
+        self.menu_items[item.name] = item
+        self.choices[letter] = item.act
+
+
+    def act(self):
+        return self.display()
+
+
+    def display(self):
+        """
+        Display the menu.
+        """
+        disp_text = ""
+        for item in self.menu_items:
+            disp_text += item + " | "
+        disp_text = disp_text.rstrip(" | ")
+        self.env.user.tell(disp_text)
+
+        choice = self.env.user.ask_for_ltr(
+            "Choose one of the above and press Enter: ")
+        self.choices[choice]()
+
+
+class MenuLeaf(Entity):
+    """
+    A leaf on the menu tree.
+    """
+
+    def __init__(self, name, env, func):
+        super().__init__(name)
+        self.env = env
+        self.func = func
+
+
+    def act(self):
+        return self.func()
+
+
+class TestMainMenu(Menu):
+    """
+    Test out new menu.
+    """
+
+    def __init__(self, name, env):
+        super().__init__(name, env)
+        e = self.env
+
+# file menu
+        file = Menu("(f)ile", e)
+        self.add_menu_item("f", file)
+        wprop = MenuLeaf("(w)rite properties", e, e.pwrite)
+        file.add_menu_item("w", wprop)
+        exmn = MenuLeaf("(e)xamine log file", e, e.disp_log)
+        file.add_menu_item("e", exmn)
+        quit = MenuLeaf("(q)uit", e, e.quit)
+        file.add_menu_item("q", quit)
+
+# edit menu
+        edit = Menu("(e)dit", e)
+        self.add_menu_item("e", edit)
+        insp_agnt = MenuLeaf("inspect (a)gent", e, e.agnt_inspect)
+        edit.add_menu_item("a", insp_agnt)
+        insp_env = MenuLeaf("inspect (e)nv", e, e.env_inspect)
+        edit.add_menu_item("e", insp_env)
+
+# view menu
+        view = Menu("(v)iew", e)
+        self.add_menu_item("v", view)
+        graph = Menu("(g)raph", e)
+        view.add_menu_item("g", graph)
+        agents = MenuLeaf("(a)gents", e, e.graph_agents)
+        graph.add_menu_item("a", agents)
+        env = MenuLeaf("(e)nvironment", e, e.graph_env)
+        graph.add_menu_item("e", env)
+        unv = MenuLeaf("(u)niversals", e, e.graph_unv)
+        graph.add_menu_item("u", unv)
+        list = MenuLeaf("(l)ist agents", e, e.list_agents)
+        view.add_menu_item("l", list)
+        props = MenuLeaf("(p)roperties", e, e.disp_props)
+        view.add_menu_item("p", props)
+        visl = MenuLeaf("(v)isualize data", e, e.display)
+        view.add_menu_item("v", visl)
+
+# tools menu
+        tools = Menu("(t)ools", e)
+        self.add_menu_item("t", tools)
+        step = MenuLeaf("(s)tep", e, e.step)
+        tools.add_menu_item("s", step)
+
+
+class MainMenu(Entity):
+    """
     Implements our basic menu: intended for text or GUI
     use.
     """
@@ -761,10 +888,10 @@ class Menu(Entity):
                            e.draw_graph)
         self.add_menu_item("View", VISL_MODE, "(v)isualize data",
                            e.display)
-        self.add_menu_item("Tools", STEP_MODE, "(s)tep (default)",
-                           e.step)
         self.add_menu_item("View", PROP_MODE, "view pr(o)perties",
                            e.disp_props)
+        self.add_menu_item("Tools", STEP_MODE, "(s)tep (default)",
+                           e.step)
         self.add_menu_item("Tools", RUN_MODE, "(r)un", e.run)
         self.add_menu_item("Tools", DBUG_MODE, "(d)ebug", e.debug)
         if e.user.utype == User.TERMINAL:
@@ -777,10 +904,8 @@ class Menu(Entity):
         Add an item to the main menu.
         """
         if submenu in self.submenus:
-            self.submenus[submenu][text] = {
-                    "letter": letter,
-                    "func": func
-                }
+            self.submenus[submenu][text] = {"letter": letter,
+                                            "func": func}
             self.choices[letter] = func
 
 
@@ -796,7 +921,6 @@ class Menu(Entity):
             disp_text = disp_text.rstrip("| ")
             if self.env.user.utype == User.IPYTHON_NB:
                 pass
-#                disp_text = "<strong>" + disp_text + "</strong>"
             self.env.user.tell(disp_text)
 
         choice = self.env.user.ask_for_ltr(
