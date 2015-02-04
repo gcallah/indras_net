@@ -25,7 +25,7 @@ class MengerAgent(bm.BarterAgent):
 
     def act(self):
         """
-        Trade, but first, produce our good..
+        Trade, but first, produce our good.
         """
         if self.prod_good is not None:
             print("Endowing da agent "

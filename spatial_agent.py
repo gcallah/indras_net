@@ -64,6 +64,7 @@ class SpatialAgent(ent.Agent):
         self.max_move = max_move
         self.max_detect = max_detect
         self.pos = None
+        self.focus = None
         self.wandering = False
         self.exclude = deque(maxlen=MAX_EXCLUDE)
 
@@ -120,12 +121,13 @@ class SpatialEnvironment(ent.Environment):
         super().__init__(name, preact=preact,
                          postact=postact, model_nm=model_nm)
 
+        self.disp_census = True
         self.length = length
         self.height = height
         self.max_dist = self.length * self.height
-        self.do_census = True
 # it only makes sense to plot agents in a spatial env, so add this here:
-        self.add_menu_item("View", "p", "(p)lot agents", self.plot)
+        plot = ent.MenuLeaf("(s)catter plot", self.plot)
+        self.menu.view.add_menu_item("s", plot)
 
 
     def add_agent(self, agent):
@@ -142,15 +144,6 @@ class SpatialEnvironment(ent.Environment):
                       + " of variety " + v)
 
 
-    def step(self):
-        """
-        Step through one period.
-        """
-        if self.do_census:
-            self.census()
-        super().step()
-
-
     def preact_loop(self):
         """
         Before acting, get agent's new location.
@@ -159,8 +152,7 @@ class SpatialEnvironment(ent.Environment):
         for agent in self.agents:
             if agent.wandering:
                 agent.pos = self.get_new_wander_pos(agent)
-                #logging.debug("We are about to survey the "
-                print("We are about to survey the "
+                logging.debug("We are about to survey the "
                               "env for "
                               + agent.name + " which has a goal of "
                               + agent.goal)
@@ -177,8 +169,7 @@ class SpatialEnvironment(ent.Environment):
         """
         if len(prehensions) > 0:
             agent.focus = self.closest_x(agent, prehensions)
-            #logging.debug("Targ = " + str(agent.focus))
-            print("Targ = " + str(agent.focus))
+            logging.debug("Targ = " + str(agent.focus))
             agent.wandering = False
         return [agent.focus]
 

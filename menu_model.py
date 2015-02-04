@@ -1,9 +1,6 @@
 """
 menu_model.py
-You can clone this file and its companion menu_run.py
-to easily get started on a new model.
-It also is a handy tool to have around
-for testing new features added to the base system.
+Model for testing the menu system
 """
 import entity as ent
 
@@ -35,5 +32,4 @@ class MenuEnv(ent.Environment):
     def __init__(self, model_nm=None):
         super().__init__("Menu test",
                          model_nm=model_nm, postact=True)
-        self.menu = ent.TestMainMenu("Test menu", self)
 

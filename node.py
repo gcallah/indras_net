@@ -76,6 +76,7 @@ class Node():
             nx.draw_networkx(self.graph)
             plt.show()
 
+
     def display(self):
         """
         Every node should have some way to display itself.

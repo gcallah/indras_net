@@ -87,6 +87,13 @@ class BarterEnv(ebm.EdgeboxEnv):
                          model_nm=model_nm, preact=preact)
         self.market = Market("agora")
         self.graph.add_edge(self, self.market)
+        self.menu.graph.add_menu_item("m", 
+                                      ent.MenuLeaf("(m)arket",
+                                      self.graph_market))
+
+
+    def graph_market(self):
+        self.market.draw()
 
 
     def fetch_agents_from_file(self, filenm, agent_type):

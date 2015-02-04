@@ -192,7 +192,7 @@ class SocietyEnv(spagnt.SpatialEnvironment):
             self.agents.change_pop_of_note(var, -1)
 
 
-    def census(self):
+    def census(self, disp=True):
         """
         Take a census of our pops.
         """

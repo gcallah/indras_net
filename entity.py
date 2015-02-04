@@ -305,6 +305,7 @@ class AgentPop(Entity):
     def census(self):
         """
         Take a census of agents by variety.
+        Return a string of results for possible display.
         """
         ret = ""
         for v in self.varieties:
@@ -345,6 +346,7 @@ class Environment(Entity):
         self.period = 0
         self.preact = preact
         self.postact = postact
+        self.disp_census = False
         self.model_nm = model_nm
         if model_nm is not None:
             self.props = pa.PropArgs.get_props(model_nm)
@@ -356,7 +358,7 @@ class Environment(Entity):
         user_type = self.props.get("user_type", User.IPYTHON)
         self.user = User(user_nm, user_type)
         self.graph.add_edge(self, self.user)
-        self.menu = MainMenu(self)
+        self.menu = MainMenu("Main Menu", self)
         self.graph.add_edge(self, self.menu)
         self.graph.add_edge(self, self.props)
         self.graph.add_edge(self, node.universals)
@@ -417,6 +419,7 @@ class Environment(Entity):
         msg = self.menu.display()
         while msg is None:
             msg = self.menu.display()
+            self.user.tell("\nMain Menu; Period: " + str(self.period))
 
         Environment.prev_period = self.period
 
@@ -581,6 +584,8 @@ class Environment(Entity):
         """
         Step period-by-period through agent actions.
         """
+        self.census(disp=self.disp_census)
+
         self.period += 1
 
 # agents might be waiting to be born
@@ -667,9 +672,9 @@ class Environment(Entity):
         return True
 
 
-    def display(self):
+    def view_pop(self):
         """
-        Default: Graph our population levels.
+        Graph our population levels.
         """
         if self.period < 4:
             self.user.tell("Too little data to display")
@@ -705,13 +710,15 @@ class Environment(Entity):
         return self.agents.contains(agent_type)
 
 
-    def census(self):
+    def census(self, disp=True):
         """
         Take a census of what is in the env.
         """
-        self.user.tell("Populations in period "
-                       + str(self.period) + ":")
-        self.user.tell(self.agents.census())
+        results = self.agents.census()
+        if disp:
+            self.user.tell("Populations in period "
+                           + str(self.period) + ":")
+            self.user.tell(results)
 
 
     def get_pop(self, var):
@@ -728,24 +735,6 @@ class Environment(Entity):
         return self.agents.get_my_pop(agent)
 
 
-ADD_MODE = "a"
-CODE_MODE = "c"
-DBUG_MODE = "d"
-ENV_MODE = "e"
-GRPH_MODE = "g"
-INSP_MODE = "i"
-LIST_MODE = "l"
-PROP_MODE = "o"
-PLOT_MODE = "p"
-QUIT_MODE = "q"
-RUN_MODE = "r"
-STEP_MODE = "s"
-VISL_MODE = "v"
-WRIT_MODE = "w"
-EXMN_MODE = "x"
-IPYN_MODE = "y"
-
-
 class Menu(Entity):
     """
     Menu items off the main menu or a sub-menu.
@@ -756,14 +745,17 @@ class Menu(Entity):
         self.env = env
         self.choices = {}
         self.menu_items = OrderedDict()
+        self.def_act = None
     
 
-    def add_menu_item(self, letter, item):
+    def add_menu_item(self, letter, item, default=False):
         """
         Add an item to the this menu.
         """
         self.menu_items[item.name] = item
         self.choices[letter] = item.act
+        if default:
+            self.def_act = item.act
 
 
     def act(self):
@@ -782,7 +774,12 @@ class Menu(Entity):
 
         choice = self.env.user.ask_for_ltr(
             "Choose one of the above and press Enter: ")
-        self.choices[choice]()
+        if choice in self.choices:
+            self.choices[choice]()
+        elif self.def_act is not None:
+            self.def_act()
+        else:
+            pass
 
 
 class MenuLeaf(Entity):
@@ -790,9 +787,8 @@ class MenuLeaf(Entity):
     A leaf on the menu tree.
     """
 
-    def __init__(self, name, env, func):
+    def __init__(self, name, func):
         super().__init__(name)
-        self.env = env
         self.func = func
 
 
@@ -800,7 +796,7 @@ class MenuLeaf(Entity):
         return self.func()
 
 
-class TestMainMenu(Menu):
+class MainMenu(Menu):
     """
     Test out new menu.
     """
@@ -810,124 +806,39 @@ class TestMainMenu(Menu):
         e = self.env
 
 # file menu
-        file = Menu("(f)ile", e)
-        self.add_menu_item("f", file)
-        wprop = MenuLeaf("(w)rite properties", e, e.pwrite)
-        file.add_menu_item("w", wprop)
-        exmn = MenuLeaf("(e)xamine log file", e, e.disp_log)
-        file.add_menu_item("e", exmn)
-        quit = MenuLeaf("(q)uit", e, e.quit)
-        file.add_menu_item("q", quit)
+        self.file = Menu("(f)ile", e)
+        self.add_menu_item("f", self.file)
+        self.file.add_menu_item("w", MenuLeaf("(w)rite props", e.pwrite))
+        self.file.add_menu_item("e", MenuLeaf("(e)xamine log", e.disp_log))
+        self.file.add_menu_item("q", MenuLeaf("(q)uit", e.quit))
 
 # edit menu
-        edit = Menu("(e)dit", e)
-        self.add_menu_item("e", edit)
-        insp_agnt = MenuLeaf("inspect (a)gent", e, e.agnt_inspect)
-        edit.add_menu_item("a", insp_agnt)
-        insp_env = MenuLeaf("inspect (e)nv", e, e.env_inspect)
-        edit.add_menu_item("e", insp_env)
+        self.edit = Menu("(e)dit", e)
+        self.add_menu_item("e", self.edit)
+        self.edit.add_menu_item("a", MenuLeaf("(a)dd agent", e.add))
+        self.edit.add_menu_item("i", MenuLeaf("(i)nspect agent", e.agnt_inspect))
+        self.edit.add_menu_item("e", MenuLeaf("inspect (e)nv", e.env_inspect))
 
 # view menu
-        view = Menu("(v)iew", e)
-        self.add_menu_item("v", view)
-        graph = Menu("(g)raph", e)
-        view.add_menu_item("g", graph)
-        agents = MenuLeaf("(a)gents", e, e.graph_agents)
-        graph.add_menu_item("a", agents)
-        env = MenuLeaf("(e)nvironment", e, e.graph_env)
-        graph.add_menu_item("e", env)
-        unv = MenuLeaf("(u)niversals", e, e.graph_unv)
-        graph.add_menu_item("u", unv)
-        list = MenuLeaf("(l)ist agents", e, e.list_agents)
-        view.add_menu_item("l", list)
-        props = MenuLeaf("(p)roperties", e, e.disp_props)
-        view.add_menu_item("p", props)
-        visl = MenuLeaf("(v)isualize data", e, e.display)
-        view.add_menu_item("v", visl)
+        self.view = Menu("(v)iew", e)
+        self.add_menu_item("v", self.view)
+        self.view.add_menu_item("l", MenuLeaf("(l)ist agents", e.list_agents))
+        self.view.add_menu_item("p", MenuLeaf("(p)roperties", e.disp_props))
+        self.view.add_menu_item("v", MenuLeaf("(v)iew populations", e.view_pop))
+# graph submenu
+        self.graph = Menu("(g)raph", e)
+        self.view.add_menu_item("g", self.graph)
+        self.graph.add_menu_item("a", MenuLeaf("(a)gents", e.graph_agents))
+        self.graph.add_menu_item("e", MenuLeaf("(e)nvironment", e.graph_env))
+        self.graph.add_menu_item("u", MenuLeaf("(u)niversals", e.graph_unv))
 
 # tools menu
-        tools = Menu("(t)ools", e)
-        self.add_menu_item("t", tools)
-        step = MenuLeaf("(s)tep", e, e.step)
-        tools.add_menu_item("s", step)
-
-
-class MainMenu(Entity):
-    """
-    Implements our basic menu: intended for text or GUI
-    use.
-    """
-
-    def __init__(self, env):
-        super().__init__("Main Menu")
-        self.env = env
-        self.choices = {}
-        self.submenus = OrderedDict()
-        self.submenus["File"] = OrderedDict()
-        self.submenus["Edit"] = OrderedDict()
-        self.submenus["View"] = OrderedDict()
-        self.submenus["Tools"] = OrderedDict()
-
-        e = self.env
-
-# add default menu items:
-        self.add_menu_item("File", WRIT_MODE, "(w)rite properties",
-                           e.pwrite)
-        self.add_menu_item("File", EXMN_MODE, "e(x)amine log file",
-                           e.disp_log)
-        self.add_menu_item("File", QUIT_MODE, "(q)uit", e.quit)
-        self.add_menu_item("Edit", ADD_MODE, "(a)dd agent to env",
-                           e.add)
-        self.add_menu_item("Edit", INSP_MODE, "(i)nspect agent",
-                           e.agnt_inspect)
-        self.add_menu_item("Edit", ENV_MODE, "inspect (e)nvironment",
-                           e.env_inspect)
-        self.add_menu_item("View", LIST_MODE, "(l)ist agents",
-                           e.list_agents)
-        self.add_menu_item("View", GRPH_MODE, "(g)raph components",
-                           e.draw_graph)
-        self.add_menu_item("View", VISL_MODE, "(v)isualize data",
-                           e.display)
-        self.add_menu_item("View", PROP_MODE, "view pr(o)perties",
-                           e.disp_props)
-        self.add_menu_item("Tools", STEP_MODE, "(s)tep (default)",
-                           e.step)
-        self.add_menu_item("Tools", RUN_MODE, "(r)un", e.run)
-        self.add_menu_item("Tools", DBUG_MODE, "(d)ebug", e.debug)
+        self.tools = Menu("(t)ools", e)
+        self.add_menu_item("t", self.tools, default=True)
+        self.tools.add_menu_item("s", MenuLeaf("(s)tep", e.step), default=True)
+        self.tools.add_menu_item("r", MenuLeaf("(r)un", e.run))
+        self.tools.add_menu_item("d", MenuLeaf("(d)ebug", e.debug))
         if e.user.utype == User.TERMINAL:
-            self.add_menu_item("Tools", IPYN_MODE, "iP(y)thon",
-                               e.ipython)
-
-
-    def add_menu_item(self, submenu, letter, text, func):
-        """
-        Add an item to the main menu.
-        """
-        if submenu in self.submenus:
-            self.submenus[submenu][text] = {"letter": letter,
-                                            "func": func}
-            self.choices[letter] = func
-
-
-    def display(self):
-        """
-        Display the menu.
-        """
-        for subm in self.submenus:
-            disp_text = subm + ": "
-            for item in self.submenus[subm]:
-                disp_text = disp_text + item + " | "
-# remove the final menu item separator:
-            disp_text = disp_text.rstrip("| ")
-            if self.env.user.utype == User.IPYTHON_NB:
-                pass
-            self.env.user.tell(disp_text)
-
-        choice = self.env.user.ask_for_ltr(
-            "Choose one of the above and press Enter: ")
-        if len(choice) == 0:
-            choice = STEP_MODE
-        ret = self.choices[choice]()
-        return ret
+            self.tools.add_menu_item("i", MenuLeaf("(i)Python", e.ipython))
 
 

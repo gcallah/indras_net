@@ -135,7 +135,6 @@ class MobileCreature(Creature, sa.MobileAgent):
 
         self.max_eat = max_eat
         self.wandering = True
-        self.focus = None
 
 
     def in_gobble_range(self):
