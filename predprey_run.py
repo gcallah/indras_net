@@ -19,8 +19,9 @@ if read_props:
 else:
     pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
     pa.set("model", MODEL_NM)
-    pa.set("num_foxes", 2)
-    pa.set("num_rabbits", 6)
+    pa.set("num_foxes", 4)
+    pa.set("num_rabbits", 8)
+    pa.set("num_zombies", 6)
     pa.set("fox_repro_age", 11)
     pa.set("rabbit_repro_age", 3.6)
     pa.set("fox_life_force", 32.8)

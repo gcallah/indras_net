@@ -36,7 +36,7 @@ class Gozer(BasicAgent):
         """
         Init Gozer with slightly different params.
         """
-        super().__init__(name="Gozer", goal="Destroy!")
+        super().__init__(name="Gozer the Destructor", goal="Destroy!")
 
 
     def postact(self):
@@ -45,7 +45,7 @@ class Gozer(BasicAgent):
         """
         e = self.env
         if len(e.agents) == 1:
-            print("Gozer the destructor has destroyed all!!")
+            print("Gozer the Destructor has destroyed all!!")
         else:
             for agent in e.agents:
                 if agent is not self:

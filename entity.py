@@ -171,6 +171,10 @@ class AgentPop(Entity):
     def __reversed__(self):
         return reversed(list(self.__iter__()))
 
+    
+    def set_num_zombies(self, num):
+        self.num_zombies = num
+
 
     def varieties_iter(self):
         """
@@ -184,6 +188,59 @@ class AgentPop(Entity):
         Allows iteration over the agents of one variety
         """
         return iter(self.varieties[var]["agents"])
+
+
+    class AgentRandomIter:
+        """
+        Iterate randomly through our agents.
+        Eventually this should be made generic so it can 
+        randomly iterate through anything.
+        """
+        def __init__(self, agents):
+            self.i = 0
+            self.agents = agents
+            self.indices = list(range(len(agents)))
+            random.shuffle(self.indices)
+
+
+        def __iter__(self):
+            return self
+
+
+        def __next__(self):
+            """
+            Return the next element or raise exception.
+            """
+            if self.i < len(self.indices):
+                # get an agent!
+                agent = self.agents.element_at(self.indices[self.i])
+                self.i += 1
+                return agent
+            else:
+                raise StopIteration()
+
+
+    def agent_random_iter(self):
+        """
+        Loop through agents in random order.
+        """
+        return AgentPop.AgentRandomIter(self)
+
+
+    def element_at(self, i):
+        """
+        Another way to treat the AgentPop as if it were really
+        one big list.
+        """
+        if i < 0 or i > len(self):
+            raise IndexError()
+        else:
+            for var in self.varieties_iter():
+                l = len(self.varieties[var]["agents"])
+                if i < l:
+                    return self.varieties[var]["agents"][i]
+                else:
+                     i -= l
 
 
     def append(self, agent):
@@ -204,22 +261,31 @@ class AgentPop(Entity):
                                    "zero_per": 0}
             self.graph.add_edge(self, var)
 
-        if len(self.varieties[var]["zombies"]) < self.num_zombies:
-            self.varieties[var]["zombies"].append(copy.copy(agent))
 # we link each agent to the variety
 # so we can show their relationship
         self.graph.add_edge(var, agent)
+
+
+    def create_zombies(self):
+        """
+        Choose a random batch of agents from each var
+        for possible revivial later.
+        """
+        if self.num_zombies > 0:
+            for var in self.varieties_iter():
+                while len(self.varieties[var]["zombies"]) < self.num_zombies:
+                    agent = random.choice(self.varieties[var]["agents"])
+                    self.varieties[var]["zombies"].append(copy.copy(agent))
 
 
     def remove(self, agent):
         """
         Removes from agent list.
         """
-        logging.debug("Removing edge between AgentPop and "
-                      + agent.name)
+        logging.debug("Removing " + agent.name + " from agents")
         var = node.get_node_type(agent)
         self.varieties[var]["agents"].remove(agent)
-        self.graph.remove_edge(var, agent)
+        self.graph.remove_node(agent) # also removes edges!
 
 
     def join_agents(self, a1, a2):
@@ -228,15 +294,6 @@ class AgentPop(Entity):
         """
         self.graph.add_edge(a1, a2)
 
-
-    def agent_random_iter(self):
-        """
-        Loop through agents in random order.
-        """
-        agents = list(self.__iter__())
-        random.shuffle(agents)
-        return iter(agents)
-        
 
     def contains(self, var):
         """
@@ -355,7 +412,7 @@ class Environment(Entity):
 
         user_nm = getpass.getuser()
         self.props.set("user_name", user_nm)
-        user_type = self.props.get("user_type", User.IPYTHON)
+        user_type = self.props.get("user_type", User.TERMINAL)
         self.user = User(user_nm, user_type)
         self.graph.add_edge(self, self.user)
         self.menu = MainMenu("Main Menu", self)

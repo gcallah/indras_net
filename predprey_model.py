@@ -293,11 +293,20 @@ class PredPreyEnv(sa.SpatialEnvironment):
 
     repop = True
 
+
     def __init__(self, name, length, height, preact=True,
                  postact=True, model_nm="predprey_model"):
         super().__init__(name, length, height, preact,
                          postact, model_nm=model_nm)
-        self.num_zombies = 10
+        self.agents.set_num_zombies(self.props.get("num_zombies", 0))
+
+
+    def run(self):
+        """
+        Create zombies, then call our super's run.
+        """
+        self.agents.create_zombies()
+        super().run()
 
 
     def keep_running(self):
