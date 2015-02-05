@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+"""
+This is a simple test script. It can be cloned to
 """
 predprey_run.py
 Script to run our predator-prey model.

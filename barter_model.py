@@ -51,7 +51,7 @@ class Market(ent.Entity):
         self.graph = nx.Graph()
 
 
-    def keys(self): 
+    def goods_iter(self): 
         """
         Return the goods in self.goods.
         """
@@ -63,7 +63,8 @@ class Market(ent.Entity):
         Add a good to the market.
         """
         if good not in self.goods:
-            self.goods[good] = []
+            self.goods[good] = {}
+            self.goods[good]["vendors"] = []
             self.graph.add_edge(self, good)
 
 
@@ -72,8 +73,15 @@ class Market(ent.Entity):
         Add an agent who can supply this good.
         """
         self.add_good(good)
-        self.goods[good].append(vendor)
+        self.goods[good]["vendors"].append(vendor)
         self.graph.add_edge(good, vendor)
+
+
+    def has_vendor(self, good):
+        """
+        Does this good have any vendors?
+        """
+        return len(self.goods[good]["vendors"]) > 0
 
 
 class BarterEnv(ebm.EdgeboxEnv):

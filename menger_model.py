@@ -52,10 +52,19 @@ class MengerEnv(bm.BarterEnv):
         make them a vendor of that good in the market.
         """
         print("In add_prod_goods")
+        my_good = None
         for agent in self.agents:
             print("Adding prod goods to agents")
-            good = random.choice(list(self.market.keys()))
-            agent.prod_good = good
-            self.market.add_vendor(good, agent)
+            for good in self.market.goods_iter():
+                if not self.market.has_vendor(good):
+                    my_good = good
+                    break
+
+            if my_good is None:
+                my_good = random.choice(list(self.market.goods_iter()))
+
+            agent.prod_good = my_good
+            self.market.add_vendor(my_good, agent)
+
         print("Market = " + str(self.market))
 

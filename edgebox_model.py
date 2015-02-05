@@ -193,33 +193,33 @@ class EdgeboxEnv(spatial_agent.SpatialEnvironment):
         super().__init__(name, length, height, model_nm=model_nm,
                          preact=preact)
         self.do_census = False
-        self.trades_this_turn = 0
+        self.trades_this_prd = 0
 
 
     def step(self):
         """
         Step through one period of trading.
         """
-        self.trades_this_turn = 0
+        self.trades_this_prd = 0
         super().step()
         self.user.tell("Trades this period: "
-                       + str(self.trades_this_turn))
-        for a in self.agents:
-            self.user.tell(a.name + " has gained "
-                           + str(a.util_gain())
-                           + " utils and now has: " + a.list_goods())
+                       + str(self.trades_this_prd))
+        if self.trades_this_prd <= 0:
+            self.user.tell("We've reached equilibrium.")
+        else:
+            for a in self.agents:
+                self.user.tell(a.name + " has gained "
+                               + str(a.util_gain())
+                               + " utils and now has: "
+                               + a.list_goods())
 
-# any return other than "None" from the step function
-# breaks the interactive loop
-#        if self.trades_this_turn <= 0:
-#            return "We've reached equilibrium."
 
 
     def record_trade(self, a1, a2, amt):
         """
         Record the fact a trade has occured.
         """
-        self.trades_this_turn += amt
+        self.trades_this_prd += amt
         self.join_agents(a1, a2)
 
 
