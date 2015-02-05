@@ -6,20 +6,17 @@ This module contains the base classes for agent-based modeling in Indra.
 
 from abc import abstractmethod
 from collections import deque, OrderedDict
-import itertools
-import copy
+import sys
 import time
 import logging
 import pdb
-import random
 import getpass
 import IPython
 import networkx as nx
 import node
 import prop_args as pa
+import agent_pop as ap
 import display_methods as disp
-
-MAX_ZERO_PER = 8
 
 
 class Entity(node.Node):
@@ -139,248 +136,7 @@ class User(Entity):
             return input(msg)
 
 
-class AgentPop(Entity):
-
-    """
-    Holds our collection of agents and a sub-graph
-    of their relationships.
-    This should implement list functions.
-    """
-
-    def __init__(self, name):
-        super().__init__(name)
-        self.varieties = OrderedDict()
-        self.graph = nx.Graph()
-        self.num_zombies = 0
-
-
-    def __iter__(self):
-        alists = []
-        for var in self.varieties_iter():
-            alists.append(self.varieties[var]["agents"])
-        return itertools.chain(*alists)
-
-
-    def __len__(self):
-        l = 0
-        for var in self.varieties_iter():
-            l += len(self.varieties[var]["agents"])
-        return l
-
-
-    def __reversed__(self):
-        return reversed(list(self.__iter__()))
-
-    
-    def set_num_zombies(self, num):
-        self.num_zombies = num
-
-
-    def varieties_iter(self):
-        """
-        Allows iteration over the varieties of agents.
-        """
-        return iter(self.varieties)
-
-
-    def variety_iter(self, var):
-        """
-        Allows iteration over the agents of one variety
-        """
-        return iter(self.varieties[var]["agents"])
-
-
-    class AgentRandomIter:
-        """
-        Iterate randomly through our agents.
-        Eventually this should be made generic so it can 
-        randomly iterate through anything.
-        """
-        def __init__(self, agents):
-            self.i = 0
-            self.agents = agents
-            self.indices = list(range(len(agents)))
-            random.shuffle(self.indices)
-
-
-        def __iter__(self):
-            return self
-
-
-        def __next__(self):
-            """
-            Return the next element or raise exception.
-            """
-            if self.i < len(self.indices):
-                # get an agent!
-                agent = self.agents.element_at(self.indices[self.i])
-                self.i += 1
-                return agent
-            else:
-                raise StopIteration()
-
-
-    def agent_random_iter(self):
-        """
-        Loop through agents in random order.
-        """
-        return AgentPop.AgentRandomIter(self)
-
-
-    def element_at(self, i):
-        """
-        Another way to treat the AgentPop as if it were really
-        one big list.
-        """
-        if i < 0 or i > len(self):
-            raise IndexError()
-        else:
-            for var in self.varieties_iter():
-                l = len(self.varieties[var]["agents"])
-                if i < l:
-                    return self.varieties[var]["agents"][i]
-                else:
-                     i -= l
-
-
-    def append(self, agent):
-        """
-        Appends to agent list.
-        """
-        var = node.get_node_type(agent)
-        logging.debug("Adding " + agent.__str__()
-                      + " of variety " + var)
-
-        if var in self.varieties:
-            self.varieties[var]["agents"].append(agent)
-        else:
-            self.varieties[var] = {"agents": [agent],
-                                   "pop_of_note": 0,
-                                   "pop_hist": [],
-                                   "zombies": [],
-                                   "zero_per": 0}
-            self.graph.add_edge(self, var)
-
-# we link each agent to the variety
-# so we can show their relationship
-        self.graph.add_edge(var, agent)
-
-
-    def create_zombies(self):
-        """
-        Choose a random batch of agents from each var
-        for possible revivial later.
-        """
-        if self.num_zombies > 0:
-            for var in self.varieties_iter():
-                while len(self.varieties[var]["zombies"]) < self.num_zombies:
-                    agent = random.choice(self.varieties[var]["agents"])
-                    self.varieties[var]["zombies"].append(copy.copy(agent))
-
-
-    def remove(self, agent):
-        """
-        Removes from agent list.
-        """
-        logging.debug("Removing " + agent.name + " from agents")
-        var = node.get_node_type(agent)
-        self.varieties[var]["agents"].remove(agent)
-        self.graph.remove_node(agent) # also removes edges!
-
-
-    def join_agents(self, a1, a2):
-        """
-        Add a graph edge between agents.
-        """
-        self.graph.add_edge(a1, a2)
-
-
-    def contains(self, var):
-        """
-        Do we have this sort of thing in our env?
-        """
-        return var in self.varieties
-
-
-    def get_agents_of_var(self, var):
-        """
-        Return all agents of type var.
-        """
-        if var in self.varieties:
-            return self.varieties[var]["agents"]
-        else:
-            return None
-
-
-    def get_pop(self, var):
-        """
-        Return the population of variety 'var'
-        """
-        return len(self.varieties[var]["agents"])
-
-
-    def get_my_pop(self, agent):
-        """
-        Return the population of agent's type
-        """
-        var = node.get_node_type(agent)
-        return self.get_pop(var)
-
-
-    def get_pop_hist(self):
-        """
-        Make a list containing the population history
-        for each var in varieties.
-        """
-        pop_hist = {}
-        for var in self.varieties:
-            pop_hist[var] = self.varieties[var]["pop_hist"]
-        return pop_hist
-
-
-    def get_pop_of_note(self, var):
-        """
-        Return the value of pop_of_note for 'var'.
-        """
-        return self.varieties[var]["pop_of_note"]
-
-
-    def change_pop_of_note(self, var, change):
-        """
-        Change the value of pop_of_note by 'change.'
-        """
-        self.varieties[var]["pop_of_note"] += change
-
-
-    def append_pop_hist(self, var, pop):
-        """
-        Add the most recent pop to pop_hist.
-        """
-        self.varieties[var]["pop_hist"].append(pop)
-
-
-    def census(self):
-        """
-        Take a census of agents by variety.
-        Return a string of results for possible display.
-        """
-        ret = ""
-        for v in self.varieties:
-            pop = self.get_pop(v)
-            ret += v + ": " + str(pop) + "\n"
-            var = self.varieties[v]
-            var["pop_hist"].append(pop)
-            if pop == 0:
-                var["zero_per"] += 1
-                if var["zero_per"] >= MAX_ZERO_PER:
-                    for agent in var["zombies"]:
-                        self.append(copy.copy(agent))
-                    var["zero_per"] = 0
-        return ret
-
-
 class Environment(Entity):
-
     """
     A basic environment allowing starting, stopping,
     stepping, inspection and editing of key objects,  etc.
@@ -397,7 +153,7 @@ class Environment(Entity):
         if model_nm:
             pop_name += model_nm + " "
         pop_name += "Agents"
-        self.agents = AgentPop(pop_name)
+        self.agents = ap.AgentPop(pop_name)
         self.graph.add_edge(self, self.agents)
         self.womb = []
         self.period = 0
@@ -757,7 +513,7 @@ class Environment(Entity):
         Leave this run.
         """
         self.user.tell("Returning to runtime environment.")
-        exit(0)
+        sys.exit(0)
 
 
     def contains(self, agent_type):
