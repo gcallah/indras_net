@@ -48,7 +48,8 @@ class AgentPop(node.Node):
 
 
     def __reversed__(self):
-        return AgentPop.ReverseIter(self)
+        all_agents = self.all_agents_list()
+        return reversed(all_agents)
 
     
     def set_num_zombies(self, num):
@@ -69,63 +70,20 @@ class AgentPop(node.Node):
         return iter(self.vars[var]["agents"])
 
 
-    class AgentIter:
-        """
-        The __next__() func is shared among several other iters,
-        as well as some other code bits.
-        """
-        def __init__(self, agents):
-            self.i = 0
-            self.agents = agents
-
-
-        def __iter__(self):
-            return self
-
-
-        def __next__(self):
-            """
-            Return the next element or raise exception to stop iterating.
-            """
-            if self.i < len(self.indices):
-                # get an agent!
-                agent = self.agents.element_at(self.indices[self.i])
-                self.i += 1
-                return agent
-            else:
-                raise StopIteration()
-
-
-    class ReverseIter(AgentIter):
-        """
-        Iterate backwards through our agents.
-        Eventually this should be made generic so it can 
-        backwards iterate through anything that implements
-        an element_at() method.
-        """
-        def __init__(self, agents):
-            super().__init__(agents)
-            self.indices = list(range(len(agents) - 1, -1, -1))
-
-
-    class RandomIter(AgentIter):
-        """
-        Iterate randomly through our agents.
-        Eventually this should be made generic so it can 
-        randomly iterate through anything that implements
-        an element_at() method.
-        """
-        def __init__(self, agents):
-            super().__init__(agents)
-            self.indices = list(range(len(agents)))
-            random.shuffle(self.indices)
+    def all_agents_list(self):
+        all_agents = []
+        for var in self.varieties_iter():
+            all_agents += self.vars[var]["agents"]
+        return all_agents
 
 
     def agent_random_iter(self):
         """
         Loop through agents in random order.
         """
-        return AgentPop.RandomIter(self)
+        all_agents = self.all_agents_list()
+        random.shuffle(all_agents)
+        return iter(all_agents)
 
 
     def element_at(self, i):

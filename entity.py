@@ -217,9 +217,12 @@ class Environment(Entity):
         return self.agents.get_agents_of_var(var)
 
 
-    def run(self, resume=False):
+    def run(self, resume=False, loops=0):
         """
-        This is the main menu loop for all models
+        This is the main menu loop for all models.
+
+        resume: starts up from a previous period.
+        loops: run x loops, perhaps for timing purposes.
         """
 
         if resume:
@@ -227,16 +230,21 @@ class Environment(Entity):
         else:
             self.period = 0
 
-        self.user.tell("Welcome, " + self.user.name)
-        self.user.tell("Running in " + self.name)
-        msg = self.menu.display()
-        while msg is None:
+        if loops > 0:
+            while self.period < loops:
+                self.step()
+            self.user.tell("Ran for " + str(self.period) + " periods.")
+        else:
+            self.user.tell("Welcome, " + self.user.name)
+            self.user.tell("Running in " + self.name)
             msg = self.menu.display()
-            self.user.tell("\nMain Menu; Period: " + str(self.period))
+            while msg is None:
+                msg = self.menu.display()
+                self.user.tell("\nMain Menu; Period: " + str(self.period))
 
-        Environment.prev_period = self.period
+            Environment.prev_period = self.period
 
-        self.user.tell(msg)
+            self.user.tell(msg)
 
 
     def add_menu_item(self, submenu, letter, text, func):

@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """
-This is a simple test script. It can be cloned to
-"""
-fashion_run.py: A script to run fashion+model.py,
+fashion_run.py: A script to run fashion_model.py,
 which implements Adam Smith's fashion model.
 """
 
