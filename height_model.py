@@ -3,12 +3,8 @@ Filename: height_agent.py
 Author: Gene Callahan and Brandon Logan
 """
 
-import random
-import logging
-import pprint
-import numpy as np
-import matplotlib.pyplot as plt
 import entity
+import random
 
 REPRODUCE = "reproduce"
 ENV_NM = "Schelling height model"
@@ -61,8 +57,8 @@ class HeightEnv(entity.Environment):
     """ This class creates an environment for Schelling height agents """
 
 
-    def __init__(self):
-        super().__init__(ENV_NM)
+    def __init__(self, model_nm = None):
+        super().__init__("Height Environment", model_nm=model_nm)
         self.height_hist = []
         self.cur_avg_height = 0
 
