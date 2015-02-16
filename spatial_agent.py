@@ -157,10 +157,9 @@ class SpatialEnvironment(ent.Environment):
                               + agent.name + " which has a goal of "
                               + agent.goal)
                 prehensions = agent.survey_env(agent.goal)
-                return self.address_prehensions(agent, prehensions)
+                self.address_prehensions(agent, prehensions)
             else:
                 agent.detect_behavior()
-                return None
 
 
     def address_prehensions(self, agent, prehensions):
@@ -202,7 +201,6 @@ class SpatialEnvironment(ent.Environment):
         this assigns it a new, random position
         based on its current position
         """
-
         new_pos = rand_complex(agent.pos, agent.max_move)
         x = new_pos.real
         y  = new_pos.imag
