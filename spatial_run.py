@@ -6,6 +6,7 @@ import logging
 import prop_args as props
 import entity as ent
 import spatial_agent as sa
+import spatial_env as se
 import spatial_model as sm
 
 # set up some file names:
@@ -26,7 +27,7 @@ else:
     pa.set("user_type", ent.User.TERMINAL)
 
 # Now we create a minimal environment for our agents to act within:
-env = sa.SpatialEnvironment("Test spatial env", 100.0, 100.0,
+env = se.SpatialEnv("Test spatial env", 100.0, 100.0,
                             model_nm=MODEL_NM)
 
 # Now we loop creating multiple agents with numbered names

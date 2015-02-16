@@ -4,6 +4,7 @@ An Edgeworth Box model where two agents trade goods.
 """
 import logging
 import spatial_agent
+import spatial_env
 
 TRADE = "trade"
 
@@ -183,7 +184,7 @@ class EdgeboxAgent(spatial_agent.SpatialAgent):
         self.goods[good] = {"endow": 0, "util_func": gen_util_func}
 
 
-class EdgeboxEnv(spatial_agent.SpatialEnvironment):
+class EdgeboxEnv(spatial_env.SpatialEnv):
     """
     Contains goods and agents who exchange them.
     """

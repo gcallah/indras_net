@@ -9,6 +9,7 @@ trend-setters and followers.
 import logging
 import node
 import spatial_agent as spagnt
+import spatial_env
 import predprey_model as prdpry
 import display_methods as disp
 
@@ -144,7 +145,7 @@ class TrendSetter(Fashionista, prdpry.MobilePrey):
                                    self.env.trnd_others)
 
 
-class SocietyEnv(spagnt.SpatialEnvironment):
+class SocietyEnv(spatial_env.SpatialEnv):
     """
     This is the society in which our fashionistas
     will adopt fashions
@@ -173,7 +174,7 @@ class SocietyEnv(spagnt.SpatialEnvironment):
         """
         Add a new fashion agent to the env.
         """
-        spagnt.SpatialEnvironment.add_agent(self, agent)
+        super().add_agent(agent)
 
         var = node.get_node_type(agent)
 

@@ -6,6 +6,7 @@ It also is a handy tool to have around for testing
 new features added to the base system.
 """
 import spatial_agent as sa
+import spatial_env as se
 
 
 class TestSpatialAgent(sa.MobileAgent):
@@ -14,6 +15,6 @@ class TestSpatialAgent(sa.MobileAgent):
     """
 
     def act(self):
-        print(sa.pos_msg(self, self.pos))
+        print(se.pos_msg(self, self.pos))
 
 
