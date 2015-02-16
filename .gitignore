@@ -1,0 +1,11 @@
+*.txt
+*~
+*.key
+*.ppt
+*.pptx
+*.sh
+*.png
+__pycache__/*
+Graphics
+debugs
+backup
