@@ -8,8 +8,9 @@ import cmath
 import random
 from collections import deque
 import logging
-import entity as ent
 import node
+import menu
+import entity as ent
 import display_methods as disp
 
 MAX_EXCLUDE = 10
@@ -126,7 +127,7 @@ class SpatialEnvironment(ent.Environment):
         self.height = height
         self.max_dist = self.length * self.height
 # it only makes sense to plot agents in a spatial env, so add this here:
-        plot = ent.MenuLeaf("(s)catter plot", self.plot)
+        plot = menu.MenuLeaf("(s)catter plot", self.plot)
         self.menu.view.add_menu_item("s", plot)
 
 

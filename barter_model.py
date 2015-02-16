@@ -5,6 +5,7 @@ An barter market model where several agents trade goods.
 import logging
 import csv
 import networkx as nx
+import menu
 import entity as ent
 import edgebox_model as ebm
 
@@ -96,7 +97,7 @@ class BarterEnv(ebm.EdgeboxEnv):
         self.market = Market("agora")
         self.graph.add_edge(self, self.market)
         self.menu.graph.add_menu_item("m", 
-                                      ent.MenuLeaf("(m)arket",
+                                      menu.MenuLeaf("(m)arket",
                                       self.graph_market))
 
 

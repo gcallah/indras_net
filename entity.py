@@ -137,7 +137,7 @@ class User(Entity):
             return input(msg)
 
 
-class Environment(Entity):
+class Environment(node.Node):
     """
     A basic environment allowing starting, stopping,
     stepping, inspection and editing of key objects,  etc.
