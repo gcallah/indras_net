@@ -23,6 +23,8 @@ coop_model.py implements the babysitting co-op model Paul Krugman made famous. c
 
 edgebox_model.py implements the "Edgeworth Box" model of exchange from economics. edgebox_run.py runs this model.
 
+emp_model.py and emp_run.py are some experiments with agent heirarchies.
+
 entity.py contains the basic agent class, and basic environment, as well as some plumbing for connecting them.
 
 fashion_model.py is Adam Smith's fashion model.
@@ -30,6 +32,8 @@ fashion_model.py is Adam Smith's fashion model.
 fashion_run.py sets some parameters for fashion_model.py, and then runs the model.
 
 height_model.py is Thomas Schelling's genetic engineered height model. height_run.py runs the model.
+
+menger_model.py is the beginnings of an attempt to get money to emerge in a market. menger_run.py runs this model.
 
 menu.py contains our basic menuing code. menu_model.py and menu_run.py exist to test the menu system in isolation.
 
