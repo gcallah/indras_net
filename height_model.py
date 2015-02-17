@@ -57,8 +57,8 @@ class HeightEnv(entity.Environment):
     """ This class creates an environment for Schelling height agents """
 
 
-    def __init__(self, preact=True, model_nm = None):
-        super().__init__(preact, "Height Environment", model_nm=model_nm)
+    def __init__(self, model_nm = None):
+        super().__init__( "Height Environment", model_nm=model_nm, preact=True,)
         self.height_hist = []
         self.cur_avg_height = 0
 
@@ -68,7 +68,7 @@ class HeightEnv(entity.Environment):
             total_height += agent.height 
             if not agent.alive:
                 print ('agent ' + agent.name + ' with a height of ' + str(agent.height))  
-                self.agents.remove  
+                self.agents.remove(agent)  
         self.cur_avg_height = total_height / len(self.agents)
         print ('Average height period ' + str(self.period) + ' is: ' + str(self.cur_avg_height))        
   
