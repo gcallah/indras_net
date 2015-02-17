@@ -324,14 +324,7 @@ class PredPreyEnv(spatial_env.SpatialEnv):
         """
         for creature in reversed(self.agents):
             if not creature.is_alive():
-                self.cull(creature)
-
-
-    def cull(self, creature):
-        """
-        Eliminate creatures who have died.
-        """
-        self.agents.remove(creature)
+                self.agents.remove(creature)
 
 
     def new_name_suffix(self, creature):
