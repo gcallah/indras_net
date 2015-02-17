@@ -15,7 +15,7 @@ LOG_FILE = MODEL_NM + ".txt"
 
 read_props = False
 if read_props:
-    pa = props.PropArgs.read_props(MODEL_NM, "basic.props")
+    pa = props.PropArgs.read_props(MODEL_NM, "height.props")
 else:
     pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
     pa.set("model", MODEL_NM)
