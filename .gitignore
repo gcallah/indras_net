@@ -1,7 +1,5 @@
 *.txt
 *~
-*.key
-*.ppt
 *.pptx
 *.png
 __pycache__
