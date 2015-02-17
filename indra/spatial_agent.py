@@ -8,7 +8,7 @@ import cmath
 import random
 from collections import deque
 import logging
-import entity as ent
+import indra.entity as ent
 
 MAX_EXCLUDE = 10
 

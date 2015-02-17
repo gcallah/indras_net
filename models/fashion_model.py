@@ -7,11 +7,11 @@ trend-setters and followers.
 """
 
 import logging
-import node
-import spatial_agent as spagnt
-import spatial_env
+import indra.node as node
+import indra.entity as ent
+import indra.spatial_env as se
+import indra.display_methods as disp
 import predprey_model as prdpry
-import display_methods as disp
 
 fashions = ["blue", "red"]
 
@@ -50,7 +50,7 @@ class Fashionista(prdpry.MobileCreature):
         """
         Take a look around and see who is wearing what!
         """
-        return spagnt.SpatialAgent.survey_env(self, goal)
+        return ent.Agent.survey_env(self, goal)
 
 
     def respond_to_trends(self, prehended, gt, fshn_ratio,
@@ -145,7 +145,7 @@ class TrendSetter(Fashionista, prdpry.MobilePrey):
                                    self.env.trnd_others)
 
 
-class SocietyEnv(spatial_env.SpatialEnv):
+class SocietyEnv(se.SpatialEnv):
     """
     This is the society in which our fashionistas
     will adopt fashions

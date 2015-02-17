@@ -3,10 +3,10 @@ A script to test our spatial capabilities.
 """
 
 import logging
-import prop_args as props
-import entity as ent
-import spatial_agent as sa
-import spatial_env as se
+import indra.prop_args as props
+import indra.entity as ent
+import indra.spatial_agent as sa
+import indra.spatial_env as se
 import spatial_model as sm
 
 # set up some file names:

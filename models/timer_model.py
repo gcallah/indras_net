@@ -3,10 +3,10 @@ timer_model.py
 An agent that does nothing to allow timing of other code portions
 more accurately.
 """
-import entity
+import indra.entity as ent
 
 
-class TimerAgent1(entity.Agent):
+class TimerAgent1(ent.Agent):
     """
     An agent that just prints that it is around when asked to act
     """
@@ -25,7 +25,7 @@ class TimerAgent1(entity.Agent):
         pass
 
 
-class TimerAgent2(entity.Agent):
+class TimerAgent2(ent.Agent):
     """
     An agent that just prints that it is around when asked to act
     """
@@ -44,7 +44,7 @@ class TimerAgent2(entity.Agent):
         pass
 
 
-class TimerAgent3(entity.Agent):
+class TimerAgent3(ent.Agent):
     """
     An agent that just prints that it is around when asked to act
     """
@@ -63,7 +63,7 @@ class TimerAgent3(entity.Agent):
         pass
 
 
-class TimerEnv(entity.Environment):
+class TimerEnv(ent.Environment):
     """
     This environment doesn't really do anything.
     """

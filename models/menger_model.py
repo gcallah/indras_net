@@ -5,7 +5,7 @@ in a barter economy.
 """
 import logging
 import random
-import entity as ent
+import indra.entity as ent
 import edgebox_model as ebm
 import barter_model as bm
 

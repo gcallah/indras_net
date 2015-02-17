@@ -3,8 +3,8 @@ edgebox_model.py
 An Edgeworth Box model where two agents trade goods.
 """
 import logging
-import spatial_agent
-import spatial_env
+import indra.spatial_agent as sa
+import indra.spatial_env as se
 
 TRADE = "trade"
 
@@ -27,7 +27,7 @@ def gen_util_func(qty):
     return 10 - .5 * qty
 
 
-class EdgeboxAgent(spatial_agent.SpatialAgent):
+class EdgeboxAgent(sa.SpatialAgent):
     """
     Agents who attempt to trade goods to achieve greater utility.
     We are descending this from SpatialAgent, because later on we want
@@ -184,7 +184,7 @@ class EdgeboxAgent(spatial_agent.SpatialAgent):
         self.goods[good] = {"endow": 0, "util_func": gen_util_func}
 
 
-class EdgeboxEnv(spatial_env.SpatialEnv):
+class EdgeboxEnv(se.SpatialEnv):
     """
     Contains goods and agents who exchange them.
     """

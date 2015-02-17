@@ -9,7 +9,7 @@ memory will allow.
 
 from collections import OrderedDict
 import logging
-import node
+import indra.node as node
 
 
 class Menu(node.Node):

@@ -7,7 +7,7 @@ location. Includes logging.
 import logging
 import networkx as nx
 import json
-import node
+import indra.node as node
 
 
 class PropArgs(node.Node):

@@ -5,8 +5,8 @@ to easily get started on a new spatial model.
 It also is a handy tool to have around for testing
 new features added to the base system.
 """
-import spatial_agent as sa
-import spatial_env as se
+import indra.spatial_agent as sa
+import indra.spatial_env as se
 
 
 class TestSpatialAgent(sa.MobileAgent):

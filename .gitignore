@@ -3,8 +3,8 @@
 *.key
 *.ppt
 *.pptx
-*.sh
 *.png
+__pycache__
 __pycache__/*
 Graphics
 debugs

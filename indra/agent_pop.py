@@ -13,7 +13,7 @@ import random
 import itertools
 import networkx as nx
 import logging
-import node
+import indra.node as node
 
 MAX_ZERO_PER = 8
 

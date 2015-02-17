@@ -7,10 +7,10 @@ import math
 import cmath
 import random
 import logging
-import node
-import menu
-import entity as ent
-import display_methods as disp
+import indra.node as node
+import indra.menu as menu
+import indra.entity as ent
+import indra.display_methods as disp
 
 
 def rand_complex(initPos, radius):

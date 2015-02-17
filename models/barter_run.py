@@ -3,9 +3,9 @@ A script to run our barter model.
 """
 
 import logging
-import node
-import prop_args as props
-import barter_model as bm
+import indra.node as node
+import indra.prop_args as props
+import indra.barter_model as bm
 
 MODEL_NM = "barter_model"
 PROG_NM = MODEL_NM + ".py"

@@ -7,8 +7,8 @@ import math
 import random
 import logging
 import pprint
-import spatial_agent as sa
-import spatial_env
+import indra.spatial_agent as sa
+import indra.spatial_env as se
 
 
 EAT = "eat"
@@ -287,7 +287,7 @@ class Rabbit(Predator):
                       self.decay_rate, self.max_move)
 
 
-class PredPreyEnv(spatial_env.SpatialEnv):
+class PredPreyEnv(se.SpatialEnv):
 
     """ This class creates an environment for predators
         to chase and eat prey """

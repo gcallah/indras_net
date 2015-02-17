@@ -4,9 +4,9 @@ A script to run our Menger model.
 """
 
 import logging
-import prop_args as props
-import node
-import entity as ent
+import indra.prop_args as props
+import indra.node as node
+import indra.entity as ent
 import barter_model as bm
 import menger_model as mm
 

@@ -13,11 +13,11 @@ import pdb
 import getpass
 import IPython
 import networkx as nx
-import node
-import prop_args as pa
-import agent_pop as ap
-import display_methods as disp
-import menu
+import indra.node as node
+import indra.prop_args as pa
+import indra.agent_pop as ap
+import indra.display_methods as disp
+import indra.menu as menu
 
 
 class Entity(node.Node):

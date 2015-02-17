@@ -5,8 +5,8 @@ An barter market model where several agents trade goods.
 import logging
 import csv
 import networkx as nx
-import menu
-import entity as ent
+import indra.menu as menu
+import indra.entity as ent
 import edgebox_model as ebm
 
 TRADE = "trade"

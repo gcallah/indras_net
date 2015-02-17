@@ -5,8 +5,8 @@ A simple text of creating a heirarchical network.
 import networkx as nx
 import matplotlib as plt
 #import pygraphviz as pgv
-import node
-import entity as ent
+import indra.node as node
+import indra.entity as ent
 
 EMPLOYS = "employs"
 

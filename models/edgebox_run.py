@@ -4,8 +4,8 @@ The script to run our Edgeworth Box model.
 """
 
 import logging
-import prop_args as props
-import node
+import indra.prop_args as props
+import indra.node as node
 import edgebox_model as ebm
 
 MODEL_NM = "edgebox_model"

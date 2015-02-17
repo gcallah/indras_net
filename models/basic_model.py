@@ -5,10 +5,10 @@ to easily get started on a new model.
 It also is a handy tool to have around
 for testing new features added to the base system.
 """
-import entity
+import indra.entity as ent
 
 
-class BasicAgent(entity.Agent):
+class BasicAgent(ent.Agent):
     """
     An agent that just prints that it is around when asked to act
     """
@@ -55,7 +55,7 @@ class Gozer(BasicAgent):
                     return
 
 
-class BasicEnv(entity.Environment):
+class BasicEnv(ent.Environment):
     """
     This environment doesn't really do anything.
     """

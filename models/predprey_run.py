@@ -4,8 +4,8 @@ predprey_run.py
 Script to run our predator-prey model.
 """
 import logging
-import node
-import prop_args as props
+import indra.node as node
+import indra.prop_args as props
 import predprey_model as ppm
 
 

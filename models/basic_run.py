@@ -5,9 +5,12 @@ create new run scripts, and should be run to test
 the system after library changes.
 """
 
+import sys
+print(sys.path)
+
 import logging
-import prop_args as props
-import entity as ent
+import indra.prop_args as props
+import indra.entity as ent
 import basic_model as bm
 
 # set up some file names:

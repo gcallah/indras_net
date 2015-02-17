@@ -2,7 +2,7 @@
 menu_model.py
 Model for testing the menu system
 """
-import entity as ent
+import indra.entity as ent
 
 
 class MenuAgent(ent.Agent):
