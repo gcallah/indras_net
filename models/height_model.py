@@ -3,7 +3,7 @@ Filename: height_agent.py
 Author: Gene Callahan and Brandon Logan
 """
 
-import entity
+import indra.entity as ent
 import random
 
 REPRODUCE = "reproduce"
@@ -13,7 +13,7 @@ DEF_HEIGHT = 1.0
 
 
 
-class HeightAgent(entity.Agent):
+class HeightAgent(ent.Agent):
 
     def __init__(self, name, height):
         super().__init__(name, REPRODUCE)
@@ -52,7 +52,7 @@ class HeightAgentEng(HeightAgent):
             #print('changing agent ' + self.mychild.name + ' height from ' + str(self.mychild.height) + ' to ' + str(runt_height))
             self.mychild.height = runt_height
 
-class HeightEnv(entity.Environment):
+class HeightEnv(ent.Environment):
 
     """ This class creates an environment for Schelling height agents """
 

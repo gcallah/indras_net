@@ -6,7 +6,7 @@ Created on Thu Sep 18 16:45:50 2014
 """
 import logging
 import prop_args as props
-import entity as ent
+import indra.entity as ent
 import height_model as hm
 
 MODEL_NM = "height_model"
