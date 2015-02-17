@@ -62,5 +62,15 @@ class BasicEnv(ent.Environment):
 
     def __init__(self, model_nm=None):
         super().__init__("Basic environment",
-                         model_nm=model_nm, postact=True)
+                         model_nm=model_nm,
+                         preact=True,
+                         postact=True)
+
+
+    def preact_loop(self):
+        print("Preact loop: demonstrating backwards looping")
+        for agent in reversed(self.agents):
+            print("Agent: " + agent.name)
+
+
 

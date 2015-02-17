@@ -5,9 +5,6 @@ create new run scripts, and should be run to test
 the system after library changes.
 """
 
-import sys
-print(sys.path)
-
 import logging
 import indra.prop_args as props
 import indra.entity as ent
