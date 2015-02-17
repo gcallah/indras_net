@@ -58,7 +58,7 @@ class HeightEnv(entity.Environment):
 
 
     def __init__(self, model_nm = None):
-        super().__init__( "Height Environment", model_nm=model_nm, preact=True,)
+        super().__init__( "Height Environment", model_nm=model_nm, preact=True)
         self.height_hist = []
         self.cur_avg_height = 0
 
