@@ -1,20 +1,44 @@
-'''
+"""
+grid_env.py
+
+This is an adaptation of the:
+
 Mesa Space Module
 =================================
 
+From the GMU Mesa project.
+
 Objects used to add a spatial component to a model.
 
-Grid: base grid, a simple list-of-lists.
+GridEnv: base grid, a simple list-of-lists.
 
-MultiGrid: extension to Grid where each cell is a set of objects.
+MultiGridEnv: extension to Grid where each cell is a set of objects.
 
-'''
+"""
+
 # Instruction for PyLint to suppress variable name errors, since we have a
 # good reason to use one-character variable names for x and y.
 # pylint: disable=invalid-name
 
-class Grid(object):
-    '''
+import random
+import itertools
+import indra.spatial_env as se
+
+
+def pos_msg(agent):
+    """
+    A convenience function for displaying
+    an entity's position.
+    """
+    x = agent.pos[0]
+    y = agent.pos[1]
+    return("New position for " + 
+           agent.name + " is "
+           + str(x) + ", " + str(y))
+
+
+class GridEnv(se.SpatialEnv):
+    """
     Base class for a square grid.
 
     Grid cells are indexed by [y][x], where [0][0] is assumed to be the top-left
@@ -32,24 +56,23 @@ class Grid(object):
         get_neighbors: Returns the objects surrounding a given cell.
         get_neighborhood: Returns the cells surrounding a given cell.
         get_cell_list_contents: Returns the contents of a list of cells ((x,y) tuples)
-    '''
+    """
 
-    width = None
-    height = None
     torus = False
     grid = None
     default_val = lambda s: None
 
-    def __init__(self, height, width, torus):
-        '''
+    def __init__(self, name, height, width, torus, model_nm=None):
+        """
         Create a new grid.
 
         Args:
             height, width: The height and width of the grid
             torus: Boolean whether the grid wraps or not.
-        '''
-        self.height = height
-        self.width = width
+        """
+        super().__init__(name, width, height, preact=True,
+                         postact=False, model_nm=model_nm)
+
         self.torus = torus
 
         self.grid = []
@@ -59,13 +82,20 @@ class Grid(object):
                 row.append(self.default_val())
             self.grid.append(row)
 
+
+    def __iter__(self):
+        # create an iterator that chains the rows of grid together as if one:
+        return itertools.chain(*self.grid)
+
+
     def __getitem__(self, index):
         return self.grid[index]
 
+
     def _get_x(self, x):
-        '''
+        """
         Convert X coordinate, handling torus looping.
-        '''
+        """
         if x >= 0 and x < self.width:
             return x
         if not self.torus:
@@ -73,10 +103,11 @@ class Grid(object):
         else:
             return x % self.width
 
+
     def _get_y(self, y):
-        '''
+        """
         Convert Y coordinate, handling torus looping.
-        '''
+        """
         if y >= 0 and y < self.height:
             return y
         if not self.torus:
@@ -84,8 +115,9 @@ class Grid(object):
         else:
             return y % self.height
 
+
     def get_neighborhood(self, x, y, moore, include_center=False, radius=1):
-        '''
+        """
         Return a list of cells that are in the neighborhood of a certain point.
 
         Args:
@@ -99,7 +131,7 @@ class Grid(object):
         Returns:
             A list of coordinate tuples representing the neighborhood; at most 9 if
             Moore, 5 if Von Neumann (8 and 4 if not including the center).
-        '''
+        """
         coordinates = []
         for dy in range(-radius, radius + 1):
             for dx in range(-radius, radius + 1):
@@ -121,8 +153,9 @@ class Grid(object):
                 coordinates.append((px, py))
         return coordinates
 
+
     def get_neighbors(self, x, y, moore, include_center=False, radius=1):
-        '''
+        """
         Return a list of neighbors to a certain point.
 
         Args:
@@ -136,38 +169,57 @@ class Grid(object):
         Returns:
             A list of non-None objects in the given neighborhood; at most 9 if
             Moore, 5 if Von-Neumann (8 and 4 if not including the center).
-        '''
+        """
         neighborhood = self.get_neighborhood(x, y, moore, include_center, radius)
         return self.get_cell_list_contents(neighborhood)
 
     def get_cell_list_contents(self, cell_list):
-        '''
+        """
         Args:
             cell_list: Array-like of (x, y) tuples
 
         Returns:
             A list of the contents of the cells identified in cell_list
-        '''
+        """
         contents = []
         for x, y in cell_list:
             self._add_members(contents, x, y)
         return contents
 
+
+    def position_agent(self, agent, x=-1, y=-1):
+        """
+        Position an agent on the grid.
+        If x or y are positive, they are used, but if negative, 
+        we get a random position.
+        """
+        print("in grid position agent")
+        if x < 0:
+            x = random.randint(0, self.width - 1)
+        if y < 0:
+            y = random.randint(0, self.height - 1)
+
+        self.grid[y][x] = agent
+
+        agent.pos = [x, y]
+
+
     def _add_members(self, target_list, x, y):
-        '''
+        """
         Helper method to append the contents of a cell to the given list.
         Override for other grid types.
-        '''
+        """
         if self.grid[y][x] is not None:
             target_list.append(self.grid[y][x])
 
+
     def is_cell_empty(self, coords):
         x, y = coords
-        return True if self.grid[y][x] is None else False
+        return self.grid[y][x] is None
 
 
-class MultiGrid(Grid):
-    '''
+class MultiGridEnv(GridEnv):
+    """
     Grid where each cell can contain more than one object.
 
     Grid cells are indexed by [y][x], where [0][0] is assumed to be the top-left
@@ -186,14 +238,19 @@ class MultiGrid(Grid):
 
     Methods:
         get_neighbors: Returns the objects surrounding a given cell.
-    '''
+    """
 
     default_val = lambda s: set()
 
     def _add_members(self, target_list, x, y):
-        '''
+        """
         Helper method to add all objects in the given cell to the target_list.
-        '''
+        """
         for a in self.grid[y][x]:
             target_list.append(a)
+
+
+    def get_pos_components(self, agent):
+        return a.pos
+
 

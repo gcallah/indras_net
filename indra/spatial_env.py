@@ -28,8 +28,6 @@ def pos_msg(agent, pos):
     A convenience function for displaying
     an entity's position.
     """
-    x = pos.real
-    y = pos.imag
     return("New position for " + 
            agent.name + " is "
            + pos_to_str(pos))
@@ -48,16 +46,16 @@ class SpatialEnv(ent.Environment):
     complex plane.
     """
 
-    def __init__(self, name, length, height, preact=True,
+    def __init__(self, name, width, height, preact=True,
                  postact=False, model_nm=None):
 
         super().__init__(name, preact=preact,
                          postact=postact, model_nm=model_nm)
 
         self.disp_census = True
-        self.length = length
+        self.width = width
         self.height = height
-        self.max_dist = self.length * self.height
+        self.max_dist = self.width * self.height
 # it only makes sense to plot agents in a spatial env, so add this here:
         plot = menu.MenuLeaf("(s)catter plot", self.plot)
         self.menu.view.add_menu_item("s", plot)
@@ -68,13 +66,18 @@ class SpatialEnv(ent.Environment):
         Add a spatial agent to env
         """
         super().add_agent(agent)
-        x = random.uniform(0, self.length - 1)
-        y = random.uniform(0, self.height - 1)
-        agent.pos = complex(x, y)
+        self.position_agent(agent)
 
         v = node.get_node_type(agent)
         logging.debug("Adding " + agent.__str__()
                       + " of variety " + v)
+
+
+    def position_agent(self, agent):
+        print("in spatial position agent")
+        x = random.uniform(0, self.width - 1)
+        y = random.uniform(0, self.height - 1)
+        agent.pos = complex(x, y)
 
 
     def preact_loop(self):
@@ -141,13 +144,19 @@ class SpatialEnv(ent.Environment):
             x = 0.0
         if y  < 0.0:
             y  = 0.0
-        if x > self.length:
-            x = self.length
+        if x > self.width:
+            x = self.width
         if y  > self.height:
             y = self.height
         pos = complex(x, y)
         logging.debug(pos_msg(agent, pos))
         return pos
+
+
+    def get_pos_components(self, agent):
+        x = agent.pos.real
+        y = agent.pos.imag
+        return [x, y]
 
 
     def plot(self):
@@ -157,12 +166,10 @@ class SpatialEnv(ent.Environment):
         data = {}
         for v in self.agents.varieties_iter():
             data[v] = {"x": [], "y": []}
-            for a in self.agents.variety_iter(v):
-                    pos = a.pos
-                    x = pos.real
-                    y = pos.imag
-                    data[v]["x"].append(x)
-                    data[v]["y"].append(y)
+            for agent in self.agents.variety_iter(v):
+                x_y = self.get_pos_components(agent)
+                data[v]["x"].append(x_y[0])
+                data[v]["y"].append(x_y[1])
                 
         disp.display_scatter_plot("Agent Positions", data)
 
