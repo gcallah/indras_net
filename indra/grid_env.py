@@ -62,6 +62,39 @@ class GridEnv(se.SpatialEnv):
     grid = None
     default_val = lambda s: None
 
+
+    class GridOccupiedIter:
+        """
+        Return just the occupied cells of the grid.
+        """
+
+        def __init__(self, grid):
+            self.grid = grid
+            self.x = 0
+            self.y = 0
+
+
+        def __iter__(self):
+            return self
+
+
+        def __next__(self):
+            while self.y < self.grid.height:
+                # print("in row " + str(self.y))
+                while self.x < self.grid.width:
+                    # print("in column " + str(self.x))
+                    if not self.grid.is_cell_empty([self.x, self.y]):
+                        ret = [self.grid[self.y][self.x], self.x, self.y]
+                        self.x += 1
+                        return ret
+                    else:
+                        self.x += 1
+                self.x = 0
+                self.y += 1
+            else:
+                raise StopIteration()
+
+
     def __init__(self, name, height, width, torus, model_nm=None):
         """
         Create a new grid.
@@ -114,6 +147,10 @@ class GridEnv(se.SpatialEnv):
             raise Exception("Coordinate out of bounds.")
         else:
             return y % self.height
+
+
+    def occupied_iter(self):
+        return GridEnv.GridOccupiedIter(self)
 
 
     def get_neighborhood(self, x, y, moore, include_center=False, radius=1):
@@ -193,7 +230,6 @@ class GridEnv(se.SpatialEnv):
         If x or y are positive, they are used, but if negative, 
         we get a random position.
         """
-        print("in grid position agent")
         if x < 0:
             x = random.randint(0, self.width - 1)
         if y < 0:

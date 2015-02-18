@@ -74,7 +74,6 @@ class SpatialEnv(ent.Environment):
 
 
     def position_agent(self, agent):
-        print("in spatial position agent")
         x = random.uniform(0, self.width - 1)
         y = random.uniform(0, self.height - 1)
         agent.pos = complex(x, y)
