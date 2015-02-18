@@ -5,8 +5,7 @@ Created on Thu Sep 18 16:45:50 2014
 @author: Gene and Brandon
 """
 import logging
-import prop_args as props
-import indra.entity as ent
+import indra.prop_args as props
 import height_model as hm
 
 MODEL_NM = "height_model"
@@ -20,14 +19,19 @@ else:
     pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
     pa.set("model", MODEL_NM)
     pa.set("num_agents", 10)
-    pa.set("user_type", ent.User.IPYTHON_NB)
+    pa.set("parent_type", "GenEng")
     
 env = hm.HeightEnv(model_nm=MODEL_NM)
 
-
+agent = None
 for i in range(pa.get("num_agents")):
-    env.add_agent(
-        hm.HeightAgent(name ='agent' + str(i),height = 8))
+  
+    if pa.get("parent_type" == "GenEng"):
+        env.add_agent(
+        hm.HeightAgentEng(name='Eng agent' + str(i),height = 8))
+    else:
+        env.add_agent(
+        hm.HeightAgent(name='agent' + str(i),height = 8))
 
 
 logging.info("Starting program " + PROG_NM)

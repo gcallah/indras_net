@@ -1,0 +1,12 @@
+{
+    "false": null,
+    "num_agents": 10,
+    "model": "height_model",
+    "parent_type": "GenEng",
+    "user_type": "terminal",
+    "log_fmode": "w",
+    "log_level": 20,
+    "user_name": "Brandon",
+    "log_format": "%(asctime)s:%(levelname)s:%(message)s",
+    "log_fname": "height_model.txt"
+}
