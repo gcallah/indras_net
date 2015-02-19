@@ -16,12 +16,14 @@ MultiGridEnv: extension to Grid where each cell is a set of objects.
 
 """
 
-# Instruction for PyLint to suppress variable name errors, since we have a
+# Instruction for PyLint to suppress variable name errors, 
+# since we have a
 # good reason to use one-character variable names for x and y.
 # pylint: disable=invalid-name
 
 import random
 import itertools
+import logging
 import indra.spatial_env as se
 
 
@@ -55,11 +57,14 @@ class GridEnv(se.SpatialEnv):
     Methods:
         get_neighbors: Returns the objects surrounding a given cell.
         get_neighborhood: Returns the cells surrounding a given cell.
-        get_cell_list_contents: Returns the contents of a list of cells ((x,y) tuples)
+        get_cell_list_contents: Returns the contents of a list of cells
+            ((x,y) tuples)
     """
 
     torus = False
     grid = None
+    total_cells = height * width
+    filled_cells = 0
     default_val = lambda s: None
 
 
@@ -83,7 +88,7 @@ class GridEnv(se.SpatialEnv):
                 # print("in row " + str(self.y))
                 while self.x < self.grid.width:
                     # print("in column " + str(self.x))
-                    if not self.grid.is_cell_empty([self.x, self.y]):
+                    if not self.grid.is_cell_empty(self.x, self.y):
                         ret = [self.grid[self.y][self.x], self.x, self.y]
                         self.x += 1
                         return ret
@@ -155,14 +160,16 @@ class GridEnv(se.SpatialEnv):
 
     def get_neighborhood(self, x, y, moore, include_center=False, radius=1):
         """
-        Return a list of cells that are in the neighborhood of a certain point.
+        Return a list of cells that are in the 
+        neighborhood of a certain point.
 
         Args:
             x, y: Coordinates for the neighborhood to get.
             moore: If True, return Moore neighborhood (including diagonals)
-                   If False, return Von Neumann neighborhood (exclude diagonals)
-            include_center: If True, return the (x, y) cell as well. Otherwise,
-                            return surrounding cells only.
+                   If False, return Von Neumann neighborhood 
+                        (exclude diagonals)
+            include_center: If True, return the (x, y) cell as well.
+                            Otherwise, return surrounding cells only.
             radius: radius, in cells, of neighborhood to get.
 
         Returns:
@@ -224,16 +231,31 @@ class GridEnv(se.SpatialEnv):
         return contents
 
 
+    RANDOM = -1
+
     def position_agent(self, agent, x=-1, y=-1):
         """
         Position an agent on the grid.
         If x or y are positive, they are used, but if negative, 
         we get a random position.
+        Ensure this random position is not occupied (in Grid).
         """
-        if x < 0:
-            x = random.randint(0, self.width - 1)
-        if y < 0:
-            y = random.randint(0, self.height - 1)
+
+        if x == -1 or y == -1:
+            tries = 0
+            got_cell = False
+            while not got_cell:
+                tries += 1
+                if x == -1:
+                    x = random.randint(0, self.width - 1)
+                if y == -1:
+                    y = random.randint(0, self.height - 1)
+                if self.is_cell_empty(x, y):
+                    got_cell = True
+                else:
+                    logging.error("Grid full; agent not added.")
+                    return
+                    
 
         self.grid[y][x] = agent
 
@@ -249,8 +271,7 @@ class GridEnv(se.SpatialEnv):
             target_list.append(self.grid[y][x])
 
 
-    def is_cell_empty(self, coords):
-        x, y = coords
+    def is_cell_empty(self, x, y):
         return self.grid[y][x] is None
 
 
