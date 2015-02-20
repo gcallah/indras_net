@@ -18,7 +18,7 @@ class TestGridAgent(sa.SpatialAgent):
 #        print(ge.pos_msg(self))
         x = self.pos[0]
         y = self.pos[1]
-        print("with agent " + self.name
+        print("With agent " + self.name
               + " we are looking around "
               + " x = " + str(x)
               + " y = " + str(y))

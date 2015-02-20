@@ -23,7 +23,7 @@ if read_props:
 else:
     pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
     pa.set("model", MODEL_NM)
-    pa.set("num_agents", 10)
+    pa.set("num_agents", 9)
     pa.set("user_type", ent.User.TERMINAL)
     pa.set("grid_width", 4)
     pa.set("grid_height", 4)
@@ -32,7 +32,7 @@ else:
 env = ge.GridEnv("Test grid env",
                  pa.get("grid_height"),
                  pa.get("grid_width"),
-                 False,
+                 torus=True,
                  model_nm=MODEL_NM)
 
 # Now we loop creating multiple agents with numbered names

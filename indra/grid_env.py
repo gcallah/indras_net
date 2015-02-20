@@ -72,8 +72,6 @@ class GridEnv(se.SpatialEnv):
             ((x,y) tuples)
     """
 
-    torus = False
-    grid = None
     default_val = lambda s: None
 
 
@@ -110,7 +108,7 @@ class GridEnv(se.SpatialEnv):
                 raise StopIteration()
 
 
-    def __init__(self, name, height, width, torus=torus,
+    def __init__(self, name, height, width, torus=False,
                  model_nm=None):
         """
         Create a new grid.
@@ -144,32 +142,25 @@ class GridEnv(se.SpatialEnv):
         return self.grid[index]
 
 
-    def _get_x(self, x):
-        """
-        Convert X coordinate, handling torus looping.
-        """
-        if x >= 0 and x < self.width:
-            return x
-        if not self.torus:
-            raise Exception("Coordinate out of bounds.")
-        else:
-            return x % self.width
-
-
-    def _get_y(self, y):
-        """
-        Convert Y coordinate, handling torus looping.
-        """
-        if y >= 0 and y < self.height:
-            return y
-        if not self.torus:
-            raise Exception("Coordinate out of bounds.")
-        else:
-            return y % self.height
-
-
     def occupied_iter(self):
         return GridEnv.GridOccupiedIter(self)
+
+
+    def torus_adj(self, coord, dim_len):
+        """
+        Convert coordinate, handling torus looping.
+        """
+        if self.torus:
+            coord %= dim_len
+        return coord
+
+
+    def out_of_bounds(self, x, y):
+        """
+        Is point x, y off the grid?
+        """
+        return(x < 0 or x >= self.width
+           or y < 0 or y >= self.height)
 
 
     def get_neighborhood(self, x, y, moore,
@@ -190,7 +181,7 @@ class GridEnv(se.SpatialEnv):
 
         Returns:
             A list of coordinate tuples representing the neighborhood;
-                at most 9 if
+                With radius 1, at most 9 if
                 Moore, 5 if Von Neumann
                 (8 and 4 if not including the center).
         """
@@ -199,19 +190,18 @@ class GridEnv(se.SpatialEnv):
             for dx in range(-radius, radius + 1):
                 if dx == 0 and dy == 0 and not include_center:
                     continue
-                # Skip diagonals in Von Neumann neighborhood.
-                if not moore and dy != 0 and dx != 0:
-                    continue
-                # Skip diagonals in Moore neighborhood when distance > radius
-                if moore and (dy ** 2 + dx ** 2) ** .5 > radius:
-                    continue
-                # Skip if not a torus and new coords out of bounds.
-                if not self.torus and (not (0 < dx + x < self.width) or
-                                           not (0 < dy + y < self.height)):
+                if not moore:
+                    # Skip diagonals in Von Neumann neighborhood.
+                    if dy != 0 and dx != 0:
+                        continue
+
+                px = self.torus_adj(x + dx, self.width)
+                py = self.torus_adj(y + dy, self.height)
+
+                # Skip if new coords out of bounds.
+                if(self.out_of_bounds(px, py)):
                     continue
 
-                px = self._get_x(x + dx)
-                py = self._get_y(y + dy)
                 coordinates.append((px, py))
         return coordinates
 
@@ -240,11 +230,6 @@ class GridEnv(se.SpatialEnv):
         neighborhood = self.get_neighborhood(x, y, moore,
                                              include_center,
                                              radius)
-        print("For x = " + str(x)
-              + " and y = " + str(y)
-              + " we have nayb cells of: ")
-        for nx, ny in neighborhood:
-            print("nx = " + str(nx) + " ny = " + str(ny))
         return self.get_cell_list_contents(neighborhood)
 
 
@@ -266,9 +251,6 @@ class GridEnv(se.SpatialEnv):
         """
         Return True if any cells empty else False.
         """
-#        print("Comparing filled " + 
-#              str(self.filled_cells) + " total of "
-#              + str(self.total_cells))
         return self.filled_cells < self.total_cells
 
 
@@ -279,7 +261,6 @@ class GridEnv(se.SpatialEnv):
         we get a random position.
         Ensure this random position is not occupied (in Grid).
         """
-        print("Positioning " + agent.name)
         if x == RANDOM or y == RANDOM:
             got_cell = False
             while not got_cell and self.exists_empty_cells():
@@ -302,7 +283,8 @@ class GridEnv(se.SpatialEnv):
 
     def _add_members(self, target_list, x, y):
         """
-        Helper method to append the contents of a cell to the given list.
+        Helper method to append the contents of a cell
+            to the given list.
         Override for other grid types.
         """
         if self.grid[y][x] is not None:
@@ -326,10 +308,13 @@ class MultiGridEnv(GridEnv):
     Properties:
         width, height: The grid's width and height.
 
-        torus: Boolean which determines whether to treat the grid as a torus.
+        torus: Boolean which determines whether
+            to treat the grid as a torus.
 
-        grid: Internal list-of-lists which holds the grid cells themselves.
-        default_val: Lambda function to populate grid cells with an empty set.
+        grid: Internal list-of-lists which holds
+            the grid cells themselves.
+        default_val: Lambda function to populate
+            grid cells with an empty set.
 
     Methods:
         get_neighbors: Returns the objects surrounding a given cell.
@@ -339,7 +324,8 @@ class MultiGridEnv(GridEnv):
 
     def _add_members(self, target_list, x, y):
         """
-        Helper method to add all objects in the given cell to the target_list.
+        Helper method to add all objects in the
+            given cell to the target_list.
         """
         for a in self.grid[y][x]:
             target_list.append(a)
