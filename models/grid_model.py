@@ -11,10 +11,23 @@ import indra.grid_env as ge
 
 class TestGridAgent(sa.SpatialAgent):
     """
-    An agent that just prints where it is when asked to act
+    An agent that prints its neighbors when asked to act
     """
 
     def act(self):
-        print(ge.pos_msg(self))
+#        print(ge.pos_msg(self))
+        x = self.pos[0]
+        y = self.pos[1]
+        print("with agent " + self.name
+              + " we are looking around "
+              + " x = " + str(x)
+              + " y = " + str(y))
+        naybs = self.env.get_neighbors(x, y, True)
+        if len(naybs) == 0:
+            print(self.name + " has no neighbors.")
+        else:
+            print(self.name + " has neighbors: ")
+            for nayb in naybs:
+                print("    " + nayb.name)
 
 
