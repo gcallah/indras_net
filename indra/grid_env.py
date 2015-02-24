@@ -77,13 +77,16 @@ class GridEnv(se.SpatialEnv):
 
     class GridOccupiedIter:
         """
-        Return just the occupied cells of the grid.
+        Return just the (un)occupied cells of the grid.
+        occupied is a flag indicating if we want the occupied (True)
+            or unoccupied (occupied=False) cells
         """
 
-        def __init__(self, grid):
+        def __init__(self, grid, occupied=True):
             self.grid = grid
             self.x = 0
             self.y = 0
+            self.occupied = occupied
 
 
         def __iter__(self):
@@ -92,10 +95,9 @@ class GridEnv(se.SpatialEnv):
 
         def __next__(self):
             while self.y < self.grid.height:
-                # print("in row " + str(self.y))
                 while self.x < self.grid.width:
-                    # print("in column " + str(self.x))
-                    if not self.grid.is_cell_empty(self.x, self.y):
+                    occupied = not self.grid.is_cell_empty(self.x, self.y)
+                    if occupied == self.occupied:
                         ret = [self.grid[self.y][self.x],
                               self.x, self.y]
                         self.x += 1
@@ -142,8 +144,8 @@ class GridEnv(se.SpatialEnv):
         return self.grid[index]
 
 
-    def occupied_iter(self):
-        return GridEnv.GridOccupiedIter(self)
+    def occupied_iter(self, occupied=True):
+        return GridEnv.GridOccupiedIter(self, occupied=occupied)
 
 
     def torus_adj(self, coord, dim_len):
