@@ -113,7 +113,7 @@ class MainMenu(Menu):
         self.tools = Menu("(t)ools", e)
         self.add_menu_item("t", self.tools, default=True)
         self.tools.add_menu_item("s", MenuLeaf("(s)tep", e.step), default=True)
-        self.tools.add_menu_item("r", MenuLeaf("(r)un", e.run))
+        self.tools.add_menu_item("r", MenuLeaf("(r)un", e.cont_run))
         self.tools.add_menu_item("d", MenuLeaf("(d)ebug", e.debug))
         self.tools.add_menu_item("i", MenuLeaf("(i)Python", e.ipython))
 
