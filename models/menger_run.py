@@ -14,7 +14,7 @@ import menger_model as mm
 MODEL_NM = "menger_model"
 PROG_NM = MODEL_NM + ".py"
 LOG_FILE = MODEL_NM + ".txt"
-CSV_FILE = MODEL_NM + ".csv"
+CSV_FILE = MODEL_NM + "02.csv"
 PROPS_FILE = MODEL_NM + ".props"
 
 # We store basic parameters in a

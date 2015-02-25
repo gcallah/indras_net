@@ -34,6 +34,16 @@ class MengerAgent(bm.BarterAgent):
         super().act()
 
 
+    def trade(self, my_good, counterparty, his_good):
+        """
+        We are going to trade goods through
+        our super(), but also up the utility
+        of the good accepted in trade since it
+        is exchangeable
+        """
+        super().trade(my_good, counterparty, his_good)
+
+
 class MengerEnv(bm.BarterEnv):
     """
     An env to host money-using agents.

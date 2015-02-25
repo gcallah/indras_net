@@ -72,7 +72,7 @@ class EdgeboxAgent(sa.SpatialAgent):
         if util_func is not None:
             g["util_func"] = util_func
         for i in range(1, endow):
-            self.utils += g["util_func"](i)
+            self.utils += (g["util_func"](i) + g["incr"])
 
         self.pretrade_utils = self.utils
 
@@ -181,7 +181,9 @@ class EdgeboxAgent(sa.SpatialAgent):
         Add a new good this agent 'knows' about
         and has a utility function for.
         """
-        self.goods[good] = {"endow": 0, "util_func": gen_util_func}
+        self.goods[good] = {"endow": 0,
+                            "util_func": gen_util_func,
+                            "incr": 0.0}
 
 
 class EdgeboxEnv(se.SpatialEnv):
@@ -213,7 +215,6 @@ class EdgeboxEnv(se.SpatialEnv):
                                + str(a.util_gain())
                                + " utils and now has: "
                                + a.list_goods())
-
 
 
     def record_trade(self, a1, a2, amt):

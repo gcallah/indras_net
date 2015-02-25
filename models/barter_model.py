@@ -14,13 +14,6 @@ TRADE = "trade"
 STEP = 3
 
 
-def util_func(qty):
-    """
-    A default util func: we can pass in others
-    """
-    return 10 - .5 * qty
-
-
 class BarterAgent(ebm.EdgeboxAgent):
     """
     Agents who attempt to trade goods to achieve greater utility.
