@@ -123,14 +123,14 @@ class GridEnv(se.SpatialEnv):
                          postact=False, model_nm=model_nm)
 
         self.torus = torus
-        self.total_cells = self.height * self.width
-        self.filled_cells = 0
 
         self.grid = []
+        self.empties = []
         for y in range(self.height):
             row = []
             for x in range(self.width):
                 row.append(self.default_val())
+                self.empties.append((x, y))
             self.grid.append(row)
 
 
@@ -253,33 +253,28 @@ class GridEnv(se.SpatialEnv):
         """
         Return True if any cells empty else False.
         """
-        return self.filled_cells < self.total_cells
+        return len(self.empties) > 0
 
 
     def position_agent(self, agent, x=RANDOM, y=RANDOM):
         """
         Position an agent on the grid.
-        If x or y are positive, they are used, but if negative, 
+        If x or y are positive, they are used, but if RANDOM, 
         we get a random position.
         Ensure this random position is not occupied (in Grid).
         """
         if x == RANDOM or y == RANDOM:
-            got_cell = False
-            while not got_cell and self.exists_empty_cells():
-                x = random.randint(0, self.width - 1)
-                y = random.randint(0, self.height - 1)
-                if self.is_cell_empty(x, y):
-                    got_cell = True
-
-            if not got_cell:
+            if self.exists_empty_cells():
+                coords = random.choice(self.empties)
+                x = coords[0]
+                y = coords[1]
+                self.empties.remove(coords)
+            else:
                 logging.error("Grid full; "
                               + agent.name + " not added.")
                 return
-                    
 
         self.grid[y][x] = agent
-        self.filled_cells += 1
-
         agent.pos = [x, y]
 
 

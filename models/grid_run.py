@@ -23,7 +23,7 @@ if read_props:
 else:
     pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
     pa.set("model", MODEL_NM)
-    pa.set("num_agents", 9)
+    pa.set("num_agents", 20)
     pa.set("user_type", ent.User.TERMINAL)
     pa.set("grid_width", 4)
     pa.set("grid_height", 4)
@@ -32,7 +32,7 @@ else:
 env = ge.GridEnv("Test grid env",
                  pa.get("grid_height"),
                  pa.get("grid_width"),
-                 torus=True,
+                 torus=False,
                  model_nm=MODEL_NM)
 
 # Now we loop creating multiple agents with numbered names
@@ -45,7 +45,7 @@ for i in range(pa.get("num_agents")):
 logging.info("Starting program " + PROG_NM)
 
 # let's test our iterator
-for cell in env.occupied_iter(occupied=False):
+for cell in env.occupied_iter(occupied=True):
     print("Contents of cell x = "
           + str(cell[1])
           + " and y = "
