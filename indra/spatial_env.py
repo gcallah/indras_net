@@ -28,7 +28,7 @@ def pos_msg(agent, pos):
     A convenience function for displaying
     an entity's position.
     """
-    return("New position for " + 
+    return("New position for " +
            agent.name + " is "
            + pos_to_str(pos))
 
@@ -42,10 +42,9 @@ def pos_to_str(pos):
 
 class SpatialEnv(ent.Environment):
     """
-    Extends the base Environment with entities located in the 
+    Extends the base Environment with entities located in the
     complex plane.
     """
-
     def __init__(self, name, width, height, preact=True,
                  postact=False, model_nm=None):
 
@@ -60,7 +59,6 @@ class SpatialEnv(ent.Environment):
         plot = menu.MenuLeaf("(s)catter plot", self.plot)
         self.menu.view.add_menu_item("s", plot)
 
-
     def add_agent(self, agent):
         """
         Add a spatial agent to env
@@ -72,12 +70,10 @@ class SpatialEnv(ent.Environment):
         logging.debug("Adding " + agent.__str__()
                       + " of variety " + v)
 
-
     def position_agent(self, agent):
         x = random.uniform(0, self.width - 1)
         y = random.uniform(0, self.height - 1)
         agent.pos = complex(x, y)
-
 
     def preact_loop(self):
         """
@@ -96,7 +92,6 @@ class SpatialEnv(ent.Environment):
             else:
                 agent.detect_behavior()
 
-
     def address_prehensions(self, agent, prehensions):
         """
         Process prehensions list if needed.
@@ -106,7 +101,6 @@ class SpatialEnv(ent.Environment):
             logging.debug("Targ = " + str(agent.focus))
             agent.wandering = False
         return [agent.focus]
-
 
     def closest_x(self, seeker, prehensions):
         """
@@ -118,9 +112,9 @@ class SpatialEnv(ent.Environment):
         logging.debug("About to search for closest, among "
                       + str(len(prehensions)))
         for agent in prehensions:
-            if seeker is not agent: # don't locate me!
-                if((seeker.exclude == None)
-                   or (not agent in seeker.exclude)):
+            if seeker is not agent:  # don't locate me!
+                if(seeker.exclude is None
+                   or (agent not in seeker.exclude)):
                     p_pos = agent.pos
                     d = abs(pos - p_pos)
                     if d < x:
@@ -128,7 +122,6 @@ class SpatialEnv(ent.Environment):
                         closest_target = agent
         logging.debug("Going to return closest = " + str(closest_target))
         return closest_target
-
 
     def get_new_wander_pos(self, agent):
         """
@@ -138,30 +131,36 @@ class SpatialEnv(ent.Environment):
         """
         new_pos = rand_complex(agent.pos, agent.max_move)
         x = new_pos.real
-        y  = new_pos.imag
+        y = new_pos.imag
         if x < 0.0:
             x = 0.0
-        if y  < 0.0:
-            y  = 0.0
+        if y < 0.0:
+            y = 0.0
         if x > self.width:
             x = self.width
-        if y  > self.height:
+        if y > self.height:
             y = self.height
         pos = complex(x, y)
         logging.debug(pos_msg(agent, pos))
         return pos
-
 
     def get_pos_components(self, agent):
         x = agent.pos.real
         y = agent.pos.imag
         return [x, y]
 
-
     def plot(self):
         """
         Show where agents are in graphical form.
         """
+        data = self.plot_data()
+        # disp.display_scatter_plot("Agent Positions", data)
+        disp.display_scatter_plot("Agent Positions", data,
+                                  int(self.width), int(self.height),
+                                  anim=True,
+                                  data_func=self.plot_data)
+
+    def plot_data(self):
         data = {}
         for v in self.agents.varieties_iter():
             data[v] = {"x": [], "y": []}
@@ -169,7 +168,4 @@ class SpatialEnv(ent.Environment):
                 x_y = self.get_pos_components(agent)
                 data[v]["x"].append(x_y[0])
                 data[v]["y"].append(x_y[1])
-                
-        disp.display_scatter_plot("Agent Positions", data)
-
-
+        return data

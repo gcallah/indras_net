@@ -1,7 +1,7 @@
 """
 Filename: display_methods.py
 Author: Gene Callahan
-A collection of convenience functions 
+A collection of convenience functions
 for using matplotlib.
 """
 
@@ -35,32 +35,55 @@ def display_line_graph(title, data, data_points):
     plt.show()
 
 
-def display_scatter_plot(title, varieties, anim=False,
-                         anim_func=None):
+def display_scatter_plot(title, varieties, width, height,
+                         anim=False,
+                         data_func=None):
     """
-    Display a scatter plot. We plan to
-    add animation soon, thus the unused
-    anim params.
-    varieties is the different types of
+    Display a scatter plot.
+    varieties contains the different types of
     entities to show in the plot, which
     will get assigned different colors
     """
 
-    _fig, ax = plt.subplots()
+    def update_plot(i):
+        """
+        This is our animation function.
+        """
+        varieties = data_func()
+        for var, scat in zip(varieties, scats):
+            data_array = get_array(varieties, var)
+            scat.set_offsets(data_array)
+        return scats
 
+    def get_array(varieties, var):
+        x_arr = np.array(varieties[var]["x"])
+        y_arr = np.array(varieties[var]["y"])
+        return {"x": x_arr, "y": y_arr}
+
+    fig, ax = plt.subplots()
+    ax.set_xlim(0, width)
+    ax.set_ylim(0, height)
+    scats = []
     i = 0
     for var in varieties:
         color = colors[i % NUM_COLORS]
+        data_array = get_array(varieties, var)
+        scat = plt.scatter(data_array,
+                           c=color, label=var,
+                           alpha=1.0, marker="8",
+                           edgecolors='none')
+        scats.append(scat)
         i += 1
-        x = np.array(varieties[var]["x"])
-        y = np.array(varieties[var]["y"])
-        plt.scatter(x, y, c=color, label=var,
-                    alpha=0.8, edgecolors='none')
 
     ax.legend()
     ax.set_title(title)
     plt.grid(True)
 
+    if anim:
+        animation.FuncAnimation(fig,
+                                update_plot,
+                                frames=1000,
+                                interval=1000,
+                                blit=False)
+
     plt.show(block=False)
-
-
