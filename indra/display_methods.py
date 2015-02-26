@@ -56,9 +56,8 @@ def display_scatter_plot(title, varieties, width, height,
         return scats
 
     def get_array(varieties, var):
-        x_arr = np.array(varieties[var]["x"])
-        y_arr = np.array(varieties[var]["y"])
-        return {"x": x_arr, "y": y_arr}
+        data_array = np.array(varieties[var])
+        return data_array
 
     fig, ax = plt.subplots()
     ax.set_xlim(0, width)
@@ -68,7 +67,7 @@ def display_scatter_plot(title, varieties, width, height,
     for var in varieties:
         color = colors[i % NUM_COLORS]
         data_array = get_array(varieties, var)
-        scat = plt.scatter(data_array,
+        scat = plt.scatter(data_array[0], data_array[1],
                            c=color, label=var,
                            alpha=1.0, marker="8",
                            edgecolors='none')

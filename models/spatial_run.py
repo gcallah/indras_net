@@ -22,7 +22,7 @@ if read_props:
 else:
     pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
     pa.set("model", MODEL_NM)
-    pa.set("num_agents", 3)
+    pa.set("num_agents", 2)
     pa.set("user_type", ent.User.TERMINAL)
 
 # Now we create a minimal environment for our agents to act within:
