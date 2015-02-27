@@ -8,9 +8,7 @@ import logging
 import matplotlib.pyplot as plt
 import networkx as nx
 
-
 UNIVERSAL = "universal"
-
 
 indras_net = nx.Graph()
 
@@ -63,10 +61,8 @@ class Node():
 # every node is potentially a graph itself
         self.graph = None
 
-
     def __str__(self):
         return self.name
-
 
     def draw(self):
         """
@@ -75,7 +71,6 @@ class Node():
         if self.graph is not None:
             nx.draw_networkx(self.graph)
             plt.show()
-
 
     def display(self):
         """
@@ -99,15 +94,13 @@ class Universals(Node):
         self.unis = {}
         self.graph = nx.MultiDiGraph()
 
-
     def add_universal(self, uni):
         """
         We want to be able to view all
         univeral relationships at a glance,
         so we will store them here
         """
-        self.unis[uni] = [] # a list of prehensions
-
+        self.unis[uni] = []  # a list of prehensions
 
     def add_prehension(self, prehender, uni, prehended):
         """
@@ -118,7 +111,6 @@ class Universals(Node):
         self.unis[uni].append([prehender, prehended])
         self.graph.add_edge(prehender, prehended,
                             universal=uni)
-
 
     def get_prehensions(self, prehender, uni):
         """
@@ -141,6 +133,4 @@ class Universals(Node):
         logging.debug("prehensions = " + str(prehensions))
         return prehensions
 
-
 universals = Universals()
-

@@ -3,9 +3,6 @@ Filename: spatial_agent.py
 Author: Gene Callahan
 """
 
-import math
-import cmath
-import random
 from collections import deque
 import logging
 import indra.entity as ent
@@ -28,27 +25,23 @@ class SpatialAgent(ent.Agent):
         self.wandering = False
         self.exclude = deque(maxlen=MAX_EXCLUDE)
 
-
     def in_detect_range(self, prehended):
         """
         Can we see the prehended with our limited view?
         """
         return self.in_range(prehended, self.max_detect)
 
-
     def in_range(self, prey, dist):
         """
         Is one agent in range of another in some sense?
         """
-
-        if prey == None:
+        if prey is None:
             return False
 
         if abs(self.pos - prey.pos) < dist:
             return True
         else:
             return False
-
 
     def detect_behavior(self):
         """
@@ -61,11 +54,8 @@ class MobileAgent(SpatialAgent):
     """
     Agents that can move in the env
     """
-
     def __init__(self, name, goal, max_move=20.0, max_detect=20.0):
-        super().__init__(name, goal, 
+        super().__init__(name, goal,
                          max_move=max_move,
                          max_detect=max_detect)
         self.wandering = True
-
-

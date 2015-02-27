@@ -28,7 +28,7 @@ def display_line_graph(title, data, data_points):
 
     for lbl, nums in data.items():
         y = np.array(nums)
-        ax.plot(x, y, linewidth=2, label=lbl, alpha=0.8)
+        ax.plot(x, y, linewidth=2, label=lbl, alpha=1.0)
 
     ax.legend()
     ax.set_title(title)
@@ -70,7 +70,7 @@ def display_scatter_plot(title, varieties, width, height,
         scat = plt.scatter(data_array[0], data_array[1],
                            c=color, label=var,
                            alpha=1.0, marker="8",
-                           edgecolors='none')
+                           edgecolors='none', s=32)
         scats.append(scat)
         i += 1
 
@@ -82,7 +82,7 @@ def display_scatter_plot(title, varieties, width, height,
         animation.FuncAnimation(fig,
                                 update_plot,
                                 frames=1000,
-                                interval=1000,
+                                interval=500,
                                 blit=False)
 
     plt.show(block=False)

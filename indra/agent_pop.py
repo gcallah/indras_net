@@ -31,7 +31,6 @@ class AgentPop(node.Node):
         self.graph = nx.Graph()
         self.num_zombies = 0
 
-
     def __iter__(self):
         alists = []
         for var in self.varieties_iter():
@@ -39,22 +38,18 @@ class AgentPop(node.Node):
         # create an iterator that chains the lists together as if one:
         return itertools.chain(*alists)
 
-
     def __len__(self):
         l = 0
         for var in self.varieties_iter():
             l += len(self.vars[var]["agents"])
         return l
 
-
     def __reversed__(self):
         all_agents = self.all_agents_list()
         return reversed(all_agents)
 
-    
     def set_num_zombies(self, num):
         self.num_zombies = num
-
 
     def varieties_iter(self):
         """
@@ -62,20 +57,17 @@ class AgentPop(node.Node):
         """
         return iter(self.vars)
 
-
     def variety_iter(self, var):
         """
         Allows iteration over the agents of one variety
         """
         return iter(self.vars[var]["agents"])
 
-
     def all_agents_list(self):
         all_agents = []
         for var in self.varieties_iter():
             all_agents += self.vars[var]["agents"]
         return all_agents
-
 
     def agent_random_iter(self):
         """
@@ -84,7 +76,6 @@ class AgentPop(node.Node):
         all_agents = self.all_agents_list()
         random.shuffle(all_agents)
         return iter(all_agents)
-
 
     def element_at(self, i):
         """
@@ -104,11 +95,10 @@ class AgentPop(node.Node):
                     # that means the agent is in this list
                     return self.vars[var]["agents"][i]
                 else:
-                    # otherwise, the agent lies in one of the 
-                    # remaining lists, so subtract the length 
+                    # otherwise, the agent lies in one of the
+                    # remaining lists, so subtract the length
                     # of this one from i and continue.
-                     i -= l
-
+                    i -= l
 
     def append(self, agent):
         """
@@ -122,16 +112,16 @@ class AgentPop(node.Node):
             self.vars[var]["agents"].append(agent)
         else:
             self.vars[var] = {"agents": [agent],
-                                   "pop_of_note": 0,
-                                   "pop_hist": [],
-                                   "zombies": [],
-                                   "zero_per": 0}
+                              "pop_of_note": 0,
+                              "pop_hist": [],
+                              "zombies": [],
+                              "zero_per": 0,
+                              "my_periods": 0}
             self.graph.add_edge(self, var)
 
 # we link each agent to the variety
 # so we can show their relationship
         self.graph.add_edge(var, agent)
-
 
     def create_zombies(self):
         """
@@ -144,7 +134,6 @@ class AgentPop(node.Node):
                     agent = random.choice(self.vars[var]["agents"])
                     self.vars[var]["zombies"].append(copy.copy(agent))
 
-
     def remove(self, agent):
         """
         Removes from agent list.
@@ -152,8 +141,7 @@ class AgentPop(node.Node):
         logging.debug("Removing " + agent.name + " from agents")
         var = node.get_node_type(agent)
         self.vars[var]["agents"].remove(agent)
-        self.graph.remove_node(agent) # also removes edges!
-
+        self.graph.remove_node(agent)  # also removes edges!
 
     def join_agents(self, a1, a2):
         """
@@ -161,13 +149,11 @@ class AgentPop(node.Node):
         """
         self.graph.add_edge(a1, a2)
 
-
     def contains(self, var):
         """
         Do we have this sort of thing in our env?
         """
         return var in self.vars
-
 
     def get_agents_of_var(self, var):
         """
@@ -178,13 +164,11 @@ class AgentPop(node.Node):
         else:
             return None
 
-
     def get_pop(self, var):
         """
         Return the population of variety 'var'
         """
         return len(self.vars[var]["agents"])
-
 
     def get_my_pop(self, agent):
         """
@@ -192,7 +176,6 @@ class AgentPop(node.Node):
         """
         var = node.get_node_type(agent)
         return self.get_pop(var)
-
 
     def get_pop_hist(self):
         """
@@ -204,13 +187,11 @@ class AgentPop(node.Node):
             pop_hist[var] = self.vars[var]["pop_hist"]
         return pop_hist
 
-
     def get_pop_of_note(self, var):
         """
         Return the value of pop_of_note for 'var'.
         """
         return self.vars[var]["pop_of_note"]
-
 
     def change_pop_of_note(self, var, change):
         """
@@ -218,13 +199,11 @@ class AgentPop(node.Node):
         """
         self.vars[var]["pop_of_note"] += change
 
-
     def append_pop_hist(self, var, pop):
         """
         Add the most recent pop to pop_hist.
         """
         self.vars[var]["pop_hist"].append(pop)
-
 
     def census(self):
         """
@@ -237,6 +216,9 @@ class AgentPop(node.Node):
             ret += v + ": " + str(pop) + "\n"
             var = self.vars[v]
             var["pop_hist"].append(pop)
+            # a type might enter the env after period 0!
+            # so we track that in my_periods
+            var["my_periods"] += 1
             if pop == 0:
                 var["zero_per"] += 1
                 if var["zero_per"] >= MAX_ZERO_PER:
@@ -244,5 +226,3 @@ class AgentPop(node.Node):
                         self.append(copy.copy(agent))
                     var["zero_per"] = 0
         return ret
-
-

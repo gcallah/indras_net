@@ -23,7 +23,6 @@ class Menu(node.Node):
         self.choices = {}
         self.menu_items = OrderedDict()
         self.def_act = None
-    
 
     def add_menu_item(self, letter, item, default=False):
         """
@@ -34,10 +33,8 @@ class Menu(node.Node):
         if default:
             self.def_act = item.act
 
-
     def act(self):
         return self.display()
-
 
     def display(self):
         """
@@ -68,7 +65,6 @@ class MenuLeaf(node.Node):
         super().__init__(name)
         self.func = func
 
-
     def act(self):
         return self.func()
 
@@ -93,8 +89,11 @@ class MainMenu(Menu):
         self.edit = Menu("(e)dit", e)
         self.add_menu_item("e", self.edit)
         self.edit.add_menu_item("a", MenuLeaf("(a)dd agent", e.add))
-        self.edit.add_menu_item("i", MenuLeaf("(i)nspect agent", e.agnt_inspect))
-        self.edit.add_menu_item("e", MenuLeaf("inspect (e)nv", e.env_inspect))
+        self.edit.add_menu_item("i",
+                                MenuLeaf("(i)nspect agent",
+                                         e.agnt_inspect))
+        self.edit.add_menu_item("e",
+                                MenuLeaf("inspect (e)nv", e.env_inspect))
 
 # view menu
         self.view = Menu("(v)iew", e)
@@ -116,5 +115,3 @@ class MainMenu(Menu):
         self.tools.add_menu_item("r", MenuLeaf("(r)un", e.cont_run))
         self.tools.add_menu_item("d", MenuLeaf("(d)ebug", e.debug))
         self.tools.add_menu_item("i", MenuLeaf("(i)Python", e.ipython))
-
-

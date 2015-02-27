@@ -31,13 +31,11 @@ class Entity(node.Node):
         self.prehensions = []
         self.env = None
 
-
     def add_env(self, env):
         """
         Note our environment.
         """
         self.env = env
-
 
     def pprint(self):
         """
@@ -58,7 +56,6 @@ class Agent(Entity):
         super().__init__(name)
         self.goal = goal
 
-
     @abstractmethod
     def act(self):
         """
@@ -78,7 +75,6 @@ class Agent(Entity):
         """
         pass
 
-
     def survey_env(self, universal):
         """
         Return a list of all prehended entities
@@ -88,7 +84,7 @@ class Agent(Entity):
         prehended = []
         prehends = node.get_prehensions(prehender=node.get_node_type(self),
                                         universal=universal)
-        if not prehends == None:
+        if prehends is not None:
             for pre_type in prehends:
                 some_pres = self.env.get_agents_of_var(pre_type)
                 prehended.extend(some_pres)
@@ -105,11 +101,9 @@ class User(Entity):
     IPYTHON = "iPython"
     IPYTHON_NB = "iPython Notebook"
 
-
     def __init__(self, nm, utype):
         super().__init__(nm)
         self.utype = utype
-
 
     def tell(self, msg):
         """
@@ -119,14 +113,12 @@ class User(Entity):
                           User.IPYTHON_NB]:
             print(msg)
 
-
     def ask_for_ltr(self, msg):
         """
         Screen the details of input from models.
         """
         choice = self.ask(msg)
         return choice.strip()
-
 
     def ask(self, msg):
         """
@@ -144,7 +136,6 @@ class Environment(node.Node):
     """
 
     prev_period = 0  # in case we need to restore state
-
 
     def __init__(self, name, preact=False,
                  postact=False, model_nm=None):
@@ -177,7 +168,6 @@ class Environment(node.Node):
         self.graph.add_edge(self, self.props)
         self.graph.add_edge(self, node.universals)
 
-
     def add_agent(self, agent):
         """
         Add an agent to pop.
@@ -185,13 +175,11 @@ class Environment(node.Node):
         self.agents.append(agent)
         agent.add_env(self)
 
-
     def join_agents(self, a1, a2):
         """
         Relate two agents.
         """
         self.agents.join_agents(a1, a2)
-
 
     def add_child(self, agent):
         """
@@ -199,7 +187,6 @@ class Environment(node.Node):
         """
         self.womb.append(agent)
         agent.add_env(self)
-
 
     def find_agent(self, name):
         """
@@ -210,13 +197,11 @@ class Environment(node.Node):
                 return agent
         return None
 
-
     def get_agents_of_var(self, var):
         """
         Return all agents of type 'var'.
         """
         return self.agents.get_agents_of_var(var)
-
 
     def run(self, resume=False, loops=0):
         """
@@ -247,7 +232,6 @@ class Environment(node.Node):
 
             self.user.tell(msg)
 
-
     def add_menu_item(self, submenu, letter, text, func):
         """
         This func exists to screen the menu class from outside objects:
@@ -255,13 +239,11 @@ class Environment(node.Node):
         """
         self.menu.add_menu_item(submenu, letter, text, func)
 
-
     def debug(self):
         """
         Invoke the python debugger.
         """
         pdb.set_trace()
-
 
     def ipython(self):
         """
@@ -269,13 +251,11 @@ class Environment(node.Node):
         """
         IPython.start_ipython(argv=[])
 
-
     def eval_code(self):
         """
         Evaluate a line of code.
         """
         eval(self.user.ask("Type a line of code to run: "))
-
 
     def list_agents(self):
         """
@@ -287,7 +267,6 @@ class Environment(node.Node):
                            + " with a goal of "
                            + agent.goal)
 
-
     def add(self):
         """
         Add a new agent to the env.
@@ -298,7 +277,6 @@ class Environment(node.Node):
         new_agent = eval("m." + constr)
         self.add_agent(new_agent)
 
-
     def agnt_inspect(self):
         """
         View (and possibly alter) an agent's data.
@@ -306,12 +284,11 @@ class Environment(node.Node):
         name = self.user.ask(
             "Type the name of the agent to inspect: ")
         agent = self.find_agent(name.strip())
-        if agent == None:
+        if agent is None:
             self.user.tell("No such agent")
         else:
             agent.pprint()
         self.edit_field(agent)
-
 
     def env_inspect(self):
         """
@@ -319,7 +296,6 @@ class Environment(node.Node):
         """
         self.pprint()
         self.edit_field(self)
-
 
     def edit_field(self, entity):
         """
@@ -344,7 +320,6 @@ class Environment(node.Node):
             else:
                 break
 
-
     def cont_run(self):
         """
         Run continuously.
@@ -361,7 +336,6 @@ class Environment(node.Node):
         except KeyboardInterrupt:
             pass
 
-
     def pwrite(self):
         """
         Write out the properties to a file.
@@ -370,13 +344,11 @@ class Environment(node.Node):
         if self.props is not None:
             self.props.write(file_nm)
 
-
     def disp_props(self):
         """
         Display current system properties.
         """
         self.user.tell(self.props.display())
-
 
     def disp_log(self):
         """
@@ -390,7 +362,7 @@ class Environment(node.Node):
         if logfile is None:
             self.user.tell("No log file to examine!")
 
-        last_n_lines = deque(maxlen=MAX_LINES) # for now hard-coded
+        last_n_lines = deque(maxlen=MAX_LINES)  # for now hard-coded
 
         with open(logfile, 'rt') as log:
             for line in log:
@@ -401,7 +373,6 @@ class Environment(node.Node):
         for line in last_n_lines:
             self.user.tell(line.strip())
 
-
     def step(self):
         """
         Step period-by-period through agent actions.
@@ -411,7 +382,7 @@ class Environment(node.Node):
         self.period += 1
 
 # agents might be waiting to be born
-        if self.womb != None:
+        if self.womb is not None:
             for agent in self.womb:
                 self.add_agent(agent)
             del self.womb[:]
@@ -426,7 +397,6 @@ class Environment(node.Node):
 # there might be cleanup to do after acting
         if self.postact:
             self.postact_loop()
- 
 
     def act_loop(self):
         """
@@ -435,7 +405,6 @@ class Environment(node.Node):
         for agent in self.agents.agent_random_iter():
             agent.act()
 
-
     def preact_loop(self):
         """
         Loop through agents calling their preact() func.
@@ -443,14 +412,12 @@ class Environment(node.Node):
         for agent in self.agents:
             agent.preact()
 
-
     def postact_loop(self):
         """
         Loop through agents calling their postact() func.
         """
         for agent in self.agents:
             agent.postact()
-
 
     def draw_graph(self):
         """
@@ -472,13 +439,11 @@ class Environment(node.Node):
         """
         self.agents.draw()
 
-
     def graph_env(self):
         """
         Draw a graph of the env's relationships.
         """
         self.draw()
-
 
     def graph_unv(self):
         """
@@ -486,13 +451,11 @@ class Environment(node.Node):
         """
         node.universals.draw()
 
-
     def keep_running(self):
         """
         Placeholder
         """
         return True
-
 
     def view_pop(self):
         """
@@ -509,13 +472,11 @@ class Environment(node.Node):
                                 pop_hist,
                                 self.period)
 
-
     def plot(self):
         """
         Placeholder
         """
         self.user.tell("Plot not implemented in this model")
-
 
     def quit(self):
         """
@@ -524,13 +485,11 @@ class Environment(node.Node):
         self.user.tell("Returning to runtime environment.")
         sys.exit(0)
 
-
     def contains(self, agent_type):
         """
         Do we have this sort of thing in our env?
         """
         return self.agents.contains(agent_type)
-
 
     def census(self, disp=True):
         """
@@ -542,18 +501,14 @@ class Environment(node.Node):
                            + str(self.period) + ":")
             self.user.tell(results)
 
-
     def get_pop(self, var):
         """
         Return the population of variety 'var'
         """
         return self.agents.get_pop(var)
 
-
     def get_my_pop(self, agent):
         """
         Return the population of agent's type
         """
         return self.agents.get_my_pop(agent)
-
-

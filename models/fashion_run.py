@@ -22,16 +22,16 @@ else:
     pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
 
     pa.set("model", MODEL_NM)
-    
+
     pa.set("num_trndstr", 20)
     pa.set("num_flwr", 80)
-    
+
     pa.set("fshn_f_ratio", 1.3)
     pa.set("fshn_t_ratio", 1.5)
-    
+
     pa.set("flwr_others", 3)
     pa.set("trnd_others", 5)
-    
+
     pa.set("flwr_max_detect", 20.0)
     pa.set("trnd_max_detect", 20.0)
 

@@ -15,9 +15,7 @@ class PropArgs(node.Node):
     """
     This class holds sets of named properties for program-wide values.
     """
-
     prop_sets = {}
-
 
     @staticmethod
     def get_props(model_nm):
@@ -27,14 +25,12 @@ class PropArgs(node.Node):
         if model_nm in PropArgs.prop_sets:
             return PropArgs.prop_sets[model_nm]
 
-
     @staticmethod
     def create_props(model_nm, props={}):
         """
         Create a property object with values in 'props'.
         """
         return PropArgs(model_nm, props)
-
 
     @staticmethod
     def read_props(model_nm, file_nm):
@@ -44,7 +40,6 @@ class PropArgs(node.Node):
         props = json.load(open(file_nm))
         return PropArgs.create_props(model_nm, props)
 
-    
     def __init__(self, model_nm, logfile=None, props=None,
                  loglevel=logging.INFO):
         super().__init__("Properties")
@@ -59,7 +54,6 @@ class PropArgs(node.Node):
         self.logger = Logger(self, logfile=logfile)
         self.graph.add_edge(self, self.logger)
 
-
     def display(self):
         """
         How to represent the properties on screen.
@@ -70,13 +64,11 @@ class PropArgs(node.Node):
 
         return ret
 
-
     def set(self, nm, val):
         """
         Set a property value.
         """
         self.props[nm] = val
-
 
     def get(self, nm, default=None):
         """
@@ -88,13 +80,11 @@ class PropArgs(node.Node):
             self.props[nm] = default
         return self.props[nm]
 
-
     def get_logfile(self):
         """
         Special get function for logfile name
         """
         return self.props.get("log_fname")
-
 
     def write(self, file_nm):
         """
@@ -128,5 +118,3 @@ class Logger(node.Node):
                             filemode=fmd,
                             filename=fnm)
         logging.info("Logging initialized.")
-
-
