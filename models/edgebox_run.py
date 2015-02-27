@@ -9,7 +9,7 @@ import indra.node as node
 import edgebox_model as ebm
 
 MODEL_NM = "edgebox_model"
-PROG_NM  = MODEL_NM + ".py"
+PROG_NM = MODEL_NM + ".py"
 LOG_FILE = MODEL_NM + ".txt"
 
 read_props = False
@@ -53,4 +53,3 @@ node.add_prehension(ebm.EdgeboxAgent, ebm.TRADE, ebm.EdgeboxAgent)
 
 logging.info("Starting program")
 env.run()
-

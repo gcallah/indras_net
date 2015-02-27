@@ -5,14 +5,13 @@ A script to run our barter model.
 import logging
 import indra.node as node
 import indra.prop_args as props
-import indra.barter_model as bm
+import barter_model as bm
 
 MODEL_NM = "barter_model"
 PROG_NM = MODEL_NM + ".py"
 LOG_FILE = MODEL_NM + ".txt"
 CSV_FILE = MODEL_NM + "02.csv"
 PROPS_FILE = MODEL_NM + ".props"
-
 
 read_props = False
 
@@ -32,4 +31,3 @@ node.add_prehension(bm.BarterAgent, bm.TRADE, bm.BarterAgent)
 
 logging.info("Starting program")
 env.run()
-

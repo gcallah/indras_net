@@ -16,5 +16,3 @@ class TestSpatialAgent(sa.MobileAgent):
 
     def act(self):
         print(se.pos_msg(self, self.pos))
-
-

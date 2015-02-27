@@ -10,7 +10,7 @@ import predprey_model as ppm
 
 
 MODEL_NM = "predprey_model"
-PROG_NM  = MODEL_NM + ".py"
+PROG_NM = MODEL_NM + ".py"
 LOG_FILE = MODEL_NM + ".txt"
 
 read_props = False
@@ -37,7 +37,7 @@ env = ppm.PredPreyEnv("meadow", 50.0, 50.0)
 
 for i in range(pa.get("num_foxes")):
     env.add_agent(ppm.Fox(name="brer" + str(i),
-                          life_force=pa.get("fox_life_force"), 
+                          life_force=pa.get("fox_life_force"),
                           repro_age=pa.get("fox_repro_age"),
                           decay_rate=pa.get("fox_decay_rate"),
                           max_move=pa.get("fox_max_move"),
@@ -53,13 +53,12 @@ for i in range(pa.get("num_rabbits")):
                              goal=ppm.EAT,
                              rand_age=True))
 
-#for i in range(20):
-#    env.add_agent(ppm.Grass("grass" + str(i), 100.0, 10.0, 10.0))
+# for i in range(20):
+#     env.add_agent(ppm.Grass("grass" + str(i), 100.0, 10.0, 10.0))
 
 node.add_prehension(ppm.Fox, ppm.EAT, ppm.Rabbit)
 node.add_prehension(ppm.Rabbit, ppm.AVOID, ppm.Fox)
-#node.add_prehension(ppm.Rabbit, ppm.EAT, ppm.Grass)
+# node.add_prehension(ppm.Rabbit, ppm.EAT, ppm.Grass)
 
 logging.info("Starting program")
 env.run()
-

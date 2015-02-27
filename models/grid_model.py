@@ -6,7 +6,6 @@ It also is a handy tool to have around for testing
 new features added to the base system.
 """
 import indra.spatial_agent as sa
-import indra.grid_env as ge
 
 
 class TestGridAgent(sa.SpatialAgent):
@@ -15,7 +14,7 @@ class TestGridAgent(sa.SpatialAgent):
     """
 
     def act(self):
-#        print(ge.pos_msg(self))
+        # print(ge.pos_msg(self))
         x = self.pos[0]
         y = self.pos[1]
         print("With agent " + self.name
@@ -29,5 +28,3 @@ class TestGridAgent(sa.SpatialAgent):
             print(self.name + " has neighbors: ")
             for nayb in naybs:
                 print("    " + nayb.name)
-
-

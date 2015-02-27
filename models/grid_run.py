@@ -4,14 +4,13 @@ A script to test our spatial capabilities.
 
 import logging
 import indra.prop_args as props
-import indra.entity as ent
-import indra.spatial_agent as sa
+import indra.user as user
 import indra.grid_env as ge
 import grid_model as gm
 
 # set up some file names:
 MODEL_NM = "grid_model"
-PROG_NM  = MODEL_NM + ".py"
+PROG_NM = MODEL_NM + ".py"
 LOG_FILE = MODEL_NM + ".txt"
 
 # We store basic parameters in a "property" file; this allows us to save
@@ -24,7 +23,7 @@ else:
     pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
     pa.set("model", MODEL_NM)
     pa.set("num_agents", 11)
-    pa.set("user_type", ent.User.TERMINAL)
+    pa.set("user_type", user.User.TERMINAL)
     pa.set("grid_width", 4)
     pa.set("grid_height", 4)
 
@@ -55,4 +54,3 @@ for cell in env.occupied_iter(occupied=True):
 
 # And now we set things running!
 env.run()
-

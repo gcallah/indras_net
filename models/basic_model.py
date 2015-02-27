@@ -6,6 +6,7 @@ It also is a handy tool to have around
 for testing new features added to the base system.
 """
 import indra.entity as ent
+import indra.env as env
 
 
 class BasicAgent(ent.Agent):
@@ -18,7 +19,6 @@ class BasicAgent(ent.Agent):
         A very basic init.
         """
         super().__init__(name, goal)
-
 
     def act(self):
         """
@@ -38,7 +38,6 @@ class Gozer(BasicAgent):
         """
         super().__init__(name="Gozer the Destructor", goal="Destroy!")
 
-
     def postact(self):
         """
         Check to see if we have wiped everyone out.
@@ -55,7 +54,7 @@ class Gozer(BasicAgent):
                     return
 
 
-class BasicEnv(ent.Environment):
+class BasicEnv(env.Environment):
     """
     This environment doesn't really do anything.
     """
@@ -66,11 +65,7 @@ class BasicEnv(ent.Environment):
                          preact=True,
                          postact=True)
 
-
     def preact_loop(self):
         print("Preact loop: demonstrating backwards looping")
         for agent in reversed(self.agents):
             print("Agent: " + agent.name)
-
-
-

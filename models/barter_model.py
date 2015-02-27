@@ -5,6 +5,7 @@ An barter market model where several agents trade goods.
 import logging
 import csv
 import networkx as nx
+import indra.node as node
 import indra.menu as menu
 import indra.entity as ent
 import edgebox_model as ebm
@@ -26,7 +27,6 @@ class BarterAgent(ebm.EdgeboxAgent):
         """
         super().__init__(name, goal=goal, max_detect=max_detect)
 
-
     def act(self):
         """
         Just call our super's act!
@@ -44,13 +44,11 @@ class Market(ent.Entity):
         self.goods = {}
         self.graph = nx.Graph()
 
-
-    def goods_iter(self): 
+    def goods_iter(self):
         """
         Return the goods in self.goods.
         """
         return self.goods.keys()
-
 
     def add_good(self, good):
         """
@@ -61,7 +59,6 @@ class Market(ent.Entity):
             self.goods[good]["vendors"] = []
             self.graph.add_edge(self, good)
 
-
     def add_vendor(self, good, vendor):
         """
         Add an agent who can supply this good.
@@ -69,7 +66,6 @@ class Market(ent.Entity):
         self.add_good(good)
         self.goods[good]["vendors"].append(vendor)
         self.graph.add_edge(good, vendor)
-
 
     def has_vendor(self, good):
         """
@@ -89,14 +85,12 @@ class BarterEnv(ebm.EdgeboxEnv):
                          model_nm=model_nm, preact=preact)
         self.market = Market("agora")
         self.graph.add_edge(self, self.market)
-        self.menu.graph.add_menu_item("m", 
+        self.menu.graph.add_menu_item("m",
                                       menu.MenuLeaf("(m)arket",
-                                      self.graph_market))
-
+                                                    self.graph_market))
 
     def graph_market(self):
         self.market.draw()
-
 
     def fetch_agents_from_file(self, filenm, agent_type):
         """
@@ -119,7 +113,6 @@ class BarterEnv(ebm.EdgeboxEnv):
                                      + row[i + 2]))
         print("Goods = " + str(self.market))
 
-
     def draw_graph(self):
         """
         Draw a graph!
@@ -135,4 +128,3 @@ class BarterEnv(ebm.EdgeboxEnv):
             node.universals.draw()
         else:
             self.draw()
-

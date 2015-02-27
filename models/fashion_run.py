@@ -11,7 +11,7 @@ import predprey_model as ppm
 import fashion_model as fm
 
 MODEL_NM = "fashion_model"
-PROG_NM  = MODEL_NM + ".py"
+PROG_NM = MODEL_NM + ".py"
 LOG_FILE = MODEL_NM + ".txt"
 
 read_props = False

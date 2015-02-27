@@ -9,7 +9,7 @@ import random
 import logging
 import indra.node as node
 import indra.menu as menu
-import indra.entity as ent
+import indra.env as env
 import indra.display_methods as disp
 
 
@@ -40,7 +40,7 @@ def pos_to_str(pos):
     return str(int(pos.real)) + " , " + str(int(pos.imag))
 
 
-class SpatialEnv(ent.Environment):
+class SpatialEnv(env.Environment):
     """
     Extends the base Environment with entities located in the
     complex plane.

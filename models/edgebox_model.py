@@ -41,7 +41,6 @@ class EdgeboxAgent(sa.SpatialAgent):
         self.utils = 0
         self.pretrade_utils = 0
 
-
     def act(self):
         """
         Act is called in an interactive loop by code
@@ -59,7 +58,6 @@ class EdgeboxAgent(sa.SpatialAgent):
                         break
                     amt += 1
 
-
     def endow(self, good, endow, util_func=None):
         """
         Endow an agent with some amount of some good.
@@ -75,7 +73,6 @@ class EdgeboxAgent(sa.SpatialAgent):
             self.utils += (g["util_func"](i) + g["incr"])
 
         self.pretrade_utils = self.utils
-
 
 # for the moment all offers are of 1 unit!
     def rec_offer(self, offer_good, amt, counterparty):
@@ -109,7 +106,6 @@ class EdgeboxAgent(sa.SpatialAgent):
                         return Accept
         return Reject
 
-
     def rec_reply(self, my_good, my_amt, his_good, his_amt):
         """
         This is a response to a trade offer this agent has initiated
@@ -118,7 +114,6 @@ class EdgeboxAgent(sa.SpatialAgent):
         util_gain = self.__marginal_util(his_good, his_amt, 1)
         util_loss = self.__marginal_util(my_good, my_amt, -1)
         return (util_gain + util_loss) > 0
-
 
     def list_goods(self):
         """
@@ -129,7 +124,6 @@ class EdgeboxAgent(sa.SpatialAgent):
             goods_descr = (goods_descr + g + ": "
                            + str(self.goods[g]["endow"]) + ", ")
         return goods_descr.strip()
-
 
     def trade(self, my_good, counterparty, his_good):
         """
@@ -146,13 +140,11 @@ class EdgeboxAgent(sa.SpatialAgent):
 
         self.env.record_trade(self, counterparty, 1)
 
-
     def util_gain(self):
         """
         Calculate our utility gain.
         """
         return self.utils - self.pretrade_utils
-
 
     def __gain_lose_good(self, good, gain_or_lose):
         """
@@ -162,7 +154,6 @@ class EdgeboxAgent(sa.SpatialAgent):
         self.utils += self.__marginal_util(good, 1, gain_or_lose)
         self.goods[good]["endow"] += gain_or_lose
 
-
     def __marginal_util(self, good, amt, gain_or_lose):
         """
         What is the marginal utility gained or lost
@@ -170,11 +161,10 @@ class EdgeboxAgent(sa.SpatialAgent):
         """
         g = self.goods[good]
         if gain_or_lose == GAIN:
-# we are calling a function stored in a dictionary here:
+            # we are calling a function stored in a dictionary here:
             return g["util_func"](g["endow"] + 1)
         else:
             return -(g["util_func"](g["endow"]))
-
 
     def __add_good(self, good):
         """
@@ -198,7 +188,6 @@ class EdgeboxEnv(se.SpatialEnv):
         self.do_census = False
         self.trades_this_prd = 0
 
-
     def step(self):
         """
         Step through one period of trading.
@@ -216,12 +205,9 @@ class EdgeboxEnv(se.SpatialEnv):
                                + " utils and now has: "
                                + a.list_goods())
 
-
     def record_trade(self, a1, a2, amt):
         """
         Record the fact a trade has occured.
         """
         self.trades_this_prd += amt
         self.join_agents(a1, a2)
-
-

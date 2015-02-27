@@ -5,7 +5,6 @@ in a barter economy.
 """
 import logging
 import random
-import indra.entity as ent
 import edgebox_model as ebm
 import barter_model as bm
 
@@ -17,11 +16,10 @@ class MengerAgent(bm.BarterAgent):
     """
 
     def __init__(self, name, goal=bm.TRADE,
-                 max_detect=ebm.GLOBAL_KNOWLEDGE ):
+                 max_detect=ebm.GLOBAL_KNOWLEDGE):
         super().__init__(name, goal=goal, max_detect=max_detect)
         self.prod_good = None
         self.prod_amt = 1
-
 
     def act(self):
         """
@@ -32,7 +30,6 @@ class MengerAgent(bm.BarterAgent):
                   + self.name + " wid some " + self.prod_good)
             self.endow(self.prod_good, self.prod_amt)
         super().act()
-
 
     def trade(self, my_good, counterparty, his_good):
         """
@@ -55,7 +52,6 @@ class MengerEnv(bm.BarterEnv):
                          model_nm=model_nm,
                          preact=True)
 
-
     def add_prod_goods(self):
         """
         Add who produces which good, and
@@ -77,4 +73,3 @@ class MengerEnv(bm.BarterEnv):
             self.market.add_vendor(my_good, agent)
 
         print("Market = " + str(self.market))
-

@@ -38,20 +38,17 @@ class Fashionista(prdpry.MobileCreature):
         self.fashion = None
         self.adv_periods = 0
 
-
     def act(self):
         """
         Take a look around and see who is wearing what!
         """
         return self.survey_env(self.goal)
 
-
     def survey_env(self, goal):
         """
         Take a look around and see who is wearing what!
         """
         return ent.Agent.survey_env(self, goal)
-
 
     def respond_to_trends(self, prehended, gt, fshn_ratio,
                           min_others):
@@ -66,12 +63,11 @@ class Fashionista(prdpry.MobileCreature):
                     has_my_fashion += 1
                 else:
                     not_my_fashion += 1
-            if(gt == True and
+            if(gt is True and
                has_my_fashion > not_my_fashion * fshn_ratio):
                 self.adverse_response()
             elif has_my_fashion * fshn_ratio < not_my_fashion:
                 self.adverse_response()
-
 
     def adverse_response(self):
         """
@@ -81,7 +77,6 @@ class Fashionista(prdpry.MobileCreature):
         if self.adv_periods >= self.env.min_adv_periods:
             self.adv_periods = 0
             self.change_fashion()
-
 
     def change_fashion(self):
         """
@@ -110,10 +105,9 @@ class Follower(Fashionista, prdpry.Predator):
 
         self.fashion = INIT_FLWR
 
-
     def act(self):
         prehended = super().act()
-        if prehended != None and len(prehended) > 0:
+        if prehended is not None and len(prehended) > 0:
             self.respond_to_trends(prehended, False,
                                    self.env.fshn_f_ratio,
                                    self.env.flwr_others)
@@ -135,10 +129,9 @@ class TrendSetter(Fashionista, prdpry.MobilePrey):
 
         self.fashion = INIT_TRND
 
-    
     def act(self):
         prehended = super().act()
-        if prehended != None and len(prehended) > 0:
+        if prehended is not None and len(prehended) > 0:
             self.respond_to_trends(prehended,
                                    True,
                                    self.env.fshn_t_ratio,
@@ -160,7 +153,7 @@ class SocietyEnv(se.SpatialEnv):
                                            default=1.3)
         self.fshn_t_ratio = self.props.get("fshn_t_ratio",
                                            default=1.5)
-        
+
         self.flwr_others = self.props.get("flwr_others",
                                           default=3)
         self.trnd_others = self.props.get("trnd_others",
@@ -168,7 +161,6 @@ class SocietyEnv(se.SpatialEnv):
 
         self.min_adv_periods = self.props.get("min_adv_periods",
                                               default=6)
-
 
     def add_agent(self, agent):
         """
@@ -181,7 +173,6 @@ class SocietyEnv(se.SpatialEnv):
         if agent.fashion == FSHN_TO_TRACK:
             self.agents.change_pop_of_note(var, 1)
 
-    
     def record_fashion_change(self, agent):
         """
         Track the fashions in our env.
@@ -192,19 +183,17 @@ class SocietyEnv(se.SpatialEnv):
         else:
             self.agents.change_pop_of_note(var, -1)
 
-
     def census(self, disp=True):
         """
         Take a census of our pops.
         """
         self.user.tell("Populations in period " + str(self.period) +
-                       " adopting " + 
+                       " adopting " +
                        fashions[FSHN_TO_TRACK] + ":")
         for var in self.agents.varieties_iter():
             pop = self.agents.get_pop_of_note(var)
-            self.user.tell(var + ": " +  str(pop))
+            self.user.tell(var + ": " + str(pop))
             self.agents.append_pop_hist(var, pop)
-
 
     def address_prehensions(self, agent, prehensions):
         """
@@ -212,7 +201,6 @@ class SocietyEnv(se.SpatialEnv):
         Here we don't have to.
         """
         return prehensions
-
 
     def display(self):
         """
@@ -231,4 +219,3 @@ class SocietyEnv(se.SpatialEnv):
                                 + fashions[FSHN_TO_TRACK],
                                 pop_hist,
                                 self.period)
-

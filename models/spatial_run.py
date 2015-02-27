@@ -4,7 +4,7 @@ A script to test our spatial capabilities.
 
 import logging
 import indra.prop_args as props
-import indra.entity as ent
+import indra.user as user
 import indra.spatial_env as se
 import spatial_model as sm
 
@@ -23,7 +23,7 @@ else:
     pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
     pa.set("model", MODEL_NM)
     pa.set("num_agents", 2)
-    pa.set("user_type", ent.User.TERMINAL)
+    pa.set("user_type", user.User.TERMINAL)
 
 # Now we create a minimal environment for our agents to act within:
 env = se.SpatialEnv("Test spatial env", 100.0, 100.0,
@@ -34,7 +34,7 @@ env = se.SpatialEnv("Test spatial env", 100.0, 100.0,
 for i in range(pa.get("num_agents")):
     env.add_agent(
         sm.TestSpatialAgent(name="agent" + str(i),
-        goal="moving around aimlessly!"))
+                            goal="moving around aimlessly!"))
 
 # Logging is automatically set up for the modeler:
 logging.info("Starting program " + PROG_NM)
