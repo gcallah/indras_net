@@ -1,14 +1,16 @@
+# -*- coding: utf-8 -*-
 """
-grid_model.py
-You can clone this file and its companion grid_run.py
-to easily get started on a new grid model.
-It also is a handy tool to have around for testing
-new features added to the base system.
+Created on Mon Mar  2 21:40:05 2015
+
+@author: Brandon
 """
+
+''' Segregation Model '''
+
 import indra.spatial_agent as sa
 
 
-class TestGridAgent(sa.SpatialAgent):
+class SegregationAgent(sa.SpatialAgent):
     """
     An agent that prints its neighbors when asked to act
     """
@@ -17,7 +19,7 @@ class TestGridAgent(sa.SpatialAgent):
         # print(ge.pos_msg(self))
         x = self.pos[0]
         y = self.pos[1]
-        print("With " + self.name
+        print("With agent " + self.name
               + " we are looking around "
               + " x = " + str(x)
               + " y = " + str(y))
