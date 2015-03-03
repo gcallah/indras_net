@@ -44,7 +44,7 @@ for i in range(pa.get("num_agents")):
 logging.info("Starting program " + PROG_NM)
 
 # let's test our iterator
-for cell in env.occupied_iter(occupied=True):
+for cell in env.occupied_iter(occupied=False):
     print("Contents of cell x = "
           + str(cell[1])
           + " and y = "
