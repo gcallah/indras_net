@@ -11,6 +11,7 @@ import indra.spatial_agent as sa
 class TestGridAgent(sa.SpatialAgent):
     """
     An agent that prints its neighbors when asked to act
+    and also jumps to an empty cell.
     """
 
     def act(self):
@@ -21,10 +22,9 @@ class TestGridAgent(sa.SpatialAgent):
               + " we are looking around "
               + " x = " + str(x)
               + " y = " + str(y))
-        naybs = self.env.get_neighbors(x, y, True)
-        if len(naybs) == 0:
-            print(self.name + " has no neighbors.")
-        else:
-            print(self.name + " has neighbors: ")
-            for nayb in naybs:
-                print("    " + nayb.name)
+        print(self.name + " has neighbors: ")
+        for neighbor in self.env.neighbor_iter(x, y):
+            print("    " + neighbor.name)
+
+    def postact(self):
+        self.env.move_to_empty(self)

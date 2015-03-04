@@ -26,7 +26,6 @@ import itertools
 import logging
 import indra.spatial_env as se
 
-
 RANDOM = -1
 
 
@@ -107,7 +106,7 @@ class GridEnv(se.SpatialEnv):
                 raise StopIteration()
 
     def __init__(self, name, height, width, torus=False,
-                 model_nm=None):
+                 model_nm=None, preact=False, postact=False):
         """
         Create a new grid.
 
@@ -115,8 +114,8 @@ class GridEnv(se.SpatialEnv):
             height, width: The height and width of the grid
             torus: Boolean whether the grid wraps or not.
         """
-        super().__init__(name, width, height, preact=True,
-                         postact=False, model_nm=model_nm)
+        super().__init__(name, width, height, preact=preact,
+                         postact=postact, model_nm=model_nm)
 
         self.torus = torus
 
@@ -139,6 +138,10 @@ class GridEnv(se.SpatialEnv):
 
     def occupied_iter(self, occupied=True):
         return GridEnv.GridOccupiedIter(self, occupied=occupied)
+
+    def neighbor_iter(self, x, y, moore=True, torus=False):
+        neighbors = self.get_neighbors(x, y, moore=moore)
+        return iter(neighbors)
 
     def torus_adj(self, coord, dim_len):
         """
@@ -259,9 +262,26 @@ class GridEnv(se.SpatialEnv):
                 logging.error("Grid full; "
                               + agent.name + " not added.")
                 return
+        self.place_agent(x, y, agent)
 
+    def place_agent(self, x, y, agent):
         self.grid[y][x] = agent
         agent.pos = [x, y]
+
+    def move_to_empty(self, agent):
+        new_x = None
+        new_y = None
+        (x, y) = self.get_pos_components(agent)
+        for cell in self.occupied_iter(occupied=False):
+            new_x = cell[1]
+            new_y = cell[2]
+            break
+        if new_x is not None:
+            self.place_agent(new_x, new_y, agent)
+            self.grid[y][x] = None
+        else:
+            logging.ERROR("Agent could not move "
+                          + "because no cells are empty")
 
     def _add_members(self, target_list, x, y):
         """

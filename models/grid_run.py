@@ -1,5 +1,5 @@
 """
-A script to test our spatial capabilities.
+A script to test our grid capabilities.
 """
 
 import logging
@@ -32,7 +32,8 @@ env = ge.GridEnv("Test grid env",
                  pa.get("grid_height"),
                  pa.get("grid_width"),
                  torus=False,
-                 model_nm=MODEL_NM)
+                 model_nm=MODEL_NM,
+                 postact=True)
 
 # Now we loop creating multiple agents with numbered names
 # based on the loop variable:
@@ -44,7 +45,7 @@ for i in range(pa.get("num_agents")):
 logging.info("Starting program " + PROG_NM)
 
 # let's test our iterator
-for cell in env.occupied_iter(occupied=False):
+for cell in env.occupied_iter(occupied=True):
     print("Contents of cell x = "
           + str(cell[1])
           + " and y = "
