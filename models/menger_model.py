@@ -3,7 +3,8 @@ menger_model.py
 The aim of this model is to get money to arise
 in a barter economy.
 """
-import logging
+# we leave logging here so we can add messages easily:
+# import logging
 import random
 import edgebox_model as ebm
 import barter_model as bm
@@ -26,8 +27,8 @@ class MengerAgent(bm.BarterAgent):
         Trade, but first, produce our good.
         """
         if self.prod_good is not None:
-            print("Endowing da agent "
-                  + self.name + " wid some " + self.prod_good)
+            print("Endowing agent "
+                  + self.name + " with " + self.prod_good)
             self.endow(self.prod_good, self.prod_amt)
         super().act()
 
@@ -39,6 +40,7 @@ class MengerAgent(bm.BarterAgent):
         is exchangeable
         """
         super().trade(my_good, counterparty, his_good)
+        self.incr_util(my_good, .1)
 
 
 class MengerEnv(bm.BarterEnv):

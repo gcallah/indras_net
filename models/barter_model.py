@@ -2,10 +2,9 @@
 barter_model.py
 An barter market model where several agents trade goods.
 """
-import logging
+# import logging
 import csv
 import networkx as nx
-import indra.node as node
 import indra.menu as menu
 import indra.entity as ent
 import edgebox_model as ebm
@@ -33,6 +32,14 @@ class BarterAgent(ebm.EdgeboxAgent):
         """
         super().act()
 
+    def trade(self, my_good, my_amt, counterparty, his_good, his_amt):
+        """
+        Call our super's trade and then record
+        this trade in the market.
+        """
+        super().trade(my_good, my_amt, counterparty, his_good, his_amt)
+        self.env.traded(my_good, his_good)
+
 
 class Market(ent.Entity):
     """
@@ -57,6 +64,7 @@ class Market(ent.Entity):
         if good not in self.goods:
             self.goods[good] = {}
             self.goods[good]["vendors"] = []
+            self.goods[good]["trades"] = 0
             self.graph.add_edge(self, good)
 
     def add_vendor(self, good, vendor):
@@ -72,6 +80,14 @@ class Market(ent.Entity):
         Does this good have any vendors?
         """
         return len(self.goods[good]["vendors"]) > 0
+
+    def traded(self, g1, g2):
+        """
+        Record trades for each good: since every
+        trade has two sides, record both with one call.
+        """
+        self.goods[g1]["trades"] += 1
+        self.goods[g2]["trades"] += 1
 
 
 class BarterEnv(ebm.EdgeboxEnv):
@@ -89,7 +105,16 @@ class BarterEnv(ebm.EdgeboxEnv):
                                       menu.MenuLeaf("(m)arket",
                                                     self.graph_market))
 
+    def traded(self, good1, good2):
+        """
+        Record that these goods have been traded.
+        """
+        self.market.traded(good1, good2)
+
     def graph_market(self):
+        """
+        Graphs market relationships
+        """
         self.market.draw()
 
     def fetch_agents_from_file(self, filenm, agent_type):
@@ -112,19 +137,3 @@ class BarterEnv(ebm.EdgeboxEnv):
                                 eval("lambda qty: "
                                      + row[i + 2]))
         print("Goods = " + str(self.market))
-
-    def draw_graph(self):
-        """
-        Draw a graph!
-        """
-        choice = self.user.ask_for_ltr("Draw graph for "
-                                       + "(a)gents; (e)nvironment; "
-                                       + "(m)arket; (u)niversals?")
-        if choice == "a":
-            self.agents.draw()
-        elif choice == "m":
-            self.market.draw()
-        elif choice == "u":
-            node.universals.draw()
-        else:
-            self.draw()

@@ -265,10 +265,18 @@ class GridEnv(se.SpatialEnv):
         self.place_agent(x, y, agent)
 
     def place_agent(self, x, y, agent):
+        """
+        A little function to make sure the grid's notion
+        of where the agent is and the agent's notion are
+        always in sync
+        """
         self.grid[y][x] = agent
         agent.pos = [x, y]
 
     def move_to_empty(self, agent):
+        """
+        Moves agent to an empty cell, vacating agent's old cell.
+        """
         new_x = None
         new_y = None
         (x, y) = self.get_pos_components(agent)
@@ -293,6 +301,9 @@ class GridEnv(se.SpatialEnv):
             target_list.append(self.grid[y][x])
 
     def is_cell_empty(self, x, y):
+        """
+        Returns True if cell is empty, else False.
+        """
         return self.grid[y][x] is None
 
     def get_pos_components(self, agent):
