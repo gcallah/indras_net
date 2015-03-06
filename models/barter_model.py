@@ -2,11 +2,12 @@
 barter_model.py
 An barter market model where several agents trade goods.
 """
-# import logging
+import logging
 import csv
 import networkx as nx
 import indra.menu as menu
 import indra.entity as ent
+import indra.display_methods as disp
 import edgebox_model as ebm
 
 TRADE = "trade"
@@ -65,6 +66,7 @@ class Market(ent.Entity):
             self.goods[good] = {}
             self.goods[good]["vendors"] = []
             self.goods[good]["trades"] = 0
+            self.goods[good]["trade_hist"] = []
             self.graph.add_edge(self, good)
 
     def add_vendor(self, good, vendor):
@@ -86,8 +88,25 @@ class Market(ent.Entity):
         Record trades for each good: since every
         trade has two sides, record both with one call.
         """
-        self.goods[g1]["trades"] += 1
-        self.goods[g2]["trades"] += 1
+        good1 = self.goods[g1]
+        good2 = self.goods[g2]
+        good1["trades"] += 1
+        good2["trades"] += 1
+        good1["trade_hist"].append(good1["trades"])
+        good2["trade_hist"].append(good2["trades"])
+
+    def get_trades(self, good):
+        return self.goods[good]["trades"]
+
+    def get_trade_hist(self):
+        """
+        Make a list containing the population history
+        for each var in vars.
+        """
+        trade_hist = {}
+        for good in self.goods_iter():
+            trade_hist[good] = self.vars[good]["trade_hist"]
+        return trade_hist
 
 
 class BarterEnv(ebm.EdgeboxEnv):
@@ -136,4 +155,19 @@ class BarterEnv(ebm.EdgeboxEnv):
                                 int(row[i + 1]),
                                 eval("lambda qty: "
                                      + row[i + 2]))
-        print("Goods = " + str(self.market))
+        logging.info("Goods = " + str(self.market))
+
+    def display(self):
+        """
+        Draw a graph of trades per good.
+        """
+        if self.period < 4:
+            self.user.tell("Too little data to display")
+            return
+
+        trade_hist = self.market.get_trade_hist()
+
+        disp.display_line_graph("Carl Menger's money model: "
+                                + "Trades per good ",
+                                trade_hist,
+                                self.period)

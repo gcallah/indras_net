@@ -3,8 +3,7 @@ menger_model.py
 The aim of this model is to get money to arise
 in a barter economy.
 """
-# we leave logging here so we can add messages easily:
-# import logging
+import logging
 import random
 import edgebox_model as ebm
 import barter_model as bm
@@ -27,20 +26,23 @@ class MengerAgent(bm.BarterAgent):
         Trade, but first, produce our good.
         """
         if self.prod_good is not None:
-            print("Endowing agent "
-                  + self.name + " with " + self.prod_good)
+            logging.info("Endowing agent "
+                         + self.name + " with "
+                         + self.prod_good)
             self.endow(self.prod_good, self.prod_amt)
         super().act()
 
-    def trade(self, my_good, counterparty, his_good):
+    def trade(self, my_good, my_amt, counterparty, his_good, his_amt):
         """
         We are going to trade goods through
         our super(), but also up the utility
         of the good accepted in trade since it
-        is exchangeable
+        is exchangeable. We will also record
+        this trade in the market.
         """
-        super().trade(my_good, counterparty, his_good)
+        super().trade(my_good, my_amt, counterparty, his_good, his_amt)
         self.incr_util(my_good, .1)
+        self.env.traded(my_good, his_good)
 
 
 class MengerEnv(bm.BarterEnv):
@@ -54,12 +56,24 @@ class MengerEnv(bm.BarterEnv):
                          model_nm=model_nm,
                          preact=True)
 
+    def step_report(self):
+        """
+        What we report after stepping.
+        Here, we are intrested in how often each good is involved
+        in a trade.
+        """
+        self.user.tell("Trades per good:")
+        for good in self.market.goods_iter():
+            self.user.tell("   " + good
+                           + " has traded "
+                           + str(self.market.get_trades(good))
+                           + " times.")
+
     def add_prod_goods(self):
         """
         Add who produces which good, and
         make them a vendor of that good in the market.
         """
-        print("In add_prod_goods")
         my_good = None
         for agent in self.agents:
             print("Adding prod goods to agents")

@@ -206,6 +206,12 @@ class EdgeboxEnv(se.SpatialEnv):
         super().step()
         self.user.tell("Trades this period: "
                        + str(self.trades_this_prd))
+        self.step_report()
+
+    def step_report(self):
+        """
+        What we report to the user after stepping.
+        """
         if self.trades_this_prd <= 0:
             self.user.tell("We've reached equilibrium.")
         else:
