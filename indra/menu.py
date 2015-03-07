@@ -7,8 +7,8 @@ It allows the addition of submenus at any depth available
 memory will allow.
 """
 
+# import logging
 from collections import OrderedDict
-import logging
 import indra.node as node
 
 
@@ -20,7 +20,6 @@ class Menu(node.Node):
     def __init__(self, name, env):
         super().__init__(name)
         self.env = env
-        self.choices = {}
         self.menu_items = OrderedDict()
         self.def_act = None
 
@@ -28,12 +27,14 @@ class Menu(node.Node):
         """
         Add an item to the this menu.
         """
-        self.menu_items[item.name] = item
-        self.choices[letter] = item.act
+        self.menu_items[letter] = item
         if default:
             self.def_act = item.act
 
     def act(self):
+        """
+        What to do when menu is selected.
+        """
         return self.display()
 
     def display(self):
@@ -41,15 +42,15 @@ class Menu(node.Node):
         Display the menu.
         """
         disp_text = ""
-        for item in self.menu_items:
-            disp_text += item + " | "
+        for _ltr, item in self.menu_items.items():
+            disp_text += str(item) + " | "
         disp_text = disp_text.rstrip(" | ")
         self.env.user.tell(disp_text)
 
         choice = self.env.user.ask_for_ltr(
             "Choose one of the above and press Enter: ")
-        if choice in self.choices:
-            self.choices[choice]()
+        if choice in self.menu_items:
+            self.menu_items[choice].act()
         elif self.def_act is not None:
             self.def_act()
         else:

@@ -92,8 +92,11 @@ class Market(ent.Entity):
         good2 = self.goods[g2]
         good1["trades"] += 1
         good2["trades"] += 1
-        good1["trade_hist"].append(good1["trades"])
-        good2["trade_hist"].append(good2["trades"])
+
+    def set_trade_hist(self):
+        for g in self.goods_iter():
+            good = self.goods[g]
+            good["trade_hist"].append(good["trades"])
 
     def get_trades(self, good):
         return self.goods[good]["trades"]
@@ -105,7 +108,7 @@ class Market(ent.Entity):
         """
         trade_hist = {}
         for good in self.goods_iter():
-            trade_hist[good] = self.vars[good]["trade_hist"]
+            trade_hist[good] = self.goods[good]["trade_hist"]
         return trade_hist
 
 
@@ -123,6 +126,10 @@ class BarterEnv(ebm.EdgeboxEnv):
         self.menu.graph.add_menu_item("m",
                                       menu.MenuLeaf("(m)arket",
                                                     self.graph_market))
+
+    def step(self):
+        super().step()
+        self.market.set_trade_hist()
 
     def traded(self, good1, good2):
         """

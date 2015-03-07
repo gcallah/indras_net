@@ -8,6 +8,7 @@ trend-setters and followers.
 
 import logging
 import indra.node as node
+import indra.menu as menu
 import indra.entity as ent
 import indra.spatial_env as se
 import indra.display_methods as disp
@@ -161,6 +162,9 @@ class SocietyEnv(se.SpatialEnv):
 
         self.min_adv_periods = self.props.get("min_adv_periods",
                                               default=6)
+        self.menu.view.add_menu_item("v",
+                                     menu.MenuLeaf("(v)iew fashions",
+                                                   self.display))
 
     def add_agent(self, agent):
         """

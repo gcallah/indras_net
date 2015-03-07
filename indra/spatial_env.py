@@ -56,8 +56,9 @@ class SpatialEnv(env.Environment):
         self.height = height
         self.max_dist = self.width * self.height
 # it only makes sense to plot agents in a spatial env, so add this here:
-        plot = menu.MenuLeaf("(s)catter plot", self.plot)
-        self.menu.view.add_menu_item("s", plot)
+        self.menu.view.add_menu_item("s",
+                                     menu.MenuLeaf("(s)catter plot",
+                                                   self.plot))
 
     def add_agent(self, agent):
         """

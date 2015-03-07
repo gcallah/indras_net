@@ -5,6 +5,8 @@ in a barter economy.
 """
 import logging
 import random
+import indra.display_methods as disp
+import indra.menu as menu
 import edgebox_model as ebm
 import barter_model as bm
 
@@ -19,7 +21,6 @@ class MengerAgent(bm.BarterAgent):
                  max_detect=ebm.GLOBAL_KNOWLEDGE):
         super().__init__(name, goal=goal, max_detect=max_detect)
         self.prod_good = None
-        self.prod_amt = 1
 
     def act(self):
         """
@@ -29,7 +30,7 @@ class MengerAgent(bm.BarterAgent):
             logging.info("Endowing agent "
                          + self.name + " with "
                          + self.prod_good)
-            self.endow(self.prod_good, self.prod_amt)
+            self.endow(self.prod_good, self.env.prod_amt)
         super().act()
 
     def trade(self, my_good, my_amt, counterparty, his_good, his_amt):
@@ -55,6 +56,10 @@ class MengerEnv(bm.BarterEnv):
                          length, height,
                          model_nm=model_nm,
                          preact=True)
+        self.menu.view.add_menu_item("v",
+                                     menu.MenuLeaf("(v)iew trades",
+                                                   self.display))
+        self.prod_amt = self.props.get("prop_amt", 1)
 
     def step_report(self):
         """
@@ -76,7 +81,6 @@ class MengerEnv(bm.BarterEnv):
         """
         my_good = None
         for agent in self.agents:
-            print("Adding prod goods to agents")
             for good in self.market.goods_iter():
                 if not self.market.has_vendor(good):
                     my_good = good
@@ -89,3 +93,20 @@ class MengerEnv(bm.BarterEnv):
             self.market.add_vendor(my_good, agent)
 
         print("Market = " + str(self.market))
+
+    def display(self):
+        """
+        Draw a graph of our changing pops.
+        """
+        if self.period < 4:
+            self.user.tell("Too little data to display")
+            return
+
+        trade_hist = self.market.get_trade_hist()
+
+        disp.display_line_graph("Adam Smith's fashion model: "
+                                + "Populations in "
+                                + self.name
+                                + " adopting fashion ",
+                                trade_hist,
+                                self.period)

@@ -29,6 +29,7 @@ else:
                         loglevel=logging.DEBUG, props=None)
     pa.set("model", MODEL_NM)
     pa.set("user_type", user.User.TERMINAL)
+    pa.set("prod_amt", 1)
 
 # Now we create an environment for our agents to act within:
 env = mm.MengerEnv("Menger's money model", 50.0, 50.0,
