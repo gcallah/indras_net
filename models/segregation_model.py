@@ -19,7 +19,7 @@ class SegregationAgent(sa.SpatialAgent):
         # print(ge.pos_msg(self))
         x = self.pos[0]
         y = self.pos[1]
-        print("With agent " + self.name
+        print("With " + self.name
               + " we are looking around "
               + " x = " + str(x)
               + " y = " + str(y))
@@ -30,3 +30,19 @@ class SegregationAgent(sa.SpatialAgent):
             print(self.name + " has neighbors: ")
             for nayb in naybs:
                 print("    " + nayb.name)
+
+    def postact(self):
+        x = self.pos[0]
+        y = self.pos[1]
+        naybs = self.env.get_neighbors(x,y,True)
+        if len(naybs) > 4:
+            self.env.move_to_empty(self)
+            print(self.name + ' has moved')
+
+class RedAgent(SegregationAgent):
+    
+    pass
+
+class BlueAgent(SegregationAgent):
+
+    pass       
