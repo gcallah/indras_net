@@ -10,6 +10,14 @@ import indra.menu as menu
 import edgebox_model as ebm
 import barter_model as bm
 
+goods = {"cheese": {"durability": .8, "prod_amt": 2.5},
+         "wine": {"durability": .9, "prod_amt": 2.22},
+         "olive oil": {"durability": .9, "prod_amt": 2.22},
+         "figs": {"durability": .7, "prod_amt": 2.86},
+         "bread": {"durability": .5, "prod_amt": 4.0},
+         "gold": {"durability": 1.0, "prod_amt": 8.0}
+         }
+
 
 class MengerAgent(bm.BarterAgent):
     """
@@ -30,8 +38,15 @@ class MengerAgent(bm.BarterAgent):
             logging.info("Endowing agent "
                          + self.name + " with "
                          + self.prod_good)
-            self.endow(self.prod_good, self.env.prod_amt)
+            prod_amt = goods[self.prod_good]["prod_amt"]
+            self.endow(self.prod_good, prod_amt)
         super().act()
+        # now let goods decay:
+        self.good_decay()
+
+    def good_decay(self):
+        for good in self.goods:
+            self.goods[good]["endow"] *= goods[good]["durability"]
 
     def trade(self, my_good, my_amt, counterparty, his_good, his_amt):
         """

@@ -11,9 +11,6 @@ TRADE = "trade"
 WINE = "wine"
 CHEESE = "cheese"
 
-GAIN = 1
-LOSE = -1
-
 GLOBAL_KNOWLEDGE = 1000.0
 
 Accept = True
@@ -58,7 +55,7 @@ class EdgeboxAgent(sa.SpatialAgent):
                         break
                     amt += 1
 
-    def endow(self, good, endow, util_func=None):
+    def endow(self, good, new_endow, util_func=None):
         """
         Endow an agent with some amount of some good.
         """
@@ -66,13 +63,13 @@ class EdgeboxAgent(sa.SpatialAgent):
             self.__add_good(good)
 
         g = self.goods[good]
-        g["endow"] += endow
         if util_func is not None:
             g["util_func"] = util_func
-        for i in range(1, endow):
-            self.utils += (g["util_func"](i) + g["incr"])
+
+        self.utils += self.__marginal_util(good, new_endow)
 
         self.pretrade_utils = self.utils
+        g["endow"] += new_endow
 
     def incr_util(self, good, incr):
         """
@@ -89,22 +86,22 @@ class EdgeboxAgent(sa.SpatialAgent):
         """
 
         my_amt = 1
-        util_gain = self.__marginal_util(his_good, his_amt, GAIN)
-        logging.debug(self.name
-                      + " is looking at a util gain of "
-                      + str(util_gain)
-                      + " for good "
-                      + his_good)
+        util_gain = self.__marginal_util(his_good, his_amt)
+        logging.info(self.name
+                     + " is looking at a util gain of "
+                     + str(util_gain)
+                     + " for good "
+                     + his_good)
         for my_good in self.goods:
             if((my_good != his_good)
                and (self.goods[my_good]["endow"] > 0)):
-                util_loss = self.__marginal_util(my_good, my_amt, LOSE)
-                logging.debug(self.name
-                              + " is looking at a util loss of "
-                              + str(util_loss)
-                              + " for good "
-                              + my_good)
-                if (util_gain + util_loss) > 0:
+                util_loss = self.__marginal_util(my_good, -my_amt)
+                logging.info(self.name
+                             + " is looking at a util loss of "
+                             + str(util_loss)
+                             + " for good "
+                             + my_good)
+                if util_gain > util_loss:
                     if(counterparty.rec_reply(his_good,
                                               his_amt,
                                               my_good,
@@ -120,9 +117,9 @@ class EdgeboxAgent(sa.SpatialAgent):
         This is a response to a trade offer this agent has initiated
         """
 
-        util_gain = self.__marginal_util(his_good, his_amt, 1)
-        util_loss = self.__marginal_util(my_good, my_amt, -1)
-        return (util_gain + util_loss) > 0
+        util_gain = self.__marginal_util(his_good, his_amt)
+        util_loss = self.__marginal_util(my_good, -my_amt)
+        return util_gain > util_loss
 
     def list_goods(self):
         """
@@ -143,12 +140,12 @@ class EdgeboxAgent(sa.SpatialAgent):
                      + " for " + str(his_amt)
                      + " units of " + his_good
                      + " with " + counterparty.name)
-        self.__gain_lose_good(my_good, my_amt, LOSE)
-        self.__gain_lose_good(his_good, his_amt, GAIN)
-        counterparty.__gain_lose_good(his_good, his_amt, LOSE)
-        counterparty.__gain_lose_good(my_good, my_amt, GAIN)
+        self.__adj_good_amt(my_good, -my_amt)
+        self.__adj_good_amt(his_good, his_amt)
+        counterparty.__adj_good_amt(his_good, -his_amt)
+        counterparty.__adj_good_amt(my_good, my_amt)
 
-        self.env.record_trade(self, counterparty, 1)
+        self.env.record_trade(self, counterparty)
 
     def util_gain(self):
         """
@@ -156,25 +153,22 @@ class EdgeboxAgent(sa.SpatialAgent):
         """
         return self.utils - self.pretrade_utils
 
-    def __gain_lose_good(self, good, amt, gain_or_lose):
+    def __adj_good_amt(self, good, amt):
         """
         We are about to add or give up a good.
         Record the change in possessions and utility.
         """
-        self.utils += self.__marginal_util(good, amt, gain_or_lose)
-        self.goods[good]["endow"] += gain_or_lose
+        self.utils += self.__marginal_util(good, amt)
+        self.goods[good]["endow"] += amt
 
-    def __marginal_util(self, good, amt, gain_or_lose):
+    def __marginal_util(self, good, amt):
         """
         What is the marginal utility gained or lost
         from our current trade?
         """
         g = self.goods[good]
-        if gain_or_lose == GAIN:
-            # we are calling a function stored in a dictionary here:
-            return g["util_func"](g["endow"] + amt)
-        else:
-            return -(g["util_func"](g["endow"] - (1 - amt)))
+        return (g["util_func"](g["endow"])
+                - g["util_func"](g["endow"] + amt))
 
     def __add_good(self, good):
         """
@@ -221,9 +215,9 @@ class EdgeboxEnv(se.SpatialEnv):
                                + " utils and now has: "
                                + a.list_goods())
 
-    def record_trade(self, a1, a2, amt):
+    def record_trade(self, a1, a2):
         """
         Record the fact a trade has occured.
         """
-        self.trades_this_prd += amt
+        self.trades_this_prd += 1
         self.join_agents(a1, a2)
