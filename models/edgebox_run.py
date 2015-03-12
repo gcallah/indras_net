@@ -19,14 +19,14 @@ if read_props:
 else:
     pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
     pa.set("model", MODEL_NM)
-    pa.set("al_cheese", 20)
-    pa.set("al_cutil", "10 - .5 * qty")
+    pa.set("al_cheese", 2)
+    pa.set("al_cutil", "10 - 4 * qty")
     pa.set("al_wine", 0)
-    pa.set("al_wutil", "10 - .5 * qty")
-    pa.set("bea_wine", 20)
-    pa.set("bea_wutil", "10 - .5 * qty")
+    pa.set("al_wutil", "10 - 4 * qty")
+    pa.set("bea_wine", 2)
+    pa.set("bea_wutil", "10 - 4 * qty")
     pa.set("bea_cheese", 0)
-    pa.set("bea_cutil", "10 - .5 * qty")
+    pa.set("bea_cutil", "10 - 4 * qty")
 
 env = ebm.EdgeboxEnv("An Edgeworth Box", 50.0, 50.0, model_nm=MODEL_NM)
 

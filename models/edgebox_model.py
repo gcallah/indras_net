@@ -13,8 +13,9 @@ CHEESE = "cheese"
 
 GLOBAL_KNOWLEDGE = 1000.0
 
-Accept = True
-Reject = False
+ACCEPT = 1
+INADEQ = 0
+REJECT = -1
 
 
 def gen_util_func(qty):
@@ -46,14 +47,17 @@ class EdgeboxAgent(sa.SpatialAgent):
 
         potential_traders = self.survey_env(TRADE)
         for t in potential_traders:
-            for g in self.goods:
-                amt = 1
-                while self.goods[g]["endow"] >= amt:
-                    logging.debug(self.name + " is offering "
-                                  + g + " to " + t.name)
-                    if t.rec_offer(g, amt, self):
-                        break
-                    amt += 1
+            if t is not self:
+                for g in self.goods:
+                    amt = 1
+                    while self.goods[g]["endow"] >= amt:
+                        logging.info(self.name + " is offering "
+                                     + str(amt) + " units of "
+                                     + g + " to " + t.name)
+                        ans = t.rec_offer(g, amt, self)
+                        if ans == ACCEPT or ans == REJECT:
+                            break
+                        amt += 1
 
     def endow(self, good, new_endow, util_func=None):
         """
@@ -66,7 +70,8 @@ class EdgeboxAgent(sa.SpatialAgent):
         if util_func is not None:
             g["util_func"] = util_func
 
-        self.utils += self.__marginal_util(good, new_endow)
+        if new_endow != 0:
+            self.utils += self.__marginal_util(good, new_endow)
 
         self.pretrade_utils = self.utils
         g["endow"] += new_endow
@@ -95,7 +100,7 @@ class EdgeboxAgent(sa.SpatialAgent):
         for my_good in self.goods:
             if((my_good != his_good)
                and (self.goods[my_good]["endow"] > 0)):
-                util_loss = self.__marginal_util(my_good, -my_amt)
+                util_loss = -self.__marginal_util(my_good, -my_amt)
                 logging.info(self.name
                              + " is looking at a util loss of "
                              + str(util_loss)
@@ -106,20 +111,26 @@ class EdgeboxAgent(sa.SpatialAgent):
                                               his_amt,
                                               my_good,
                                               my_amt)
-                       is Accept):
+                       == ACCEPT):
                         self.trade(my_good, my_amt,
                                    counterparty, his_good, his_amt)
-                        return Accept
-        return Reject
+                        return ACCEPT
+                    else:
+                        return INADEQ
+        return REJECT
 
     def rec_reply(self, my_good, my_amt, his_good, his_amt):
         """
         This is a response to a trade offer this agent has initiated
         """
 
+        print("In rec_reply; his_amt = " + str(his_amt))
         util_gain = self.__marginal_util(his_good, his_amt)
-        util_loss = self.__marginal_util(my_good, -my_amt)
-        return util_gain > util_loss
+        util_loss = -self.__marginal_util(my_good, -my_amt)
+        if util_gain > util_loss:
+            return ACCEPT
+        else:
+            return INADEQ
 
     def list_goods(self):
         """
@@ -160,15 +171,38 @@ class EdgeboxAgent(sa.SpatialAgent):
         """
         self.utils += self.__marginal_util(good, amt)
         self.goods[good]["endow"] += amt
+        print("Adjusting " + good + " amt for " + self.name
+              + "; amt = " + str(amt))
+        print("Util gain (loss) = " + str(self.__marginal_util(good, amt)))
 
     def __marginal_util(self, good, amt):
         """
         What is the marginal utility gained or lost
         from our current trade?
         """
+        assert amt != 0
         g = self.goods[good]
-        return (g["util_func"](g["endow"])
-                - g["util_func"](g["endow"] + amt))
+        curr_amt = g["endow"]
+        if amt < 0:
+            u1 = 1
+            u2 = 0
+        else:
+            u1 = 0
+            u2 = 1
+        print("We are going to take the average util of "
+              + str(curr_amt + u1) + " and "
+              + str(curr_amt + amt + u2)
+              + " for curr_amt = " + str(curr_amt)
+              + " and amt = " + str(amt))
+        util1 = g["util_func"](curr_amt + u1)
+        util2 = g["util_func"](curr_amt + amt + u2)
+        avg_util = (util1 + util2) / 2
+        print("For " + self.name
+              + " we are getting util1 of "
+              + str(util1)
+              + " and util2 of "
+              + str(util2))
+        return(avg_util * amt)
 
     def __add_good(self, good):
         """
