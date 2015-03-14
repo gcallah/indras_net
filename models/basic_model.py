@@ -24,7 +24,7 @@ class BasicAgent(ent.Agent):
         """
         Just print my name and goal!
         """
-        print("Agent " + self.name + " with a goal of " + self.goal)
+        print("Agent %s with a goal of %s" % (self.name, self.goal))
 
 
 class Gozer(BasicAgent):
@@ -61,9 +61,9 @@ class BasicEnv(env.Environment):
 
     def __init__(self, model_nm=None):
         super().__init__("Basic environment",
-                         model_nm=model_nm,
                          preact=True,
-                         postact=True)
+                         postact=True,
+                         model_nm=model_nm)
 
     def preact_loop(self):
         print("Preact loop: demonstrating backwards looping")

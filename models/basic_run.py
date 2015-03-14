@@ -7,7 +7,6 @@ the system after library changes.
 
 import logging
 import indra.prop_args as props
-import indra.entity as ent
 import basic_model as bm
 
 # set up some file names:
@@ -26,7 +25,6 @@ else:
     pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
     pa.set("model", MODEL_NM)
     pa.set("num_agents", 10)
-    pa.set("user_type", ent.User.IPYTHON_NB)
 
 # Now we create a minimal environment for our agents to act within:
 env = bm.BasicEnv(model_nm=MODEL_NM)
@@ -42,4 +40,3 @@ logging.info("Starting program " + PROG_NM)
 
 # And now we set things running!
 env.run()
-
