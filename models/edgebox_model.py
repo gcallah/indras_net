@@ -187,8 +187,8 @@ class EdgeboxAgent(sa.SpatialAgent):
         else:
             u1 = 0
             u2 = 1
-        util1 = g["util_func"](curr_amt + u1)
-        util2 = g["util_func"](curr_amt + amt + u2)
+        util1 = g["util_func"](curr_amt + u1) + g["incr"]
+        util2 = g["util_func"](curr_amt + amt + u2) + g["incr"]
         avg_util = (util1 + util2) / 2
         logging.debug("For %s; util1 = %i and util2 = %i"
                       % (self.name, util1, util2))

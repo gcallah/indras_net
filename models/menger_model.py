@@ -119,9 +119,6 @@ class MengerEnv(bm.BarterEnv):
 
         trade_hist = self.market.get_trade_hist()
 
-        disp.display_line_graph("Adam Smith's fashion model: "
-                                + "Populations in "
-                                + self.name
-                                + " adopting fashion ",
+        disp.display_line_graph("Menger model: trades per good.",
                                 trade_hist,
                                 self.period)

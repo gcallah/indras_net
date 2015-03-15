@@ -93,8 +93,9 @@ class Fashionista(prdpry.MobileCreature):
 
 class Follower(Fashionista, prdpry.Predator):
 
-    """ This class describes the followers in Adam Smith's
-        fashion model """
+    """
+    This class describes the followers in Adam Smith's fashion model
+    """
 
     def __init__(self, name, life_force=20, repro_age=1000,
                  decay_rate=0.0, max_move=20.0, max_detect=20.0,
@@ -216,10 +217,8 @@ class SocietyEnv(se.SpatialEnv):
 
         pop_hist = self.agents.get_pop_hist()
 
-        disp.display_line_graph("Adam Smith's fashion model: "
-                                + "Populations in "
-                                + self.name
-                                + " adopting fashion "
-                                + fashions[FSHN_TO_TRACK],
+        disp.display_line_graph("A. Smith's fashion model: "
+                                + "Populations in %s adopting fashion %s"
+                                % (self.name, fashions[FSHN_TO_TRACK]),
                                 pop_hist,
                                 self.period)
