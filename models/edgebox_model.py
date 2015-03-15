@@ -124,7 +124,6 @@ class EdgeboxAgent(sa.SpatialAgent):
         This is a response to a trade offer this agent has initiated
         """
 
-        print("In rec_reply; his_amt = " + str(his_amt))
         util_gain = self.__marginal_util(his_good, his_amt)
         util_loss = -self.__marginal_util(my_good, -my_amt)
         if util_gain > util_loss:
@@ -146,11 +145,9 @@ class EdgeboxAgent(sa.SpatialAgent):
         """
         We actual swap goods, and record the trade in the environment
         """
-        logging.info(self.name + " is going to trade "
-                     + str(my_amt) + " units of " + my_good
-                     + " for " + str(his_amt)
-                     + " units of " + his_good
-                     + " with " + counterparty.name)
+        logging.info("%s is trading %i units of %s for %i units of %s with %s"
+                     % (self.name, my_amt, my_good, his_amt, his_good,
+                        counterparty.name))
         self.__adj_good_amt(my_good, -my_amt)
         self.__adj_good_amt(his_good, his_amt)
         counterparty.__adj_good_amt(his_good, -his_amt)
@@ -171,9 +168,10 @@ class EdgeboxAgent(sa.SpatialAgent):
         """
         self.utils += self.__marginal_util(good, amt)
         self.goods[good]["endow"] += amt
-        print("Adjusting " + good + " amt for " + self.name
-              + "; amt = " + str(amt))
-        print("Util gain (loss) = " + str(self.__marginal_util(good, amt)))
+        logging.debug("Adjusting " + good + " amt for " + self.name
+                      + "; amt = " + str(amt))
+        logging.debug("Util gain (loss) = "
+                      + str(self.__marginal_util(good, amt)))
 
     def __marginal_util(self, good, amt):
         """
@@ -189,19 +187,11 @@ class EdgeboxAgent(sa.SpatialAgent):
         else:
             u1 = 0
             u2 = 1
-        print("We are going to take the average util of "
-              + str(curr_amt + u1) + " and "
-              + str(curr_amt + amt + u2)
-              + " for curr_amt = " + str(curr_amt)
-              + " and amt = " + str(amt))
         util1 = g["util_func"](curr_amt + u1)
         util2 = g["util_func"](curr_amt + amt + u2)
         avg_util = (util1 + util2) / 2
-        print("For " + self.name
-              + " we are getting util1 of "
-              + str(util1)
-              + " and util2 of "
-              + str(util2))
+        logging.debug("For %s; util1 = %i and util2 = %i"
+                      % (self.name, util1, util2))
         return(avg_util * amt)
 
     def __add_good(self, good):
@@ -244,10 +234,8 @@ class EdgeboxEnv(se.SpatialEnv):
             self.user.tell("We've reached equilibrium.")
         else:
             for a in self.agents:
-                self.user.tell(a.name + " has gained "
-                               + str(a.util_gain())
-                               + " utils and now has: "
-                               + a.list_goods())
+                self.user.tell("%s has gained %f utils and now has: %s"
+                               % (a.name, a.util_gain(), a.list_goods()))
 
     def record_trade(self, a1, a2):
         """
