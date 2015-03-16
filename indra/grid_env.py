@@ -247,6 +247,15 @@ class GridEnv(se.SpatialEnv):
         """
         return len(self.empties) > 0
 
+    def swap_pos(self, a1, a2):
+        """
+        Swap two agents in the grid.
+        """
+        c1 = self.get_pos_components(a1)
+        c2 = self.get_pos_components(a2)
+        self._place_agent(c2, a1)
+        self._place_agent(c1, a2)
+
     def move_to_empty(self, agent):
         """
         Moves agent to an empty cell, vacating agent's old cell.
@@ -273,6 +282,9 @@ class GridEnv(se.SpatialEnv):
     def position_agent(self, agent, x=RANDOM, y=RANDOM):
         """
         Position an agent on the grid.
+        This is used when first placing agents! Use 'move_to_empty()'
+        when you want agents to jump to an empty cell.
+        Use 'swap_pos()' to swap agents positions.
         If x or y are positive, they are used, but if RANDOM,
         we get a random position.
         Ensure this random position is not occupied (in Grid).
