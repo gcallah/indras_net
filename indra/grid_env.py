@@ -28,6 +28,9 @@ import indra.spatial_env as se
 
 RANDOM = -1
 
+X = 0
+Y = 1
+
 
 def pos_msg(agent):
     """
@@ -73,18 +76,16 @@ class GridEnv(se.SpatialEnv):
 
     default_val = None
 
-    class GridOccupiedIter:
+    class CoordIter:
         """
-        Return just the (un)occupied cells of the grid.
-        occupied is a flag indicating if we want the occupied (True)
-            or unoccupied (occupied=False) cells
+        An iterator that returns the coordinatesof a cell along with its
+        contents.
         """
 
-        def __init__(self, grid, occupied=True):
+        def __init__(self, grid):
             self.grid = grid
             self.x = 0
             self.y = 0
-            self.occupied = occupied
 
         def __iter__(self):
             return self
@@ -92,14 +93,10 @@ class GridEnv(se.SpatialEnv):
         def __next__(self):
             while self.y < self.grid.height:
                 while self.x < self.grid.width:
-                    occupied = not self.grid.is_cell_empty(self.x, self.y)
-                    if occupied == self.occupied:
-                        ret = [self.grid[self.y][self.x],
-                               self.x, self.y]
-                        self.x += 1
-                        return ret
-                    else:
-                        self.x += 1
+                    ret = [self.grid[self.y][self.x],
+                           self.x, self.y]
+                    self.x += 1
+                    return ret
                 self.x = 0
                 self.y += 1
             else:
@@ -114,8 +111,7 @@ class GridEnv(se.SpatialEnv):
             height, width: The height and width of the grid
             torus: Boolean whether the grid wraps or not.
         """
-        super().__init__(name, width, height, preact=preact,
-                         postact=postact, model_nm=model_nm)
+        super().__init__(name, width, height, preact, postact, model_nm)
 
         self.torus = torus
 
@@ -136,10 +132,16 @@ class GridEnv(se.SpatialEnv):
     def __getitem__(self, index):
         return self.grid[index]
 
-    def occupied_iter(self, occupied=True):
-        return GridEnv.GridOccupiedIter(self, occupied=occupied)
+    def coord_iter(self):
+        """
+        An iterator that returns coordinates as well as cell contents.
+        """
+        return GridEnv.CoordIter(self)
 
     def neighbor_iter(self, x, y, moore=True, torus=False):
+        """
+        Iterate over our neighbors.
+        """
         neighbors = self.get_neighbors(x, y, moore=moore)
         return iter(neighbors)
 
@@ -245,6 +247,29 @@ class GridEnv(se.SpatialEnv):
         """
         return len(self.empties) > 0
 
+    def move_to_empty(self, agent):
+        """
+        Moves agent to an empty cell, vacating agent's old cell.
+        """
+        coords = self.get_pos_components(agent)
+        new_coords = self.find_empty()
+        if new_coords is None:
+            logging.ERROR("Agent could not move because no cells are empty")
+        else:
+            self._place_agent(new_coords, agent)
+            self._make_empty(coords)
+
+    def _make_empty(self, coords):
+        self.empties.append(coords)
+        self.grid[coords[Y]][coords[X]] = None
+
+    def find_empty(self):
+        if self.exists_empty_cells():
+            coords = random.choice(self.empties)
+            return coords
+        else:
+            return None
+
     def position_agent(self, agent, x=RANDOM, y=RANDOM):
         """
         Position an agent on the grid.
@@ -253,43 +278,23 @@ class GridEnv(se.SpatialEnv):
         Ensure this random position is not occupied (in Grid).
         """
         if x == RANDOM or y == RANDOM:
-            if self.exists_empty_cells():
-                coords = random.choice(self.empties)
-                x = coords[0]
-                y = coords[1]
-                self.empties.remove(coords)
-            else:
-                logging.error("Grid full; "
-                              + agent.name + " not added.")
-                return
-        self.place_agent(x, y, agent)
+            coords = self.find_empty()
+        if coords is None:
+            logging.error("Grid full; "
+                          + agent.name + " not added.")
+            return
+        self._place_agent(coords, agent)
 
-    def place_agent(self, x, y, agent):
+    def _place_agent(self, coords, agent):
         """
         A little function to make sure the grid's notion
         of where the agent is and the agent's notion are
         always in sync
         """
-        self.grid[y][x] = agent
-        agent.pos = [x, y]
-
-    def move_to_empty(self, agent):
-        """
-        Moves agent to an empty cell, vacating agent's old cell.
-        """
-        new_x = None
-        new_y = None
-        (x, y) = self.get_pos_components(agent)
-        for cell in self.occupied_iter(occupied=False):
-            new_x = cell[1]
-            new_y = cell[2]
-            break
-        if new_x is not None:
-            self.place_agent(new_x, new_y, agent)
-            self.grid[y][x] = None
-        else:
-            logging.ERROR("Agent could not move "
-                          + "because no cells are empty")
+        self.grid[coords[Y]][coords[X]] = agent
+        agent.pos = [coords[X], coords[Y]]
+        if coords in self.empties:
+            self.empties.remove(coords)
 
     def _add_members(self, target_list, x, y):
         """
