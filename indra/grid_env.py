@@ -291,10 +291,11 @@ class GridEnv(se.SpatialEnv):
         """
         if x == RANDOM or y == RANDOM:
             coords = self.find_empty()
-        if coords is None:
-            logging.error("Grid full; "
-                          + agent.name + " not added.")
-            return
+            if coords is None:
+                logging.error("Grid full; %s not added." % (agent.name))
+                return
+        else:
+            coords = (x, y)
         self._place_agent(coords, agent)
 
     def _place_agent(self, coords, agent):
