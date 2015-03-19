@@ -49,8 +49,10 @@ class Environment(node.Node):
             self.props = None
 
         user_nm = getpass.getuser()
-        self.props.set("user_name", user_nm)
-        user_type = self.props.get("user_type", user.User.TERMINAL)
+        user_type = None
+        if self.props is not None:
+            self.props.set("user_name", user_nm)
+            user_type = self.props.get("user_type", user.User.TERMINAL)
         self.user = user.User(user_nm, user_type)
         self.graph.add_edge(self, self.user)
         self.menu = menu.MainMenu("Main Menu", self)
@@ -402,3 +404,6 @@ class Environment(node.Node):
         Return the population of agent's type
         """
         return self.agents.get_my_pop(agent)
+
+    def change_agent_type(self, agent, old_type, new_type):
+        self.agents.change_agent_type(agent, old_type, new_type)

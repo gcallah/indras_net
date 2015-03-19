@@ -199,6 +199,9 @@ class AgentPop(node.Node):
         """
         self.vars[var]["pop_of_note"] += change
 
+    def change_agent_type(self, agent, old_type, new_type):
+        pass
+
     def append_pop_hist(self, var, pop):
         """
         Add the most recent pop to pop_hist.

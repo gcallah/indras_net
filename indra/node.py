@@ -82,6 +82,9 @@ class Node():
         """
         pass
 
+    def get_type(self):
+        return get_node_type(self)
+
 
 class Universals(Node):
     """
