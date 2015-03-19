@@ -25,7 +25,7 @@ else:
     pa.set("model", MODEL_NM)
 
 # Now we create a forest fire environment for our agents to act within:
-env = fm.ForestFire(10, 10, .6, model_nm=MODEL_NM)
+env = fm.ForestEnv(10, 10, .6, model_nm=MODEL_NM)
 
 # Logging is automatically set up for the modeler:
 logging.info("Starting program " + PROG_NM)

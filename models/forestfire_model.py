@@ -1,3 +1,9 @@
+"""
+forestfire_model.py
+Adapted from the George Mason mesa project.
+This model shows the spread of a forest fire through a forest.
+"""
+
 import random
 
 import indra.spatial_agent as sa
@@ -6,6 +12,10 @@ import indra.grid_env as grid
 
 X = 0
 Y = 1
+
+HEALTHY = "Healthy"
+ON_FIRE = "On Fire"
+BURNED_OUT = "Burned Out"
 
 
 class Tree(sa.SpatialAgent):
@@ -29,45 +39,40 @@ class Tree(sa.SpatialAgent):
         name = "Tree at %i %i" % (x, y)
         super().__init__(name, "burn")
         self.pos = (x, y)
+        self.ntype = HEALTHY
 
-    def change_type(self, new_type):
+    def is_healthy(self):
+        return self.ntype == HEALTHY
+
+    def is_burning(self):
+        return self.ntype == HEALTHY
+
+    def is_burnt(self):
+        return self.ntype == HEALTHY
+
+    def set_type(self, new_type):
         """
-        This is intended simply to turn Trees into
-        BurningTrees or DeadTrees. Since those classes
-        have no code and just make graphing work
-        right, this should be safe!
+        Set tree's new type.
         """
-        old_type = type(self)
-        self.__class__ = new_type
+        old_type = self.ntype
+        self.ntype = new_type
         self.env.change_agent_type(self, old_type, new_type)
 
     def act(self):
         '''
         If the tree is on fire, spread it to fine trees nearby.
         '''
-        if type(self) == BurningTree:
+        if self.is_burning():
             for neighbor in self.env.neighbor_iter(self.pos[X], self.pos[Y]):
-                if type(neighbor) == Tree:
-                    neighbor.change_type(BurningTree)
-            self.change_type(DeadTree)
+                if neighbor.is_healthy():
+                    neighbor.set_type(ON_FIRE)
+            self.set_type(BURNED_OUT)
 
     def get_pos(self):
         return self.pos
 
 
-class BurningTree(Tree):
-    """
-    No code needed. It just changes the type for AgentPop
-    """
-
-
-class DeadTree(Tree):
-    """
-    No code needed. It just changes the type for AgentPop
-    """
-
-
-class ForestFire(grid.GridEnv):
+class ForestEnv(grid.GridEnv):
     '''
     Simple Forest Fire model.
     '''
@@ -82,7 +87,6 @@ class ForestFire(grid.GridEnv):
         # Initialize model parameters
         super().__init__("Forest Fire", height, width, model_nm)
         self.density = density
-        self.burning_type = "BurningTree"
 
         # Place a tree in each cell with Prob = density
         for cell in self.coord_iter():
@@ -90,16 +94,15 @@ class ForestFire(grid.GridEnv):
             y = cell[2]
             if random.random() < self.density:
                 # Create a tree
+                new_tree = Tree(x, y)
+                self.add_agent(new_tree)
+                self.position_agent(new_tree, x, y)
                 if x == 0:
                     # all trees in col 0 start on fire
-                    new_tree = BurningTree(x, y)
-                else:
-                    new_tree = Tree(x, y)
-                self.position_agent(new_tree, x, y)
-        self.running = True
+                    new_tree.set_type(ON_FIRE)
 
     def step(self):
         super().step()
         # Halt if no more fire
-        if self.get_pop(self.burning_type) == 0:
+        if self.get_pop(ON_FIRE) == 0:
             return "The fire is out!"

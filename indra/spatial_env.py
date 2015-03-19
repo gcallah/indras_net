@@ -7,7 +7,6 @@ import math
 import cmath
 import random
 import logging
-import indra.node as node
 import indra.menu as menu
 import indra.env as env
 import indra.display_methods as disp
@@ -67,7 +66,7 @@ class SpatialEnv(env.Environment):
         super().add_agent(agent)
         self.position_agent(agent)
 
-        v = node.get_node_type(agent)
+        v = agent.get_type()
         logging.debug("Adding " + agent.__str__()
                       + " of variety " + v)
 

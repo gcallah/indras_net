@@ -104,7 +104,7 @@ class AgentPop(node.Node):
         """
         Appends to agent list.
         """
-        var = node.get_node_type(agent)
+        var = agent.get_type()
         logging.debug("Adding " + agent.__str__()
                       + " of variety " + var)
 
@@ -139,7 +139,7 @@ class AgentPop(node.Node):
         Removes from agent list.
         """
         logging.debug("Removing " + agent.name + " from agents")
-        var = node.get_node_type(agent)
+        var = agent.get_type()
         self.vars[var]["agents"].remove(agent)
         self.graph.remove_node(agent)  # also removes edges!
 
@@ -174,7 +174,7 @@ class AgentPop(node.Node):
         """
         Return the population of agent's type
         """
-        var = node.get_node_type(agent)
+        var = agent.get_type()
         return self.get_pop(var)
 
     def get_pop_hist(self):
