@@ -6,8 +6,7 @@ the system after library changes.
 """
 
 import logging
-import prop_args as props
-import entity as ent
+import indra.prop_args as props
 import menu_model as mm
 
 # set up some file names:
@@ -26,7 +25,6 @@ else:
     pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
     pa.set("model", MODEL_NM)
     pa.set("num_agents", 10)
-    pa.set("user_type", ent.User.IPYTHON_NB)
 
 # Now we create a minimal environment for our agents to act within:
 env = mm.MenuEnv(model_nm=MODEL_NM)
@@ -35,11 +33,10 @@ env = mm.MenuEnv(model_nm=MODEL_NM)
 #  with numbered names based on the loop variable:
 for i in range(pa.get("num_agents")):
     env.add_agent(mm.MenuAgent(name="agent" + str(i),
-                                goal="testing our menu capabilities!"))
+                               goal="testing our menu capabilities!"))
 
 # Logging is automatically set up for the modeler:
 logging.info("Starting program " + PROG_NM)
 
 # And now we set things running!
 env.run()
-

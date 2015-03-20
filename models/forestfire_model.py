@@ -45,10 +45,10 @@ class Tree(sa.SpatialAgent):
         return self.ntype == HEALTHY
 
     def is_burning(self):
-        return self.ntype == HEALTHY
+        return self.ntype == ON_FIRE
 
     def is_burnt(self):
-        return self.ntype == HEALTHY
+        return self.ntype == BURNED_OUT
 
     def set_type(self, new_type):
         """

@@ -49,10 +49,10 @@ class Environment(node.Node):
             self.props = None
 
         user_nm = getpass.getuser()
-        user_type = None
+        user_type = user.TERMINAL
         if self.props is not None:
             self.props.set("user_name", user_nm)
-            user_type = self.props.get("user_type", user.User.TERMINAL)
+            user_type = self.props.get("user_type", user.TERMINAL)
         self.user = user.User(user_nm, user_type)
         self.graph.add_edge(self, self.user)
         self.menu = menu.MainMenu("Main Menu", self)

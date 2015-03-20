@@ -3,7 +3,13 @@ user.py
 Manages the user for the Indra system.
 """
 
+# import logging
 import indra.entity as ent
+
+# user types
+TERMINAL = "terminal"
+IPYTHON = "iPython"
+IPYTHON_NB = "iPython Notebook"
 
 
 class User(ent.Entity):
@@ -11,12 +17,7 @@ class User(ent.Entity):
     We will represent the user to the system as another entity.
     """
 
-    # user types
-    TERMINAL = "terminal"
-    IPYTHON = "iPython"
-    IPYTHON_NB = "iPython Notebook"
-
-    def __init__(self, nm, utype):
+    def __init__(self, nm, utype=TERMINAL):
         super().__init__(nm)
         self.utype = utype
 
@@ -24,8 +25,8 @@ class User(ent.Entity):
         """
         Screen the details of output from models.
         """
-        if self.utype in [User.TERMINAL, User.IPYTHON,
-                          User.IPYTHON_NB]:
+        assert self.utype in [TERMINAL, IPYTHON, IPYTHON_NB]
+        if self.utype in [TERMINAL, IPYTHON, IPYTHON_NB]:
             print(msg)
 
     def ask_for_ltr(self, msg):
@@ -39,6 +40,6 @@ class User(ent.Entity):
         """
         Screen the details of input from models.
         """
-        if(self.utype in [User.TERMINAL, User.IPYTHON,
-                          User.IPYTHON_NB]):
+        assert self.utype in [TERMINAL, IPYTHON, IPYTHON_NB]
+        if(self.utype in [TERMINAL, IPYTHON, IPYTHON_NB]):
             return input(msg)

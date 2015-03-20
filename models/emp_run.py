@@ -5,7 +5,6 @@ demonstrating heirarchical graphing.
 """
 
 import logging
-import entity as ent
 import prop_args as props
 import emp_model as em
 
@@ -24,7 +23,6 @@ if read_props:
 else:
     pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
     pa.set("model", MODEL_NM)
-    pa.set("user_type", ent.User.TERMINAL)
 
 # Now we create a minimal environment for our agents to act within:
 env = em.EmpEnv(model_nm=MODEL_NM)
@@ -48,4 +46,3 @@ em.employs(suzanne, rich)
 
 logging.info("Starting program")
 env.run()
-

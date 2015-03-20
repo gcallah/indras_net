@@ -100,11 +100,14 @@ class AgentPop(node.Node):
                     # of this one from i and continue.
                     i -= l
 
-    def append(self, agent):
+    def append(self, agent, v=None):
         """
         Appends to agent list.
         """
-        var = agent.get_type()
+        if v is None:
+            var = agent.get_type()
+        else:
+            var = v
         logging.debug("Adding " + agent.__str__()
                       + " of variety " + var)
 
@@ -134,12 +137,15 @@ class AgentPop(node.Node):
                     agent = random.choice(self.vars[var]["agents"])
                     self.vars[var]["zombies"].append(copy.copy(agent))
 
-    def remove(self, agent):
+    def remove(self, agent, v=None):
         """
         Removes from agent list.
         """
         logging.debug("Removing " + agent.name + " from agents")
-        var = agent.get_type()
+        if v is None:
+            var = agent.get_type()
+        else:
+            var = v
         self.vars[var]["agents"].remove(agent)
         self.graph.remove_node(agent)  # also removes edges!
 
@@ -200,7 +206,8 @@ class AgentPop(node.Node):
         self.vars[var]["pop_of_note"] += change
 
     def change_agent_type(self, agent, old_type, new_type):
-        pass
+        self.remove(agent, v=old_type)
+        self.append(agent, v=new_type)
 
     def append_pop_hist(self, var, pop):
         """
