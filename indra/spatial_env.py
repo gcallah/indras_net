@@ -165,7 +165,9 @@ class SpatialEnv(env.Environment):
     def plot_data(self):
         data = {}
         for var in self.agents.varieties_iter():
-            data[var] = [[], []]
+            data[var] = {}
+            data[var][X] = []
+            data[var][Y] = []
             for agent in self.agents.variety_iter(var):
                 (x, y) = self.get_pos_components(agent)
                 data[var][X].append(x)

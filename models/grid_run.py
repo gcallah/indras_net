@@ -21,7 +21,7 @@ if read_props:
 else:
     pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
     pa.set("model", MODEL_NM)
-    pa.set("num_agents", 6)
+    pa.set("num_agents", 2)
     pa.set("grid_width", 3)
     pa.set("grid_height", 3)
 
