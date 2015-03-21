@@ -8,10 +8,13 @@ for using matplotlib.
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+plt.ion()
 
 
 colors = ['b', 'r', 'g', 'y', 'm', 'c']
 NUM_COLORS = 6
+X = 0
+Y = 1
 
 
 def display_line_graph(title, data, data_points):
@@ -45,38 +48,44 @@ def display_scatter_plot(title, varieties, width, height,
     will get assigned different colors
     """
 
-    def update_plot(i):
-        """
-        This is our animation function.
-        """
-        varieties = data_func()
-        for var, scat in zip(varieties, scats):
-            data_array = get_array(varieties, var)
-            scat.set_offsets(data_array)
-        return scats
+    def get_arrays(varieties, var):
+        x_array = np.array(varieties[var][X])
+        y_array = np.array(varieties[var][Y])
+        return (x_array, y_array)
 
-    def get_array(varieties, var):
-        data_array = np.array(varieties[var])
-        return data_array
+    def create_scats(varieties):
+        new_scats = []
+        i = 0
+        for var in varieties:
+            color = colors[i % NUM_COLORS]
+            (x_array, y_array) = get_arrays(varieties, var)
+            scat = plt.scatter(x_array, y_array,
+                               c=color, label=var,
+                               alpha=1.0, marker="8",
+                               edgecolors='none', s=32)
+            new_scats.append(scat)
+            i += 1
+        return new_scats
 
     fig, ax = plt.subplots()
     ax.set_xlim(0, width)
     ax.set_ylim(0, height)
-    scats = []
-    i = 0
-    for var in varieties:
-        color = colors[i % NUM_COLORS]
-        data_array = get_array(varieties, var)
-        scat = plt.scatter(data_array[0], data_array[1],
-                           c=color, label=var,
-                           alpha=1.0, marker="8",
-                           edgecolors='none', s=32)
-        scats.append(scat)
-        i += 1
-
+    scats = create_scats(varieties)
     ax.legend()
     ax.set_title(title)
     plt.grid(True)
+
+    def update_plot(i):
+        """
+        This is our animation function.
+        """
+        #  plt.clf()
+        if scats is not None:
+            for scat in scats:
+                scat.remove()
+        varieties = data_func()
+        scats = create_scats(varieties)
+        return scats
 
     if anim:
         animation.FuncAnimation(fig,
@@ -85,4 +94,4 @@ def display_scatter_plot(title, varieties, width, height,
                                 interval=500,
                                 blit=False)
 
-    plt.show(block=False)
+    plt.show()

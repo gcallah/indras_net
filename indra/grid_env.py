@@ -78,7 +78,7 @@ class GridEnv(se.SpatialEnv):
 
     class CoordIter:
         """
-        An iterator that returns the coordinatesof a cell along with its
+        An iterator that returns the coordinates of a cell along with its
         contents.
         """
 

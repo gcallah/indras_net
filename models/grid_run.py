@@ -21,9 +21,9 @@ if read_props:
 else:
     pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
     pa.set("model", MODEL_NM)
-    pa.set("num_agents", 1)
-    pa.set("grid_width", 2)
-    pa.set("grid_height", 2)
+    pa.set("num_agents", 2)
+    pa.set("grid_width", 3)
+    pa.set("grid_height", 3)
 
 # Now we create a minimal environment for our agents to act within:
 env = ge.GridEnv("Test grid env",
