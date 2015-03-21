@@ -11,8 +11,8 @@ import edgebox_model as ebm
 import barter_model as bm
 
 goods = {"cheese": {"durability": .8, "prod_amt": 2.5},
-         "wine": {"durability": .9, "prod_amt": 2.22},
-         "olive oil": {"durability": .9, "prod_amt": 2.22},
+         "wine": {"durability": .8, "prod_amt": 2.5},
+         "olive oil": {"durability": .8, "prod_amt": 2.5},
          "figs": {"durability": .7, "prod_amt": 2.86},
          "bread": {"durability": .5, "prod_amt": 4.0},
          "gold": {"durability": 1.0, "prod_amt": 8.0}

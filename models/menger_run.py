@@ -6,7 +6,6 @@ A script to run our Menger model.
 import logging
 import indra.prop_args as props
 import indra.node as node
-import indra.user as user
 import barter_model as bm
 import menger_model as mm
 
@@ -28,7 +27,6 @@ else:
     pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE,
                         loglevel=logging.DEBUG, props=None)
     pa.set("model", MODEL_NM)
-    pa.set("user_type", user.User.TERMINAL)
     pa.set("prod_amt", 1)
 
 # Now we create an environment for our agents to act within:

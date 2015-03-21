@@ -14,17 +14,7 @@ indras_net = nx.Graph()
 
 
 def get_class_name(genera):
-    """
-    A convenience function to get this field.
-    """
     return genera.__name__
-
-
-def get_node_type(node):
-    """
-    A convenience function to get type of node.
-    """
-    return get_class_name(type(node))
 
 
 def get_prehensions(prehender, universal):
@@ -38,6 +28,7 @@ def add_prehension(prehender, universal, prehended):
     """
     Add a prehension between classes
     """
+    print("Prehender = " + str(prehender))
     prnr_type = get_class_name(prehender)
     prnd_type = get_class_name(prehended)
     universals.add_prehension(prnr_type, universal, prnd_type)
@@ -60,6 +51,7 @@ class Node():
         self.name = name
 # every node is potentially a graph itself
         self.graph = None
+        self.ntype = self.__class__.__name__
 
     def __str__(self):
         return self.name
@@ -82,6 +74,20 @@ class Node():
         """
         pass
 
+    def get_type(self):
+        """
+        Returns node's type.
+        By default, this is its class name.
+        """
+        return self.ntype
+
+    def set_type(self, new_type):
+        """
+        Change node's type.
+        Use caution: A lot depends on this field!
+        In particular, AgentPop uses it to sort agents.
+        """
+        self.ntype = new_type
 
 class Universals(Node):
     """

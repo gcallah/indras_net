@@ -7,7 +7,6 @@ trend-setters and followers.
 """
 
 import logging
-import indra.node as node
 import indra.menu as menu
 import indra.entity as ent
 import indra.spatial_env as se
@@ -173,7 +172,7 @@ class SocietyEnv(se.SpatialEnv):
         """
         super().add_agent(agent)
 
-        var = node.get_node_type(agent)
+        var = agent.get_type()
 
         if agent.fashion == FSHN_TO_TRACK:
             self.agents.change_pop_of_note(var, 1)
@@ -182,7 +181,7 @@ class SocietyEnv(se.SpatialEnv):
         """
         Track the fashions in our env.
         """
-        var = node.get_node_type(agent)
+        var = agent.get_type()
         if agent.fashion == FSHN_TO_TRACK:
             self.agents.change_pop_of_note(var, 1)
         else:

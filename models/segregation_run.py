@@ -29,7 +29,6 @@ else:
     pa.set("model", MODEL_NM)
     pa.set("num_R_agents", 6)
     pa.set("num_B_agents", 5)
-    pa.set("user_type", user.User.TERMINAL)
     pa.set("grid_width", 4)
     pa.set("grid_height", 4)
 
@@ -46,10 +45,10 @@ env = ge.GridEnv("Test grid env",
 for i in range(pa.get("num_R_agents")):
     env.add_agent(sm.RedAgent(name="Red agent" + str(i),
                   goal="taking up a grid space!"))
-                  
+
 for i in range(pa.get("num_B_agents")):
     env.add_agent(sm.BlueAgent(name="Blue agent" + str(i),
-                  goal="taking up a grid space!"))                  
+                  goal="taking up a grid space!"))
 
 # Logging is automatically set up for the modeler:
 logging.info("Starting program " + PROG_NM)

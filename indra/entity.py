@@ -71,7 +71,7 @@ class Agent(Entity):
         """
         logging.debug("scanning env for " + universal)
         prehended = []
-        prehends = node.get_prehensions(prehender=node.get_node_type(self),
+        prehends = node.get_prehensions(prehender=self.get_type(),
                                         universal=universal)
         if prehends is not None:
             for pre_type in prehends:

@@ -7,6 +7,8 @@ new features added to the base system.
 """
 import indra.spatial_agent as sa
 
+X = 0
+Y = 1
 
 class TestGridAgent(sa.SpatialAgent):
     """
@@ -16,8 +18,8 @@ class TestGridAgent(sa.SpatialAgent):
 
     def act(self):
         # print(ge.pos_msg(self))
-        x = self.pos[0]
-        y = self.pos[1]
+        x = self.pos[X]
+        y = self.pos[Y]
         print("With " + self.name
               + " we are looking around "
               + " x = " + str(x)

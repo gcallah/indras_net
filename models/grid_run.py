@@ -4,7 +4,6 @@ A script to test our grid capabilities.
 
 import logging
 import indra.prop_args as props
-import indra.user as user
 import indra.grid_env as ge
 import grid_model as gm
 
@@ -23,7 +22,6 @@ else:
     pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
     pa.set("model", MODEL_NM)
     pa.set("num_agents", 6)
-    pa.set("user_type", user.User.TERMINAL)
     pa.set("grid_width", 3)
     pa.set("grid_height", 3)
 
