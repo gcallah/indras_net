@@ -11,6 +11,9 @@ import indra.menu as menu
 import indra.env as env
 import indra.display_methods as disp
 
+X = 0
+Y = 1
+
 
 def rand_complex(initPos, radius):
     """
@@ -154,7 +157,6 @@ class SpatialEnv(env.Environment):
         Show where agents are in graphical form.
         """
         data = self.plot_data()
-        # disp.display_scatter_plot("Agent Positions", data)
         disp.display_scatter_plot("Agent Positions", data,
                                   int(self.width), int(self.height),
                                   anim=True,
@@ -163,9 +165,9 @@ class SpatialEnv(env.Environment):
     def plot_data(self):
         data = {}
         for var in self.agents.varieties_iter():
-            data[var] = []
+            data[var] = [[], []]
             for agent in self.agents.variety_iter(var):
-                # x_y is a list
-                x_y = self.get_pos_components(agent)
-                data[var].append(x_y)
+                (x, y) = self.get_pos_components(agent)
+                data[var][X].append(x)
+                data[var][Y].append(y)
         return data

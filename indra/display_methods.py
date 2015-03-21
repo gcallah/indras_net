@@ -12,6 +12,8 @@ import matplotlib.animation as animation
 
 colors = ['b', 'r', 'g', 'y', 'm', 'c']
 NUM_COLORS = 6
+X = 0
+Y = 1
 
 
 def display_line_graph(title, data, data_points):
@@ -67,7 +69,7 @@ def display_scatter_plot(title, varieties, width, height,
     for var in varieties:
         color = colors[i % NUM_COLORS]
         data_array = get_array(varieties, var)
-        scat = plt.scatter(data_array[0], data_array[1],
+        scat = plt.scatter(data_array[X], data_array[Y],
                            c=color, label=var,
                            alpha=1.0, marker="8",
                            edgecolors='none', s=32)
