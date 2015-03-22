@@ -10,6 +10,7 @@ import indra.spatial_agent as sa
 X = 0
 Y = 1
 
+
 class TestGridAgent(sa.SpatialAgent):
     """
     An agent that prints its neighbors when asked to act
@@ -17,9 +18,7 @@ class TestGridAgent(sa.SpatialAgent):
     """
 
     def act(self):
-        # print(ge.pos_msg(self))
-        x = self.pos[X]
-        y = self.pos[Y]
+        (x, y) = self.env.get_pos_components(self)
         print("With " + self.name
               + " we are looking around "
               + " x = " + str(x)
