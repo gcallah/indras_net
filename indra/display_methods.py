@@ -8,11 +8,12 @@ for using matplotlib.
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+import logging
 plt.ion()
 
 
-colors = ['b', 'r', 'g', 'y', 'm', 'c']
-NUM_COLORS = 6
+colors = ['b', 'r', 'g', 'y', 'm', 'c', 'k']
+NUM_COLORS = 7
 X = 0
 Y = 1
 
@@ -99,6 +100,11 @@ class ScatterPlot():
         for var in varieties:
             color = colors[i % NUM_COLORS]
             (x_array, y_array) = self.get_arrays(varieties, var)
+            if len(x_array) <= 0:  # no data to graph!
+                next
+            elif len(x_array) != len(y_array):
+                logging.debug("Array length mismatch in scatter plot")
+                next
             scat = plt.scatter(x_array, y_array,
                                c=color, label=var,
                                alpha=1.0, marker="8",

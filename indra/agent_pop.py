@@ -108,8 +108,7 @@ class AgentPop(node.Node):
             var = agent.get_type()
         else:
             var = v
-        logging.debug("Adding " + agent.__str__()
-                      + " of variety " + var)
+        print("Adding %s of variety %s" % (agent.name, var))
 
         if var in self.vars:
             self.vars[var]["agents"].append(agent)
