@@ -85,7 +85,7 @@ class ForestEnv(grid.GridEnv):
             density: What fraction of grid cells have a tree in them.
         '''
         # Initialize model parameters
-        super().__init__("Forest Fire", height, width, model_nm)
+        super().__init__("Forest Fire", height, width, model_nm=model_nm)
         self.density = density
 
         # Place a tree in each cell with Prob = density
@@ -100,6 +100,7 @@ class ForestEnv(grid.GridEnv):
                 if x == 0:
                     # all trees in col 0 start on fire
                     new_tree.set_type(ON_FIRE)
+        self.agents.add_variety(BURNED_OUT)
 
     def step(self):
         super().step()

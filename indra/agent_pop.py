@@ -100,6 +100,19 @@ class AgentPop(node.Node):
                     # of this one from i and continue.
                     i -= l
 
+    def add_variety(self, var):
+        """
+        Sometimes, we may know a variety is coming, and want to
+        add it even before any agents of that variety are created,
+        for census or graphing purposes.
+        """
+        self.vars[var] = {"agents": [],
+                          "pop_of_note": 0,
+                          "pop_hist": [],
+                          "zombies": [],
+                          "zero_per": 0,
+                          "my_periods": 0}
+
     def append(self, agent, v=None):
         """
         Appends to agent list.
@@ -110,16 +123,11 @@ class AgentPop(node.Node):
             var = v
         print("Adding %s of variety %s" % (agent.name, var))
 
-        if var in self.vars:
-            self.vars[var]["agents"].append(agent)
-        else:
-            self.vars[var] = {"agents": [agent],
-                              "pop_of_note": 0,
-                              "pop_hist": [],
-                              "zombies": [],
-                              "zero_per": 0,
-                              "my_periods": 0}
+        if var not in self.vars:
+            self.add_variety(var)
             self.graph.add_edge(self, var)
+
+        self.vars[var]["agents"].append(agent)
 
 # we link each agent to the variety
 # so we can show their relationship
