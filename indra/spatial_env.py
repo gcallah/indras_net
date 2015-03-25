@@ -172,6 +172,7 @@ class SpatialEnv(env.Environment):
             data[var] = {}
             data[var][X] = []
             data[var][Y] = []
+            data[var]["color"] = self.agents.get_var_color(var)
             for agent in self.agents.variety_iter(var):
                 (x, y) = self.get_pos_components(agent)
                 data[var][X].append(x)

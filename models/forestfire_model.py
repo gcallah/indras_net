@@ -40,6 +40,7 @@ class Tree(sa.SpatialAgent):
         super().__init__(name, "burn")
         self.pos = (x, y)
         self.ntype = HEALTHY
+        self.next_state = None
 
     def is_healthy(self):
         return self.ntype == HEALTHY
@@ -65,8 +66,16 @@ class Tree(sa.SpatialAgent):
         if self.is_burning():
             for neighbor in self.env.neighbor_iter(self.pos[X], self.pos[Y]):
                 if neighbor.is_healthy():
-                    neighbor.set_type(ON_FIRE)
+                    #  print("Setting next state to ON_FIRE")
+                    neighbor.next_state = ON_FIRE
+#                    neighbor.set_type(ON_FIRE)
             self.set_type(BURNED_OUT)
+
+    def postact(self):
+        if self.next_state is not None:
+            print("Setting type to: " + self.next_state)
+            self.set_type(self.next_state)
+            self.next_state = None
 
     def get_pos(self):
         return self.pos
@@ -76,7 +85,8 @@ class ForestEnv(grid.GridEnv):
     '''
     Simple Forest Fire model.
     '''
-    def __init__(self, height, width, density, model_nm="ForestFire"):
+    def __init__(self, height, width, density, model_nm="ForestFire",
+                 postact=True):
         '''
         Create a new forest fire model.
 
@@ -85,7 +95,8 @@ class ForestEnv(grid.GridEnv):
             density: What fraction of grid cells have a tree in them.
         '''
         # Initialize model parameters
-        super().__init__("Forest Fire", height, width, model_nm=model_nm)
+        super().__init__("Forest Fire", height, width, model_nm=model_nm,
+                         postact=postact)
         self.density = density
 
         # Place a tree in each cell with Prob = density

@@ -100,6 +100,18 @@ class AgentPop(node.Node):
                     # of this one from i and continue.
                     i -= l
 
+    def get_var_color(self, var):
+        """
+        Get the display color for this variety.
+        """
+        return self.vars[var]["disp_color"]
+
+    def set_var_color(self, var, color):
+        """
+        Set the display color for this var.
+        """
+        self.vars[var]["disp_color"] = color
+
     def add_variety(self, var):
         """
         Sometimes, we may know a variety is coming, and want to
@@ -111,7 +123,8 @@ class AgentPop(node.Node):
                           "pop_hist": [],
                           "zombies": [],
                           "zero_per": 0,
-                          "my_periods": 0}
+                          "my_periods": 0,
+                          "disp_color": None}
 
     def append(self, agent, v=None):
         """
