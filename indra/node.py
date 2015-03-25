@@ -28,7 +28,7 @@ def add_prehension(prehender, universal, prehended):
     """
     Add a prehension between classes
     """
-    print("Prehender = " + str(prehender))
+    logging.info("Prehender = %s for universal %s" % (prehender, universal))
     prnr_type = get_class_name(prehender)
     prnd_type = get_class_name(prehended)
     universals.add_prehension(prnr_type, universal, prnd_type)
@@ -88,6 +88,7 @@ class Node():
         In particular, AgentPop uses it to sort agents.
         """
         self.ntype = new_type
+
 
 class Universals(Node):
     """

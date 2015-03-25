@@ -24,7 +24,7 @@ else:
     pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
     pa.set("model", MODEL_NM)
 
-# Now we create a forest fire environment for our agents to act within:
+# Now we create a forest environment for our agents to act within:
 env = fm.ForestEnv(100, 100, .6, model_nm=MODEL_NM)
 
 # Logging is automatically set up for the modeler:

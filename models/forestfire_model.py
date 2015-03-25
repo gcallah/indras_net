@@ -111,7 +111,11 @@ class ForestEnv(grid.GridEnv):
                 if x == 0:
                     # all trees in col 0 start on fire
                     new_tree.set_type(ON_FIRE)
+        # since we start with no burned out agents, let's add the var:
         self.agents.add_variety(BURNED_OUT)
+        self.agents.set_var_color(BURNED_OUT, 'k')
+        self.agents.set_var_color(ON_FIRE, 'r')
+        self.agents.set_var_color(HEALTHY, 'g')
 
     def step(self):
         super().step()

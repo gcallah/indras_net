@@ -98,7 +98,8 @@ class ScatterPlot():
         self.scats = []
         i = 0
         for var in varieties:
-            if varieties[var]["color"] is None:
+            color = varieties[var]["color"]
+            if color is None:
                 color = colors[i % NUM_COLORS]
             (x_array, y_array) = self.get_arrays(varieties, var)
             if len(x_array) <= 0:  # no data to graph!
