@@ -5,6 +5,7 @@ location. Includes logging.
 """
 
 import logging
+import platform
 import networkx as nx
 import json
 import indra.node as node
@@ -53,6 +54,7 @@ class PropArgs(node.Node):
             self.props = props
         self.logger = Logger(self, logfile=logfile)
         self.graph.add_edge(self, self.logger)
+        self.set("OS", platform.system())
 
     def display(self):
         """

@@ -158,10 +158,12 @@ class SpatialEnv(env.Environment):
         Show where agents are in graphical form.
         """
         data = self.plot_data()
+        system = self.props.get("OS")
+        anim_val = (system != "Windows")
         self.scatter_plot = disp.ScatterPlot(
             "Agent Positions", data,
             int(self.width), int(self.height),
-            anim=True, data_func=self.plot_data)
+            anim=anim_val, data_func=self.plot_data)
         self.scatter_plot.show()
 
     def plot_data(self):
