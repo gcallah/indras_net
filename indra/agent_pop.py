@@ -118,13 +118,14 @@ class AgentPop(node.Node):
         add it even before any agents of that variety are created,
         for census or graphing purposes.
         """
-        self.vars[var] = {"agents": [],
-                          "pop_of_note": 0,
-                          "pop_hist": [],
-                          "zombies": [],
-                          "zero_per": 0,
-                          "my_periods": 0,
-                          "disp_color": None}
+        if var not in self.vars:
+            self.vars[var] = {"agents": [],
+                              "pop_of_note": 0,
+                              "pop_hist": [],
+                              "zombies": [],
+                              "zero_per": 0,
+                              "my_periods": 0,
+                              "disp_color": None}
 
     def append(self, agent, v=None):
         """

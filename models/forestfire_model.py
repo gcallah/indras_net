@@ -6,7 +6,7 @@ This model shows the spread of a forest fire through a forest.
 
 import random
 
-import indra.spatial_agent as sa
+import indra.grid_agent as ga
 import indra.grid_env as grid
 
 
@@ -18,7 +18,7 @@ ON_FIRE = "On Fire"
 BURNED_OUT = "Burned Out"
 
 
-class Tree(sa.SpatialAgent):
+class Tree(ga.GridAgent):
     '''
     A tree cell.
 
@@ -61,23 +61,24 @@ class Tree(sa.SpatialAgent):
 
     def act(self):
         '''
-        If the tree is on fire, spread it to fine trees nearby.
+        If the tree is on fire, spread it to healthy trees nearby.
         '''
         if self.is_burning():
-            for neighbor in self.env.neighbor_iter(self.pos[X], self.pos[Y]):
+            (x, y) = self.get_pos()
+            for neighbor in self.env.neighbor_iter(x, y):
+                print("Neighbors: %i, %i and %i, %i"
+                      % (x, y, neighbor.pos[X], neighbor.pos[Y]))
                 if neighbor.is_healthy():
-                    #  print("Setting next state to ON_FIRE")
+                    print("Setting next state to FIRE for: %i, %i from %i, %i"
+                          % (neighbor.pos[X], neighbor.pos[Y], x, y))
                     neighbor.next_state = ON_FIRE
-#                    neighbor.set_type(ON_FIRE)
             self.set_type(BURNED_OUT)
 
     def postact(self):
         if self.next_state is not None:
-            print("Setting type to: " + self.next_state)
             self.set_type(self.next_state)
             self.next_state = None
 
-    def get_pos(self):
         return self.pos
 
 
@@ -85,8 +86,8 @@ class ForestEnv(grid.GridEnv):
     '''
     Simple Forest Fire model.
     '''
-    def __init__(self, height, width, density, model_nm="ForestFire",
-                 postact=True):
+    def __init__(self, height, width, density, torus=False,
+                 model_nm="ForestFire", postact=True):
         '''
         Create a new forest fire model.
 
@@ -95,14 +96,12 @@ class ForestEnv(grid.GridEnv):
             density: What fraction of grid cells have a tree in them.
         '''
         # Initialize model parameters
-        super().__init__("Forest Fire", height, width, model_nm=model_nm,
-                         postact=postact)
+        super().__init__("Forest Fire", height, width, torus=False,
+                         model_nm=model_nm, postact=postact)
         self.density = density
 
         # Place a tree in each cell with Prob = density
-        for cell in self.coord_iter():
-            x = cell[1]
-            y = cell[2]
+        for (contents, x, y) in self.coord_iter():
             if random.random() < self.density:
                 # Create a tree
                 new_tree = Tree(x, y)
@@ -113,6 +112,8 @@ class ForestEnv(grid.GridEnv):
                     new_tree.set_type(ON_FIRE)
         # since we start with no burned out agents, let's add the var:
         self.agents.add_variety(BURNED_OUT)
+        # for small test cases, we sometimes fail to get trees burning, so:
+        self.agents.add_variety(ON_FIRE)
         self.agents.set_var_color(BURNED_OUT, 'k')
         self.agents.set_var_color(ON_FIRE, 'r')
         self.agents.set_var_color(HEALTHY, 'g')

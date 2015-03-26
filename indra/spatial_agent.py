@@ -4,7 +4,7 @@ Author: Gene Callahan
 """
 
 from collections import deque
-import logging
+# import logging
 import indra.entity as ent
 
 MAX_EXCLUDE = 10
@@ -48,6 +48,9 @@ class SpatialAgent(ent.Agent):
         What to do on detecting a prehension.
         """
         pass
+
+    def get_pos(self):
+        return (self.pos.real, self.pos.imag)
 
 
 class MobileAgent(SpatialAgent):

@@ -5,13 +5,13 @@ to easily get started on a new grid model.
 It also is a handy tool to have around for testing
 new features added to the base system.
 """
-import indra.spatial_agent as sa
+import indra.grid_agent as ga
 
 X = 0
 Y = 1
 
 
-class TestGridAgent(sa.SpatialAgent):
+class TestGridAgent(ga.GridAgent):
     """
     An agent that prints its neighbors when asked to act
     and also jumps to an empty cell.
@@ -25,7 +25,8 @@ class TestGridAgent(sa.SpatialAgent):
               + " y = " + str(y))
         print(self.name + " has neighbors: ")
         for neighbor in self.env.neighbor_iter(x, y):
-            print("    " + neighbor.name)
+            (x1, y1) = self.env.get_pos_components(neighbor)
+            print("    %i, %i" % (x1, y1))
 
     def postact(self):
         self.env.move_to_empty(self)

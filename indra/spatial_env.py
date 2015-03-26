@@ -149,9 +149,7 @@ class SpatialEnv(env.Environment):
         return pos
 
     def get_pos_components(self, agent):
-        x = agent.pos.real
-        y = agent.pos.imag
-        return [x, y]
+        return agent.get_pos()
 
     def plot(self):
         """
