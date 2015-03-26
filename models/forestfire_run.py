@@ -24,8 +24,16 @@ else:
     pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
     pa.set("model", MODEL_NM)
 
+GRID_X = 100
+GRID_Y = 100
+DENSITY = .42
+
 # Now we create a forest environment for our agents to act within:
-env = fm.ForestEnv(4, 4, .80, model_nm=MODEL_NM, torus=False)
+env = fm.ForestEnv(GRID_X, GRID_Y, DENSITY, model_nm=MODEL_NM, torus=False)
+num_agents = int(GRID_X * GRID_Y * DENSITY)
+
+for i in range(num_agents):
+    env.add_agent(fm.Tree(name="tree" + str(i)))
 
 # Logging is automatically set up for the modeler:
 logging.info("Starting program " + PROG_NM)

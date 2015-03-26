@@ -18,14 +18,14 @@ class TestGridAgent(ga.GridAgent):
     """
 
     def act(self):
-        (x, y) = self.env.get_pos_components(self)
+        (x, y) = self.get_pos()
         print("With " + self.name
               + " we are looking around "
               + " x = " + str(x)
               + " y = " + str(y))
         print(self.name + " has neighbors: ")
         for neighbor in self.env.neighbor_iter(x, y):
-            (x1, y1) = self.env.get_pos_components(neighbor)
+            (x1, y1) = neighbor.get_pos()
             print("    %i, %i" % (x1, y1))
 
     def postact(self):

@@ -4,8 +4,6 @@ Adapted from the George Mason mesa project.
 This model shows the spread of a forest fire through a forest.
 """
 
-import random
-
 import indra.grid_agent as ga
 import indra.grid_env as grid
 
@@ -30,15 +28,13 @@ class Tree(ga.GridAgent):
     unique_id isn't strictly necessary here, but it's good
     practice to give one to each agent anyway.
     '''
-    def __init__(self, x, y):
+    def __init__(self, name):
         '''
         Create a new tree.
         Args:
             x, y: The tree's coordinates on the grid.
         '''
-        name = "Tree at %i %i" % (x, y)
         super().__init__(name, "burn")
-        self.pos = (x, y)
         self.ntype = HEALTHY
         self.next_state = None
 
@@ -66,11 +62,11 @@ class Tree(ga.GridAgent):
         if self.is_burning():
             (x, y) = self.get_pos()
             for neighbor in self.env.neighbor_iter(x, y):
-                print("Neighbors: %i, %i and %i, %i"
-                      % (x, y, neighbor.pos[X], neighbor.pos[Y]))
+                (x1, y1) = neighbor.get_pos()
+                print("Neighbors: %i, %i and %i, %i" % (x, y, x1, y1))
                 if neighbor.is_healthy():
                     print("Setting next state to FIRE for: %i, %i from %i, %i"
-                          % (neighbor.pos[X], neighbor.pos[Y], x, y))
+                          % (x1, y1, x, y))
                     neighbor.next_state = ON_FIRE
             self.set_type(BURNED_OUT)
 
@@ -99,24 +95,21 @@ class ForestEnv(grid.GridEnv):
         super().__init__("Forest Fire", height, width, torus=False,
                          model_nm=model_nm, postact=postact)
         self.density = density
+        self.plot_title = "A Forest Fire"
 
-        # Place a tree in each cell with Prob = density
-        for (contents, x, y) in self.coord_iter():
-            if random.random() < self.density:
-                # Create a tree
-                new_tree = Tree(x, y)
-                self.add_agent(new_tree)
-                self.position_agent(new_tree, x, y)
-                if x == 0:
-                    # all trees in col 0 start on fire
-                    new_tree.set_type(ON_FIRE)
-        # since we start with no burned out agents, let's add the var:
+        # add our types so we can set colors
         self.agents.add_variety(BURNED_OUT)
-        # for small test cases, we sometimes fail to get trees burning, so:
         self.agents.add_variety(ON_FIRE)
+        self.agents.add_variety(HEALTHY)
         self.agents.set_var_color(BURNED_OUT, 'k')
         self.agents.set_var_color(ON_FIRE, 'r')
         self.agents.set_var_color(HEALTHY, 'g')
+
+    def add_agent(self, tree):
+        super().add_agent(tree)
+        (x, y) = tree.get_pos()
+        if x == 0:
+            tree.set_type(ON_FIRE)
 
     def step(self):
         super().step()

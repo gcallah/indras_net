@@ -58,6 +58,7 @@ class SpatialEnv(env.Environment):
         self.height = height
         self.max_dist = self.width * self.height
         self.scatter_plot = None
+        self.plot_title = "Agent Positions"
 # it only makes sense to plot agents in a spatial env, so add this here:
         self.menu.view.add_menu_item("s",
                                      menu.MenuLeaf("(s)catter plot",
@@ -159,7 +160,7 @@ class SpatialEnv(env.Environment):
         system = self.props.get("OS")
         anim_val = (system != "Windows")
         self.scatter_plot = disp.ScatterPlot(
-            "Agent Positions", data,
+            self.plot_title, data,
             int(self.width), int(self.height),
             anim=anim_val, data_func=self.plot_data)
         self.scatter_plot.show()
