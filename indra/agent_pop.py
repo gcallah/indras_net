@@ -262,5 +262,9 @@ class AgentPop(node.Node):
                     var["zero_per"] = 0
         return ret
 
+    def jsondump(self, o):
+        return "Agent pop"
+
     def record_results(self, file_nm):
-        json.dump(self, open(file_nm, 'w'), indent=4)
+        json.dump(self, open(file_nm, 'w'), indent=4,
+                  default=self.jsondump)
