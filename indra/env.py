@@ -5,7 +5,7 @@ Other specialized environments inherit from this.
 """
 
 from collections import deque
-import sys
+# import sys
 import time
 import pdb
 import getpass
@@ -17,6 +17,14 @@ import indra.menu as menu
 import indra.prop_args as pa
 import indra.agent_pop as ap
 import indra.user as user
+
+
+class Quit(Exception):
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
 
 
 class Environment(node.Node):
@@ -117,8 +125,11 @@ class Environment(node.Node):
             self.user.tell("Running in " + self.name)
             msg = self.menu.display()
             while msg is None:
-                msg = self.menu.display()
-                self.user.tell("\nMain Menu; Period: " + str(self.period))
+                try:
+                    msg = self.menu.display()
+                    self.user.tell("\nMain Menu; Period: " + str(self.period))
+                except Quit:
+                    break
 
             Environment.prev_period = self.period
 
@@ -374,8 +385,8 @@ class Environment(node.Node):
         """
         Leave this run.
         """
-        self.user.tell("Returning to runtime environment.")
-        sys.exit(0)
+        self.user.tell("Exiting main loop.")
+        raise Quit("User exit")
 
     def contains(self, agent_type):
         """
@@ -407,3 +418,6 @@ class Environment(node.Node):
 
     def change_agent_type(self, agent, old_type, new_type):
         self.agents.change_agent_type(agent, old_type, new_type)
+
+    def record_results(self, file_nm):
+        self.agents.record_results(file_nm)

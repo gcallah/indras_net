@@ -11,6 +11,7 @@ from collections import OrderedDict
 import copy
 import random
 import itertools
+import json
 import networkx as nx
 import logging
 import indra.node as node
@@ -260,3 +261,6 @@ class AgentPop(node.Node):
                         self.append(copy.copy(agent))
                     var["zero_per"] = 0
         return ret
+
+    def record_results(self, file_nm):
+        json.dump(self, open(file_nm, 'w'), indent=4)

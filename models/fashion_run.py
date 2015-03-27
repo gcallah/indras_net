@@ -13,11 +13,13 @@ import fashion_model as fm
 MODEL_NM = "fashion_model"
 PROG_NM = MODEL_NM + ".py"
 LOG_FILE = MODEL_NM + ".txt"
+PROPS_NM = MODEL_NM + ".props"
+RESULTS_NM = MODEL_NM + ".out"
 
 read_props = False
 
 if read_props:
-    pa = props.PropArgs.read_props(MODEL_NM, "fashion.props")
+    pa = props.PropArgs.read_props(MODEL_NM, PROPS_NM)
 else:
     pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
 
@@ -52,3 +54,4 @@ node.add_prehension(fm.TrendSetter, ppm.AVOID, fm.Follower)
 
 logging.info("Starting program")
 env.run()
+env.record_results(RESULTS_NM)

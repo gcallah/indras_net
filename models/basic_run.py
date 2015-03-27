@@ -13,6 +13,7 @@ import basic_model as bm
 MODEL_NM = "basic_model"
 PROG_NM = MODEL_NM + ".py"
 LOG_FILE = MODEL_NM + ".txt"
+PROPS_NM = MODEL_NM + ".props"
 
 # We store basic parameters in a
 # "property" file; this allows us to save
