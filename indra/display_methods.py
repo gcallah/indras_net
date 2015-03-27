@@ -13,12 +13,21 @@ plt.ion()
 
 
 colors = ['b', 'r', 'g', 'y', 'm', 'c', 'k']
-NUM_COLORS = 7
+NUM_COLORS = len(colors)
 X = 0
 Y = 1
 
 
-def display_line_graph(title, data, data_points):
+def get_color(var, i):
+    color = None
+    if "color" in var:
+        color = var["color"]
+    if color is None:
+        color = colors[i % NUM_COLORS]
+    return color
+
+
+def display_line_graph(title, varieties, data_points):
     """
     Display a simple matplotlib line graph.
     The data is a dictionary with the label
@@ -30,9 +39,13 @@ def display_line_graph(title, data, data_points):
     _fig, ax = plt.subplots()
     x = np.arange(0, data_points)
 
-    for lbl, nums in data.items():
-        y = np.array(nums)
-        ax.plot(x, y, linewidth=2, label=lbl, alpha=1.0)
+    i = 0
+    for var in varieties:
+        data = varieties[var]["data"]
+        color = get_color(varieties[var], i)
+        y = np.array(data)
+        ax.plot(x, y, linewidth=2, label=var, alpha=1.0, c=color)
+        i += 1
 
     ax.legend()
     ax.set_title(title)
@@ -98,15 +111,13 @@ class ScatterPlot():
         self.scats = []
         i = 0
         for var in varieties:
-            color = varieties[var]["color"]
-            if color is None:
-                color = colors[i % NUM_COLORS]
             (x_array, y_array) = self.get_arrays(varieties, var)
             if len(x_array) <= 0:  # no data to graph!
                 next
             elif len(x_array) != len(y_array):
                 logging.debug("Array length mismatch in scatter plot")
                 next
+            color = get_color(varieties[var], i)
             scat = plt.scatter(x_array, y_array,
                                c=color, label=var,
                                alpha=1.0, marker="8",

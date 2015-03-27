@@ -63,10 +63,7 @@ class Tree(ga.GridAgent):
             (x, y) = self.get_pos()
             for neighbor in self.env.neighbor_iter(x, y):
                 (x1, y1) = neighbor.get_pos()
-                print("Neighbors: %i, %i and %i, %i" % (x, y, x1, y1))
                 if neighbor.is_healthy():
-                    print("Setting next state to FIRE for: %i, %i from %i, %i"
-                          % (x1, y1, x, y))
                     neighbor.next_state = ON_FIRE
             self.set_type(BURNED_OUT)
 

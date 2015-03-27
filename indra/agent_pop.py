@@ -211,7 +211,10 @@ class AgentPop(node.Node):
         """
         pop_hist = {}
         for var in self.varieties_iter():
-            pop_hist[var] = self.vars[var]["pop_hist"]
+            pop_hist[var] = {}
+            pop_hist[var]["data"] = self.vars[var]["pop_hist"]
+            pop_hist[var]["color"] = self.vars[var]["disp_color"]
+            print("Setting color for %s to %s" % (var, pop_hist[var]["color"]))
         return pop_hist
 
     def get_pop_of_note(self, var):
