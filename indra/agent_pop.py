@@ -15,6 +15,7 @@ import json
 import networkx as nx
 import logging
 import indra.node as node
+import indra.entity as ent
 
 MAX_ZERO_PER = 8
 
@@ -262,8 +263,13 @@ class AgentPop(node.Node):
                     var["zero_per"] = 0
         return ret
 
-    def jsondump(self, o):
-        return "Agent pop"
+    def jsondump(self, obj):
+        if type(obj) == nx.Graph:
+            return "Graph"
+        elif isinstance(obj, ent.Entity):
+            return obj.to_json()
+        else:
+            return obj.__dict__
 
     def record_results(self, file_nm):
         json.dump(self, open(file_nm, 'w'), indent=4,
