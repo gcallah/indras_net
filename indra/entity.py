@@ -78,3 +78,6 @@ class Agent(Entity):
                 some_pres = self.env.get_agents_of_var(pre_type)
                 prehended.extend(some_pres)
         return prehended
+
+    def to_json(self):
+        return "%s: %s" % (self.name, self.goal)

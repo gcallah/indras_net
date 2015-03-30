@@ -27,8 +27,9 @@ def get_color(var, i):
     return color
 
 
-def display_line_graph(title, varieties, data_points):
+class LineGraph():
     """
+    We create a class here to save state for animation.
     Display a simple matplotlib line graph.
     The data is a dictionary with the label
     as the key and a list of numbers as the
@@ -36,20 +37,57 @@ def display_line_graph(title, varieties, data_points):
     data_points is the length of the x-axis.
     """
 
-    _fig, ax = plt.subplots()
-    x = np.arange(0, data_points)
+    def __init__(self, title, varieties, data_points,
+                 anim=False, data_func=None):
+        self.title = title
+        self.anim = anim
+        self.data_func = data_func
+        self.draw_graph(data_points, varieties)
+        if anim:
+            animation.FuncAnimation(self.fig,
+                                    self.update_plot,
+                                    frames=1000,
+                                    interval=500,
+                                    blit=False)
 
-    i = 0
-    for var in varieties:
-        data = varieties[var]["data"]
-        color = get_color(varieties[var], i)
-        y = np.array(data)
-        ax.plot(x, y, linewidth=2, label=var, alpha=1.0, c=color)
-        i += 1
+    def draw_graph(self, data_points, varieties):
+        """
+        Draw all elements of the graph.
+        """
+        self.fig, self.ax = plt.subplots()
+        x = np.arange(0, data_points)
+        self.create_lines(x, self.ax, varieties)
+        self.ax.legend()
+        self.ax.set_title(self.title)
 
-    ax.legend()
-    ax.set_title(title)
-    plt.show()
+    def create_lines(self, x, ax, varieties):
+        """
+        Draw just the data portion.
+        """
+        self.lines = []
+        i = 0
+        for var in varieties:
+            data = varieties[var]["data"]
+            color = get_color(varieties[var], i)
+            y = np.array(data)
+            ax.plot(x, y, linewidth=2, label=var, alpha=1.0, c=color)
+            i += 1
+
+    def show(self):
+        """
+        Display the plot.
+        """
+        plt.show()
+
+    def update_plot(self, i):
+        """
+        This is our animation function.
+        For line graphs, redraw the whole thing.
+        """
+        plt.clf()
+        (data_points, varieties) = self.data_func()
+        self.draw_graph(data_points, varieties)
+        self.show()
 
 
 class ScatterPlot():

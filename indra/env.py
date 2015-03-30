@@ -50,6 +50,7 @@ class Environment(node.Node):
         self.preact = preact
         self.postact = postact
         self.disp_census = False
+        self.line_graph = None
         self.model_nm = model_nm
         if model_nm is not None:
             self.props = pa.PropArgs.get_props(model_nm)
@@ -368,12 +369,14 @@ class Environment(node.Node):
             self.user.tell("Too little data to display")
             return
 
-        pop_hist = self.agents.get_pop_hist()
+        (period, data) = self.line_data()
+        self.line_graph = disp.LineGraph('Populations in ' + self.name,
+                                         data, period, anim=True,
+                                         data_func=self.line_data)
+        self.line_graph.show()
 
-        disp.display_line_graph('Populations in '
-                                + self.name,
-                                pop_hist,
-                                self.period)
+    def line_data(self):
+        return (self.period, self.agents.get_pop_hist())
 
     def plot(self):
         """

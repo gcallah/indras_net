@@ -149,7 +149,6 @@ class SocietyEnv(se.SpatialEnv):
         super().__init__(name, length, height,
                          preact=True, postact=False,
                          model_nm=model_nm)
-
         self.fshn_f_ratio = self.props.get("fshn_f_ratio",
                                            default=1.3)
         self.fshn_t_ratio = self.props.get("fshn_t_ratio",
@@ -164,7 +163,7 @@ class SocietyEnv(se.SpatialEnv):
                                               default=6)
         self.menu.view.add_menu_item("v",
                                      menu.MenuLeaf("(v)iew fashions",
-                                                   self.display))
+                                                   self.view_pop))
 
     def add_agent(self, agent):
         """
@@ -206,7 +205,7 @@ class SocietyEnv(se.SpatialEnv):
         """
         return prehensions
 
-    def display(self):
+    def view_pop(self):
         """
         Draw a graph of our changing pops.
         """
@@ -214,10 +213,9 @@ class SocietyEnv(se.SpatialEnv):
             self.user.tell("Too little data to display")
             return
 
-        pop_hist = self.agents.get_pop_hist()
-
-        disp.display_line_graph("A. Smith's fashion model: "
-                                + "Populations in %s adopting fashion %s"
-                                % (self.name, fashions[FSHN_TO_TRACK]),
-                                pop_hist,
-                                self.period)
+        (period, data) = self.line_data()
+        self.line_graph = disp.LineGraph("A. Smith's fashion model: Populations"
+                                         + " in %s adopting fashion %s"
+                                         % (self.name, fashions[FSHN_TO_TRACK]),
+                                         data, period, anim=True,
+                                         data_func=self.line_data)
