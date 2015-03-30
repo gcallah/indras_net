@@ -27,10 +27,12 @@ if read_props:
 else:
     pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
     pa.set("model", MODEL_NM)
-    pa.set("num_R_agents", 6)
-    pa.set("num_B_agents", 5)
-    pa.set("grid_width", 4)
-    pa.set("grid_height", 4)
+    pa.set("num_R_agents", 50)
+    pa.set("num_B_agents", 20)
+    pa.set("num_G_agents", 20)
+    pa.set("grid_width", 10)
+    pa.set("grid_height", 10)
+    pa.set("tolerance", .5)
 
 # Now we create a minimal environment for our agents to act within:
 env = ge.GridEnv("Test grid env",
@@ -44,23 +46,27 @@ env = ge.GridEnv("Test grid env",
 # based on the loop variable:
 for i in range(pa.get("num_R_agents")):
     env.add_agent(sm.RedAgent(name="Red agent" + str(i),
-                  goal="taking up a grid space!"))
+                  goal="taking up a grid space!", tolerance = pa.get('tolerance')))
 
 for i in range(pa.get("num_B_agents")):
     env.add_agent(sm.BlueAgent(name="Blue agent" + str(i),
-                  goal="taking up a grid space!"))
+                  goal="taking up a grid space!", tolerance = pa.get('tolerance')))
+                  
+for i in range(pa.get("num_G_agents")):
+    env.add_agent(sm.GreenAgent(name="Green agent" + str(i),
+                  goal="taking up a grid space!", tolerance = pa.get('tolerance')))                  
 
 # Logging is automatically set up for the modeler:
 logging.info("Starting program " + PROG_NM)
 
 # let's test our iterator
-for cell in env.occupied_iter(occupied=True):
-    print("Contents of cell x = "
-          + str(cell[1])
-          + " and y = "
-          + str(cell[2])
-          + " is "
-          + str(cell[0]))
+#for cell in env.occupied_iter(occupied=True):
+#    print("Contents of cell x = "
+#          + str(cell[1])
+#          + " and y = "
+#          + str(cell[2])
+#          + " is "
+#          + str(cell[0]))
 
 # And now we set things running!
 env.run()
