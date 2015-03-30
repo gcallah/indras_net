@@ -14,35 +14,33 @@ class SegregationAgent(sa.SpatialAgent):
     """
     An agent that prints its neighbors when asked to act
     """
-
+    def __init__(self, name, goal, tolerance):
+        super().__init__(name, goal)
+        self.tolerance = tolerance
+      
+        
     def act(self):
-        # print(ge.pos_msg(self))
-        x = self.pos[0]
-        y = self.pos[1]
-        print("With " + self.name
-              + " we are looking around "
-              + " x = " + str(x)
-              + " y = " + str(y))
-        naybs = self.env.get_neighbors(x, y, True)
-        if len(naybs) == 0:
-            print(self.name + " has no neighbors.")
-        else:
-            print(self.name + " has neighbors: ")
-            for nayb in naybs:
-                print("    " + nayb.name)
-
-    def postact(self):
-        x = self.pos[0]
-        y = self.pos[1]
-        naybs = self.env.get_neighbors(x,y,True)
-        if len(naybs) > 4:
+        like_me = 0
+        total_neighbors = 0
+        (x, y) = self.env.get_pos_components(self)
+        for neighbor in self.env.neighbor_iter(x, y):
+            total_neighbors += 1
+            if self.get_type() == neighbor.get_type():
+                like_me += 1
+        if like_me / total_neighbors < self.tolerance:        
             self.env.move_to_empty(self)
             print(self.name + ' has moved')
+           
+           
+        
+class BlueAgent(SegregationAgent):
+
+    pass       
 
 class RedAgent(SegregationAgent):
     
     pass
 
-class BlueAgent(SegregationAgent):
-
-    pass       
+class GreenAgent(SegregationAgent):
+    
+    pass
