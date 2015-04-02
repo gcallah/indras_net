@@ -108,6 +108,7 @@ class Market(ent.Entity):
         """
         trade_hist = {}
         for good in self.goods_iter():
+            trade_hist[good] = {}
             trade_hist[good]["data"] = self.goods[good]["trade_hist"]
         return trade_hist
 
