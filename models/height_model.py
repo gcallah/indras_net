@@ -66,14 +66,27 @@ class HeightEnv(env.Environment):
     def preact_loop(self):
         total_height = 0
         for agent in reversed(self.agents):
-            total_height += agent.height
-            if not agent.alive:
-                print ('agent ' + agent.name + ' with a height of ' + str(agent.height))
+            if agent.alive:
+                total_height += agent.height
+            else:
+#                print ( agent.name + ' with a height of ' + str(agent.height))
                 self.agents.remove(agent)
         self.cur_avg_height = total_height / len(self.agents)
+        self.height_hist.append(self.cur_avg_height)
         print ('Average height period ' + str(self.period) + ' is: ' + str(self.cur_avg_height))
-
-
+        print(self.height_hist)
+#    def display(self):
+#        
+#        if self.period < 4:
+#            self.user.tell("Too little data to display")
+#            return
+#
+#        
+#
+#        disp.display_line_graph("Carl Menger's money model: "
+#                                + "Trades per good ",
+#                                self.height_hist,
+#                                self.period)
 
 
 
