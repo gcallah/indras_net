@@ -90,7 +90,7 @@ class Node():
         self.ntype = new_type
 
     def to_json(self):
-        return self.name
+        return {"name": self.name}
 
 
 class Universals(Node):

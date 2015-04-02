@@ -80,4 +80,11 @@ class Agent(Entity):
         return prehended
 
     def to_json(self):
-        return "%s: %s" % (self.name, self.goal)
+        """
+        We're going to make a dictionary of the 'safe' parts of the object to
+        output to a json file. (We can't output the env, for instance, since
+        IT contains a reference to each agent!
+        """
+        safe_fields = super().to_json()
+        safe_fields["goal"] = self.goal
+        return safe_fields

@@ -7,13 +7,12 @@ the system after library changes.
 
 import logging
 import indra.prop_args as props
+import indra.utils as utils
 import basic_model as bm
 
 # set up some file names:
 MODEL_NM = "basic_model"
-PROG_NM = MODEL_NM + ".py"
-LOG_FILE = MODEL_NM + ".txt"
-PROPS_NM = MODEL_NM + ".props"
+(prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
 
 # We store basic parameters in a
 # "property" file; this allows us to save
@@ -21,9 +20,9 @@ PROPS_NM = MODEL_NM + ".props"
 #  We can read these in from file or set them here.
 read_props = False
 if read_props:
-    pa = props.PropArgs.read_props(MODEL_NM, "basic.props")
+    pa = props.PropArgs.read_props(MODEL_NM, prop_file)
 else:
-    pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
+    pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
     pa.set("num_agents", 10)
 
@@ -37,7 +36,8 @@ for i in range(pa.get("num_agents")):
                                 goal="acting up!"))
 
 # Logging is automatically set up for the modeler:
-logging.info("Starting program " + PROG_NM)
+logging.info("Starting program " + prog_file)
 
 # And now we set things running!
 env.run()
+env.record_results(results_file)

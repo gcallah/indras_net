@@ -22,3 +22,13 @@ class GridAgent(sa.SpatialAgent):
         Our pos is just x, y
         """
         return self.pos
+
+    def to_json(self):
+        """
+        We're going to make a dictionary of the 'safe' parts of the object to
+        output to a json file. (We can't output the env, for instance, since
+        IT contains a reference to each agent!
+        """
+        safe_fields = super().to_json()
+        safe_fields["pos"] = self.pos
+        return safe_fields

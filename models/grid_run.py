@@ -11,13 +11,15 @@ import grid_model as gm
 MODEL_NM = "grid_model"
 PROG_NM = MODEL_NM + ".py"
 LOG_FILE = MODEL_NM + ".txt"
+PROPS_NM = MODEL_NM + ".props"
+RESULTS_NM = MODEL_NM + ".out"
 
 # We store basic parameters in a "property" file; this allows us to save
 #  multiple parameter sets, which is important in simulation work.
 #  We can read these in from file or set them here.
 read_props = False
 if read_props:
-    pa = props.PropArgs.read_props(MODEL_NM, "grid.props")
+    pa = props.PropArgs.read_props(MODEL_NM, PROPS_NM)
 else:
     pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
     pa.set("model", MODEL_NM)
@@ -53,3 +55,4 @@ for cell in env.coord_iter():
 
 # And now we set things running!
 env.run()
+env.record_results(RESULTS_NM)
