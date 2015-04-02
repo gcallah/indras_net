@@ -4,20 +4,20 @@ The script to run our Edgeworth Box model.
 """
 
 import logging
+import indra.utils as utils
 import indra.prop_args as props
 import indra.node as node
 import edgebox_model as ebm
 
 MODEL_NM = "edgebox_model"
-PROG_NM = MODEL_NM + ".py"
-LOG_FILE = MODEL_NM + ".txt"
+(prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
 
 read_props = False
 
 if read_props:
-    pa = props.PropArgs.read_props(MODEL_NM, "edgebox.props")
+    pa = props.PropArgs.read_props(MODEL_NM, prop_file)
 else:
-    pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
+    pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
     pa.set("al_cheese", 20)
     pa.set("al_cutil", "10 - .5 * qty")
@@ -52,3 +52,4 @@ node.add_prehension(ebm.EdgeboxAgent, ebm.TRADE, ebm.EdgeboxAgent)
 
 logging.info("Starting program")
 env.run()
+env.record_results(results_file)

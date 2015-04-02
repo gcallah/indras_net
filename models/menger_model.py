@@ -73,7 +73,7 @@ class MengerEnv(bm.BarterEnv):
                          preact=True)
         self.menu.view.add_menu_item("v",
                                      menu.MenuLeaf("(v)iew trades",
-                                                   self.display))
+                                                   self.view_trades))
         self.prod_amt = self.props.get("prop_amt", 1)
 
     def step_report(self):
@@ -109,16 +109,15 @@ class MengerEnv(bm.BarterEnv):
 
         print("Market = " + str(self.market))
 
-    def display(self):
+    def view_trades(self):
         """
-        Draw a graph of our changing pops.
+        Draw a graph of our changing trade levels.
         """
         if self.period < 4:
             self.user.tell("Too little data to display")
             return
 
-        trade_hist = self.market.get_trade_hist()
-
-        disp.display_line_graph("Menger model: trades per good.",
-                                trade_hist,
-                                self.period)
+        data = self.market.get_trade_hist()
+        self.line_graph = disp.LineGraph('Populations in ' + self.name,
+                                         data, self.period, anim=False)
+        self.line_graph.show()

@@ -4,6 +4,7 @@ A script to run our Menger model.
 """
 
 import logging
+import indra.utils as utils
 import indra.prop_args as props
 import indra.node as node
 import barter_model as bm
@@ -11,10 +12,8 @@ import menger_model as mm
 
 # set up some file names:
 MODEL_NM = "menger_model"
-PROG_NM = MODEL_NM + ".py"
-LOG_FILE = MODEL_NM + ".txt"
+(prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
 CSV_FILE = MODEL_NM + "02.csv"
-PROPS_FILE = MODEL_NM + ".props"
 
 # We store basic parameters in a
 # "property" file; this allows us to save
@@ -22,10 +21,10 @@ PROPS_FILE = MODEL_NM + ".props"
 #  We can read these in from file or set them here.
 read_props = False
 if read_props:
-    pa = props.PropArgs.read_props(MODEL_NM, PROPS_FILE)
+    pa = props.PropArgs.read_props(MODEL_NM, prop_file)
 else:
-    pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE,
-                        loglevel=logging.DEBUG, props=None)
+    pa = props.PropArgs(MODEL_NM, logfile=log_file,
+                        loglevel=logging.INFO, props=None)
     pa.set("model", MODEL_NM)
     pa.set("prod_amt", 1)
 
@@ -38,7 +37,8 @@ env.add_prod_goods()
 node.add_prehension(mm.MengerAgent, bm.TRADE, mm.MengerAgent)
 
 # Logging is automatically set up for the modeler:
-logging.info("Starting program " + PROG_NM)
+logging.info("Starting program " + prog_file)
 
 # And now we set things running!
 env.run()
+env.record_results(results_file)

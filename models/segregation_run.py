@@ -8,24 +8,23 @@ Segregation Run File
 """
 
 import logging
+import indra.utils as utils
 import indra.prop_args as props
-import indra.user as user
 import indra.grid_env as ge
 import segregation_model as sm
 
 # set up some file names:
 MODEL_NM = "segregation_model"
-PROG_NM = MODEL_NM + ".py"
-LOG_FILE = MODEL_NM + ".txt"
+(prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
 
 # We store basic parameters in a "property" file; this allows us to save
 #  multiple parameter sets, which is important in simulation work.
 #  We can read these in from file or set them here.
 read_props = False
 if read_props:
-    pa = props.PropArgs.read_props(MODEL_NM, "segregation.props")
+    pa = props.PropArgs.read_props(MODEL_NM, prop_file)
 else:
-    pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
+    pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
     pa.set("num_R_agents", 50)
     pa.set("num_B_agents", 20)
@@ -46,27 +45,21 @@ env = ge.GridEnv("Test grid env",
 # based on the loop variable:
 for i in range(pa.get("num_R_agents")):
     env.add_agent(sm.RedAgent(name="Red agent" + str(i),
-                  goal="taking up a grid space!", tolerance = pa.get('tolerance')))
+                  goal="A good neighborhood.",
+                  tolerance=pa.get('tolerance')))
 
 for i in range(pa.get("num_B_agents")):
     env.add_agent(sm.BlueAgent(name="Blue agent" + str(i),
-                  goal="taking up a grid space!", tolerance = pa.get('tolerance')))
-                  
+                  goal="A good neighborhood.",
+                  tolerance=pa.get('tolerance')))
+
 for i in range(pa.get("num_G_agents")):
     env.add_agent(sm.GreenAgent(name="Green agent" + str(i),
-                  goal="taking up a grid space!", tolerance = pa.get('tolerance')))                  
+                  goal="A good neighborhood.",
+                  tolerance=pa.get('tolerance')))
 
 # Logging is automatically set up for the modeler:
-logging.info("Starting program " + PROG_NM)
-
-# let's test our iterator
-#for cell in env.occupied_iter(occupied=True):
-#    print("Contents of cell x = "
-#          + str(cell[1])
-#          + " and y = "
-#          + str(cell[2])
-#          + " is "
-#          + str(cell[0]))
+logging.info("Starting program " + prog_file)
 
 # And now we set things running!
 env.run()

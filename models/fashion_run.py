@@ -5,23 +5,21 @@ which implements Adam Smith's fashion model.
 """
 
 import logging
+import indra.utils as utils
 import indra.node as node
 import indra.prop_args as props
 import predprey_model as ppm
 import fashion_model as fm
 
 MODEL_NM = "fashion_model"
-PROG_NM = MODEL_NM + ".py"
-LOG_FILE = MODEL_NM + ".txt"
-PROPS_NM = MODEL_NM + ".props"
-RESULTS_NM = MODEL_NM + ".out"
+(prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
 
 read_props = False
 
 if read_props:
-    pa = props.PropArgs.read_props(MODEL_NM, PROPS_NM)
+    pa = props.PropArgs.read_props(MODEL_NM, prop_file)
 else:
-    pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
+    pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
 
     pa.set("model", MODEL_NM)
 
@@ -54,4 +52,4 @@ node.add_prehension(fm.TrendSetter, ppm.AVOID, fm.Follower)
 
 logging.info("Starting program")
 env.run()
-env.record_results(RESULTS_NM)
+env.record_results(results_file)

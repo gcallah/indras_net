@@ -5,13 +5,13 @@ demonstrating heirarchical graphing.
 """
 
 import logging
-import prop_args as props
+import indra.utils as utils
+import indra.prop_args as props
 import emp_model as em
 
 # set up some file names:
 MODEL_NM = "emp_model"
-PROG_NM = MODEL_NM + ".py"
-LOG_FILE = MODEL_NM + ".txt"
+(prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
 
 # We store basic parameters in a
 # "property" file; this allows us to save
@@ -19,9 +19,9 @@ LOG_FILE = MODEL_NM + ".txt"
 #  We can read these in from file or set them here.
 read_props = False
 if read_props:
-    pa = props.PropArgs.read_props(MODEL_NM, "emp.props")
+    pa = props.PropArgs.read_props(MODEL_NM, prop_file)
 else:
-    pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
+    pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
 
 # Now we create a minimal environment for our agents to act within:

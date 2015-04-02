@@ -5,25 +5,24 @@ Created on Thu Sep 18 16:45:50 2014
 @author: Gene and Brandon
 """
 import logging
+import indra.utils as utils
 import indra.prop_args as props
 import height_model as hm
 
 MODEL_NM = "height_model"
-PROG_NM = MODEL_NM + ".py"
-LOG_FILE = MODEL_NM + ".txt"
+(prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
 
 read_props = False
 if read_props:
-    pa = props.PropArgs.read_props(MODEL_NM, "height.props")
+    pa = props.PropArgs.read_props(MODEL_NM, prop_file)
 else:
-    pa = props.PropArgs(MODEL_NM, logfile=LOG_FILE, props=None)
+    pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
     pa.set("num_agents", 10)
     # pa.set("parent_type", "GenEng")
 
 env = hm.HeightEnv(model_nm=MODEL_NM)
 
-agent = None
 for i in range(pa.get("num_agents")):
 
     if pa.get("parent_type") == "GenEng":
@@ -35,6 +34,6 @@ for i in range(pa.get("num_agents")):
             hm.HeightAgent(name='agent' + str(i), height=8))
 
 
-logging.info("Starting program " + PROG_NM)
+logging.info("Starting program " + prog_file)
 
 env.run()

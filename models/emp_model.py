@@ -4,13 +4,12 @@ A simple text of creating a heirarchical network.
 """
 import networkx as nx
 import matplotlib as plt
-#import pygraphviz as pgv
+# import pygraphviz as pgv
 import indra.node as node
 import indra.entity as ent
+import indra.env as env
 
 EMPLOYS = "employs"
-
-
 
 
 def employs(employer, employee):
@@ -20,7 +19,7 @@ def employs(employer, employee):
     """
     node.add_ent_prehension(employer, EMPLOYS, employee)
 
- 
+
 class EmpAgent(ent.Agent):
     """
     An agent that exists in an heirarchical organization.
@@ -35,7 +34,7 @@ class EmpAgent(ent.Agent):
               + self.goal)
 
 
-class EmpEnv(ent.Environment):
+class EmpEnv(env.Environment):
     """
     An environment for creating a heirarchical graph
     and displaying it.
@@ -45,7 +44,6 @@ class EmpEnv(ent.Environment):
         super().__init__("Employee environment",
                          model_nm=model_nm)
 
-
     def draw(self):
         """
         Draw a network graph of the employee relationship.
@@ -53,6 +51,3 @@ class EmpEnv(ent.Environment):
         if self.graph is not None:
             nx.draw_networkx(self.graph)
             plt.show()
-
-
-
