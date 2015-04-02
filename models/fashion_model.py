@@ -174,7 +174,7 @@ class SocietyEnv(se.SpatialEnv):
         var = agent.get_type()
 
         if agent.fashion == FSHN_TO_TRACK:
-            self.agents.change_pop_of_note(var, 1)
+            self.agents.change_pop_data(var, 1)
 
     def record_fashion_change(self, agent):
         """
@@ -182,9 +182,9 @@ class SocietyEnv(se.SpatialEnv):
         """
         var = agent.get_type()
         if agent.fashion == FSHN_TO_TRACK:
-            self.agents.change_pop_of_note(var, 1)
+            self.agents.change_pop_data(var, 1)
         else:
-            self.agents.change_pop_of_note(var, -1)
+            self.agents.change_pop_data(var, -1)
 
     def census(self, disp=True):
         """
@@ -194,7 +194,7 @@ class SocietyEnv(se.SpatialEnv):
                        " adopting " +
                        fashions[FSHN_TO_TRACK] + ":")
         for var in self.agents.varieties_iter():
-            pop = self.agents.get_pop_of_note(var)
+            pop = self.agents.get_pop_data(var)
             self.user.tell(var + ": " + str(pop))
             self.agents.append_pop_hist(var, pop)
 

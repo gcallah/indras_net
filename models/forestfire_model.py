@@ -94,10 +94,7 @@ class ForestEnv(grid.GridEnv):
         self.density = density
         self.plot_title = "A Forest Fire"
 
-        # add our types so we can set colors
-        self.agents.add_variety(BURNED_OUT)
-        self.agents.add_variety(ON_FIRE)
-        self.agents.add_variety(HEALTHY)
+        # setting our colors adds varieties as well!
         self.agents.set_var_color(BURNED_OUT, 'k')
         self.agents.set_var_color(ON_FIRE, 'r')
         self.agents.set_var_color(HEALTHY, 'g')

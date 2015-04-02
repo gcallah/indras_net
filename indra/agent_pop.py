@@ -112,6 +112,7 @@ class AgentPop(node.Node):
         """
         Set the display color for this var.
         """
+        self.add_variety(var)
         self.vars[var]["disp_color"] = color
 
     def add_variety(self, var):
@@ -122,7 +123,8 @@ class AgentPop(node.Node):
         """
         if var not in self.vars:
             self.vars[var] = {"agents": [],
-                              "pop_of_note": 0,
+                              # some arbitrary data to track for pop:
+                              "pop_data": 0,
                               "pop_hist": [],
                               "zombies": [],
                               "zero_per": 0,
@@ -220,17 +222,17 @@ class AgentPop(node.Node):
                           % (var, pop_hist[var]["color"]))
         return pop_hist
 
-    def get_pop_of_note(self, var):
+    def get_pop_data(self, var):
         """
-        Return the value of pop_of_note for 'var'.
+        Return the value of pop_data for 'var'.
         """
-        return self.vars[var]["pop_of_note"]
+        return self.vars[var]["pop_data"]
 
-    def change_pop_of_note(self, var, change):
+    def change_pop_data(self, var, change):
         """
-        Change the value of pop_of_note by 'change.'
+        Change the value of pop_data by 'change.'
         """
-        self.vars[var]["pop_of_note"] += change
+        self.vars[var]["pop_data"] += change
 
     def change_agent_type(self, agent, old_type, new_type):
         self.remove(agent, v=old_type)
