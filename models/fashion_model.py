@@ -9,7 +9,7 @@ trend-setters and followers.
 import logging
 import indra.menu as menu
 import indra.entity as ent
-import indra.spatial_env as se
+import indra.plane_env as pe
 import indra.display_methods as disp
 import predprey_model as prdpry
 
@@ -139,7 +139,7 @@ class TrendSetter(Fashionista, prdpry.MobilePrey):
                                    self.env.trnd_others)
 
 
-class SocietyEnv(se.SpatialEnv):
+class SocietyEnv(pe.PlaneEnv):
     """
     This is the society in which our fashionistas
     will adopt fashions

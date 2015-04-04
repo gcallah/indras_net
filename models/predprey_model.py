@@ -7,8 +7,8 @@ import math
 import random
 import logging
 import pprint
-import indra.spatial_agent as sa
-import indra.spatial_env as se
+import indra.plane_agent as pa
+import indra.plane_env as pe
 
 
 EAT = "eat"
@@ -18,7 +18,7 @@ REPRODUCE = "reproduce"
 pp = pprint.PrettyPrinter(indent=4)
 
 
-class Creature(sa.SpatialAgent):
+class Creature(pa.PlaneAgent):
 
     """ This class is the parent of all things that:
         1) eat; 2) age; and 3) reproduce """
@@ -110,7 +110,7 @@ class Grass(Creature):
             return None
 
 
-class MobileCreature(Creature, sa.MobileAgent):
+class MobileCreature(Creature, pa.MobileAgent):
     """
     This class is the parent of all creatures
     that can move around.
@@ -267,7 +267,7 @@ class Rabbit(Predator):
                       self.decay_rate, self.max_move)
 
 
-class PredPreyEnv(se.SpatialEnv):
+class PredPreyEnv(pe.PlaneEnv):
 
     """ This class creates an environment for predators
         to chase and eat prey """
