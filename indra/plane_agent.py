@@ -3,7 +3,6 @@ Filename: plane_agent.py
 Author: Gene Callahan
 """
 
-from collections import deque
 # import logging
 import indra.spatial_agent as sa
 
@@ -18,12 +17,6 @@ class PlaneAgent(sa.SpatialAgent):
 
     def __init__(self, name, goal, max_move=0.0, max_detect=0.0):
         super().__init__(name, goal)
-        self.max_move = max_move
-        self.max_detect = max_detect
-        self.pos = None
-        self.focus = None
-        self.wandering = False
-        self.exclude = deque(maxlen=MAX_EXCLUDE)
 
     def in_detect_range(self, prehended):
         """

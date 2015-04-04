@@ -34,14 +34,9 @@ class SpatialAgent(ent.Agent):
     def in_range(self, prey, dist):
         """
         Is one agent in range of another in some sense?
+        Must be implemented in descendents.
         """
-        if prey is None:
-            return False
-
-        if abs(self.pos - prey.pos) < dist:
-            return True
-        else:
-            return False
+        pass
 
     def detect_behavior(self):
         """
@@ -50,7 +45,10 @@ class SpatialAgent(ent.Agent):
         pass
 
     def get_pos(self):
-        return (self.pos.real, self.pos.imag)
+        """
+        To be implemented in descendents.
+        """
+        pass
 
 
 class MobileAgent(SpatialAgent):
