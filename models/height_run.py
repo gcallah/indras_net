@@ -25,11 +25,9 @@ env = hm.HeightEnv(model_nm=MODEL_NM)
 
 for i in range(pa.get("num_agents")):
 
-    if pa.get("parent_type") == "GenEng":
         env.add_agent(
             hm.HeightAgentEng(name='Eng agent' + str(i),
                               height=8))
-    else:
         env.add_agent(
             hm.HeightAgent(name='agent' + str(i), height=8))
 
