@@ -9,7 +9,7 @@ trend-setters and followers.
 import logging
 import indra.menu as menu
 import indra.entity as ent
-import indra.spatial_env as se
+import indra.plane_env as pe
 import indra.display_methods as disp
 import predprey_model as prdpry
 
@@ -139,7 +139,7 @@ class TrendSetter(Fashionista, prdpry.MobilePrey):
                                    self.env.trnd_others)
 
 
-class SocietyEnv(se.SpatialEnv):
+class SocietyEnv(pe.PlaneEnv):
     """
     This is the society in which our fashionistas
     will adopt fashions
@@ -174,7 +174,7 @@ class SocietyEnv(se.SpatialEnv):
         var = agent.get_type()
 
         if agent.fashion == FSHN_TO_TRACK:
-            self.agents.change_pop_of_note(var, 1)
+            self.agents.change_pop_data(var, 1)
 
     def record_fashion_change(self, agent):
         """
@@ -182,9 +182,9 @@ class SocietyEnv(se.SpatialEnv):
         """
         var = agent.get_type()
         if agent.fashion == FSHN_TO_TRACK:
-            self.agents.change_pop_of_note(var, 1)
+            self.agents.change_pop_data(var, 1)
         else:
-            self.agents.change_pop_of_note(var, -1)
+            self.agents.change_pop_data(var, -1)
 
     def census(self, disp=True):
         """
@@ -194,7 +194,7 @@ class SocietyEnv(se.SpatialEnv):
                        " adopting " +
                        fashions[FSHN_TO_TRACK] + ":")
         for var in self.agents.varieties_iter():
-            pop = self.agents.get_pop_of_note(var)
+            pop = self.agents.get_pop_data(var)
             self.user.tell(var + ": " + str(pop))
             self.agents.append_pop_hist(var, pop)
 

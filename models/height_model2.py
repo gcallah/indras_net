@@ -13,8 +13,6 @@ ENV_NM = "Schelling height model"
 DEF_HEIGHT = 1.0
 
 
-
-
 class HeightAgent(ent.Agent):
 
     def __init__(self, name, height):
@@ -98,7 +96,27 @@ class HeightEnv(env.Environment):
 #                print ( agent.name + ' with a height of ' + str(agent.height))
                 self.agents.remove(agent)
         self.cur_avg_height = total_height / len(self.agents)
+<<<<<<< HEAD
       
+=======
+        self.height_hist.append(self.cur_avg_height)
+        print ('Average height period ' + str(self.period) + ' is: ' + str(self.cur_avg_height))
+        print(self.height_hist)
+#    def display(self):
+#
+#        if self.period < 4:
+#            self.user.tell("Too little data to display")
+#            return
+#
+#
+#
+#        disp.display_line_graph("Carl Menger's money model: "
+#                                + "Trades per good ",
+#                                self.height_hist,
+#                                self.period)
+
+
+>>>>>>> origin/master
 
 
 
