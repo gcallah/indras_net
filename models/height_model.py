@@ -46,11 +46,9 @@ class HeightAgentEng(HeightAgent):
 
         self.env.add_child(self.mychild)
 
-        #print(self.env.step(self.total_height))
-        runt_height = .67 * HeightEnv.avg_height
-        if self.mychild.height < runt_height:
-            #print('changing agent ' + self.mychild.name + ' height from ' + str(self.mychild.height) + ' to ' + str(runt_height))
-            self.mychild.height = runt_height
+
+#       runt_height = .67 * HeightEnv.census.avg_height[var]
+#       self.mychild.height = runt_height
 
 class HeightEnv(env.Environment):
 
@@ -68,14 +66,17 @@ class HeightEnv(env.Environment):
         self.user.tell("Average heights in period " + str(self.period))                        
         for var in self.agents.varieties_iter():                                        
             total_height = 0                                                              
-            i = 0                                                                       
-        for agent in self.agents.variety_iter(var):                                 
-            total_height += agent.height                                               
-            i += 1                                                                  
-        self.avg_height[var] = total_height / i                                           
-        self.agents.append_pop_hist(var, self.avg_height)                                
-        self.user.tell(var + ": " + str(self.avg_height))                                
-                                                                                    
+            i = 0
+                                                                            
+            for agent in self.agents.variety_iter(var):                                 
+                total_height += agent.height                                               
+                i += 1
+                
+            self.avg_height[var] = total_height / i                                           
+            self.agents.append_pop_hist(var, self.avg_height)                                
+        self.user.tell(var + ": " + str(self.avg_height))
+        
+                                                
     def view_pop(self):                                                                 
         """                                                                             
         Draw a graph of our changing pops.                                              
@@ -95,20 +96,6 @@ class HeightEnv(env.Environment):
 #                print ( agent.name + ' with a height of ' + str(agent.height))
                 pass
        
-        print ('Average height period ' + str(self.period) + ' is: ' + str(self.avg_height))
-       
-#    def display(self):
-#
-#        if self.period < 4:
-#            self.user.tell("Too little data to display")
-#            return
-#
-#
-#
-#        disp.display_line_graph("Carl Menger's money model: "
-#                                + "Trades per good ",
-#                                self.height_hist,
-#                                self.period)
 
 
 
