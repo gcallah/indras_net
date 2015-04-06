@@ -47,7 +47,7 @@ class HeightAgentEng(HeightAgent):
         self.env.add_child(self.mychild)
 
         #print(self.env.step(self.total_height))
-        runt_height = .67 * self.env.cur_avg_height
+        runt_height = .67 * self.avg_height
         if self.mychild.height < runt_height:
             #print('changing agent ' + self.mychild.name + ' height from ' + str(self.mychild.height) + ' to ' + str(runt_height))
             self.mychild.height = runt_height
@@ -59,7 +59,7 @@ class HeightEnv(env.Environment):
 
     def __init__(self, model_nm = None):
         super().__init__( "Height Environment", model_nm=model_nm, preact=True)
-        self.cur_avg_height = 0
+        self.avg_height = {}
         
     def census(self, disp=True):                                                        
         """                                                                             
@@ -72,7 +72,8 @@ class HeightEnv(env.Environment):
         for agent in self.agents.variety_iter(var):                                 
             total_height += agent.height                                               
             i += 1                                                                  
-        avg_height = total_height / i                                                 
+        avg_height = total_height / i        
+        avg_height[var] = total_height / i                                         
         self.agents.append_pop_hist(var, avg_height)                                
         self.user.tell(var + ": " + str(avg_height))                                
                                                                                     
@@ -88,20 +89,15 @@ class HeightEnv(env.Environment):
         self.line_graph = disp.LineGraph("Schelling's height model",                    
                                      data, period, anim=False)                          
     def preact_loop(self):
-        total_height = 0
         for agent in reversed(self.agents):
-            if agent.alive:
-                total_height += agent.height
+            if not agent.alive:
+                self.agents.remove(agent)
             else:
 #                print ( agent.name + ' with a height of ' + str(agent.height))
-                self.agents.remove(agent)
-        self.cur_avg_height = total_height / len(self.agents)
-<<<<<<< HEAD
-      
-=======
-        self.height_hist.append(self.cur_avg_height)
-        print ('Average height period ' + str(self.period) + ' is: ' + str(self.cur_avg_height))
-        print(self.height_hist)
+                pass
+       
+        print ('Average height period ' + str(self.period) + ' is: ' + str(self.avg_height))
+       
 #    def display(self):
 #
 #        if self.period < 4:
@@ -116,7 +112,7 @@ class HeightEnv(env.Environment):
 #                                self.period)
 
 
->>>>>>> origin/master
+
 
 
 
