@@ -7,10 +7,15 @@ Created on Mon Mar  2 21:40:05 2015
 
 ''' Segregation Model '''
 
-import indra.spatial_agent as sa
+import indra.grid_agent as ga
+import indra.grid_env as grid
+
+BLUE_AGENT = "Blue Agent"
+RED_AGENT = "Red Agent"
+GREEN_AGENT = "Green Agent"
 
 
-class SegregationAgent(sa.SpatialAgent):
+class SegregationAgent(ga.GridAgent):
     """
     An agent that prints its neighbors when asked to act
     """
@@ -29,18 +34,37 @@ class SegregationAgent(sa.SpatialAgent):
                 like_me += 1
         if like_me / total_neighbors < self.tolerance:        
             self.env.move_to_empty(self)
-            print(self.name + ' has moved')
-           
-           
+               
         
 class BlueAgent(SegregationAgent):
-
-    pass       
+    
+    def setColorB(self):
+        type(BLUE_AGENT) 
 
 class RedAgent(SegregationAgent):
     
-    pass
+       
+    def setColorR(self):
+        type(RED_AGENT)
 
 class GreenAgent(SegregationAgent):
     
-    pass
+       
+    def setColorG(self):
+        type(GREEN_AGENT)
+
+
+class SegregationEnv(grid.GridEnv):
+    
+    def __init__(self, height, width, torus=False,
+                 model_nm="Segregation"):
+                     
+        super().__init__("Segregation", height, width, torus=False,
+                         model_nm=model_nm)
+                         
+        self.plot_title = "Segregation"
+
+        # setting our colors adds varieties as well!
+        self.agents.set_var_color(BLUE_AGENT, 'b')
+        self.agents.set_var_color(RED_AGENT, 'r')
+        self.agents.set_var_color(GREEN_AGENT, 'g')

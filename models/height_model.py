@@ -47,7 +47,7 @@ class HeightAgentEng(HeightAgent):
         self.env.add_child(self.mychild)
 
         #print(self.env.step(self.total_height))
-        runt_height = .67 * env.self.avg_height[var]
+        runt_height = .67 * HeightEnv.avg_height
         if self.mychild.height < runt_height:
             #print('changing agent ' + self.mychild.name + ' height from ' + str(self.mychild.height) + ' to ' + str(runt_height))
             self.mychild.height = runt_height
