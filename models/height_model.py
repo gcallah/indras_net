@@ -47,7 +47,7 @@ class HeightAgentEng(HeightAgent):
         self.env.add_child(self.mychild)
 
         #print(self.env.step(self.total_height))
-        runt_height = .67 * self.avg_height
+        runt_height = .67 * env.self.avg_height[var]
         if self.mychild.height < runt_height:
             #print('changing agent ' + self.mychild.name + ' height from ' + str(self.mychild.height) + ' to ' + str(runt_height))
             self.mychild.height = runt_height
@@ -72,10 +72,9 @@ class HeightEnv(env.Environment):
         for agent in self.agents.variety_iter(var):                                 
             total_height += agent.height                                               
             i += 1                                                                  
-        avg_height = total_height / i        
-        avg_height[var] = total_height / i                                         
-        self.agents.append_pop_hist(var, avg_height)                                
-        self.user.tell(var + ": " + str(avg_height))                                
+        self.avg_height[var] = total_height / i                                           
+        self.agents.append_pop_hist(var, self.avg_height)                                
+        self.user.tell(var + ": " + str(self.avg_height))                                
                                                                                     
     def view_pop(self):                                                                 
         """                                                                             
