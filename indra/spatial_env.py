@@ -34,12 +34,13 @@ class SpatialEnv(env.Environment):
                                      menu.MenuLeaf("(s)catter plot",
                                                    self.plot))
 
-    def add_agent(self, agent):
+    def add_agent(self, agent, position=True):
         """
         Add a spatial agent to env
         """
         super().add_agent(agent)
-        self.position_agent(agent)
+        if position:
+            self.position_agent(agent)
 
         v = agent.get_type()
         logging.debug("Adding " + agent.__str__()

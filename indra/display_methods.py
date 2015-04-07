@@ -12,7 +12,14 @@ import logging
 plt.ion()
 
 
-colors = ['b', 'r', 'g', 'y', 'm', 'c', 'k']
+BLUE = 'b'
+RED = 'r'
+GREEN = 'g'
+YELLOW = 'y'
+MAGENTA = 'm'
+CYAN = 'c'
+BLACK = 'k'
+colors = [BLUE, RED, GREEN, YELLOW, MAGENTA, CYAN, BLACK]
 NUM_COLORS = len(colors)
 X = 0
 Y = 1
