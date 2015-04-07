@@ -5,6 +5,7 @@ A collection of convenience functions
 for using matplotlib.
 """
 
+from math import ceil
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -113,6 +114,7 @@ class ScatterPlot():
         self.scats = None
         self.anim = anim
         self.data_func = data_func
+        self.s = ceil(4096 / width)
 
         fig, ax = plt.subplots()
         ax.set_xlim(0, width)
@@ -166,6 +168,6 @@ class ScatterPlot():
             scat = plt.scatter(x_array, y_array,
                                c=color, label=var,
                                alpha=1.0, marker="8",
-                               edgecolors='none', s=32)
+                               edgecolors='none', s=self.s)
             self.scats.append(scat)
             i += 1

@@ -11,6 +11,7 @@ X = 0
 Y = 1
 
 MAX_SAND = 4
+FULL_NEIGHBORHOOD = 4
 
 
 class SandAgent(ga.GridAgent):
@@ -25,17 +26,23 @@ class SandAgent(ga.GridAgent):
         self.ntype = str(self.sand_amt)  # we get our color from our sand amount
 
     def act(self):
+        """
+        Our main action goes here.
+        """
         if self.sand_amt >= MAX_SAND:
             (x, y) = self.get_pos()
+            i = 0
             for neighbor in self.env.neighbor_iter(x, y, moore=False):
-                amt = str(self.sand_amt)
-                print("My sand amt = " + amt)
+                i += 1
                 if self.sand_amt > 0:
                     neighbor.add_grains(1)
                     self.sand_amt -= 1
-                # (x1, y1) = neighbor.get_pos()
-                # print("    %i, %i" % (x1, y1))
-            self.sand_amt = 0  # leftover grains tumble off edge
+            if i < FULL_NEIGHBORHOOD:
+                for j in range(i, FULL_NEIGHBORHOOD):
+                    """
+                    If at edge, sand tumbles off.
+                    """
+                    self.sand_amt -= 1
 
     def postact(self):
         """
@@ -51,7 +58,6 @@ class SandAgent(ga.GridAgent):
         """
         Get some sand.
         """
-        print("Adding grains at : %i, %i" % (self.pos[X], self.pos[Y]))
         self.sand_amt += amt
 
 
@@ -69,6 +75,9 @@ class SandEnv(ge.GridEnv):
         self.agents.set_var_color('1', disp.MAGENTA)
         self.agents.set_var_color('2', disp.BLUE)
         self.agents.set_var_color('3', disp.CYAN)
+        self.agents.set_var_color('4', disp.GREEN)
+        self.agents.set_var_color('5', disp.YELLOW)
+        self.agents.set_var_color('6', disp.RED)
         center_x = floor(self.width / 2)
         center_y = floor(self.height / 2)
         print("center = %i, %i" % (center_x, center_y))

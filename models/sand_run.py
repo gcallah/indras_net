@@ -20,8 +20,8 @@ if read_props:
 else:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
-    pa.set("grid_width", 100)
-    pa.set("grid_height", 100)
+    pa.set("grid_width", 200)
+    pa.set("grid_height", 200)
 
 # Now we create a minimal environment for our agents to act within:
 env = sm.SandEnv("Abelian sand env",
