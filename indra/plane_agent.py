@@ -18,12 +18,6 @@ class PlaneAgent(sa.SpatialAgent):
     def __init__(self, name, goal, max_move=0.0, max_detect=0.0):
         super().__init__(name, goal)
 
-    def in_detect_range(self, prehended):
-        """
-        Can we see the prehended with our limited view?
-        """
-        return self.in_range(prehended, self.max_detect)
-
     def in_range(self, prey, dist):
         """
         Is one agent in range of another in some sense?
