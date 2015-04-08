@@ -33,19 +33,27 @@ else:
     pa.set("tolerance", .4)
 
 # Now we create a minimal environment for our agents to act within:
+<<<<<<< HEAD
 env = sm.SegregationEnv("Test grid env",
                         pa.get("grid_height"),
                         pa.get("grid_width"))
+=======
+env = sm.SegregationEnv("Segregation Model",
+                 pa.get("grid_height"),
+                 pa.get("grid_width"))
+                
+>>>>>>> 1dfd25dcb43875c0644799a2c1780c3dd87615c2
 
 # Now we loop creating multiple agents with numbered names
 # based on the loop variable:
-for i in range(pa.get("num_R_agents")):
-    env.add_agent(sm.RedAgent(name="Red agent" + str(i),
-                  goal="A good neighborhood.",
-                  tolerance=pa.get('tolerance')))
 
 for i in range(pa.get("num_B_agents")):
     env.add_agent(sm.BlueAgent(name="Blue agent" + str(i),
+                  goal="A good neighborhood.",
+                  tolerance=pa.get('tolerance')))
+                  
+for i in range(pa.get("num_R_agents")):
+    env.add_agent(sm.RedAgent(name="Red agent" + str(i),
                   goal="A good neighborhood.",
                   tolerance=pa.get('tolerance')))
 

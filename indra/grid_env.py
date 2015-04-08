@@ -145,10 +145,6 @@ class GridEnv(se.SpatialEnv):
         neighbors = self.get_neighbors(x, y, moore=moore)
         return iter(neighbors)
 
-    def neighborhood_iter(self, x, y, moore=True, torus=False):
-        neighborhood = self.get_neighborhood(x, y, moore=moore)
-        return iter(neighborhood)
-
     def torus_adj(self, coord, dim_len):
         """
         Convert coordinate, handling torus looping.

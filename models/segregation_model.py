@@ -40,19 +40,28 @@ class BlueAgent(SegregationAgent):
     """
     Just a type
     """
+<<<<<<< HEAD
     def __init__(self, name, goal, tolerance):
         super().__init__(name, goal, tolerance)
         self.ntype = BLUE_AGENT
 
 
+=======
+    
+    
+>>>>>>> 1dfd25dcb43875c0644799a2c1780c3dd87615c2
 class RedAgent(SegregationAgent):
     """
     Just a type with no code
     """
+<<<<<<< HEAD
     def __init__(self, name, goal, tolerance):
         super().__init__(name, goal, tolerance)
         self.ntype = RED_AGENT
 
+=======
+    
+>>>>>>> 1dfd25dcb43875c0644799a2c1780c3dd87615c2
 
 class GreenAgent(SegregationAgent):
     """
