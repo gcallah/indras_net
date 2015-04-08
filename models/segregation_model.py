@@ -40,13 +40,13 @@ class BlueAgent(SegregationAgent):
     """
     Just a type with no code
     """
-
-
+    
+    
 class RedAgent(SegregationAgent):
     """
     Just a type with no code
     """
-
+    
 
 class GreenAgent(SegregationAgent):
     """
@@ -56,7 +56,7 @@ class GreenAgent(SegregationAgent):
 
 class SegregationEnv(grid.GridEnv):
 
-    def __init__(self, height, width, torus=False,
+    def __init__(self, name, height, width, torus=False,
                  model_nm="Segregation"):
 
         super().__init__("Segregation", height, width, torus=False,

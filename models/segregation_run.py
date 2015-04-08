@@ -10,7 +10,6 @@ Segregation Run File
 import logging
 import indra.utils as utils
 import indra.prop_args as props
-import indra.grid_env as ge
 import segregation_model as sm
 
 # set up some file names:
@@ -34,22 +33,21 @@ else:
     pa.set("tolerance", .4)
 
 # Now we create a minimal environment for our agents to act within:
-env = ge.GridEnv("Test grid env",
+env = sm.SegregationEnv("Segregation Model",
                  pa.get("grid_height"),
-                 pa.get("grid_width"),
-                 torus=False,
-                 model_nm=MODEL_NM,
-                 postact=True)
+                 pa.get("grid_width"))
+                
 
 # Now we loop creating multiple agents with numbered names
 # based on the loop variable:
-for i in range(pa.get("num_R_agents")):
-    env.add_agent(sm.RedAgent(name="Red agent" + str(i),
-                  goal="A good neighborhood.",
-                  tolerance=pa.get('tolerance')))
 
 for i in range(pa.get("num_B_agents")):
     env.add_agent(sm.BlueAgent(name="Blue agent" + str(i),
+                  goal="A good neighborhood.",
+                  tolerance=pa.get('tolerance')))
+                  
+for i in range(pa.get("num_R_agents")):
+    env.add_agent(sm.RedAgent(name="Red agent" + str(i),
                   goal="A good neighborhood.",
                   tolerance=pa.get('tolerance')))
 
