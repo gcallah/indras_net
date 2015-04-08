@@ -10,9 +10,9 @@ Created on Mon Mar  2 21:40:05 2015
 import indra.grid_agent as ga
 import indra.grid_env as grid
 
-BLUE_AGENT = "Blue Agent"
-RED_AGENT = "Red Agent"
-GREEN_AGENT = "Green Agent"
+BLUE_AGENT = "BlueAgent"
+RED_AGENT = "RedAgent"
+GREEN_AGENT = "GreenAgent"
 
 
 class SegregationAgent(ga.GridAgent):

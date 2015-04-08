@@ -9,6 +9,8 @@ import indra.utils as utils
 import indra.prop_args as props
 import height_model as hm
 
+START_HEIGHT = 100.0
+
 MODEL_NM = "height_model"
 (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
 
@@ -18,18 +20,17 @@ if read_props:
 else:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
-    pa.set("num_agents", 10)
-    # pa.set("parent_type", "GenEng")
+    pa.set("num_agents", 80)
 
 env = hm.HeightEnv(model_nm=MODEL_NM)
 
 for i in range(pa.get("num_agents")):
 
         env.add_agent(
-            hm.HeightAgentEng(name='Eng agent' + str(i),
-                              height=8))
+            hm.HeightAgentEng('Eng agent' + str(i),
+                              START_HEIGHT, START_HEIGHT))
         env.add_agent(
-            hm.HeightAgent(name='agent' + str(i), height=8))
+            hm.HeightAgent('agent' + str(i), START_HEIGHT, START_HEIGHT))
 
 
 logging.info("Starting program " + prog_file)
