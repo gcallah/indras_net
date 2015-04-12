@@ -323,20 +323,6 @@ class Environment(node.Node):
         for agent in self.agents:
             agent.postact()
 
-    def draw_graph(self):
-        """
-        Draw a graph!
-        """
-        choice = self.user.ask_for_ltr("Draw graph for "
-                                       + "(a)gents; (e)nvironment; "
-                                       + "(u)niversals?")
-        if choice == "a":
-            self.agents.draw()
-        elif choice == "u":
-            node.universals.draw()
-        else:
-            self.draw()
-
     def graph_agents(self):
         """
         Draw a graph of the agent relationships.
@@ -354,6 +340,9 @@ class Environment(node.Node):
         Draw a graph of the universal relationships.
         """
         node.universals.draw()
+
+    def graph_class_tree(self):
+        node.Node.class_draw()
 
     def keep_running(self):
         """

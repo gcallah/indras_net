@@ -9,6 +9,7 @@ memory will allow.
 
 # import logging
 from collections import OrderedDict
+import networkx as nx
 import indra.node as node
 
 
@@ -78,13 +79,14 @@ class MainMenu(Menu):
     def __init__(self, name, env):
         super().__init__(name, env)
         e = self.env
+        self.graph = nx.Graph()
 
 # file menu
         self.file = Menu("(f)ile", e)
         self.add_menu_item("f", self.file)
-        self.file.add_menu_item("w", MenuLeaf("(w)rite props", e.pwrite))
         self.file.add_menu_item("e", MenuLeaf("(e)xamine log", e.disp_log))
         self.file.add_menu_item("q", MenuLeaf("(q)uit", e.quit))
+        self.file.add_menu_item("w", MenuLeaf("(w)rite props", e.pwrite))
 
 # edit menu
         self.edit = Menu("(e)dit", e)
@@ -106,6 +108,7 @@ class MainMenu(Menu):
         self.graph = Menu("(g)raph", e)
         self.view.add_menu_item("g", self.graph)
         self.graph.add_menu_item("a", MenuLeaf("(a)gents", e.graph_agents))
+        self.graph.add_menu_item("c", MenuLeaf("(c)lasses", e.graph_class_tree))
         self.graph.add_menu_item("e", MenuLeaf("(e)nvironment", e.graph_env))
         self.graph.add_menu_item("u", MenuLeaf("(u)niversals", e.graph_unv))
 

@@ -25,7 +25,7 @@ else:
 
 GRID_X = 100
 GRID_Y = 100
-DENSITY = .616
+DENSITY = .413
 
 # Now we create a forest environment for our agents to act within:
 env = fm.ForestEnv(GRID_X, GRID_Y, DENSITY, model_nm=MODEL_NM, torus=False)

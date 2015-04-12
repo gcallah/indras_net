@@ -5,6 +5,7 @@ net of objects
 """
 
 import logging
+import inspect
 import matplotlib.pyplot as plt
 import networkx as nx
 
@@ -47,11 +48,41 @@ class Node():
     Contains a name and a graph.
     """
 
+    class_graph = nx.Graph()  # we are going to graph our class hierarchy
+    node_added = False
+
+    @classmethod
+    def class_draw(cls):
+        """
+        This draws our class hierarchy.
+        """
+        if cls.class_graph is not None:
+            plt.title("Class Hierarchy")
+            nx.draw_networkx(cls.class_graph)
+            plt.show()
+
+    @classmethod
+    def connect_to_class_tree(cls):
+        for c in inspect.getmro(cls):
+            if c != cls:
+                if c.__name__ not in Node.class_graph:
+                    c.connect_to_class_tree()
+                    break
+                else:
+                    Node.class_graph.add_edge(get_class_name(c),
+                                              get_class_name(cls))
+                    return
+        cls.connect_to_class_tree()  # call until all upper classes are in
+
     def __init__(self, name):
         self.name = name
 # every node is potentially a graph itself
         self.graph = None
         self.ntype = self.__class__.__name__
+        if not Node.node_added:
+            Node.class_graph.add_node(Node.__name__)
+        if self.ntype not in Node.class_graph:
+            self.__class__.connect_to_class_tree()
 
     def __str__(self):
         return self.name
@@ -99,10 +130,14 @@ class Universals(Node):
     or classes.
     """
 
+    universals_graphed = False
+
     def __init__(self):
         super().__init__("Universals")
         self.unis = {}
         self.graph = nx.MultiDiGraph()
+        if not Universals.universals_graphed:
+            pass
 
     def add_universal(self, uni):
         """
