@@ -67,4 +67,4 @@ class SegregationEnv(grid.GridEnv):
         # setting our colors adds varieties as well!
         self.agents.set_var_color(BLUE_AGENT, 'b')
         self.agents.set_var_color(RED_AGENT, 'r')
-        self.agents.set_var_color(GREEN_AGENT, 'g')
+        # self.agents.set_var_color(GREEN_AGENT, 'g')

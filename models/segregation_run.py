@@ -26,7 +26,7 @@ else:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
     pa.set("num_R_agents", 1000)
-    pa.set("num_B_agents", 800)
+    pa.set("num_B_agents", 1200)
     pa.set("grid_width", 60)
     pa.set("grid_height", 60)
     pa.set("tolerance", .4)
