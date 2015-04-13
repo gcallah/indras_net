@@ -217,5 +217,5 @@ class SocietyEnv(pe.PlaneEnv):
         self.line_graph = disp.LineGraph("A. Smith's fashion model: Populations"
                                          + " in %s adopting fashion %s"
                                          % (self.name, fashions[FSHN_TO_TRACK]),
-                                         data, period, anim=True,
+                                         data, period, anim=False,
                                          data_func=self.line_data)

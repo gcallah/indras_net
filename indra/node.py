@@ -39,7 +39,6 @@ def add_ent_prehension(prehender, universal, prehended):
     """
     Add a prehension between entities.
     """
-
     universals.add_prehension(prehender, universal, prehended)
 
 

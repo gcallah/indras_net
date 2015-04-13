@@ -27,7 +27,6 @@ else:
     pa.set("model", MODEL_NM)
     pa.set("num_R_agents", 1000)
     pa.set("num_B_agents", 800)
-    pa.set("num_G_agents", 800)
     pa.set("grid_width", 60)
     pa.set("grid_height", 60)
     pa.set("tolerance", .4)
@@ -50,13 +49,9 @@ for i in range(pa.get("num_R_agents")):
                   goal="A good neighborhood.",
                   tolerance=pa.get('tolerance')))
 
-for i in range(pa.get("num_G_agents")):
-    env.add_agent(sm.GreenAgent(name="Green agent" + str(i),
-                  goal="A good neighborhood.",
-                  tolerance=pa.get('tolerance')))
-
 # Logging is automatically set up for the modeler:
 logging.info("Starting program " + prog_file)
 
 # And now we set things running!
 env.run()
+env.record_results(results_file)
