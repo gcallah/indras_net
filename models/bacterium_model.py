@@ -1,37 +1,46 @@
-"""
-spatial_model.py
-You can clone this file and its companion spatial_run.py
-to easily get started on a new spatial model.
-It also is a handy tool to have around for testing
-new features added to the base system.
-"""
-import indra.spatial_agent as sa
-import indra.spatial_env as se
+import indra.grid_agent as ga
 
+X = 0
+Y = 1
 
-class TestSpatialAgent(sa.MobileAgent):
+class Bacterium(ga.GridAgent):
     """
-    An agent that just prints where it is when asked to act
+    An agent that randomly jumps to an empty cell every turn. does not yet seek
+    the foodsource
     """
 
     def act(self):
-        print(se.pos_msg(self, self.pos))
-        
-class Bacterium(sa.MobileAgent):
+        (x, y) = self.get_pos()
+        print("My name is " + self.name + " and I am a " + self.ntype +".")
+        print("My position is" + " x = " + str(x)+ "," + " y = " + str(y))
+        #print(self.name + " has neighbors: ")
+        for neighbor in self.env.neighbor_iter(x, y):
+            """(x1, y1) = neighbor.get_pos()
+            print("    %i, %i" % (x1, y1))"""
+
+    def postact(self):
+        self.env.move_to_empty(self)        
+
+class FoodSource(ga.GridAgent):
+    """
+    An agent that checks its neighbors every turn. If one of those neighbors is
+    a Bacterium, it will run away to a random location
+    """
 
     def act(self):
-        print(se.pos_msg(self, self.pos))
-
+        (x, y) = self.get_pos() #x and y
+        print("I am a " + self.ntype)
+        print("My position is x = " + str(x)+ ", y = " + str(y))
+        for neighbor in self.env.neighbor_iter(x, y):
+            if neighbor.ntype == "Bacterium":
+                print("Enemy near! Run away!")
+                self.env.move_to_empty(self)
+                (x, y) = self.get_pos()
+                print("My new position is x = " + str(x) + ", y = " + str(y))
+            else:
+                print("nothing here")
+                
 """
-FoodSource and Toxin will be SpatialAgents so that they don't move.
-we can make them move by changing them to MobileAgents
-"""
-class FoodSource(sa.SpatialAgent):
-
-    def act(self):
-        print(se.pos_msg(self, self.pos))
-
-class Toxin(sa.SpatialAgent):
-
-    def act(self):
-        print(se.pos_msg(self, self.pos))
+    def postact(self):
+        self.env.move_to_empty(self)
+"""        
