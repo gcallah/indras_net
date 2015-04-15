@@ -26,6 +26,43 @@ X = 0
 Y = 1
 
 
+def hierarchy_pos(graph, root, width=1., vert_gap=0.2, vert_loc=0,
+                  xcenter=0.5, pos=None, parent=None):
+        """
+        This is an attempt to get a tree graph from networkx.
+        If there is a cycle that is reachable from root, then this will
+        infinitely recurse.
+        graph: the graph
+        root: the root node of current branch
+        width: horizontal space allocated for this branch
+                - avoids overlap with other branches
+        vert_gap: gap between levels of hierarchy
+        vert_loc: vertical location of root
+        xcenter: horizontal location of root
+        pos: a dict saying where all nodes go if they have been assigned
+        parent: parent of this branch.
+        """
+        if pos is None:
+            pos = {root: (xcenter, vert_loc)}
+        else:
+            pos[root] = (xcenter, vert_loc)
+        neighbors = graph.neighbors(root)
+        if parent is not None:
+            neighbors.remove(parent)
+        n_len = len(neighbors)
+        dx = 0
+        if n_len != 0:
+            dx = width / n_len
+            nextx = xcenter - width / 2 + dx / 2
+            for neighbor in neighbors:
+                pos = hierarchy_pos(graph, neighbor, width=dx,
+                                    vert_gap=vert_gap,
+                                    vert_loc=vert_loc-vert_gap,
+                                    xcenter=nextx, pos=pos, parent=root)
+                nextx += dx
+        return pos
+
+
 def get_color(var, i):
     color = None
     if "color" in var:

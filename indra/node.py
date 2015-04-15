@@ -8,6 +8,7 @@ import logging
 import inspect
 import matplotlib.pyplot as plt
 import networkx as nx
+import indra.display_methods as disp
 
 UNIVERSAL = "universal"
 
@@ -57,7 +58,8 @@ class Node():
         """
         if cls.class_graph is not None:
             plt.title("Class Hierarchy")
-            nx.draw_networkx(cls.class_graph)
+            pos = disp.hierarchy_pos(cls.class_graph, Node.__name__)
+            nx.draw(cls.class_graph, pos=pos, with_labels=True)
             plt.show()
 
     @classmethod
