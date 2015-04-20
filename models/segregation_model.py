@@ -17,11 +17,12 @@ GREEN_AGENT = "GreenAgent"
 
 class SegregationAgent(ga.GridAgent):
     """
-    An agent that prints its neighbors when asked to act
+    An agent that moves location pending it's neighbors' types
     """
     def __init__(self, name, goal, tolerance):
         super().__init__(name, goal)
         self.tolerance = tolerance
+        self.red = 0
 
     def act(self):
         like_me = 0
@@ -34,8 +35,11 @@ class SegregationAgent(ga.GridAgent):
         if total_neighbors > 0:
             if like_me / total_neighbors < self.tolerance:
                 self.env.move_to_empty(self)
+                self.env.num_moves += 1
+                if self.get_type() == "RedAgent":
+                    self.red +=1
 
-
+               
 class BlueAgent(SegregationAgent):
     """
     Just a type with no code
@@ -68,3 +72,29 @@ class SegregationEnv(grid.GridEnv):
         self.agents.set_var_color(BLUE_AGENT, 'b')
         self.agents.set_var_color(RED_AGENT, 'r')
         # self.agents.set_var_color(GREEN_AGENT, 'g')
+        
+        self.num_moves = 0
+        self.move_hist = {}
+
+    def census(self, disp=True):                                                        
+        """                                                                             
+        Take a census of our pops.                                                      
+        """
+        for var in self.agents.varieties_iter():                                        
+            print(self.num_moves)
+            print(var)
+
+            if var == "RedAgent":
+                self.num_moves = self.agents.red
+            else:
+                self.num_moves = (self.num_moves - self.agents.red)                             
+                
+                    
+        self.num_moves = 0
+        self.agents.red = 0            
+               
+    def record_results(self, file_nm):
+        pass       
+             
+           # self.agents.append_pop_hist(var, self.avg_height[var])   
+        #self.user.tell("\nAverage Heights for Period " + str(self.period) + ": \n" + str(self.avg_height))
