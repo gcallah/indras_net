@@ -25,10 +25,10 @@ if read_props:
 else:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
-    pa.set("num_R_agents", 1000)
-    pa.set("num_B_agents", 1200)
-    pa.set("grid_width", 60)
-    pa.set("grid_height", 60)
+    pa.set("num_agents", 2400)
+    pa.set("num_agents", 2400)
+    pa.set("grid_width", 80)
+    pa.set("grid_height", 80)
     pa.set("tolerance", .4)
 
 # Now we create a minimal environment for our agents to act within:
@@ -39,12 +39,10 @@ env = sm.SegregationEnv("Test grid env",
 # Now we loop creating multiple agents with numbered names
 # based on the loop variable:
 
-for i in range(pa.get("num_B_agents")):
+for i in range(pa.get("num_agents")):
     env.add_agent(sm.BlueAgent(name="Blue agent" + str(i),
                   goal="A good neighborhood.",
                   tolerance=pa.get('tolerance')))
-
-for i in range(pa.get("num_R_agents")):
     env.add_agent(sm.RedAgent(name="Red agent" + str(i),
                   goal="A good neighborhood.",
                   tolerance=pa.get('tolerance')))
