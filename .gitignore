@@ -4,8 +4,12 @@
 *~
 *.pptx
 *.png
+*.pyc
 __pycache__
 __pycache__/*
 Graphics
 debugs
 backup
+indra_backup
+menger_fail
+*.swp
