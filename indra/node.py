@@ -6,7 +6,6 @@ net of objects
 
 import logging
 import inspect
-import matplotlib.pyplot as plt
 import networkx as nx
 import indra.display_methods as disp
 
@@ -57,10 +56,8 @@ class Node():
         This draws our class hierarchy.
         """
         if cls.class_graph is not None:
-            plt.title("Class Hierarchy")
-            pos = disp.hierarchy_pos(cls.class_graph, Node.__name__)
-            nx.draw(cls.class_graph, pos=pos, with_labels=True)
-            plt.show()
+            disp.draw_graph(cls.class_graph, "Class Hierarchy",
+                            hierarchy=True, root=Node.__name__)
 
     @classmethod
     def connect_to_class_tree(cls):
@@ -93,8 +90,7 @@ class Node():
         Every node should have some way to draw itself.
         """
         if self.graph is not None:
-            nx.draw_networkx(self.graph)
-            plt.show()
+            disp.draw_graph(self.graph, self.name)
 
     def display(self):
         """

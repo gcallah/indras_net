@@ -7,6 +7,7 @@ for using matplotlib.
 
 from math import ceil
 import numpy as np
+import networkx as nx
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import logging
@@ -61,6 +62,20 @@ def hierarchy_pos(graph, root, width=1., vert_gap=0.2, vert_loc=0,
                                     xcenter=nextx, pos=pos, parent=root)
                 nextx += dx
         return pos
+
+
+def draw_graph(graph, title, hierarchy=False, root=None):
+    """
+    Drawing networkx graphs.
+    graph is the graph to draw.
+    hierarchy is whether we should draw it as a tree.
+    """
+    pos = None
+    plt.title(title)
+    if hierarchy:
+        pos = hierarchy_pos(graph, root)
+    nx.draw(graph, pos=pos, with_labels=True)
+    plt.show()
 
 
 def get_color(var, i):
