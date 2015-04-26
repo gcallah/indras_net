@@ -1,7 +1,7 @@
 """
 node.py
 A very basic class implementing some thing at the bottom of our
-net of objects
+net of objects, such as being a node in a graph.
 """
 
 import logging
@@ -88,6 +88,8 @@ class Node():
     def draw(self):
         """
         Every node should have some way to draw itself.
+        The default is to draw a graph.
+        Other types of nodes will need different draw functions.
         """
         if self.graph is not None:
             disp.draw_graph(self.graph, self.name)

@@ -15,7 +15,8 @@ class GridAgent(sa.SpatialAgent):
     """
 
     def __init__(self, name, goal, max_move=0.0, max_detect=0.0):
-        super().__init__(name, goal, max_move=0.0, max_detect=0.0)
+        super().__init__(name, goal, max_move=max_move,
+                         max_detect=max_detect)
 
     def get_pos(self):
         """
