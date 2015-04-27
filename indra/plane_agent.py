@@ -12,11 +12,11 @@ MAX_EXCLUDE = 10
 class PlaneAgent(sa.SpatialAgent):
     """
     This class is the parent of all entities that are
-    located in space (and might or might not move in it)
+    located on a plane env.
     """
 
     def __init__(self, name, goal, max_move=0.0, max_detect=0.0):
-        super().__init__(name, goal)
+        super().__init__(name, goal, max_move, max_detect)
 
     def in_range(self, prey, dist):
         """

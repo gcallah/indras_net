@@ -26,7 +26,7 @@ class SegregationAgent(ga.GridAgent):
     def act(self):
         like_me = 0
         total_neighbors = 0
-        (x, y) = self.env.get_pos_components(self)
+        (x, y) = self.pos
         for neighbor in self.env.neighbor_iter(x, y):
             total_neighbors += 1
             if self.get_type() == neighbor.get_type():
@@ -35,13 +35,13 @@ class SegregationAgent(ga.GridAgent):
             if like_me / total_neighbors < self.tolerance:
                 self.env.move_to_empty(self)
                 self.env.num_moves += 1
-               
-               
+
+
 class BlueAgent(SegregationAgent):
     """
     Just a type with no code
     """
-    
+
 
 class RedAgent(SegregationAgent):
     """
@@ -53,7 +53,7 @@ class GreenAgent(SegregationAgent):
     """
     Just a type with no code
     """
-    
+
 
 class SegregationEnv(grid.GridEnv):
 
@@ -69,25 +69,22 @@ class SegregationEnv(grid.GridEnv):
         self.agents.set_var_color(BLUE_AGENT, 'b')
         self.agents.set_var_color(RED_AGENT, 'r')
         # self.agents.set_var_color(GREEN_AGENT, 'g')
-        
+
         self.num_moves = 0
         self.move_hist = []
 
-    def census(self, disp=True):                                                        
-        """                                                                             
-        Take a census of our pops.                                                      
-        """                                 
-         
+    def census(self, disp=True):
+        """
+        Take a census of number of moves.
+        """
+
         self.move_hist.append(self.num_moves)
-        #self.agents.append_pop_hist(var, self.move_hist[var])  
-        print(self.move_hist)    
-        self.num_moves = 0         
-               
+        self.user.tell("Moves per turn: ")
+        self.user.tell(self.move_hist)
+        self.num_moves = 0
+
     def record_results(self, file_nm):
         f = open(file_nm, 'w')
-        for self.num_moves in self.move_hist:
-            f.write(str(self.num_moves) + '\n')
-        f.close()    
-             
-           # self.agents.append_pop_hist(var, self.avg_height[var])   
-        #self.user.tell("\nAverage Heights for Period " + str(self.period) + ": \n" + str(self.avg_height))
+        for num_moves in self.move_hist:
+            f.write(str(num_moves) + '\n')
+        f.close()
