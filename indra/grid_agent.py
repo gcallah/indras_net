@@ -16,12 +16,14 @@ class GridAgent(sa.SpatialAgent):
 
     def __init__(self, name, goal, max_move=0.0, max_detect=0.0):
         super().__init__(name, goal, max_move=0.0, max_detect=0.0)
+        self.cell = None
 
     def get_pos(self):
         """
         Our pos is just x, y
         """
         return self.pos
+        # return self.cell.get_pos()
 
     def to_json(self):
         """

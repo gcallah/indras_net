@@ -24,6 +24,7 @@ MultiGridEnv: extension to Grid where each cell is a set of objects.
 import random
 import itertools
 import logging
+import indra.node as node
 import indra.spatial_env as se
 
 RANDOM = -1
@@ -45,6 +46,62 @@ def pos_msg(agent):
                + str(x) + ", " + str(y))
     else:
         return(agent.name + " is not located!")
+
+
+class Cell(node.Node):
+    """
+    Cells hold the grid contents.
+    They also have a record of where they are in the grid.
+    """
+    def __init__(self, coords, contents=None):
+        super().__init__(None)
+        self.coords = coords
+        self.contents = contents
+
+    def set_contents(self, contents):
+        """
+        Set the contents of this cell to contents
+        """
+        self.contents = contents
+
+    def get_contents(self):
+        """
+        Return contents.
+        """
+        return self.contents
+
+    def get_pos(self):
+        """
+        Return the coordinates of this cell.
+        """
+        return self.coords
+
+    def add_to_contents(self, new_item):
+        """
+        Add new_item to cell contents.
+        If contents already a list, append.
+        If not, make contents a list.
+        """
+        if self.contents is None:
+            self.contents = new_item
+        else:
+            if not isinstance(self.contents, list):
+                existing = self.contents
+                self.contents = []
+                self.contents.append(existing)
+            self.contents.append(new_item)
+
+    def remove_from_contents(self, item):
+        """
+        If contents are a list, remove item from it.
+        If an object, set contents to None.
+        If that is not our object, do nothing.
+        """
+        if isinstance(self.contents, list):
+            self.contents.remove(item)
+        else:
+            if item == self.contents:
+                self.contents = None
 
 
 class GridEnv(se.SpatialEnv):
