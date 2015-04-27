@@ -15,13 +15,9 @@ class GridAgent(sa.SpatialAgent):
     """
 
     def __init__(self, name, goal, max_move=0.0, max_detect=0.0):
-<<<<<<< HEAD
-        super().__init__(name, goal, max_move=0.0, max_detect=0.0)
-        self.cell = None
-=======
         super().__init__(name, goal, max_move=max_move,
                          max_detect=max_detect)
->>>>>>> f8a2a2b21ec6e39e2cd35af27b937fecebc245eb
+        self.cell = None
 
     def get_pos(self):
         """
@@ -33,7 +29,7 @@ class GridAgent(sa.SpatialAgent):
         """
         We're going to make a dictionary of the 'safe' parts of the object to
         output to a json file. (We can't output the env, for instance, since
-        IT contains a reference to each agent!
+        IT contains a reference to each agent!)
         """
         safe_fields = super().to_json()
         safe_fields["pos"] = self.pos
