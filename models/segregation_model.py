@@ -26,7 +26,7 @@ class SegregationAgent(ga.GridAgent):
     def act(self):
         like_me = 0
         total_neighbors = 0
-        (x, y) = self.pos
+        (x, y) = self.get_pos()
         for neighbor in self.env.neighbor_iter(x, y):
             total_neighbors += 1
             if self.get_type() == neighbor.get_type():

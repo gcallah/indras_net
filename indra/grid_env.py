@@ -33,21 +33,6 @@ X = 0
 Y = 1
 
 
-def pos_msg(agent):
-    """
-    A convenience function for displaying
-    an entity's position.
-    """
-    if agent.pos is not None:
-        x = agent.pos[0]
-        y = agent.pos[1]
-        return("Position for " +
-               agent.name + " is "
-               + str(x) + ", " + str(y))
-    else:
-        return(agent.name + " is not located!")
-
-
 class Cell(node.Node):
     """
     Cells hold the grid contents.
@@ -58,11 +43,8 @@ class Cell(node.Node):
         self.coords = coords
         self.contents = contents
 
-    def set_contents(self, contents):
-        """
-        Set the contents of this cell to contents
-        """
-        self.contents = contents
+    def is_empty(self):
+        return not self.contents
 
     def get_contents(self):
         """
@@ -76,12 +58,15 @@ class Cell(node.Node):
         """
         return self.coords
 
-    def add_to_contents(self, new_item):
+    def add_item(self, new_item):
         """
         Add new_item to cell contents.
         If contents already a list, append.
         If not, make contents a list.
+        Every cell item must have a cell
+        field to store its location.
         """
+        new_item.cell = self
         if self.contents is None:
             self.contents = new_item
         else:
@@ -91,7 +76,7 @@ class Cell(node.Node):
                 self.contents.append(existing)
             self.contents.append(new_item)
 
-    def remove_from_contents(self, item):
+    def remove_item(self, item):
         """
         If contents are a list, remove item from it.
         If an object, set contents to None.
@@ -121,43 +106,13 @@ class GridEnv(se.SpatialEnv):
 
         grid: Internal list-of-lists which holds
             the grid cells themselves.
-        default_val: Lambda function to populate
-            each grid cell with None.
 
     Methods:
         get_neighbors: Returns the objects surrounding a given cell.
-        get_neighborhood: Returns the cells surrounding a given cell.
+        get_neighborhood: Returns the coords surrounding a given cell.
         get_cell_list_contents: Returns the contents of a list of cells
             ((x,y) tuples)
     """
-
-    default_val = None
-
-    class CoordIter:
-        """
-        An iterator that returns the coordinates of a cell along with its
-        contents.
-        """
-
-        def __init__(self, grid):
-            self.grid = grid
-            self.x = 0
-            self.y = 0
-
-        def __iter__(self):
-            return self
-
-        def __next__(self):
-            while self.y < self.grid.height:
-                while self.x < self.grid.width:
-                    ret = [self.grid[self.y][self.x],
-                           self.x, self.y]
-                    self.x += 1
-                    return ret
-                self.x = 0
-                self.y += 1
-            else:
-                raise StopIteration()
 
     def __init__(self, name, height, width, torus=False,
                  model_nm=None, preact=False, postact=False):
@@ -177,8 +132,9 @@ class GridEnv(se.SpatialEnv):
         for y in range(self.height):
             row = []
             for x in range(self.width):
-                row.append(self.default_val)
-                self.empties.append((x, y))
+                cell = Cell((x, y))
+                row.append(cell)
+                self.empties.append(cell)
             self.grid.append(row)
 
     def __iter__(self):
@@ -188,12 +144,6 @@ class GridEnv(se.SpatialEnv):
 
     def __getitem__(self, index):
         return self.grid[index]
-
-    def coord_iter(self):
-        """
-        An iterator that returns coordinates as well as cell contents.
-        """
-        return GridEnv.CoordIter(self)
 
     def neighbor_iter(self, x, y, moore=True, torus=False):
         """
@@ -304,67 +254,64 @@ class GridEnv(se.SpatialEnv):
         """
         return len(self.empties) > 0
 
-    def swap_pos(self, a1, a2):
-        """
-        Swap two agents in the grid.
-        """
-        c1 = self.get_pos_components(a1)
-        c2 = self.get_pos_components(a2)
-        self._place_agent(c2, a1)
-        self._place_agent(c1, a2)
-
     def move_to_empty(self, agent):
         """
         Moves agent to an empty cell, vacating agent's old cell.
         """
-        coords = self.get_pos_components(agent)
-        new_coords = self.find_empty()
-        if new_coords is None:
+        empty_cell = self.find_empty()
+        if empty_cell is None:
             logging.ERROR("Agent could not move because no cells are empty")
         else:
-            self._place_agent(new_coords, agent)
-            self._make_empty(coords)
-
-    def _make_empty(self, coords):
-        self.empties.append(coords)
-        self.grid[coords[Y]][coords[X]] = None
+            self._move_item(agent, empty_cell)
 
     def find_empty(self):
         if self.exists_empty_cells():
-            coords = random.choice(self.empties)
-            return coords
+            cell = random.choice(self.empties)
+            return cell
         else:
             return None
 
-    def position_agent(self, agent, x=RANDOM, y=RANDOM):
+    def position_item(self, item, x=RANDOM, y=RANDOM):
         """
         Position an agent on the grid.
         This is used when first placing agents! Use 'move_to_empty()'
         when you want agents to jump to an empty cell.
-        Use 'swap_pos()' to swap agents positions.
         If x or y are positive, they are used, but if RANDOM,
         we get a random position.
         Ensure this random position is not occupied (in Grid).
         """
         if x == RANDOM or y == RANDOM:
-            coords = self.find_empty()
-            if coords is None:
-                logging.error("Grid full; %s not added." % (agent.name))
+            cell = self.find_empty()
+            if cell is None:
+                logging.error("Grid full; %s not added." % (item.name))
                 return
         else:
-            coords = (x, y)
-        self._place_agent(coords, agent)
+            cell = self._get_cell(x, y)
+        self._place_item(cell, item)
 
-    def _place_agent(self, coords, agent):
+    def _place_item(self, cell, item):
         """
-        A little function to make sure the grid's notion
-        of where the agent is and the agent's notion are
-        always in sync
+        Place an agent in the grid.
         """
-        self.grid[coords[Y]][coords[X]] = agent
-        agent.pos = [coords[X], coords[Y]]
-        if coords in self.empties:
-            self.empties.remove(coords)
+        cell.add_item(item)
+        if cell in self.empties:
+            self.empties.remove(cell)
+
+    def _get_contents(self, x, y):
+        """
+        Extract contents from cell at x, y
+        """
+        return self._get_cell(x, y).get_contents()
+
+    def _move_item(self, item, dest):
+        old_cell = item.cell
+        old_cell.remove_item(item)
+        self._check_empty(old_cell)
+        self._place_item(dest, item)
+
+    def _check_empty(self, cell):
+        if cell.is_empty():
+            self.empties.append(cell)
 
     def _add_members(self, target_list, x, y):
         """
@@ -372,17 +319,18 @@ class GridEnv(se.SpatialEnv):
             to the given list.
         Override for other grid types.
         """
-        if self.grid[y][x] is not None:
-            target_list.append(self.grid[y][x])
+        contents = self._get_contents(x, y)
+        if contents is not None:
+            target_list.append(contents)
+
+    def _get_cell(self, x, y):
+        return self.grid[y][x]
 
     def is_cell_empty(self, x, y):
         """
         Returns True if cell is empty, else False.
         """
-        return self.grid[y][x] is None
-
-    def get_pos_components(self, agent):
-        return agent.pos
+        return self._get_contents(x, y) is None
 
 
 class MultiGridEnv(GridEnv):
@@ -403,14 +351,10 @@ class MultiGridEnv(GridEnv):
 
         grid: Internal list-of-lists which holds
             the grid cells themselves.
-        default_val: Lambda function to populate
-            grid cells with an empty set.
 
     Methods:
         get_neighbors: Returns the objects surrounding a given cell.
     """
-
-    default_val = set()
 
     def _add_members(self, target_list, x, y):
         """

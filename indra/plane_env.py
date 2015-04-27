@@ -56,13 +56,13 @@ class PlaneEnv(se.SpatialEnv):
         Add a spatial agent to env
         """
         super().add_agent(agent)
-        self.position_agent(agent)
+        self.position_item(agent)
 
         v = agent.get_type()
         logging.debug("Adding " + agent.__str__()
                       + " of variety " + v)
 
-    def position_agent(self, agent):
+    def position_item(self, agent):
         x = random.uniform(0, self.width - 1)
         y = random.uniform(0, self.height - 1)
         agent.pos = complex(x, y)

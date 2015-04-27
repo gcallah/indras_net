@@ -21,9 +21,9 @@ if read_props:
 else:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
-    pa.set("num_agents", 16)
-    pa.set("grid_width", 5)
-    pa.set("grid_height", 5)
+    pa.set("num_agents", 4)
+    pa.set("grid_width", 3)
+    pa.set("grid_height", 3)
 
 # Now we create a minimal environment for our agents to act within:
 env = ge.GridEnv("Test grid env",
@@ -43,13 +43,11 @@ for i in range(pa.get("num_agents")):
 logging.info("Starting program " + prog_file)
 
 # let's test our iterator
-for cell in env.coord_iter():
-    print("Contents of cell x = "
-          + str(cell[1])
-          + " and y = "
-          + str(cell[2])
-          + " is "
-          + str(cell[0]))
+for cell in env:
+    (x, y) = cell.get_pos()
+    print("Contents of cell x = " + str(x)
+          + " and y = " + str(y)
+          + " is " + str(cell.get_contents()))
 
 # And now we set things running!
 env.run()

@@ -14,16 +14,25 @@ class GridAgent(sa.SpatialAgent):
     located in a grid space (and might or might not move in it)
     """
 
-    def __init__(self, name, goal, max_move=0.0, max_detect=0.0):
+    def __init__(self, name, goal, max_move=0.0, max_detect=0.0, cell=None):
         super().__init__(name, goal, max_move=max_move,
                          max_detect=max_detect)
-        self.cell = None
+        self.cell = cell
+
+    def set_cell(self, cell):
+        """
+        Sets where we are on grid.
+        """
+        self.cell = cell
+
+    def get_cell(self):
+        return self.cell
 
     def get_pos(self):
         """
         Our pos is just x, y
         """
-        return self.pos
+        return self.cell.get_pos()
 
     def to_json(self):
         """

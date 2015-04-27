@@ -21,9 +21,7 @@ class Tree(ga.GridAgent):
     A tree cell.
 
     Attributes:
-        x, y: Grid coordinates
         condition: Can be "Fine", "On Fire", or "Burned Out"
-        unique_id: (x,y) tuple.
 
     unique_id isn't strictly necessary here, but it's good
     practice to give one to each agent anyway.
@@ -31,8 +29,6 @@ class Tree(ga.GridAgent):
     def __init__(self, name):
         '''
         Create a new tree.
-        Args:
-            x, y: The tree's coordinates on the grid.
         '''
         super().__init__(name, "burn")
         self.ntype = HEALTHY
@@ -62,7 +58,6 @@ class Tree(ga.GridAgent):
         if self.is_burning():
             (x, y) = self.get_pos()
             for neighbor in self.env.neighbor_iter(x, y):
-                (x1, y1) = neighbor.get_pos()
                 if neighbor.is_healthy():
                     neighbor.next_state = ON_FIRE
             self.set_type(BURNED_OUT)

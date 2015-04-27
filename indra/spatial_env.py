@@ -3,6 +3,7 @@ spatial_env.py
 The base environment for envs that incorporate space.
 """
 
+from abc import abstractmethod
 import logging
 import indra.menu as menu
 import indra.env as env
@@ -46,13 +47,13 @@ class SpatialEnv(env.Environment):
         """
         super().add_agent(agent)
         if position:
-            self.position_agent(agent)
+            self.position_item(agent)
 
-        v = agent.get_type()
         logging.debug("Adding " + agent.__str__()
-                      + " of variety " + v)
+                      + " of variety " + agent.get_type())
 
-    def position_agent(self, agent):
+    @abstractmethod
+    def position_item(self, agent):
         """
         This must be implemented by descendents.
         """
