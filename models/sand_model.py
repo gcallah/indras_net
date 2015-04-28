@@ -19,15 +19,16 @@ class SandAgent(ga.GridAgent):
     An agent that collects sand particles until its stack collapses
     onto its neighbors.
     """
-    def __init__(self, name, goal, x, y):
+    def __init__(self, name, goal, cell):
         super().__init__(name, goal)
-        self.pos = (x, y)
+        self.cell = cell
         self.sand_amt = 0
         self.ntype = str(self.sand_amt)  # we get our color from our sand amount
 
     def act(self):
         """
-        Our main action goes here.
+        Our main action goes here, in this case,
+        tumbling sand onto our neighbors.
         """
         if self.sand_amt >= MAX_SAND:
             (x, y) = self.get_pos()
@@ -82,18 +83,17 @@ class SandEnv(ge.GridEnv):
         center_y = floor(self.height / 2)
         print("center = %i, %i" % (center_x, center_y))
 
-        for (cell, x, y) in self.coord_iter():
-            agent = SandAgent("Grainy", "Hold sand", x, y)
+        for cell in self:
+            (x, y) = cell.get_pos()
+            agent = SandAgent("Grainy", "Hold sand", cell)
             self.add_agent(agent, position=False)
-            self.position_agent(agent, x, y)
             if x == center_x and y == center_y:
-                # print("Adding center agent at %i, %i" % (x, y))
                 self.center_agent = agent
                 # (x1, y1) = self.center_agent.get_pos()
                 # print("Center agent is at: %i, %i" % (x1, y1))
 
     def step(self):
         super().step()
-        (x, y) = self.center_agent.get_pos()
         self.center_agent.add_grains(1)
+        # (x, y) = self.center_agent.get_pos()
         # print("Center agent is at: %i, %i" % (x, y))

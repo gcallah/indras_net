@@ -145,6 +145,14 @@ class GridEnv(se.SpatialEnv):
     def __getitem__(self, index):
         return self.grid[index]
 
+    def add_agent(self, agent, position=True):
+        """
+        Add an agent and link to cell if present in agent.
+        """
+        super().add_agent(agent, position)
+        if agent.cell is not None:
+            agent.cell.add_item(agent)
+
     def neighbor_iter(self, x, y, moore=True, torus=False):
         """
         Iterate over our neighbors.
@@ -302,6 +310,13 @@ class GridEnv(se.SpatialEnv):
         Extract contents from cell at x, y
         """
         return self._get_cell(x, y).get_contents()
+
+    def move(self, item, x, y):
+        """
+        Move item from its old cell to cell at x, y.
+        """
+        dest = self._get_cell(x, y)
+        self._move_item(item, dest)
 
     def _move_item(self, item, dest):
         old_cell = item.cell

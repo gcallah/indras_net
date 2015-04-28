@@ -26,12 +26,12 @@ class ObstacleAgent(ga.GridAgent):
                          max_detect=max_detect)
 
     def act(self):
-        (x, y) = self.pos
+        (x, y) = self.get_pos()
         w = self.env.get_width()
         h = self.env.get_height()
         print("In oa act(); max_move = %i" % self.max_move)
-        new_x = get_rand_coord(x, self.max_move, 0, w)
-        new_y = get_rand_coord(y, self.max_move, 0, h)
+        new_x = get_rand_coord(x, self.max_move, 0, w - 1)
+        new_y = get_rand_coord(y, self.max_move, 0, h - 1)
         print("In oa act(); x = %i, y = %i, new_x = %i, new_y = %i"
               % (x, y, new_x, new_y))
-        self.pos = (new_x, new_y)
+        self.env.move(self, new_x, new_y)
