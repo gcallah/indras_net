@@ -67,14 +67,16 @@ class Cell(node.Node):
         field to store its location.
         """
         new_item.cell = self
-        if self.contents is None:
-            self.contents = new_item
-        else:
-            if not isinstance(self.contents, list):
-                existing = self.contents
-                self.contents = []
-                self.contents.append(existing)
-            self.contents.append(new_item)
+        self.contents = new_item
+        # for right now, no lists in cells!
+        # if self.contents is None:
+        #     self.contents = new_item
+        # else:
+        #     if not isinstance(self.contents, list):
+        #         existing = self.contents
+        #         self.contents = []
+        #         self.contents.append(existing)
+        #     self.contents.append(new_item)
 
     def remove_item(self, item):
         """
@@ -110,7 +112,7 @@ class GridEnv(se.SpatialEnv):
     Methods:
         get_neighbors: Returns the objects surrounding a given cell.
         get_neighborhood: Returns the coords surrounding a given cell.
-        get_cell_list_contents: Returns the contents of a list of cells
+        get_cell_items: Returns the contents of a list of cells
             ((x,y) tuples)
     """
 
@@ -241,9 +243,9 @@ class GridEnv(se.SpatialEnv):
         neighborhood = self.get_neighborhood(x, y, moore,
                                              include_center,
                                              radius)
-        return self.get_cell_list_contents(neighborhood)
+        return self.get_cell_items(neighborhood)
 
-    def get_cell_list_contents(self, cell_list):
+    def get_cell_items(self, cell_list):
         """
         Args:
             cell_list: Array-like of (x, y) tuples
@@ -251,10 +253,10 @@ class GridEnv(se.SpatialEnv):
         Returns:
             A list of the contents of the cells identified in cell_list
         """
-        contents = []
+        items = []
         for x, y in cell_list:
-            self._add_members(contents, x, y)
-        return contents
+            self._add_members(items, x, y)
+        return items
 
     def exists_empty_cells(self):
         """
@@ -334,9 +336,9 @@ class GridEnv(se.SpatialEnv):
             to the given list.
         Override for other grid types.
         """
-        contents = self._get_contents(x, y)
-        if contents is not None:
-            target_list.append(contents)
+        items = self._get_contents(x, y)
+        if items is not None:
+            target_list.append(items)
 
     def _get_cell(self, x, y):
         return self.grid[y][x]
