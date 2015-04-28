@@ -19,7 +19,7 @@ if read_props:
 else:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
-    pa.set("num_agents", 10)
+    pa.set("num_agents", 15)
 
 env = cm.CoopEnv(model_nm=MODEL_NM)
 

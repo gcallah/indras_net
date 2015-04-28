@@ -9,6 +9,7 @@ import logging
 import indra.entity as ent
 import indra.env as env
 import indra.display_methods as dsp
+import random
 
 ''' These are our possible goals'''
 UNKNOWN = 'unknown'
@@ -30,8 +31,11 @@ class CoopAgent(ent.Agent):
         self.sitting = False
         if self.coupons < 5.5:
             self.goal = BABYSIT
-        else:
-            self.goal = GO_OUT
+        elif self.coupons > 5.5:
+            if random.randint(0,100) > 50 :
+                self.goal = GO_OUT
+            else:
+                self.goal = BABYSIT
         print(self.name + ' acting with coupons = '
               + str(self.coupons) + ' , goal = ' + self.goal)
 
@@ -60,14 +64,13 @@ class CoopEnv(env.Environment):
                 continue
             self.rd_exchanges = exchange
         self.exchange_hist.append(self.rd_exchanges)
-        print('Coupon exchanges this round: ' + str(self.rd_exchanges))
+        print('\nCoupon exchanges in round ' + str(self.period) + ': ' + str(self.rd_exchanges) + '\n')
 
     def assignSitter(self):
         for agent in reversed(self.agents):
             if agent.goal == BABYSIT:
                 if agent.sitting is False:
                     agent.sitting = True
-                    print(agent.name + ' is now sitting')
                     return agent
                 else:
                     # print(agent.name + ' already sitting')
