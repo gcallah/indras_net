@@ -47,15 +47,6 @@ env.add_agent(bm.FoodSource(name="Runaway Food", goal="not get eaten"))
 # Logging is automatically set up for the modeler:
 logging.info("Starting program " + prog_file)
 
-# let's test our iterator
-for cell in env.coord_iter():
-    print("Contents of cell x = "
-          + str(cell[1])
-          + " and y = "
-          + str(cell[2])
-          + " is "
-          + str(cell[0]))
-
 # And now we set things running!
 env.run()
 env.record_results(results_file)
