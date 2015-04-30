@@ -22,8 +22,8 @@ else:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
     pa.set("num_agents", 2)
-    pa.set("grid_width", 5)
-    pa.set("grid_height", 5)
+    pa.set("grid_width", 8)
+    pa.set("grid_height", 8)
 
 # Now we create a minimal environment for our agents to act within:
 env = ge.GridEnv("Obstacle env",

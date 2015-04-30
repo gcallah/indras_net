@@ -6,14 +6,24 @@ Testing obstacle detection.
 import random
 import indra.grid_agent as ga
 
-X = 0
-Y = 1
+LEFT = (-1, 0)
+UP = (0, 1)
+RIGHT = (1, 0)
+DOWN = (0, -1)
+MOVES = [LEFT, UP, RIGHT, DOWN]
 
 
-def get_rand_coord(coord, dist, low_lim, high_lim):
-    new_coord = random.randint(max(coord - dist, low_lim),
-                               min(coord + dist, high_lim))
-    return new_coord
+def get_rand_vector_mag(dist):
+    vector_mag = random.randint(0, dist)
+    return vector_mag
+
+
+def get_rand_direction():
+    return random.choice(MOVES)
+
+
+def new_coord(old, mag, mult, bound):
+    return max(0, min(old + mag * mult, bound))
 
 
 class ObstacleAgent(ga.GridAgent):
@@ -24,14 +34,21 @@ class ObstacleAgent(ga.GridAgent):
     def __init__(self, name, goal, max_move=2, max_detect=2):
         super().__init__(name, goal, max_move=max_move,
                          max_detect=max_detect)
+        self.wbound = None
+        self.hbound = None
+
+    def add_env(self, env):
+        super().add_env(env)
+        self.wbound = self.env.get_width() - 1
+        self.hbound = self.env.get_height() - 1
 
     def act(self):
         (x, y) = self.get_pos()
-        w = self.env.get_width()
-        h = self.env.get_height()
         print("In oa act(); max_move = %i" % self.max_move)
-        new_x = get_rand_coord(x, self.max_move, 0, w - 1)
-        new_y = get_rand_coord(y, self.max_move, 0, h - 1)
+        vector_mag = get_rand_vector_mag(self.max_move)
+        (x_mult, y_mult) = get_rand_direction()
+        new_x = new_coord(x, vector_mag, x_mult, self.wbound)
+        new_y = new_coord(y, vector_mag, y_mult, self.hbound)
         print("In oa act(); x = %i, y = %i, new_x = %i, new_y = %i"
               % (x, y, new_x, new_y))
         self.env.move(self, new_x, new_y)

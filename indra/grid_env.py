@@ -40,17 +40,28 @@ class Cell(node.Node):
     """
     def __init__(self, coords, contents=None):
         super().__init__(None)
+        self.__contents = None
         self.coords = coords
         self.contents = contents
 
-    def is_empty(self):
-        return not self.contents
+    @property
+    def contents(self):
+        return self.__contents
 
-    def get_contents(self):
+    @contents.setter
+    def contents(self, item):
+        old_item = self.__contents
+        self.__contents = item
+        if item is not None:
+            item.cell = self
+        if old_item is not None:
+            old_item.cell = None
+
+    def is_empty(self):
         """
-        Return contents.
+        Return True if cell empty, else False.
         """
-        return self.contents
+        return not self.contents
 
     def get_pos(self):
         """
@@ -66,7 +77,6 @@ class Cell(node.Node):
         Every cell item must have a cell
         field to store its location.
         """
-        new_item.cell = self
         self.contents = new_item
         # for right now, no lists in cells!
         # if self.contents is None:
@@ -153,7 +163,8 @@ class GridEnv(se.SpatialEnv):
         """
         super().add_agent(agent, position)
         if agent.cell is not None:
-            agent.cell.add_item(agent)
+            if agent.cell.contents is not agent:
+                agent.cell.add_item(agent)
 
     def neighbor_iter(self, x, y, moore=True, torus=False):
         """
@@ -311,7 +322,7 @@ class GridEnv(se.SpatialEnv):
         """
         Extract contents from cell at x, y
         """
-        return self._get_cell(x, y).get_contents()
+        return self._get_cell(x, y).contents
 
     def move(self, item, x, y):
         """
