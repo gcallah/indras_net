@@ -6,11 +6,15 @@ Testing obstacle detection.
 import random
 import indra.grid_agent as ga
 
-LEFT = (-1, 0)
-UP = (0, 1)
-RIGHT = (1, 0)
-DOWN = (0, -1)
-MOVES = [LEFT, UP, RIGHT, DOWN]
+WEST = (-1, 0)
+NW = (-1, 1)
+NORTH = (0, 1)
+NE = (1, 1)
+EAST = (1, 0)
+SE = (1, -1)
+SOUTH = (0, -1)
+SW = (-1, -1)
+MOVES = [WEST, NW, NORTH, NE, EAST, SE, SOUTH, SW]
 
 
 def get_rand_vector_mag(dist):
@@ -58,10 +62,19 @@ class ObstacleAgent(ga.GridAgent):
         (x_mult, y_mult) = get_rand_direction()
         new_x = new_coord(x, vector_mag, x_mult, self.wbound)
         new_y = new_coord(y, vector_mag, y_mult, self.hbound)
-        (new_x, new_y) = self._premove(x, y, new_x, new_y)
+        if (new_x != x) or (new_y != y):  # we are moving
+            (new_x, new_y) = self._premove(x, y, new_x, new_y)
         print("In oa act(); x = %i, y = %i, new_x = %i, new_y = %i"
               % (x, y, new_x, new_y))
         self.env.move(self, new_x, new_y)
+
+    def _getdir(self, diff):
+        if diff > 0:
+            return 1
+        elif diff == 0:
+            return 0
+        else:
+            return -1
 
     def _premove(self, x, y, new_x, new_y):
         """
@@ -70,33 +83,22 @@ class ObstacleAgent(ga.GridAgent):
         """
         x_diff = new_x - x
         y_diff = new_y - y
-        # we have four cases: no move, movement on x, on y, or on diagonal
-        if y_diff == 0 and x_diff == 0:
-            return (new_x, new_y)
-        elif y_diff == 0:
-            # we walk the x-axis looking for an obstacle
-            x_dir = 1
-            if x_diff < 0:
-                x_dir = -1
-            last_x = x
-            for potential_x in range(x + x_dir, new_x + x_dir, x_dir):
-                if not self.env.is_cell_empty(potential_x, y):
-                    return (last_x, y)
-                last_x = potential_x
-            return (new_x, new_y)
-        elif x_diff == 0:
-            # we walk the y-axis looking for an obstacle
-            y_dir = 1
-            if y_diff < 0:
-                y_dir = -1
-            last_y = y
-            for potential_y in range(y + y_dir, new_y + y_dir, y_dir):
-                if not self.env.is_cell_empty(x, potential_y):
-                    return (x, last_y)
-                last_y = potential_y
-            return (new_x, new_y)
-        else:
-            # we walk a diagonal looking for an obstacle
-            while x_diff != 0 and y_diff != 0:
-                pass
+        x_dir = self._getdir(x_diff)
+        y_dir = self._getdir(y_diff)
+        last_x = x
+        last_y = y
+        pot_x = x + x_dir
+        pot_y = y + y_dir
+        while x_diff != 0 and y_diff != 0:
+            if not self.env.is_cell_empty(pot_x, pot_y):
+                return (last_x, last_y)
+            if(x_diff > 0):
+                x_diff -= x_dir
+            if(y_diff > 0):
+                y_diff -= y_dir
+            last_x = pot_x
+            last_y = pot_y
+            pot_x += x_dir
+            pot_y += y_dir
+
         return (new_x, new_y)
