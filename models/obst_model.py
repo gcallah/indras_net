@@ -14,30 +14,54 @@ EAST = (1, 0)
 SE = (1, -1)
 SOUTH = (0, -1)
 SW = (-1, -1)
-MOVES = [WEST, NW, NORTH, NE, EAST, SE, SOUTH, SW]
+DIRECTIONS = [WEST, NW, NORTH, NE, EAST, SE, SOUTH, SW]
 
 
 def get_rand_vector_mag(dist):
-    vector_mag = random.randint(0, dist)
+    vector_mag = random.randint(1, dist)
     return vector_mag
 
 
 def get_rand_direction():
-    return random.choice(MOVES)
+    return random.choice(DIRECTIONS)
 
 
-def new_coord(old, mag, mult, bound):
-    return max(0, min(old + mag * mult, bound))
+def get_steps(x, y, vector_mag, x_step, y_step):
+    steps = []
+    print("vector_mag = %i" % (vector_mag))
+    for i in range(0, vector_mag):
+        x += x_step
+        y += y_step
+        steps.append((x, y))
+    print(str(steps))
+    return steps
+
+
+class Obstacle(ga.GridAgent):
+    """
+    An obstacle.
+    """
+
+    def __init__(self, name, goal="Be in the way."):
+        super().__init__(name, goal, max_move=0, max_detect=0)
+
+    def act(self):
+        pass
 
 
 class ObstacleAgent(ga.GridAgent):
     """
     An agent that avoids obstacles in its env.
+    Properties:
+        max_move: the furthest agent can move in one turn
+        tolerance: how close we feel OK getting near an obstacle
     """
 
-    def __init__(self, name, goal, max_move=2, max_detect=2):
+    def __init__(self, name, goal, max_move=2, max_detect=2,
+                 tolerance=1):
         super().__init__(name, goal, max_move=max_move,
                          max_detect=max_detect)
+        self.tolerance = tolerance
         self.wbound = None
         self.hbound = None
 
@@ -54,51 +78,30 @@ class ObstacleAgent(ga.GridAgent):
 
     def act(self):
         """
-        Our act is to move to a random cell.
+        Our act is to move to a random cell,
+        on a straight line or a diagonal.
         """
         (x, y) = self.get_pos()
         print("In oa act(); max_move = %i" % self.max_move)
         vector_mag = get_rand_vector_mag(self.max_move)
-        (x_mult, y_mult) = get_rand_direction()
-        new_x = new_coord(x, vector_mag, x_mult, self.wbound)
-        new_y = new_coord(y, vector_mag, y_mult, self.hbound)
-        if (new_x != x) or (new_y != y):  # we are moving
-            (new_x, new_y) = self._premove(x, y, new_x, new_y)
+        (x_step, y_step) = get_rand_direction()
+        steps = get_steps(x, y, vector_mag, x_step, y_step)
+        (new_x, new_y) = self._check_for_obst(steps, x, y)
         print("In oa act(); x = %i, y = %i, new_x = %i, new_y = %i"
               % (x, y, new_x, new_y))
         self.env.move(self, new_x, new_y)
 
-    def _getdir(self, diff):
-        if diff > 0:
-            return 1
-        elif diff == 0:
-            return 0
-        else:
-            return -1
-
-    def _premove(self, x, y, new_x, new_y):
+    def _check_for_obst(self, steps, clear_x, clear_y):
         """
-        Look for obstacles in the path to new_x, new_y,
+        Look for obstacles in the path 'steps'
         and stop short if they are there.
+        clear_x and clear_y start out as the agent's current pos,
+        which must, of course, be clear for this agent to occupy!
         """
-        x_diff = new_x - x
-        y_diff = new_y - y
-        x_dir = self._getdir(x_diff)
-        y_dir = self._getdir(y_diff)
-        last_x = x
-        last_y = y
-        pot_x = x + x_dir
-        pot_y = y + y_dir
-        while x_diff != 0 and y_diff != 0:
-            if not self.env.is_cell_empty(pot_x, pot_y):
-                return (last_x, last_y)
-            if(x_diff > 0):
-                x_diff -= x_dir
-            if(y_diff > 0):
-                y_diff -= y_dir
-            last_x = pot_x
-            last_y = pot_y
-            pot_x += x_dir
-            pot_y += y_dir
-
-        return (new_x, new_y)
+        for (x, y) in steps:
+            if not self.env.is_cell_empty(x, y):
+                return (clear_x, clear_y)
+            else:
+                clear_x = x
+                clear_y = y
+        return (clear_x, clear_y)

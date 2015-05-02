@@ -21,7 +21,8 @@ if read_props:
 else:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
-    pa.set("num_agents", 2)
+    pa.set("num_moving_agents", 2)
+    pa.set("num_obstacles", 4)
     pa.set("grid_width", 8)
     pa.set("grid_height", 8)
 
@@ -35,9 +36,11 @@ env = ge.GridEnv("Obstacle env",
 
 # Now we loop creating multiple agents with numbered names
 # based on the loop variable:
-for i in range(pa.get("num_agents")):
+for i in range(pa.get("num_moving_agents")):
     env.add_agent(om.ObstacleAgent(name="agent" + str(i),
                   goal="Avoiding obstacles!", max_move=4))
+for i in range(pa.get("num_obstacles")):
+    env.add_agent(om.Obstacle(name="obstacle" + str(i)))
 
 # Logging is automatically set up for the modeler:
 logging.info("Starting program " + prog_file)

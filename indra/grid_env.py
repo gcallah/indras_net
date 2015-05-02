@@ -72,33 +72,18 @@ class Cell(node.Node):
     def add_item(self, new_item):
         """
         Add new_item to cell contents.
-        If contents already a list, append.
-        If not, make contents a list.
         Every cell item must have a cell
         field to store its location.
         """
         self.contents = new_item
-        # for right now, no lists in cells!
-        # if self.contents is None:
-        #     self.contents = new_item
-        # else:
-        #     if not isinstance(self.contents, list):
-        #         existing = self.contents
-        #         self.contents = []
-        #         self.contents.append(existing)
-        #     self.contents.append(new_item)
 
     def remove_item(self, item):
         """
-        If contents are a list, remove item from it.
-        If an object, set contents to None.
+        If item is our object, set contents to None.
         If that is not our object, do nothing.
         """
-        if isinstance(self.contents, list):
-            self.contents.remove(item)
-        else:
-            if item == self.contents:
-                self.contents = None
+        if item == self.contents:
+            self.contents = None
 
 
 class GridEnv(se.SpatialEnv):
@@ -357,8 +342,13 @@ class GridEnv(se.SpatialEnv):
     def is_cell_empty(self, x, y):
         """
         Returns True if cell is empty, else False.
+        A non-existent cell is NOT empty, i.e., not free
+        to move to!
         """
-        return self._get_contents(x, y) is None
+        if self.out_of_bounds(x, y):
+            return False
+        else:
+            return self._get_contents(x, y) is None
 
 
 class MultiGridEnv(GridEnv):
