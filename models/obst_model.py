@@ -3,6 +3,7 @@ obst_model.py
 Testing obstacle detection.
 """
 # import logging
+from collections import deque
 import random
 import indra.grid_agent as ga
 
@@ -18,7 +19,7 @@ DIRECTIONS = [WEST, NW, NORTH, NE, EAST, SE, SOUTH, SW]
 
 
 def get_rand_vector_mag(dist):
-    vector_mag = random.randint(1, dist)
+    vector_mag = 2  # random.randint(1, dist)
     return vector_mag
 
 
@@ -26,10 +27,10 @@ def get_rand_direction():
     return random.choice(DIRECTIONS)
 
 
-def get_steps(x, y, vector_mag, x_step, y_step):
+def get_steps(x, y, num_steps, x_step, y_step):
     steps = []
-    print("vector_mag = %i" % (vector_mag))
-    for i in range(0, vector_mag):
+    print("num_steps = %i" % (num_steps))
+    for i in range(0, num_steps):
         x += x_step
         y += y_step
         steps.append((x, y))
@@ -84,24 +85,32 @@ class ObstacleAgent(ga.GridAgent):
         (x, y) = self.get_pos()
         print("In oa act(); max_move = %i" % self.max_move)
         vector_mag = get_rand_vector_mag(self.max_move)
+        print("vector_mag = %i" % (vector_mag))
         (x_step, y_step) = get_rand_direction()
-        steps = get_steps(x, y, vector_mag, x_step, y_step)
-        (new_x, new_y) = self._check_for_obst(steps, x, y)
+        steps = get_steps(x, y, vector_mag + (self.tolerance - 1),
+                          x_step, y_step)
+        (new_x, new_y) = self._check_for_obst(steps, vector_mag, x, y)
         print("In oa act(); x = %i, y = %i, new_x = %i, new_y = %i"
               % (x, y, new_x, new_y))
         self.env.move(self, new_x, new_y)
 
-    def _check_for_obst(self, steps, clear_x, clear_y):
+    def _check_for_obst(self, steps, vector_mag, clear_x, clear_y):
         """
         Look for obstacles in the path 'steps'
         and stop short if they are there.
         clear_x and clear_y start out as the agent's current pos,
         which must, of course, be clear for this agent to occupy!
+        If there happens to be an obstacle less than tolerance - 1
+        from the agent's initial square, well, we just stay put.
         """
+        lag = self.tolerance - 1
+        lookahead = deque(maxlen=lag + 1)
         for (x, y) in steps:
+            lookahead.append((x, y))
             if not self.env.is_cell_empty(x, y):
                 return (clear_x, clear_y)
+            elif lag > 0:
+                lag -= 1
             else:
-                clear_x = x
-                clear_y = y
+                (clear_x, clear_y) = lookahead.popleft()
         return (clear_x, clear_y)

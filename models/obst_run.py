@@ -23,8 +23,8 @@ else:
     pa.set("model", MODEL_NM)
     pa.set("num_moving_agents", 2)
     pa.set("num_obstacles", 4)
-    pa.set("grid_width", 8)
-    pa.set("grid_height", 8)
+    pa.set("grid_width", 10)
+    pa.set("grid_height", 10)
 
 # Now we create a minimal environment for our agents to act within:
 env = ge.GridEnv("Obstacle env",
@@ -38,7 +38,8 @@ env = ge.GridEnv("Obstacle env",
 # based on the loop variable:
 for i in range(pa.get("num_moving_agents")):
     env.add_agent(om.ObstacleAgent(name="agent" + str(i),
-                  goal="Avoiding obstacles!", max_move=4))
+                  goal="Avoiding obstacles!", max_move=4,
+                  tolerance=2))
 for i in range(pa.get("num_obstacles")):
     env.add_agent(om.Obstacle(name="obstacle" + str(i)))
 
