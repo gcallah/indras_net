@@ -19,7 +19,7 @@ DIRECTIONS = [WEST, NW, NORTH, NE, EAST, SE, SOUTH, SW]
 
 
 def get_rand_vector_mag(dist):
-    vector_mag = 2  # random.randint(1, dist)
+    vector_mag = random.randint(1, dist)
     return vector_mag
 
 
@@ -74,8 +74,8 @@ class ObstacleAgent(ga.GridAgent):
         this code must change!
         """
         super().add_env(env)
-        self.wbound = self.env.get_width() - 1
-        self.hbound = self.env.get_height() - 1
+        self.wbound = self.env.width - 1
+        self.hbound = self.env.height - 1
 
     def act(self):
         """

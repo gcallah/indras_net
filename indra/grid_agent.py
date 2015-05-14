@@ -17,16 +17,18 @@ class GridAgent(sa.SpatialAgent):
     def __init__(self, name, goal, max_move=0.0, max_detect=0.0, cell=None):
         super().__init__(name, goal, max_move=max_move,
                          max_detect=max_detect)
-        self.cell = cell
+        self.__cell = cell
 
-    def set_cell(self, cell):
+    @property
+    def cell(self):
+        return self.__cell
+
+    @cell.setter
+    def cell(self, cell):
         """
         Sets where we are on grid.
         """
-        self.cell = cell
-
-    def get_cell(self):
-        return self.cell
+        self.__cell = cell
 
     def get_pos(self):
         """

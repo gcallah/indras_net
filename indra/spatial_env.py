@@ -35,12 +35,6 @@ class SpatialEnv(env.Environment):
                                      menu.MenuLeaf("(s)catter plot",
                                                    self.plot))
 
-    def get_width(self):
-        return self.width
-
-    def get_height(self):
-        return self.height
-
     def add_agent(self, agent, position=True):
         """
         Add a spatial agent to env
