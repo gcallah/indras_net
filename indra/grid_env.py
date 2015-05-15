@@ -88,11 +88,8 @@ class Cell(node.Node):
 
 class GridEnv(se.SpatialEnv):
     """
-    Base class for a square grid.
+    Base class for a rectangular grid.
 
-    Grid cells are indexed by [y][x],
-    where [0][0] is assumed to be the top-left
-    and [height-1][width-1] is the bottom-right.
     If a grid is toroidal, the top
     and bottom, and left and right, edges wrap to each other
 
@@ -318,8 +315,9 @@ class GridEnv(se.SpatialEnv):
 
     def _move_item(self, item, dest):
         old_cell = item.cell
-        old_cell.remove_item(item)
-        self._check_empty(old_cell)
+        if old_cell is not None:
+            old_cell.remove_item(item)
+            self._check_empty(old_cell)
         self._place_item(dest, item)
 
     def _check_empty(self, cell):
