@@ -63,7 +63,6 @@ class Cell(node.Node):
         """
         return not self.contents
 
-    def get_pos(self):
         """
         Return the coordinates of this cell.
         """

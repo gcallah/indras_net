@@ -108,5 +108,3 @@ class PlaneEnv(se.SpatialEnv):
         pos = complex(x, y)
         logging.debug(pos_msg(agent, pos))
         return pos
-
-        return agent.get_pos()

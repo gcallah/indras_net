@@ -1,6 +1,6 @@
 """
 grid_agent.py
-Overrides get_pos for SpatialAgent.
+Overrides pos for SpatialAgent.
 Maybe other things for grid as well.
 """
 
@@ -30,11 +30,12 @@ class GridAgent(sa.SpatialAgent):
         """
         self.__cell = cell
 
-    def get_pos(self):
-        """
-        Our pos is just x, y
-        """
-        return self.cell.get_pos()
+    @property
+    def pos(self):
+        if self.cell:
+            return self.cell.coords
+        else:
+            return None
 
     def to_json(self):
         """

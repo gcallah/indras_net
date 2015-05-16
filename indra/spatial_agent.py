@@ -20,10 +20,18 @@ class SpatialAgent(ent.Agent):
         super().__init__(name, goal)
         self.max_move = max_move
         self.max_detect = max_detect
-        self.pos = None
+        self.__pos = None
         self.focus = None
         self.wandering = False
         self.exclude = deque(maxlen=MAX_EXCLUDE)
+
+    @property
+    def pos(self):
+        return self.__pos
+
+    @pos.setter
+    def pos(self, pos):
+        self.__pos = pos
 
     def in_detect_range(self, prehended):
         """
@@ -44,7 +52,6 @@ class SpatialAgent(ent.Agent):
         """
         pass
 
-    def get_pos(self):
         """
         To be implemented in descendents.
         """

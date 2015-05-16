@@ -92,7 +92,6 @@ class SpatialEnv(env.Environment):
         """
         pass
 
-    def get_pos_components(self, agent):
         return agent.get_pos()
 
     def plot(self):
@@ -118,7 +117,7 @@ class SpatialEnv(env.Environment):
             data[var]["color"] = self.agents.get_var_color(var)
             for agent in self.agents.variety_iter(var):
                 if agent.pos is not None:
-                    (x, y) = self.get_pos_components(agent)
+                    (x, y) = agent.pos
                     data[var][X].append(x)
                     data[var][Y].append(y)
         return data

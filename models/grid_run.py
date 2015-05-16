@@ -44,7 +44,7 @@ logging.info("Starting program " + prog_file)
 
 # let's test our iterator
 for cell in env:
-    (x, y) = cell.get_pos()
+    (x, y) = cell.pos
     print("Contents of cell x = " + str(x)
           + " and y = " + str(y)
           + " is " + str(cell.get_contents()))

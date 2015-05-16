@@ -18,6 +18,10 @@ class PlaneAgent(sa.SpatialAgent):
     def __init__(self, name, goal, max_move=0.0, max_detect=0.0):
         super().__init__(name, goal, max_move, max_detect)
 
+    @property
+    def pos(self):
+        return (self.__pos.real, self.__pos.imag)
+
     def in_range(self, prey, dist):
         """
         Is one agent in range of another in some sense?
@@ -36,7 +40,6 @@ class PlaneAgent(sa.SpatialAgent):
         """
         pass
 
-    def get_pos(self):
         return (self.pos.real, self.pos.imag)
 
 

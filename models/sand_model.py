@@ -31,7 +31,7 @@ class SandAgent(ga.GridAgent):
         tumbling sand onto our neighbors.
         """
         if self.sand_amt >= MAX_SAND:
-            (x, y) = self.get_pos()
+            (x, y) = self.pos
             i = 0
             for neighbor in self.env.neighbor_iter(x, y, moore=False):
                 i += 1
@@ -84,16 +84,16 @@ class SandEnv(ge.GridEnv):
         print("center = %i, %i" % (center_x, center_y))
 
         for cell in self:
-            (x, y) = cell.get_pos()
+            (x, y) = cell.coords
             agent = SandAgent("Grainy", "Hold sand", cell)
             self.add_agent(agent, position=False)
             if x == center_x and y == center_y:
                 self.center_agent = agent
-                # (x1, y1) = self.center_agent.get_pos()
+                # (x1, y1) = self.center_agent.pos
                 # print("Center agent is at: %i, %i" % (x1, y1))
 
     def step(self):
         super().step()
         self.center_agent.add_grains(1)
-        # (x, y) = self.center_agent.get_pos()
+        # (x, y) = self.center_agent.pos
         # print("Center agent is at: %i, %i" % (x, y))

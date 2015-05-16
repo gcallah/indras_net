@@ -56,7 +56,7 @@ class Tree(ga.GridAgent):
         If the tree is on fire, spread it to healthy trees nearby.
         '''
         if self.is_burning():
-            (x, y) = self.get_pos()
+            (x, y) = self.pos
             for neighbor in self.env.neighbor_iter(x, y):
                 if neighbor.is_healthy():
                     neighbor.next_state = ON_FIRE
@@ -96,7 +96,7 @@ class ForestEnv(grid.GridEnv):
 
     def add_agent(self, tree):
         super().add_agent(tree)
-        (x, y) = tree.get_pos()
+        (x, y) = tree.pos
         if x == 0:
             tree.set_type(ON_FIRE)
 

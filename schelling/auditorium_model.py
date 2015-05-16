@@ -19,8 +19,12 @@ class AuditoriumAgent(ga.GridAgent):
         Find a seat.
         Once seated, these agents just stay put!
         """
+        print("Acting")
         if not self.seated:
             self.env.move_to_empty(self)
+            self.seated = True
+            (x, y) = self.pos
+            print("Agent %s has pos %i, %i" % (self.name, x, y))
 
 
 class Auditorium(ge.GridEnv):
@@ -42,5 +46,6 @@ class Auditorium(ge.GridEnv):
         super().step()
         if self.curr_agents < self.total_agents:
             self.add_agent(AuditoriumAgent("Aud agent %i"
-                                           % self.curr_agents))
+                                           % self.curr_agents),
+                           position=False)
             self.curr_agents += 1

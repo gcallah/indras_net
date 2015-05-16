@@ -82,7 +82,7 @@ class ObstacleAgent(ga.GridAgent):
         Our act is to move to a random cell,
         on a straight line or a diagonal.
         """
-        (x, y) = self.get_pos()
+        (x, y) = self.pos
         print("In oa act(); max_move = %i" % self.max_move)
         vector_mag = get_rand_vector_mag(self.max_move)
         print("vector_mag = %i" % (vector_mag))
