@@ -19,7 +19,6 @@ class AuditoriumAgent(ga.GridAgent):
         Find a seat.
         Once seated, these agents just stay put!
         """
-        print("Acting")
         if not self.seated:
             self.env.move_to_empty(self)
             self.seated = True

@@ -9,18 +9,23 @@ import random
 import logging
 import indra.spatial_env as se
 
-X = 0
-Y = 1
+REAL = 0
+IMAG = 1
 
 
-def rand_complex(initPos, radius):
+def pos_to_complex(pos):
+    return complex(pos[REAL], pos[IMAG])
+
+
+def rand_complex(init_pos, radius):
     """
     Generates a random complex number
     uniformly picked from a disk of radius 'radius'.
     """
+    init = pos_to_complex(init_pos)
     radius = math.sqrt(radius * random.uniform(0.0, radius))
     theta = random.random() * 2 * math.pi
-    return initPos + cmath.rect(radius, theta)
+    return init + cmath.rect(radius, theta)
 
 
 def pos_msg(agent, pos):
@@ -35,7 +40,7 @@ def pos_msg(agent, pos):
 
 def pos_to_str(pos):
     """
-    Convert a complex position to a string rep.
+    Convert a complex number to a string rep.
     """
     return str(int(pos.real)) + " , " + str(int(pos.imag))
 
@@ -71,7 +76,7 @@ class PlaneEnv(se.SpatialEnv):
         """
         What is the closest entity of target_type?
         """
-        pos = seeker.pos
+        pos = pos_to_complex(seeker.pos)
         x = self.max_dist
         closest_target = None
         logging.debug("About to search for closest, among "
@@ -80,7 +85,7 @@ class PlaneEnv(se.SpatialEnv):
             if seeker is not agent:  # don't locate me!
                 if(seeker.exclude is None
                    or (agent not in seeker.exclude)):
-                    p_pos = agent.pos
+                    p_pos = pos_to_complex(agent.pos)
                     d = abs(pos - p_pos)
                     if d < x:
                         x = d

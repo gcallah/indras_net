@@ -154,11 +154,12 @@ class Predator(MobileCreature):
         prey = self.focus
         logging.info(self.name + " is pursuing " + prey.name)
         if prey.is_alive():
-            new_pos = self.pos
-            vector = prey.pos - self.pos
+            new_pos = pe.pos_to_complex(self.pos)
+            prey_pos = pe.pos_to_complex(prey.pos)
+            vector = prey_pos - new_pos
             dist = abs(vector)
             if dist < self.max_move:
-                new_pos = prey.pos
+                new_pos = prey_pos
             else:
                 new_pos += (vector / dist) * self.max_move
 
