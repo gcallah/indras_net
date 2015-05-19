@@ -29,7 +29,7 @@ else:
     pa.set("num_B_agents", 1200)
     pa.set("grid_width", 60)
     pa.set("grid_height", 60)
-    pa.set("tolerance", .4)
+    pa.set("tolerance", .6)
 
 # Now we create a minimal environment for our agents to act within:
 env = sm.SegregationEnv("Test grid env",

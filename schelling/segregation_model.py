@@ -62,14 +62,10 @@ class SegregationEnv(grid.GridEnv):
 
         super().__init__("Segregation", height, width, torus=False,
                          model_nm=model_nm)
-
         self.plot_title = "Segregation"
-
         # setting our colors adds varieties as well!
         self.agents.set_var_color(BLUE_AGENT, 'b')
         self.agents.set_var_color(RED_AGENT, 'r')
-        # self.agents.set_var_color(GREEN_AGENT, 'g')
-
         self.num_moves = 0
         self.move_hist = []
 
@@ -79,8 +75,7 @@ class SegregationEnv(grid.GridEnv):
         """
 
         self.move_hist.append(self.num_moves)
-        self.user.tell("Moves per turn: ")
-        self.user.tell(self.move_hist)
+        self.user.tell("Moves per turn: " + str(self.move_hist))
         self.num_moves = 0
 
     def record_results(self, file_nm):

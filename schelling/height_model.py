@@ -33,9 +33,7 @@ class HeightAgent(ent.Agent):
             new_height = MIN_HEIGHT
         return new_height
         
-    
     def reproduce(self):
-        #print(self.height)
         new_height = self.get_new_height()
         self.mychild = self.__class__(self.name + str(self.env.period),
                                        new_height, self.height)                         
@@ -74,7 +72,8 @@ class HeightEnv(env.Environment):
             self.agents.append_pop_hist(var, self.avg_height[var])   
             if var == "HeightAgentEng":
                 self.runt_height = .67 * self.avg_height[var]   
-        self.user.tell("\nAverage Heights for Period " + str(self.period) + ": \n" + str(self.avg_height))
+        self.user.tell("\nAverage Heights for Period " + str(self.period) +
+                       ": \n" + str(self.avg_height))
                                                 
     def view_pop(self):                                                                 
         """                                                                             

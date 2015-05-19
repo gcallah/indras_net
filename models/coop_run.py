@@ -19,13 +19,14 @@ if read_props:
 else:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
-    pa.set("num_agents", 15)
+    pa.set("num_agents", 100)
+    pa.set("min_holdings", 4.5)
 
 env = cm.CoopEnv(model_nm=MODEL_NM)
 
 for i in range(pa.get("num_agents")):
     env.add_agent(
-        cm.CoopAgent('agent' + str(i), i+1))
+        cm.CoopAgent('agent' + str(i), 5, 0))
 
 logging.info("Starting program " + prog_file)
 
