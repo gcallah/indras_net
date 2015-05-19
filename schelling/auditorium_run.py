@@ -20,11 +20,14 @@ if read_props:
 else:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
-    pa.set("num_agents", 8)
+    pa.set("num_agents", 16)
+    pa.set("aud_width", 8)
+    pa.set("aud_height", 8)
 
 # Now we create a minimal environment for our agents to act within:
 env = am.Auditorium("Auditorium",
-                    height=4, width=4,
+                    height=pa.get("aud_height"),
+                    width=pa.get("aud_width"),
                     torus=False,
                     model_nm=MODEL_NM,
                     num_agents=pa.get("num_agents"))

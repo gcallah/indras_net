@@ -33,6 +33,14 @@ X = 0
 Y = 1
 
 
+def out_of_bounds(x, y, x1, y1, x2, y2):
+    """
+    Is point x, y off the grid defined by x1, y1, x2, y2?
+    """
+    return(x < x1 or x >= x2
+           or y < y1 or y >= y2)
+
+
 class Cell(node.Node):
     """
     Cells hold the grid contents.
@@ -83,6 +91,35 @@ class Cell(node.Node):
         """
         if item == self.contents:
             self.contents = None
+
+
+class OutOfBounds(Exception):
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
+
+
+class GridView():
+    """
+    Defines a subsection of the entire grid env.
+    """
+    def __init__(self, parent_grid, x1, y1, x2, y2):
+        if parent_grid.out_of_bounds(x1, y1):
+            raise OutOfBounds("x1 or y1 off grid.")
+        if parent_grid.out_of_bounds(x2, y2):
+            raise OutOfBounds("x2 or y2 off grid.")
+        self.x1 = x1
+        self.x2 = x2
+        self.y1 = y1
+        self.y2 = y2
+
+    def out_of_bounds(self, x, y):
+        """
+        Returns False if x, y in view, else True.
+        """
+        return out_of_bounds(x, y, self.x1, self.y1, self.x2, self.y2)
 
 
 class GridEnv(se.SpatialEnv):
@@ -166,8 +203,7 @@ class GridEnv(se.SpatialEnv):
         """
         Is point x, y off the grid?
         """
-        return(x < 0 or x >= self.width
-               or y < 0 or y >= self.height)
+        return out_of_bounds(x, y, 0, 0, self.width, self.height)
 
     def get_neighborhood(self, x, y, moore,
                          include_center=False, radius=1):
@@ -250,30 +286,40 @@ class GridEnv(se.SpatialEnv):
             self._add_members(items, x, y)
         return items
 
-    def exists_empty_cells(self):
+    def exists_empty_cells(self, grid_view=None):
         """
         Return True if any cells empty else False.
         """
-        return len(self.empties) > 0
+        if len(self.empties) <= 0:
+            return False
+        else:
+            if grid_view is None:
+                return True
+            else:
+                pass
 
-    def move_to_empty(self, agent):
+    def move_to_empty(self, agent, grid_view=None):
         """
         Moves agent to an empty cell, vacating agent's old cell.
         """
-        empty_cell = self.find_empty()
+        empty_cell = self.find_empty(grid_view)
         if empty_cell is None:
             logging.ERROR("Agent could not move because no cells are empty")
         else:
             self._move_item(agent, empty_cell)
 
-    def find_empty(self):
-        if self.exists_empty_cells():
-            cell = random.choice(self.empties)
+    def find_empty(self, grid_view=None):
+        cell = None
+        if self.exists_empty_cells(grid_view):
+            if grid_view is None:
+                cell = random.choice(self.empties)
+            else:
+                pass
             return cell
         else:
             return None
 
-    def position_item(self, item, x=RANDOM, y=RANDOM):
+    def position_item(self, item, x=RANDOM, y=RANDOM, grid_view=None):
         """
         Position an agent on the grid.
         This is used when first placing agents! Use 'move_to_empty()'
@@ -283,7 +329,7 @@ class GridEnv(se.SpatialEnv):
         Ensure this random position is not occupied (in Grid).
         """
         if x == RANDOM or y == RANDOM:
-            cell = self.find_empty()
+            cell = self.find_empty(grid_view)
             if cell is None:
                 logging.error("Grid full; %s not added." % (item.name))
                 return
@@ -346,35 +392,3 @@ class GridEnv(se.SpatialEnv):
             return False
         else:
             return self._get_contents(x, y) is None
-
-
-class MultiGridEnv(GridEnv):
-    """
-    Grid where each cell can contain more than one object.
-
-    Grid cells are indexed by [y][x], where [0][0] is assumed to be the top-left
-    and [height-1][width-1] is the bottom-right. If a grid is toroidal, the top
-    and bottom, and left and right, edges wrap to each other.
-
-    Each grid cell holds a set object.
-
-    Properties:
-        width, height: The grid's width and height.
-
-        torus: Boolean which determines whether
-            to treat the grid as a torus.
-
-        grid: Internal list-of-lists which holds
-            the grid cells themselves.
-
-    Methods:
-        get_neighbors: Returns the objects surrounding a given cell.
-    """
-
-    def _add_members(self, target_list, x, y):
-        """
-        Helper method to add all objects in the
-            given cell to the target_list.
-        """
-        for a in self.grid[y][x]:
-            target_list.append(a)
