@@ -105,15 +105,46 @@ class GridView():
     """
     Defines a subsection of the entire grid env.
     """
-    def __init__(self, parent_grid, x1, y1, x2, y2):
-        if parent_grid.out_of_bounds(x1, y1):
+
+    class CellIter:
+        """
+        Iterate through the view's cells.
+        """
+        def __init__(self, view):
+            self.view = view
+            self.x = view.x1
+            self.y = view.y1
+
+        def __iter__(self):
+            return self
+
+        def __next__(self):
+            if self.y < self.view.y2:
+                if self.x < self.view.x2:
+                    ret = self.view.grid[self.y][self.x]
+                    self.x += 1
+                    return ret
+                self.x = self.view.x1
+                self.y += 1
+            else:
+                raise StopIteration()
+
+    def __init__(self, grid, x1, y1, x2, y2):
+        if grid.out_of_bounds(x1, y1):
             raise OutOfBounds("x1 or y1 off grid.")
-        if parent_grid.out_of_bounds(x2, y2):
+        if grid.out_of_bounds(x2 - 1, y2 - 1):
             raise OutOfBounds("x2 or y2 off grid.")
+        self.grid = grid
         self.x1 = x1
         self.x2 = x2
         self.y1 = y1
         self.y2 = y2
+
+    def __iter__(self):
+        """
+        Iterate through the cells in this view.
+        """
+        return GridView.CellIter(self)
 
     def out_of_bounds(self, x, y):
         """
@@ -184,13 +215,6 @@ class GridEnv(se.SpatialEnv):
             if agent.cell.contents is not agent:
                 agent.cell.add_item(agent)
 
-    def neighbor_iter(self, x, y, moore=True, torus=False):
-        """
-        Iterate over our neighbors.
-        """
-        neighbors = self.get_neighbors(x, y, moore=moore)
-        return iter(neighbors)
-
     def torus_adj(self, coord, dim_len):
         """
         Convert coordinate, handling torus looping.
@@ -204,6 +228,19 @@ class GridEnv(se.SpatialEnv):
         Is point x, y off the grid?
         """
         return out_of_bounds(x, y, 0, 0, self.width, self.height)
+
+    def get_row_view(self, row):
+        """
+        Return a view of a single row
+        """
+        return GridView(self, 0, row, self.width, row + 1)
+
+    def neighbor_iter(self, x, y, moore=True, torus=False):
+        """
+        Iterate over our neighbors.
+        """
+        neighbors = self.get_neighbors(x, y, moore=moore)
+        return iter(neighbors)
 
     def get_neighborhood(self, x, y, moore,
                          include_center=False, radius=1):
@@ -286,17 +323,14 @@ class GridEnv(se.SpatialEnv):
             self._add_members(items, x, y)
         return items
 
-    def exists_empty_cells(self, grid_view=None):
+    def exists_empty_cells(self):
         """
         Return True if any cells empty else False.
         """
         if len(self.empties) <= 0:
             return False
         else:
-            if grid_view is None:
-                return True
-            else:
-                pass
+            return True
 
     def move_to_empty(self, agent, grid_view=None):
         """
@@ -309,12 +343,19 @@ class GridEnv(se.SpatialEnv):
             self._move_item(agent, empty_cell)
 
     def find_empty(self, grid_view=None):
+        """
+        Return a random, empty cell.
+        """
         cell = None
-        if self.exists_empty_cells(grid_view):
+        if self.exists_empty_cells():
             if grid_view is None:
                 cell = random.choice(self.empties)
             else:
-                pass
+                # just return the first empty for a view
+                for cell in grid_view:
+                    if cell.is_empty():
+                        return cell
+                cell = None
             return cell
         else:
             return None
@@ -331,11 +372,11 @@ class GridEnv(se.SpatialEnv):
         if x == RANDOM or y == RANDOM:
             cell = self.find_empty(grid_view)
             if cell is None:
-                logging.error("Grid full; %s not added." % (item.name))
-                return
+                return None
         else:
             cell = self._get_cell(x, y)
         self._place_item(cell, item)
+        return cell
 
     def _place_item(self, cell, item):
         """
