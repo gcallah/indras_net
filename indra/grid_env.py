@@ -119,15 +119,15 @@ class GridView():
             return self
 
         def __next__(self):
-            if self.y < self.view.y2:
-                if self.x < self.view.x2:
+            while self.y < self.view.y2:
+                while self.x < self.view.x2:
                     ret = self.view.grid[self.y][self.x]
                     self.x += 1
                     return ret
                 self.x = self.view.x1
                 self.y += 1
-            else:
-                raise StopIteration()
+
+            raise StopIteration()
 
     def __init__(self, grid, x1, y1, x2, y2):
         if grid.out_of_bounds(x1, y1):
@@ -152,6 +152,18 @@ class GridView():
         """
         return out_of_bounds(x, y, self.x1, self.y1, self.x2, self.y2)
 
+    def get_empties(self):
+        """
+        Return all of the unoccupied cells in this view.
+        """
+        return list(filter(lambda x: x.is_empty(), iter(self)))
+
+    def get_neighbors(self):
+        """
+        Return all of the occupied cells in this view.
+        """
+        return list(filter(lambda x: not x.is_empty(), iter(self)))
+
 
 class GridEnv(se.SpatialEnv):
     """
@@ -170,9 +182,6 @@ class GridEnv(se.SpatialEnv):
 
     Methods:
         get_neighbors: Returns the objects surrounding a given cell.
-        get_neighborhood: Returns the coords surrounding a given cell.
-        get_cell_items: Returns the contents of a list of cells
-            ((x,y) tuples)
     """
 
     def __init__(self, name, height, width, torus=False,
@@ -235,102 +244,53 @@ class GridEnv(se.SpatialEnv):
         """
         return GridView(self, 0, row, self.width, row + 1)
 
-    def neighbor_iter(self, x, y, moore=True, torus=False):
+    def get_square_view(self, center, distance):
+        """
+        Attempt to return a view of a square centered on center.
+        This might return a rectangle if the center is near an edge.
+        """
+        center_x = center[X]
+        center_y = center[Y]
+        x1 = max(0, center_x - distance)
+        x2 = min(self.width, center_x + distance)
+        y1 = max(0, center_y - distance)
+        y2 = min(self.height, center_y + distance)
+        return GridView(self, x1, y1, x2, y2)
+
+    def neighbor_iter(self, x, y, distance=1):
         """
         Iterate over our neighbors.
         """
-        neighbors = self.get_neighbors(x, y, moore=moore)
+        neighbors = self.get_neighbors(x, y, distance)
         return iter(neighbors)
 
-    def get_neighborhood(self, x, y, moore,
-                         include_center=False, radius=1):
-        """
-        Return a list of cells that are in the
-        neighborhood of a certain point.
-
-        Args:
-            x, y: Coordinates for the neighborhood to get.
-            moore: If True, return Moore neighborhood
-                        (including diagonals)
-                   If False, return Von Neumann neighborhood
-                        (exclude diagonals)
-            include_center: If True, return the (x, y) cell as well.
-                            Otherwise, return surrounding cells only.
-            radius: radius, in cells, of neighborhood to get.
-
-        Returns:
-            A list of coordinate tuples representing the neighborhood;
-                With radius 1, at most 9 if
-                Moore, 5 if Von Neumann
-                (8 and 4 if not including the center).
-        """
-        coordinates = []
-        for dy in range(-radius, radius + 1):
-            for dx in range(-radius, radius + 1):
-                if dx == 0 and dy == 0 and not include_center:
-                    continue
-                if not moore:
-                    # Skip diagonals in Von Neumann neighborhood.
-                    if dy != 0 and dx != 0:
-                        continue
-
-                px = self.torus_adj(x + dx, self.width)
-                py = self.torus_adj(y + dy, self.height)
-
-                # Skip if new coords out of bounds.
-                if(self.out_of_bounds(px, py)):
-                    continue
-
-                coordinates.append((px, py))
-        return coordinates
-
-    def get_neighbors(self, x, y, moore,
-                      include_center=False, radius=1):
+    def get_neighbors(self, x, y, distance=1):
         """
         Return a list of neighbors to a certain point.
 
         Args:
             x, y: Coordinates for the neighborhood to get.
-            moore: If True, return Moore neighborhood
-                    (including diagonals)
-                   If False, return Von Neumann neighborhood
-                     (exclude diagonals)
-            include_center: If True, return the (x, y) cell as well.
-                            Otherwise,
-                            return surrounding cells only.
-            radius: radius, in cells, of neighborhood to get.
+            distance: distance, in cells, of neighborhood to get.
 
         Returns:
             A list of non-None objects in the given neighborhood;
             at most 9 if Moore, 5 if Von-Neumann
             (8 and 4 if not including the center).
         """
-        neighborhood = self.get_neighborhood(x, y, moore,
-                                             include_center,
-                                             radius)
-        return self.get_cell_items(neighborhood)
+        grid_view = self.get_square_view((x, y), distance)
+        return grid_view.get_neighbors()
 
-    def get_cell_items(self, cell_list):
-        """
-        Args:
-            cell_list: Array-like of (x, y) tuples
-
-        Returns:
-            A list of the contents of the cells identified in cell_list
-        """
-        items = []
-        for x, y in cell_list:
-            self._add_members(items, x, y)
-        return items
-
-    def exists_empty_cells(self):
+    def exists_empty_cells(self, grid_view=None):
         """
         Return True if any cells empty else False.
         """
         if len(self.empties) <= 0:
             return False
-        else:
-            return True
+        elif grid_view is not None:
+            if len(grid_view.empties) <= 0:
+                return False
+
+        return True
 
     def move_to_empty(self, agent, grid_view=None):
         """
@@ -346,19 +306,14 @@ class GridEnv(se.SpatialEnv):
         """
         Return a random, empty cell.
         """
-        cell = None
         if self.exists_empty_cells():
             if grid_view is None:
-                cell = random.choice(self.empties)
+                return random.choice(self.empties)
             else:
-                # just return the first empty for a view
-                for cell in grid_view:
-                    if cell.is_empty():
-                        return cell
-                cell = None
-            return cell
-        else:
-            return None
+                view_empties = grid_view.get_empties()
+                if view_empties:
+                    return random.choice(view_empties)
+        return None
 
     def position_item(self, item, x=RANDOM, y=RANDOM, grid_view=None):
         """

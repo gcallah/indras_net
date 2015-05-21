@@ -25,7 +25,7 @@ class TestGridAgent(ga.GridAgent):
               + " y = " + str(y))
         print(self.name + " has neighbors: ")
         for neighbor in self.env.neighbor_iter(x, y):
-            (x1, y1) = neighbor.pos
+            (x1, y1) = neighbor.coords
             print("    %i, %i" % (x1, y1))
 
     def postact(self):
