@@ -31,7 +31,7 @@ env = ge.GridEnv("Test grid env",
                  pa.get("grid_width"),
                  torus=False,
                  model_nm=MODEL_NM,
-                 postact=True)
+                 preact=True)
 
 # Now we loop creating multiple agents with numbered names
 # based on the loop variable:

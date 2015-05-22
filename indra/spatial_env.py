@@ -52,23 +52,6 @@ class SpatialEnv(env.Environment):
         This must be implemented by descendents.
         """
 
-    def preact_loop(self):
-        """
-        Before acting, get agent's new location.
-        """
-        logging.debug("Calling preact_loop()")
-        for agent in self.agents:
-            if agent.wandering:
-                agent.pos = self.get_new_wander_pos(agent)
-                logging.debug("We are about to survey the "
-                              "env for "
-                              + agent.name + " which has a goal of "
-                              + agent.goal)
-                prehensions = agent.survey_env(agent.goal)
-                self.address_prehensions(agent, prehensions)
-            else:
-                agent.detect_behavior()
-
     def address_prehensions(self, agent, prehensions):
         """
         Process prehensions list if needed.

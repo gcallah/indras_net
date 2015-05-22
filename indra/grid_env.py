@@ -252,9 +252,9 @@ class GridEnv(se.SpatialEnv):
         center_x = center[X]
         center_y = center[Y]
         x1 = max(0, center_x - distance)
-        x2 = min(self.width, center_x + distance)
+        x2 = min(self.width, center_x + distance + 1)
         y1 = max(0, center_y - distance)
-        y2 = min(self.height, center_y + distance)
+        y2 = min(self.height, center_y + distance + 1)
         return GridView(self, x1, y1, x2, y2)
 
     def neighbor_iter(self, x, y, distance=1):
@@ -262,7 +262,7 @@ class GridEnv(se.SpatialEnv):
         Iterate over our neighbors.
         """
         neighbors = self.get_neighbors(x, y, distance)
-        return iter(neighbors)
+        return map(lambda x: x.contents, iter(neighbors))
 
     def get_neighbors(self, x, y, distance=1):
         """

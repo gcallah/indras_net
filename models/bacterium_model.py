@@ -16,7 +16,7 @@ class Bacterium(ga.GridAgent):
               + ".")
         print("My position is" + " x = " + str(x) + ","
               + " y = " + str(y))
-        for neighbor in self.env.neighbor_iter(x, y):
+        for neighbor in self.neighbor_iter():
             """(x1, y1) = neighbor.pos
             print("    %i, %i" % (x1, y1))"""
 
@@ -34,7 +34,7 @@ class FoodSource(ga.GridAgent):
         (x, y) = self.pos
         print("I am a " + self.ntype)
         print("My position is x = " + str(x) + ", y = " + str(y))
-        for neighbor in self.env.neighbor_iter(x, y):
+        for neighbor in self.neighbor_iter():
             if neighbor.ntype == "Bacterium":
                 print("Enemy near! Run away!")
                 self.env.move_to_empty(self)

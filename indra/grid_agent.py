@@ -7,6 +7,9 @@ Maybe other things for grid as well.
 # import logging
 import indra.spatial_agent as sa
 
+X = 0
+Y = 1
+
 
 class GridAgent(sa.SpatialAgent):
     """
@@ -36,6 +39,11 @@ class GridAgent(sa.SpatialAgent):
             return self.cell.coords
         else:
             return None
+
+    def neighbor_iter(self, distance=1):
+        return filter(lambda x: x is not self,
+                      self.env.neighbor_iter(self.pos[X], self.pos[Y],
+                                             distance=distance))
 
     def to_json(self):
         """
