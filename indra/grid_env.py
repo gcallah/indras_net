@@ -71,11 +71,6 @@ class Cell(node.Node):
         """
         return not self.contents
 
-        """
-        Return the coordinates of this cell.
-        """
-        return self.coords
-
     def add_item(self, new_item):
         """
         Add new_item to cell contents.
@@ -155,6 +150,8 @@ class GridView():
     def get_empties(self):
         """
         Return all of the unoccupied cells in this view.
+        This and get_neighbors ought to be folded into
+        a general filter function for views.
         """
         return list(filter(lambda x: x.is_empty(), iter(self)))
 
@@ -163,6 +160,39 @@ class GridView():
         Return all of the occupied cells in this view.
         """
         return list(filter(lambda x: not x.is_empty(), iter(self)))
+
+
+class VonNeumannView(GridView):
+    """
+    A Von Neumann view combines a column view and a row view,
+    i.e., it is a rectangular view with the diagonals gone.
+    """
+    def __init__(self, grid, row, col):
+        self.grid = grid
+        self.row = row
+        self.col = col
+
+    def __iter__(self):
+        """
+        Iterate over all our cells: note,
+        right now, this return the center cell twice.
+        """
+        return itertools.chain(self.row, self.col)
+
+    def out_of_bounds(self, x, y):
+        """
+        Is x, y not in this view?
+        It is not only if it is not in the row view AND not in the col view.
+        """
+        return self.col.out_of_bounds(x, y) and self.row.out_of_bounds(x, y)
+
+    def get_neighbors(self):
+        """
+        Return all of the occupied cells in this view.
+        """
+        neighbors = self.col.get_neighbors()
+        neighbors += self.row.get_neighbors()
+        return neighbors
 
 
 class GridEnv(se.SpatialEnv):
@@ -238,11 +268,36 @@ class GridEnv(se.SpatialEnv):
         """
         return out_of_bounds(x, y, 0, 0, self.width, self.height)
 
-    def get_row_view(self, row):
+    def get_col_view(self, col, low=None, high=None):
+        """
+        Return a view of a single column.
+        It will be the whole column from the grid,
+        unless low or high are passed.
+        """
+        if low is None:
+            low = 0
+        if high is None:
+            high = self.height
+        return GridView(self, col, low, col + 1, high)
+
+    def get_row_view(self, row, left=None, right=None):
         """
         Return a view of a single row
+        It will be the whole row from the grid,
+        unless left or right are passed.
         """
-        return GridView(self, 0, row, self.width, row + 1)
+        if left is None:
+            left = 0
+        if right is None:
+            right = self.width
+        return GridView(self, left, row, right, row + 1)
+
+    def get_vonneumann_view(self, center, distance):
+        """
+        Return a Von Neumann view (row and col)
+        centered on center.
+        """
+        pass
 
     def get_square_view(self, center, distance):
         """
