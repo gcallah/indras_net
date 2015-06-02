@@ -12,8 +12,6 @@ Objects used to add a spatial component to a model.
 
 GridEnv: base grid, a simple list-of-lists.
 
-MultiGridEnv: extension to Grid where each cell is a set of objects.
-
 """
 
 # Instruction for PyLint to suppress variable name errors,
@@ -147,51 +145,57 @@ class GridView():
         """
         return out_of_bounds(x, y, self.x1, self.y1, self.x2, self.y2)
 
+    def filter_view(self, lam):
+        """
+        Returns a view filtered with lambda functionlam.
+        """
+        return list(filter(lam, iter(self)))
+
     def get_empties(self):
         """
         Return all of the unoccupied cells in this view.
-        This and get_neighbors ought to be folded into
-        a general filter function for views.
         """
-        return list(filter(lambda x: x.is_empty(), iter(self)))
+        return self.filter_view(lambda x: x.is_empty())
 
     def get_neighbors(self):
         """
         Return all of the occupied cells in this view.
         """
-        return list(filter(lambda x: not x.is_empty(), iter(self)))
+        return self.filter_view(lambda x: not x.is_empty())
 
 
-class VonNeumannView(GridView):
+class CompositeView(GridView):
     """
-    A Von Neumann view combines a column view and a row view,
-    i.e., it is a rectangular view with the diagonals gone.
+    A composite view combines several other views.
     """
-    def __init__(self, grid, row, col):
+    def __init__(self, grid, views):
         self.grid = grid
-        self.row = row
-        self.col = col
+        self.views = list(views)  # the parameter will be a tuple
 
     def __iter__(self):
         """
         Iterate over all our cells: note,
         right now, this return the center cell twice.
         """
-        return itertools.chain(self.row, self.col)
+        return itertools.chain(self.views)
 
     def out_of_bounds(self, x, y):
         """
         Is x, y not in this view?
-        It is not only if it is not in the row view AND not in the col view.
+        It is not only if it is not in ANY of the sub-views.
         """
-        return self.col.out_of_bounds(x, y) and self.row.out_of_bounds(x, y)
+        for view in self.views:
+            if not view.out_of_bounds(x, y):
+                return False
+        return True
 
     def get_neighbors(self):
         """
         Return all of the occupied cells in this view.
         """
-        neighbors = self.col.get_neighbors()
-        neighbors += self.row.get_neighbors()
+        neighbors = []
+        for view in self.views:
+            neighbors += view.get_neighbors()
         return neighbors
 
 
@@ -292,34 +296,42 @@ class GridEnv(se.SpatialEnv):
             right = self.width
         return GridView(self, left, row, right, row + 1)
 
+    def _adjust_coords(self, center, distance, max_val):
+        coord1 = max(0, center - distance)
+        coord2 = min(max_val, center + distance + 1)
+        return (coord1, coord2)
+
     def get_vonneumann_view(self, center, distance):
         """
         Return a Von Neumann view (row and col)
         centered on center.
         """
-        pass
+        (x, y) = center
+        (x1, x2) = self._adjust_coords(x, distance, self.width)
+        (y1, y2) = self._adjust_coords(y, distance, self.height)
+        col_view = self.get_col_view(x, y1, y2)
+        row_view = self.get_row_view(y, x1, x2)
+        return CompositeView(self, (col_view, row_view))
 
     def get_square_view(self, center, distance):
         """
         Attempt to return a view of a square centered on center.
-        This might return a rectangle if the center is near an edge.
+        This might return a non-square rectangle
+        if the center is near an edge.
         """
-        center_x = center[X]
-        center_y = center[Y]
-        x1 = max(0, center_x - distance)
-        x2 = min(self.width, center_x + distance + 1)
-        y1 = max(0, center_y - distance)
-        y2 = min(self.height, center_y + distance + 1)
+        (center_x, center_y) = center
+        (x1, x2) = self._adjust_coords(center_x, distance, self.width)
+        (y1, y2) = self._adjust_coords(center_y, distance, self.height)
         return GridView(self, x1, y1, x2, y2)
 
-    def neighbor_iter(self, x, y, distance=1):
+    def neighbor_iter(self, x, y, distance=1, moore=True):
         """
         Iterate over our neighbors.
         """
-        neighbors = self.get_neighbors(x, y, distance)
+        neighbors = self.get_neighbors(x, y, distance, moore)
         return map(lambda x: x.contents, iter(neighbors))
 
-    def get_neighbors(self, x, y, distance=1):
+    def get_neighbors(self, x, y, distance=1, moore=True):
         """
         Return a list of neighbors to a certain point.
 
@@ -332,7 +344,11 @@ class GridEnv(se.SpatialEnv):
             at most 9 if Moore, 5 if Von-Neumann
             (8 and 4 if not including the center).
         """
-        grid_view = self.get_square_view((x, y), distance)
+        grid_view = None
+        if moore:
+            grid_view = self.get_square_view((x, y), distance)
+        else:
+            grid_view = self.get_vonneumann_view((x, y), distance)
         return grid_view.get_neighbors()
 
     def exists_empty_cells(self, grid_view=None):
@@ -419,16 +435,6 @@ class GridEnv(se.SpatialEnv):
     def _check_empty(self, cell):
         if cell.is_empty():
             self.empties.append(cell)
-
-    def _add_members(self, target_list, x, y):
-        """
-        Helper method to append the contents of a cell
-            to the given list.
-        Override for other grid types.
-        """
-        items = self._get_contents(x, y)
-        if items is not None:
-            target_list.append(items)
 
     def _get_cell(self, x, y):
         return self.grid[y][x]

@@ -40,10 +40,11 @@ class GridAgent(sa.SpatialAgent):
         else:
             return None
 
-    def neighbor_iter(self, distance=1):
+    def neighbor_iter(self, distance=1, moore=True):
         return filter(lambda x: x is not self,
                       self.env.neighbor_iter(self.pos[X], self.pos[Y],
-                                             distance=distance))
+                                             distance=distance,
+                                             moore=moore))
 
     def to_json(self):
         """
