@@ -21,6 +21,7 @@ class GridAgent(sa.SpatialAgent):
         super().__init__(name, goal, max_move=max_move,
                          max_detect=max_detect)
         self.__cell = cell
+        self.neighborhood = None
 
     @property
     def cell(self):
@@ -40,11 +41,25 @@ class GridAgent(sa.SpatialAgent):
         else:
             return None
 
-    def neighbor_iter(self, distance=1, moore=True):
+    def _neighbor_filter(self, distance=1, moore=True):
         return filter(lambda x: x is not self,
                       self.env.neighbor_iter(self.pos[X], self.pos[Y],
                                              distance=distance,
                                              moore=moore))
+
+    def neighbor_iter(self, distance=1, moore=True, save_hood=False):
+        """
+        Iterate over our neighbors.
+        In some models, the neighbors don't move:
+            then we can save the neighborhood and a lot of overhead!
+        """
+        if not save_hood:
+            return self._neighbor_filter(distance, moore)
+        else:
+            if not self.neighborhood:
+                self.neighborhood = list(self._neighbor_filter(
+                                         distance, moore))
+            return iter(self.neighborhood)
 
     def to_json(self):
         """
