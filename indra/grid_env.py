@@ -258,6 +258,14 @@ class GridEnv(se.SpatialEnv):
             if agent.cell.contents is not agent:
                 agent.cell.add_item(agent)
 
+    def remove_agent(self, agent):
+        """
+        Remove agent from pop and from grid.
+        """
+        super().remove_agent(agent)
+        if agent.cell is not None:
+            agent.cell.remove_item(agent)
+
     def torus_adj(self, coord, dim_len):
         """
         Convert coordinate, handling torus looping.

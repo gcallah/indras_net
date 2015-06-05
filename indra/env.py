@@ -76,6 +76,12 @@ class Environment(node.Node):
         self.agents.append(agent)
         agent.add_env(self)
 
+    def remove_agent(self, agent):
+        """
+        Remove agent from pop.
+        """
+        self.agents.remove(agent)
+
     def join_agents(self, a1, a2):
         """
         Relate two agents.
@@ -360,7 +366,7 @@ class Environment(node.Node):
 
         (period, data) = self.line_data()
         self.line_graph = disp.LineGraph('Populations in ' + self.name,
-                                         data, period, anim=True,
+                                         data, period, anim=False,
                                          data_func=self.line_data)
         self.line_graph.show()
 
