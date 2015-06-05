@@ -2,7 +2,7 @@
 """
 Created on Thu Sep 18 16:45:50 2014
 
-@author: Gene and Brandon
+@author: Gene Callahan and Brandon Logan
 """
 import logging
 import indra.utils as utils
@@ -25,7 +25,6 @@ else:
 env = hm.HeightEnv(model_nm=MODEL_NM)
 
 for i in range(pa.get("num_agents")):
-
         env.add_agent(
             hm.HeightAgentEng('Eng agent' + str(i),
                               START_HEIGHT, START_HEIGHT))
