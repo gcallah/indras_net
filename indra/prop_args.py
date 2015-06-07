@@ -82,6 +82,10 @@ class PropArgs(node.Node):
             self.props[nm] = default
         return self.props[nm]
 
+    def ask(self, nm, msg, val_type):
+        val = input(msg + " ")
+        self.set(nm, val_type(val))
+
     def get_logfile(self):
         """
         Special get function for logfile name

@@ -19,14 +19,15 @@ class SegregationAgent(ga.GridAgent):
     """
     An agent that moves location pending it's neighbors' types
     """
-    def __init__(self, name, goal, tolerance):
+    def __init__(self, name, goal, tolerance, nsize=1):
         super().__init__(name, goal)
         self.tolerance = tolerance
+        self.neighborhood_size = nsize
 
     def act(self):
         like_me = 0
         total_neighbors = 0
-        for neighbor in self.neighbor_iter(distance=3):
+        for neighbor in self.neighbor_iter(distance=self.neighborhood_size):
             total_neighbors += 1
             if self.get_type() == neighbor.get_type():
                 like_me += 1
@@ -59,9 +60,9 @@ class SegregationEnv(grid.GridEnv):
     def __init__(self, name, height, width, torus=False,
                  model_nm="Segregation"):
 
-        super().__init__("Segregation", height, width, torus=False,
+        super().__init__(name, height, width, torus=False,
                          model_nm=model_nm)
-        self.plot_title = "Segregation"
+        self.plot_title = name
         # setting our colors adds varieties as well!
         self.agents.set_var_color(BLUE_AGENT, 'b')
         self.agents.set_var_color(RED_AGENT, 'r')

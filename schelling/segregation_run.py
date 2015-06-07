@@ -25,14 +25,15 @@ if read_props:
 else:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
-    pa.set("num_R_agents", 1000)
-    pa.set("num_B_agents", 1200)
+    pa.set("num_R_agents", 1100)
+    pa.set("num_B_agents", 1100)
     pa.set("grid_width", 60)
     pa.set("grid_height", 60)
     pa.set("tolerance", .6)
+    pa.ask("hoodsize", "What is the agent's neighborhood size?", int)
 
-# Now we create a minimal environment for our agents to act within:
-env = sm.SegregationEnv("Test grid env",
+# Now we create an environment for our agents to act within:
+env = sm.SegregationEnv("A city",
                         pa.get("grid_height"),
                         pa.get("grid_width"))
 
@@ -41,13 +42,15 @@ env = sm.SegregationEnv("Test grid env",
 
 for i in range(pa.get("num_B_agents")):
     env.add_agent(sm.BlueAgent(name="Blue agent" + str(i),
-                  goal="A good neighborhood.",
-                  tolerance=pa.get('tolerance')))
+                  goal="A preferred neighborhood.",
+                  tolerance=pa.get('tolerance'),
+                  nsize=pa.get('hoodsize')))
 
 for i in range(pa.get("num_R_agents")):
     env.add_agent(sm.RedAgent(name="Red agent" + str(i),
                   goal="A good neighborhood.",
-                  tolerance=pa.get('tolerance')))
+                  tolerance=pa.get('tolerance'),
+                  nsize=pa.get('hoodsize')))
 
 # Logging is automatically set up for the modeler:
 logging.info("Starting program " + prog_file)
