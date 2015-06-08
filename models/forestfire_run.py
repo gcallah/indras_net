@@ -22,14 +22,15 @@ if read_props:
 else:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
+    pa.ask("density", "How dense is the forest? (0.0 - 1.0)", float)
 
 GRID_X = 100
 GRID_Y = 100
-DENSITY = .42
+density = pa.get("density")
 
 # Now we create a forest environment for our agents to act within:
-env = fm.ForestEnv(GRID_X, GRID_Y, DENSITY, model_nm=MODEL_NM, torus=False)
-num_agents = int(GRID_X * GRID_Y * DENSITY)
+env = fm.ForestEnv(GRID_X, GRID_Y, density, model_nm=MODEL_NM, torus=False)
+num_agents = int(GRID_X * GRID_Y * density)
 
 for i in range(num_agents):
     env.add_agent(fm.Tree(name="tree" + str(i)))
