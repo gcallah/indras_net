@@ -30,7 +30,8 @@ else:
     pa.set("num_B_agents", 1100)
     pa.set("grid_width", 60)
     pa.set("grid_height", 60)
-    pa.set("tolerance", .6)
+    pa.ask("tolerance", "What is the agent's minimum % like self tolerated?",
+           float)
     pa.ask("hoodsize", "What is the agent's neighborhood size?", int)
 
 # Now we create an environment for our agents to act within:
