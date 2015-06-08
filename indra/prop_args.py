@@ -4,6 +4,7 @@ Set, read, and write program-wide properties in one
 location. Includes logging.
 """
 
+import sys
 import logging
 import platform
 import networkx as nx
@@ -15,6 +16,8 @@ class PropArgs(node.Node):
 
     """
     This class holds sets of named properties for program-wide values.
+    It enables getting properties from a file, in-program,
+    or from the user, either via the command line or a prompt.
     """
     prop_sets = {}
 
@@ -45,7 +48,7 @@ class PropArgs(node.Node):
                  loglevel=logging.INFO):
         super().__init__("Properties")
         self.model_nm = model_nm
-# store this instance as the value in the dict for 'model_nm'
+        # store this instance as the value in the dict for 'model_nm'
         PropArgs.prop_sets[model_nm] = self
         self.graph = nx.Graph()
         if props is None:
@@ -55,6 +58,14 @@ class PropArgs(node.Node):
         self.logger = Logger(self, logfile=logfile)
         self.graph.add_edge(self, self.logger)
         self.set("OS", platform.system())
+        # process command line args and set them as properties:
+        prop_nm = None
+        for arg in sys.argv:
+            if arg[0] == '-':
+                prop_nm = arg.lstrip('-')
+            elif prop_nm is not None:
+                self.set(prop_nm, arg)
+                prop_nm = None
 
     def display(self):
         """
@@ -83,7 +94,14 @@ class PropArgs(node.Node):
         return self.props[nm]
 
     def ask(self, nm, msg, val_type):
-        val = input(msg + " ")
+        """
+        Ask the user for a property value, which might come
+        from the user via the command line.
+        """
+        if nm not in self.props:
+            val = input(msg + " ")
+        else:  # it was set from command line
+            val = self.get(nm)
         self.set(nm, val_type(val))
 
     def get_logfile(self):
