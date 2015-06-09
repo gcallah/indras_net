@@ -47,6 +47,9 @@ class GridAgent(sa.SpatialAgent):
                                              distance=distance,
                                              moore=moore))
 
+    def get_square_view(self, distance):
+        return self.env.get_square_view(self.pos, distance)
+
     def neighbor_iter(self, distance=1, moore=True, save_hood=False):
         """
         Iterate over our neighbors.
