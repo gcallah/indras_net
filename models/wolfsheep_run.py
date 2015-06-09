@@ -24,6 +24,10 @@ else:
     pa.set("num_sheep", 16)
     pa.set("grid_width", 16)
     pa.set("grid_height", 16)
+    pa.ask("wolf_repro", "What is the wolf reproduction age?", int)
+    pa.ask("wolf_lforce", "What is the wolf life force?", int)
+    pa.ask("sheep_repro", "What is the sheep reproduction age?", int)
+    pa.ask("sheep_lforce", "What is the sheep life force?", int)
 
 # Now we create a minimal environment for our agents to act within:
 env = wsm.Meadow("Meadow",
@@ -36,9 +40,13 @@ env = wsm.Meadow("Meadow",
 # Now we loop creating multiple agents with numbered names
 # based on the loop variable:
 for i in range(pa.get("num_wolves")):
-    env.add_agent(wsm.Wolf("wolf" + str(i), "Eating sheep"))
+    env.add_agent(wsm.Wolf("wolf" + str(i), "Eating sheep",
+                           pa.get("wolf_repro"),
+                           pa.get("wolf_lforce")))
 for i in range(pa.get("num_sheep")):
-    env.add_agent(wsm.Sheep("sheep" + str(i), "Reproducing"))
+    env.add_agent(wsm.Sheep("sheep" + str(i), "Reproducing",
+                            pa.get("sheep_repro"),
+                            pa.get("sheep_lforce")))
 
 # Logging is automatically set up for the modeler:
 logging.info("Starting program " + prog_file)

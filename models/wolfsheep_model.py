@@ -6,12 +6,6 @@ that get near them.
 import indra.grid_env as ge
 import indra.grid_agent as ga
 
-WOLF_REPRO = 10
-WOLF_LFORCE = 9
-
-SHEEP_REPRO = 3
-SHEEP_LFORCE = 5
-
 
 class Creature(ga.GridAgent):
     """
@@ -24,6 +18,7 @@ class Creature(ga.GridAgent):
         self.alive = True
         self.repro_age = repro_age
         self.life_force = life_force
+        self.init_life_force = life_force
 
     def died(self):
         if self.alive:
@@ -43,7 +38,8 @@ class Creature(ga.GridAgent):
 
     def reproduce(self):
         if self.alive:
-            creature = self.__class__(self.name + "x", self.goal)
+            creature = self.__class__(self.name + "x", self.goal,
+                                      self.repro_age, self.init_life_force)
             self.env.add_agent(creature)
 
 
@@ -52,8 +48,8 @@ class Wolf(Creature):
     A wolf: moves around randomly and eats any sheep
     nearby.
     """
-    def __init__(self, name, goal):
-        super().__init__(name, goal, WOLF_REPRO, WOLF_LFORCE)
+    def __init__(self, name, goal, repro_age, life_force):
+        super().__init__(name, goal, repro_age, life_force)
 
     def act(self):
         super().act()
@@ -65,7 +61,6 @@ class Wolf(Creature):
                     break  # don't be greedy! eat one sheep per turn!
 
     def eat(self, sheep):
-        self.env.user.tell("%s eating sheep: %s" % (self.name, sheep.name))
         self.life_force += sheep.life_force
         sheep.died()
 
@@ -74,8 +69,8 @@ class Sheep(Creature):
     """
     A sheep: moves around randomly and sometimes gets eaten.
     """
-    def __init__(self, name, goal):
-        super().__init__(name, goal, SHEEP_REPRO, SHEEP_LFORCE)
+    def __init__(self, name, goal, repro_age, life_force):
+        super().__init__(name, goal, repro_age, life_force)
 
 
 class Meadow(ge.GridEnv):
