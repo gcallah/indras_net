@@ -4,6 +4,8 @@ Wolves and sheep roaming a meadow, with wolves eating sheep
 that get near them.
 """
 import logging
+import indra.display_methods as disp
+import indra.menu as menu
 import indra.grid_env as ge
 import indra.grid_agent as ga
 
@@ -39,8 +41,7 @@ class Fashionista(ga.GridAgent):
             self.fashion = BLUE
         else:
             self.fashion = RED
-        # self.env.record_fashion_change(self)
-        print(self.name + " is changing fashions")
+        self.env.record_fashion_change(self)
         logging.info(self.name + " is changing fashions")
 
 
@@ -92,3 +93,54 @@ class Society(ge.GridEnv):
     """
     A society of hipsters and followers.
     """
+    def __init__(self, name, length, height, model_nm=None, torus=False):
+        super().__init__(name, length, height, model_nm=model_nm, torus=False)
+        self.menu.view.add_menu_item("v",
+                                     menu.MenuLeaf("(v)iew fashions",
+                                                   self.view_pop))
+
+    def add_agent(self, agent):
+        """
+        Add a new fashion agent to the env.
+        """
+        super().add_agent(agent)
+        var = agent.get_type()
+        if agent.fashion == FSHN_TO_TRACK:
+            self.agents.change_pop_data(var, 1)
+
+    def record_fashion_change(self, agent):
+        """
+        Track the fashions in our env.
+        """
+        var = agent.get_type()
+        if agent.fashion == FSHN_TO_TRACK:
+            self.agents.change_pop_data(var, 1)
+        else:
+            self.agents.change_pop_data(var, -1)
+
+    def census(self, disp=True):
+        """
+        Take a census of our pops.
+        """
+        self.user.tell("Populations in period " + str(self.period) +
+                       " adopting " +
+                       fashions[FSHN_TO_TRACK] + ":")
+        for var in self.agents.varieties_iter():
+            pop = self.agents.get_pop_data(var)
+            self.user.tell(var + ": " + str(pop))
+            self.agents.append_pop_hist(var, pop)
+
+    def view_pop(self):
+        """
+        Draw a graph of our changing pops.
+        """
+        if self.period < 4:
+            self.user.tell("Too little data to display")
+            return
+
+        (period, data) = self.line_data()
+        self.line_graph = disp.LineGraph("A. Smith's fashion model: Populations"
+                                         + " in %s adopting fashion %s"
+                                         % (self.name, fashions[FSHN_TO_TRACK]),
+                                         data, period, anim=False,
+                                         data_func=self.line_data)
