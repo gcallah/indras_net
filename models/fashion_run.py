@@ -4,7 +4,6 @@ fashion_run.py: A script to run fashion_model.py,
 which implements Adam Smith's fashion model.
 """
 
-import logging
 import indra.utils as utils
 import indra.node as node
 import indra.prop_args as props
@@ -14,11 +13,8 @@ import fashion_model as fm
 MODEL_NM = "fashion_model"
 (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
 
-read_props = False
-
-if read_props:
-    pa = props.PropArgs.read_props(MODEL_NM, prop_file)
-else:
+pa = utils.read_props(MODEL_NM)
+if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
 
     pa.set("model", MODEL_NM)
@@ -50,6 +46,4 @@ for i in range(pa.get("num_trndstr")):
 node.add_prehension(fm.Follower, ppm.EAT, fm.TrendSetter)
 node.add_prehension(fm.TrendSetter, ppm.AVOID, fm.Follower)
 
-logging.info("Starting program")
-env.run()
-env.record_results(results_file)
+utils.run_model(env, prog_file, results_file)

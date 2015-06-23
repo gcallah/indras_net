@@ -19,10 +19,8 @@ MODEL_NM = "timer_model"
 # "property" file; this allows us to save
 #  multiple parameter sets, which is important in simulation work.
 #  We can read these in from file or set them here.
-read_props = False
-if read_props:
-    pa = props.PropArgs.read_props(MODEL_NM, "timer.props")
-else:
+pa = utils.read_props(MODEL_NM)
+if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
     pa.set("num_agents", 50)

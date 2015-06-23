@@ -1,9 +1,9 @@
+#!/usr/bin/env python3
 """
 edgebox_run.py
 The script to run our Edgeworth Box model.
 """
 
-import logging
 import indra.utils as utils
 import indra.prop_args as props
 import indra.node as node
@@ -12,11 +12,8 @@ import edgebox_model as ebm
 MODEL_NM = "edgebox_model"
 (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
 
-read_props = False
-
-if read_props:
-    pa = props.PropArgs.read_props(MODEL_NM, prop_file)
-else:
+pa = utils.read_props(MODEL_NM)
+if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
     pa.set("al_cheese", 20)
@@ -50,6 +47,4 @@ beatrice.endow(ebm.CHEESE,
 
 node.add_prehension(ebm.EdgeboxAgent, ebm.TRADE, ebm.EdgeboxAgent)
 
-logging.info("Starting program")
-env.run()
-env.record_results(results_file)
+utils.run_model(env, prog_file, results_file)

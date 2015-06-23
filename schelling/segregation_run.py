@@ -8,7 +8,6 @@ Created on Mon Mar  2 21:39:40 2015
 Segregation Run File
 """
 
-import logging
 import indra.utils as utils
 import indra.prop_args as props
 import segregation_model as sm
@@ -20,17 +19,17 @@ MODEL_NM = "segregation_model"
 # We store basic parameters in a "property" file; this allows us to save
 #  multiple parameter sets, which is important in simulation work.
 #  We can read these in from file or set them here.
-read_props = False
-if read_props:
-    pa = props.PropArgs.read_props(MODEL_NM, prop_file)
-else:
+pa = utils.read_props(MODEL_NM)
+if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
     pa.set("num_R_agents", 1100)
     pa.set("num_B_agents", 1100)
     pa.set("grid_width", 60)
     pa.set("grid_height", 60)
-    pa.ask("tolerance", "What is the agent's minimum % like self tolerated?",
+    pa.ask("tolerance",
+           "What is minimum tolerable proportion of " +
+           "neighboring agents like self?",
            float)
     pa.ask("hoodsize", "What is the agent's neighborhood size?", int)
 
@@ -54,9 +53,4 @@ for i in range(pa.get("num_R_agents")):
                   tolerance=pa.get('tolerance'),
                   nsize=pa.get('hoodsize')))
 
-# Logging is automatically set up for the modeler:
-logging.info("Starting program " + prog_file)
-
-# And now we set things running!
-env.run()
-env.record_results(results_file)
+utils.run_model(env, prog_file, results_file)

@@ -3,7 +3,6 @@
 A script to run our Menger model.
 """
 
-import logging
 import indra.utils as utils
 import indra.prop_args as props
 import indra.node as node
@@ -19,12 +18,9 @@ CSV_FILE = MODEL_NM + "02.csv"
 # "property" file; this allows us to save
 #  multiple parameter sets, which is important in simulation work.
 #  We can read these in from file or set them here.
-read_props = False
-if read_props:
-    pa = props.PropArgs.read_props(MODEL_NM, prop_file)
-else:
-    pa = props.PropArgs(MODEL_NM, logfile=log_file,
-                        loglevel=logging.INFO, props=None)
+pa = utils.read_props(MODEL_NM)
+if pa is None:
+    pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
     pa.set("prod_amt", 1)
 
@@ -36,9 +32,4 @@ env.add_prod_goods()
 
 node.add_prehension(mm.MengerAgent, bm.TRADE, mm.MengerAgent)
 
-# Logging is automatically set up for the modeler:
-logging.info("Starting program " + prog_file)
-
-# And now we set things running!
-env.run()
-env.record_results(results_file)
+utils.run_model(env, prog_file, results_file)

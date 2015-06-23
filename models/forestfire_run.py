@@ -3,7 +3,6 @@
 This file runs the forestfire_model.
 """
 
-import logging
 import indra.prop_args as props
 import indra.utils as utils
 import forestfire_model as fm
@@ -16,28 +15,23 @@ MODEL_NM = "forestfire_model"
 # "property" file; this allows us to save
 #  multiple parameter sets, which is important in simulation work.
 #  We can read these in from file or set them here.
-read_props = False
-if read_props:
-    pa = props.PropArgs.read_props(MODEL_NM, prop_file)
-else:
+pa = utils.read_props(MODEL_NM)
+if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
     pa.ask("density", "How dense is the forest? (0.0 - 1.0)", float)
+    pa.ask("grid_x", "What is the grid width?", int)
+    pa.ask("grid_y", "What is the grid height?", int)
 
-GRID_X = 100
-GRID_Y = 100
 density = pa.get("density")
+grid_x = pa.get("grid_x")
+grid_y = pa.get("grid_y")
 
 # Now we create a forest environment for our agents to act within:
-env = fm.ForestEnv(GRID_X, GRID_Y, density, model_nm=MODEL_NM, torus=False)
-num_agents = int(GRID_X * GRID_Y * density)
+env = fm.ForestEnv(grid_x, grid_y, density, model_nm=MODEL_NM, torus=False)
+num_agents = int(grid_x * grid_y * density)
 
 for i in range(num_agents):
     env.add_agent(fm.Tree(name="tree" + str(i)))
 
-# Logging is automatically set up for the modeler:
-logging.info("Starting program " + prog_file)
-
-# And now we set things running!
-env.run()
-env.record_results(results_file)
+utils.run_model(env, prog_file, results_file)

@@ -21,6 +21,7 @@ class SegregationAgent(ga.GridAgent):
     """
     def __init__(self, name, goal, tolerance, nsize=1):
         super().__init__(name, goal)
+        assert tolerance > 0.0 and tolerance < 1.0, "Tolerance must be 0 - 1"
         self.tolerance = tolerance
         self.hood_size = nsize
 

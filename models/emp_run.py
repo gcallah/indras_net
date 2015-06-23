@@ -4,7 +4,6 @@ A script to run our simple employee model,
 demonstrating heirarchical graphing.
 """
 
-import logging
 import indra.utils as utils
 import indra.prop_args as props
 import emp_model as em
@@ -17,10 +16,8 @@ MODEL_NM = "emp_model"
 # "property" file; this allows us to save
 #  multiple parameter sets, which is important in simulation work.
 #  We can read these in from file or set them here.
-read_props = False
-if read_props:
-    pa = props.PropArgs.read_props(MODEL_NM, prop_file)
-else:
+pa = utils.read_props(MODEL_NM)
+if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
 
@@ -44,5 +41,4 @@ em.employs(linda, sandy)
 em.employs(suzanne, linda)
 em.employs(suzanne, rich)
 
-logging.info("Starting program")
-env.run()
+utils.run_model(env, prog_file, results_file)

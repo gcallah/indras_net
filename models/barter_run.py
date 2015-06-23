@@ -2,7 +2,6 @@
 A script to run our barter model.
 """
 
-import logging
 import indra.utils as utils
 import indra.node as node
 import indra.prop_args as props
@@ -14,9 +13,8 @@ CSV_FILE = MODEL_NM + "02.csv"
 
 read_props = False
 
-if read_props:
-    pa = props.PropArgs.read_props(MODEL_NM, prop_file)
-else:
+pa = utils.read_props(MODEL_NM)
+if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file,
                         props=None)
     pa.set("model", MODEL_NM)
@@ -28,6 +26,4 @@ env.fetch_agents_from_file(CSV_FILE, bm.BarterAgent)
 
 node.add_prehension(bm.BarterAgent, bm.TRADE, bm.BarterAgent)
 
-logging.info("Starting program " + prog_file)
-env.run()
-env.record_results(results_file)
+utils.run_model(env, prog_file, results_file)

@@ -3,7 +3,6 @@
 predprey_run.py
 Script to run our predator-prey model.
 """
-import logging
 import indra.utils as utils
 import indra.node as node
 import indra.prop_args as props
@@ -13,11 +12,8 @@ import predprey_model as ppm
 MODEL_NM = "predprey_model"
 (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
 
-read_props = False
-
-if read_props:
-    pa = props.PropArgs.read_props(MODEL_NM, prop_file)
-else:
+pa = utils.read_props(MODEL_NM)
+if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
     pa.set("num_foxes", 16)
@@ -60,5 +56,4 @@ node.add_prehension(ppm.Fox, ppm.EAT, ppm.Rabbit)
 node.add_prehension(ppm.Rabbit, ppm.AVOID, ppm.Fox)
 # node.add_prehension(ppm.Rabbit, ppm.EAT, ppm.Grass)
 
-logging.info("Starting program")
-env.run()
+utils.run_model(env, prog_file, results_file)

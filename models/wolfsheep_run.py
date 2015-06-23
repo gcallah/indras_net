@@ -2,7 +2,6 @@
 A predator-prey model with wolves and sheep.
 """
 
-import logging
 import indra.utils as utils
 import indra.prop_args as props
 import wolfsheep_model as wsm
@@ -14,10 +13,8 @@ MODEL_NM = "wolfsheep_model"
 # We store basic parameters in a "property" file; this allows us to save
 #  multiple parameter sets, which is important in simulation work.
 #  We can read these in from file or set them here.
-read_props = False
-if read_props:
-    pa = props.PropArgs.read_props(MODEL_NM, prop_file)
-else:
+pa = utils.read_props(MODEL_NM)
+if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
     pa.set("num_wolves", 4)
@@ -48,9 +45,4 @@ for i in range(pa.get("num_sheep")):
                             pa.get("sheep_repro"),
                             pa.get("sheep_lforce")))
 
-# Logging is automatically set up for the modeler:
-logging.info("Starting program " + prog_file)
-
-# And now we set things running!
-env.run()
-env.record_results(results_file)
+utils.run_model(env, prog_file, results_file)

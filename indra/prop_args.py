@@ -34,7 +34,7 @@ class PropArgs(node.Node):
         """
         Create a property object with values in 'props'.
         """
-        return PropArgs(model_nm, props)
+        return PropArgs(model_nm, props=props)
 
     @staticmethod
     def read_props(model_nm, file_nm):
@@ -42,7 +42,7 @@ class PropArgs(node.Node):
         Create a new PropArgs object from a json file
         """
         props = json.load(open(file_nm))
-        return PropArgs.create_props(model_nm, props)
+        return PropArgs.create_props(model_nm, props=props)
 
     def __init__(self, model_nm, logfile=None, props=None,
                  loglevel=logging.INFO):
@@ -55,13 +55,14 @@ class PropArgs(node.Node):
             self.props = {}
         else:
             self.props = props
+            logfile = self.get("log_fname")
         self.logger = Logger(self, logfile=logfile)
         self.graph.add_edge(self, self.logger)
         self.set("OS", platform.system())
         # process command line args and set them as properties:
         prop_nm = None
         for arg in sys.argv:
-            if arg[0] == '-':
+            if arg.startswith('-'):
                 prop_nm = arg.lstrip('-')
             elif prop_nm is not None:
                 self.set(prop_nm, arg)

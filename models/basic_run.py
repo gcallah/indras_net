@@ -5,7 +5,6 @@ create new run scripts, and should be run to test
 the system after library changes.
 """
 
-import logging
 import indra.prop_args as props
 import indra.utils as utils
 import basic_model as bm
@@ -18,13 +17,11 @@ MODEL_NM = "basic_model"
 # "property" file; this allows us to save
 #  multiple parameter sets, which is important in simulation work.
 #  We can read these in from file or set them here.
-read_props = False
-if read_props:
-    pa = props.PropArgs.read_props(MODEL_NM, prop_file)
-else:
+pa = utils.read_props(MODEL_NM)
+if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
-    pa.set("num_agents", 10)
+    pa.ask("num_agents", "How many agents should we create?", int)
 
 # Now we create a minimal environment for our agents to act within:
 env = bm.BasicEnv(model_nm=MODEL_NM)
@@ -35,9 +32,4 @@ for i in range(pa.get("num_agents")):
     env.add_agent(bm.BasicAgent(name="agent" + str(i),
                                 goal="acting up!"))
 
-# Logging is automatically set up for the modeler:
-logging.info("Starting program " + prog_file)
-
-# And now we set things running!
-env.run()
-env.record_results(results_file)
+utils.run_model(env, prog_file, results_file)
