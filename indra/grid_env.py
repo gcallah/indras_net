@@ -332,32 +332,33 @@ class GridEnv(se.SpatialEnv):
         (y1, y2) = self._adjust_coords(center_y, distance, self.height)
         return GridView(self, x1, y1, x2, y2)
 
-    def neighbor_iter(self, x, y, distance=1, moore=True):
+    def neighbor_iter(self, x, y, distance=1, moore=True, view=None):
         """
         Iterate over our neighbors.
         """
-        neighbors = self.get_neighbors(x, y, distance, moore)
+        neighbors = self.get_neighbors(x, y, distance, moore, view)
         return map(lambda x: x.contents, iter(neighbors))
 
-    def get_neighbors(self, x, y, distance=1, moore=True):
+    def get_neighbors(self, x, y, distance=1, moore=True, view=None):
         """
-        Return a list of neighbors to a certain point.
+        Return a list of neighbors within a certain purview.
 
         Args:
             x, y: Coordinates for the neighborhood to get.
             distance: distance, in cells, of neighborhood to get.
+            view: we may already have a view we are working with.
 
         Returns:
             A list of non-None objects in the given neighborhood;
             at most 9 if Moore, 5 if Von-Neumann
             (8 and 4 if not including the center).
         """
-        grid_view = None
-        if moore:
-            grid_view = self.get_square_view((x, y), distance)
-        else:
-            grid_view = self.get_vonneumann_view((x, y), distance)
-        return grid_view.get_neighbors()
+        if view is None:
+            if moore:
+                view = self.get_square_view((x, y), distance)
+            else:
+                view = self.get_vonneumann_view((x, y), distance)
+        return view.get_neighbors()
 
     def exists_empty_cells(self, grid_view=None):
         """

@@ -41,27 +41,29 @@ class GridAgent(sa.SpatialAgent):
         else:
             return None
 
-    def _neighbor_filter(self, distance=1, moore=True):
+    def _neighbor_filter(self, distance=1, moore=True, view=None):
         return filter(lambda x: x is not self,
                       self.env.neighbor_iter(self.pos[X], self.pos[Y],
                                              distance=distance,
-                                             moore=moore))
+                                             moore=moore,
+                                             view=view))
 
     def get_square_view(self, distance):
         return self.env.get_square_view(self.pos, distance)
 
-    def neighbor_iter(self, distance=1, moore=True, save_hood=False):
+    def neighbor_iter(self, distance=1, moore=True, save_hood=False,
+                      view=None):
         """
         Iterate over our neighbors.
         In some models, the neighbors don't move:
             then we can save the neighborhood and a lot of overhead!
         """
         if not save_hood:
-            return self._neighbor_filter(distance, moore)
+            return self._neighbor_filter(distance, moore, view=view)
         else:
             if not self.neighborhood:
                 self.neighborhood = list(self._neighbor_filter(
-                                         distance, moore))
+                                         distance, moore, view=view))
             return iter(self.neighborhood)
 
     def to_json(self):

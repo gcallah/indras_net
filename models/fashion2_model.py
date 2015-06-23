@@ -4,6 +4,7 @@ Wolves and sheep roaming a meadow, with wolves eating sheep
 that get near them.
 """
 import logging
+import operator as op
 import indra.display_methods as disp
 import indra.menu as menu
 import indra.grid_env as ge
@@ -21,17 +22,42 @@ FSHN_TO_TRACK = BLUE
 
 class Fashionista(ga.GridAgent):
     """
-    A creature: moves around randomly.
-    Reproduction to be added.
+    An agent concerned with fashion.
     """
     def __init__(self, name, goal, max_move):
         super().__init__(name, goal)
         self.max_move = max_move
+        self.max_detect = max_move  # for now, anyway!
         self.fashion = None
+        self.adv_periods = 0
+        self.other = None
+        self.comp = None
 
     def act(self):
-        move_view = self.get_square_view(self.max_move)
-        self.env.move_to_empty(self, grid_view=move_view)
+        """
+        What to do when called upon to act?
+        """
+        has_my_fashion = 0
+        not_my_fashion = 0
+        my_view = self.get_square_view(self.max_move)  # == self.max_detect
+        for other in filter(lambda a: isinstance(a, self.other),
+                            self.neighbor_iter(view=my_view)):
+            if other.fashion == self.fashion:
+                has_my_fashion += 1
+            else:
+                not_my_fashion += 1
+        if self.comp(not_my_fashion, has_my_fashion):
+            self.respond_to_cond()
+        self.env.move_to_empty(self, grid_view=my_view)
+
+    def respond_to_cond(self):
+        """
+        What an agent does when he doesn't like the trend.
+        """
+        self.adv_periods += 1
+        if self.adv_periods >= self.env.min_adv_periods:
+            self.change_fashion()
+            self.adv_periods = 0
 
     def change_fashion(self):
         """
@@ -52,19 +78,8 @@ class Follower(Fashionista):
     def __init__(self, name, goal, max_move):
         super().__init__(name, goal, max_move)
         self.fashion = INIT_FLWR
-
-    def act(self):
-        super().act()
-        has_my_fashion = 0
-        not_my_fashion = 0
-        for hipster in filter(lambda a: isinstance(a, Hipster),
-                              self.neighbor_iter()):
-            if hipster.fashion == self.fashion:
-                has_my_fashion += 1
-            else:
-                not_my_fashion += 1
-        if not_my_fashion > has_my_fashion:
-            self.change_fashion()
+        self.other = Hipster
+        self.comp = op.gt
 
 
 class Hipster(Fashionista):
@@ -74,19 +89,8 @@ class Hipster(Fashionista):
     def __init__(self, name, goal, max_move):
         super().__init__(name, goal, max_move)
         self.fashion = INIT_HPST
-
-    def act(self):
-        super().act()
-        has_my_fashion = 0
-        not_my_fashion = 0
-        for follower in filter(lambda a: isinstance(a, Follower),
-                               self.neighbor_iter()):
-            if follower.fashion == self.fashion:
-                has_my_fashion += 1
-            else:
-                not_my_fashion += 1
-        if not_my_fashion < has_my_fashion:
-            self.change_fashion()
+        self.other = Follower
+        self.comp = op.lt
 
 
 class Society(ge.GridEnv):
@@ -95,6 +99,8 @@ class Society(ge.GridEnv):
     """
     def __init__(self, name, length, height, model_nm=None, torus=False):
         super().__init__(name, length, height, model_nm=model_nm, torus=False)
+        self.min_adv_periods = self.props.get("min_adv_periods",
+                                              default=6)
         self.menu.view.add_menu_item("v",
                                      menu.MenuLeaf("(v)iew fashions",
                                                    self.view_pop))

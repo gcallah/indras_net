@@ -22,19 +22,20 @@ class SegregationAgent(ga.GridAgent):
     def __init__(self, name, goal, tolerance, nsize=1):
         super().__init__(name, goal)
         self.tolerance = tolerance
-        self.neighborhood_size = nsize
+        self.hood_size = nsize
 
     def act(self):
         like_me = 0
         total_neighbors = 0
-        for neighbor in self.neighbor_iter(distance=self.neighborhood_size):
+
+        for neighbor in self.neighbor_iter(distance=self.hood_size):
             total_neighbors += 1
             if self.get_type() == neighbor.get_type():
                 like_me += 1
+
         if total_neighbors > 0:
             if like_me / total_neighbors < self.tolerance:
                 self.env.move_to_empty(self)
-                self.env.num_moves += 1
 
 
 class BlueAgent(SegregationAgent):
@@ -68,6 +69,10 @@ class SegregationEnv(grid.GridEnv):
         self.agents.set_var_color(RED_AGENT, 'r')
         self.num_moves = 0
         self.move_hist = []
+
+    def move_to_empty(self, agent):
+        super().move_to_empty(agent)
+        self.num_moves += 1
 
     def census(self, disp=True):
         """

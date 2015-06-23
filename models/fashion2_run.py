@@ -22,10 +22,12 @@ else:
     pa.set("model", MODEL_NM)
     pa.set("num_followers", 48)
     pa.set("num_hipsters", 16)
-    pa.set("fmax_move", 2)
-    pa.set("hmax_move", 2)
     pa.set("grid_width", 16)
     pa.set("grid_height", 16)
+    pa.ask("fmax_move", "What is the follower's max move?", int)
+    pa.ask("hmax_move", "What is the hipster's max move?", int)
+    pa.ask("min_adv_periods", "What are the minimum adverse periods?", int)
+
 
 # Now we create a minimal environment for our agents to act within:
 env = fm.Society("Society",
