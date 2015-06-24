@@ -29,7 +29,7 @@ if pa is None:
     pa.set("grid_height", 60)
     pa.ask("tolerance",
            "What is minimum tolerable proportion of " +
-           "neighboring agents like self?",
+           "neighboring agents like oneself?",
            float)
     pa.ask("hoodsize", "What is the agent's neighborhood size?", int)
 

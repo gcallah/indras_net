@@ -25,7 +25,7 @@ if pa is None:
     pa.set("bea_cheese", 0)
     pa.set("bea_cutil", "10 - .5 * qty")
 
-env = ebm.EdgeboxEnv("An Edgeworth Box", 50.0, 50.0, model_nm=MODEL_NM)
+env = ebm.EdgeboxEnv("An Edgeworth Box", 50, 50, model_nm=MODEL_NM)
 
 albert = ebm.EdgeboxAgent(name="Albert")
 env.add_agent(albert)

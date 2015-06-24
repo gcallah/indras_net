@@ -25,7 +25,7 @@ if pa is None:
     pa.set("prod_amt", 1)
 
 # Now we create an environment for our agents to act within:
-env = mm.MengerEnv("Menger's money model", 50.0, 50.0,
+env = mm.MengerEnv("Menger's money model", 50, 50,
                    model_nm=MODEL_NM)
 env.fetch_agents_from_file(CSV_FILE, mm.MengerAgent)
 env.add_prod_goods()

@@ -3,15 +3,15 @@ edgebox_model.py
 An Edgeworth Box model where two agents trade goods.
 """
 import logging
-import indra.plane_agent as pa
-import indra.plane_env as pe
+import indra.grid_agent as ga
+import indra.grid_env as ge
 
 TRADE = "trade"
 
 WINE = "wine"
 CHEESE = "cheese"
 
-GLOBAL_KNOWLEDGE = 1000.0
+GLOBAL_KNOWLEDGE = 10000  # a value bigger than any grid we will create
 
 ACCEPT = 1
 INADEQ = 0
@@ -25,7 +25,7 @@ def gen_util_func(qty):
     return 10 - .5 * qty
 
 
-class EdgeboxAgent(pa.PlaneAgent):
+class EdgeboxAgent(ga.GridAgent):
     """
     Agents who attempt to trade goods to achieve greater utility.
     We are descending this from PlaneAgent, because later on we want
@@ -204,7 +204,7 @@ class EdgeboxAgent(pa.PlaneAgent):
                             "incr": 0.0}
 
 
-class EdgeboxEnv(pe.PlaneEnv):
+class EdgeboxEnv(ge.GridEnv):
     """
     Contains goods and agents who exchange them.
     """

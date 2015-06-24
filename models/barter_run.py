@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 A script to run our barter model.
 """
@@ -5,6 +6,7 @@ A script to run our barter model.
 import indra.utils as utils
 import indra.node as node
 import indra.prop_args as props
+import edgebox_model as ebm
 import barter_model as bm
 
 MODEL_NM = "barter_model"
@@ -18,10 +20,9 @@ if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file,
                         props=None)
     pa.set("model", MODEL_NM)
-    pa.set("max_detect", 1000.0)
+    pa.set("max_detect", ebm.GLOBAL_KNOWLEDGE)
 
-env = bm.BarterEnv("A barter market", 50.0, 50.0,
-                   model_nm=MODEL_NM)
+env = bm.BarterEnv("A barter market", 50, 50, model_nm=MODEL_NM)
 env.fetch_agents_from_file(CSV_FILE, bm.BarterAgent)
 
 node.add_prehension(bm.BarterAgent, bm.TRADE, bm.BarterAgent)

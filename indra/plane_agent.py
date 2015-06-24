@@ -46,8 +46,6 @@ class PlaneAgent(sa.SpatialAgent):
         """
         pass
 
-        return (self.pos.real, self.pos.imag)
-
 
 class MobileAgent(PlaneAgent):
     """
