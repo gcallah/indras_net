@@ -32,6 +32,7 @@ class Fashionista(ga.GridAgent):
         self.adv_periods = 0
         self.other = None
         self.comp = None
+        self.my_view = None
 
     def act(self):
         """
@@ -39,16 +40,21 @@ class Fashionista(ga.GridAgent):
         """
         has_my_fashion = 0
         not_my_fashion = 0
-        my_view = self.get_square_view(self.max_move)  # == self.max_detect
+        self.my_view = self.get_square_view(self.max_move)  # == self.max_detect
         for other in filter(lambda a: isinstance(a, self.other),
-                            self.neighbor_iter(view=my_view)):
+                            self.neighbor_iter(view=self.my_view)):
             if other.fashion == self.fashion:
                 has_my_fashion += 1
             else:
                 not_my_fashion += 1
         if self.comp(not_my_fashion, has_my_fashion):
             self.respond_to_cond()
-        self.env.move_to_empty(self, grid_view=my_view)
+
+    def postact(self):
+        """
+        After we are done acting, move to an empty cell.
+        """
+        self.env.move_to_empty(self, grid_view=self.my_view)
 
     def respond_to_cond(self):
         """
@@ -98,7 +104,8 @@ class Society(ge.GridEnv):
     A society of hipsters and followers.
     """
     def __init__(self, name, length, height, model_nm=None, torus=False):
-        super().__init__(name, length, height, model_nm=model_nm, torus=False)
+        super().__init__(name, length, height, model_nm=model_nm,
+                         torus=False, postact=True)
         self.min_adv_periods = self.props.get("min_adv_periods",
                                               default=6)
         self.menu.view.add_menu_item("v",

@@ -75,3 +75,14 @@ class GridAgent(sa.SpatialAgent):
         safe_fields = super().to_json()
         safe_fields["pos"] = self.pos
         return safe_fields
+
+
+class SocialAgent(GridAgent):
+    """
+    A grid agent concerned with its neighbors.
+    """
+
+    def __init__(self, name, goal, max_move=0.0, max_detect=0.0, cell=None):
+        super().__init__(self, name, goal, max_move=max_move,
+                         max_detect=max_detect, cell=cell)
+        self.my_view = None

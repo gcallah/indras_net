@@ -23,8 +23,6 @@ class Tree(ga.GridAgent):
     Attributes:
         condition: Can be "Fine", "On Fire", or "Burned Out"
 
-    unique_id isn't strictly necessary here, but it's good
-    practice to give one to each agent anyway.
     '''
     def __init__(self, name):
         '''
