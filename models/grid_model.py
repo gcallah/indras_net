@@ -30,3 +30,6 @@ class TestGridAgent(ga.GridAgent):
 
     def preact(self):
         self.env.move_to_empty(self)
+
+    def postact(self):
+        print("Agent %s postacting" % (self.name))

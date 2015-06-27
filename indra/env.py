@@ -304,7 +304,7 @@ class Environment(node.Node):
 # now have everyone act in random order
         self.act_loop()
 
-# there might be cleanup to do after acting
+# there might be state-setting to do after acting
         if self.postact:
             self.postact_loop()
 
@@ -326,7 +326,7 @@ class Environment(node.Node):
         """
         Loop through agents calling their postact() func.
         """
-        for agent in self.agents:
+        for agent in self.agents.agent_random_iter():
             agent.postact()
 
     def graph_agents(self):

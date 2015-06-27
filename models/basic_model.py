@@ -24,7 +24,13 @@ class BasicAgent(ent.Agent):
         """
         Just print my name and goal!
         """
-        print("Agent %s with a goal of %s" % (self.name, self.goal))
+        # print("Agent %s with a goal of %s" % (self.name, self.goal))
+
+    def postact(self):
+        """
+        Test of postact loop.
+        """
+        print("Agent %s is postacting" % (self.name))
 
 
 class Gozer(BasicAgent):

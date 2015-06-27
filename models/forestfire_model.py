@@ -21,7 +21,7 @@ class Tree(ga.GridAgent):
     A tree cell.
 
     Attributes:
-        condition: Can be "Fine", "On Fire", or "Burned Out"
+        condition: Can be "Healthy", "On Fire", or "Burned Out"
 
     '''
     def __init__(self, name):
@@ -51,17 +51,22 @@ class Tree(ga.GridAgent):
 
     def act(self):
         '''
-        If the tree is on fire, spread it to healthy trees nearby.
+        If a neighbor is on fire, this tree catches on fire.
+        If this tree is on fire, set its next state to BURNED_OUT.
         '''
         if self.is_burning():
-            (x, y) = self.pos
+            self.next_state = BURNED_OUT
+        elif self.is_healthy():
+            # at some point, we may want to try bigger neighborhoods
+            # than size 1
             for neighbor in self.neighbor_iter():
-                if neighbor.is_healthy():
-                    neighbor.next_state = ON_FIRE
-            self.set_type(BURNED_OUT)
+                if neighbor.is_burning():
+                    self.next_state = ON_FIRE
+                    break
 
     def postact(self):
         if self.next_state is not None:
+            print("Setting type to %s" % self.next_state)
             self.set_type(self.next_state)
             self.next_state = None
 
