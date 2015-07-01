@@ -123,10 +123,18 @@ class GridView():
             raise StopIteration()
 
     def __init__(self, grid, x1, y1, x2, y2):
-        if grid.out_of_bounds(x1, y1):
-            raise OutOfBounds("x1 or y1 off grid.")
-        if grid.out_of_bounds(x2 - 1, y2 - 1):
-            raise OutOfBounds("x2 or y2 off grid.")
+        """
+        see if view is in grid
+        adjust x, y to fit if not
+        """
+        if x1 < 0:
+            x1 = 0
+        if y1 < 0:
+            y1 = 0
+        if x2 > grid.width:
+            x2 = grid.width
+        if y2 > grid.height:
+            y2 = grid.height
         self.grid = grid
         self.x1 = x1
         self.x2 = x2
@@ -230,6 +238,7 @@ class GridEnv(se.SpatialEnv):
         super().__init__(name, width, height, preact, postact, model_nm)
 
         self.torus = torus
+        self.num_cells = width * height
 
         self.grid = []
         self.empties = []

@@ -33,6 +33,12 @@ class BarterAgent(ebm.EdgeboxAgent):
         """
         super().act()
 
+    def postact(self):
+        """
+        Move to a random cell.
+        """
+        self.move_to_empty()
+
     def trade(self, my_good, my_amt, counterparty, his_good, his_amt):
         """
         Call our super's trade and then record
@@ -119,9 +125,10 @@ class BarterEnv(ebm.EdgeboxEnv):
     """
 
     def __init__(self, name, length, height, model_nm=None,
-                 preact=False):
+                 preact=False, postact=True):
         super().__init__(name, length, height,
-                         model_nm=model_nm, preact=preact)
+                         model_nm=model_nm, preact=preact,
+                         postact=postact)
         self.market = Market("agora")
         self.graph.add_edge(self, self.market)
         self.menu.graph.add_menu_item("m",

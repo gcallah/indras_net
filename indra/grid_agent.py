@@ -22,6 +22,7 @@ class GridAgent(sa.SpatialAgent):
                          max_detect=max_detect)
         self.__cell = cell
         self.neighborhood = None
+        self.my_view = None
 
     @property
     def cell(self):
@@ -41,30 +42,35 @@ class GridAgent(sa.SpatialAgent):
         else:
             return None
 
-    def _neighbor_filter(self, distance=1, moore=True, view=None):
+    def _neighbor_filter(self, moore=True, view=None):
         return filter(lambda x: x is not self,
                       self.env.neighbor_iter(self.pos[X], self.pos[Y],
-                                             distance=distance,
                                              moore=moore,
                                              view=view))
 
     def get_square_view(self, distance):
         return self.env.get_square_view(self.pos, distance)
 
-    def neighbor_iter(self, distance=1, moore=True, save_hood=False,
-                      view=None):
+    def neighbor_iter(self, moore=True, save_hood=False, view=None):
         """
         Iterate over our neighbors.
         In some models, the neighbors don't move:
             then we can save the neighborhood and a lot of overhead!
         """
+        if view is None:
+            # our default view is a square reaching 1 square out from self
+            self.get_square_view(1)
+
         if not save_hood:
-            return self._neighbor_filter(distance, moore, view=view)
+            return self._neighbor_filter(moore, view=view)
         else:
             if not self.neighborhood:
                 self.neighborhood = list(self._neighbor_filter(
-                                         distance, moore, view=view))
+                                         moore, view=view))
             return iter(self.neighborhood)
+
+    def move_to_empty(self, grid_view=None):
+        self.env.move_to_empty(self, grid_view)
 
     def to_json(self):
         """
@@ -75,14 +81,3 @@ class GridAgent(sa.SpatialAgent):
         safe_fields = super().to_json()
         safe_fields["pos"] = self.pos
         return safe_fields
-
-
-class SocialAgent(GridAgent):
-    """
-    A grid agent concerned with its neighbors.
-    """
-
-    def __init__(self, name, goal, max_move=0.0, max_detect=0.0, cell=None):
-        super().__init__(self, name, goal, max_move=max_move,
-                         max_detect=max_detect, cell=cell)
-        self.my_view = None

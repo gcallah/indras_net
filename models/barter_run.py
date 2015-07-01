@@ -20,9 +20,13 @@ if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file,
                         props=None)
     pa.set("model", MODEL_NM)
-    pa.set("max_detect", ebm.GLOBAL_KNOWLEDGE)
+    pa.ask("max_detect", "What is the trader detect distance?", int,
+           default=ebm.GLOBAL_KNOWLEDGE)
+    pa.ask("grid_dim", "What is the length of the grid's sides?",
+           int, default=50)
 
-env = bm.BarterEnv("A barter market", 50, 50, model_nm=MODEL_NM)
+dim = pa.get("grid_dim")
+env = bm.BarterEnv("A barter market", dim, dim, model_nm=MODEL_NM)
 env.fetch_agents_from_file(CSV_FILE, bm.BarterAgent)
 
 node.add_prehension(bm.BarterAgent, bm.TRADE, bm.BarterAgent)

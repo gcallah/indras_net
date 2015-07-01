@@ -29,7 +29,8 @@ class SegregationAgent(ga.GridAgent):
         like_me = 0
         total_neighbors = 0
 
-        for neighbor in self.neighbor_iter(distance=self.hood_size):
+        self.my_view = self.get_square_view(self.hood_size)
+        for neighbor in self.neighbor_iter(view=self.my_view):
             total_neighbors += 1
             if self.get_type() == neighbor.get_type():
                 like_me += 1

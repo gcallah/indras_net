@@ -32,7 +32,6 @@ class Fashionista(ga.GridAgent):
         self.adv_periods = 0
         self.other = None
         self.comp = None
-        self.my_view = None
 
     def act(self):
         """
@@ -54,7 +53,7 @@ class Fashionista(ga.GridAgent):
         """
         After we are done acting, move to an empty cell.
         """
-        self.env.move_to_empty(self, grid_view=self.my_view)
+        self.move_to_empty(grid_view=self.my_view)
 
     def respond_to_cond(self):
         """

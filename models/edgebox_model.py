@@ -11,7 +11,7 @@ TRADE = "trade"
 WINE = "wine"
 CHEESE = "cheese"
 
-GLOBAL_KNOWLEDGE = 10000  # a value bigger than any grid we will create
+GLOBAL_KNOWLEDGE = 10000000  # a value bigger than any grid we will create
 
 ACCEPT = 1
 INADEQ = 0
@@ -45,19 +45,18 @@ class EdgeboxAgent(ga.GridAgent):
         in the base framework
         """
 
-        potential_traders = self.survey_env(TRADE)
-        for t in potential_traders:
-            if t is not self:
-                for g in self.goods:
-                    amt = 1
-                    while self.goods[g]["endow"] >= amt:
-                        logging.info(self.name + " is offering "
-                                     + str(amt) + " units of "
-                                     + g + " to " + t.name)
-                        ans = t.rec_offer(g, amt, self)
-                        if ans == ACCEPT or ans == REJECT:
-                            break
-                        amt += 1
+        self.my_view = self.get_square_view(self.max_detect)
+        for trader in self.neighbor_iter(view=self.my_view):
+            for g in self.goods:
+                amt = 1
+                while self.goods[g]["endow"] >= amt:
+                    logging.info(self.name + " is offering "
+                                 + str(amt) + " units of "
+                                 + g + " to " + trader.name)
+                    ans = trader.rec_offer(g, amt, self)
+                    if ans == ACCEPT or ans == REJECT:
+                        break
+                    amt += 1
 
     def endow(self, good, new_endow, util_func=None):
         """
@@ -210,9 +209,9 @@ class EdgeboxEnv(ge.GridEnv):
     """
 
     def __init__(self, name, length, height, model_nm=None,
-                 preact=False):
+                 preact=False, postact=False):
         super().__init__(name, length, height, model_nm=model_nm,
-                         preact=preact)
+                         preact=preact, postact=postact)
         self.do_census = False
         self.trades_this_prd = 0
 

@@ -65,8 +65,10 @@ class Tree(ga.GridAgent):
                     break
 
     def postact(self):
+        """
+        Set our type to next_state.
+        """
         if self.next_state is not None:
-            print("Setting type to %s" % self.next_state)
             self.set_type(self.next_state)
             self.next_state = None
 

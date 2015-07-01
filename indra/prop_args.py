@@ -94,13 +94,15 @@ class PropArgs(node.Node):
             self.props[nm] = default
         return self.props[nm]
 
-    def ask(self, nm, msg, val_type):
+    def ask(self, nm, msg, val_type, default=None):
         """
         Ask the user for a property value, which might come
         from the user via the command line.
         """
         if nm not in self.props:
             val = input(msg + " ")
+            if len(val) == 0:
+                val = default
         else:  # it was set from command line
             val = self.get(nm)
         self.set(nm, val_type(val))
