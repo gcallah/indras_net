@@ -23,15 +23,15 @@ pa = utils.read_props(MODEL_NM)
 if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
-    pa.set("num_R_agents", 1100)
-    pa.set("num_B_agents", 1100)
-    pa.set("grid_width", 60)
-    pa.set("grid_height", 60)
+    pa.ask("num_R_agents", "What is num red agents?", int, default=1100)
+    pa.ask("num_B_agents", "What is num blue agents?", int,  default=1100)
+    pa.ask("grid_width", "What is the grid width?", int, default=60)
+    pa.ask("grid_height", "What is the grid height?", int, default=60)
     pa.ask("tolerance",
            "What is minimum tolerable proportion of " +
            "neighboring agents like oneself?",
-           float)
-    pa.ask("hoodsize", "What is the agent's neighborhood size?", int)
+           float, default=.44)
+    pa.ask("hoodsize", "What is the agent's neighborhood size?", int, default=4)
 
 # Now we create an environment for our agents to act within:
 env = sm.SegregationEnv("A city",

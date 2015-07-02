@@ -17,16 +17,17 @@ pa = utils.read_props(MODEL_NM)
 if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
-    pa.set("num_wolves", 4)
-    pa.set("num_sheep", 16)
-    pa.set("grid_width", 16)
-    pa.set("grid_height", 16)
-    pa.ask("wolf_repro", "What is the wolf reproduction age?", int)
-    pa.ask("wolf_lforce", "What is the wolf life force?", int)
-    pa.ask("sheep_repro", "What is the sheep reproduction age?", int)
-    pa.ask("sheep_lforce", "What is the sheep life force?", int)
+    pa.ask("num_wolves", "What is num wolves?", int, default=4)
+    pa.ask("num_sheep", "What is num sheep?", int, default=16)
+    pa.ask("grid_width", "What is grid width?", int, default=16)
+    pa.ask("grid_height", "What is grid height?", int, default=16)
+    pa.ask("wolf_repro", "What is the wolf reproduction age?", int, default=8)
+    pa.ask("wolf_lforce", "What is the wolf life force?", int, default=7)
+    pa.ask("sheep_repro", "What is the sheep reproduction age?", int,
+           default=4)
+    pa.ask("sheep_lforce", "What is the sheep life force?", int, default=5)
 
-# Now we create a minimal environment for our agents to act within:
+# Now we create a meadow for our agents to act within:
 env = wsm.Meadow("Meadow",
                  pa.get("grid_height"),
                  pa.get("grid_width"),

@@ -54,8 +54,10 @@ class Wolf(Creature):
     def act(self):
         super().act()
         if self.alive:
-            for sheep in filter(lambda a: isinstance(a, Sheep),
-                                self.neighbor_iter()):
+
+            def my_filter(n): return isinstance(n, Sheep)
+
+            for sheep in self.neighbor_iter(filt_func=my_filter):
                 if sheep.alive:
                     self.eat(sheep)
                     break  # don't be greedy! eat one sheep per turn!

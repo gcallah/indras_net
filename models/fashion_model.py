@@ -1,164 +1,113 @@
-
 """
-Filename: fashion_model.py
-Author: Gene Callahan
-Implements Adam Smith's fashion model of
-trend-setters and followers.
+fashion_model.py
+A fashion model that includes followers and hipsters
+changing fashions based on each other's choices.
 """
-
 import logging
-import indra.menu as menu
-import indra.entity as ent
-import indra.plane_env as pe
+import operator as op
 import indra.display_methods as disp
-import predprey_model as prdpry
+import indra.menu as menu
+import indra.grid_env as ge
+import indra.grid_agent as ga
 
 fashions = ["blue", "red"]
 
-INIT_FLWR = 0
-INIT_TRND = 1
+BLUE = 0
+RED = 1
+INIT_FLWR = BLUE
+INIT_HPST = RED
 
-FSHN_TO_TRACK = 0
+FSHN_TO_TRACK = BLUE
 
 
-class Fashionista(prdpry.MobileCreature):
-
+class Fashionista(ga.GridAgent):
     """
-    The base class for trend-setters and followers.
+    An agent concerned with fashion.
     """
-
-    def __init__(self, name, life_force=20, repro_age=1000,
-                 decay_rate=0.0, max_move=20.0, max_detect=20.0,
-                 max_eat=10.0, goal="", rand_age=False):
-
-        super().__init__(name, life_force, repro_age,
-                         decay_rate, max_move, max_detect,
-                         max_eat, goal, rand_age)
-
+    def __init__(self, name, goal, max_move):
+        super().__init__(name, goal)
+        self.max_move = max_move
+        self.max_detect = max_move  # for now, anyway!
         self.fashion = None
         self.adv_periods = 0
+        self.other = None
+        self.comp = None
 
     def act(self):
         """
-        Take a look around and see who is wearing what!
+        What to do when called upon to act?
         """
-        return self.survey_env(self.goal)
+        has_my_fashion = 0
+        not_my_fashion = 0
+        self.my_view = self.get_square_view(self.max_move)  # == self.max_detect
 
-    def survey_env(self, goal):
-        """
-        Take a look around and see who is wearing what!
-        """
-        return ent.Agent.survey_env(self, goal)
+        def my_filter(n): return isinstance(n, self.other)
 
-    def respond_to_trends(self, prehended, gt, fshn_ratio,
-                          min_others):
-        """
-        What an agent does based on trends around her,
-        """
-        if len(prehended) >= min_others:
-            has_my_fashion = 0
-            not_my_fashion = 0
-            for preh in prehended:
-                if preh.fashion == self.fashion:
-                    has_my_fashion += 1
-                else:
-                    not_my_fashion += 1
-            if(gt is True and
-               has_my_fashion > not_my_fashion * fshn_ratio):
-                self.adverse_response()
-            elif has_my_fashion * fshn_ratio < not_my_fashion:
-                self.adverse_response()
+        for other in self.neighbor_iter(view=self.my_view,
+                                        filt_func=my_filter):
+            if other.fashion == self.fashion:
+                has_my_fashion += 1
+            else:
+                not_my_fashion += 1
+        if self.comp(not_my_fashion, has_my_fashion):
+            self.respond_to_cond()
 
-    def adverse_response(self):
+    def postact(self):
+        """
+        After we are done acting, move to an empty cell.
+        """
+        self.move_to_empty(grid_view=self.my_view)
+
+    def respond_to_cond(self):
         """
         What an agent does when he doesn't like the trend.
         """
         self.adv_periods += 1
         if self.adv_periods >= self.env.min_adv_periods:
-            self.adv_periods = 0
             self.change_fashion()
+            self.adv_periods = 0
 
     def change_fashion(self):
         """
         Switch my fashion.
         """
-        if self.fashion == 1:
-            self.fashion = 0
+        if self.fashion == RED:
+            self.fashion = BLUE
         else:
-            self.fashion = 1
+            self.fashion = RED
         self.env.record_fashion_change(self)
         logging.info(self.name + " is changing fashions")
 
 
-class Follower(Fashionista, prdpry.Predator):
-
+class Follower(Fashionista):
     """
-    This class describes the followers in Adam Smith's fashion model
+    A fashion follower: tries to switch to hipsters' fashions.
     """
-
-    def __init__(self, name, life_force=20, repro_age=1000,
-                 decay_rate=0.0, max_move=20.0, max_detect=20.0,
-                 max_eat=10.0, goal=prdpry.EAT):
-
-        super().__init__(name, life_force, repro_age,
-                         decay_rate, max_move, max_detect,
-                         max_eat, goal)
-
+    def __init__(self, name, goal, max_move):
+        super().__init__(name, goal, max_move)
         self.fashion = INIT_FLWR
-
-    def act(self):
-        prehended = super().act()
-        if prehended is not None and len(prehended) > 0:
-            self.respond_to_trends(prehended, False,
-                                   self.env.fshn_f_ratio,
-                                   self.env.flwr_others)
+        self.other = Hipster
+        self.comp = op.gt
 
 
-class TrendSetter(Fashionista, prdpry.MobilePrey):
+class Hipster(Fashionista):
     """
-    This class describes the trendsetters in Adam Smith's
-    fashion model
+    A fashion hipster: tries to not look like followers.
     """
-
-    def __init__(self, name, life_force=20, repro_age=1000,
-                 decay_rate=0.0, max_move=20.0, max_detect=20.0,
-                 goal=prdpry.AVOID):
-
-        super().__init__(name, life_force, repro_age,
-                         decay_rate, max_move, max_detect,
-                         goal=goal)
-
-        self.fashion = INIT_TRND
-
-    def act(self):
-        prehended = super().act()
-        if prehended is not None and len(prehended) > 0:
-            self.respond_to_trends(prehended,
-                                   True,
-                                   self.env.fshn_t_ratio,
-                                   self.env.trnd_others)
+    def __init__(self, name, goal, max_move):
+        super().__init__(name, goal, max_move)
+        self.fashion = INIT_HPST
+        self.other = Follower
+        self.comp = op.lt
 
 
-class SocietyEnv(pe.PlaneEnv):
+class Society(ge.GridEnv):
     """
-    This is the society in which our fashionistas
-    will adopt fashions
+    A society of hipsters and followers.
     """
-
-    def __init__(self, name, length, height, model_nm=None):
-        super().__init__(name, length, height,
-                         preact=True, postact=False,
-                         model_nm=model_nm)
-        self.fshn_f_ratio = self.props.get("fshn_f_ratio",
-                                           default=1.3)
-        self.fshn_t_ratio = self.props.get("fshn_t_ratio",
-                                           default=1.5)
-
-        self.flwr_others = self.props.get("flwr_others",
-                                          default=3)
-        self.trnd_others = self.props.get("trnd_others",
-                                          default=5)
-
+    def __init__(self, name, length, height, model_nm=None, torus=False):
+        super().__init__(name, length, height, model_nm=model_nm,
+                         torus=False, postact=True)
         self.min_adv_periods = self.props.get("min_adv_periods",
                                               default=6)
         self.menu.view.add_menu_item("v",
@@ -170,9 +119,7 @@ class SocietyEnv(pe.PlaneEnv):
         Add a new fashion agent to the env.
         """
         super().add_agent(agent)
-
         var = agent.get_type()
-
         if agent.fashion == FSHN_TO_TRACK:
             self.agents.change_pop_data(var, 1)
 
@@ -197,13 +144,6 @@ class SocietyEnv(pe.PlaneEnv):
             pop = self.agents.get_pop_data(var)
             self.user.tell(var + ": " + str(pop))
             self.agents.append_pop_hist(var, pop)
-
-    def address_prehensions(self, agent, prehensions):
-        """
-        Process prehensions list if needed.
-        Here we don't have to.
-        """
-        return prehensions
 
     def view_pop(self):
         """

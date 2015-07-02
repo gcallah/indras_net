@@ -42,8 +42,14 @@ class GridAgent(sa.SpatialAgent):
         else:
             return None
 
-    def _neighbor_filter(self, moore=True, view=None):
-        return filter(lambda x: x is not self,
+    def _neighbor_filter(self, moore=True, view=None, filt_func=None):
+        """
+        This filter can be overridden in class's that need a different one
+        by passing in a different filter function.
+        """
+        if filt_func is None:
+            def filt_func(n): return n is not self
+        return filter(filt_func,
                       self.env.neighbor_iter(self.pos[X], self.pos[Y],
                                              moore=moore,
                                              view=view))
@@ -51,7 +57,8 @@ class GridAgent(sa.SpatialAgent):
     def get_square_view(self, distance):
         return self.env.get_square_view(self.pos, distance)
 
-    def neighbor_iter(self, moore=True, save_hood=False, view=None):
+    def neighbor_iter(self, moore=True, save_hood=False, view=None,
+                      filt_func=None):
         """
         Iterate over our neighbors.
         In some models, the neighbors don't move:
@@ -62,11 +69,12 @@ class GridAgent(sa.SpatialAgent):
             self.get_square_view(1)
 
         if not save_hood:
-            return self._neighbor_filter(moore, view=view)
+            return self._neighbor_filter(moore, view=view, filt_func=filt_func)
         else:
             if not self.neighborhood:
                 self.neighborhood = list(self._neighbor_filter(
-                                         moore, view=view))
+                                         moore, view=view,
+                                         filt_func=filt_func))
             return iter(self.neighborhood)
 
     def move_to_empty(self, grid_view=None):

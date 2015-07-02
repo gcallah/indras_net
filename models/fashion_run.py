@@ -1,49 +1,47 @@
 #!/usr/bin/env python3
 """
-fashion_run.py: A script to run fashion_model.py,
-which implements Adam Smith's fashion model.
+Runs a fashion model with hipsters and followers.
 """
 
 import indra.utils as utils
-import indra.node as node
 import indra.prop_args as props
-import predprey_model as ppm
 import fashion_model as fm
 
-MODEL_NM = "fashion_model"
+# set up some file names:
+MODEL_NM = "fashion2_model"
 (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
 
+# We store basic parameters in a "property" file; this allows us to save
+#  multiple parameter sets, which is important in simulation work.
+#  We can read these in from file or set them here.
 pa = utils.read_props(MODEL_NM)
 if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
-
     pa.set("model", MODEL_NM)
+    pa.ask("num_followers", "What is the number of followers?", int, default=48)
+    pa.ask("num_hipsters", "What is the number of hipsters?", int, default=16)
+    pa.ask("grid_width", "What is the grid width?", int, default=16)
+    pa.ask("grid_height", "What is the grid height?", int, default=16)
+    pa.ask("fmax_move", "What is the follower's max move?", int, default=4)
+    pa.ask("hmax_move", "What is the hipster's max move?", int, default=4)
+    pa.ask("min_adv_periods", "What are the minimum adverse periods?", int,
+           default=6)
 
-    pa.set("num_trndstr", 20)
-    pa.set("num_flwr", 80)
 
-    pa.set("fshn_f_ratio", 1.3)
-    pa.set("fshn_t_ratio", 1.5)
+# Now we create a minimal environment for our agents to act within:
+env = fm.Society("Society",
+                 pa.get("grid_height"),
+                 pa.get("grid_width"),
+                 torus=False,
+                 model_nm=MODEL_NM)
 
-    pa.set("flwr_others", 3)
-    pa.set("trnd_others", 5)
-
-    pa.set("flwr_max_detect", 20.0)
-    pa.set("trnd_max_detect", 20.0)
-
-    pa.set("min_adv_periods", 8)
-
-env = fm.SocietyEnv("society", 50.0, 50.0, model_nm=MODEL_NM)
-
-for i in range(pa.get("num_flwr")):
-    env.add_agent(fm.Follower(name="prole" + str(i),
-                  max_detect=pa.get("flwr_max_detect")))
-
-for i in range(pa.get("num_trndstr")):
-    env.add_agent(fm.TrendSetter(name="hipster" + str(i),
-                  max_detect=pa.get("trnd_max_detect")))
-
-node.add_prehension(fm.Follower, ppm.EAT, fm.TrendSetter)
-node.add_prehension(fm.TrendSetter, ppm.AVOID, fm.Follower)
+# Now we loop creating multiple agents with numbered names
+# based on the loop variable:
+for i in range(pa.get("num_followers")):
+    env.add_agent(fm.Follower("follower" + str(i), "Looking like hipsters",
+                              pa.get("fmax_move")))
+for i in range(pa.get("num_hipsters")):
+    env.add_agent(fm.Hipster("hipster" + str(i), "Looking trendy",
+                             pa.get("hmax_move")))
 
 utils.run_model(env, prog_file, results_file)
