@@ -19,16 +19,23 @@ pa = utils.read_props(MODEL_NM)
 if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
-    pa.ask("density", "How dense is the forest? (0.0 - 1.0)", float)
-    pa.ask("grid_x", "What is the grid width?", int)
-    pa.ask("grid_y", "What is the grid height?", int)
+    pa.ask("density", "How dense is the forest? (0.0 - 1.0)", float,
+           default=.43)
+    pa.ask("grid_x", "What is the grid width?", int, default=100)
+    pa.ask("grid_y", "What is the grid height?", int, default=100)
+    pa.ask("strike_freq", "How many turns between lightning strikes?",
+           int, default=4)
+    pa.ask("regen_period",
+           "How many turns before a new tree grows where one has burned?",
+           int, default=20)
 
 density = pa.get("density")
 grid_x = pa.get("grid_x")
 grid_y = pa.get("grid_y")
 
 # Now we create a forest environment for our agents to act within:
-env = fm.ForestEnv(grid_x, grid_y, density, model_nm=MODEL_NM, torus=False)
+env = fm.ForestEnv(grid_x, grid_y, density, pa.get("strike_freq"),
+                   pa.get("regen_period"), model_nm=MODEL_NM, torus=False)
 num_agents = int(grid_x * grid_y * density)
 
 for i in range(num_agents):

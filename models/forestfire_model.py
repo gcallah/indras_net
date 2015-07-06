@@ -4,6 +4,7 @@ Adapted from the George Mason mesa project.
 This model shows the spread of a forest fire through a forest.
 """
 
+import indra.display_methods as disp
 import indra.grid_agent as ga
 import indra.grid_env as grid
 
@@ -31,6 +32,7 @@ class Tree(ga.GridAgent):
         super().__init__(name, "burn")
         self.ntype = HEALTHY
         self.next_state = None
+        self.dead_periods = 0
 
     def is_healthy(self):
         return self.ntype == HEALTHY
@@ -63,6 +65,11 @@ class Tree(ga.GridAgent):
                 if neighbor.is_burning():
                     self.next_state = ON_FIRE
                     break
+        elif self.is_burnt:
+            self.dead_periods += 1
+            if self.dead_periods >= self.env.regen_period:
+                self.next_state = HEALTHY
+                self.dead_periods = 0
 
     def postact(self):
         """
@@ -79,8 +86,8 @@ class ForestEnv(grid.GridEnv):
     '''
     Simple Forest Fire model.
     '''
-    def __init__(self, height, width, density, torus=False,
-                 model_nm="ForestFire", postact=True):
+    def __init__(self, height, width, density, strike_freq, regen_period,
+                 torus=False, model_nm="ForestFire", postact=True):
         '''
         Create a new forest fire model.
 
@@ -92,21 +99,22 @@ class ForestEnv(grid.GridEnv):
         super().__init__("Forest Fire", height, width, torus=False,
                          model_nm=model_nm, postact=postact)
         self.density = density
+        self.strike_freq = strike_freq
+        self.regen_period = regen_period
         self.plot_title = "A Forest Fire"
 
         # setting our colors adds varieties as well!
-        self.agents.set_var_color(BURNED_OUT, 'k')
-        self.agents.set_var_color(ON_FIRE, 'r')
-        self.agents.set_var_color(HEALTHY, 'g')
-
-    def add_agent(self, tree):
-        super().add_agent(tree)
-        (x, y) = tree.pos
-        if x == 0:
-            tree.set_type(ON_FIRE)
+        self.agents.set_var_color(BURNED_OUT, disp.BLACK)
+        self.agents.set_var_color(ON_FIRE, disp.RED)
+        self.agents.set_var_color(HEALTHY, disp.GREEN)
 
     def step(self):
+        """
+        We strike a tree with lightning every self.strike_freq
+        turns.
+        """
+        if self.period % self.strike_freq == 0:
+            target = self.get_randagent_of_var(HEALTHY)
+            if target is not None:
+                target.set_type(ON_FIRE)
         super().step()
-        # Halt if no more fire
-        if self.get_pop(ON_FIRE) == 0:
-            return "The fire is out!"

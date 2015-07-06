@@ -8,7 +8,7 @@ import indra.prop_args as props
 import fashion_model as fm
 
 # set up some file names:
-MODEL_NM = "fashion2_model"
+MODEL_NM = "fashion_model"
 (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
 
 # We store basic parameters in a "property" file; this allows us to save

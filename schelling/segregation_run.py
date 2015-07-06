@@ -31,7 +31,8 @@ if pa is None:
            "What is minimum tolerable proportion of " +
            "neighboring agents like oneself?",
            float, default=.44)
-    pa.ask("hoodsize", "What is the agent's neighborhood size?", int, default=4)
+    pa.ask("max_detect", "What is the agent's neighborhood size?",
+           int, default=4)
 
 # Now we create an environment for our agents to act within:
 env = sm.SegregationEnv("A city",
@@ -45,12 +46,12 @@ for i in range(pa.get("num_B_agents")):
     env.add_agent(sm.BlueAgent(name="Blue agent" + str(i),
                   goal="A preferred neighborhood.",
                   tolerance=pa.get('tolerance'),
-                  nsize=pa.get('hoodsize')))
+                  max_detect=pa.get('max_detect')))
 
 for i in range(pa.get("num_R_agents")):
     env.add_agent(sm.RedAgent(name="Red agent" + str(i),
                   goal="A good neighborhood.",
                   tolerance=pa.get('tolerance'),
-                  nsize=pa.get('hoodsize')))
+                  max_detect=pa.get('max_detect')))
 
 utils.run_model(env, prog_file, results_file)

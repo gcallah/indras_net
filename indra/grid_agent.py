@@ -17,11 +17,12 @@ class GridAgent(sa.SpatialAgent):
     located in a grid space (and might or might not move in it)
     """
 
-    def __init__(self, name, goal, max_move=0.0, max_detect=0.0, cell=None):
+    def __init__(self, name, goal, max_move=0, max_detect=0, cell=None):
         super().__init__(name, goal, max_move=max_move,
                          max_detect=max_detect)
         self.__cell = cell
         self.neighborhood = None
+        self.hood_size = max_detect
         self.my_view = None
 
     @property
@@ -53,6 +54,9 @@ class GridAgent(sa.SpatialAgent):
                       self.env.neighbor_iter(self.pos[X], self.pos[Y],
                                              moore=moore,
                                              view=view))
+
+    def act(self):
+        self.my_view = self.get_square_view(self.hood_size)
 
     def get_square_view(self, distance):
         return self.env.get_square_view(self.pos, distance)

@@ -99,6 +99,8 @@ class PropArgs(node.Node):
         Ask the user for a property value, which might come
         from the user via the command line.
         """
+        if default is not None:
+            msg += " (" + str(default) + ")"
         if nm not in self.props:
             val = input(msg + " ")
             if len(val) == 0:

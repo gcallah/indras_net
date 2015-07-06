@@ -25,9 +25,7 @@ class Fashionista(ga.GridAgent):
     An agent concerned with fashion.
     """
     def __init__(self, name, goal, max_move):
-        super().__init__(name, goal)
-        self.max_move = max_move
-        self.max_detect = max_move  # for now, anyway!
+        super().__init__(name, goal, max_move, max_detect=max_move)
         self.fashion = None
         self.adv_periods = 0
         self.other = None
@@ -35,11 +33,11 @@ class Fashionista(ga.GridAgent):
 
     def act(self):
         """
-        What to do when called upon to act?
+        Try to adjust our fashion to our neighbor's
         """
+        super().act()
         has_my_fashion = 0
         not_my_fashion = 0
-        self.my_view = self.get_square_view(self.max_move)  # == self.max_detect
 
         def my_filter(n): return isinstance(n, self.other)
 
@@ -108,6 +106,8 @@ class Society(ge.GridEnv):
     def __init__(self, name, length, height, model_nm=None, torus=False):
         super().__init__(name, length, height, model_nm=model_nm,
                          torus=False, postact=True)
+        self.agents.set_var_color('Hipster', disp.GREEN)
+        self.agents.set_var_color('Follower', disp.MAGENTA)
         self.min_adv_periods = self.props.get("min_adv_periods",
                                               default=6)
         self.menu.view.add_menu_item("v",

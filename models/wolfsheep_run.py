@@ -31,12 +31,11 @@ if pa is None:
 env = wsm.Meadow("Meadow",
                  pa.get("grid_height"),
                  pa.get("grid_width"),
-                 torus=False,
                  model_nm=MODEL_NM,
                  preact=True)
 
 # Now we loop creating multiple agents with numbered names
-# based on the loop variable:
+# based on the number of agents of that type to create:
 for i in range(pa.get("num_wolves")):
     env.add_agent(wsm.Wolf("wolf" + str(i), "Eating sheep",
                            pa.get("wolf_repro"),

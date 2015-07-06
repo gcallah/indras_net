@@ -110,6 +110,9 @@ class Environment(node.Node):
         """
         return self.agents.get_agents_of_var(var)
 
+    def get_randagent_of_var(self, var):
+        return self.agents.get_randagent_of_var(var)
+
     def run(self, resume=False, loops=0):
         """
         This is the main menu loop for all models.

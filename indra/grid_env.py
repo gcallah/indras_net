@@ -387,7 +387,7 @@ class GridEnv(se.SpatialEnv):
         """
         empty_cell = self.find_empty(grid_view)
         if empty_cell is None:
-            logging.ERROR("Agent could not move because no cells are empty")
+            logging.error("Agent could not move because no cells are empty")
         else:
             self._move_item(agent, empty_cell)
 

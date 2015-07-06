@@ -8,7 +8,6 @@ from multiple perspectives.
 """
 
 from collections import OrderedDict
-import copy
 import random
 import itertools
 import json
@@ -31,7 +30,6 @@ class AgentPop(node.Node):
         super().__init__(name)
         self.vars = OrderedDict()
         self.graph = nx.Graph()
-        self.num_zombies = 0
 
     def __iter__(self):
         alists = []
@@ -49,9 +47,6 @@ class AgentPop(node.Node):
     def __reversed__(self):
         all_agents = self.all_agents_list()
         return reversed(all_agents)
-
-    def set_num_zombies(self, num):
-        self.num_zombies = num
 
     def varieties_iter(self):
         """
@@ -126,8 +121,6 @@ class AgentPop(node.Node):
                               # some arbitrary data to track for pop:
                               "pop_data": 0,
                               "pop_hist": [],
-                              "zombies": [],
-                              "zero_per": 0,
                               "my_periods": 0,
                               "disp_color": None}
 
@@ -150,17 +143,6 @@ class AgentPop(node.Node):
 # we link each agent to the variety
 # so we can show their relationship
         self.graph.add_edge(var, agent)
-
-    def create_zombies(self):
-        """
-        Choose a random batch of agents from each var
-        for possible revivial later.
-        """
-        if self.num_zombies > 0:
-            for var in self.varieties_iter():
-                while len(self.vars[var]["zombies"]) < self.num_zombies:
-                    agent = random.choice(self.vars[var]["agents"])
-                    self.vars[var]["zombies"].append(copy.copy(agent))
 
     def remove(self, agent, v=None):
         """
@@ -194,6 +176,9 @@ class AgentPop(node.Node):
             return self.vars[var]["agents"]
         else:
             return None
+
+    def get_randagent_of_var(self, var):
+        return random.choice(self.vars[var]["agents"])
 
     def get_pop(self, var):
         """
@@ -258,12 +243,6 @@ class AgentPop(node.Node):
             # a type might enter the env after period 0!
             # so we track that in my_periods
             var["my_periods"] += 1
-            if pop == 0:
-                var["zero_per"] += 1
-                if var["zero_per"] >= MAX_ZERO_PER:
-                    for agent in var["zombies"]:
-                        self.append(copy.copy(agent))
-                    var["zero_per"] = 0
         return ret
 
     def jsondump(self, obj):

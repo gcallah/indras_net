@@ -19,17 +19,16 @@ class SegregationAgent(ga.GridAgent):
     """
     An agent that moves location pending it's neighbors' types
     """
-    def __init__(self, name, goal, tolerance, nsize=1):
-        super().__init__(name, goal)
+    def __init__(self, name, goal, tolerance, max_detect=1):
+        super().__init__(name, goal, max_detect=max_detect)
         assert tolerance > 0.0 and tolerance < 1.0, "Tolerance must be 0 - 1"
         self.tolerance = tolerance
-        self.hood_size = nsize
 
     def act(self):
+        super().act()
         like_me = 0
         total_neighbors = 0
 
-        self.my_view = self.get_square_view(self.hood_size)
         for neighbor in self.neighbor_iter(view=self.my_view):
             total_neighbors += 1
             if self.get_type() == neighbor.get_type():

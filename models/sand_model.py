@@ -79,8 +79,8 @@ class SandEnv(ge.GridEnv):
         self.agents.set_var_color('4', disp.RED)
         self.agents.set_var_color('5', disp.YELLOW)
         self.agents.set_var_color('6', disp.GREEN)
-        center_x = floor(self.width / 2)
-        center_y = floor(self.height / 2)
+        center_x = floor(self.width // 2)
+        center_y = floor(self.height // 2)
         print("center = %i, %i" % (center_x, center_y))
 
         for cell in self:
