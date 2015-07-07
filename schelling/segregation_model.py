@@ -7,22 +7,23 @@ Created on Mon Mar  2 21:40:05 2015
 
 ''' Segregation Model '''
 
+import random
 import indra.grid_agent as ga
 import indra.grid_env as grid
 
 BLUE_AGENT = "BlueAgent"
 RED_AGENT = "RedAgent"
-GREEN_AGENT = "GreenAgent"
 
 
 class SegregationAgent(ga.GridAgent):
     """
-    An agent that moves location pending it's neighbors' types
+    An agent that moves location based on its neighbors' types
     """
-    def __init__(self, name, goal, tolerance, max_detect=1):
+    def __init__(self, name, goal, min_tol, max_tol, max_detect=1):
         super().__init__(name, goal, max_detect=max_detect)
-        assert tolerance > 0.0 and tolerance < 1.0, "Tolerance must be 0 - 1"
-        self.tolerance = tolerance
+        assert min_tol > 0.0 and min_tol < 1.0, "Tolerance must be 0 - 1"
+        assert max_tol > 0.0 and max_tol < 1.0, "Tolerance must be 0 - 1"
+        self.tolerance = random.uniform(max_tol, min_tol)
 
     def act(self):
         """
@@ -67,12 +68,6 @@ class BlueAgent(SegregationAgent):
 
 
 class RedAgent(SegregationAgent):
-    """
-    Just a type with no code
-    """
-
-
-class GreenAgent(SegregationAgent):
     """
     Just a type with no code
     """
