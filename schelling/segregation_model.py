@@ -25,18 +25,39 @@ class SegregationAgent(ga.GridAgent):
         self.tolerance = tolerance
 
     def act(self):
+        """
+        We see if our neighborhood is OK, given our tolerance.
+        If not, move and test again, until good hood is found.
+        """
         super().act()
-        like_me = 0
-        total_neighbors = 0
+        (resembles_me, total_neighbors) = self.survey_env(self.my_view)
+        if not self.evaluate_env(resembles_me, total_neighbors):
+            found_good_hood = False
+            max_tries = 4  # we don't want to keep looking forever!
+            tries = 0
+            while not found_good_hood and tries < max_tries:
+                tries += 1
+                # it is simplest just to move to a random spot,
+                # and then see if it is OK; if not, move again
+                self.env.move_to_empty(self)
+                (resembles_me, total_neighbors) = self.survey_env(self.my_view)
+                if self.evaluate_env(resembles_me, total_neighbors):
+                    found_good_hood = True
 
-        for neighbor in self.neighbor_iter(view=self.my_view):
+    def evaluate_env(self, resembles_me, total_neighbors):
+        if total_neighbors > 0:
+            return resembles_me / total_neighbors >= self.tolerance
+        else:
+            return True  # everyone is OK with no neighbors
+
+    def survey_env(self, this_view):
+        resembles_me = 0
+        total_neighbors = 0
+        for neighbor in self.neighbor_iter(view=this_view):
             total_neighbors += 1
             if self.get_type() == neighbor.get_type():
-                like_me += 1
-
-        if total_neighbors > 0:
-            if like_me / total_neighbors < self.tolerance:
-                self.env.move_to_empty(self)
+                resembles_me += 1
+        return (resembles_me, total_neighbors)
 
 
 class BlueAgent(SegregationAgent):

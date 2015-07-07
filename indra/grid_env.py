@@ -15,8 +15,7 @@ GridEnv: base grid, a simple list-of-lists.
 """
 
 # Instruction for PyLint to suppress variable name errors,
-# since we have a
-# good reason to use one-character variable names for x and y.
+# since we have a good reason to use one-character variable names for x and y.
 # pylint: disable=invalid-name
 
 import random
