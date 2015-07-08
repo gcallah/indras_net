@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 A predator-prey model with wolves and sheep.
 """

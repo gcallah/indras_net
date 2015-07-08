@@ -1,5 +1,6 @@
+#!/usr/bin/env python3
 """
-A script to test our grid capabilities.
+A script to run the bacterium model.
 """
 
 import indra.utils as utils

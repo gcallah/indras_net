@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 emp_run.py
 A script to run our simple employee model,
