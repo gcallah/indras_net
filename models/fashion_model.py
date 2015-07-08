@@ -36,25 +36,32 @@ class Fashionista(ga.GridAgent):
         Try to adjust our fashion to our neighbor's
         """
         super().act()
-        has_my_fashion = 0
-        not_my_fashion = 0
+        (has_my_fashion, not_my_fashion) = self.survey_env(self.my_view)
+        self.evaluate_env(has_my_fashion, not_my_fashion)
 
+    def evaluate_env(self, has_my_fashion, not_my_fashion):
+        """
+        See how we like the fashion scene.
+        """
+        if self.comp(not_my_fashion, has_my_fashion):
+            self.respond_to_cond()
+
+    def survey_env(self, this_view):
+        """
+        Look around and see what fashions surround us.
+        """
         def my_filter(n): return isinstance(n, self.other)
 
+        has_my_fashion = 0
+        not_my_fashion = 0
         for other in self.neighbor_iter(view=self.my_view,
                                         filt_func=my_filter):
             if other.fashion == self.fashion:
                 has_my_fashion += 1
             else:
                 not_my_fashion += 1
-        if self.comp(not_my_fashion, has_my_fashion):
-            self.respond_to_cond()
 
-    def postact(self):
-        """
-        After we are done acting, move to an empty cell.
-        """
-        self.move_to_empty(grid_view=self.my_view)
+        return (has_my_fashion, not_my_fashion)
 
     def respond_to_cond(self):
         """
@@ -75,6 +82,12 @@ class Fashionista(ga.GridAgent):
             self.fashion = RED
         self.env.record_fashion_change(self)
         logging.info(self.name + " is changing fashions")
+
+    def postact(self):
+        """
+        After we are done acting, move to an empty cell.
+        """
+        self.move_to_empty(grid_view=self.my_view)
 
 
 class Follower(Fashionista):

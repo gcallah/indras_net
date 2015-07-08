@@ -53,23 +53,30 @@ class Tree(ga.GridAgent):
 
     def act(self):
         '''
-        If a neighbor is on fire, this tree catches on fire.
+        If this tree is HEALTHY and a neighbor is on fire,
+         this tree catches on fire.
         If this tree is on fire, set its next state to BURNED_OUT.
+        If the tree is burned out, after regen_period it grows back.
         '''
         if self.is_burning():
             self.next_state = BURNED_OUT
         elif self.is_healthy():
-            # at some point, we may want to try bigger neighborhoods
-            # than size 1
-            for neighbor in self.neighbor_iter():
-                if neighbor.is_burning():
-                    self.next_state = ON_FIRE
-                    break
+            self.next_state = self.survey_env()
         elif self.is_burnt:
             self.dead_periods += 1
             if self.dead_periods >= self.env.regen_period:
                 self.next_state = HEALTHY
                 self.dead_periods = 0
+
+    def survey_env(self, this_view=None):
+        """
+        Look around and see what our env holds for us.
+        We will want to try views > 1 in the future.
+        """
+        for neighbor in self.neighbor_iter():
+            if neighbor.is_burning():
+                return ON_FIRE
+        return HEALTHY
 
     def postact(self):
         """

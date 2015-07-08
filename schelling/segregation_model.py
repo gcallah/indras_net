@@ -46,12 +46,18 @@ class SegregationAgent(ga.GridAgent):
                     found_good_hood = True
 
     def evaluate_env(self, resembles_me, total_neighbors):
+        """
+        Use the results of surveying the env to decide what to do.
+        """
         if total_neighbors > 0:
             return resembles_me / total_neighbors >= self.tolerance
         else:
             return True  # everyone is OK with no neighbors
 
     def survey_env(self, this_view):
+        """
+        Look around and see what our env holds for us.
+        """
         resembles_me = 0
         total_neighbors = 0
         for neighbor in self.neighbor_iter(view=this_view):

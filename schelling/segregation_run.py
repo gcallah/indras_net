@@ -28,11 +28,9 @@ if pa is None:
     pa.ask("grid_width", "What is the grid width?", int, default=60)
     pa.ask("grid_height", "What is the grid height?", int, default=60)
     pa.ask("max_tolerance",
-           "What is the maximum tolerance (a low %)?",
-           float, default=.20)
+           "What is the minimum intolerance?", float, default=.10)
     pa.ask("min_tolerance",
-           "What is the minimum tolerance (a high %)?",
-           float, default=.80)
+           "What is the maximum intolerance?", float, default=.70)
     pa.ask("max_detect", "What is the agent's neighborhood size?",
            int, default=4)
 
@@ -46,7 +44,7 @@ env = sm.SegregationEnv("A city",
 
 for i in range(pa.get("num_B_agents")):
     env.add_agent(sm.BlueAgent(name="Blue agent" + str(i),
-                  goal="A preferred neighborhood.",
+                  goal="A good neighborhood.",
                   min_tol=pa.get('min_tolerance'),
                   max_tol=pa.get('max_tolerance'),
                   max_detect=pa.get('max_detect')))
