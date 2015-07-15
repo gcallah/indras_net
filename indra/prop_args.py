@@ -12,6 +12,10 @@ import json
 import indra.node as node
 
 
+def in_range(low, val, high):
+    return low <= val and val <= high
+
+
 class PropArgs(node.Node):
 
     """
@@ -94,20 +98,32 @@ class PropArgs(node.Node):
             self.props[nm] = default
         return self.props[nm]
 
-    def ask(self, nm, msg, val_type, default=None):
+    def ask(self, nm, msg, val_type, default=None, range=None):
         """
         Ask the user for a property value, which might come
         from the user via the command line.
         """
+        rng_msg = ""
+        if range is not None:
+            (low, high) = range
+            rng_msg = "[" + str(low) + "-" + str(high) + "]"
         if default is not None:
-            msg += " (" + str(default) + ")"
-        if nm not in self.props:
-            val = input(msg + " ")
-            if len(val) == 0:
-                val = default
-        else:  # it was set from command line
-            val = self.get(nm)
-        self.set(nm, val_type(val))
+            msg += " (" + str(default) + ") " + rng_msg
+        msg += " "
+        good_val = False
+        while not good_val:
+            if nm not in self.props:
+                val = input(msg)
+                if len(val) == 0:
+                    val = default
+            else:  # was set from command line, but we still need to type it
+                val = self.get(nm)
+            typed_val = val_type(val)
+            if range is not None:
+                good_val = in_range(low, typed_val, high)
+            else:
+                good_val = True
+        self.set(nm, typed_val)
 
     def get_logfile(self):
         """
