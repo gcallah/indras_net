@@ -19,15 +19,17 @@ pa = utils.read_props(MODEL_NM)
 if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
-    pa.ask("density", "How dense is the forest? (0.0 - 1.0)", float,
-           default=.43)
-    pa.ask("grid_x", "What is the grid width?", int, default=100)
-    pa.ask("grid_y", "What is the grid height?", int, default=100)
+    pa.ask("density", "How dense is the forest?", float,
+           default=.43, range=utils.BTWN_ZERO_ONE)
+    pa.ask("grid_x", "What is the grid width?", int, default=100,
+           range=utils.GRID_LIMITS)
+    pa.ask("grid_y", "What is the grid height?", int, default=100,
+           range=utils.GRID_LIMITS)
     pa.ask("strike_freq", "How many turns between lightning strikes?",
-           int, default=4)
+           int, default=4, range=utils.POS_INTS)
     pa.ask("regen_period",
            "How many turns before a new tree grows where one has burned?",
-           int, default=20)
+           int, default=20, range=utils.POS_INTS)
 
 density = pa.get("density")
 grid_x = pa.get("grid_x")

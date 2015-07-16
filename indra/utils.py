@@ -7,6 +7,13 @@ import sys
 import logging
 import indra.prop_args as props
 
+# some values useful for checking valid ranges:
+BIG_INT = sys.maxsize
+BTWN_ZERO_ONE = (.01, .99)
+NTRL_NUMS = (0, BIG_INT)
+POS_INTS = (1, BIG_INT)
+GRID_LIMITS = (1, 100000)  # this gives us a max grid of 1 billion elements!
+
 
 def gen_file_names(model_nm):
     """

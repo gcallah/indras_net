@@ -12,6 +12,9 @@ import indra.grid_env as grid
 X = 0
 Y = 1
 
+# tree conditions: NEW_GROWTH and HEALTHY both return True
+#  when tested with is_healthy()
+NEW_GROWTH = "New Growth"
 HEALTHY = "Healthy"
 ON_FIRE = "On Fire"
 BURNED_OUT = "Burned Out"
@@ -22,7 +25,7 @@ class Tree(ga.GridAgent):
     A tree cell.
 
     Attributes:
-        condition: Can be "Healthy", "On Fire", or "Burned Out"
+        condition: Can be "New Growth", "Healthy", "On Fire", or "Burned Out"
 
     '''
     def __init__(self, name):
@@ -35,7 +38,7 @@ class Tree(ga.GridAgent):
         self.dead_periods = 0
 
     def is_healthy(self):
-        return self.ntype == HEALTHY
+        return self.ntype == HEALTHY or self.ntype == NEW_GROWTH
 
     def is_burning(self):
         return self.ntype == ON_FIRE
@@ -65,15 +68,17 @@ class Tree(ga.GridAgent):
         elif self.is_burnt:
             self.dead_periods += 1
             if self.dead_periods >= self.env.regen_period:
-                self.next_state = HEALTHY
+                self.next_state = NEW_GROWTH
                 self.dead_periods = 0
 
     def survey_env(self, this_view=None):
         """
         Look around and see what our env holds for us.
         We will want to try views > 1 in the future.
+        We set save_hood=True, because the trees don't move,
+        so no need to keep fetching their neighborhood.
         """
-        for neighbor in self.neighbor_iter():
+        for neighbor in self.neighbor_iter(save_hood=True):
             if neighbor.is_burning():
                 return ON_FIRE
         return HEALTHY
@@ -114,6 +119,7 @@ class ForestEnv(grid.GridEnv):
         self.agents.set_var_color(BURNED_OUT, disp.BLACK)
         self.agents.set_var_color(ON_FIRE, disp.RED)
         self.agents.set_var_color(HEALTHY, disp.GREEN)
+        self.agents.set_var_color(NEW_GROWTH, disp.CYAN)
 
     def step(self):
         """

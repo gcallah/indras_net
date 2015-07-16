@@ -23,10 +23,14 @@ pa = utils.read_props(MODEL_NM)
 if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
-    pa.ask("num_R_agents", "What is num red agents?", int, default=1100)
-    pa.ask("num_B_agents", "What is num blue agents?", int,  default=1100)
-    pa.ask("grid_width", "What is the grid width?", int, default=60)
-    pa.ask("grid_height", "What is the grid height?", int, default=60)
+    pa.ask("num_R_agents", "What is num red agents?", int, default=1100,
+           range=utils.POS_INTS)
+    pa.ask("num_B_agents", "What is num blue agents?", int,  default=1100,
+           range=utils.POS_INTS)
+    pa.ask("grid_width", "What is the grid width?", int, default=60,
+           range=utils.GRID_LIMITS)
+    pa.ask("grid_height", "What is the grid height?", int, default=60,
+           range=utils.GRID_LIMITS)
     pa.ask("max_tolerance",
            "What is the minimum intolerance?", float, default=.10,
            range=(.01, .99))
