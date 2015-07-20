@@ -3,6 +3,7 @@ edgebox_model.py
 An Edgeworth Box model where two agents trade goods.
 """
 import logging
+import indra.utils as utils
 import indra.grid_agent as ga
 import indra.grid_env as ge
 
@@ -11,7 +12,7 @@ TRADE = "trade"
 WINE = "wine"
 CHEESE = "cheese"
 
-GLOBAL_KNOWLEDGE = 10000000  # a value bigger than any grid we will create
+GLOBAL_KNOWLEDGE = utils.BIG_INT  # a value bigger than any grid we will create
 
 ACCEPT = 1
 INADEQ = 0

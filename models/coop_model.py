@@ -3,14 +3,14 @@
 Created on Tue Nov 11 20:23:01 2014
 
 @author: Brandon
+This implements Paul Krugman's babysitting co-op model.
 """
 
-import logging
+# import logging
 import indra.entity as ent
 import indra.env as env
 import indra.display_methods as disp
 import random
-#import barter_model as bm
 
 ''' These are our possible goals'''
 UNKNOWN = 'unknown'
@@ -20,7 +20,7 @@ GO_OUT = 'go out'
 ENV_NM = "Krugman Babysitting Co-op"
 
 
-class CoopAgent(ent.Agent):  
+class CoopAgent(ent.Agent):
     """
     An agent that chooses to babysit or go out based on coupon holdings
     """
@@ -29,22 +29,20 @@ class CoopAgent(ent.Agent):
         self.coupons = coupons
         self.min_holdings = min_holdings
         self.sitting = False
-        
+
     def act(self):
         self.sitting = False
-        if self.coupons <  self.min_holdings:
+        if self.coupons < self.min_holdings:
             self.goal = BABYSIT
-        elif self.coupons >  self.min_holdings:
-            if random.random() > .5 :
+        elif self.coupons > self.min_holdings:
+            if random.random() > .5:
                 self.goal = GO_OUT
             else:
-                self.goal = BABYSIT       
+                self.goal = BABYSIT
 
     def pay(self, sitter):
         self.coupons -= 1
         sitter.coupons += 1
-#        if random.random() < .01:
-#            self.coupons -= 1
 
 
 class CoopEnv(env.Environment):
@@ -56,7 +54,7 @@ class CoopEnv(env.Environment):
         super().__init__("Co-op Environment",
                          model_nm=model_nm, postact=True)
         self.rd_exchanges = 0
-        
+
     def postact_loop(self):
         """
         If an agent wants to go out, it hopes to find a babysitter, and pay them
@@ -65,7 +63,7 @@ class CoopEnv(env.Environment):
         for agent in reversed(self.agents):
             if agent.goal == GO_OUT:
                 sitter = self.assignSitter()
-                if sitter == None:
+                if sitter is None:
                     pass
                 else:
                     agent.pay(sitter)
@@ -74,7 +72,7 @@ class CoopEnv(env.Environment):
                 pass
             self.rd_exchanges = exchange
         print('\nCoupon exchanges in round ' + str(self.period)
-             + ': ' + str(self.rd_exchanges) + '\n' )
+              + ': ' + str(self.rd_exchanges) + '\n')
 
     def assignSitter(self):
         """
@@ -89,7 +87,7 @@ class CoopEnv(env.Environment):
                     pass
             else:
                 pass
-            
+
     def census(self, disp=True):
         """
         Take a census of our pops.
@@ -97,7 +95,7 @@ class CoopEnv(env.Environment):
         self.agents.change_pop_data('CoopAgent', self.rd_exchanges)
         for var in self.agents.varieties_iter():
             pop = self.agents.get_pop_data(var)
-            self.agents.append_pop_hist(var, pop)  
+            self.agents.append_pop_hist(var, pop)
         self.agents.change_pop_data('CoopAgent', -self.rd_exchanges)
 
     def view_pop(self):
@@ -108,8 +106,7 @@ class CoopEnv(env.Environment):
             print("Too little data to display")
             return
 
-        (period, data) = self.line_data()                                         
-        self.line_graph = disp.LineGraph("History of Coupon Exchanges",                    
+        (period, data) = self.line_data()
+        self.line_graph = disp.LineGraph("History of Coupon Exchanges",
                                          data, period, anim=False,
-                                         data_func=self.line_data)                       
-                                     
+                                         data_func=self.line_data)

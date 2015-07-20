@@ -21,7 +21,8 @@ pa = utils.read_props(MODEL_NM)
 if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
-    pa.ask("num_agents", "How many agents should we create?", int)
+    pa.ask("num_agents", "How many agents should we create?", int,
+           range=utils.NTRL_NUMS)
 
 # Now we create a minimal environment for our agents to act within:
 env = bm.BasicEnv(model_nm=MODEL_NM)

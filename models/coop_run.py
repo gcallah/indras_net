@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Nov 11 21:13:15 2014
-
 @author: Brandon
+Implements Paul Krugman's babysitting co-op model.
 """
 
 import indra.utils as utils
@@ -17,8 +17,9 @@ pa = utils.read_props(MODEL_NM)
 if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
-    pa.set("num_agents", 100)
-    pa.set("min_holdings", 4.5)
+    pa.ask("num_agents", "What is the number of agents?", int, default=100,
+           range=utils.NTRL_NUMS)
+    pa.set("min_holdings", 7.5)
 
 env = cm.CoopEnv(model_nm=MODEL_NM)
 
