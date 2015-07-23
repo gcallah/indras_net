@@ -19,19 +19,19 @@ if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
     pa.ask("num_followers", "What is the number of followers?", int,
-           default=48, range=utils.POS_INTS)
+           default=48, limits=utils.AGENT_LIMITS)
     pa.ask("num_hipsters", "What is the number of hipsters?", int,
-           default=16, range=utils.POS_INTS)
+           default=16, limits=utils.AGENT_LIMITS)
     pa.ask("grid_width", "What is the grid width?", int, default=16,
-           range=utils.GRID_LIMITS)
+           limits=utils.GRID_LIMITS)
     pa.ask("grid_height", "What is the grid height?", int, default=16,
-           range=utils.GRID_LIMITS)
+           limits=utils.GRID_LIMITS)
     pa.ask("fmax_move", "What is the follower's max move?", int, default=4,
-           range=utils.GRID_LIMITS)
+           limits=utils.GRID_LIMITS)
     pa.ask("hmax_move", "What is the hipster's max move?", int, default=4,
-           range=utils.GRID_LIMITS)
+           limits=utils.GRID_LIMITS)
     pa.ask("min_adv_periods", "What are the minimum adverse periods?", int,
-           default=6, range=(1, 100))
+           default=6, limits=(1, 100))
 
 
 # Now we create a minimal environment for our agents to act within:

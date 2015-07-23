@@ -17,16 +17,16 @@ if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
     pa.ask("al_cheese", "What is Albert's cheese endowment?", int, default=20,
-           range=utils.NTRL_NUMS)
+           limits=utils.NTRL_NUMS)
     pa.set("al_cutil", "10 - .75 * qty")
     pa.ask("al_wine", "What is Albert's wine endowment?", int, default=0,
-           range=utils.NTRL_NUMS)
+           limits=utils.NTRL_NUMS)
     pa.set("al_wutil", "10 - .5 * qty")
     pa.ask("bea_wine", "What is Beatrice's wine endowment?", int, default=20,
-           range=utils.NTRL_NUMS)
+           limits=utils.NTRL_NUMS)
     pa.set("bea_wutil", "10 - .75 * qty")
     pa.ask("bea_cheese", "What is Beatrice's cheese endowment?", int, default=0,
-           range=utils.NTRL_NUMS)
+           limits=utils.NTRL_NUMS)
     pa.set("bea_cutil", "10 - .5 * qty")
 
 env = ebm.EdgeboxEnv("An Edgeworth Box", 50, 50, model_nm=MODEL_NM)

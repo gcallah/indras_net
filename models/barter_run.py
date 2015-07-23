@@ -21,9 +21,9 @@ if pa is None:
                         props=None)
     pa.set("model", MODEL_NM)
     pa.ask("max_detect", "What is the trader detect distance?", int,
-           default=ebm.GLOBAL_KNOWLEDGE, range=utils.NTRL_NUMS)
+           default=ebm.GLOBAL_KNOWLEDGE, limits=utils.NTRL_NUMS)
     pa.ask("grid_dim", "What is the length of the grid's sides?",
-           int, default=50, range=utils.GRID_LIMITS)
+           int, default=50, limits=utils.GRID_LIMITS)
 
 dim = pa.get("grid_dim")
 env = bm.BarterEnv("A barter market", dim, dim, model_nm=MODEL_NM)

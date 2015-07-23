@@ -18,10 +18,14 @@ pa = utils.read_props(MODEL_NM)
 if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
-    pa.ask("num_wolves", "What is num wolves?", int, default=4)
-    pa.ask("num_sheep", "What is num sheep?", int, default=16)
-    pa.ask("grid_width", "What is grid width?", int, default=16)
-    pa.ask("grid_height", "What is grid height?", int, default=16)
+    pa.ask("num_wolves", "What is num wolves?", int, default=4,
+           limits=utils.MAX_AGENTS)
+    pa.ask("num_sheep", "What is num sheep?", int, default=16,
+           limits=utils.MAX_AGENTS)
+    pa.ask("grid_width", "What is grid width?", int, default=16,
+           limits=utils.MAX_GRID)
+    pa.ask("grid_height", "What is grid height?", int, default=16,
+           limits=utils.MAX_GRID)
     pa.ask("wolf_repro", "What is the wolf reproduction age?", int, default=8)
     pa.ask("wolf_lforce", "What is the wolf life force?", int, default=7)
     pa.ask("sheep_repro", "What is the sheep reproduction age?", int,

@@ -18,9 +18,12 @@ pa = utils.read_props(MODEL_NM)
 if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
-    pa.ask("num_agents", "What is num agents?", int, default=16)
-    pa.ask("aud_width", "What is auditorium width?", int, default=8)
-    pa.ask("aud_height", "What is auditorium height?", int, default=8)
+    pa.ask("num_agents", "What is num agents?", int, default=16,
+           limits=utils.AGENT_LIMITS)
+    pa.ask("aud_width", "What is auditorium width?", int, default=8,
+           limits=utils.GRID_LIMITS)
+    pa.ask("aud_height", "What is auditorium height?", int, default=8,
+           limits=utils.GRID_LIMITS)
 
 # Now we create a minimal environment for our agents to act within:
 env = am.Auditorium("Auditorium",

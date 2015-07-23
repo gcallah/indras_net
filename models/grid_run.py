@@ -19,9 +19,12 @@ pa = utils.read_props(MODEL_NM)
 if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
-    pa.ask("num_agents", "How many agents?", int)
-    pa.ask("grid_width", "What is the grid width?", int)
-    pa.ask("grid_height", "What is the grid height?", int)
+    pa.ask("num_agents", "How many agents?", int, default=8,
+           limits=utils.AGENT_LIMITS)
+    pa.ask("grid_width", "What is the grid width?", int, default=6,
+           limits=utils.GRID_LIMITS)
+    pa.ask("grid_height", "What is the grid height?", int, default=6,
+           limits=utils.GRID_LIMITS)
 
 # Now we create a minimal environment for our agents to act within:
 env = ge.GridEnv("Test grid env",

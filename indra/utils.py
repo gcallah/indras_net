@@ -12,7 +12,10 @@ BIG_INT = sys.maxsize
 BTWN_ZERO_ONE = (.01, .99)
 NTRL_NUMS = (0, BIG_INT)
 POS_INTS = (1, BIG_INT)
-GRID_LIMITS = (1, 100000)  # this gives us a max grid of 1 billion elements!
+MAX_GRID = 100000
+GRID_LIMITS = (1, MAX_GRID)  # this gives us a max grid of 1 billion elements!
+MAX_AGENTS = MAX_GRID * MAX_GRID  # enough to fill a maximum sized grid
+AGENT_LIMITS = (1, MAX_AGENTS)
 
 
 def gen_file_names(model_nm):

@@ -98,18 +98,18 @@ class PropArgs(node.Node):
             self.props[nm] = default
         return self.props[nm]
 
-    def ask(self, nm, msg, val_type, default=None, range=None):
+    def ask(self, nm, msg, val_type, default=None, limits=None):
         """
         Ask the user for a property value, which might come
         from the user via the command line.
         """
         rng_msg = ""
-        if range is not None:
-            (low, high) = range
-            rng_msg = "[" + str(low) + "-" + str(high) + "]"
+        if limits is not None:
+            (low, high) = limits
+            rng_msg = " [" + str(low) + "-" + str(high) + "]"
         if default is not None:
-            msg += " (" + str(default) + ") " + rng_msg
-        msg += " "
+            msg += " (" + str(default) + ")"
+        msg += rng_msg + " "
         good_val = False
         while not good_val:
             if nm not in self.props:
@@ -119,7 +119,7 @@ class PropArgs(node.Node):
             else:  # was set from command line, but we still need to type it
                 val = self.get(nm)
             typed_val = val_type(val)
-            if range is not None:
+            if limits is not None:
                 good_val = in_range(low, typed_val, high)
             else:
                 good_val = True
