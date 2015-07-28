@@ -20,10 +20,8 @@ if pa is None:
     utils.get_grid_dims(pa, 16)
     utils.get_agent_num(pa, "num_followers", "followers", 48)
     utils.get_agent_num(pa, "num_vinvestors", "value investors", 16)
-    pa.ask("fmax_move", "What is the follower's max move?", int, default=4,
-           limits=utils.GRID_LIMITS)
-    pa.ask("hmax_move", "What is the hipster's max move?", int, default=4,
-           limits=utils.GRID_LIMITS)
+    utils.get_max_move(pa, "fmax_move", "chart follower", 4)
+    utils.get_max_move(pa, "vmax_move", "value investor", 4)
     pa.ask("min_adv_periods", "What are the minimum adverse periods?", int,
            default=6, limits=(1, 100))
 
@@ -42,6 +40,6 @@ for i in range(pa.get("num_followers")):
                                    pa.get("fmax_move")))
 for i in range(pa.get("num_vinvestors")):
     env.add_agent(fm.ValueInvestor("value_inv" + str(i), "Buying value",
-                                   pa.get("hmax_move")))
+                                   pa.get("vmax_move")))
 
 utils.run_model(env, prog_file, results_file)

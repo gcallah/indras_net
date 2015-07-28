@@ -20,10 +20,8 @@ if pa is None:
     utils.get_grid_dims(pa, 16)
     utils.get_agent_num(pa, "num_followers", "followers", 48)
     utils.get_agent_num(pa, "num_hipsters", "hipsters", 16)
-    pa.ask("fmax_move", "What is the follower's max move?", int, default=4,
-           limits=utils.GRID_LIMITS)
-    pa.ask("hmax_move", "What is the hipster's max move?", int, default=4,
-           limits=utils.GRID_LIMITS)
+    utils.get_max_move(pa, "fmax_move", "follower", 4)
+    utils.get_max_move(pa, "hmax_move", "hipster", 4)
     pa.ask("min_adv_periods", "What are the minimum adverse periods?", int,
            default=6, limits=(1, 100))
 

@@ -60,3 +60,8 @@ def get_grid_dims(pa, def_dims):
 def get_agent_num(pa, prop_nm, agent_type, def_num):
     pa.ask(prop_nm, "What is the number of %s?" % (agent_type),
            int, default=def_num, limits=AGENT_LIMITS)
+
+
+def get_max_move(pa, prop_nm, agent_type, def_move):
+    pa.ask(prop_nm, "What is %s's maximum move?" % (agent_type),
+           int, default=def_move, limits=AGENT_LIMITS)

@@ -20,11 +20,8 @@ if pa is None:
     utils.get_grid_dims(pa, 16)
     utils.get_agent_num(pa, "num_followers", "followers", 48)
     utils.get_agent_num(pa, "num_linvest", "leaders", 16)
-    pa.ask("fmax_move", "What is the follower's max move?", int,
-           default=4, limits=utils.GRID_LIMITS)
-    pa.ask("lmax_move", "What is the leader's max move?", int,
-           default=4, limits=utils.GRID_LIMITS)
-
+    utils.get_max_move(pa, "fmax_move", "follower", 4)
+    utils.get_max_move(pa, "lmax_move", "leader", 4)
 
 # Now we create a minimal environment for our agents to act within:
 env = sm.StanceEnv("Stance Environment",
