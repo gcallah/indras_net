@@ -48,3 +48,7 @@ def read_props(model_nm):
             return props.PropArgs.read_props(model_nm, poss_props)
 
     return None
+
+
+def get_grid_dims(def_dims):
+    pass

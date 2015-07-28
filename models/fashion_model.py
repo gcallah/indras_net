@@ -8,15 +8,6 @@ import indra.display_methods as disp
 import indra.menu as menu
 import stance_model as sm
 
-stances = ["blue", "red"]
-
-BLUE = 0
-RED = 1
-INIT_FLWR = BLUE
-INIT_LDR = RED
-
-STANCE_TRACKED = BLUE
-
 
 class Follower(sm.Follower):
     """
@@ -43,23 +34,11 @@ class Society(sm.StanceEnv):
     def __init__(self, name, length, height, model_nm=None, torus=False):
         super().__init__(name, length, height, model_nm=model_nm,
                          torus=False, postact=True)
+        self.stances = ["blue", "red"]
+        self.line_graph_title = \
+            "A. Smith's fashion model: Populations in %s adopting fashion %s"
         self.agents.set_var_color('Hipster', disp.GREEN)
         self.agents.set_var_color('Follower', disp.MAGENTA)
         self.menu.view.add_menu_item("v",
                                      menu.MenuLeaf("(v)iew fashions",
                                                    self.view_pop))
-
-    def view_pop(self):
-        """
-        Draw a graph of our changing pops.
-        """
-        if self.period < 4:
-            self.user.tell("Too little data to display")
-            return
-
-        (period, data) = self.line_data()
-        self.line_graph = disp.LineGraph("A. Smith's fashion model: Populations"
-                                         + " in %s adopting fashion %s"
-                                         % (self.name, stances[STANCE_TRACKED]),
-                                         data, period, anim=False,
-                                         data_func=self.line_data)

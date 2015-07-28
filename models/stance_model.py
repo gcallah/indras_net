@@ -10,16 +10,13 @@ import indra.menu as menu
 import indra.grid_env as ge
 import indra.grid_agent as ga
 
-# sub-models will override these silly names with something
-# meaningful in those models
-stances = ["foo", "bar"]
 
-FOO = 0
-BAR = 1
-INIT_FLWR = FOO
-INIT_LDR = BAR
+YES = 0
+NO = 1
+INIT_FLWR = YES
+INIT_LDR = NO
 
-STANCE_TRACKED = FOO
+STANCE_TRACKED = YES
 
 
 class StanceAgent(ga.GridAgent):
@@ -78,10 +75,10 @@ class StanceAgent(ga.GridAgent):
         """
         Switch my fashion.
         """
-        if self.stance == BAR:
-            self.stance = FOO
+        if self.stance == NO:
+            self.stance = YES
         else:
-            self.stance = BAR
+            self.stance = NO
         self.env.record_stance_change(self)
         logging.info(self.name + " is changing stance")
 
@@ -122,6 +119,10 @@ class StanceEnv(ge.GridEnv):
                  postact=True):
         super().__init__(name, length, height, model_nm=model_nm,
                          torus=False, postact=postact)
+        # sub-models will override these vague names with something
+        # meaningful in those models
+        self.stances = ["yes", "no"]
+        self.line_graph_title = "StanceAgents in %s adopting stance %s"
         self.min_adv_periods = self.props.get("min_adv_periods",
                                               default=6)
         self.menu.view.add_menu_item("v",
@@ -134,7 +135,7 @@ class StanceEnv(ge.GridEnv):
         """
         self.user.tell("Populations in period " + str(self.period) +
                        " adopting " +
-                       stances[STANCE_TRACKED] + ":")
+                       self.stances[STANCE_TRACKED] + ":")
         for var in self.agents.varieties_iter():
             pop = self.agents.get_pop_data(var)
             self.user.tell(var + ": " + str(pop))
@@ -149,8 +150,9 @@ class StanceEnv(ge.GridEnv):
             return
 
         (period, data) = self.line_data()
-        self.line_graph = disp.LineGraph("StanceAgents in %s adopting stance %s"
-                                         % (self.name, stances[STANCE_TRACKED]),
+        self.line_graph = disp.LineGraph(self.line_graph_title
+                                         % (self.name,
+                                            self.stances[STANCE_TRACKED]),
                                          data, period, anim=False,
                                          data_func=self.line_data)
 
