@@ -19,12 +19,9 @@ pa = utils.read_props(MODEL_NM)
 if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
+    utils.get_grid_dims(pa, 100)
     pa.ask("density", "How dense is the forest?", float,
            default=.43, limits=utils.BTWN_ZERO_ONE)
-    pa.ask("grid_x", "What is the grid width?", int, default=100,
-           limits=utils.GRID_LIMITS)
-    pa.ask("grid_y", "What is the grid height?", int, default=100,
-           limits=utils.GRID_LIMITS)
     pa.ask("strike_freq", "How many turns between lightning strikes?",
            int, default=4, limits=utils.POS_INTS)
     pa.ask("regen_period",
@@ -32,8 +29,8 @@ if pa is None:
            int, default=20, limits=utils.POS_INTS)
 
 density = pa.get("density")
-grid_x = pa.get("grid_x")
-grid_y = pa.get("grid_y")
+grid_x = pa.get("grid_width")
+grid_y = pa.get("grid_height")
 
 # Now we create a forest environment for our agents to act within:
 env = fm.ForestEnv(grid_x, grid_y, density, pa.get("strike_freq"),

@@ -18,14 +18,9 @@ pa = utils.read_props(MODEL_NM)
 if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
-    pa.ask("num_followers", "What is the number of followers?", int,
-           default=48, limits=utils.AGENT_LIMITS)
-    pa.ask("num_hipsters", "What is the number of hipsters?", int,
-           default=16, limits=utils.AGENT_LIMITS)
-    pa.ask("grid_width", "What is the grid width?", int, default=16,
-           limits=utils.GRID_LIMITS)
-    pa.ask("grid_height", "What is the grid height?", int, default=16,
-           limits=utils.GRID_LIMITS)
+    utils.get_grid_dims(pa, 16)
+    utils.get_agent_num(pa, "num_followers", "followers", 48)
+    utils.get_agent_num(pa, "num_hipsters", "hipsters", 16)
     pa.ask("fmax_move", "What is the follower's max move?", int, default=4,
            limits=utils.GRID_LIMITS)
     pa.ask("hmax_move", "What is the hipster's max move?", int, default=4,

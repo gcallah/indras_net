@@ -17,8 +17,7 @@ pa = utils.read_props(MODEL_NM)
 if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     pa.set("model", MODEL_NM)
-    pa.ask("num_agents", "What is the number of agents?", int, default=100,
-           limits=utils.AGENT_LIMITS)
+    utils.get_agent_num(pa, "num_agents", "agents", 100)
     pa.set("min_holdings", 7.5)
 
 env = cm.CoopEnv(model_nm=MODEL_NM)

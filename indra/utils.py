@@ -50,5 +50,13 @@ def read_props(model_nm):
     return None
 
 
-def get_grid_dims(def_dims):
-    pass
+def get_grid_dims(pa, def_dims):
+    pa.ask("grid_width", "What is the grid width?", int, default=def_dims,
+           limits=GRID_LIMITS)
+    pa.ask("grid_height", "What is the grid height?", int, default=def_dims,
+           limits=GRID_LIMITS)
+
+
+def get_agent_num(pa, prop_nm, agent_type, def_num):
+    pa.ask(prop_nm, "What is the number of %s?" % (agent_type),
+           int, default=def_num, limits=AGENT_LIMITS)
