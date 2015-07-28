@@ -19,8 +19,7 @@ pa = utils.read_props(MODEL_NM)
 if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     utils.get_grid_dims(pa, 100)
-    pa.ask("density", "How dense is the forest?", float,
-           default=.43, limits=utils.BTWN_ZERO_ONE)
+    utils.get_pct(pa, "density", "forest", "density", .43)
     pa.ask("strike_freq", "How many turns between lightning strikes?",
            int, default=4, limits=utils.POS_INTS)
     pa.ask("regen_period",

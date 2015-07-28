@@ -25,12 +25,8 @@ if pa is None:
     utils.get_grid_dims(pa, 60)
     utils.get_agent_num(pa, "num_R_agents", "red agents", 1100)
     utils.get_agent_num(pa, "num_B_agents", "blue agents", 1100)
-    pa.ask("max_tolerance",
-           "What is the minimum intolerance?", float, default=.10,
-           limits=(.01, .99))
-    pa.ask("min_tolerance",
-           "What is the maximum intolerance?", float, default=.70,
-           limits=(.01, .99))
+    utils.get_pct(pa, "max_tolerance", "agent", "minimum intolerance", .10)
+    utils.get_pct(pa, "min_tolerance", "agent", "maximum intolerance", .70)
     pa.ask("max_detect", "What is the agent's neighborhood size?",
            int, default=4, limits=(1, 10))
 
@@ -41,7 +37,6 @@ env = sm.SegregationEnv("A city",
 
 # Now we loop creating multiple agents with numbered names
 # based on the loop variable:
-
 for i in range(pa.get("num_B_agents")):
     env.add_agent(sm.BlueAgent(name="Blue agent" + str(i),
                   goal="A good neighborhood.",
