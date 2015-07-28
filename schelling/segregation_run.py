@@ -22,7 +22,6 @@ MODEL_NM = "segregation_model"
 pa = utils.read_props(MODEL_NM)
 if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
-    pa.set("model", MODEL_NM)
     utils.get_grid_dims(pa, 60)
     utils.get_agent_num(pa, "num_R_agents", "red agents", 1100)
     utils.get_agent_num(pa, "num_B_agents", "blue agents", 1100)

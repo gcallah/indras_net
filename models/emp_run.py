@@ -20,7 +20,6 @@ MODEL_NM = "emp_model"
 pa = utils.read_props(MODEL_NM)
 if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
-    pa.set("model", MODEL_NM)
 
 # Now we create a minimal environment for our agents to act within:
 env = em.EmpEnv(model_nm=MODEL_NM)

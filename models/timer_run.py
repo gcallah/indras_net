@@ -22,7 +22,6 @@ MODEL_NM = "timer_model"
 pa = utils.read_props(MODEL_NM)
 if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
-    pa.set("model", MODEL_NM)
     pa.set("num_agents", 50)
 
 # Now we create a minimal environment for our agents to act within:

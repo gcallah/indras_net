@@ -63,6 +63,7 @@ class PropArgs(node.Node):
         self.logger = Logger(self, logfile=logfile)
         self.graph.add_edge(self, self.logger)
         self.set("OS", platform.system())
+        self.set("model", model_nm)
         # process command line args and set them as properties:
         prop_nm = None
         for arg in sys.argv:

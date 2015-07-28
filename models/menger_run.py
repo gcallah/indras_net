@@ -21,7 +21,6 @@ CSV_FILE = MODEL_NM + "02.csv"
 pa = utils.read_props(MODEL_NM)
 if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
-    pa.set("model", MODEL_NM)
     pa.set("prod_amt", 1)
 
 # Now we create an environment for our agents to act within:

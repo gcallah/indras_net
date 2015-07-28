@@ -18,7 +18,6 @@ MODEL_NM = "grid_model"
 pa = utils.read_props(MODEL_NM)
 if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
-    pa.set("model", MODEL_NM)
     pa.set("num_agents", 1)
     pa.set("grid_width", 4)
     pa.set("grid_height", 4)

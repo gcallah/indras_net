@@ -19,7 +19,6 @@ pa = utils.read_props(MODEL_NM)
 if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file,
                         props=None)
-    pa.set("model", MODEL_NM)
     pa.ask("max_detect", "What is the trader detect distance?", int,
            default=ebm.GLOBAL_KNOWLEDGE, limits=utils.NTRL_NUMS)
     pa.ask("grid_dim", "What is the length of the grid's sides?",

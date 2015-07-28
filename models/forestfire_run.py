@@ -18,7 +18,6 @@ MODEL_NM = "forestfire_model"
 pa = utils.read_props(MODEL_NM)
 if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
-    pa.set("model", MODEL_NM)
     utils.get_grid_dims(pa, 100)
     pa.ask("density", "How dense is the forest?", float,
            default=.43, limits=utils.BTWN_ZERO_ONE)

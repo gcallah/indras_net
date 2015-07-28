@@ -15,7 +15,6 @@ MODEL_NM = "edgebox_model"
 pa = utils.read_props(MODEL_NM)
 if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
-    pa.set("model", MODEL_NM)
     pa.ask("al_cheese", "What is Albert's cheese endowment?", int, default=20,
            limits=utils.NTRL_NUMS)
     pa.set("al_cutil", "10 - .75 * qty")

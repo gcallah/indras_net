@@ -17,7 +17,6 @@ MODEL_NM = "auditorium_model"
 pa = utils.read_props(MODEL_NM)
 if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
-    pa.set("model", MODEL_NM)
     utils.get_grid_dims(pa, 8)
     utils.get_agent_num(pa, "num_agents", "agents", 16)
 
