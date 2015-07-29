@@ -108,5 +108,4 @@ class CoopEnv(env.Environment):
 
         (period, data) = self.line_data()
         self.line_graph = disp.LineGraph("History of Coupon Exchanges",
-                                         data, period, anim=False,
-                                         data_func=self.line_data)
+                                         data, period)

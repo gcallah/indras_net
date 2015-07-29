@@ -157,8 +157,7 @@ class StanceEnv(ge.GridEnv):
         self.line_graph = disp.LineGraph(self.line_graph_title
                                          % (self.name,
                                             self.stances[STANCE_TRACKED]),
-                                         data, period, anim=False,
-                                         data_func=self.line_data)
+                                         data, period)
 
     def add_agent(self, agent):
         """

@@ -369,8 +369,7 @@ class Environment(node.Node):
 
         (period, data) = self.line_data()
         self.line_graph = disp.LineGraph('Populations in ' + self.name,
-                                         data, period, anim=False,
-                                         data_func=self.line_data)
+                                         data, period)
         self.line_graph.show()
 
     def line_data(self):

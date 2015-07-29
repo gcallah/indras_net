@@ -5,6 +5,7 @@ and value investors.
 """
 # import logging
 import indra.menu as menu
+import indra.display_methods as disp
 import stance_model as sm
 
 
@@ -35,14 +36,13 @@ class FinMarket(sm.StanceEnv):
                          torus=False, postact=True)
         self.total_pop = 0  # to be set once we add agents
         self.asset_price = 10.0  # an arbitrary starting point
-        self.price_move = 1.0
-        self.asset_price_hist = []
-        self.asset_price_hist.append(self.asset_price)
+        self.price_hist = []
+        self.max_abs_pmove = .5
         self.stances = ["buy", "sell"]
         self.line_graph_title = \
             "Asset trading model: Populations in %s adopting stance %s"
         self.menu.view.add_menu_item("v",
-                                     menu.MenuLeaf("(v)iew traders",
+                                     menu.MenuLeaf("(v)iew asset price",
                                                    self.view_pop))
 
     def census(self, disp=True):
@@ -51,16 +51,30 @@ class FinMarket(sm.StanceEnv):
         Here we add to our parent an adjustment of the asset price.
         """
         total_buyers = super().census(disp)
-        print("total_buyers = %i" % (total_buyers))
+        self.user.tell("asset price = %f" % (self.asset_price))
         if self.total_pop == 0:
             # we should only need to do this once, as the model doesn't add
             # agents mid-stream.
             self.total_pop = self.get_total_pop()
-            print("total_pop = %i" % (self.total_pop))
         self.adj_asset_price(total_buyers)
+        self.price_hist.append(self.asset_price)
 
     def adj_asset_price(self, total_buyers):
         buy_ratio = total_buyers / self.total_pop
-        print("buy_ratio = %f" % (buy_ratio))
-        self.asset_price += self.price_move * ((2.0 * buy_ratio) - 1.0)
-        print("asset price = %f" % (self.asset_price))
+        self.asset_price += self.max_abs_pmove * ((2.0 * buy_ratio) - 1.0)
+
+    def view_pop(self):
+        """
+        Draw a graph of our changing pops.
+        """
+        if self.period < 4:
+            self.user.tell("Too little data to display")
+            return
+
+        # put our data in right form for line graph
+        data = {}
+        data["asset price"] = {}
+        data["asset price"]["data"] = self.price_hist
+        data["asset price"]["color"] = disp.MAGENTA
+
+        self.line_graph = disp.LineGraph("Asset price.", data, self.period)
