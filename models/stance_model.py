@@ -132,14 +132,18 @@ class StanceEnv(ge.GridEnv):
     def census(self, disp=True):
         """
         Take a census of our pops.
+        Return the total adopting STANCE_TRACKED.
         """
+        total_w_stance = 0
         self.user.tell("Populations in period " + str(self.period) +
                        " adopting " +
                        self.stances[STANCE_TRACKED] + ":")
         for var in self.agents.varieties_iter():
             pop = self.agents.get_pop_data(var)
+            total_w_stance += pop
             self.user.tell(var + ": " + str(pop))
             self.agents.append_pop_hist(var, pop)
+        return total_w_stance
 
     def view_pop(self):
         """

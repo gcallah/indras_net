@@ -411,6 +411,12 @@ class Environment(node.Node):
         """
         return self.agents.get_pop(var)
 
+    def get_total_pop(self):
+        """
+        Return the total number of agents.
+        """
+        return self.agents.get_total_pop()
+
     def get_my_pop(self, agent):
         """
         Return the population of agent's type

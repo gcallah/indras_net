@@ -186,6 +186,12 @@ class AgentPop(node.Node):
         """
         return len(self.vars[var]["agents"])
 
+    def get_total_pop(self):
+        total_pop = 0
+        for var in self.varieties_iter():
+            total_pop += self.get_pop(var)
+        return total_pop
+
     def get_my_pop(self, agent):
         """
         Return the population of agent's type
