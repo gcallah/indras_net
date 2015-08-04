@@ -404,6 +404,15 @@ class Environment(node.Node):
                            + str(self.period) + ":")
             self.user.tell(results)
 
+    def varieties_iter(self):
+        return self.agents.varieties_iter()
+
+    def variety_iter(self, var):
+        return self.agents.variety_iter(var)
+
+    def set_var_color(self, var, color):
+        self.agents.set_var_color(var, color)
+
     def get_pop(self, var):
         """
         Return the population of variety 'var'
@@ -427,3 +436,12 @@ class Environment(node.Node):
 
     def record_results(self, file_nm):
         self.agents.record_results(file_nm)
+
+    def change_pop_data(self, var, change):
+        self.agents.change_pop_data(var, change)
+
+    def get_pop_data(self, var):
+        return self.agents.get_pop_data(var)
+
+    def append_pop_hist(self, var, pop):
+        self.agents.append_pop_hist(var, pop)

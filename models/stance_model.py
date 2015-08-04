@@ -138,11 +138,11 @@ class StanceEnv(ge.GridEnv):
         self.user.tell("Populations in period " + str(self.period) +
                        " adopting " +
                        self.stances[STANCE_TRACKED] + ":")
-        for var in self.agents.varieties_iter():
-            pop = self.agents.get_pop_data(var)
+        for var in self.varieties_iter():
+            pop = self.get_pop_data(var)
             total_w_stance += pop
             self.user.tell(var + ": " + str(pop))
-            self.agents.append_pop_hist(var, pop)
+            self.append_pop_hist(var, pop)
         return total_w_stance
 
     def view_pop(self):
@@ -166,7 +166,7 @@ class StanceEnv(ge.GridEnv):
         super().add_agent(agent)
         var = agent.get_type()
         if agent.stance == STANCE_TRACKED:
-            self.agents.change_pop_data(var, 1)
+            self.change_pop_data(var, 1)
 
     def record_stance_change(self, agent):
         """
@@ -174,6 +174,6 @@ class StanceEnv(ge.GridEnv):
         """
         var = agent.get_type()
         if agent.stance == STANCE_TRACKED:
-            self.agents.change_pop_data(var, 1)
+            self.change_pop_data(var, 1)
         else:
-            self.agents.change_pop_data(var, -1)
+            self.change_pop_data(var, -1)

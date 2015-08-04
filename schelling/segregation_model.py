@@ -88,8 +88,8 @@ class SegregationEnv(grid.GridEnv):
                          model_nm=model_nm)
         self.plot_title = name
         # setting our colors adds varieties as well!
-        self.agents.set_var_color(BLUE_AGENT, 'b')
-        self.agents.set_var_color(RED_AGENT, 'r')
+        self.set_var_color(BLUE_AGENT, 'b')
+        self.set_var_color(RED_AGENT, 'r')
         self.num_moves = 0
         self.move_hist = []
 

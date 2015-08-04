@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Nov 11 21:13:15 2014
-@author: Brandon
+@author: Brandon and Gene
 Implements Paul Krugman's babysitting co-op model.
 """
 
@@ -17,7 +17,9 @@ pa = utils.read_props(MODEL_NM)
 if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     utils.get_agent_num(pa, "num_agents", "agents", 100)
-    pa.set("min_holdings", 7.5)
+    pa.ask("min_holdings",
+           "What is a co-op member's minimum desired holding of coupons?",
+           float, default=7.5, limits=(1.0, 20.0))
 
 env = cm.CoopEnv(model_nm=MODEL_NM)
 

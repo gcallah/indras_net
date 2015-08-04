@@ -116,10 +116,10 @@ class ForestEnv(grid.GridEnv):
         self.plot_title = "A Forest Fire"
 
         # setting our colors adds varieties as well!
-        self.agents.set_var_color(BURNED_OUT, disp.BLACK)
-        self.agents.set_var_color(ON_FIRE, disp.RED)
-        self.agents.set_var_color(HEALTHY, disp.GREEN)
-        self.agents.set_var_color(NEW_GROWTH, disp.CYAN)
+        self.set_var_color(BURNED_OUT, disp.BLACK)
+        self.set_var_color(ON_FIRE, disp.RED)
+        self.set_var_color(HEALTHY, disp.GREEN)
+        self.set_var_color(NEW_GROWTH, disp.CYAN)
 
     def step(self):
         """

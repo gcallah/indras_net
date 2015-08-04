@@ -92,11 +92,11 @@ class CoopEnv(env.Environment):
         """
         Take a census of our pops.
         """
-        self.agents.change_pop_data('CoopAgent', self.rd_exchanges)
-        for var in self.agents.varieties_iter():
-            pop = self.agents.get_pop_data(var)
-            self.agents.append_pop_hist(var, pop)
-        self.agents.change_pop_data('CoopAgent', -self.rd_exchanges)
+        self.change_pop_data('CoopAgent', self.rd_exchanges)
+        for var in self.varieties_iter():
+            pop = self.get_pop_data(var)
+            self.append_pop_hist(var, pop)
+        self.change_pop_data('CoopAgent', -self.rd_exchanges)
 
     def view_pop(self):
         """

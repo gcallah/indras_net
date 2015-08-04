@@ -37,8 +37,8 @@ class Society(sm.StanceEnv):
         self.stances = ["blue", "red"]
         self.line_graph_title = \
             "A. Smith's fashion model: Populations in %s adopting fashion %s"
-        self.agents.set_var_color('Hipster', disp.GREEN)
-        self.agents.set_var_color('Follower', disp.MAGENTA)
+        self.set_var_color('Hipster', disp.GREEN)
+        self.set_var_color('Follower', disp.MAGENTA)
         self.menu.view.add_menu_item("v",
                                      menu.MenuLeaf("(v)iew fashions",
                                                    self.view_pop))

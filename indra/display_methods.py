@@ -87,6 +87,15 @@ def get_color(var, i):
     return color
 
 
+def assemble_lgraph_data(key, values, color):
+    # put our data in right form for line graph
+    data = {}
+    data[key] = {}
+    data[key]["data"] = values
+    data[key]["color"] = color
+    return data
+
+
 class LineGraph():
     """
     We create a class here to save state for animation.

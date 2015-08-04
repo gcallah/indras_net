@@ -109,7 +109,7 @@ class Market(ent.Entity):
 
     def get_trade_hist(self):
         """
-        Make a list containing the population history
+        Make a list containing the trade history
         for each var in vars.
         """
         trade_hist = {}

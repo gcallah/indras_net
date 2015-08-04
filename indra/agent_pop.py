@@ -203,6 +203,8 @@ class AgentPop(node.Node):
         """
         Make a list containing the population history
         for each var in vars.
+        We should merge this with display_methods
+        assemble data when we can.
         """
         pop_hist = {}
         for var in self.varieties_iter():

@@ -75,16 +75,16 @@ class HeightEnv(env.Environment):
         """
         Take a census of our pops.
         """
-        for var in self.agents.varieties_iter():
+        for var in self.varieties_iter():
             total_height = 0
             num_agents = self.get_pop(var)
 
             # perhaps we should use reduce here:
-            for agent in self.agents.variety_iter(var):
+            for agent in self.variety_iter(var):
                 total_height += agent.height
 
             self.avg_height[var] = total_height / num_agents
-            self.agents.append_pop_hist(var, self.avg_height[var])
+            self.append_pop_hist(var, self.avg_height[var])
             if var == "HeightAgentEng":
                 self.runt_height = RUNT_PCT * self.avg_height[var]
             self.user.tell("\nAverage %s height for period %i: %f" %
@@ -105,4 +105,4 @@ class HeightEnv(env.Environment):
     def preact_loop(self):
         for agent in reversed(self.agents):
             if not agent.alive:
-                self.agents.remove(agent)
+                self.remove_agent(agent)
