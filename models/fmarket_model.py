@@ -22,8 +22,6 @@ class FinancialAgent(sm.StanceAgent):
         super().__init__(name, goal, max_move)
         self.profit = 0.0
         self.funds = INIT_ENDOW
-        if self.stance == BUY:
-            self.funds -= self.env.asset_price
 
     def change_stance(self):
         super().change_stance()
@@ -52,6 +50,10 @@ class ValueInvestor(FinancialAgent, sm.Leader):
         self.other = ChartFollower
 
 
+def get_profits(a):
+    return a.profit
+
+
 class FinMarket(sm.StanceEnv):
     """
     A society of value investors and chart followers.
@@ -75,7 +77,7 @@ class FinMarket(sm.StanceEnv):
         Take a census of our pops.
         Here we add to our parent an adjustment of the asset price.
         """
-        total_buyers = super().census(disp)
+        total_buyers = super().census(disp, census_func=get_profits)
         self.user.tell("asset price = %f" % (self.asset_price))
         if self.total_pop == 0:
             # we should only need to do this once, as the model doesn't add
@@ -83,6 +85,9 @@ class FinMarket(sm.StanceEnv):
             self.total_pop = self.get_total_pop()
         self.adj_asset_price(total_buyers)
         self.price_hist.append(self.asset_price)
+        for v in self.varieties_iter():
+            p = self.get_pop_data(v)
+            self.user.tell("Group %s has a net profit of %f." % (v, p))
 
     def adj_asset_price(self, total_buyers):
         buy_ratio = total_buyers / self.total_pop

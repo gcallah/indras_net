@@ -394,11 +394,11 @@ class Environment(node.Node):
         """
         return self.agents.contains(agent_type)
 
-    def census(self, disp=True):
+    def census(self, disp=True, census_func=None):
         """
         Take a census of what is in the env.
         """
-        results = self.agents.census()
+        results = self.agents.census(census_func=None)
         if disp:
             self.user.tell("Populations in period "
                            + str(self.period) + ":")

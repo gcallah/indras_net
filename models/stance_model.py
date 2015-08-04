@@ -129,7 +129,7 @@ class StanceEnv(ge.GridEnv):
                                      menu.MenuLeaf("(v)iew populations",
                                                    self.view_pop))
 
-    def census(self, disp=True):
+    def census(self, disp=True, census_func=None):
         """
         Take a census of our pops.
         Return the total adopting STANCE_TRACKED.
