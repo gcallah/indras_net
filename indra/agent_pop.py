@@ -237,7 +237,7 @@ class AgentPop(node.Node):
         """
         self.vars[var]["pop_hist"].append(pop)
 
-    def census(self, census_func=None):
+    def census(self):
         """
         Take a census of agents by variety.
         Return a string of results for possible display.
@@ -251,9 +251,6 @@ class AgentPop(node.Node):
             # a type might enter the env after period 0!
             # so we track that in my_periods
             var["my_periods"] += 1
-            if census_func is not None:
-                for a in self.variety_iter():
-                    var["data"] += census_func(a)
         return ret
 
     def jsondump(self, obj):

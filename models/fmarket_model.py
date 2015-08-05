@@ -3,7 +3,7 @@ fmarket_model.py
 A financial market model that includes chart followers
 and value investors.
 """
-# import logging
+import logging
 import indra.menu as menu
 import indra.display_methods as disp
 import stance_model as sm
@@ -29,7 +29,19 @@ class FinancialAgent(sm.StanceAgent):
             self.funds -= self.env.asset_price
         else:
             self.funds += self.env.asset_price
+        self.calc_profit()
+
+    def calc_profit(self):
         self.profit = self.funds - INIT_ENDOW
+        logging.debug(" for a = %s, profit (%f) = funds (%f) - INIT_ENDOW (%f)"
+                      % (self.name, self.profit, self.funds, INIT_ENDOW))
+        self.env.record_profit(self, self.profit)
+
+    def add_env(self, env):
+        super().add_env(env)
+        if self.stance == BUY:
+            self.funds -= self.env.asset_price
+            self.calc_profit()
 
 
 class ChartFollower(FinancialAgent, sm.Follower):
@@ -50,10 +62,6 @@ class ValueInvestor(FinancialAgent, sm.Leader):
         self.other = ChartFollower
 
 
-def get_profits(a):
-    return a.profit
-
-
 class FinMarket(sm.StanceEnv):
     """
     A society of value investors and chart followers.
@@ -66,18 +74,24 @@ class FinMarket(sm.StanceEnv):
         self.price_hist = []
         self.max_abs_pmove = .5
         self.stances = ["buy", "sell"]
-        self.line_graph_title = \
-            "Asset trading model: Populations in %s adopting stance %s"
         self.menu.view.add_menu_item("v",
                                      menu.MenuLeaf("(v)iew asset price",
                                                    self.view_price))
+        self.follower_profit = 0.0
+        self.value_profit = 0.0
+
+    def record_profit(self, agent, profit):
+        if isinstance(agent, ChartFollower):
+            self.follower_profit += profit
+        else:
+            self.value_profit += profit
 
     def census(self, disp=True):
         """
         Take a census of our pops.
         Here we add to our parent an adjustment of the asset price.
         """
-        total_buyers = super().census(disp, census_func=get_profits)
+        total_buyers = super().census(disp)
         self.user.tell("asset price = %f" % (self.asset_price))
         if self.total_pop == 0:
             # we should only need to do this once, as the model doesn't add
@@ -85,9 +99,14 @@ class FinMarket(sm.StanceEnv):
             self.total_pop = self.get_total_pop()
         self.adj_asset_price(total_buyers)
         self.price_hist.append(self.asset_price)
-        for v in self.varieties_iter():
-            p = self.get_pop_data(v)
-            self.user.tell("Group %s has a net profit of %f." % (v, p))
+        self.user.tell("The chart followes have a net profit of %f."
+                       % (self.follower_profit))
+        self.user.tell("The value investors have a net profit of %f."
+                       % (self.value_profit))
+        # these profits are reported anew every exchange, so we have to
+        # zero them out after reporting
+        self.follower_profit = 0.0
+        self.value_profit = 0.0
 
     def adj_asset_price(self, total_buyers):
         buy_ratio = total_buyers / self.total_pop
