@@ -373,11 +373,11 @@ class GridEnv(se.SpatialEnv):
         Return True if any cells empty else False.
         """
         if len(self.empties) <= 0:
+            # if no empties anywhere then none in any view!
             return False
         elif grid_view is not None:
             if len(grid_view.empties) <= 0:
                 return False
-
         return True
 
     def move_to_empty(self, agent, grid_view=None):
