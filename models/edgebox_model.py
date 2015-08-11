@@ -45,7 +45,7 @@ class EdgeboxAgent(ga.GridAgent):
         Act is called in an interactive loop by code
         in the base framework
         """
-        super().act()
+        super().survey_env()
         for trader in self.neighbor_iter(view=self.my_view):
             for g in self.goods:
                 amt = 1
