@@ -30,27 +30,20 @@ class StanceAgent(ga.GridAgent):
         self.other = None
         self.comp = None
 
-    def act(self):
-        """
-        Try to adjust our stance to our neighbor's
-        """
-        super().act()
-        (has_my_stance, not_my_stance) = self.survey_env(self.my_view)
-        self.evaluate_env(has_my_stance, not_my_stance)
-
-    def evaluate_env(self, has_my_stance, not_my_stance):
+    def eval_env(self, env_vars):
         """
         See how we like the stance scene.
         """
-        if self.comp(not_my_stance, has_my_stance):
-            self.respond_to_cond()
+        (has_my_stance, not_my_stance) = env_vars
+        return self.comp(not_my_stance, has_my_stance)
 
-    def survey_env(self, this_view):
+    def survey_env(self):
         """
         Look around and see what stances surround us.
         """
         def my_filter(n): return isinstance(n, self.other)
 
+        super().survey_env()
         has_my_stance = 0
         not_my_stance = 0
         for other in self.neighbor_iter(view=self.my_view,

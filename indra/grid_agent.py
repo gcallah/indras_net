@@ -56,7 +56,25 @@ class GridAgent(sa.SpatialAgent):
                                              view=view))
 
     def act(self):
+        """
+        Here we set up the usual pattern of action for a grid agent.
+        """
+        env_vars = self.survey_env()
+        if self.eval_env(env_vars):
+            self.respond_to_cond()
+
+    def eval_env(self, env_vars):
+        """
+        Return True if we need to do something.
+        """
+        return False
+
+    def respond_to_cond(self):
+        pass
+
+    def survey_env(self):
         self.my_view = self.get_square_view(self.hood_size)
+        return None
 
     def get_square_view(self, distance):
         return self.env.get_square_view(self.pos, distance)
@@ -82,7 +100,7 @@ class GridAgent(sa.SpatialAgent):
             return iter(self.neighborhood)
 
     def move_to_empty(self, grid_view=None):
-        self.env.move_to_empty(self, grid_view)
+        self.env.move_to_empty(self, grid_view=grid_view)
 
     def to_json(self):
         """
