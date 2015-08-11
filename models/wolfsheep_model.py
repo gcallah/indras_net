@@ -30,7 +30,7 @@ class Creature(ga.GridAgent):
         self.life_force -= 1
         if self.life_force <= 0:
             self.died()
-        if self.age % self.repro_age == 0:
+        elif self.age % self.repro_age == 0:
             self.reproduce()
 
     def preact(self):

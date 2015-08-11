@@ -13,11 +13,12 @@ Y = 1
 
 class TestGridAgent(ga.GridAgent):
     """
-    An agent that prints its neighbors when asked to act
-    and also jumps to an empty cell.
+    An agent that prints its neighbors in preact
+    and also jumps to an empty cell: defaut behavior
+    from our ancestor.
     """
 
-    def act(self):
+    def preact(self):
         (x, y) = self.pos
         print("With " + self.name
               + " we are looking around "
@@ -27,9 +28,6 @@ class TestGridAgent(ga.GridAgent):
         for neighbor in self.neighbor_iter():
             (x1, y1) = neighbor.pos
             print("    %i, %i" % (x1, y1))
-
-    def preact(self):
-        self.env.move_to_empty(self)
 
     def postact(self):
         print("Agent %s postacting" % (self.name))

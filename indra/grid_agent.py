@@ -67,14 +67,19 @@ class GridAgent(sa.SpatialAgent):
         """
         Return True if we need to do something.
         """
-        return False
+        return True
 
     def respond_to_cond(self):
-        pass
+        """
+        Default is to jump to empty cell.
+        """
+        self.move_to_empty(grid_view=self.my_view)
 
     def survey_env(self):
+        """
+        Have a look around, by default in a square view.
+        """
         self.my_view = self.get_square_view(self.hood_size)
-        return None
 
     def get_square_view(self, distance):
         return self.env.get_square_view(self.pos, distance)
