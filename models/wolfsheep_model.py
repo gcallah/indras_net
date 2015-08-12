@@ -10,12 +10,13 @@ import indra.grid_agent as ga
 class Creature(ga.GridAgent):
     """
     A creature: moves around randomly.
-    Reproduction to be added.
+    Eventually, this should be a descendant of StanceAgent.
     """
     def __init__(self, name, goal, repro_age, life_force):
         super().__init__(name, goal)
         self.age = 0
         self.alive = True
+        self.other = None
         self.repro_age = repro_age
         self.life_force = life_force
         self.init_life_force = life_force
@@ -25,16 +26,23 @@ class Creature(ga.GridAgent):
             self.alive = False
             self.env.died(self)
 
-    def act(self):
+    def survey_env(self):
+        if self.alive:
+            super().survey_env()
+
+            def my_filter(n): return isinstance(n, self.other)
+
+            for other in self.neighbor_iter(filt_func=my_filter):
+                return (other)
+        return None
+
+    def postact(self):
         self.age += 1
         self.life_force -= 1
         if self.life_force <= 0:
             self.died()
         elif self.age % self.repro_age == 0:
             self.reproduce()
-
-    def preact(self):
-        self.env.move_to_empty(self)
 
     def reproduce(self):
         if self.alive:
@@ -50,17 +58,22 @@ class Wolf(Creature):
     """
     def __init__(self, name, goal, repro_age, life_force):
         super().__init__(name, goal, repro_age, life_force)
+        self.other = Sheep
 
-    def act(self):
-        super().act()
-        if self.alive:
+    def preact(self):
+        """
+        Wolves always move, seeking prey.
+        """
+        self.env.move_to_empty(self)
 
-            def my_filter(n): return isinstance(n, Sheep)
-
-            for sheep in self.neighbor_iter(filt_func=my_filter):
-                if sheep.alive:
-                    self.eat(sheep)
-                    break  # don't be greedy! eat one sheep per turn!
+    def respond_to_cond(self, env_vars=None):
+        """
+        We found a nearby sheep: eat it!
+        """
+        if env_vars is not None:
+            sheep = (env_vars)
+            if sheep.alive:
+                self.eat(sheep)
 
     def eat(self, sheep):
         self.life_force += sheep.life_force
@@ -73,6 +86,7 @@ class Sheep(Creature):
     """
     def __init__(self, name, goal, repro_age, life_force):
         super().__init__(name, goal, repro_age, life_force)
+        self.other = Wolf
 
 
 class Meadow(ge.GridEnv):

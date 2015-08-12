@@ -23,8 +23,8 @@ if pa is None:
 
 # Now we create a minimal environment for our agents to act within:
 env = ge.GridEnv("Test grid env",
-                 pa.get("grid_height"),
                  pa.get("grid_width"),
+                 pa.get("grid_height"),
                  torus=False,
                  model_nm=MODEL_NM,
                  preact=True,

@@ -98,17 +98,17 @@ class ForestEnv(grid.GridEnv):
     '''
     Simple Forest Fire model.
     '''
-    def __init__(self, height, width, density, strike_freq, regen_period,
+    def __init__(self, width, height, density, strike_freq, regen_period,
                  torus=False, model_nm="ForestFire", postact=True):
         '''
         Create a new forest fire model.
 
         Args:
-            height, width: The size of the grid to model
+            width, height: The size of the grid to model
             density: What fraction of grid cells have a tree in them.
         '''
         # Initialize model parameters
-        super().__init__("Forest Fire", height, width, torus=False,
+        super().__init__("Forest Fire", width, height, torus=False,
                          model_nm=model_nm, postact=postact)
         self.density = density
         self.strike_freq = strike_freq

@@ -30,13 +30,6 @@ class StanceAgent(ga.GridAgent):
         self.other = None
         self.comp = None
 
-    def eval_env(self, env_vars):
-        """
-        See how we like the stance scene.
-        """
-        (has_my_stance, not_my_stance) = env_vars
-        return self.comp(not_my_stance, has_my_stance)
-
     def survey_env(self):
         """
         Look around and see what stances surround us.
@@ -55,7 +48,14 @@ class StanceAgent(ga.GridAgent):
 
         return (has_my_stance, not_my_stance)
 
-    def respond_to_cond(self):
+    def eval_env(self, env_vars):
+        """
+        See how we like the stance scene.
+        """
+        (has_my_stance, not_my_stance) = env_vars
+        return self.comp(not_my_stance, has_my_stance)
+
+    def respond_to_cond(self, env_vars=None):
         """
         What an agent does when he doesn't like the trend.
         """

@@ -28,10 +28,11 @@ if pa is None:
 
 # Now we create a meadow for our agents to act within:
 env = wsm.Meadow("Meadow",
-                 pa.get("grid_height"),
                  pa.get("grid_width"),
+                 pa.get("grid_height"),
                  model_nm=MODEL_NM,
-                 preact=True)
+                 preact=True,
+                 postact=True)
 
 # Now we loop creating multiple agents with numbered names
 # based on the number of agents of that type to create:

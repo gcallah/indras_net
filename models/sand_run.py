@@ -21,8 +21,8 @@ if pa is None:
 
 # Now we create a minimal environment for our agents to act within:
 env = sm.SandEnv("Abelian sand env",
-                 pa.get("grid_height"),
                  pa.get("grid_width"),
+                 pa.get("grid_height"),
                  model_nm=MODEL_NM)
 
 # This env adds agents itself.

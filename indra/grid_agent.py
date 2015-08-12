@@ -17,7 +17,7 @@ class GridAgent(sa.SpatialAgent):
     located in a grid space (and might or might not move in it)
     """
 
-    def __init__(self, name, goal, max_move=0, max_detect=0, cell=None):
+    def __init__(self, name, goal, max_move=1, max_detect=1, cell=None):
         super().__init__(name, goal, max_move=max_move,
                          max_detect=max_detect)
         self.__cell = cell
@@ -61,7 +61,7 @@ class GridAgent(sa.SpatialAgent):
         """
         env_vars = self.survey_env()
         if self.eval_env(env_vars):
-            self.respond_to_cond()
+            self.respond_to_cond(env_vars=env_vars)
 
     def eval_env(self, env_vars):
         """
@@ -69,7 +69,7 @@ class GridAgent(sa.SpatialAgent):
         """
         return True
 
-    def respond_to_cond(self):
+    def respond_to_cond(self, env_vars=None):
         """
         Default is to jump to empty cell.
         """

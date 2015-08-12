@@ -32,8 +32,8 @@ if pa is None:
 
 # Now we create an environment for our agents to act within:
 env = sm.SegregationEnv("A city",
-                        pa.get("grid_height"),
-                        pa.get("grid_width"))
+                        pa.get("grid_width"),
+                        pa.get("grid_height"))
 
 # Now we loop creating multiple agents with numbered names
 # based on the loop variable:

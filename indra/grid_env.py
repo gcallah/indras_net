@@ -225,7 +225,7 @@ class GridEnv(se.SpatialEnv):
         get_neighbors: Returns the objects surrounding a given cell.
     """
 
-    def __init__(self, name, height, width, torus=False,
+    def __init__(self, name, width, height, torus=False,
                  model_nm=None, preact=False, postact=False):
         """
         Create a new grid.

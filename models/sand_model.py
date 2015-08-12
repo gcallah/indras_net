@@ -67,8 +67,8 @@ class SandEnv(ge.GridEnv):
     An environment for spilling sand all over the place.
     """
 
-    def __init__(self, name, height, width, model_nm=None):
-        super().__init__(name, height, width, torus=False,
+    def __init__(self, name, width, height, model_nm=None):
+        super().__init__(name, width, height, torus=False,
                          model_nm=model_nm, postact=True)
 
         self.center_agent = None

@@ -64,10 +64,10 @@ class RedAgent(SegregationAgent):
 
 class SegregationEnv(grid.GridEnv):
 
-    def __init__(self, name, height, width, torus=False,
+    def __init__(self, name, width, height, torus=False,
                  model_nm="Segregation"):
 
-        super().__init__(name, height, width, torus=False,
+        super().__init__(name, width, height, torus=False,
                          model_nm=model_nm)
         self.plot_title = name
         # setting our colors adds varieties as well!
