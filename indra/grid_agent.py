@@ -67,7 +67,7 @@ class GridAgent(sa.SpatialAgent):
         """
         Return True if we need to do something.
         """
-        return True
+        return env_vars is not None
 
     def respond_to_cond(self, env_vars=None):
         """
