@@ -12,8 +12,8 @@ class Creature(ga.GridAgent):
     A creature: moves around randomly.
     Eventually, this should be a descendant of StanceAgent.
     """
-    def __init__(self, name, goal, repro_age, life_force):
-        super().__init__(name, goal)
+    def __init__(self, name, goal, repro_age, life_force, max_detect=1):
+        super().__init__(name, goal, max_detect=max_detect)
         self.age = 0
         self.alive = True
         self.other = None
@@ -33,6 +33,7 @@ class Creature(ga.GridAgent):
             def my_filter(n): return isinstance(n, self.other)
 
             for other in self.neighbor_iter(filt_func=my_filter):
+                print("Detected %s" % (other.name))
                 return (other)
         return None
 
@@ -64,7 +65,7 @@ class Wolf(Creature):
         """
         Wolves always move, seeking prey.
         """
-        self.env.move_to_empty(self)
+        self.env.move_to_empty(self, grid_view=self.my_view)
 
     def respond_to_cond(self, env_vars=None):
         """
@@ -78,14 +79,16 @@ class Wolf(Creature):
     def eat(self, sheep):
         self.life_force += sheep.life_force
         sheep.died()
+        print("%s eating a sheep!" % (self.name))
 
 
 class Sheep(Creature):
     """
-    A sheep: moves around randomly and sometimes gets eaten.
+    A sheep: moves when wolf is nearby and sometimes gets eaten.
     """
-    def __init__(self, name, goal, repro_age, life_force):
-        super().__init__(name, goal, repro_age, life_force)
+    def __init__(self, name, goal, repro_age, life_force, max_detect=3):
+        super().__init__(name, goal, repro_age, life_force,
+                         max_detect=max_detect)
         self.other = Wolf
 
 

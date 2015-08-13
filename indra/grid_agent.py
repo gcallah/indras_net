@@ -80,6 +80,7 @@ class GridAgent(sa.SpatialAgent):
         Have a look around, by default in a square view.
         """
         self.my_view = self.get_square_view(self.hood_size)
+        return (self.my_view)
 
     def get_square_view(self, distance):
         return self.env.get_square_view(self.pos, distance)
@@ -92,8 +93,11 @@ class GridAgent(sa.SpatialAgent):
             then we can save the neighborhood and a lot of overhead!
         """
         if view is None:
-            # our default view is a square reaching 1 square out from self
-            self.get_square_view(1)
+            view = self.my_view
+        if view is None:
+            # our default view is a square reaching 1 cell out from self
+            # in every direction
+            view = self.get_square_view(1)
 
         if not save_hood:
             return self._neighbor_filter(moore, view=view, filt_func=filt_func)
