@@ -3,6 +3,7 @@ wolfsheep_model.py
 Wolves and sheep roaming a meadow, with wolves eating sheep
 that get near them.
 """
+import random
 import indra.grid_env as ge
 import indra.grid_agent as ga
 
@@ -12,9 +13,13 @@ class Creature(ga.GridAgent):
     A creature: moves around randomly.
     Eventually, this should be a descendant of StanceAgent.
     """
-    def __init__(self, name, goal, repro_age, life_force, max_detect=1):
+    def __init__(self, name, goal, repro_age, life_force, max_detect=1,
+                 rand_age=False):
         super().__init__(name, goal, max_detect=max_detect)
-        self.age = 0
+        if not rand_age:
+            self.age = 0
+        else:
+            self.age = random.randint(0, repro_age - 2)
         self.alive = True
         self.other = None
         self.repro_age = repro_age
@@ -33,7 +38,6 @@ class Creature(ga.GridAgent):
             def my_filter(n): return isinstance(n, self.other)
 
             for other in self.neighbor_iter(filt_func=my_filter):
-                print("Detected %s" % (other.name))
                 return (other)
         return None
 
@@ -57,8 +61,8 @@ class Wolf(Creature):
     A wolf: moves around randomly and eats any sheep
     nearby.
     """
-    def __init__(self, name, goal, repro_age, life_force):
-        super().__init__(name, goal, repro_age, life_force)
+    def __init__(self, name, goal, repro_age, life_force, rand_age=False):
+        super().__init__(name, goal, repro_age, life_force, rand_age=rand_age)
         self.other = Sheep
 
     def preact(self):
@@ -79,16 +83,16 @@ class Wolf(Creature):
     def eat(self, sheep):
         self.life_force += sheep.life_force
         sheep.died()
-        print("%s eating a sheep!" % (self.name))
 
 
 class Sheep(Creature):
     """
     A sheep: moves when wolf is nearby and sometimes gets eaten.
     """
-    def __init__(self, name, goal, repro_age, life_force, max_detect=3):
+    def __init__(self, name, goal, repro_age, life_force, max_detect=2,
+                 rand_age=False):
         super().__init__(name, goal, repro_age, life_force,
-                         max_detect=max_detect)
+                         max_detect=max_detect, rand_age=rand_age)
         self.other = Wolf
 
 
