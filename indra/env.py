@@ -364,7 +364,7 @@ class Environment(node.Node):
         Graph our population levels.
         """
         if self.period < 4:
-            self.user.tell("Too little data to display")
+            self.user.tell("Too little data to display", type=user.ERROR)
             return
 
         (period, data) = self.line_data()
@@ -379,7 +379,7 @@ class Environment(node.Node):
         """
         Placeholder
         """
-        self.user.tell("Plot not implemented in this model")
+        self.user.tell("Plot not implemented in this model", type=user.ERROR)
 
     def quit(self):
         """

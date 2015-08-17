@@ -10,6 +10,7 @@ import platform
 import networkx as nx
 import json
 import indra.node as node
+import indra.user as user
 
 
 def in_range(low, val, high):
@@ -114,7 +115,7 @@ class PropArgs(node.Node):
         good_val = False
         while not good_val:
             if nm not in self.props:
-                val = input(msg)
+                val = user.ask(msg)
                 if len(val) == 0:
                     val = default
             else:  # was set from command line, but we still need to type it
