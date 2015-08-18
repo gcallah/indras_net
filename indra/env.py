@@ -196,6 +196,9 @@ class Environment(node.Node):
         """
         name = self.user.ask(
             "Type the name of the agent to inspect: ")
+        if not name:
+            return
+
         agent = self.find_agent(name.strip())
         if agent is None:
             self.user.tell("No such agent")
