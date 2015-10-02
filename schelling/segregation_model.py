@@ -33,7 +33,7 @@ class SegregationAgent(ga.GridAgent):
         else:
             return False  # everyone is OK with no neighbors
 
-    def respond_to_cond(self):
+    def respond_to_cond(self, env_vars=None):
         self.move_to_empty()
 
     def survey_env(self):
