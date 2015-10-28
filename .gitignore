@@ -2,7 +2,6 @@
 *.log
 *.out
 *~
-*.pptx
 *.png
 *.pyc
 __pycache__
