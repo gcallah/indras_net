@@ -22,8 +22,6 @@ if pa is None:
     utils.get_agent_num(pa, "num_hipsters", "hipsters", 16)
     utils.get_max_move(pa, "fmax_move", "follower", 4)
     utils.get_max_move(pa, "hmax_move", "hipster", 4)
-    pa.ask("min_adv_periods", "What are the minimum adverse periods?", int,
-           default=6, limits=(1, 100))
 
 
 # Now we create a minimal environment for our agents to act within:

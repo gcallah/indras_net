@@ -10,6 +10,10 @@ Sub-class this to instantiate another implementation.
 import numpy as np
 # import logging
 
+X_VEC = np.array([1, 0])
+Y_VEC = np.array([0, 1])
+NULL_VEC = np.array([0, 0])
+
 
 class Prehension():
     """
@@ -27,7 +31,7 @@ class Prehension():
                 interacting with one neighborhood and then another one
                 ((a + b) + c).
             c.  Identity: Any prehension prehending the null prehension produces
-                itself.
+                unchanged.
             d.  Invertibility: For any prehension, there is another prehension
                 that combines with it to produce the null prehension.
         The operation *, which we will call “intensify” (although it may also
@@ -54,3 +58,11 @@ class Prehension():
 
     def intensify(self, a):
         return Prehension.from_vector(self.vector * a)
+
+    def direction(self):
+        if self.vector[0] > self.vector[1]:
+            return X_VEC
+        elif self.vector[0] < self.vector[1]:
+            return Y_VEC
+        else:
+            return NULL_VEC

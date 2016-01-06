@@ -3,29 +3,29 @@ stance_model.py
 Models two classes of agents: one tries to follow the other,
 the other tries to avoid the first.
 """
-import logging
+# import numpy as np
+# import logging
 import operator as op
 import indra.display_methods as disp
 import indra.menu as menu
 import indra.grid_env as ge
 import indra.grid_agent as ga
+import indra.prehension as pre
 
 
-YES = 0
-NO = 1
-INIT_FLWR = YES
-INIT_LDR = NO
+INIT_FLWR = pre.X_VEC
+INIT_LEDR = pre.Y_VEC
 
-STANCE_TRACKED = YES
+STANCE_TRACKED = INIT_FLWR
 
 
-class StanceAgent(ga.GridAgent):
+class TwoPopAgent(ga.GridAgent):
     """
     An agent taking a stance depending on others' stance.
     """
     def __init__(self, name, goal, max_move):
         super().__init__(name, goal, max_move, max_detect=max_move)
-        self.stance = None
+        self.stance = pre.Prehension()
         self.adv_periods = 0
         self.other = None
         self.comp = None
@@ -37,43 +37,17 @@ class StanceAgent(ga.GridAgent):
         def my_filter(n): return isinstance(n, self.other)
 
         super().survey_env()
-        has_my_stance = 0
-        not_my_stance = 0
+        other_pre = pre.Prehension()
         for other in self.neighbor_iter(view=self.my_view,
                                         filt_func=my_filter):
-            if other.stance == self.stance:
-                has_my_stance += 1
-            else:
-                not_my_stance += 1
+            other_pre = other.stance.prehend(other_pre)
+        return other_pre
 
-        return (has_my_stance, not_my_stance)
-
-    def eval_env(self, env_vars):
+    def eval_env(self, other_pre):
         """
-        See how we like the stance scene.
+        See how we respond to the stance scene.
         """
-        (has_my_stance, not_my_stance) = env_vars
-        return self.comp(not_my_stance, has_my_stance)
-
-    def respond_to_cond(self, env_vars=None):
-        """
-        What an agent does when he doesn't like the trend.
-        """
-        self.adv_periods += 1
-        if self.adv_periods >= self.env.min_adv_periods:
-            self.change_stance()
-            self.adv_periods = 0
-
-    def change_stance(self):
-        """
-        Switch my fashion.
-        """
-        if self.stance == NO:
-            self.stance = YES
-        else:
-            self.stance = NO
-        self.env.record_stance_change(self)
-        logging.info(self.name + " is changing stance")
+        self.stance = self.stance.prehend(other_pre)
 
     def postact(self):
         """
@@ -82,7 +56,7 @@ class StanceAgent(ga.GridAgent):
         self.move_to_empty(grid_view=self.my_view)
 
 
-class Follower(StanceAgent):
+class Follower(TwoPopAgent):
     """
     A trend follower: tries to switch to value investor' stance.
     """
@@ -93,7 +67,7 @@ class Follower(StanceAgent):
         self.stance = INIT_FLWR
 
 
-class Leader(StanceAgent):
+class Leader(TwoPopAgent):
     """
     A value investor: tries to buy assets out of favor
     """
@@ -101,7 +75,7 @@ class Leader(StanceAgent):
         super().__init__(name, goal, max_move)
         self.comp = op.lt
         self.other = Follower
-        self.stance = INIT_LDR
+        self.stance = INIT_LEDR
 
 
 class StanceEnv(ge.GridEnv):
@@ -116,8 +90,6 @@ class StanceEnv(ge.GridEnv):
         # meaningful in those models
         self.stances = ["yes", "no"]
         self.line_graph_title = "StanceAgents in %s adopting stance %s"
-        self.min_adv_periods = self.props.get("min_adv_periods",
-                                              default=6)
         self.menu.view.add_menu_item("v",
                                      menu.MenuLeaf("(v)iew populations",
                                                    self.view_pop))
