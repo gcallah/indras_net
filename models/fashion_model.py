@@ -6,10 +6,10 @@ changing fashions based on each other's choices.
 # import logging
 import indra.display_methods as disp
 import indra.menu as menu
-import stance_model as sm
+import two_pop_model as tp
 
 
-class Follower(sm.Follower):
+class Follower(tp.Follower):
     """
     A fashion follower: tries to switch to hipsters' fashions.
     """
@@ -18,7 +18,7 @@ class Follower(sm.Follower):
         self.other = Hipster
 
 
-class Hipster(sm.Leader):
+class Hipster(tp.Leader):
     """
     A fashion hipster: tries to not look like followers.
     """
@@ -27,7 +27,7 @@ class Hipster(sm.Leader):
         self.other = Follower
 
 
-class Society(sm.StanceEnv):
+class Society(tp.TwoPopEnv):
     """
     A society of hipsters and followers.
     """

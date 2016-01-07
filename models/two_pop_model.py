@@ -13,10 +13,11 @@ import indra.grid_agent as ga
 import indra.prehension as pre
 
 
-INIT_FLWR = pre.X_VEC
-INIT_LEDR = pre.Y_VEC
+INIT_FLWR = pre.Prehension.from_vector(pre.X_VEC)
+INIT_LEDR = pre.Prehension.from_vector(pre.Y_VEC)
 
 STANCE_TRACKED = INIT_FLWR
+STANCE_TINDEX = 0  # the index of the tracked stance in an array of stances
 
 
 class TwoPopAgent(ga.GridAgent):
@@ -90,7 +91,7 @@ class Leader(TwoPopAgent):
         self.stance = INIT_LEDR
 
 
-class StanceEnv(ge.GridEnv):
+class TwoPopEnv(ge.GridEnv):
     """
     A society of leaders and followers.
     """
@@ -114,7 +115,7 @@ class StanceEnv(ge.GridEnv):
         total_w_stance = 0
         self.user.tell("Populations in period " + str(self.period) +
                        " adopting " +
-                       self.stances[STANCE_TRACKED] + ":")
+                       self.stances[STANCE_TINDEX] + ":")
         for var in self.varieties_iter():
             pop = self.get_pop_data(var)
             total_w_stance += pop
@@ -133,7 +134,7 @@ class StanceEnv(ge.GridEnv):
         (period, data) = self.line_data()
         self.line_graph = disp.LineGraph(self.line_graph_title
                                          % (self.name,
-                                            self.stances[STANCE_TRACKED]),
+                                            self.stances[STANCE_TINDEX]),
                                          data, period)
 
     def add_agent(self, agent):

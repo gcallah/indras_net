@@ -61,8 +61,8 @@ class Prehension():
 
     def direction(self):
         if self.vector[0] > self.vector[1]:
-            return X_VEC
+            return Prehension.from_vector(X_VEC)
         elif self.vector[0] < self.vector[1]:
-            return Y_VEC
+            return Prehension.from_vector(Y_VEC)
         else:
-            return NULL_VEC
+            return Prehension.from_vector(NULL_VEC)
