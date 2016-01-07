@@ -49,6 +49,12 @@ class TwoPopAgent(ga.GridAgent):
         """
         self.stance = self.stance.prehend(other_pre)
 
+    def respond_to_cond(self, env_vars=None):
+        """
+        Over-riding our parent method.
+        """
+        pass
+
     def postact(self):
         """
         After we are done acting, move to an empty cell.
