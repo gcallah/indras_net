@@ -40,7 +40,7 @@ class TwoPopAgent(ga.GridAgent):
         other_pre = pre.Prehension()
         for other in self.neighbor_iter(view=self.my_view,
                                         filt_func=my_filter):
-            other_pre = other.stance.prehend(other_pre)
+            other_pre = other.public_stance().prehend(other_pre)
         return other_pre
 
     def eval_env(self, other_pre):
@@ -54,6 +54,12 @@ class TwoPopAgent(ga.GridAgent):
         After we are done acting, move to an empty cell.
         """
         self.move_to_empty(grid_view=self.my_view)
+
+    def public_stance(self):
+        """
+        My stance as seen from outside. Filters internal conflict.
+        """
+        return self.stance.direction()
 
 
 class Follower(TwoPopAgent):
@@ -130,7 +136,7 @@ class StanceEnv(ge.GridEnv):
         """
         super().add_agent(agent)
         var = agent.get_type()
-        if agent.stance == STANCE_TRACKED:
+        if agent.public_stance() == STANCE_TRACKED:
             self.change_pop_data(var, 1)
 
     def record_stance_change(self, agent):
@@ -138,7 +144,7 @@ class StanceEnv(ge.GridEnv):
         Track the stances in our env.
         """
         var = agent.get_type()
-        if agent.stance == STANCE_TRACKED:
+        if agent.public_stance() == STANCE_TRACKED:
             self.change_pop_data(var, 1)
         else:
             self.change_pop_data(var, -1)
