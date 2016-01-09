@@ -66,3 +66,6 @@ class Prehension():
             return Prehension.from_vector(Y_VEC)
         else:
             return Prehension.from_vector(NULL_VEC)
+
+    def equals(self, other):
+        return np.array_equal(self.vector, other.vector)

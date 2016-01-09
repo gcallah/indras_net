@@ -139,11 +139,11 @@ class TwoPopEnv(ge.GridEnv):
 
     def add_agent(self, agent):
         """
-        Add a new financial agent to the env.
+        Add a new agent to the env.
         """
         super().add_agent(agent)
         var = agent.get_type()
-        if agent.public_stance() == STANCE_TRACKED:
+        if agent.public_stance().equals(STANCE_TRACKED):
             self.change_pop_data(var, 1)
 
     def record_stance_change(self, agent):
@@ -151,7 +151,7 @@ class TwoPopEnv(ge.GridEnv):
         Track the stances in our env.
         """
         var = agent.get_type()
-        if agent.public_stance() == STANCE_TRACKED:
+        if agent.public_stance().equals(STANCE_TRACKED):
             self.change_pop_data(var, 1)
         else:
             self.change_pop_data(var, -1)
