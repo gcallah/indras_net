@@ -69,3 +69,10 @@ class Prehension():
 
     def equals(self, other):
         return np.array_equal(self.vector, other.vector)
+
+    def reverse(self):
+        """
+        Reverse the vector.
+        """
+        new_vec = np.array(np.flipud(self.vector))
+        return Prehension.from_vector(new_vec)

@@ -27,7 +27,7 @@ class TwoPopAgent(ga.GridAgent):
     def __init__(self, name, goal, max_move):
         super().__init__(name, goal, max_move, max_detect=max_move)
         self.stance = pre.Prehension()
-        self.adv_periods = 0
+        self.new_stance = pre.Prehension()
         self.other = None
         self.comp = None
 
@@ -44,12 +44,6 @@ class TwoPopAgent(ga.GridAgent):
             other_pre = other.public_stance().prehend(other_pre)
         return other_pre
 
-    def eval_env(self, other_pre):
-        """
-        See how we respond to the stance scene.
-        """
-        self.stance = self.stance.prehend(other_pre)
-
     def respond_to_cond(self, env_vars=None):
         """
         Over-riding our parent method.
@@ -58,8 +52,10 @@ class TwoPopAgent(ga.GridAgent):
 
     def postact(self):
         """
-        After we are done acting, move to an empty cell.
+        After we are done acting, adopt our new stance.
+        Then move to an empty cell.
         """
+        self.stance = self.new_stance
         self.move_to_empty(grid_view=self.my_view)
 
     def public_stance(self):
@@ -71,7 +67,7 @@ class TwoPopAgent(ga.GridAgent):
 
 class Follower(TwoPopAgent):
     """
-    A trend follower: tries to switch to value investor' stance.
+    A trend follower: tries to switch to leader's stance
     """
     def __init__(self, name, goal, max_move):
         super().__init__(name, goal, max_move)
@@ -79,16 +75,29 @@ class Follower(TwoPopAgent):
         self.other = Leader
         self.stance = INIT_FLWR
 
+    def eval_env(self, other_pre):
+        """
+        See how we respond to the stance scene.
+        """
+        self.new_stance = self.stance.prehend(other_pre)
+
 
 class Leader(TwoPopAgent):
     """
-    A value investor: tries to buy assets out of favor
+    A leader: avoids follower's stance.
     """
     def __init__(self, name, goal, max_move):
         super().__init__(name, goal, max_move)
         self.comp = op.lt
         self.other = Follower
         self.stance = INIT_LEDR
+
+    def eval_env(self, other_pre):
+        """
+        See how we respond to the stance scene.
+        For a leader, we reverse what the followers are doing.
+        """
+        self.new_stance = self.stance.prehend(other_pre.reverse())
 
 
 class TwoPopEnv(ge.GridEnv):
