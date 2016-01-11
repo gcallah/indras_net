@@ -126,7 +126,10 @@ class TwoPopEnv(ge.GridEnv):
                        " adopting " +
                        self.stances[STANCE_TINDEX] + ":")
         for var in self.varieties_iter():
-            pop = self.get_pop_data(var)
+            pop = 0
+            for agent in self.get_agents_of_var(var):
+                if agent.public_stance().equals(STANCE_TRACKED):
+                    pop += 1
             total_w_stance += pop
             self.user.tell(var + ": " + str(pop))
             self.append_pop_hist(var, pop)
@@ -145,22 +148,3 @@ class TwoPopEnv(ge.GridEnv):
                                          % (self.name,
                                             self.stances[STANCE_TINDEX]),
                                          data, period)
-
-    def add_agent(self, agent):
-        """
-        Add a new agent to the env.
-        """
-        super().add_agent(agent)
-        var = agent.get_type()
-        if agent.public_stance().equals(STANCE_TRACKED):
-            self.change_pop_data(var, 1)
-
-    def record_stance_change(self, agent):
-        """
-        Track the stances in our env.
-        """
-        var = agent.get_type()
-        if agent.public_stance().equals(STANCE_TRACKED):
-            self.change_pop_data(var, 1)
-        else:
-            self.change_pop_data(var, -1)
