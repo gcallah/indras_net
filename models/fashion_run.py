@@ -22,7 +22,8 @@ if pa is None:
     utils.get_agent_num(pa, "num_hipsters", "hipsters", 16)
     utils.get_max_move(pa, "fmax_move", "follower", 4)
     utils.get_max_move(pa, "hmax_move", "hipster", 4)
-
+    pa.ask("self_imp", "What is the agent's self importance?",
+           int, default=4, limits=(1, 20))
 
 # Now we create a minimal environment for our agents to act within:
 env = fm.Society("Society",
@@ -35,9 +36,9 @@ env = fm.Society("Society",
 # based on the loop variable:
 for i in range(pa.get("num_followers")):
     env.add_agent(fm.Follower("follower" + str(i), "Looking like hipsters",
-                              pa.get("fmax_move")))
+                              pa.get("fmax_move"), pa.get("self_imp")))
 for i in range(pa.get("num_hipsters")):
     env.add_agent(fm.Hipster("hipster" + str(i), "Looking trendy",
-                             pa.get("hmax_move")))
+                             pa.get("hmax_move"), pa.get("self_imp")))
 
 utils.run_model(env, prog_file, results_file)

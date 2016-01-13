@@ -15,7 +15,7 @@ Y_VEC = np.array([0, 1])
 NULL_VEC = np.array([0, 0])
 
 
-class Prehension():
+class Prehension:
     """
     All prehensions must have the following properties:
         The operation +, which we will call “prehend”, accepts two prehensions
@@ -44,6 +44,10 @@ class Prehension():
 
     """
 
+    X_PRE = None
+    Y_PRE = None
+    NULL_PRE = None
+
     @classmethod
     def from_vector(cls, v):
         p = Prehension()
@@ -53,6 +57,9 @@ class Prehension():
     def __init__(self, x=0, y=0):
         self.vector = np.array([x, y])
 
+    def __str__(self):
+        return ("x: %f, y: %f" % (self.vector[0], self.vector[1]))
+
     def prehend(self, other):
         return Prehension.from_vector(self.vector + other.vector)
 
@@ -61,11 +68,11 @@ class Prehension():
 
     def direction(self):
         if self.vector[0] > self.vector[1]:
-            return Prehension.from_vector(X_VEC)
+            return Prehension.X_PRE
         elif self.vector[0] < self.vector[1]:
-            return Prehension.from_vector(Y_VEC)
+            return Prehension.Y_PRE
         else:
-            return Prehension.from_vector(NULL_VEC)
+            return Prehension.NULL_PRE
 
     def equals(self, other):
         return np.array_equal(self.vector, other.vector)
@@ -76,3 +83,13 @@ class Prehension():
         """
         new_vec = np.array(np.flipud(self.vector))
         return Prehension.from_vector(new_vec)
+
+    def normalize(self):
+        """
+        Return a normalized prehension
+        """
+        return Prehension.from_vector(self.vector / np.linalg.norm(self.vector))
+
+Prehension.X_PRE = Prehension(1, 0)
+Prehension.Y_PRE = Prehension(0, 1)
+Prehension.NULL_PRE = Prehension(0, 0)

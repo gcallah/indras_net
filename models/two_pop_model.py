@@ -3,9 +3,7 @@ stance_model.py
 Models two classes of agents: one tries to follow the other,
 the other tries to avoid the first.
 """
-# import numpy as np
 # import logging
-import operator as op
 import indra.display_methods as disp
 import indra.menu as menu
 import indra.grid_env as ge
@@ -13,8 +11,8 @@ import indra.grid_agent as ga
 import indra.prehension as pre
 
 
-INIT_FLWR = pre.Prehension.from_vector(pre.X_VEC)
-INIT_LEDR = pre.Prehension.from_vector(pre.Y_VEC)
+INIT_FLWR = pre.Prehension.X_PRE
+INIT_LEDR = pre.Prehension.Y_PRE
 
 STANCE_TRACKED = INIT_FLWR
 STANCE_TINDEX = 0  # the index of the tracked stance in an array of stances
@@ -24,12 +22,12 @@ class TwoPopAgent(ga.GridAgent):
     """
     An agent taking a stance depending on others' stance.
     """
-    def __init__(self, name, goal, max_move):
+    def __init__(self, name, goal, max_move, self_import=1):
         super().__init__(name, goal, max_move, max_detect=max_move)
         self.stance = pre.Prehension()
         self.new_stance = pre.Prehension()
         self.other = None
-        self.comp = None
+        self.self_import = self_import
 
     def survey_env(self):
         """
@@ -55,12 +53,22 @@ class TwoPopAgent(ga.GridAgent):
         After we are done acting, adopt our new stance.
         Then move to an empty cell.
         """
+        print("With " + type(self).__name__)
+        print("old stance = " + str(self.stance))
+        print("public old stance = " + str(self.public_stance()))
+        print("new stance = " + str(self.new_stance))
+        self.new_stance = self.new_stance.normalize()
+        self.new_stance = self.new_stance.intensify(self.self_import)
+        print("new stance intensified = " + str(self.new_stance),
+              "self importance = " + str(self.self_import))
         self.stance = self.new_stance
+        print("stance = " + str(self.stance))
+        print("")
         self.move_to_empty(grid_view=self.my_view)
 
     def public_stance(self):
         """
-        My stance as seen from outside. Filters internal conflict.
+        My stance as seen from outside. Filters out internal conflict.
         """
         return self.stance.direction()
 
@@ -69,11 +77,10 @@ class Follower(TwoPopAgent):
     """
     A trend follower: tries to switch to leader's stance
     """
-    def __init__(self, name, goal, max_move):
-        super().__init__(name, goal, max_move)
-        self.comp = op.gt
+    def __init__(self, name, goal, max_move, self_import=1):
+        super().__init__(name, goal, max_move, self_import)
         self.other = Leader
-        self.stance = INIT_FLWR
+        self.stance = INIT_FLWR.intensify(self.self_import)
 
     def eval_env(self, other_pre):
         """
@@ -86,11 +93,10 @@ class Leader(TwoPopAgent):
     """
     A leader: avoids follower's stance.
     """
-    def __init__(self, name, goal, max_move):
-        super().__init__(name, goal, max_move)
-        self.comp = op.lt
+    def __init__(self, name, goal, max_move, self_import=1):
+        super().__init__(name, goal, max_move, self_import)
         self.other = Follower
-        self.stance = INIT_LEDR
+        self.stance = INIT_LEDR.intensify(self.self_import)
 
     def eval_env(self, other_pre):
         """
