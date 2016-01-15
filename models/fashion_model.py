@@ -13,8 +13,8 @@ class Follower(tp.Follower):
     """
     A fashion follower: tries to switch to hipsters' fashions.
     """
-    def __init__(self, name, goal, max_move, self_import=1):
-        super().__init__(name, goal, max_move, self_import)
+    def __init__(self, name, goal, max_move, variability=.5):
+        super().__init__(name, goal, max_move, variability)
         self.other = Hipster
 
 
@@ -22,8 +22,8 @@ class Hipster(tp.Leader):
     """
     A fashion hipster: tries to not look like followers.
     """
-    def __init__(self, name, goal, max_move, self_import=1):
-        super().__init__(name, goal, max_move, self_import)
+    def __init__(self, name, goal, max_move, variability=.5):
+        super().__init__(name, goal, max_move, variability)
         self.other = Follower
 
 

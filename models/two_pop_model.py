@@ -22,12 +22,12 @@ class TwoPopAgent(ga.GridAgent):
     """
     An agent taking a stance depending on others' stance.
     """
-    def __init__(self, name, goal, max_move, self_import=1):
+    def __init__(self, name, goal, max_move, variability=.5):
         super().__init__(name, goal, max_move, max_detect=max_move)
         self.stance = pre.Prehension()
         self.new_stance = pre.Prehension()
         self.other = None
-        self.self_import = self_import
+        self.variability = variability
 
     def survey_env(self):
         """
@@ -39,7 +39,7 @@ class TwoPopAgent(ga.GridAgent):
         other_pre = pre.Prehension()
         for other in self.neighbor_iter(view=self.my_view,
                                         filt_func=my_filter):
-            other_pre = other.public_stance().prehend(other_pre)
+            other_pre = other.stance.prehend(other_pre)
         return other_pre
 
     def respond_to_cond(self, env_vars=None):
@@ -53,17 +53,8 @@ class TwoPopAgent(ga.GridAgent):
         After we are done acting, adopt our new stance.
         Then move to an empty cell.
         """
-        print("With " + type(self).__name__)
-        print("old stance = " + str(self.stance))
-        print("public old stance = " + str(self.public_stance()))
-        print("new stance = " + str(self.new_stance))
         self.new_stance = self.new_stance.normalize()
-        self.new_stance = self.new_stance.intensify(self.self_import)
-        print("new stance intensified = " + str(self.new_stance),
-              "self importance = " + str(self.self_import))
         self.stance = self.new_stance
-        print("stance = " + str(self.stance))
-        print("")
         self.move_to_empty(grid_view=self.my_view)
 
     def public_stance(self):
@@ -77,26 +68,27 @@ class Follower(TwoPopAgent):
     """
     A trend follower: tries to switch to leader's stance
     """
-    def __init__(self, name, goal, max_move, self_import=1):
-        super().__init__(name, goal, max_move, self_import)
+    def __init__(self, name, goal, max_move, variability=.5):
+        super().__init__(name, goal, max_move, variability)
         self.other = Leader
-        self.stance = INIT_FLWR.intensify(self.self_import)
+        self.stance = INIT_FLWR
 
     def eval_env(self, other_pre):
         """
         See how we respond to the stance scene.
         """
-        self.new_stance = self.stance.prehend(other_pre)
+        self.new_stance = self.stance.prehend(
+            other_pre.intensify(self.variability))
 
 
 class Leader(TwoPopAgent):
     """
     A leader: avoids follower's stance.
     """
-    def __init__(self, name, goal, max_move, self_import=1):
-        super().__init__(name, goal, max_move, self_import)
+    def __init__(self, name, goal, max_move, variability=.5):
+        super().__init__(name, goal, max_move, variability)
         self.other = Follower
-        self.stance = INIT_LEDR.intensify(self.self_import)
+        self.stance = INIT_LEDR
 
     def eval_env(self, other_pre):
         """
