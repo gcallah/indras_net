@@ -6,30 +6,33 @@ and value investors.
 import logging
 import indra.menu as menu
 import indra.display_methods as disp
-import stance_model as sm
+import two_pop_model as tp
 
 INIT_PRICE = 10.0
 INIT_ENDOW = INIT_PRICE * 10.0
-BUY = sm.INIT_FLWR
-SELL = sm.INIT_LDR
+BUY = tp.INIT_FLWR
+SELL = tp.INIT_LEDR
 
 
-class FinancialAgent(sm.StanceAgent):
+class FinancialAgent(tp.TwoPopAgent):
     """
     A financial agent who trades an asset.
     """
-    def __init__(self, name, goal, max_move):
-        super().__init__(name, goal, max_move)
+    def __init__(self, name, goal, max_move, variability=.5):
+        super().__init__(name, goal, max_move, variability)
         self.profit = 0.0
         self.funds = INIT_ENDOW
+        self.prev_direct = self.stance.direction()
 
-    def change_stance(self):
-        super().change_stance()
-        if self.stance == BUY:
-            self.funds -= self.env.asset_price
-        else:
-            self.funds += self.env.asset_price
-        self.calc_profit()
+    def respond_to_cond(self, env_vars=None):
+        curr_direct = self.stance.direction()
+        if not curr_direct.equals(self.prev_direct):
+            if curr_direct.equals(BUY):
+                self.funds -= self.env.asset_price
+            else:
+                self.funds += self.env.asset_price
+            self.calc_profit()
+            self.prev_direct = curr_direct
 
     def calc_profit(self):
         self.profit = self.funds - INIT_ENDOW
@@ -44,25 +47,25 @@ class FinancialAgent(sm.StanceAgent):
             self.calc_profit()
 
 
-class ChartFollower(FinancialAgent, sm.Follower):
+class ChartFollower(FinancialAgent, tp.Follower):
     """
     A trend follower: buys what others are buying.
     """
-    def __init__(self, name, goal, max_move):
-        super().__init__(name, goal, max_move)
+    def __init__(self, name, goal, max_move, variability=.5):
+        super().__init__(name, goal, max_move, variability)
         self.other = ValueInvestor
 
 
-class ValueInvestor(FinancialAgent, sm.Leader):
+class ValueInvestor(FinancialAgent, tp.Leader):
     """
     A value investor: buys what others are not buying.
     """
-    def __init__(self, name, goal, max_move):
-        super().__init__(name, goal, max_move)
+    def __init__(self, name, goal, max_move, variability=.5):
+        super().__init__(name, goal, max_move, variability)
         self.other = ChartFollower
 
 
-class FinMarket(sm.StanceEnv):
+class FinMarket(tp.TwoPopEnv):
     """
     A society of value investors and chart followers.
     """
@@ -99,7 +102,7 @@ class FinMarket(sm.StanceEnv):
             self.total_pop = self.get_total_pop()
         self.adj_asset_price(total_buyers)
         self.price_hist.append(self.asset_price)
-        self.user.tell("The chart followes have a net profit of %f."
+        self.user.tell("The chart followers have a net profit of %f."
                        % (self.follower_profit))
         self.user.tell("The value investors have a net profit of %f."
                        % (self.value_profit))

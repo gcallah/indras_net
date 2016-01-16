@@ -79,6 +79,7 @@ class Follower(TwoPopAgent):
         """
         self.new_stance = self.stance.prehend(
             other_pre.intensify(self.variability))
+        return self.new_stance
 
 
 class Leader(TwoPopAgent):
@@ -96,6 +97,7 @@ class Leader(TwoPopAgent):
         For a leader, we reverse what the followers are doing.
         """
         self.new_stance = self.stance.prehend(other_pre.reverse())
+        return self.new_stance
 
 
 class TwoPopEnv(ge.GridEnv):
