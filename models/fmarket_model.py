@@ -22,20 +22,18 @@ class FinancialAgent(tp.TwoPopAgent):
         super().__init__(name, goal, max_move, variability)
         self.profit = 0.0
         self.funds = INIT_ENDOW
-        self.prev_direct = self.stance.direction()
 
     def respond_to_cond(self, env_vars=None):
         curr_direct = self.stance.direction()
-        logging.debug("For type %s, curr_direct = %s, prev_direct = %s"
-                      % (type(self).__name__, str(curr_direct),
-                         str(self.prev_direct)))
+        logging.info("For type %s, curr_direct = %s, prev_direct = %s"
+                     % (type(self).__name__, str(curr_direct),
+                        str(self.prev_direct)))
         if not curr_direct.equals(self.prev_direct):
             if curr_direct.equals(BUY):
                 self.funds -= self.env.asset_price
             else:
                 self.funds += self.env.asset_price
             self.calc_profit()
-            self.prev_direct = curr_direct
 
     def calc_profit(self):
         self.profit = self.funds - INIT_ENDOW
@@ -115,14 +113,12 @@ class FinMarket(tp.TwoPopEnv):
         self.value_profit = 0.0
 
     def adj_asset_price(self, total_buyers):
-        max_move = self.asset_price * .10  # no moves over 10%!
         buy_ratio = total_buyers / self.total_pop
         move = self.max_abs_pmove * ((2.0 * buy_ratio) - 1.0)
-        if abs(move) > max_move:
-            if move < 0:
+        if move < 0:  # limit downward moves
+            max_move = self.asset_price * .10
+            if abs(move) > max_move:
                 move = -max_move
-            else:
-                move = max_move
         self.asset_price += move
 
     def view_price(self):

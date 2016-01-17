@@ -3,7 +3,7 @@ stance_model.py
 Models two classes of agents: one tries to follow the other,
 the other tries to avoid the first.
 """
-# import logging
+import logging
 import indra.display_methods as disp
 import indra.menu as menu
 import indra.grid_env as ge
@@ -28,6 +28,7 @@ class TwoPopAgent(ga.GridAgent):
         self.new_stance = pre.Prehension()
         self.other = None
         self.variability = variability
+        self.prev_direct = self.stance.direction()
 
     def survey_env(self):
         """
@@ -51,11 +52,17 @@ class TwoPopAgent(ga.GridAgent):
     def postact(self):
         """
         After we are done acting, adopt our new stance.
+        If the stance changes our direction, we adopt the extreme
+        of the new direction.
         Then move to an empty cell.
         """
+        curr_direct = self.stance.direction()
         self.new_stance = self.new_stance.normalize()
+        logging.info("For %s: stance = %s, new stance = %s"
+                     % (self.name, str(self.stance), str(self.new_stance)))
         self.stance = self.new_stance
         self.move_to_empty(grid_view=self.my_view)
+        self.prev_direct = curr_direct
 
     def public_stance(self):
         """

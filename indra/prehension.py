@@ -13,6 +13,7 @@ import numpy as np
 X_VEC = np.array([1, 0])
 Y_VEC = np.array([0, 1])
 NULL_VEC = np.array([0, 0])
+NEUT_VEC = np.array([.7071068, .7071068])
 
 
 class Prehension:
@@ -47,6 +48,7 @@ class Prehension:
     X_PRE = None
     Y_PRE = None
     NULL_PRE = None
+    NEUT_PRE = None
 
     @classmethod
     def from_vector(cls, v):
@@ -72,7 +74,7 @@ class Prehension:
         elif self.vector[0] < self.vector[1]:
             return Prehension.Y_PRE
         else:
-            return Prehension.NULL_PRE
+            return Prehension.NEUT_PRE
 
     def equals(self, other):
         return np.array_equal(self.vector, other.vector)
@@ -90,6 +92,7 @@ class Prehension:
         """
         return Prehension.from_vector(self.vector / np.linalg.norm(self.vector))
 
-Prehension.X_PRE = Prehension(1, 0)
-Prehension.Y_PRE = Prehension(0, 1)
-Prehension.NULL_PRE = Prehension(0, 0)
+Prehension.X_PRE = Prehension.from_vector(X_VEC)
+Prehension.Y_PRE = Prehension.from_vector(Y_VEC)
+Prehension.NULL_PRE = Prehension.from_vector(NULL_VEC)
+Prehension.NEUT_PRE = Prehension.from_vector(NEUT_VEC)
