@@ -23,13 +23,12 @@ class FinancialAgent(tp.TwoPopAgent):
         self.profit = 0.0
         self.funds = INIT_ENDOW
 
-    def respond_to_cond(self, env_vars=None):
-        curr_direct = self.stance.direction()
-        logging.info("For type %s, curr_direct = %s, prev_direct = %s"
-                     % (type(self).__name__, str(curr_direct),
-                        str(self.prev_direct)))
-        if not curr_direct.equals(self.prev_direct):
-            if curr_direct.equals(BUY):
+    def direction_changed(self, curr_direct, new_direct):
+        if not new_direct.equals(curr_direct):
+            logging.info("For type %s, new_direct = %s, curr_direct = %s"
+                         % (type(self).__name__, str(new_direct),
+                            str(curr_direct)))
+            if new_direct.equals(BUY):
                 self.funds -= self.env.asset_price
             else:
                 self.funds += self.env.asset_price

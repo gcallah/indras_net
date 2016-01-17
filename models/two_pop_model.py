@@ -28,7 +28,6 @@ class TwoPopAgent(ga.GridAgent):
         self.new_stance = pre.Prehension()
         self.other = None
         self.variability = variability
-        self.prev_direct = self.stance.direction()
 
     def survey_env(self):
         """
@@ -56,13 +55,25 @@ class TwoPopAgent(ga.GridAgent):
         of the new direction.
         Then move to an empty cell.
         """
+        new_direct = self.new_stance.direction()
         curr_direct = self.stance.direction()
-        self.new_stance = self.new_stance.normalize()
         logging.info("For %s: stance = %s, new stance = %s"
                      % (self.name, str(self.stance), str(self.new_stance)))
+        if not new_direct.equals(curr_direct):
+            self.direction_changed(curr_direct, new_direct)
+            # if adopting a new stance direction, we go to the extreme
+            self.new_stance = new_direct
+        else:
+            self.new_stance = self.new_stance.normalize()
         self.stance = self.new_stance
         self.move_to_empty(grid_view=self.my_view)
-        self.prev_direct = curr_direct
+
+    def direction_changed(self, curr_direct, new_direct):
+        """
+        Some models may need to do something when the direction of an
+        agent changes.
+        """
+        pass
 
     def public_stance(self):
         """
