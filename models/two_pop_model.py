@@ -1,13 +1,16 @@
 """
-stance_model.py
+two_pop_model.py
 Models two classes of agents: one tries to follow the other,
 the other tries to avoid the first.
 """
+
+# pylint: disable=E731
+
 import logging
 import indra.display_methods as disp
 import indra.menu as menu
 import indra.grid_env as ge
-import indra.grid_agent as ga
+import indra.prehension_agent as pa
 import indra.prehension as pre
 
 
@@ -18,13 +21,15 @@ STANCE_TRACKED = INIT_FLWR
 STANCE_TINDEX = 0  # the index of the tracked stance in an array of stances
 
 
-class TwoPopAgent(ga.GridAgent):
+class TwoPopAgent(pa.PrehensionAgent):
     """
     An agent taking a stance depending on others' stance.
     """
     def __init__(self, name, goal, max_move, variability=.5):
         super().__init__(name, goal, max_move, max_detect=max_move)
-        self.stance = pre.Prehension()
+
+        self.my_filter = lambda n: isinstance(n, self.other)
+
         self.new_stance = pre.Prehension()
         self.other = None
         self.variability = variability
@@ -33,12 +38,11 @@ class TwoPopAgent(ga.GridAgent):
         """
         Look around and see what stances surround us.
         """
-        def my_filter(n): return isinstance(n, self.other)
 
         super().survey_env()
         other_pre = pre.Prehension()
         for other in self.neighbor_iter(view=self.my_view,
-                                        filt_func=my_filter):
+                                        filt_func=self.my_filter):
             other_pre = other.stance.prehend(other_pre)
         return other_pre
 
