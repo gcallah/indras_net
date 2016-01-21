@@ -61,7 +61,7 @@ class GridAgent(sa.SpatialAgent):
         """
         env_vars = self.survey_env()
         if self.eval_env(env_vars):
-            self.respond_to_cond(env_vars=env_vars)
+            self.respond_to_cond() # env_vars=env_vars)
 
     def eval_env(self, env_vars):
         """

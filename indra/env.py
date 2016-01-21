@@ -196,6 +196,9 @@ class Environment(node.Node):
         """
         name = self.user.ask(
             "Type the name of the agent to inspect: ")
+        if not name:
+            return
+
         agent = self.find_agent(name.strip())
         if agent is None:
             self.user.tell("No such agent")
@@ -364,7 +367,7 @@ class Environment(node.Node):
         Graph our population levels.
         """
         if self.period < 4:
-            self.user.tell("Too little data to display")
+            self.user.tell("Too little data to display", type=user.ERROR)
             return
 
         (period, data) = self.line_data()
@@ -379,7 +382,7 @@ class Environment(node.Node):
         """
         Placeholder
         """
-        self.user.tell("Plot not implemented in this model")
+        self.user.tell("Plot not implemented in this model", type=user.ERROR)
 
     def quit(self):
         """

@@ -134,13 +134,11 @@ class LineGraph():
         Draw just the data portion.
         """
         self.lines = []
-        i = 0
-        for var in varieties:
+        for i, var in enumerate(varieties):
             data = varieties[var]["data"]
             color = get_color(varieties[var], i)
             y = np.array(data)
             ax.plot(x, y, linewidth=2, label=var, alpha=1.0, c=color)
-            i += 1
 
     def show(self):
         """
@@ -217,8 +215,7 @@ class ScatterPlot():
 
     def create_scats(self, varieties):
         self.scats = []
-        i = 0
-        for var in varieties:
+        for i, var in enumerate(varieties):
             (x_array, y_array) = self.get_arrays(varieties, var)
             if len(x_array) <= 0:  # no data to graph!
                 next
@@ -231,4 +228,3 @@ class ScatterPlot():
                                alpha=1.0, marker="8",
                                edgecolors='none', s=self.s)
             self.scats.append(scat)
-            i += 1
