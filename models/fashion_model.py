@@ -6,28 +6,28 @@ changing fashions based on each other's choices.
 # import logging
 import indra.display_methods as disp
 import indra.menu as menu
-import stance_model as sm
+import two_pop_model as tp
 
 
-class Follower(sm.Follower):
+class Follower(tp.Follower):
     """
     A fashion follower: tries to switch to hipsters' fashions.
     """
-    def __init__(self, name, goal, max_move):
-        super().__init__(name, goal, max_move)
+    def __init__(self, name, goal, max_move, variability=.5):
+        super().__init__(name, goal, max_move, variability)
         self.other = Hipster
 
 
-class Hipster(sm.Leader):
+class Hipster(tp.Leader):
     """
     A fashion hipster: tries to not look like followers.
     """
-    def __init__(self, name, goal, max_move):
-        super().__init__(name, goal, max_move)
+    def __init__(self, name, goal, max_move, variability=.5):
+        super().__init__(name, goal, max_move, variability)
         self.other = Follower
 
 
-class Society(sm.StanceEnv):
+class Society(tp.TwoPopEnv):
     """
     A society of hipsters and followers.
     """

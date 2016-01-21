@@ -18,15 +18,13 @@ pa = utils.read_props(MODEL_NM)
 if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     utils.get_grid_dims(pa, 16)
-    utils.get_agent_num(pa, "num_followers", "followers", 48)
+    utils.get_agent_num(pa, "num_followers", "followers", 32)
     utils.get_agent_num(pa, "num_vinvestors", "value investors", 16)
     utils.get_max_move(pa, "fmax_move", "chart follower", 4)
     utils.get_max_move(pa, "vmax_move", "value investor", 4)
-    pa.ask("min_adv_periods", "What are the minimum adverse periods?", int,
-           default=12, limits=(1, 100))
+    utils.get_pct(pa, "variability", "agent", "variability", .2)
 
-
-# Now we create a minimal environment for our agents to act within:
+# Now we create a asset environment for our agents to act within:
 env = fm.FinMarket("Financial Market",
                    pa.get("grid_height"),
                    pa.get("grid_width"),
@@ -37,9 +35,9 @@ env = fm.FinMarket("Financial Market",
 # based on the loop variable:
 for i in range(pa.get("num_followers")):
     env.add_agent(fm.ChartFollower("follower" + str(i), "Following trend",
-                                   pa.get("fmax_move")))
+                                   pa.get("fmax_move"), pa.get("variability")))
 for i in range(pa.get("num_vinvestors")):
     env.add_agent(fm.ValueInvestor("value_inv" + str(i), "Buying value",
-                                   pa.get("vmax_move")))
+                                   pa.get("vmax_move"), pa.get("variability")))
 
 utils.run_model(env, prog_file, results_file)

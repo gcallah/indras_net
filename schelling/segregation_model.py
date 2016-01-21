@@ -8,19 +8,20 @@ Created on Mon Mar  2 21:40:05 2015
 ''' Segregation Model '''
 
 import random
-import indra.grid_agent as ga
+import indra.prehension_agent as pa
 import indra.grid_env as grid
 
 BLUE_AGENT = "BlueAgent"
 RED_AGENT = "RedAgent"
 
 
-class SegregationAgent(ga.GridAgent):
+class SegregationAgent(pa.PrehensionAgent):
     """
     An agent that moves location based on its neighbors' types
     """
-    def __init__(self, name, goal, min_tol, max_tol, max_detect=1):
-        super().__init__(name, goal, max_detect=max_detect)
+    def __init__(self, name, goal, min_tol, max_tol, max_move=100,
+                 max_detect=1):
+        super().__init__(name, goal, max_move=max_move, max_detect=max_detect)
         self.tolerance = random.uniform(max_tol, min_tol)
 
     def eval_env(self, env_vars):
@@ -33,7 +34,7 @@ class SegregationAgent(ga.GridAgent):
         else:
             return False  # everyone is OK with no neighbors
 
-    def respond_to_cond(self):
+    def respond_to_cond(self, env_vars=None):
         self.move_to_empty()
 
     def survey_env(self):
