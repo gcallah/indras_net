@@ -7,6 +7,7 @@ The base implementation of a prehension is as a vector.
 Sub-class this to instantiate another implementation.
 """
 
+import math
 import numpy as np
 # import logging
 
@@ -96,3 +97,25 @@ Prehension.X_PRE = Prehension.from_vector(X_VEC)
 Prehension.Y_PRE = Prehension.from_vector(Y_VEC)
 Prehension.NULL_PRE = Prehension.from_vector(NULL_VEC)
 Prehension.NEUT_PRE = Prehension.from_vector(NEUT_VEC)
+
+
+def stance_pct_to_pre(pct, y=False):
+    """
+    pct is our % of the way to the y-axis from
+    the x-axis around the unit circle. (If y=True, it is the opposite.)
+    It will return the x, y coordinates of the point that % of the way.
+    I.e., .5 returns NEUT_VEC, 0 returns X_VEC.
+    """
+    if y:
+        pct = 1 - pct
+    if pct == 0:
+        return Prehension.X_PRE
+    elif pct == .5:
+        return Prehension.NEUT_PRE
+    elif pct == 1:
+        return Prehension.Y_PRE
+    else:
+        angle = 90 * pct
+        x = math.cos(math.radians(angle))
+        y = math.sin(math.radians(angle))
+        return Prehension(x, y)

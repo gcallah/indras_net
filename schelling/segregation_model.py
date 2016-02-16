@@ -2,15 +2,21 @@
 """
 Created on Mon Mar  2 21:40:05 2015
 
-@author: Brandon
+@author: Brandon Logan
+    Gene Callahan
+Implements Thomas Schelling's segregation model.
+An agent moves when she finds herself to be "too small"
+of a minority in a particular neighborhood.
 """
 
-''' Segregation Model '''
 
 import random
+import indra.prehension as pre
 import indra.prehension_agent as pa
 import indra.grid_env as grid
 
+BLUE = True
+RED = False
 BLUE_AGENT = "BlueAgent"
 RED_AGENT = "RedAgent"
 
@@ -23,44 +29,37 @@ class SegregationAgent(pa.PrehensionAgent):
                  max_detect=1):
         super().__init__(name, goal, max_move=max_move, max_detect=max_detect)
         self.tolerance = random.uniform(max_tol, min_tol)
+        self.stance = None
 
-    def eval_env(self, env_vars):
+    def eval_env(self, other_pre):
         """
         Use the results of surveying the env to decide what to do.
         """
-        (resembles_me, total_neighbors) = env_vars
-        if total_neighbors > 0:
-            return resembles_me / total_neighbors < self.tolerance
-        else:
-            return False  # everyone is OK with no neighbors
 
     def respond_to_cond(self, env_vars=None):
         self.move_to_empty()
 
-    def survey_env(self):
-        """
-        Look around and see what our env holds for us.
-        """
-        super().survey_env()
-        resembles_me = 0
-        total_neighbors = 0
-        for neighbor in self.neighbor_iter(view=self.my_view):
-            total_neighbors += 1
-            if self.get_type() == neighbor.get_type():
-                resembles_me += 1
-        return (resembles_me, total_neighbors)
-
 
 class BlueAgent(SegregationAgent):
     """
-    Just a type with no code
+    We set our stance.
     """
+    def __init__(self, name, goal, min_tol, max_tol, max_move=100,
+                 max_detect=1):
+        super().__init__(name, goal, min_tol, max_tol,
+                         max_move=max_move, max_detect=max_detect)
+        self.stance = pre.stance_pct_to_pre(self.tolerance, y=BLUE)
 
 
 class RedAgent(SegregationAgent):
     """
-    Just a type with no code
+    We set our stance.
     """
+    def __init__(self, name, goal, min_tol, max_tol, max_move=100,
+                 max_detect=1):
+        super().__init__(name, goal, min_tol, max_tol,
+                         max_move=max_move, max_detect=max_detect)
+        self.stance = pre.stance_pct_to_pre(self.tolerance, y=RED)
 
 
 class SegregationEnv(grid.GridEnv):
