@@ -11,6 +11,10 @@ import math
 import numpy as np
 # import logging
 
+# x and y indices
+X = 0
+Y = 1
+
 X_VEC = np.array([1, 0])
 Y_VEC = np.array([0, 1])
 NULL_VEC = np.array([0, 0])
@@ -61,7 +65,7 @@ class Prehension:
         self.vector = np.array([x, y])
 
     def __str__(self):
-        return ("x: %f, y: %f" % (self.vector[0], self.vector[1]))
+        return ("x: %f, y: %f" % (self.vector[X], self.vector[Y]))
 
     def prehend(self, other):
         return Prehension.from_vector(self.vector + other.vector)
@@ -70,12 +74,19 @@ class Prehension:
         return Prehension.from_vector(self.vector * a)
 
     def direction(self):
-        if self.vector[0] > self.vector[1]:
+        if self.vector[X] > self.vector[Y]:
             return Prehension.X_PRE
-        elif self.vector[0] < self.vector[1]:
+        elif self.vector[X] < self.vector[Y]:
             return Prehension.Y_PRE
         else:
             return Prehension.NEUT_PRE
+
+    def project(self, x_or_y):
+        """
+        Projects the vector onto the x or y axis.
+        Pass in X or Y as declared above.
+        """
+        return self.vector[x_or_y]
 
     def equals(self, other):
         return np.array_equal(self.vector, other.vector)
@@ -89,9 +100,14 @@ class Prehension:
 
     def normalize(self):
         """
-        Return a normalized prehension
+        Return a normalized prehension.
+        If we get the NULL prehension, just return it.
         """
+        if self.equals(Prehension.NULL_PRE):
+            return Prehension.NULL_PRE
+
         return Prehension.from_vector(self.vector / np.linalg.norm(self.vector))
+
 
 Prehension.X_PRE = Prehension.from_vector(X_VEC)
 Prehension.Y_PRE = Prehension.from_vector(Y_VEC)
@@ -99,14 +115,14 @@ Prehension.NULL_PRE = Prehension.from_vector(NULL_VEC)
 Prehension.NEUT_PRE = Prehension.from_vector(NEUT_VEC)
 
 
-def stance_pct_to_pre(pct, y=False):
+def stance_pct_to_pre(pct, x_or_y):
     """
     pct is our % of the way to the y-axis from
-    the x-axis around the unit circle. (If y=True, it is the opposite.)
+    the x-axis around the unit circle. (If x_or_y == Y, it is the opposite.)
     It will return the x, y coordinates of the point that % of the way.
     I.e., .5 returns NEUT_VEC, 0 returns X_VEC.
     """
-    if y:
+    if x_or_y == Y:
         pct = 1 - pct
     if pct == 0:
         return Prehension.X_PRE

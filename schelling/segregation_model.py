@@ -2,7 +2,7 @@
 """
 Created on Mon Mar  2 21:40:05 2015
 
-@author: Brandon Logan
+@authors: Brandon Logan
     Gene Callahan
 Implements Thomas Schelling's segregation model.
 An agent moves when she finds herself to be "too small"
@@ -15,10 +15,13 @@ import indra.prehension as pre
 import indra.prehension_agent as pa
 import indra.grid_env as grid
 
-BLUE = True
-RED = False
-BLUE_AGENT = "BlueAgent"
+MOVE = True
+STAY = False
+RED = pre.X
+BLUE = pre.Y
+AGENT_TYPES = {RED: "RedAgent", BLUE: "BlueAgent"}
 RED_AGENT = "RedAgent"
+BLUE_AGENT = "BlueAgent"
 
 
 class SegregationAgent(pa.PrehensionAgent):
@@ -30,11 +33,23 @@ class SegregationAgent(pa.PrehensionAgent):
         super().__init__(name, goal, max_move=max_move, max_detect=max_detect)
         self.tolerance = random.uniform(max_tol, min_tol)
         self.stance = None
+        self.orientation = None
 
     def eval_env(self, other_pre):
         """
         Use the results of surveying the env to decide what to do.
         """
+        if other_pre == pre.Prehension.NULL_PRE:  # no neighbors, we stay put
+            return STAY
+
+        # otherwise, see how we like the hood
+        other_pre = other_pre.normalize()
+        other_projection = other_pre.project(self.orientation)
+        my_projection = self.stance.project(self.orientation)
+        if other_projection < my_projection:
+            return MOVE
+        else:
+            return STAY
 
     def respond_to_cond(self, env_vars=None):
         self.move_to_empty()
@@ -48,7 +63,8 @@ class BlueAgent(SegregationAgent):
                  max_detect=1):
         super().__init__(name, goal, min_tol, max_tol,
                          max_move=max_move, max_detect=max_detect)
-        self.stance = pre.stance_pct_to_pre(self.tolerance, y=BLUE)
+        self.orientation = BLUE
+        self.stance = pre.stance_pct_to_pre(self.tolerance, BLUE)
 
 
 class RedAgent(SegregationAgent):
@@ -59,7 +75,8 @@ class RedAgent(SegregationAgent):
                  max_detect=1):
         super().__init__(name, goal, min_tol, max_tol,
                          max_move=max_move, max_detect=max_detect)
-        self.stance = pre.stance_pct_to_pre(self.tolerance, y=RED)
+        self.orientation = RED
+        self.stance = pre.stance_pct_to_pre(self.tolerance, RED)
 
 
 class SegregationEnv(grid.GridEnv):
@@ -71,8 +88,8 @@ class SegregationEnv(grid.GridEnv):
                          model_nm=model_nm)
         self.plot_title = name
         # setting our colors adds varieties as well!
-        self.set_var_color(BLUE_AGENT, 'b')
-        self.set_var_color(RED_AGENT, 'r')
+        self.set_var_color(AGENT_TYPES[BLUE], 'b')
+        self.set_var_color(AGENT_TYPES[RED], 'r')
         self.num_moves = 0
         self.move_hist = []
 
