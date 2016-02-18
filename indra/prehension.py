@@ -4,6 +4,9 @@ The way agents interact is through prehensions.
 entity.py currently has another notion of prehension: that one
 and this one must be combined in the future.
 The base implementation of a prehension is as a vector.
+As of the moment, this is essentially a wrapper around numpy's vector
+functions. But the reason to do it that way is because other models might
+want a prehension that is NOT a vector.
 Sub-class this to instantiate another implementation.
 """
 
@@ -15,6 +18,7 @@ import numpy as np
 X = 0
 Y = 1
 
+# Set up constants for some common vectors: this will save time and memory.
 X_VEC = np.array([1, 0])
 Y_VEC = np.array([0, 1])
 NULL_VEC = np.array([0, 0])
@@ -50,6 +54,8 @@ class Prehension:
 
     """
 
+# we must pre-declare these, then use them, then init them at the bottom
+#  of the file.
     X_PRE = None
     Y_PRE = None
     NULL_PRE = None
@@ -57,6 +63,9 @@ class Prehension:
 
     @classmethod
     def from_vector(cls, v):
+        """
+        Convenience method to turn a vector into a prehension.
+        """
         p = Prehension()
         p.vector = v
         return p
@@ -68,12 +77,26 @@ class Prehension:
         return ("x: %f, y: %f" % (self.vector[X], self.vector[Y]))
 
     def prehend(self, other):
+        """
+        In this class, a prehension prehends another prehension
+        through vector addition.
+        other: prehension to prehend
+        """
         return Prehension.from_vector(self.vector + other.vector)
 
     def intensify(self, a):
+        """
+        Here this is scalar multiplication of a vector.
+        a: scalar to multiply by.
+        """
         return Prehension.from_vector(self.vector * a)
 
     def direction(self):
+        """
+        This gets us the orientation of the vector: x, y, or neutral.
+        We use it, for instance, to set an agent's market stance to
+        buy or sell.
+        """
         if self.vector[X] > self.vector[Y]:
             return Prehension.X_PRE
         elif self.vector[X] < self.vector[Y]:
@@ -89,6 +112,10 @@ class Prehension:
         return self.vector[x_or_y]
 
     def equals(self, other):
+        """
+        For prehensions of the base type, they are equal
+        when their vetors are equal.
+        """
         return np.array_equal(self.vector, other.vector)
 
     def reverse(self):
@@ -109,6 +136,8 @@ class Prehension:
         return Prehension.from_vector(self.vector / np.linalg.norm(self.vector))
 
 
+# Now we actually initialize the prehensions we declared above.
+#  This can't be done earlier, since Prehension was just defined.
 Prehension.X_PRE = Prehension.from_vector(X_VEC)
 Prehension.Y_PRE = Prehension.from_vector(Y_VEC)
 Prehension.NULL_PRE = Prehension.from_vector(NULL_VEC)
