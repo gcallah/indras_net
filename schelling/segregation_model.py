@@ -42,7 +42,7 @@ class SegregationAgent(pa.PrehensionAgent):
         """
         Use the results of surveying the env to decide what to do.
         """
-        print(self.debug_info())
+        print("\n" + self.debug_info())
         print("other_pre = " + str(other_pre))
         # no neighbors, we stay put:
         if other_pre.equals(pre.Prehension.NULL_PRE):
