@@ -42,24 +42,17 @@ class SegregationAgent(pa.PrehensionAgent):
         """
         Use the results of surveying the env to decide what to do.
         """
-        print("\n" + self.debug_info())
-        print("other_pre = " + str(other_pre))
         # no neighbors, we stay put:
         if other_pre.equals(pre.Prehension.NULL_PRE):
-            print("staying: no neighbors")
             return STAY
 
         # otherwise, see how we like the hood
         other_pre = other_pre.normalize()
         other_projection = other_pre.project(self.orientation)
         my_projection = self.stance.project(self.orientation)
-        print("other_proj = " + str(other_projection))
-        print("my proj = " + str(my_projection))
         if other_projection < my_projection:
-            print("moving")
             return MOVE
         else:
-            print("staying: like neighbors")
             return STAY
 
     def respond_to_cond(self, env_vars=None):
