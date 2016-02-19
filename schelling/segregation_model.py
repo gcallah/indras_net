@@ -80,6 +80,9 @@ class RedAgent(SegregationAgent):
 
 
 class SegregationEnv(grid.GridEnv):
+    """
+    The segregation model environment, mostly concerned with bookkeeping.
+    """
 
     def __init__(self, name, width, height, torus=False,
                  model_nm="Segregation"):
@@ -99,14 +102,15 @@ class SegregationEnv(grid.GridEnv):
 
     def census(self, disp=True):
         """
-        Take a census of number of moves.
+        Take a census recording the number of moves.
         """
-
         self.move_hist.append(self.num_moves)
         self.user.tell("Moves per turn: " + str(self.move_hist))
         self.num_moves = 0
 
     def record_results(self, file_nm):
+        """
+        """
         f = open(file_nm, 'w')
         for num_moves in self.move_hist:
             f.write(str(num_moves) + '\n')
