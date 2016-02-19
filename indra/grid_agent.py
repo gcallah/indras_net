@@ -111,6 +111,15 @@ class GridAgent(sa.SpatialAgent):
     def move_to_empty(self, grid_view=None):
         self.env.move_to_empty(self, grid_view=grid_view)
 
+    def debug_info(self):
+        """
+        Relevant debugging info.
+        """
+        s = (super().debug_info() + "\nLocation x: "
+             + str(self.pos[X]) + ", y: " + str(self.pos[X])
+             + "\nHood size: " + str(self.hood_size))
+        return s
+
     def to_json(self):
         """
         We're going to make a dictionary of the 'safe' parts of the object to

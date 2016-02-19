@@ -4,7 +4,7 @@ A very basic class implementing some thing at the bottom of our
 net of objects, such as being a node in a graph.
 """
 
-import logging
+# import logging
 import inspect
 import networkx as nx
 import indra.display_methods as disp
@@ -16,30 +16,6 @@ indras_net = nx.Graph()
 
 def get_class_name(genera):
     return genera.__name__
-
-
-def get_prehensions(prehender, universal):
-    """
-    Find prehensions for a prehender.
-    """
-    return universals.get_prehensions(prehender, universal)
-
-
-def add_prehension(prehender, universal, prehended):
-    """
-    Add a prehension between classes
-    """
-    logging.info("Prehender = %s for universal %s" % (prehender, universal))
-    prnr_type = get_class_name(prehender)
-    prnd_type = get_class_name(prehended)
-    universals.add_prehension(prnr_type, universal, prnd_type)
-
-
-def add_ent_prehension(prehender, universal, prehended):
-    """
-    Add a prehension between entities.
-    """
-    universals.add_prehension(prehender, universal, prehended)
 
 
 class Node():
@@ -104,6 +80,13 @@ class Node():
         """
         pass
 
+    def debug_info(self):
+        """
+        Relevant debugging info.
+        """
+        s = "name: " + self.name + "\nntype: " + self.ntype
+        return s
+
     def get_type(self):
         """
         Returns node's type.
@@ -125,8 +108,8 @@ class Node():
 
 class Universals(Node):
     """
-    Our universals, the things which relate instances
-    or classes.
+    Our universals, the things which relate instances or classes.
+    This is not implemented at the moment.
     """
 
     universals_graphed = False
@@ -144,37 +127,6 @@ class Universals(Node):
         univeral relationships at a glance,
         so we will store them here
         """
-        self.unis[uni] = []  # a list of prehensions
-
-    def add_prehension(self, prehender, uni, prehended):
-        """
-        Adds a universal relationship between two classes
-        """
-        if uni not in self.unis:
-            self.add_universal(uni)
-        self.unis[uni].append([prehender, prehended])
-        self.graph.add_edge(prehender, prehended,
-                            universal=uni)
-
-    def get_prehensions(self, prehender, uni):
-        """
-        Find all prehensions for some prehender.
-        """
-        prehensions = []
-        logging.debug("edges = " + str(self.graph.edges()))
-        for etuple in self.graph.edges_iter(data=True):
-            hender = etuple[0]
-            hended = etuple[1]
-            edge_data = etuple[2]
-            prehension = edge_data[UNIVERSAL]
-            logging.debug("Comparing hender = "
-                          + hender
-                          + " with prehender = "
-                          + prehender)
-            if uni == prehension and hender == prehender:
-                logging.debug("Found our universal: " + uni)
-                prehensions.append(hended)
-        logging.debug("prehensions = " + str(prehensions))
-        return prehensions
+        self.unis[uni] = []
 
 universals = Universals()

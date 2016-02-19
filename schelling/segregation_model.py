@@ -19,9 +19,11 @@ MOVE = True
 STAY = False
 RED = pre.X
 BLUE = pre.Y
-AGENT_TYPES = {RED: "RedAgent", BLUE: "BlueAgent"}
+RED_PRE = pre.Prehension.X_PRE
+BLUE_PRE = pre.Prehension.Y_PRE
 RED_AGENT = "RedAgent"
 BLUE_AGENT = "BlueAgent"
+AGENT_TYPES = {RED: RED_AGENT, BLUE: BLUE_AGENT}
 
 
 class SegregationAgent(pa.PrehensionAgent):
@@ -34,25 +36,44 @@ class SegregationAgent(pa.PrehensionAgent):
         self.tolerance = random.uniform(max_tol, min_tol)
         self.stance = None
         self.orientation = None
+        self.visible_pre = None
 
     def eval_env(self, other_pre):
         """
         Use the results of surveying the env to decide what to do.
         """
-        if other_pre == pre.Prehension.NULL_PRE:  # no neighbors, we stay put
+        print(self.debug_info())
+        print("other_pre = " + str(other_pre))
+        # no neighbors, we stay put:
+        if other_pre.equals(pre.Prehension.NULL_PRE):
+            print("staying: no neighbors")
             return STAY
 
         # otherwise, see how we like the hood
         other_pre = other_pre.normalize()
         other_projection = other_pre.project(self.orientation)
         my_projection = self.stance.project(self.orientation)
+        print("other_proj = " + str(other_projection))
+        print("my proj = " + str(my_projection))
         if other_projection < my_projection:
+            print("moving")
             return MOVE
         else:
+            print("staying: like neighbors")
             return STAY
 
     def respond_to_cond(self, env_vars=None):
+        """
+        If we don't like the neighborhood, we jump to a random empty cell.
+        """
         self.move_to_empty()
+
+    def visible_stance(self):
+        """
+        Our visible stance differs from our internal one.
+        It is just our "color."
+        """
+        return self.visible_pre
 
 
 class BlueAgent(SegregationAgent):
@@ -64,6 +85,7 @@ class BlueAgent(SegregationAgent):
         super().__init__(name, goal, min_tol, max_tol,
                          max_move=max_move, max_detect=max_detect)
         self.orientation = BLUE
+        self.visible_pre = BLUE_PRE
         self.stance = pre.stance_pct_to_pre(self.tolerance, BLUE)
 
 
@@ -76,6 +98,7 @@ class RedAgent(SegregationAgent):
         super().__init__(name, goal, min_tol, max_tol,
                          max_move=max_move, max_detect=max_detect)
         self.orientation = RED
+        self.visible_pre = RED_PRE
         self.stance = pre.stance_pct_to_pre(self.tolerance, RED)
 
 
