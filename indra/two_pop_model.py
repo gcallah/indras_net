@@ -13,7 +13,8 @@ import indra.grid_env as ge
 import indra.prehension_agent as pa
 import indra.prehension as pre
 
-
+# We represent one stance by a vector pointing along the x-axis, the other
+#  by one pointing along the y-axis:
 INIT_FLWR = pre.Prehension.X_PRE
 INIT_LEDR = pre.Prehension.Y_PRE
 
@@ -24,6 +25,8 @@ STANCE_TINDEX = 0  # the index of the tracked stance in an array of stances
 class TwoPopAgent(pa.PrehensionAgent):
     """
     An agent taking a stance depending on others' stance.
+    variability: controls how self-directed the agent is. The higher the
+        variability, the more the agent is influenced by others.
     """
     def __init__(self, name, goal, max_move, variability=.5):
         super().__init__(name, goal, max_move, max_detect=max_move)
@@ -34,21 +37,9 @@ class TwoPopAgent(pa.PrehensionAgent):
         self.other = None
         self.variability = variability
 
-    def survey_env(self):
-        """
-        Look around and see what stances surround us.
-        """
-
-        super().survey_env()
-        other_pre = pre.Prehension()
-        for other in self.neighbor_iter(view=self.my_view,
-                                        filt_func=self.my_filter):
-            other_pre = other.stance.prehend(other_pre)
-        return other_pre
-
     def respond_to_cond(self, env_vars=None):
         """
-        Over-riding our parent method.
+        Over-riding our parent method to do nothing.
         """
         pass
 
@@ -75,7 +66,7 @@ class TwoPopAgent(pa.PrehensionAgent):
     def direction_changed(self, curr_direct, new_direct):
         """
         Some models may need to do something when the direction of an
-        agent changes.
+        agent changes. But in the base class, we don't.
         """
         pass
 
@@ -125,6 +116,8 @@ class Leader(TwoPopAgent):
 class TwoPopEnv(ge.GridEnv):
     """
     A society of leaders and followers.
+    Most of the code here is bookkeeping: setting up a census,
+        adding menu items, drawing a graph.
     """
     def __init__(self, name, length, height, model_nm=None, torus=False,
                  postact=True):

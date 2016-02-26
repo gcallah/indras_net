@@ -6,7 +6,7 @@ changing fashions based on each other's choices.
 # import logging
 import indra.display_methods as disp
 import indra.menu as menu
-import two_pop_model as tp
+import indra.two_pop_model as tp
 
 
 class Follower(tp.Follower):

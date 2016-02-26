@@ -6,7 +6,7 @@ and value investors.
 import logging
 import indra.menu as menu
 import indra.display_methods as disp
-import two_pop_model as tp
+import indra.two_pop_model as tp
 
 INIT_PRICE = 10.0
 INIT_ENDOW = INIT_PRICE * 10.0

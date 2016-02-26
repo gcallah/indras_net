@@ -203,7 +203,7 @@ class Environment(node.Node):
         if agent is None:
             self.user.tell("No such agent")
         else:
-            agent.pprint()
+            self.user.tell(agent.debug_info())
         self.edit_field(agent)
 
     def env_inspect(self):
