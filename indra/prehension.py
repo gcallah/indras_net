@@ -82,6 +82,7 @@ class Prehension:
     def reverse(self):
         """
         Reverse the vector.
+        Reflection across line y = x.
         """
         new_vec = np.array(np.flipud(self.vector))
         return Prehension.from_vector(new_vec)
