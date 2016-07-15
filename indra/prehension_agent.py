@@ -20,12 +20,7 @@ class PrehensionAgent(ga.GridAgent):
         Look around and see what surrounds us.
         """
         super().survey_env()
-        other_pre = pre.Prehension()
-        for other in self.neighbor_iter(view=self.my_view,
-                                        filt_func=self.my_filter):
-            # accumulate prehensions:
-            other_pre = other.visible_stance().prehend(other_pre)
-        return other_pre
+        return None
 
     def visible_stance(self):
         """

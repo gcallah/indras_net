@@ -11,22 +11,22 @@ of a minority in a particular neighborhood.
 
 
 import random
-import indra.prehension as pre
-import indra.prehension_agent as pa
+import indra.vector_space as vs
+import indra.vs_agent as va
 import indra.grid_env as grid
 
 MOVE = True
 STAY = False
-RED = pre.X
-BLUE = pre.Y
-RED_PRE = pre.Prehension.X_PRE
-BLUE_PRE = pre.Prehension.Y_PRE
+RED = vs.X
+BLUE = vs.Y
+RED_PRE = vs.VectorSpace.X_PRE
+BLUE_PRE = vs.VectorSpace.Y_PRE
 RED_AGENT = "RedAgent"
 BLUE_AGENT = "BlueAgent"
 AGENT_TYPES = {RED: RED_AGENT, BLUE: BLUE_AGENT}
 
 
-class SegregationAgent(pa.PrehensionAgent):
+class SegregationAgent(va.VSAgent):
     """
     An agent that moves location based on its neighbors' types
     """
@@ -43,7 +43,7 @@ class SegregationAgent(pa.PrehensionAgent):
         Use the results of surveying the env to decide what to do.
         """
         # no neighbors, we stay put:
-        if other_pre.equals(pre.Prehension.NULL_PRE):
+        if other_pre.equals(vs.VectorSpace.NULL_PRE):
             return STAY
 
         # otherwise, see how we like the hood
@@ -79,7 +79,7 @@ class BlueAgent(SegregationAgent):
                          max_move=max_move, max_detect=max_detect)
         self.orientation = BLUE
         self.visible_pre = BLUE_PRE
-        self.stance = pre.stance_pct_to_pre(self.tolerance, BLUE)
+        self.stance = vs.stance_pct_to_pre(self.tolerance, BLUE)
 
 
 class RedAgent(SegregationAgent):
@@ -92,7 +92,7 @@ class RedAgent(SegregationAgent):
                          max_move=max_move, max_detect=max_detect)
         self.orientation = RED
         self.visible_pre = RED_PRE
-        self.stance = pre.stance_pct_to_pre(self.tolerance, RED)
+        self.stance = vs.stance_pct_to_pre(self.tolerance, RED)
 
 
 class SegregationEnv(grid.GridEnv):

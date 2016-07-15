@@ -10,19 +10,19 @@ import logging
 import indra.display_methods as disp
 import indra.menu as menu
 import indra.grid_env as ge
-import indra.prehension_agent as pa
-import indra.prehension as pre
+import indra.vs_agent as va
+import indra.vector_space as vs
 
 # We represent one stance by a vector pointing along the x-axis, the other
 #  by one pointing along the y-axis:
-INIT_FLWR = pre.Prehension.X_PRE
-INIT_LEDR = pre.Prehension.Y_PRE
+INIT_FLWR = vs.VectorSpace.X_PRE
+INIT_LEDR = vs.VectorSpace.Y_PRE
 
 STANCE_TRACKED = INIT_FLWR
 STANCE_TINDEX = 0  # the index of the tracked stance in an array of stances
 
 
-class TwoPopAgent(pa.PrehensionAgent):
+class TwoPopAgent(va.VSAgent):
     """
     An agent taking a stance depending on others' stance.
     variability: controls how self-directed the agent is. The higher the
@@ -33,7 +33,7 @@ class TwoPopAgent(pa.PrehensionAgent):
 
         self.my_filter = lambda n: isinstance(n, self.other)
 
-        self.new_stance = pre.Prehension()
+        self.new_stance = vs.VectorSpace()
         self.other = None
         self.variability = variability
 
