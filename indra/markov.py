@@ -14,41 +14,35 @@ ROWS = 0
 COLS = 1
 
 
+def state_vector(vlen, init_state):
+    vals = ""
+    for i in range(vlen):
+        if i == init_state:
+            vals = vals + "1 "
+        else:
+            vals = vals + "0 "
+    return np.matrix(vals)
+
+
+def probvec_to_state(pv):
+    state_vec = None
+    cum_prob = 0.0
+    r = random.random()
+    l = pv.shape[COLS]
+    for i in range(l):
+        cum_prob += pv.item(i)
+        if cum_prob >= r:
+            state_vec = state_vector(l, i)
+            break
+    return state_vec
+
+
 class MarkovPre(pre.Prehension):
     """
     This class manages taking a state vector and a transition matrix
     and turning them into a new state vector, as well as
     creating matrices more easily than numpy.
     """
-
-    @classmethod
-    def state_vector(vlen, init_state):
-        m = MarkovPre(1, vlen)
-        vals = ""
-        for i in range(vlen):
-            if i == init_state:
-                vals = vals + "1 "
-            else:
-                vals = vals + "0 "
-        m.matrix = np.matrix(vals)
-        return m
-
-    @classmethod
-    def probvec_to_state(pv):
-        state_vec = None
-        cum_prob = 0.0
-        l = pv.shape[COLS]
-        map = []
-        for i in range(l):
-            prob = pv.item(i)
-            cum_prob += prob
-            map.append(cum_prob)
-        r = random.random()
-        for i in range(len(map)):
-            if map[i] >= r:
-                state_vec = MarkovPre.state_vector(l, i)
-                break
-        return state_vec
 
     def __init__(self, dim1, dim2):
         super().__init__()
@@ -71,5 +65,5 @@ class MarkovPre(pre.Prehension):
         """
         if self.dim1 == 1:
             return self.matrix * other.matrix
-        else
+        else:
             return other.matrix * self.matrix
