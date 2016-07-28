@@ -21,14 +21,3 @@ class MarkovAgent(pa.PrehensionAgent):
         Look around and see what surrounds us.
         """
         return self.env.get_pre()
-
-    def get_state(self):
-        """
-        This method assumes we have a state vector.
-        It then return the index of the element that is "on."
-        """
-        i = 0
-        for s in self.state.flat:
-            if s == 1:
-                return i
-            i += 1

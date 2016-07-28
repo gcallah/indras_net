@@ -36,6 +36,19 @@ def probvec_to_state(pv):
             break
     return state_vec
 
+def get_state(sv):
+    """
+    This method takes a state vector, sv.
+    It then return the index of the element that is "on,"
+    or None if none are.
+    """
+    i = 0
+    for s in sv.flat:
+        if s == 1:
+            return i
+        i += 1
+    return None
+
 
 class MarkovPre(pre.Prehension):
     """
@@ -44,15 +57,12 @@ class MarkovPre(pre.Prehension):
     creating matrices more easily than numpy.
     """
 
-    def __init__(self, dim1, dim2):
+    def __init__(self, str_matrix):
+        """
+        str_matrix is the matrix represented as a string in numpy fashion.
+        """
         super().__init__()
-        self.dim1 = dim1
-        self.dim2 = dim2
-        if dim1 == 1:
-            self.matrix = np.matrix("1 0 0 0") # for now
-        else:
-            self.matrix = np.matrix(".95 .05 0 0; 0 0 1 0; "
-                                    "0 0 .95 .05; 1 0 0 0")
+        self.matrix = np.matrix(str_matrix)
 
     def __str__(self):
         return ("markov chain")
@@ -63,7 +73,7 @@ class MarkovPre(pre.Prehension):
         as a markov chain process.
         other: prehension to prehend
         """
-        if self.dim1 == 1:
+        if self.matrix.shape[ROWS] == 1:
             return self.matrix * other.matrix
         else:
             return other.matrix * self.matrix
