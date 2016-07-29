@@ -7,6 +7,10 @@ import indra.prop_args as props
 import indra.utils as utils
 import forestfire_model as fm
 
+DEF_GRID_DIM = 5
+DEF_DENS = .43
+DEF_REGEN = 20
+
 # set up some file names:
 MODEL_NM = "forestfire_model"
 (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
@@ -18,13 +22,13 @@ MODEL_NM = "forestfire_model"
 pa = utils.read_props(MODEL_NM)
 if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
-    utils.get_grid_dims(pa, 100)
-    utils.get_pct(pa, "density", "forest", "density", .43)
+    utils.get_grid_dims(pa, DEF_GRID_DIM)
+    utils.get_pct(pa, "density", "forest", "density", DEF_DENS)
     pa.ask("strike_freq", "How many turns between lightning strikes?",
            int, default=4, limits=utils.POS_INTS)
     pa.ask("regen_period",
            "How many turns before a new tree grows where one has burned?",
-           int, default=20, limits=utils.POS_INTS)
+           int, default=DEF_REGEN, limits=utils.POS_INTS)
 
 density = pa.get("density")
 grid_x = pa.get("grid_width")

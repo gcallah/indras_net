@@ -57,6 +57,9 @@ def from_matrix(m):
     pre.matrix = m
     return pre
 
+def to_matrix(pre):
+    return pre.matrix
+
 
 class MarkovPre(pre.Prehension):
     """
@@ -82,6 +85,6 @@ class MarkovPre(pre.Prehension):
         other: prehension to prehend
         """
         if self.matrix.shape[ROWS] == 1:
-            return self.matrix * other.matrix
+            return from_matrix(self.matrix * other.matrix)
         else:
-            return other.matrix * self.matrix
+            return from_matrix(other.matrix * self.matrix)

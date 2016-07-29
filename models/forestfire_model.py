@@ -5,22 +5,34 @@ This model shows the spread of a forest fire through a forest.
 """
 
 import indra.display_methods as disp
-import indra.grid_agent as ga
-import indra.grid_env as grid
+import indra.markov as markov
+import indra.markov_agent as ma
+import indra.markov_env as menv
 
 
 X = 0
 Y = 1
 
-# tree conditions: NEW_GROWTH and HEALTHY both return True
-#  when tested with is_healthy()
-NEW_GROWTH = "New Growth"
+# tree condition strings
 HEALTHY = "Healthy"
 ON_FIRE = "On Fire"
 BURNED_OUT = "Burned Out"
+NEW_GROWTH = "New Growth"
 
+# states
+HE = 0
+OF = 1
+BO = 2
+NG = 3
 
-class Tree(ga.GridAgent):
+STATE_MAP = { HE: HEALTHY, OF: ON_FIRE, BO: BURNED_OUT, NG: NEW_GROWTH }
+
+NSTATES = 4
+
+NORMAL_TRANS = ".95 .05 0 0; 0 0 1 0; 0 0 .95 .05; 0 0 0 1"
+FIRE_TRANS = "0 1 0 0; 0 0 1 0; 0 0 .95 .05; 0 1 0 0"
+
+class Tree(ma.MarkovAgent):
     '''
     A tree cell.
 
@@ -32,69 +44,32 @@ class Tree(ga.GridAgent):
         '''
         Create a new tree.
         '''
-        super().__init__(name, "burn")
-        self.ntype = HEALTHY
+        super().__init__(name, "health", NSTATES, HE)
+        self.state = HE
+        self.ntype = STATE_MAP[HE]
         self.next_state = None
-        self.dead_periods = 0
 
-    def is_healthy(self):
-        return self.ntype == HEALTHY or self.ntype == NEW_GROWTH
-
-    def is_burning(self):
-        return self.ntype == ON_FIRE
-
-    def is_burnt(self):
-        return self.ntype == BURNED_OUT
-
-    def set_type(self, new_type):
+    def set_state(self, new_state):
         """
         Set tree's new type.
         """
         old_type = self.ntype
-        self.ntype = new_type
-        self.env.change_agent_type(self, old_type, new_type)
-
-    def act(self):
-        '''
-        If this tree is HEALTHY and a neighbor is on fire,
-         this tree catches on fire.
-        If this tree is on fire, set its next state to BURNED_OUT.
-        If the tree is burned out, after regen_period it grows back.
-        '''
-        if self.is_burning():
-            self.next_state = BURNED_OUT
-        elif self.is_healthy():
-            self.next_state = self.survey_env()
-        elif self.is_burnt:
-            self.dead_periods += 1
-            if self.dead_periods >= self.env.regen_period:
-                self.next_state = NEW_GROWTH
-                self.dead_periods = 0
-
-    def survey_env(self, this_view=None):
-        """
-        Look around and see what our env holds for us.
-        We will want to try views > 1 in the future.
-        We set save_hood=True, because the trees don't move,
-        so no need to keep fetching their neighborhood.
-        """
-        for neighbor in self.neighbor_iter(save_hood=True):
-            if neighbor.is_burning():
-                return ON_FIRE
-        return HEALTHY
+        self.state = new_state
+        self.ntype = STATE_MAP[new_state]
+        self.env.change_agent_type(self, old_type, self.ntype)
 
     def postact(self):
         """
         Set our type to next_state.
         """
         if self.next_state is not None:
-            self.set_type(self.next_state)
+            self.set_state(self.next_state)
             self.next_state = None
 
         return self.pos
 
 
-class ForestEnv(grid.GridEnv):
+class ForestEnv(menv.MarkovEnv):
     '''
     Simple Forest Fire model.
     '''
@@ -108,11 +83,9 @@ class ForestEnv(grid.GridEnv):
             density: What fraction of grid cells have a tree in them.
         '''
         # Initialize model parameters
-        super().__init__("Forest Fire", width, height, torus=False,
-                         model_nm=model_nm, postact=postact)
+        super().__init__("Forest Fire", width, height, NORMAL_TRANS,
+                         torus=False, model_nm=model_nm, postact=postact)
         self.density = density
-        self.strike_freq = strike_freq
-        self.regen_period = regen_period
         self.plot_title = "A Forest Fire"
 
         # setting our colors adds varieties as well!
@@ -121,13 +94,9 @@ class ForestEnv(grid.GridEnv):
         self.set_var_color(HEALTHY, disp.GREEN)
         self.set_var_color(NEW_GROWTH, disp.CYAN)
 
-    def step(self):
-        """
-        We strike a tree with lightning every self.strike_freq
-        turns.
-        """
-        if self.period % self.strike_freq == 0:
-            target = self.get_randagent_of_var(HEALTHY)
-            if target is not None:
-                target.set_type(ON_FIRE)
-        super().step()
+        # set up our two possible transition matrices:
+        self.normal = markov.MarkovPre(NORMAL_TRANS)
+        self.fire = markov.MarkovPre(FIRE_TRANS)
+
+    def get_pre(self):
+        return self.normal
