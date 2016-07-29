@@ -14,13 +14,13 @@ class MarkovEnv(ge.GridEnv):
     """
     """
 
-    def __init__(self, name, width, height, dim, torus=False,
+    def __init__(self, name, width, height, trans_str, torus=False,
                  model_nm=None, preact=False, postact=False):
         """
         Create a new markov env
         """
         super().__init__(name, width, height, torus, preact, postact, model_nm)
-        self.trans_matrix = MarkovPre(dim, dim)
+        self.trans_matrix = markov.MarkovPre(trans_str)
 
     def get_pre(self):
         return self.trans_matrix

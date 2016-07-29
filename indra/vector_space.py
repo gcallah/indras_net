@@ -20,6 +20,15 @@ NULL_VEC = np.array([0, 0])
 NEUT_VEC = np.array([.7071068, .7071068])
 
 
+def from_vector(v):
+    """
+    Convenience method to turn a vector into a prehension.
+    """
+    vspace = VectorSpace()
+    vspace.vector = v
+    return vspace
+
+
 class VectorSpace(pre.Prehension):
     """
     We need to put definition of a vector space here.
@@ -32,14 +41,6 @@ class VectorSpace(pre.Prehension):
     NULL_PRE = None
     NEUT_PRE = None
 
-    @classmethod
-    def from_vector(cls, v):
-        """
-        Convenience method to turn a vector into a prehension.
-        """
-        vspace = VectorSpace()
-        vspace.vector = v
-        return vspace
 
     def __init__(self, x=0, y=0):
         super().__init__()
@@ -54,14 +55,14 @@ class VectorSpace(pre.Prehension):
         through vector addition.
         other: prehension to prehend
         """
-        return VectorSpace.from_vector(self.vector + other.vector)
+        return from_vector(self.vector + other.vector)
 
     def intensify(self, a):
         """
         Here this is scalar multiplication of a vector.
         a: scalar to multiply by.
         """
-        return VectorSpace.from_vector(self.vector * a)
+        return from_vector(self.vector * a)
 
     def direction(self):
         """
@@ -96,7 +97,7 @@ class VectorSpace(pre.Prehension):
         Reflection across line y = x.
         """
         new_vec = np.array(np.flipud(self.vector))
-        return VectorSpace.from_vector(new_vec)
+        return from_vector(new_vec)
 
     def normalize(self):
         """
@@ -106,15 +107,15 @@ class VectorSpace(pre.Prehension):
         if self.equals(VectorSpace.NULL_PRE):
             return VectorSpace.NULL_PRE
 
-        return VectorSpace.from_vector(self.vector / np.linalg.norm(self.vector))
+        return from_vector(self.vector / np.linalg.norm(self.vector))
 
 
 # Now we actually initialize the prehensions we declared above.
 #  This can't be done earlier, since VectorSpace was just defined.
-VectorSpace.X_PRE = VectorSpace.from_vector(X_VEC)
-VectorSpace.Y_PRE = VectorSpace.from_vector(Y_VEC)
-VectorSpace.NULL_PRE = VectorSpace.from_vector(NULL_VEC)
-VectorSpace.NEUT_PRE = VectorSpace.from_vector(NEUT_VEC)
+VectorSpace.X_PRE = from_vector(X_VEC)
+VectorSpace.Y_PRE = from_vector(Y_VEC)
+VectorSpace.NULL_PRE = from_vector(NULL_VEC)
+VectorSpace.NEUT_PRE = from_vector(NEUT_VEC)
 
 
 def stance_pct_to_pre(pct, x_or_y):

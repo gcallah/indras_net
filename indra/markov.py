@@ -49,6 +49,14 @@ def get_state(sv):
         i += 1
     return None
 
+def from_matrix(m):
+    """
+    Takes an numpy matrix and returns a prehension.
+    """
+    pre = MarkovPre("")
+    pre.matrix = m
+    return pre
+
 
 class MarkovPre(pre.Prehension):
     """
