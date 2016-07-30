@@ -29,7 +29,7 @@ STATE_MAP = { HE: HEALTHY, OF: ON_FIRE, BO: BURNED_OUT, NG: NEW_GROWTH }
 
 NSTATES = 4
 
-NORMAL_TRANS = ".95 .05 0 0; 0 0 1 0; 0 0 .95 .05; 0 0 0 1"
+NORMAL_TRANS = ".50 .50 0 0; 0 0 1 0; 0 0 .50 .50; 1 0 0 0"
 FIRE_TRANS = "0 1 0 0; 0 0 1 0; 0 0 .95 .05; 0 1 0 0"
 
 class Tree(ma.MarkovAgent):
@@ -62,7 +62,8 @@ class Tree(ma.MarkovAgent):
         """
         Set our type to next_state.
         """
-        if self.next_state is not None:
+        if self.next_state is not None and self.next_state != self.state:
+            print("Setting state to " + str(self.next_state))
             self.set_state(self.next_state)
             self.next_state = None
 

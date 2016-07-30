@@ -76,7 +76,7 @@ class MarkovPre(pre.Prehension):
         self.matrix = np.matrix(str_matrix)
 
     def __str__(self):
-        return ("markov chain")
+        return str(self.matrix)
 
     def prehend(self, other):
         """
