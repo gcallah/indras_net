@@ -22,15 +22,14 @@ class MarkovAgent(pa.PrehensionAgent):
         """
         Look around and see what surrounds us.
         """
-        return self.env.get_pre()
+        return self.env.get_pre(self)
 
     def eval_env(self, other_pre):
         """
         Use the results of surveying the env to decide what to do.
         """
-        print("Called eval_env")
-        print("other_pre = " + str(other_pre))
+        # print("self_pre before = " + str(self.state_pre))
         prob_pre = self.state_pre.prehend(other_pre)
         self.state_pre.matrix = markov.probvec_to_state(prob_pre.matrix)
-        print("self_pre = " + str(self.state_pre))
+        # print("self_pre after = " + str(self.state_pre))
         self.next_state = markov.get_state(self.state_pre.matrix)

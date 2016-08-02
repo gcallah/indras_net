@@ -244,7 +244,7 @@ class GridEnv(se.SpatialEnv):
         for y in range(self.height):
             row = []
             for x in range(self.width):
-                cell = Cell((x, y))
+                cell = self.__new_cell__((x, y))
                 row.append(cell)
                 self.empties.append(cell)
             self.grid.append(row)
@@ -256,6 +256,9 @@ class GridEnv(se.SpatialEnv):
 
     def __getitem__(self, index):
         return self.grid[index]
+
+    def __new_cell__(self, coords):
+        return Cell(coords)
 
     def add_agent(self, agent, position=True):
         """

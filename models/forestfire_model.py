@@ -29,8 +29,8 @@ STATE_MAP = { HE: HEALTHY, OF: ON_FIRE, BO: BURNED_OUT, NG: NEW_GROWTH }
 
 NSTATES = 4
 
-NORMAL_TRANS = ".50 .50 0 0; 0 0 1 0; 0 0 .50 .50; 1 0 0 0"
-FIRE_TRANS = "0 1 0 0; 0 0 1 0; 0 0 .95 .05; 0 1 0 0"
+NORMAL_TRANS = ".9995 .0005 0 0; 0 0 1 0; 0 0 .90 .10; 1 0 0 0"
+FIRE_TRANS = "0 1 0 0; 0 0 1 0; 0 0 .90 .10; .30 .70 0 0"
 
 class Tree(ma.MarkovAgent):
     '''
@@ -49,6 +49,9 @@ class Tree(ma.MarkovAgent):
         self.ntype = STATE_MAP[HE]
         self.next_state = None
 
+    def is_healthy(self):
+        return self.state == HE or self.state == NG
+
     def set_state(self, new_state):
         """
         Set tree's new type.
@@ -57,13 +60,20 @@ class Tree(ma.MarkovAgent):
         self.state = new_state
         self.ntype = STATE_MAP[new_state]
         self.env.change_agent_type(self, old_type, self.ntype)
+        # if we've got a fire, it must spread!
+        if new_state == OF:
+            for tree in self.neighbor_iter():
+                if tree.is_healthy():
+                    self.env.spread_fire(tree)
+        elif new_state == BO:
+            self.env.burn_out(self)
 
     def postact(self):
         """
         Set our type to next_state.
         """
         if self.next_state is not None and self.next_state != self.state:
-            print("Setting state to " + str(self.next_state))
+            # print("Setting state to " + str(self.next_state))
             self.set_state(self.next_state)
             self.next_state = None
 
@@ -99,5 +109,18 @@ class ForestEnv(menv.MarkovEnv):
         self.normal = markov.MarkovPre(NORMAL_TRANS)
         self.fire = markov.MarkovPre(FIRE_TRANS)
 
-    def get_pre(self):
-        return self.normal
+    def spread_fire(self, tree):
+        """
+        We change the transition matrix of the surrounding cells
+        to the fire matrix.
+        """
+        # print("Spreading the fire!")
+        self.set_trans(tree.pos, self.fire)
+
+    def burn_out(self, tree):
+        """
+        We change the transition matrix of this tree
+        to the normal matrix.
+        """
+        # print("Stopping the fire!")
+        self.set_trans(tree.pos, self.normal)
