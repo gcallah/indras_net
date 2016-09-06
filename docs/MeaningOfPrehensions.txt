@@ -25,15 +25,27 @@ the agent's understanding of its own condition, e.g., for a fashion follower
 in our fashion model:
 
 Major Premise: I want the fashion I wear be the same as the fashion of the
-trendiest people.
+trendiest people. (Self prehension)
 
 The minor premise is the agent's view of its environment:
 
-Minor Premise: The trendy people I see around me are wearing blue.
+Minor Premise: The trendy people I see around me are wearing blue. (Env
+prehension)
 
 The conclusion of an Aristotelian practical syllogism is not a proposition,
 but an action. Thus, given the major and minor premises above, the "conclusion"
 of the practical syllogism is:
 
-Conclusion: Let me change my garb to blue.
+Conclusion: I change my garb to blue. (Prehension resulting from combining the
+major and minor premises.)
 
+Similarly, in Schelling's segregation model, we have:
+
+Major Premise: I wish to live in a neighborhood where at least X% of
+the people are like me. (Self prehension)
+
+Minor Premise: my current neighborhood contains only (X - Y)% of people like
+me. (Env prehension)
+
+Conclusion: I move to a new neighborhood. (Prehension resulting from combining
+the major and minor premises.)
