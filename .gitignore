@@ -12,4 +12,5 @@ debugs
 backup
 indra_backup
 menger_fail
+models/old_models/*
 *.swp
