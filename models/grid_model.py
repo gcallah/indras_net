@@ -7,9 +7,6 @@ new features added to the base system.
 """
 import indra.grid_agent as ga
 
-X = 0
-Y = 1
-
 
 class TestGridAgent(ga.GridAgent):
     """

@@ -32,12 +32,16 @@ class MarkovEnv(ge.GridEnv):
     An env that holds transition matrix for each cell.
     """
 
-    def __init__(self, name, width, height, trans_str, torus=False,
-                 model_nm=None, preact=False, postact=False):
+    def __init__(self, name, width, height, trans_str=None, torus=False,
+                 matrix_dim=2, model_nm=None, preact=False, postact=False):
         """
         Create a new markov env
         """
-        self.def_trans_matrix = markov.MarkovPre(trans_str)
+        if trans_str is None:
+            # create a matrix_dim * matrix_dim identity matrix here:
+            pass
+        else:
+            self.def_trans_matrix = markov.MarkovPre(trans_str)
         super().__init__(name, width, height, torus, preact,
                          postact, model_nm)
 
@@ -46,7 +50,6 @@ class MarkovEnv(ge.GridEnv):
 
     def get_pre(self, agent):
         cell = self._get_cell(agent.pos[X], agent.pos[Y])
-        # print("get pre returning " + str(cell.trans_matrix))
         return cell.trans_matrix
 
     def set_trans(self, coords, trans):

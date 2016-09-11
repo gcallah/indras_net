@@ -14,6 +14,23 @@ ROWS = 0
 COLS = 1
 
 
+def create_iden_matrix(n):
+    """
+    Create a dim1 * dim2 identity matrix.
+
+    Returns: the new matrix.
+    """
+    matrix_init = [[] for i in range(n)]
+    for i in range(0, n): 
+        for j in range(0, n): 
+            if i == j:
+                matrix_init[i].append(1)
+            else:
+                matrix_init[i].append(0)
+
+    return np.matrix(matrix_init)
+
+
 def state_vector(vlen, init_state):
     vals = ""
     for i in range(vlen):
