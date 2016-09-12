@@ -42,11 +42,4 @@ for i in range(pa.get("num_agents")):
     env.add_agent(tpm.TestLeader(name="Leader" + str(i),
                   goal="taking up a grid space!",max_move=1))
 
-# let's test our iterator
-for cell in env:
-    (x, y) = cell.coords
-    print("Contents of cell x = " + str(x)
-          + " and y = " + str(y)
-          + " is " + str(cell.contents))
-
 utils.run_model(env, prog_file, results_file)
