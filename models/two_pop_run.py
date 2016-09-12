@@ -9,7 +9,7 @@ import indra.two_pop_model as itpm
 import two_pop_model as tpm
 
 # set up some file names:
-MODEL_NM = "grid_model"
+MODEL_NM = "two_pop_model"
 (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
 
 # We store basic parameters in a "property" file; this allows us to save
