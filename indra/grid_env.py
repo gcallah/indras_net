@@ -226,7 +226,7 @@ class GridEnv(se.SpatialEnv):
     """
 
     def __init__(self, name, width, height, torus=False,
-                 model_nm=None, preact=False, postact=False):
+                preact=False, postact=False, model_nm=None):
         """
         Create a new grid.
 
