@@ -101,9 +101,9 @@ class TwoPopEnv(menv.MarkovEnv):
         adding menu items, drawing a graph.
     """
     def __init__(self, name, width, height, preact, postact,
-                trans_str="0.5 0.5; 0.5 0.5", model_nm=None, torus=False):
+                trans_str=None, model_nm=None, torus=False):
 
-        super().__init__(name, width, height, trans_str="0.5 0.5; 0.5 0.5", torus=False,
+        super().__init__(name, width, height, trans_str=trans_str, torus=False,
                         matrix_dim=2, model_nm=None, preact=preact, postact=postact)
 
         # sub-models will override these vague names with something
