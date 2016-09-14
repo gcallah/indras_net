@@ -19,7 +19,7 @@ pa = utils.read_props(MODEL_NM)
 if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     utils.get_grid_dims(pa, 6)
-    utils.get_agent_num(pa, "num_agents", "agents", 8)
+    utils.get_agent_num(pa, "num_agents", "agents", 16)
 
 # Now we create a minimal environment for our agents to act within:
 env = itpm.TwoPopEnv("Test two pop Markov env",
@@ -37,18 +37,6 @@ env = itpm.TwoPopEnv("Test two pop Markov env",
 # Get Number of Followers
 for i in range(pa.get("num_agents")):
     env.add_agent(tpm.TestFollower(name="Follower" + str(i),
-                  goal="taking up a grid space!"))
-
-# Get Number of Hipsters
-for i in range(pa.get("num_agents")):
-    env.add_agent(tpm.TestLeader(name="Leader" + str(i),
-                  goal="taking up a grid space!"))
-
-# let's test our iterator
-for cell in env:
-    (x, y) = cell.coords
-    print("Contents of cell x = " + str(x)
-          + " and y = " + str(y)
-          + " is " + str(cell.contents))
+                  goal="Changing states!"))
 
 utils.run_model(env, prog_file, results_file)
