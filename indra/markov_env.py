@@ -54,3 +54,14 @@ class MarkovEnv(ge.GridEnv):
     def set_trans(self, coords, trans):
         cell = self._get_cell(coords[X], coords[Y])
         cell.trans_matrix = trans
+
+    def neighborhood_census(self, agent):
+        n_census = {}
+
+        for neighbor in agent.neighbor_iter():
+            if neighbor.ntype in n_census:
+                n_census[neighbor.ntype] += 1
+            else:
+                n_census[neighbor.ntype] = 1
+
+        return n_census
