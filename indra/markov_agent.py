@@ -22,7 +22,8 @@ class MarkovAgent(pa.PrehensionAgent):
         """
         Look around and see what surrounds us.
         """
-        return self.env.get_pre(self)
+        n_census = self.env.neighborhood_census(self);
+        return self.env.get_pre(self, n_census)
 
     def eval_env(self, other_pre):
         """
