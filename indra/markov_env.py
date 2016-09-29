@@ -33,7 +33,7 @@ class MarkovEnv(ge.GridEnv):
     """
 
     def __init__(self, name, width, height, trans_str=None, torus=False,
-                 matrix_dim=2, model_nm=None, preact=False, postact=False):
+                 matrix_dim=2, model_nm=None, preact=False, postact=False, wanderingAgents=False):
         """
         Create a new markov env
         """
@@ -43,6 +43,7 @@ class MarkovEnv(ge.GridEnv):
             self.def_trans_matrix = markov.MarkovPre(trans_str)
         super().__init__(name, width, height, torus, preact,
                          postact, model_nm)
+        self.wanderingAgents=wanderingAgents
 
     def __new_cell__(self, coords):
         return MarkovCell(coords, trans_matrix=self.def_trans_matrix)
@@ -58,13 +59,6 @@ class MarkovEnv(ge.GridEnv):
     def neighborhood_census(self, agent):
         n_census = {}
         save_hood = False
-
-            # Later we might make wanderingAgents into
-            # attribute of all models's envs.
-        try:
-            self.wanderingAgents
-        except NameError:
-            self.wanderingAgents=None
 
             # If agents don't move, we don't want to continually
             # update the neighborhood.
