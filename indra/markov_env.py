@@ -57,8 +57,21 @@ class MarkovEnv(ge.GridEnv):
 
     def neighborhood_census(self, agent):
         n_census = {}
+        save_hood = False
 
-        for neighbor in agent.neighbor_iter():
+            # Later we might make wanderingAgents into
+            # attribute of all models's envs.
+        try:
+            self.wanderingAgents
+        except NameError:
+            self.wanderingAgents=None
+
+            # If agents don't move, we don't want to continually
+            # update the neighborhood.
+        if(self.wanderingAgents == False):
+            save_hood = True
+
+        for neighbor in agent.neighbor_iter(save_hood):
             if neighbor.ntype in n_census:
                 n_census[neighbor.ntype] += 1
             else:
