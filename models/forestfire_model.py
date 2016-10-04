@@ -118,7 +118,7 @@ class ForestEnv(menv.MarkovEnv):
         self.set_trans(tree.pos, self.normal)
 
     def get_pre(self, agent, n_census):
-        if ('On Fire' in n_census) and (n_census['On Fire'] > 0):
+        if (ON_FIRE in n_census) and (n_census[ON_FIRE] > 0):
             return self.fire
         else:
             return self.normal
