@@ -49,9 +49,6 @@ class Tree(ma.MarkovAgent):
         self.ntype = STATE_MAP[HE]
         self.next_state = None
 
-            # This dictionary attribute holds information about
-            # the number of each type of agent in its
-            # neighborhood.
 
     def is_healthy(self):
         return self.state == HE or self.state == NG
@@ -64,14 +61,6 @@ class Tree(ma.MarkovAgent):
         self.state = new_state
         self.ntype = STATE_MAP[new_state]
         self.env.change_agent_type(self, old_type, self.ntype)
-        
-        # if we've got a fire, it must spread!
-        #if new_state == OF:
-        #    for tree in self.neighbor_iter():
-        #        if tree.is_healthy():
-        #            self.env.spread_fire(tree)
-        #elif new_state == BO:
-        #    self.env.burn_out(self)
 
     def postact(self):
         """
@@ -119,7 +108,6 @@ class ForestEnv(menv.MarkovEnv):
         We change the transition matrix of the surrounding cells
         to the fire matrix.
         """
-        # print("Spreading the fire!")
         self.set_trans(tree.pos, self.fire)
 
     def burn_out(self, tree):
@@ -127,14 +115,10 @@ class ForestEnv(menv.MarkovEnv):
         We change the transition matrix of this tree
         to the normal matrix.
         """
-        # print("Stopping the fire!")
         self.set_trans(tree.pos, self.normal)
 
     def get_pre(self, agent, n_census):
-            # Double check.
-        if(('On Fire' in n_census) and (n_census['On Fire'] > 0)):
-            trans_matrix = markov.MarkovPre(FIRE_TRANS)
+        if ('On Fire' in n_census) and (n_census['On Fire'] > 0):
+            return self.fire
         else:
-            trans_matrix = markov.MarkovPre(NORMAL_TRANS)
-
-        return trans_matrix
+            return self.normal
