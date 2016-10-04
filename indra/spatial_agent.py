@@ -16,13 +16,11 @@ class SpatialAgent(ent.Agent):
     located in space (and might or might not move in it)
     """
 
-    def __init__(self, name, goal, max_move=0.0, max_detect=0.0):
+    def __init__(self, name, goal, max_move=0, max_detect=1):
         super().__init__(name, goal)
         self.max_move = max_move
         self.max_detect = max_detect
         self.__pos = None
-        self.focus = None
-        self.wandering = False
         self.exclude = deque(maxlen=MAX_EXCLUDE)
 
     @property
@@ -32,38 +30,3 @@ class SpatialAgent(ent.Agent):
     @pos.setter
     def pos(self, pos):
         self.__pos = pos
-
-    def in_detect_range(self, prehended):
-        """
-        Can we see the prehended with our limited view?
-        """
-        return self.in_range(prehended, self.max_detect)
-
-    def in_range(self, prey, dist):
-        """
-        Is one agent in range of another in some sense?
-        Must be implemented in descendents.
-        """
-        pass
-
-    def detect_behavior(self):
-        """
-        What to do on detecting a prehension.
-        """
-        pass
-
-        """
-        To be implemented in descendents.
-        """
-        pass
-
-
-class MobileAgent(SpatialAgent):
-    """
-    Agents that can move in the env
-    """
-    def __init__(self, name, goal, max_move=20.0, max_detect=20.0):
-        super().__init__(name, goal,
-                         max_move=max_move,
-                         max_detect=max_detect)
-        self.wandering = True

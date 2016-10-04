@@ -45,14 +45,3 @@ class PlaneAgent(sa.SpatialAgent):
         What to do on detecting a prehension.
         """
         pass
-
-
-class MobileAgent(PlaneAgent):
-    """
-    Agents that can move in the env
-    """
-    def __init__(self, name, goal, max_move=20.0, max_detect=20.0):
-        super().__init__(name, goal,
-                         max_move=max_move,
-                         max_detect=max_detect)
-        self.wandering = True
