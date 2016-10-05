@@ -52,30 +52,12 @@ class SpatialEnv(env.Environment):
         This must be implemented by descendents.
         """
 
-    def address_prehensions(self, agent, prehensions):
-        """
-        Process prehensions list if needed.
-        """
-        if len(prehensions) > 0:
-            agent.focus = self.closest_x(agent, prehensions)
-            logging.debug("Targ = " + str(agent.focus))
-            agent.wandering = False
-        return [agent.focus]
-
     def closest_x(self, seeker, prehensions):
         """
         What is the closest entity of target_type?
         To be implemented by descendents.
         """
         pass
-
-    def get_new_wander_pos(self, agent):
-        """
-        Should be implemented in descendents.
-        """
-        pass
-
-        return agent.get_pos()
 
     def plot(self):
         """

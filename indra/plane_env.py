@@ -107,6 +107,7 @@ class PlaneEnv(se.SpatialEnv):
         If an agent is wandering in the env,
         this assigns it a new, random position
         based on its current position
+        This is not used at present.
         """
         new_pos = rand_complex(agent.pos, agent.max_move)
         x = new_pos.real

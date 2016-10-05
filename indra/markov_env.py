@@ -33,7 +33,8 @@ class MarkovEnv(ge.GridEnv):
     """
 
     def __init__(self, name, width, height, trans_str=None, torus=False,
-                 matrix_dim=2, model_nm=None, preact=False, postact=False, wanderingAgents=False):
+                 matrix_dim=2, model_nm=None, preact=False, postact=False,
+                 mobile_agents=False):
         """
         Create a new markov env
         """
@@ -43,7 +44,7 @@ class MarkovEnv(ge.GridEnv):
             self.def_trans_matrix = markov.MarkovPre(trans_str)
         super().__init__(name, width, height, torus, preact,
                          postact, model_nm)
-        self.wanderingAgents=wanderingAgents
+        self.mobile_agents = mobile_agents
 
     def __new_cell__(self, coords):
         return MarkovCell(coords, trans_matrix=self.def_trans_matrix)
@@ -58,14 +59,8 @@ class MarkovEnv(ge.GridEnv):
 
     def neighborhood_census(self, agent):
         n_census = {}
-        save_hood = False
 
-            # If agents don't move, we don't want to continually
-            # update the neighborhood.
-        if(self.wanderingAgents == False):
-            save_hood = True
-
-        for neighbor in agent.neighbor_iter(save_hood):
+        for neighbor in agent.neighbor_iter(not self.mobile_agents):
             if neighbor.ntype in n_census:
                 n_census[neighbor.ntype] += 1
             else:
