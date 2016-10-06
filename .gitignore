@@ -1,4 +1,5 @@
 *.txt
+*.props
 *.log
 *.out
 *~
