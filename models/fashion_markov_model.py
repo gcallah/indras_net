@@ -36,15 +36,10 @@ No change in fashion.
 '''
 DEF_TRANS = "1 0 0 0; 0 1 0 0; 0 0 1 0; 0 0 0 1"
 
-class Hipster(ma.MarkovAgent):
-    '''
-    Hipsters begin red.
-    '''
-    def __init__(self, name, goal, max_move,var):
-        super().__init__(name, "Don't look like Follower!", NSTATES, HR)
-        self.state = HR
-        self.ntype = STATE_MAP[HR]
-        self.next_state = None
+class TwoPopAgent(ma.MarkovAgent):
+    
+    def __init__(self, name, goal, NSTATES, init_state):
+        super().__init__(name, goal, NSTATES, init_state, max_detect=1)
 
         # Effect of eval_env.
     def set_state(self, new_state):
@@ -70,39 +65,25 @@ class Hipster(ma.MarkovAgent):
 
         return self.pos
 
-class Follower(ma.MarkovAgent):
+class Hipster(TwoPopAgent):
+    '''
+    Hipsters begin red.
+    '''
+    def __init__(self, name, goal, max_move,var):
+        super().__init__(name, goal, NSTATES, HR)
+        self.state = HR
+        self.ntype = STATE_MAP[HR]
+        self.next_state = None
+
+class Follower(TwoPopAgent):
     '''
     Followers begin blue.
     '''
     def __init__(self, name, goal, max_move,var):
-        super().__init__(name, "Look like Hipster!", NSTATES, FB)
+        super().__init__(name, goal, NSTATES, FB)
         self.state = FB
         self.ntype = STATE_MAP[FB]
         self.next_state = None
-
-    def set_state(self, new_state):
-        '''
-        Set Hipster's new type.
-        '''
-        old_type = self.ntype
-        self.state = new_state
-        self.ntype = STATE_MAP[new_state]
-        self.env.change_agent_type(self, old_type, self.ntype)
-            # Unlike the forest fire model, we don't here update environment's cell's
-            # transition matrices. This is because the cell's transition matrix depends
-            # on all the agents near it, not just one.
-
-    def postact(self):
-        '''
-        Set our type to next_state.
-        '''
-        if self.next_state is not None and self.next_state != self.state:
-            # print("Setting state to " + str(self.next_state))
-            self.set_state(self.next_state)
-            self.next_state = None
-
-        return self.pos
-
 
 class Society(menv.MarkovEnv):
     def __init__(self, name, width, height, torus=False,
@@ -118,37 +99,41 @@ class Society(menv.MarkovEnv):
         self.set_var_color(REDFOLLOWER, disp.GREEN)
         self.set_var_color(BLUEFOLLOWER, disp.CYAN)
 
-    def get_pre(self, agent):
-        cell = self._get_cell(agent.pos[X], agent.pos[Y])
-        neighborhood = self.neighbor_iter(x=agent.pos[X],y=agent.pos[Y],distance=1, moore=True, view=None)
+    def get_pre(self, agent, n_census):
+        
+        numRH, numBH, numRF, numBF = 0,0,0,0
+        
+        if(REDHIPSTER in n_census):
+            numRH = n_census[REDHIPSTER]
+        if(BLUEHIPSTER in n_census):
+            numBH = n_census[BLUEHIPSTER]
+        if(REDFOLLOWER in n_census):
+            numRF = n_census[REDFOLLOWER]
+        if(BLUEFOLLOWER in n_census):
+            numBF = n_census[BLUEFOLLOWER]
 
-        numRH, numBH = 0, 0
-        numRF, numBF = 0, 0
-        for agent in neighborhood:
-            if agent.state == HR:
-                numRH +=1
-            elif agent.state == HB:
-                numBH +=1
-            elif agent.state == FR:
-                numRF +=1
-            else:
-                numBF +=1
         total = numRH + numBH + numRF + numBF
 
-            # If neighborhood is empty, we don't want to divide by zero!
-        if total == 0:
+            # Don't divide by zero!
+        if(total == 0):
             total = 1
 
-        rh = float(numRH/total)
-        bh = float(numBH/total)
+        rh = self.influence(numRH, total)
+        bh = self.influence(numBH, total)
 
-        rf = float(numRF/total)
-        bf = float(numBF/total)
+        rf = self.influence(numRF, total)
+        bf = self.influence(numBF, total)
 
             # THE TRANSITION MATRIX
             # See documentation if this is confusing
         str_trans = str(1-bf) + " " + str(bf) + " 0 0;" + str(rf) + " " + str(1-rf) + " 0 0;" + "0 0 " + str(rh) + " " + str(1-rh) + ";" + "0 0 " + str(1-bh) + " " + str(bh)
 
         coords = (agent.pos[X],agent.pos[Y])
-        super().set_trans(coords, markov.from_matrix(np.matrix(str_trans)))
-        return cell.trans_matrix
+        trans_matrix = markov.from_matrix(np.matrix(str_trans))
+        return trans_matrix
+
+    def influence(self, num, total):
+        if(total - num != 0):
+            return float((num/total)**1/(total-num))
+        else:
+            return float((num/total))
