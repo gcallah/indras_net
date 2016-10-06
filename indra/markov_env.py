@@ -39,7 +39,7 @@ class MarkovEnv(ge.GridEnv):
         Create a new markov env
         """
         if trans_str is None:
-            self.def_trans_matrix = from_matrix(create_iden_matrix(matrix_dim))
+            self.def_trans_matrix = markov.from_matrix(markov.create_iden_matrix(matrix_dim))
         else:
             self.def_trans_matrix = markov.MarkovPre(trans_str)
         super().__init__(name, width, height, torus, preact,
