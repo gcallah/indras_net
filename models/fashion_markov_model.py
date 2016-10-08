@@ -43,10 +43,6 @@ class FashionAgent(ma.MarkovAgent):
     
     def __init__(self, name, goal, NSTATES, init_state):
         super().__init__(name, goal, NSTATES, init_state, max_detect=1)
-        self.numRH = 0
-        self.numBH = 0
-        self.numRF = 0
-        self.numBF = 0
 
         # Effect of eval_env.
     def set_state(self, new_state):
@@ -69,11 +65,6 @@ class FashionAgent(ma.MarkovAgent):
             # print("Setting state to " + str(self.next_state))
             self.set_state(self.next_state)
             self.next_state = None
-            # memory gets erased after changing state
-            self.numRH = 0
-            self.numBH = 0
-            self.numRF = 0
-            self.numBF = 0
 
         return self.pos
 
@@ -113,20 +104,26 @@ class Society(menv.MarkovEnv):
 
     def get_pre(self, agent, n_census):
                 
+
+        numRH = 0
+        numBH = 0
+        numRF = 0
+        numBF = 0
+
         if(REDHIPSTER in n_census):
-            agent.numRH += n_census[REDHIPSTER]
+            numRH = n_census[REDHIPSTER]
         if(BLUEHIPSTER in n_census):
-            agent.numBH += n_census[BLUEHIPSTER]
+            numBH = n_census[BLUEHIPSTER]
         if(REDFOLLOWER in n_census):
-            agent.numRF += n_census[REDFOLLOWER]
+            numRF = n_census[REDFOLLOWER]
         if(BLUEFOLLOWER in n_census):
-            agent.numBF += n_census[BLUEFOLLOWER]
+            numBF = n_census[BLUEFOLLOWER]
 
-        rh = self.influence(agent.numRH, 100)
-        bh = self.influence(agent.numBH, 100)
+        rh = self.influence(numRH, 5)
+        bh = self.influence(numBH, 5)
 
-        rf = self.influence(agent.numRF, 100)
-        bf = self.influence(agent.numBF, 100)
+        rf = self.influence(numRF, 5)
+        bf = self.influence(numBF, 5)
 
         str_trans = ""
             # THE TRANSITION MATRIX
