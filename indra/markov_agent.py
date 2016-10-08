@@ -12,8 +12,8 @@ class MarkovAgent(pa.PrehensionAgent):
     """
     An agent that use Prehensions to understand its environment.
     """
-    def __init__(self, name, goal, vlen, init_state):
-        super().__init__(name, goal, max_move=1, max_detect=1)
+    def __init__(self, name, goal, vlen, init_state, max_detect=1):
+        super().__init__(name, goal, max_move=1, max_detect=max_detect)
         self.state_pre = markov.from_matrix(markov.state_vector(vlen,
                                                                 init_state))
         self.state = markov.get_state(markov.to_matrix(self.state_pre))
