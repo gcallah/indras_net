@@ -36,10 +36,17 @@ No change in fashion.
 '''
 DEF_TRANS = "1 0 0 0; 0 1 0 0; 0 0 1 0; 0 0 0 1"
 
-class TwoPopAgent(ma.MarkovAgent):
+class FashionAgent(ma.MarkovAgent):
+    
+    def preact(self):
+        self.move_to_empty(grid_view=self.my_view)
     
     def __init__(self, name, goal, NSTATES, init_state):
         super().__init__(name, goal, NSTATES, init_state, max_detect=1)
+        self.numRH = 0
+        self.numBH = 0
+        self.numRF = 0
+        self.numBF = 0
 
         # Effect of eval_env.
     def set_state(self, new_state):
@@ -62,10 +69,15 @@ class TwoPopAgent(ma.MarkovAgent):
             # print("Setting state to " + str(self.next_state))
             self.set_state(self.next_state)
             self.next_state = None
+            # memory gets erased after changing state
+            self.numRH = 0
+            self.numBH = 0
+            self.numRF = 0
+            self.numBF = 0
 
         return self.pos
 
-class Hipster(TwoPopAgent):
+class Hipster(FashionAgent):
     '''
     Hipsters begin red.
     '''
@@ -75,7 +87,7 @@ class Hipster(TwoPopAgent):
         self.ntype = STATE_MAP[HR]
         self.next_state = None
 
-class Follower(TwoPopAgent):
+class Follower(FashionAgent):
     '''
     Followers begin blue.
     '''
@@ -91,7 +103,7 @@ class Society(menv.MarkovEnv):
         '''
         Create a new markov env
         '''
-        super().__init__("Fashion Model", width, height, DEF_TRANS, torus=False, model_nm=model_nm, preact=False, postact=True)
+        super().__init__("Fashion Model", width, height, DEF_TRANS, torus=False, model_nm=model_nm, preact=True, postact=True)
         self.plot_title = "Metropolitan Fashion Scene"
 
         self.set_var_color(REDHIPSTER, disp.RED)
@@ -100,40 +112,32 @@ class Society(menv.MarkovEnv):
         self.set_var_color(BLUEFOLLOWER, disp.CYAN)
 
     def get_pre(self, agent, n_census):
-        
-        numRH, numBH, numRF, numBF = 0,0,0,0
-        
+                
         if(REDHIPSTER in n_census):
-            numRH = n_census[REDHIPSTER]
+            agent.numRH += n_census[REDHIPSTER]
         if(BLUEHIPSTER in n_census):
-            numBH = n_census[BLUEHIPSTER]
+            agent.numBH += n_census[BLUEHIPSTER]
         if(REDFOLLOWER in n_census):
-            numRF = n_census[REDFOLLOWER]
+            agent.numRF += n_census[REDFOLLOWER]
         if(BLUEFOLLOWER in n_census):
-            numBF = n_census[BLUEFOLLOWER]
+            agent.numBF += n_census[BLUEFOLLOWER]
 
-        total = numRH + numBH + numRF + numBF
+        rh = self.influence(agent.numRH, 100)
+        bh = self.influence(agent.numBH, 100)
 
-            # Don't divide by zero!
-        if(total == 0):
-            total = 1
+        rf = self.influence(agent.numRF, 100)
+        bf = self.influence(agent.numBF, 100)
 
-        rh = self.influence(numRH, total)
-        bh = self.influence(numBH, total)
-
-        rf = self.influence(numRF, total)
-        bf = self.influence(numBF, total)
-
+        str_trans = ""
             # THE TRANSITION MATRIX
-            # See documentation if this is confusing
-        str_trans = str(1-bf) + " " + str(bf) + " 0 0;" + str(rf) + " " + str(1-rf) + " 0 0;" + "0 0 " + str(rh) + " " + str(1-rh) + ";" + "0 0 " + str(1-bh) + " " + str(bh)
+            # See documentation.
+        str_trans += str(1-rf) + " " + str(rf) + " 0 0;"
+        str_trans += str(bf) + " " + str(1-bf) + " 0 0;" 
+        str_trans += "0 0 " + str(1-bh) + " " + str(bh) + ";"
+        str_trans += "0 0 " + str(rh) + " " + str(1-rh)
 
-        coords = (agent.pos[X],agent.pos[Y])
         trans_matrix = markov.from_matrix(np.matrix(str_trans))
         return trans_matrix
 
-    def influence(self, num, total):
-        if(total - num != 0):
-            return float((num/total)**1/(total-num))
-        else:
-            return float((num/total))
+    def influence(self, num, resistance):
+        return float((num/(resistance)))
