@@ -44,22 +44,28 @@ class FashionAgent(ma.MarkovAgent):
     def __init__(self, name, goal, NSTATES, init_state):
         super().__init__(name, goal, NSTATES, init_state, max_detect=1)
 
-        # Effect of eval_env.
     def set_state(self, new_state):
         '''
         Set Hipster's new type.
+        This comes from evaling the env.
+        Args:
+            new_state: the agent's new state
+        Returns:
+            None
         '''
         old_type = self.ntype
         self.state = new_state
         self.ntype = STATE_MAP[new_state]
         self.env.change_agent_type(self, old_type, self.ntype)
-            # Unlike the forest fire model, we don't here update environment's cell's
-            # transition matrices. This is because the cell's transition matrix depends
-            # on all the agents near it, not just one.
+        # Unlike the forest fire model, we don't here update environment's cell's
+        # transition matrices. This is because the cell's transition matrix depends
+        # on all the agents near it, not just one.
 
     def postact(self):
         '''
         Set our type to next_state.
+        Returns:
+            the agent's position
         '''
         if self.next_state is not None and self.next_state != self.state:
             # print("Setting state to " + str(self.next_state))
@@ -94,7 +100,8 @@ class Society(menv.MarkovEnv):
         '''
         Create a new markov env
         '''
-        super().__init__("Fashion Model", width, height, DEF_TRANS, torus=False, model_nm=model_nm, preact=True, postact=True)
+        super().__init__("Fashion Model", width, height, DEF_TRANS, torus=False,
+                         model_nm=model_nm, preact=True, postact=True)
         self.plot_title = "Metropolitan Fashion Scene"
 
         self.set_var_color(REDHIPSTER, disp.RED)
@@ -103,8 +110,6 @@ class Society(menv.MarkovEnv):
         self.set_var_color(BLUEFOLLOWER, disp.CYAN)
 
     def get_pre(self, agent, n_census):
-                
-
         numRH = 0
         numBH = 0
         numRF = 0
@@ -128,13 +133,13 @@ class Society(menv.MarkovEnv):
         str_trans = ""
             # THE TRANSITION MATRIX
             # See documentation.
-        str_trans += str(1-rf) + " " + str(rf) + " 0 0;"
-        str_trans += str(bf) + " " + str(1-bf) + " 0 0;" 
-        str_trans += "0 0 " + str(1-bh) + " " + str(bh) + ";"
-        str_trans += "0 0 " + str(rh) + " " + str(1-rh)
+        str_trans += str(1 - rf) + " " + str(rf) + " 0 0;"
+        str_trans += str(bf) + " " + str(1 - bf) + " 0 0;" 
+        str_trans += "0 0 " + str(1 - bh) + " " + str(bh) + ";"
+        str_trans += "0 0 " + str(rh) + " " + str(1 - rh)
 
         trans_matrix = markov.from_matrix(np.matrix(str_trans))
         return trans_matrix
 
     def influence(self, num, resistance):
-        return float((num/(resistance)))
+        return float(num / resistance)
