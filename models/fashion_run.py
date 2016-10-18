@@ -5,7 +5,7 @@ Runs a fashion model with hipsters and followers.
 
 import indra.utils as utils
 import indra.prop_args as props
-import fashion_markov_model as fmm
+import fashion_model as fm
 
 # set up some file names:
 MODEL_NM = "fashion_markov_model"
@@ -24,7 +24,7 @@ if pa is None:
     utils.get_max_move(pa, "hmax_move", "hipster", 4)
 
 # Now we create a minimal environment for our agents to act within:
-env = fmm.Society("Society",
+env = fm.Society("Society",
                  pa.get("grid_height"),
                  pa.get("grid_width"),
                  model_nm=MODEL_NM)
@@ -32,10 +32,10 @@ env = fmm.Society("Society",
 # Now we loop creating multiple agents with numbered names
 # based on the loop variable:
 for i in range(pa.get("num_followers")):
-    env.add_agent(fmm.Follower("follower" + str(i), "Looking like hipsters",
+    env.add_agent(fm.Follower("follower" + str(i), "Looking like hipsters",
                               pa.get("fmax_move"), pa.get("variability")))
 for i in range(pa.get("num_hipsters")):
-    env.add_agent(fmm.Hipster("hipster" + str(i), "Looking trendy",
+    env.add_agent(fm.Hipster("hipster" + str(i), "Looking trendy",
                              pa.get("hmax_move"), pa.get("variability")))
 
 utils.run_model(env, prog_file, results_file)
