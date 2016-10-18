@@ -86,7 +86,7 @@ class GridAgent(sa.SpatialAgent):
         return self.env.get_square_view(self.pos, distance)
 
     def neighbor_iter(self, moore=True, save_hood=False, view=None,
-                      filt_func=None):
+                      filt_func=None, sq_v=1):
         """
         Iterate over our neighbors.
         In some models, the neighbors don't move:
@@ -97,7 +97,7 @@ class GridAgent(sa.SpatialAgent):
         if view is None:
             # our default view is a square reaching 1 cell out from self
             # in every direction
-            view = self.get_square_view(1)
+            view = self.get_square_view(sq_v)
 
         if not save_hood:
             return self._neighbor_filter(moore, view=view, filt_func=filt_func)
