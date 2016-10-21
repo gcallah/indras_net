@@ -1,4 +1,22 @@
 """
+This file is part of Indra.
+
+Indra is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Indra is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+"""
+
+
+"""
 wolfsheep_model.py
 Wolves and sheep roaming a meadow, with wolves eating sheep
 that get near them.
@@ -27,12 +45,26 @@ S = 1
 E = 2
 W = 3
 
-STATE_MAP = {N: NORTH, S: SOUTH, E: EAST, W: WEST }
+STATE_MAP = { N: NORTH, S: SOUTH, E: EAST, W: WEST }
 
 class Creature(ma.MarkovAgent): 
     """
-    A creature: moves around randomly.
-    Eventually, this should be a descendant of StanceAgent.
+    A Creature moves around intelligently based on his
+    prehension of the env.
+
+    Attubutes: 
+        alive: boolean indicating if Creature should exist in the env 
+        age: int keeps trak of how many steps Creature has been in existance; 
+            used for controling periodic reproduction
+        other: Wolf or Sheep object to be used by subclass to identify what
+            Creature is different than itself
+        repro_age: if age (mod repro_age) == 0, make a new Creature of same
+            class.
+        life_force: if this int goes to or below zero, Creature dies and is 
+            removed from env.
+        init_life_force: int 
+        speed: an int amount of times a Creature may move per turn
+        state: the direction the Creature is moving
     """
     def __init__(self, name, goal, repro_age, life_force, init_state, max_detect=1,
                  rand_age=False, speed=1):
@@ -50,17 +82,38 @@ class Creature(ma.MarkovAgent):
         self.state = init_state
 
     def died(self):
+        """
+        Removes dead agent from grid.
+        """
         if self.alive:
             self.alive = False
             self.env.died(self)
 
     def act(self):
+        """
+        The Creature moves either one unit north, south, east, 
+        or west. For however many units of "speed" he has, he 
+        can move that many times per action.
+        """
         for i in range(self.speed):
             super().act()
             self.state = self.next_state
             self.move(self.state)
             
     def move(self, state):
+        """
+        Moves self one unit in a cardinal direction if
+        that direction is empty and doesn't lead off the
+        board.
+
+        Args:
+            self: the agent to be moved
+            state: a cardinal direction
+                North: N = 0
+                South: S = 1
+                East: E = 2
+                West: W = 3
+        """
         x = self.pos[X]
         y = self.pos[Y]
         if state == N:
@@ -77,6 +130,11 @@ class Creature(ma.MarkovAgent):
                 self.env.move(self, x+1,y)
             
     def postact(self):
+        """
+        Every step ages the Creature by 1. If the Creature 
+        has not lifeforce, he dies. If the Creature happens to
+        be in the right stage of life, he may reproduce.
+        """
         self.age += 1
         self.life_force -= 1
         if self.life_force <= 0:
@@ -84,9 +142,10 @@ class Creature(ma.MarkovAgent):
         elif self.age % self.repro_age == 0:
             self.reproduce()
 
-        return self.pos
-
     def reproduce(self):
+        """
+        Adds a Creature of self's type to a random place in the env.
+        """
         if self.alive:
             creature = self.__class__(self.name + "x", self.goal,
                                       self.repro_age, self.init_life_force)
@@ -97,6 +156,12 @@ class Wolf(Creature):
     """
     A wolf: moves around randomly and eats any sheep
     nearby.
+
+    Attributes: 
+        other: the class of the other kind of Creature, Sheep
+        ntype: "node type," variety of Creature,
+            used for bookkeeping purposes by agent_pop.
+            
     """
     def __init__(self, name, goal, repro_age, life_force, max_detect=10,
                     rand_age=False, speed=2):
@@ -107,12 +172,19 @@ class Wolf(Creature):
         self.ntype = "Wolf"
 
     def preact(self):
+        """
+        After (or before depending on how you view it) everything moves, 
+        wolves eat nearby sheep.
+        """
         creatures = self.neighbor_iter()
         for creature in creatures:
             if type(creature) is Sheep:
                 self.eat(creature)
 
     def eat(self, sheep):
+        """
+        Gains sheep's life force and removes sheep from env.
+        """
         self.life_force += sheep.life_force
         sheep.died()
 
@@ -120,6 +192,11 @@ class Wolf(Creature):
 class Sheep(Creature):
     """
     A sheep: moves when wolf is nearby and sometimes gets eaten.
+
+    Attributes: 
+        other: the class of the other kind of Creature, Wolf
+        ntype: variety of Creature, used for bookkeeping purposes by agent_pop, not 
+            an essential feature for the running of this program
     """
     def __init__(self, name, goal, repro_age, life_force, max_detect=5,
                  rand_age=False, speed=1):
@@ -136,11 +213,25 @@ class Meadow(menv.MarkovEnv):
     """
 
     def died(self, prey):
+        """
+        Removes prey from env.
+        """
         self.remove_agent(prey)
 
     def get_pre(self, agent, n_census):
-        
-        # Default to begin with ...
+        """
+        Gathers and uses env info to make a prehension transition matrix
+
+        Args: 
+            self: the env
+            agent: the agent acting in the env 
+            n_census: unused
+        Returns:
+            prehesion based on what Creatures are North, South,
+            East, and West of self, determining what direction
+            the agent might come.
+        """
+
         trans_str = ""
 
         d, total = self.dir_info(agent)
@@ -154,10 +245,6 @@ class Meadow(menv.MarkovEnv):
         return trans_matrix
 
     def dir_info(self, agent):
-
-        directions = {N: 0, S: 0, E: 0, W: 0}
-        creatureCoords = (0,0)
-        total = 0
         """
         We count wolves and sheep that are North, South, East, West 
         of the agent in question. What quadrant they're in, and how
@@ -189,40 +276,43 @@ class Meadow(menv.MarkovEnv):
         Returns:
             A dict maping cardinal directions to numbers representing
             both how far and how many agents of the opposite type are
-            in that cardinal direciton. 
+            in that cardinal direciton.
         """
+        directions = {N: 0, S: 0, E: 0, W: 0}
+        creatureCoords = (0,0)
+        total = 0
         creatures = agent.neighbor_iter(sq_v=10)
         for creature in creatures:
             if type(creature) == agent.other:
                 othr = creature.pos
                 xa = agent.pos[X]
                 ya = agent.pos[Y]
-                # North
+                # North constitutes upper quadrant and positive diagonal line
                 if(-othr[X]+(ya+xa) < othr[Y] and othr[Y] >= othr[X] + (ya-xa)):
                     dist = math.sqrt((ya-othr[Y])**2 + (xa-othr[X])**2)
-                    directions[N] += 1 + 1/dist
-                    total += 1 + 1/dist
-                # South
+                    directions[N] += 1/dist
+                    total += 1/dist
+                # South constitutes lower quadrant and negative diagonal line
                 elif(othr[X]+(ya-xa) >= othr[Y] and othr[Y] < -othr[X]+(ya+xa)):
                     dist = math.sqrt((ya-othr[Y])**2 + (xa-othr[X])**2)
-                    directions[S] += 1 + 1/dist
-                    total += 1 + 1/dist
-                # East
+                    directions[S] += 1/dist
+                    total += 1/dist
+                # East constitutes left quadrant and negative diagonal line
                 elif(othr[Y]-(ya-xa) > othr[X] and othr[X] <= -othr[Y]+(ya+xa)):
                     dist = math.sqrt((ya-othr[Y])**2 + (xa-othr[X])**2)
-                    directions[E] += 1 + 1/dist
-                    total += 1 + 1/dist
-                # West
+                    directions[E] += 1/dist
+                    total += 1/dist
+                # West constitutes right quadrant and positive diagonal line
                 else:
                     dist = math.sqrt((ya-othr[Y])**2 + (xa-othr[X])**2)
-                    directions[W] += 1 + 1/dist
-                    total += 1 + 1/dist
+                    directions[W] += 1/dist
+                    total += 1/dist
 
         return directions, total
 
     def wolf_trans(self, d, total):
         """
-        The wolf uses it's survey of the environment to see which
+        The wolf uses its survey of the environment to see which
         directions have the closest and most sheep. He'll probably
         go in the direction with the highest reward.
 
@@ -235,7 +325,6 @@ class Meadow(menv.MarkovEnv):
         Returns:
             trans_str: the string representing the sheep's possibilities
             for movement
-
         """
         trans_str = ""
 
@@ -244,7 +333,7 @@ class Meadow(menv.MarkovEnv):
         EN, ES, EW, EE = 0,0,0,0
         WN, WS, WE, WW = 0,0,0,0
 
-            # Random movement if nothing is in view.
+        # Random movement if nothing is in view.
         if total == 0:
             NS, NE, NW, NN = 0.25,0.25,0.25,0.25
             SN, SE, SW, SS = 0.25,0.25,0.25,0.25
@@ -290,8 +379,8 @@ class Meadow(menv.MarkovEnv):
              computation
 
         Returns:
-            trans_str: the string representing the sheep's possibilities
-            for movement
+            trans_str: the string representing the probability a sheep will
+                move in any cardinal direction
         """
         best_dir = min(d, key=d.get)
 
