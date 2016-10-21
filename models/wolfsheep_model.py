@@ -52,7 +52,7 @@ class Creature(ma.MarkovAgent):
     A Creature moves around intelligently based on his
     prehension of the env.
 
-    Attubutes: 
+    Attributes: 
         alive: boolean indicating if Creature should exist in the env 
         age: int keeps trak of how many steps Creature has been in existance; 
             used for controling periodic reproduction
