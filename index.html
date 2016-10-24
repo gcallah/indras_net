@@ -31,14 +31,103 @@
             <h2>
                 Project Architecture
             </h2>
-                <p>
-                </p>
+
+    		<h3>
+			Overview of Ideas
+	    	</h3>
+
+		    	<p>
+				Every model has two basic objects: an environment and an agent.
+				Everything in every model is a node in a graph. Thus everything
+				is interconnected through 
+				<a href=https://en.wikipedia.org/wiki/Indra%27s_net>Indra's Net.</a>
+			</p>
+
+		<h3>
+			node.py
+		</h3>
+
+			<p>
+			The Node class is the most abstract class of the Indra modules;
+			or at least, &ldquo;the core of the system.&rdquo; From it, all other classes
+			are derived. Everything is a node, making everything relatable
+			under a common general structure.
+			</p>
+
+			<h4>
+				Attributes
+			</h4>
+
+			<p>
+			<ul>
+				<li>
+				name - the name of the node
+				</li>
+
+				<li>
+				graph - initially None, may become a graph object. Thus
+				every node may itself be a graph.
+				</li>
+
+				<li>
+				ntype - initially, the name of the class of node, often custom
+				named (e.g. "agent," "sheep," "grid env," etc.)
+				</li>
+			</ul>
+			</p>
+	
+			<h4>
+				Methods
+			</h4>
+	
+	    	<h3>
+			entity.py
+		</h3>
+
+			<p>
+			The basic agent class.
+			</p>
+
+			<h4>
+				Attributes
+			</h4>
+	
+			<h4>
+				Methods
+			</h4>
+	
+	    	<h3>
+			env.py
+		</h3>
+
+			<p>
+			The basic environment class.
+			</p>
+
+			<h4>
+				Attributes
+			</h4>
+	
+			<h4>
+				Methods
+			</h4>
+
+
 
             <h2>
                 Current Models
             </h2>
+
+		<h3>
+		Forest Fire
+		</h3>
+
                 <p>
+		Simulates fires starting and spreading through a forest. Burned out trees
+		are replaced by new growth, which are suseptible to catching and spreading
+		fire.
                 </p>
 
     </body>
 </html>
+
