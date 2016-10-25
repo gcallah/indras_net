@@ -21,155 +21,145 @@
             <h2>
                 Project Goal
             </h2>
+
                 <p>
-                Indra is an agent-based modeling system in Python.
-                The ultimate goal is to build a GUI front-end that will allow non-coders
-                to build models, while at the same time permitting coders to use Python for
-                more flexibility in model creation.
+		Indra is an agent-based modeling (ABM) system in Python.
                 </p>
+
+		<p>
+		The ultimate goal is to build a GUI front-end that will allow non-coders
+            	to build models, while at the same time permitting coders to use Python for
+             	more flexibility in model creation.
+		</p>
 
             <h2>
                 Project Architecture
             </h2>
 
-    		<h3>
-			Overview of Ideas
-	    	</h3>
+		<h3>
+		   Agents and Environments
+		</h3>
+			<p>
+			Indra&rsquo;s structure can be appreciated philosophically. We start by
+			considering the following question, What are the most general features of
+			all population dynamics?
+			</p>
 
-		    	<p>
-				Every model has two basic objects: an environment and an agent.
-				Everything in every model is a node in a graph. Thus everything
-				is interconnected through 
-				<a href=https://en.wikipedia.org/wiki/Indra%27s_net>Indra's Net.</a>
+			<p>
+			In order to have a population we have to have members of that population, and
+			since these members must *do* something we call them
+			"<a href=https://github.com/gcallah/Indra/blob/master/indra/entity.py>agents.</a>"
+			So these agents act, and action always as a definite character, designed to reach an end.
+			For this reason, all agents are also assigned a goal.
+			For example, sheep are agents that run away from wolves because their goal is to not be
+			eaten. These agents all exist within some world defining the ways they may interact
+			with other agents. For example, wolves are agents limited by distance. They
+			have to reach the sheep before they can eat them! This world in which interaction
+			takes place we call the 
+			"<a href=https://github.com/gcallah/Indra/blob/master/indra/env.py>environment</a>,"
+			env for short.
+			</p>
+	
+			<p>
+			All agents act, and while respose to the external env is not stricty required, whenever
+			an agent needs to know something about it's external world, it has to peer into its
+			env to see what&rsquo;s about. For this reason, agents access information about other
+			agents strictly through the env object that it lives in.
 			</p>
 
 		<h3>
-			node.py
+		   The User, the Menu, and the Environment
 		</h3>
 
 			<p>
-			The Node class is the most abstract class of the Indra modules;
-			or at least, &ldquo;the core of the system.&rdquo; From it, all other classes
-			are derived. Everything is a node, making everything relatable
-			under a common general structure.
+			The 
+			<a href=https://github.com/gcallah/Indra/blob/master/indra/user.py>user</a> 
+			is of course given control to run the program and to display its data.
+			His primary method of interface is through the
+			<a href=https://github.com/gcallah/Indra/blob/master/indra/menu.py >menu</a>.
 			</p>
 
-			<h4>
-				Attributes
-			</h4>
-
-			<p>
-			<ul>
-				<li>
-				name - the name of the node
-				</li>
-
-				<li>
-				graph - initially None, may become a graph object. Thus
-				every node may itself be a graph.
-				</li>
-
-				<li>
-				ntype - initially, the name of the class of node, often custom
-				named (e.g. "agent," "sheep," "grid env," etc.)
-				</li>
-			</ul>
-			</p>
-	
-			<h4>
-				Methods
-			</h4>
-	
-	    	<h3>
-			entity.py
+		<h3>
+		    Agent Pop and the Program
 		</h3>
 
 			<p>
-			The basic agent class.
+			   Agent pop is where we record all the information about the agents in an
+		           active model.
 			</p>
 
-			<h4>
-				Attributes
-			</h4>
-	
-			<h4>
-				Methods
-			</h4>
-	
-	    	<h3>
-			env.py
+		<h3>
+		    Universals and Everything
 		</h3>
+		
+			<p>
+			One last generality can be noted. Agents have some kind of relation to one another
+			and to the env they act within. Even the user has a relation to these things. He
+			called the into existence and manages everything!
+			To express these connections, nearly everything in the program
+			is a 
+			<a href=https://github.com/gcallah/Indra/blob/master/indra/node.py>node</a>
+			in an all-encompassing graph.
+			Thus everything is interconnected through 
+			<a href=https://en.wikipedia.org/wiki/Indra%27s_net>Indra's Net.</a>
+			And thus we may record abstract relationships of the kind similar to that which is in our
+			mind.
+			</p>
 
 			<p>
-			The basic environment class.
+			Universals are a type of node that relate classes and their instances. They aren&rsquo;t
+			currently used right now.
 			</p>
-
-			<h4>
-				Attributes
-			</h4>
-	
-			<h4>
-				Methods
-			</h4>
-
-
 
             <h2>
                 Current Models
             </h2>
 
 		<h3>
-		Forest Fire
+		    Forest Fire
 		</h3>
 
-                <p>
-		Simulates fires starting and spreading through a forest. Burned out trees
-		are replaced by new growth, which are suseptible to catching and spreading
-		fire.
-                </p>
-
-			<h4>
-			Agents: Trees
-			</h4>
-
 			<p>
-			
+			Simulates fires starting and spreading through a forest. Burned out trees
+			are replaced by new growth, which after aging are suseptible to catching
+			and spreading fire.
 			</p>
-
-			<h4>
-			Environment: Forest
-			</h4>
 
 		<h3>
-		Wolf-Sheep
+		    Wolf-Sheep
 		</h3>
 
-		<p>
-		Simulates wolves chasing sheep and sheep avoiding wolves in a meadow. The animals
-		may reproduce. And they 
-		</p>
-
-
-			<h4>
-			Agents: Trees
-			</h4>
-
 			<p>
-			
+			Simulates wolves chasing sheep and sheep avoiding wolves in a meadow. The animals
+			may reproduce. Once a wolf is near a sheep, it eats him.
 			</p>
 
-			<h4>
-			Environment: Forest
-			</h4>
-	
+		<h3>
+		    Fashion Model
+		</h3>
+
 			<p>
-				
+			In the metropolitan fashion scene, there are the trend-setters and the trend-followers.
+			These we call hipsters and followers. Hipsters do not want to look like followers, and
+			followers do not want to look like hipsters.
 			</p>
 
-			<h5>
-			Transition Matrix
-			</h5>
+		<h3>
+		    Free Market Model
+		</h3>
+
+		<h3>
+		    Auditorium Model
+		</h3>
+
+		<h3>
+		    Height Model
+		</h3>
+
+		<h3>
+		    Segregation Model
+		</h3>
+
 
     </body>
 </html>
-
