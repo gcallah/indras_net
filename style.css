@@ -2,9 +2,18 @@ body {
     margin: 0;
     padding: 0;
     font-size: 20px;
-    color: #333;
-    background: #edf;
+    color: #fde;
+    background: #444;
 }
+
+a:link {
+    color: #acf;
+}
+
+a:visited {
+    color: #caf;
+}
+
 
 table, th, td {
     border: 1px solid black;
@@ -14,11 +23,11 @@ table, th, td {
     }
 
 p {
-    margin: 8px 8px 8px 40px;
+    margin: 8px 40px 8px 40px;
 }
 
 ol, ul, dl, li {
-    margin: 20px 8px 8px 12px;
+    margin: 20px 12px 8px 12px;
 }
 
 p {
@@ -35,14 +44,14 @@ h1 {
     text-align: center;
     font-weight: 300;
     font-size: 32px;
-    background-color: #339;
-    color: #cfc;
+    color: #339;
+    background-color: #cfc;
 }
 
 h2 {
     font-size: 26px;
-    margin: 20px 8px 12px 24px;
-    color: #066;
+    margin: 20px 24px 12px 24px;
+    color: #6bb;
 }
 
 h2.subhead {
@@ -54,21 +63,21 @@ h2.subhead {
 
 h3 {
     font-size: 20px;
-    margin: 20px 8px 12px 32px;
-    color: #633;
+    margin: 20px 32px 12px 32px;
+    color: #ca9;
     font-weight: bold;
 }
 
 h4 {
     font-size: 18px;
-    margin: 16px 8px 12px 40px;
+    margin: 16px 40px 12px 40px;
     color: #339;
     font-weight: bold;
 }
 
 h5 {
     font-size: 16px;
-    margin: 16px 8px 12px 48px;
+    margin: 16px 48px 12px 48px;
     color: #600;
     font-weight: bold;
 
