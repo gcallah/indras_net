@@ -11,7 +11,7 @@ a:link {
 }
 
 a:visited {
-    color: #caf;
+    color: #cbf;
 }
 
 
@@ -51,7 +51,7 @@ h1 {
 h2 {
     font-size: 26px;
     margin: 20px 24px 12px 24px;
-    color: #6bb;
+    color: #9cc;
 }
 
 h2.subhead {
@@ -64,7 +64,7 @@ h2.subhead {
 h3 {
     font-size: 20px;
     margin: 20px 32px 12px 32px;
-    color: #ca9;
+    color: #ecb;
     font-weight: bold;
 }
 
