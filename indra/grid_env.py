@@ -469,3 +469,17 @@ class GridEnv(se.SpatialEnv):
             return False
         else:
             return self._get_contents(x, y) is None
+
+     def dist(agent1, agent2):
+        """
+        Arguments:
+            Two grid agents.
+
+        Returns:
+            The Euclidian distance between the two
+        agents. There isn't numerical ill-conditioning
+        with this because the positions are integers. If 
+        there are any applications where positions are given
+        by nonintegral values, use caution.
+        """
+        return math.sqrt((agent1.pos[X]-agent2.pos[X])**2 + (agent1.pos[Y]-agent2.pos[Y])**2)
