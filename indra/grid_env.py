@@ -469,8 +469,8 @@ class GridEnv(se.SpatialEnv):
             return False
         else:
             return self._get_contents(x, y) is None
-
-     def dist(agent1, agent2):
+        
+    def dist(agent1, agent2):
         """
         Arguments:
             Two grid agents.
