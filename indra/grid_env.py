@@ -18,6 +18,7 @@ GridEnv: base grid, a simple list-of-lists.
 # since we have a good reason to use one-character variable names for x and y.
 # pylint: disable=invalid-name
 
+import math
 import random
 import itertools
 import logging
@@ -470,7 +471,7 @@ class GridEnv(se.SpatialEnv):
         else:
             return self._get_contents(x, y) is None
         
-    def dist(agent1, agent2):
+    def dist(self, agent1, agent2):
         """
         Arguments:
             Two grid agents.
@@ -483,3 +484,26 @@ class GridEnv(se.SpatialEnv):
         by nonintegral values, use caution.
         """
         return math.sqrt((agent1.pos[X]-agent2.pos[X])**2 + (agent1.pos[Y]-agent2.pos[Y])**2)
+
+    def free_spot_near(self, agent):
+        """
+        Looks for an empty cell near agent. If the board is full,
+        returns None. 
+
+        Argument:
+            The agent whose nearest empty cell we look for.
+
+        Returns:
+            Either (a) the position of this empty cell or
+            (b) null in which case the entire board is full
+            of agents.
+        """
+
+        max_poss_dist = max(self.width, self.height)
+        for i in range(max_poss_dist):
+            view = self.get_square_view(center=agent.pos, distance=i)
+            for cell in view:
+                if cell.is_empty():
+                    return cell.coords
+
+        return None
