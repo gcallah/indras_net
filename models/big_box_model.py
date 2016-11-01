@@ -39,9 +39,11 @@ class Consumer(ma.MarkovAgent):
     Mom_And_Pop stores, but will buy occasionally from Big_Box.
 
     Attributes:
+        ntype: node type in graph
         state: Does agent want to buy from Big_Box or Mom_And_Pop?
         allowance: The amount the agent will buy from a store.
-    """
+        hunger: increments each step; when maxed, consumer spends allowance
+        max_hunger: maximum hunger, when reached, consumer spends allowance    """
 
     def __init__(self, name, goal, init_state, allowance, max_hunger):
         super().__init__(name, goal, NSTATES, init_state)
@@ -52,6 +54,9 @@ class Consumer(ma.MarkovAgent):
         self.max_hunger = max_hunger
 
     def buy_from(self, store, amount):
+        """
+        Consumer adds to store's funds.
+        """
         store.funds += amount
 
     def act(self):
@@ -113,6 +118,7 @@ class Mom_And_Pop(ga.GridAgent):
     Attributes:
         ntype: The kind of store it is.
         funds: If less than zero, the business disappears.
+        rent: how much is decremented from funds every step.
     """
 
     def __init__(self, name, goal, endowment, rent):
