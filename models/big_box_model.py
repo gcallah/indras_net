@@ -3,8 +3,9 @@ big_box_model.py
 
 Simulates a small town with consumers.
 
-The both local "Mom and Pop" and chain "Big Box" stores. The town's consumers
-prefer the local stores, but will shot at the big box retailer when convenient.
+The consumers may shop at either "Mom and Pop" and chain "Big Box" stores. The town's consumers
+prefer the local stores, but will shot at the big box retailer when convenient. The major difference
+between Mom and Pops and Big Boxes is the larger endowment Big Boxes have initially.
 
 Initially there are only local stores, but later the big box stores come in and 
 change the population dynamic.
