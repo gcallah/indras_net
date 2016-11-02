@@ -53,7 +53,7 @@ class MarkovEnv(ge.GridEnv):
     def __new_cell__(self, coords):
         return MarkovCell(coords, trans_matrix=self.def_trans_matrix)
 
-    def get_pre(self, agent):
+    def get_pre(self, agent, n_census):
         cell = self._get_cell(agent.pos[X], agent.pos[Y])
         return cell.trans_matrix
 
