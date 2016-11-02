@@ -18,6 +18,9 @@ class MarkovCell(ge.Cell):
     """
     A grid cell that also has a transition matrix
     specific to it.
+
+    Attribute:
+        trans_matrix: a transition matrix
     """
     def __init__(self, coords, contents=None, trans_matrix=None):
         super().__init__(coords, contents)
@@ -29,14 +32,16 @@ class MarkovCell(ge.Cell):
 
 class MarkovEnv(ge.GridEnv):
     """
-    An env that holds transition matrix for each cell.
+    An env that holds transition matrix for each cell, though strictly speaking,
+    it isn't required that the transition matricies must be aquired through
+    accessing this cell.
     """
 
     def __init__(self, name, width, height, trans_str=None, torus=False,
                  matrix_dim=2, model_nm=None, preact=False, postact=False,
                  mobile_agents=False):
         """
-        Create a new markov env
+        Create a new markov env. By default the transition matrix is identity.
         """
         if trans_str is None:
             self.def_trans_matrix = markov.from_matrix(markov.create_iden_matrix(matrix_dim))
@@ -44,7 +49,6 @@ class MarkovEnv(ge.GridEnv):
             self.def_trans_matrix = markov.MarkovPre(trans_str)
         super().__init__(name, width, height, torus, preact,
                          postact, model_nm)
-        self.mobile_agents = mobile_agents
 
     def __new_cell__(self, coords):
         return MarkovCell(coords, trans_matrix=self.def_trans_matrix)
@@ -58,9 +62,13 @@ class MarkovEnv(ge.GridEnv):
         cell.trans_matrix = trans
 
     def neighborhood_census(self, agent):
+        """
+        Counts number of each type in a neighborhood. Stores
+        the result in a dictionary.
+        """
         n_census = {}
 
-        for neighbor in agent.neighbor_iter(not self.mobile_agents):
+        for neighbor in agent.neighbor_iter():
             if neighbor.ntype in n_census:
                 n_census[neighbor.ntype] += 1
             else:
