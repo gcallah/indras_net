@@ -10,7 +10,14 @@ import indra.prehension_agent as pa
 
 class MarkovAgent(pa.PrehensionAgent):
     """
-    An agent that use Prehensions to understand its environment.
+    An agent whose changeable state determines its action, type, or character.
+    Being "Markov-like" an agent will have its next state determined by a 
+    probablility distribution represented by a vector. This vector's value is dependent
+    only on the agent's current state.
+
+    Attributes:
+        state_pre: a state vector prehension
+        state: whatever state the agent is in, subject to change
     """
     def __init__(self, name, goal, vlen, init_state, max_detect=1):
         super().__init__(name, goal, max_move=1, max_detect=max_detect)
@@ -22,8 +29,8 @@ class MarkovAgent(pa.PrehensionAgent):
         """
         Look around and see what surrounds us.
         """
-        n_census = self.env.neighborhood_census(self)
-        return self.env.get_pre(self, n_census)
+        n_census = self.env.neighborhood_census(self) # Method found in markov_env.
+        return self.env.get_pre(self, n_census) # Also in markov_env.
 
     def eval_env(self, other_pre):
         """
