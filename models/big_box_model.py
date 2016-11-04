@@ -110,8 +110,10 @@ class Consumer(ma.MarkovAgent):
 
 class Store(ga.GridAgent):
     """
-    A small mom and pop store. It has a much smaller initial endowment than the
-    Big Box store.
+    A store. Occupying a spot on the grid, it uses it's funds to pay
+    rent. If the funds vanish, it is removed from the env. Consumers
+    increase its pool of funds if they decide to visit.
+    
     Attributes:
         ntype: The kind of store it is.
         funds: If less than zero, the business disappears.
