@@ -13,6 +13,9 @@ class Entity(node.Node):
     """
     This is the base class of all agents, environments,
     and objects contained in an environment.
+    
+    Attribute:
+        env: the environment the agent lives within
     """
 
     def __init__(self, name):
@@ -31,6 +34,15 @@ class Agent(Entity):
     """
     This class adds a goal to an entity
     and is the base for all other agents.
+    
+    All agents act. For reasons of clarity
+    they *may* also act before or after this
+    action.
+    
+    Attribute:
+        goal: this is a string which helps
+            the user understand what the agent
+            is "up to."
     """
 
     def __init__(self, name, goal=None):
