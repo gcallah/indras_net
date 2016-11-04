@@ -26,13 +26,13 @@ Y = 1
 NSTATES = 2
 
 CONSUMER = "consumer"
-MOMANDPOP = "mom_and_pop"
+MOM_AND_POP = "mom_and_pop"
 BIGBOX = "big_box"
 
 MP = 0
 BB = 1
 
-STATE_MAP = { MP: MOMANDPOP, BB: BIGBOX }
+STATE_MAP = { MP: MOM_AND_POP, BB: BIGBOX }
 
 class Consumer(ma.MarkovAgent):
     """
@@ -91,12 +91,12 @@ class Consumer(ma.MarkovAgent):
         stores = self.neighbor_iter(view=view, filt_func=filt_func)
 
         close_store = None
-        maxDist = math.sqrt(self.env.width**2 + self.env.height**2)
+        max_dist = self.env.get_max_dist()
         for store in stores:
             dist = self.env.dist(self,store)
-            if(dist<maxDist):
+            if(dist < max_dist):
                 close_store = store
-                maxDist = dist
+                max_dist = dist
 
         return close_store
         
@@ -124,7 +124,7 @@ class Mom_And_Pop(ga.GridAgent):
 
     def __init__(self, name, goal, endowment, rent):
         super().__init__(name, goal)
-        self.ntype = MOMANDPOP
+        self.ntype = MOM_AND_POP
         self.funds = endowment
         self.rent = rent
 
@@ -133,7 +133,7 @@ class Mom_And_Pop(ga.GridAgent):
         Loses money. If it goes bankrupt, the business goes away.
         """
         self.pay_bills(self.rent)
-        if(self.funds<=0):
+        if(self.funds <= 0):
             self.declare_bankruptcy()
 
     def declare_bankruptcy(self):
@@ -161,7 +161,7 @@ class EverytownUSA(menv.MarkovEnv):
         super().__init__(width=width, height=height, torus=torus, name=model_nm)
 
         self.set_var_color(CONSUMER, disp.YELLOW)
-        self.set_var_color(MOMANDPOP, disp.GREEN)
+        self.set_var_color(MOM_AND_POP, disp.GREEN)
 
     def foreclose(self, business):
         """

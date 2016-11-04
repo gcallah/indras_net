@@ -292,6 +292,14 @@ class GridEnv(se.SpatialEnv):
         """
         return out_of_bounds(x, y, 0, 0, self.width, self.height)
 
+    def get_max_dist(self):
+        """
+            Args: none
+
+            Returns: The furthest move possible in this env.
+        """
+        return math.sqrt(self.width**2 + self.height**2)
+
     def get_col_view(self, col, low=None, high=None):
         """
         Return a view of a single column.
