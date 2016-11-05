@@ -38,10 +38,10 @@ NUM_GOODS = 5
 class Consumer(ma.MarkovAgent):
     """
     Everyday consumer of EverytownUSA. He has a preference for the cosy
-    Mom_And_Pop stores, but will buy occasionally from Big_Box.
+    small shops stores, but will buy occasionally from big boxes.
 
     Attributes:
-        state: Does agent want to buy from Big_Box or Mom_And_Pop?
+        state: Does agent want to buy from big boxes or small shops?
         allowance: The amount the agent will buy from a store.
     """
 
@@ -49,7 +49,7 @@ class Consumer(ma.MarkovAgent):
         super().__init__(name, goal, NUM_STATES, init_state)
         self.state = init_state
         self.allowance = allowance
-        self.preference = Mom_And_Pop
+        self.preference = MomAndPop
 
     def act(self):
         super().act()
@@ -90,6 +90,9 @@ class Consumer(ma.MarkovAgent):
                 close_store: the store to which we should move.
             Returns: None
         """
+        # if we need to test that consumers are moving between stores,
+        # uncomment the following line:
+        # print(self.name + " heading to " + store.name)
         self.move(store)
         store.buy_from(self.allowance)
 
@@ -150,7 +153,7 @@ class Retailer(ga.GridAgent):
         return False
 
 
-class Mom_And_Pop(Retailer):
+class MomAndPop(Retailer):
     """
     A small mom and pop store. It has a much smaller initial endowment than the
     Big Box store.
@@ -166,6 +169,20 @@ class Mom_And_Pop(Retailer):
         Does this retailer sell this good?
         """
         return self.goal == good
+
+
+class BigBox(Retailer):
+    """
+    """
+    def __init__(self, name, goal, endowment, rent):
+        super().__init__(name, goal, endowment, rent)
+
+    def sells(self, good):
+        """
+        Does this retailer sell this good?
+        The big box retailer sells everything!
+        """
+        return True
 
 
 
