@@ -72,7 +72,7 @@ class Consumer(ma.MarkovAgent):
         """
             Args:
                 stores: a list of stores
-            Returns: the closest store.
+            Returns: the closest store of prefered type.
         """
         other_pre = self.env.get_pre(self)
         super().eval_env(other_pre)
@@ -81,7 +81,6 @@ class Consumer(ma.MarkovAgent):
             self.preference = MomAndPop 
         else:
             self.preference = BigBox
-
 
         close_store = None
         max_dist = self.env.get_max_dist()
