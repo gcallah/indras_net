@@ -19,8 +19,9 @@ pa = utils.read_props(MODEL_NM)
 if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     utils.get_grid_dims(pa, 50)
-    utils.get_agent_num(pa, "num_consumers", "consumers", 25)
-    utils.get_agent_num(pa, "num_mom_and_pops", "mom and pop stores", 5)
+    utils.get_agent_num(pa, "num_consumers", "consumers", bb.NUM_GOODS * 5)
+    utils.get_agent_num(pa, "num_mom_and_pops", "mom and pop stores",
+                        bb.NUM_GOODS)
     pa.ask("allowance", "What are the consumers' daily allowances?", 
            int, default=5)
     pa.ask("endowment", "What are the small shops' initial endowments?", 
