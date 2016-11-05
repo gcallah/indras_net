@@ -74,6 +74,15 @@ class Consumer(ma.MarkovAgent):
                 stores: a list of stores
             Returns: the closest store.
         """
+        other_pre = self.env.get_pre(self)
+        super().eval_env(other_pre)
+        self.state = self. next_state
+        if(self.state == 0):
+            self.preference = MomAndPop 
+        else:
+            self.preference = BigBox
+
+
         close_store = None
         max_dist = self.env.get_max_dist()
         for store in stores:
@@ -129,8 +138,6 @@ class Retailer(ga.GridAgent):
         """
         Args:
             amt: amount to bought
-        Returns:
-
         """
         self.funds += amt
 
@@ -185,7 +192,6 @@ class BigBox(Retailer):
         return True
 
 
-
 class EverytownUSA(menv.MarkovEnv):
     """
     Just your typical city: filled with businesses and consumers.
@@ -203,3 +209,11 @@ class EverytownUSA(menv.MarkovEnv):
         Removes business from town.
         """
         self.remove_agent(business)
+
+    def get_pre(self, agent):
+        """
+        Returns a vector prehension describing
+        the chance an agent will prefer to go to
+        a mom and pop or big box store.
+        """
+        return markov.MarkovPre("0.7 0.3; 0.7 0.3")
