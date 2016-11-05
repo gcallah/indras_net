@@ -22,10 +22,9 @@ import indra.markov_env as menv
 X = 0
 Y = 1
 
-NSTATES = 2
-
 MP = 0
 BB = 1
+NUM_STATES = 2
 
 # types of goods sold
 HARDWARE = 0
@@ -33,6 +32,8 @@ HAIRCUT = 1
 GROCERIES = 2
 BOOKS = 3
 COFFEE = 4
+NUM_GOODS = 5
+
 
 class Consumer(ma.MarkovAgent):
     """
@@ -40,17 +41,19 @@ class Consumer(ma.MarkovAgent):
     Mom_And_Pop stores, but will buy occasionally from Big_Box.
 
     Attributes:
-        ntype: node type in graph
         state: Does agent want to buy from Big_Box or Mom_And_Pop?
         allowance: The amount the agent will buy from a store.
     """
 
     def __init__(self, name, goal, init_state, allowance):
-        super().__init__(name, goal, NSTATES, init_state)
+        super().__init__(name, goal, NUM_STATES, init_state)
         self.state = init_state
         self.allowance = allowance
         self.preference = Mom_And_Pop
 
+    def act(self):
+        super().act()
+        self.goal = (self.goal + 1) % NUM_GOODS
 
     def survey_env(self):
         """
@@ -62,7 +65,8 @@ class Consumer(ma.MarkovAgent):
                                         max(self.env.height, self.env.width))
         return self.neighbor_iter(view=view,
                                   filt_func=lambda x:
-                                  type(x) is self.preference)
+                                  type(x) is self.preference
+                                  and x.sells(self.goal))
 
     def eval_env(self, stores):
         """
@@ -121,7 +125,7 @@ class Retailer(ga.GridAgent):
     def buy_from(self, amt):
         """
         Args:
-            amt: amount to buy
+            amt: amount to bought
         Returns:
 
         """
@@ -139,6 +143,12 @@ class Retailer(ga.GridAgent):
         """
         self.funds -= amt
 
+    def sells(self, good):
+        """
+        Does this retailer sell this good?
+        """
+        return False
+
 
 class Mom_And_Pop(Retailer):
     """
@@ -150,6 +160,13 @@ class Mom_And_Pop(Retailer):
 
     def __init__(self, name, goal, endowment, rent):
         super().__init__(name, goal, endowment, rent)
+
+    def sells(self, good):
+        """
+        Does this retailer sell this good?
+        """
+        return self.goal == good
+
 
 
 class EverytownUSA(menv.MarkovEnv):
