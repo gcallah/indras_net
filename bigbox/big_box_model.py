@@ -1,0 +1,171 @@
+"""
+big_box_model.py
+
+Simulates a small town with consumers.
+
+The consumers may shop at either "Mom and Pop" and chain "Big Box" stores. The
+town's consumers prefer the local stores, but will shot at the 
+big box retailer when convenient. The major difference between Mom and 
+Pops and Big Boxes is the larger endowment Big Boxes have initially.
+
+Initially there are only local stores, but later the big box stores come in and 
+change the population dynamic.
+"""
+
+import indra.display_methods as disp
+import indra.grid_agent as ga
+import indra.grid_env as genv
+import indra.markov as markov
+import indra.markov_agent as ma
+import indra.markov_env as menv
+
+X = 0
+Y = 1
+
+NSTATES = 2
+
+MP = 0
+BB = 1
+
+# types of goods sold
+HARDWARE = 0
+HAIRCUT = 1
+GROCERIES = 2
+BOOKS = 3
+COFFEE = 4
+
+class Consumer(ma.MarkovAgent):
+    """
+    Everyday consumer of EverytownUSA. He has a preference for the cosy
+    Mom_And_Pop stores, but will buy occasionally from Big_Box.
+
+    Attributes:
+        ntype: node type in graph
+        state: Does agent want to buy from Big_Box or Mom_And_Pop?
+        allowance: The amount the agent will buy from a store.
+    """
+
+    def __init__(self, name, goal, init_state, allowance):
+        super().__init__(name, goal, NSTATES, init_state)
+        self.state = init_state
+        self.allowance = allowance
+        self.preference = Mom_And_Pop
+
+
+    def survey_env(self):
+        """
+            Args: self
+
+            Returns: stores
+        """
+        view = self.env.get_square_view(self.pos,
+                                        max(self.env.height, self.env.width))
+        return self.neighbor_iter(view=view,
+                                  filt_func=lambda x:
+                                  type(x) is self.preference)
+
+    def eval_env(self, stores):
+        """
+            Args:
+                stores: a list of stores
+            Returns: the closest store.
+        """
+        close_store = None
+        max_dist = self.env.get_max_dist()
+        for store in stores:
+            dist = self.env.dist(self, store)
+            if(dist < max_dist):
+                close_store = store
+                max_dist = dist
+
+        return close_store
+
+    def respond_to_cond(self, store):
+        """
+            Args:
+                close_store: the store to which we should move.
+            Returns: None
+        """
+        self.move(store)
+        store.buy_from(self.allowance)
+
+    def move(self, store):
+        """
+        Moves as close as possible to the store.
+        """
+        open_spot = self.env.free_spot_near(store)
+        if(open_spot is not None):
+            self.env.move(self, open_spot[X], open_spot[Y])
+
+
+class Retailer(ga.GridAgent):
+    """
+    Attributes:
+        funds: If less than zero, the business disappears.
+        rent: how much is decremented from funds every step.
+    """
+
+    def __init__(self, name, goal, endowment, rent):
+        super().__init__(name, goal)
+        self.funds = endowment
+        self.rent = rent
+
+    def act(self):
+        """
+        Loses money. If it goes bankrupt, the business goes away.
+        """
+        self.pay_bills(self.rent)
+        if(self.funds <= 0):
+            self.declare_bankruptcy()
+
+    def buy_from(self, amt):
+        """
+        Args:
+            amt: amount to buy
+        Returns:
+
+        """
+        self.funds += amt
+
+    def declare_bankruptcy(self):
+        """
+        Removes the business from the town.
+        """
+        self.env.foreclose(self)
+
+    def pay_bills(self, amt):
+        """
+        Lose funds.
+        """
+        self.funds -= amt
+
+
+class Mom_And_Pop(Retailer):
+    """
+    A small mom and pop store. It has a much smaller initial endowment than the
+    Big Box store.
+
+    Attributes:
+    """
+
+    def __init__(self, name, goal, endowment, rent):
+        super().__init__(name, goal, endowment, rent)
+
+
+class EverytownUSA(menv.MarkovEnv):
+    """
+    Just your typical city: filled with businesses and consumers.
+
+    The city management will remove businesses that cannot pay rent!
+    """
+
+    def __init__(self, width, height, torus=False,
+                model_nm="Big Box Model"):
+        super().__init__(width=width, height=height, torus=torus, name=model_nm)
+
+
+    def foreclose(self, business):
+        """
+        Removes business from town.
+        """
+        self.remove_agent(business)
