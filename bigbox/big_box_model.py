@@ -34,6 +34,7 @@ BOOKS = 3
 COFFEE = 4
 NUM_GOODS = 5
 
+GOODS_MAP = {0: "Hardware", 1: "Haircut", 2: "Groceries", 3: "Books", 4: "Coffee"}
 
 class Consumer(ma.MarkovAgent):
     """
@@ -129,6 +130,7 @@ class Retailer(ga.GridAgent):
         """
         Loses money. If it goes bankrupt, the business goes away.
         """
+        print(self.funds)
         self.pay_bills(self.rent)
         if(self.funds <= 0):
             self.declare_bankruptcy()
@@ -136,7 +138,7 @@ class Retailer(ga.GridAgent):
     def buy_from(self, amt):
         """
         Args:
-            amt: amount to bought
+            amt: amount to buy
         """
         self.funds += amt
 
@@ -169,6 +171,7 @@ class MomAndPop(Retailer):
 
     def __init__(self, name, goal, endowment, rent):
         super().__init__(name, goal, endowment, rent)
+        self.ntype = GOODS_MAP[goal]
 
     def sells(self, good):
         """
