@@ -34,6 +34,7 @@ BOOKS = 3
 COFFEE = 4
 NUM_GOODS = 5
 
+GOODS_MAP = {0: "Hardware", 1: "Haircut", 2: "Groceries", 3: "Books", 4: "Coffee"}
 
 class Consumer(ma.MarkovAgent):
     """
@@ -72,8 +73,16 @@ class Consumer(ma.MarkovAgent):
         """
             Args:
                 stores: a list of stores
-            Returns: the closest store.
+            Returns: the closest store of prefered type.
         """
+        other_pre = self.env.get_pre(self)
+        super().eval_env(other_pre)
+        self.state = self. next_state
+        if(self.state == 0):
+            self.preference = MomAndPop 
+        else:
+            self.preference = BigBox
+
         close_store = None
         max_dist = self.env.get_max_dist()
         for store in stores:
@@ -121,6 +130,7 @@ class Retailer(ga.GridAgent):
         """
         Loses money. If it goes bankrupt, the business goes away.
         """
+        print(self.funds)
         self.pay_bills(self.rent)
         if(self.funds <= 0):
             self.declare_bankruptcy()
@@ -128,9 +138,7 @@ class Retailer(ga.GridAgent):
     def buy_from(self, amt):
         """
         Args:
-            amt: amount to bought
-        Returns:
-
+            amt: amount to buy
         """
         self.funds += amt
 
@@ -163,6 +171,7 @@ class MomAndPop(Retailer):
 
     def __init__(self, name, goal, endowment, rent):
         super().__init__(name, goal, endowment, rent)
+        self.ntype = GOODS_MAP[goal]
 
     def sells(self, good):
         """
@@ -185,7 +194,6 @@ class BigBox(Retailer):
         return True
 
 
-
 class EverytownUSA(menv.MarkovEnv):
     """
     Just your typical city: filled with businesses and consumers.
@@ -203,3 +211,11 @@ class EverytownUSA(menv.MarkovEnv):
         Removes business from town.
         """
         self.remove_agent(business)
+
+    def get_pre(self, agent):
+        """
+        Returns a vector prehension describing
+        the chance an agent will prefer to go to
+        a mom and pop or big box store.
+        """
+        return markov.MarkovPre("0.7 0.3; 0.7 0.3")

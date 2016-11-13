@@ -23,10 +23,10 @@ if pa is None:
     utils.get_agent_num(pa, "num_mom_and_pops", "mom and pop stores",
                         bb.NUM_GOODS)
     pa.ask("allowance", "What are the consumers' daily allowances?", 
-           int, default=5)
+           int, default=2)
     pa.ask("endowment", "What are the small shops' initial endowments?", 
-           int, default=6)
-    pa.ask("rent", "What are the stores' rents?", int, default=2)
+           int, default=20)
+    pa.ask("rent", "What are the stores' rents?", int, default=7)
 
 # Now we create a meadow for our agents to act within:
 env = bb.EverytownUSA(pa.get("grid_width"),
@@ -48,6 +48,6 @@ for i in range(pa.get("num_mom_and_pops")):
 
 env.add_agent(bb.BigBox("Big Box", goal="Dominance",
                         endowment=(pa.get("endowment") * 1000),
-                        rent=(pa.get("rent") * 4)))
+                        rent=(pa.get("rent") * 2)))
 
 utils.run_model(env, prog_file, results_file)

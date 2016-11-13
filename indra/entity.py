@@ -40,9 +40,11 @@ class Agent(Entity):
     action.
     
     Attribute:
-        goal: this is a string which helps
+        goal: Often, this is a string which helps
             the user understand what the agent
-            is "up to."
+            is "up to." It might also be used to
+            inform the env what kind of action
+            the agent will take.
     """
 
     def __init__(self, name, goal=None):
