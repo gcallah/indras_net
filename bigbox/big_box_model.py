@@ -105,6 +105,7 @@ class Consumer(ma.MarkovAgent):
             self.preference = MomAndPop 
         else:
             self.preference = BigBox
+        self.goal = (self.goal + 1) % NUM_GOODS
 
 
 class Retailer(ga.GridAgent):
