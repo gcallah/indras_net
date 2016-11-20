@@ -60,20 +60,9 @@ class GridAgent(sa.SpatialAgent):
         Here we set up the usual pattern of action for a grid agent.
         """
         env_vars = self.survey_env()
-        if self.eval_env(env_vars):
-            self.respond_to_cond() # env_vars=env_vars)
-
-    def eval_env(self, env_vars):
-        """
-        Return True if we need to do something.
-        """
-        return env_vars is not None
-
-    def respond_to_cond(self, env_vars=None):
-        """
-        Default is to jump to empty cell.
-        """
-        self.move_to_empty(grid_view=self.my_view)
+        eval_vars = self.eval_env(env_vars)
+        if eval_vars:
+            self.respond_to_cond(eval_vars)
 
     def survey_env(self):
         """
@@ -81,6 +70,18 @@ class GridAgent(sa.SpatialAgent):
         """
         self.my_view = self.get_square_view(self.hood_size)
         return (self.my_view)
+
+    def eval_env(self, env_vars):
+        """
+        Return True if we need to do something.
+        """
+        return env_vars is not None
+
+    def respond_to_cond(self, eval_vars=None):
+        """
+        Default is to jump to empty cell.
+        """
+        self.move_to_empty(grid_view=self.my_view)
 
     def get_square_view(self, distance):
         return self.env.get_square_view(self.pos, distance)

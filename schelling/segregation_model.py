@@ -55,7 +55,7 @@ class SegregationAgent(va.VSAgent):
         else:
             return STAY
 
-    def respond_to_cond(self, env_vars=None):
+    def respond_to_cond(self, eval_vars=None):
         """
         If we don't like the neighborhood, we jump to a random empty cell.
         """

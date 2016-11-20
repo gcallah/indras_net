@@ -20,11 +20,12 @@ if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     utils.get_grid_dims(pa, 50)
     utils.get_agent_num(pa, "num_consumers", "consumers", 25)
-    utils.get_agent_num(pa, "num_mom_and_pops", "mom and pop stores", 15)
-    pa.ask("allowance", "What is the consumers daily allowance?", int, default=5)
-    pa.ask("max_hunger", "How hungry should the consumer be before he consumes?", int, default=5)
-    pa.ask("endowment", "What is the stores initial endowment?", int, default=6)
-    pa.ask("lease_rent", "What is every store's lease rent?", int, default=1)
+    utils.get_agent_num(pa, "num_mom_and_pops", "mom and pop stores", 5)
+    pa.ask("allowance", "What are the consumers' daily allowances?", 
+           int, default=5)
+    pa.ask("endowment", "What are the stores' initial endowments?", 
+           int, default=6)
+    pa.ask("lease_rent", "What are the stores' rents?", int, default=1)
 
 # Now we create a meadow for our agents to act within:
 env = bb.EverytownUSA(pa.get("grid_width"),
@@ -36,8 +37,7 @@ env = bb.EverytownUSA(pa.get("grid_width"),
 for i in range(pa.get("num_consumers")):
     env.add_agent(bb.Consumer("consumer" + str(i), goal="consuming",
                            init_state=0,
-                           allowance=pa.get("allowance"),
-                           max_hunger=pa.get("max_hunger")))
+                           allowance=pa.get("allowance")))
 for i in range(pa.get("num_mom_and_pops")):
     env.add_agent(bb.Mom_And_Pop("mom_and_pop" + str(i), "selling",
                            pa.get("endowment"),
