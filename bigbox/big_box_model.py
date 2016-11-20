@@ -1,6 +1,5 @@
 """
 big_box_model.py
-
 Simulates a small town with consumers.
 
 The consumers may shop at either "Mom and Pop" and chain "Big Box" stores. The
@@ -12,9 +11,6 @@ Initially there are only local stores, but later the big box stores come in and
 change the population dynamic.
 """
 
-import indra.display_methods as disp
-import indra.grid_agent as ga
-import indra.grid_env as genv
 import indra.markov as markov
 import indra.markov_agent as ma
 import indra.markov_env as menv
@@ -22,10 +18,9 @@ import indra.markov_env as menv
 X = 0
 Y = 1
 
-NSTATES = 2
-
 MP = 0
 BB = 1
+NUM_STATES = 2
 
 # types of goods sold
 HARDWARE = 0
@@ -33,51 +28,68 @@ HAIRCUT = 1
 GROCERIES = 2
 BOOKS = 3
 COFFEE = 4
+NUM_GOODS = 5
 
-class Consumer(ma.MarkovAgent):
+GOODS_MAP = {0: "Hardware", 1: "Haircut", 2: "Groceries",
+             3: "Books", 4: "Coffee"}
+
+class MarketParticipant(ma.MarkovAgent):
+
+    def __init__(self, name, goal, init_state=0):
+        super().__init__(name, goal, NUM_STATES, init_state)
+
+    def sells(self, good):
+        """
+        Does this participant sell this good?
+        """
+        return False
+
+
+class Consumer(MarketParticipant):
     """
     Everyday consumer of EverytownUSA. He has a preference for the cosy
-    Mom_And_Pop stores, but will buy occasionally from Big_Box.
+    small shops stores, but will buy occasionally from big boxes.
 
     Attributes:
-        ntype: node type in graph
-        state: Does agent want to buy from Big_Box or Mom_And_Pop?
+        state: Does agent want to buy from big boxes or small shops?
         allowance: The amount the agent will buy from a store.
     """
 
     def __init__(self, name, goal, init_state, allowance):
-        super().__init__(name, goal, NSTATES, init_state)
+        super().__init__(name, goal, init_state)
         self.state = init_state
         self.allowance = allowance
-        self.preference = Mom_And_Pop
-
+        self.preference = MomAndPop
+        self.max_dist = None
 
     def survey_env(self):
         """
             Args: self
-
             Returns: stores
         """
-        view = self.env.get_square_view(self.pos,
-                                        max(self.env.height, self.env.width))
+        if not self.max_dist:
+            self.max_dist = self.env.get_max_dist()
+        view = self.env.get_square_view(self.pos, self.max_dist)
         return self.neighbor_iter(view=view,
                                   filt_func=lambda x:
-                                  type(x) is self.preference)
+                                  x.sells(self.goal))
 
     def eval_env(self, stores):
         """
             Args:
                 stores: a list of stores
-            Returns: the closest store.
+            Returns: the closest store of prefered type.
         """
+        other_pre = self.env.get_pre(self)
+        super().eval_env(other_pre)
+
         close_store = None
-        max_dist = self.env.get_max_dist()
+        stores = filter(lambda x: type(x) is self.preference, stores)
         for store in stores:
             dist = self.env.dist(self, store)
-            if(dist < max_dist):
+            if(dist < self.max_dist):
                 close_store = store
                 max_dist = dist
-
         return close_store
 
     def respond_to_cond(self, store):
@@ -86,6 +98,9 @@ class Consumer(ma.MarkovAgent):
                 close_store: the store to which we should move.
             Returns: None
         """
+        # if we need to test that consumers are moving between stores,
+        # uncomment the following line:
+        # print(self.name + " heading to " + store.name)
         self.move(store)
         store.buy_from(self.allowance)
 
@@ -98,7 +113,16 @@ class Consumer(ma.MarkovAgent):
             self.env.move(self, open_spot[X], open_spot[Y])
 
 
-class Retailer(ga.GridAgent):
+    def postact(self):
+        self.state = self.next_state
+        if(self.state == 0):
+            self.preference = MomAndPop 
+        else:
+            self.preference = BigBox
+        self.goal = (self.goal + 1) % NUM_GOODS
+
+
+class Retailer(MarketParticipant):
     """
     Attributes:
         funds: If less than zero, the business disappears.
@@ -114,6 +138,7 @@ class Retailer(ga.GridAgent):
         """
         Loses money. If it goes bankrupt, the business goes away.
         """
+        print(self.funds)
         self.pay_bills(self.rent)
         if(self.funds <= 0):
             self.declare_bankruptcy()
@@ -122,8 +147,6 @@ class Retailer(ga.GridAgent):
         """
         Args:
             amt: amount to buy
-        Returns:
-
         """
         self.funds += amt
 
@@ -140,7 +163,7 @@ class Retailer(ga.GridAgent):
         self.funds -= amt
 
 
-class Mom_And_Pop(Retailer):
+class MomAndPop(Retailer):
     """
     A small mom and pop store. It has a much smaller initial endowment than the
     Big Box store.
@@ -150,18 +173,38 @@ class Mom_And_Pop(Retailer):
 
     def __init__(self, name, goal, endowment, rent):
         super().__init__(name, goal, endowment, rent)
+        self.ntype = GOODS_MAP[goal]
+
+    def sells(self, good):
+        """
+        Does this retailer sell this good?
+        """
+        return self.goal == good
+
+
+class BigBox(Retailer):
+    """
+    """
+    def __init__(self, name, goal, endowment, rent):
+        super().__init__(name, goal, endowment, rent)
+
+    def sells(self, good):
+        """
+        Does this retailer sell this good?
+        The big box retailer sells everything!
+        """
+        return True
 
 
 class EverytownUSA(menv.MarkovEnv):
     """
     Just your typical city: filled with businesses and consumers.
-
     The city management will remove businesses that cannot pay rent!
     """
 
     def __init__(self, width, height, torus=False,
                 model_nm="Big Box Model"):
-        super().__init__(width=width, height=height, torus=torus, name=model_nm)
+        super().__init__(width=width, height=height, torus=torus, name=model_nm, postact=True)
 
 
     def foreclose(self, business):
@@ -169,3 +212,11 @@ class EverytownUSA(menv.MarkovEnv):
         Removes business from town.
         """
         self.remove_agent(business)
+
+    def get_pre(self, agent):
+        """
+        Returns a vector prehension describing
+        the chance an agent will prefer to go to
+        a mom and pop or big box store.
+        """
+        return markov.MarkovPre("0.7 0.3; 0.7 0.3")

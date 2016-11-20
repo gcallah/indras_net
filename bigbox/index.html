@@ -19,22 +19,26 @@
         </h1>
 
         <h2>
-            Theoretical Considerations
+            Introduction
         </h2>
             <p>
-                Conventional wisdom from committed “free market”
+                Conventional wisdom from committed "free market"
                 economists would have it that moves to ban
-                “big box” retailers such as Walmart from certain localities
+                "big box" retailers such as Walmart from certain localities
                 are rebellions against consumer sovereignty and must hurt consumer
                 welfare. After all, if consumers did not want to shop at the big box
                 retailer, they would simply not do so, correct? The fact that they
-                switch their shopping to the big box and away from “mom-and-pop” stores
+                switch their shopping to the big box and away from "mom-and-pop" stores
                 shows they prefer the big box.
             </p>
+
+        <h2>
+            Theoretical Considerations
+        </h2>
             <p>
-                This paper attempts to show that such analysis is simplistic. We present
-                a model in which all consumers have the following preference ordering in
-                some retail sector:
+                This paper attempts to show that the above analysis is simplistic.
+                We present a model in which all consumers have the following 
+                preference ordering in some retail sector:
             </p>
             <ol>
                 <li>Have both local shops and a big box store.
@@ -82,7 +86,7 @@
                 competitors and then jack up the prices to achieve high profits
                 has an obvious problem: once the prices charge by the big box
                 stores have been raised, why don't the small competitors simply
-                reenter the market?
+                reenter the market? (See, for instance, DiLorenzo, 1992.)
                 <br>
                 <br>
                 Our model avoids this pitfall: the big box stores do not need
@@ -99,32 +103,105 @@
         </h2>
             <p>
                 We create a model populated by three types of agents:
-                consumers (C), mom-and-pops (M), and big-boxers (B).
-                At first "space" is occupied by only M and C. each supply
+                consumers (C), mom-and-pops (M), and big-boxes (B).
+                The mom-and-pops are further divided by each supplying a
+                specific type of good, such as hardware or groceries, while the
+                big-boxes provide every sort of good.
+                At first "space" is occupied by only M and C. Each supply
                 something the other needs to continue in existence: the
                 consumers supply money to the mom-and-pop stores, who supply
                 goods to the consumers. Ms receive a periodic endowment of
-                goods "from heaven," while Cs have the same thing happen in
-                regards to money. When Cs supply of goods runs low, they move
-                to Ms to replenish it. If Ms run out of money, they disappear.
+                goods "from heaven" (which is a parameter),
+                while Cs have the same thing happen in
+                regards to money. Cs shop in turn at each stores selling each
+                type of good they need. If Ms run out of money, they disappear.
             </p>
 
             <p>
                 At some point in the progress of the model, the Bs appear. They
                 have a much larger initial endowment of money then do the Ms.
-                The Cs like both equally well, and split their acquisition of
-                goods between the two types of agents. This causes the money
+                The Cs like both (how much they like each is again a parameter),
+                and split their acquisition of goods (according to that
+                parameter) between the two types of agents. This split causes the money
                 supply of both types of agents to dwindle. But as the Bs have
                 much more money to start, they are able to survive this period
-                of coexistence, while all of the Ms disappear. We are left with
+                of coexistence, while the Ms gradually disappear. We are left with
                 an environment of only Bs and Cs, which the Cs did <em>not</em>
                 want. Thus, under very simple but not outrageous conditions,
                 our model shows our story above as plausible: it has what Weber
                 would call "explanatory adequacy." Empirical work
                 would be necessary to decide whether it has Weberian "causal
-                adequacy."
+                adequacy." (See Callahan and Horwitz, 2010.)
             </p>
 
+        <h2>
+            Model Implmentation
+        </h2>
+            
+            <h3>
+                The Indra System
+            </h3>
+                <p>
+                    A fairly brief description. 
+                    Include description of matrix capabilities.
+                </p>
+
+            <h3>
+                Implementing the Big Box Model in Indra
+            </h3>
+                <p>
+                    Here is how a consumer "looks around" for where to shop
+                    next: 
+                </p>
+                <pre>
+                <code>
+                def eval_env(self, stores):
+                    """
+                        Args:
+                            stores: a list of stores
+                        Returns: the closest store of prefered type.
+                    """
+                    
+                    other_pre = self.env.get_pre(self)
+                    super().eval_env(other_pre)
+                    self.state = self. next_state
+                    if(self.state == 0):
+                        self.preference = MomAndPop 
+                    else:
+                        self.preference = BigBox
+            
+                    close_store = None
+                    max_dist = self.env.get_max_dist()
+                    
+                    for store in stores:
+                        dist = self.env.dist(self, store)
+                        if(dist < max_dist):
+                            close_store = store
+                            max_dist = dist
+                            
+                    return close_store
+                        
+                </code>
+                </pre>
+
+
+        <h2>
+            Bibliography
+        </h2>
+
+            <ul>
+                <li>Callahan, Gene and Steven Horwitz.
+                    "The Role of Ideal Types in Austrian Business Cycle Theory."
+                    In <em>What Is so Austrian about Austrian Economics?</em>,
+                    14:205-24. Advances in Austrian
+                    Economics 14. Emerald Group Publishing Limited, 2010.
+                    http://www.emeraldinsight.com/doi/abs/10.1108/S1529-2134%282010%290000014013.
+                <li>DiLoernzo, Thomas. "The Myth of Predatory Pricing."
+                    Cato.org, 1992. https://www.cato.org/pubs/pas/pa-169.html.
+                <li>Slee, Tom.
+                    <em>No One Makes You Shop At Walmart.</em>
+                    Between the Lines, 2006.
+            </ul>
 
     </body>
 </html>
