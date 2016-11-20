@@ -46,7 +46,7 @@ class Consumer(ma.MarkovAgent):
         super().__init__(name, goal, NUM_STATES, init_state)
         self.state = init_state
         self.allowance = allowance
-        self.preference = MomAndPop        
+        self.preference = MomAndPop
 
     def survey_env(self):
         """
@@ -57,7 +57,8 @@ class Consumer(ma.MarkovAgent):
                                         max(self.env.height, self.env.width))
         return self.neighbor_iter(view=view,
                                   filt_func=lambda x:
-                                  type(x) is self.preference
+                                  (type(x) is MomAndPop
+                                  or type(x) is BigBox)
                                   and x.sells(self.goal))
 
     def eval_env(self, stores):
@@ -71,6 +72,7 @@ class Consumer(ma.MarkovAgent):
 
         close_store = None
         max_dist = self.env.get_max_dist()
+        stores = filter(lambda x: type(x) is self.preference, stores)
         for store in stores:
             dist = self.env.dist(self, store)
             if(dist < max_dist):
@@ -99,8 +101,8 @@ class Consumer(ma.MarkovAgent):
         if(open_spot is not None):
             self.env.move(self, open_spot[X], open_spot[Y])
 
-    def postact():
-        self.state = self. next_state
+    def postact(self):
+        self.state = self.next_state
         if(self.state == 0):
             self.preference = MomAndPop 
         else:
@@ -195,7 +197,7 @@ class EverytownUSA(menv.MarkovEnv):
 
     def __init__(self, width, height, torus=False,
                 model_nm="Big Box Model"):
-        super().__init__(width=width, height=height, torus=torus, name=model_nm)
+        super().__init__(width=width, height=height, torus=torus, name=model_nm, postact=True)
 
 
     def foreclose(self, business):
