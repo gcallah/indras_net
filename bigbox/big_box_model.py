@@ -1,13 +1,10 @@
 """
 big_box_model.py
-
 Simulates a small town with consumers.
-
 The consumers may shop at either "Mom and Pop" and chain "Big Box" stores. The
 town's consumers prefer the local stores, but will shot at the 
 big box retailer when convenient. The major difference between Mom and 
 Pops and Big Boxes is the larger endowment Big Boxes have initially.
-
 Initially there are only local stores, but later the big box stores come in and 
 change the population dynamic.
 """
@@ -40,7 +37,6 @@ class Consumer(ma.MarkovAgent):
     """
     Everyday consumer of EverytownUSA. He has a preference for the cosy
     small shops stores, but will buy occasionally from big boxes.
-
     Attributes:
         state: Does agent want to buy from big boxes or small shops?
         allowance: The amount the agent will buy from a store.
@@ -50,16 +46,11 @@ class Consumer(ma.MarkovAgent):
         super().__init__(name, goal, NUM_STATES, init_state)
         self.state = init_state
         self.allowance = allowance
-        self.preference = MomAndPop
-
-    def act(self):
-        super().act()
-        self.goal = (self.goal + 1) % NUM_GOODS
+        self.preference = MomAndPop        
 
     def survey_env(self):
         """
             Args: self
-
             Returns: stores
         """
         view = self.env.get_square_view(self.pos,
@@ -77,11 +68,6 @@ class Consumer(ma.MarkovAgent):
         """
         other_pre = self.env.get_pre(self)
         super().eval_env(other_pre)
-        self.state = self. next_state
-        if(self.state == 0):
-            self.preference = MomAndPop 
-        else:
-            self.preference = BigBox
 
         close_store = None
         max_dist = self.env.get_max_dist()
@@ -112,6 +98,13 @@ class Consumer(ma.MarkovAgent):
         open_spot = self.env.free_spot_near(store)
         if(open_spot is not None):
             self.env.move(self, open_spot[X], open_spot[Y])
+
+    def postact():
+        self.state = self. next_state
+        if(self.state == 0):
+            self.preference = MomAndPop 
+        else:
+            self.preference = BigBox
 
 
 class Retailer(ga.GridAgent):
@@ -165,7 +158,6 @@ class MomAndPop(Retailer):
     """
     A small mom and pop store. It has a much smaller initial endowment than the
     Big Box store.
-
     Attributes:
     """
 
@@ -197,7 +189,6 @@ class BigBox(Retailer):
 class EverytownUSA(menv.MarkovEnv):
     """
     Just your typical city: filled with businesses and consumers.
-
     The city management will remove businesses that cannot pay rent!
     """
 
