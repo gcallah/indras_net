@@ -134,9 +134,60 @@
                 adequacy." (See Callahan and Horwitz, 2010.)
             </p>
 
-            <h2>
-                Bibliography
-            </h2>
+        <h2>
+            Model Implmentation
+        </h2>
+            
+            <h3>
+                The Indra System
+            </h3>
+                <p>
+                    A fairly brief description. 
+                    Include description of matrix capabilities.
+                </p>
+
+            <h3>
+                Implementing the Big Box Model in Indra
+            </h3>
+                <p>
+                    Here is how a consumer "looks around" for where to shop
+                    next: 
+                </p>
+                <pre>
+                <code>
+                def eval_env(self, stores):
+                    """
+                        Args:
+                            stores: a list of stores
+                        Returns: the closest store of prefered type.
+                    """
+                    
+                    other_pre = self.env.get_pre(self)
+                    super().eval_env(other_pre)
+                    self.state = self. next_state
+                    if(self.state == 0):
+                        self.preference = MomAndPop 
+                    else:
+                        self.preference = BigBox
+            
+                    close_store = None
+                    max_dist = self.env.get_max_dist()
+                    
+                    for store in stores:
+                        dist = self.env.dist(self, store)
+                        if(dist < max_dist):
+                            close_store = store
+                            max_dist = dist
+                            
+                    return close_store
+                        
+                </code>
+                </pre>
+
+
+        <h2>
+            Bibliography
+        </h2>
 
             <ul>
                 <li>Callahan, Gene and Steven Horwitz.
