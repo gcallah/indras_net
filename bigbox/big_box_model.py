@@ -9,9 +9,6 @@ Initially there are only local stores, but later the big box stores come in and
 change the population dynamic.
 """
 
-import indra.display_methods as disp
-import indra.grid_agent as ga
-import indra.grid_env as genv
 import indra.markov as markov
 import indra.markov_agent as ma
 import indra.markov_env as menv
@@ -33,7 +30,19 @@ NUM_GOODS = 5
 
 GOODS_MAP = {0: "Hardware", 1: "Haircut", 2: "Groceries", 3: "Books", 4: "Coffee"}
 
-class Consumer(ma.MarkovAgent):
+class MarketParticipant(ma.MarkovAgent):
+
+    def __init__(self, name, goal, init_state=0):
+        super().__init__(name, goal, NUM_STATES, init_state)
+
+    def sells(self, good):
+        """
+        Does this participant sell this good?
+        """
+        return False
+
+
+class Consumer(MarketParticipant):
     """
     Everyday consumer of EverytownUSA. He has a preference for the cosy
     small shops stores, but will buy occasionally from big boxes.
@@ -43,23 +52,23 @@ class Consumer(ma.MarkovAgent):
     """
 
     def __init__(self, name, goal, init_state, allowance):
-        super().__init__(name, goal, NUM_STATES, init_state)
+        super().__init__(name, goal, init_state)
         self.state = init_state
         self.allowance = allowance
         self.preference = MomAndPop
+        self.max_dist = None
 
     def survey_env(self):
         """
             Args: self
             Returns: stores
         """
-        view = self.env.get_square_view(self.pos,
-                                        max(self.env.height, self.env.width))
+        if not self.max_dist:
+            self.max_dist = self.env.get_max_dist()
+        view = self.env.get_square_view(self.pos, self.max_dist)
         return self.neighbor_iter(view=view,
                                   filt_func=lambda x:
-                                  (type(x) is MomAndPop
-                                  or type(x) is BigBox)
-                                  and x.sells(self.goal))
+                                  x.sells(self.goal))
 
     def eval_env(self, stores):
         """
@@ -71,14 +80,12 @@ class Consumer(ma.MarkovAgent):
         super().eval_env(other_pre)
 
         close_store = None
-        max_dist = self.env.get_max_dist()
         stores = filter(lambda x: type(x) is self.preference, stores)
         for store in stores:
             dist = self.env.dist(self, store)
-            if(dist < max_dist):
+            if(dist < self.max_dist):
                 close_store = store
                 max_dist = dist
-
         return close_store
 
     def respond_to_cond(self, store):
@@ -110,7 +117,7 @@ class Consumer(ma.MarkovAgent):
         self.goal = (self.goal + 1) % NUM_GOODS
 
 
-class Retailer(ga.GridAgent):
+class Retailer(MarketParticipant):
     """
     Attributes:
         funds: If less than zero, the business disappears.
@@ -149,12 +156,6 @@ class Retailer(ga.GridAgent):
         Lose funds.
         """
         self.funds -= amt
-
-    def sells(self, good):
-        """
-        Does this retailer sell this good?
-        """
-        return False
 
 
 class MomAndPop(Retailer):
