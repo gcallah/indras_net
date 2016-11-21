@@ -11,6 +11,7 @@ Initially there are only local stores, but later the big box stores come in and
 change the population dynamic.
 """
 
+import random
 import indra.markov as markov
 import indra.markov_agent as ma
 import indra.markov_env as menv
@@ -81,19 +82,19 @@ class Consumer(MarketParticipant):
             Returns: a store of the preferred type
         """
         state_pre = self.env.get_pre(self)
-        state_vec = markov.probvec_to_state(state_pre.matrix)
-        state = markov.get_state(state_vec)
-        self.assess_preference(state)
         for store in stores:
-            if(type(store) is self.preference):
-                return store
+            last_store = store
+            if(type(store) == MomAndPop):
+                if(random.random() <= 0.7):
+                    return store
+            elif(type(store) == BigBox):
+                if(random.random() <= 0.3):
+                    print(store)
+                    return store
 
-    def assess_preference(self, state):
-        if(state == 0):
-            self.preference = MomAndPop
-        else:
-            self.preference = BigBox
-
+        print(last_store)
+        return last_store
+                
     def respond_to_cond(self, store):
         """
             Args:
@@ -113,7 +114,6 @@ class Consumer(MarketParticipant):
         open_spot = self.env.free_spot_near(store)
         if(open_spot is not None):
             self.env.move(self, open_spot[X], open_spot[Y])
-
 
     def postact(self):
         self.goal = (self.goal + 1) % NUM_GOODS
