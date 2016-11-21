@@ -27,7 +27,7 @@ if pa is None:
     pa.ask("endowment", "What are the small shops' initial endowments?", 
            int, default=20)
     # We should ask this for big boxes as well!
-    pa.ask("rent", "What are the stores' rents?", int, default=7)
+    pa.ask("rent", "What are the stores' rents?", int, default=10)
     # We should ask this for big boxes as well!
 
 # Now we create a meadow for our agents to act within:
@@ -50,6 +50,6 @@ for i in range(pa.get("num_mom_and_pops")):
 
 env.add_agent(bb.BigBox("Big Box", goal="Dominance",
                         endowment=(pa.get("endowment") * 1000),
-                        rent=(pa.get("rent") * 2)))
+                        rent=(pa.get("rent"))))
 
 utils.run_model(env, prog_file, results_file)
