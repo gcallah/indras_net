@@ -84,15 +84,13 @@ class Consumer(MarketParticipant):
         state_pre = self.env.get_pre(self)
         for store in stores:
             last_store = store
-            if(type(store) == MomAndPop):
-                if(random.random() <= 0.7):
+            if(type(store) is MomAndPop):
+                if(random.random() < state_pre.matrix.item(0)):
                     return store
-            elif(type(store) == BigBox):
-                if(random.random() <= 0.3):
-                    print(store)
+            elif(type(store) is BigBox):
+                if(random.random() < state_pre.matrix.item(1)):
                     return store
 
-        print(last_store)
         return last_store
                 
     def respond_to_cond(self, store):
