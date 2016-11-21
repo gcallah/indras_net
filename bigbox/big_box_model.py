@@ -77,20 +77,22 @@ class Consumer(MarketParticipant):
     def eval_env(self, stores):
         """
             Args:
-                stores: a list of stores
-            Returns: the closest store of prefered type.
+                stores: a list of stores selling the agent's desired good
+            Returns: a store of the preferred type
         """
-        other_pre = self.env.get_pre(self)
-        super().eval_env(other_pre)
-
-        close_store = None
-        stores = filter(lambda x: type(x) is self.preference, stores)
+        state_pre = self.env.get_pre(self)
+        state_vec = markov.probvec_to_state(state_pre.matrix)
+        state = markov.get_state(state_vec)
+        self.assess_preference(state)
         for store in stores:
-            dist = self.env.dist(self, store)
-            if(dist < self.max_dist):
-                close_store = store
-                max_dist = dist
-        return close_store
+            if(type(store) is self.preference):
+                return store
+
+    def assess_preference(self, state):
+        if(state == 0):
+            self.preference = MomAndPop
+        else:
+            self.preference = BigBox
 
     def respond_to_cond(self, store):
         """
@@ -114,11 +116,6 @@ class Consumer(MarketParticipant):
 
 
     def postact(self):
-        self.state = self.next_state
-        if(self.state == 0):
-            self.preference = MomAndPop 
-        else:
-            self.preference = BigBox
         self.goal = (self.goal + 1) % NUM_GOODS
 
 
@@ -219,4 +216,4 @@ class EverytownUSA(menv.MarkovEnv):
         the chance an agent will prefer to go to
         a mom and pop or big box store.
         """
-        return markov.MarkovPre("0.7 0.3; 0.7 0.3")
+        return markov.MarkovPre("0.7 0.3")
