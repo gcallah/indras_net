@@ -83,11 +83,11 @@ class Consumer(MarketParticipant):
         """
         state_pre = self.env.get_pre(self)
         for store in stores:
-            last_store = store
             if(type(store) is MomAndPop):
                 if(random.random() < state_pre.matrix.item(0)):
                     return store
             elif(type(store) is BigBox):
+                last_store = store  # We want to remember the last big box we see as last resort.
                 if(random.random() < state_pre.matrix.item(1)):
                     return store
 
