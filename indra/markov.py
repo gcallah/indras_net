@@ -66,6 +66,8 @@ def get_state(sv):
         i += 1
     return None
 
+
+
 def from_matrix(m):
     """
     Takes an numpy matrix and returns a prehension.
@@ -74,14 +76,10 @@ def from_matrix(m):
     pre.matrix = m
     return pre
 
+
 def to_matrix(pre):
     return pre.matrix
 
-def normalize(v):
-    norm=np.linalg.norm(v)
-    if norm==0:
-        return v
-    return v/norm
 
 class MarkovPre(pre.Prehension):
     """

@@ -29,6 +29,15 @@ def from_vector(v):
     return vspace
 
 
+def normalize(v):
+    print("Normalizing!")
+    norm = np.linalg.norm(v)
+    if norm == 0:
+        return v
+    else:
+        return v / norm
+
+
 class VectorSpace(pre.Prehension):
     """
     We need to put definition of a vector space here.
@@ -106,8 +115,8 @@ class VectorSpace(pre.Prehension):
         """
         if self.equals(VectorSpace.NULL_PRE):
             return VectorSpace.NULL_PRE
-
-        return from_vector(self.vector / np.linalg.norm(self.vector))
+        else:
+            return from_vector(normalize(self.vector))
 
 
 # Now we actually initialize the prehensions we declared above.
