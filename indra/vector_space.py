@@ -30,7 +30,6 @@ def from_vector(v):
 
 
 def normalize(v):
-    print("Normalizing!")
     norm = np.linalg.norm(v)
     if norm == 0:
         return v
