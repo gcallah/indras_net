@@ -56,7 +56,7 @@ def probvec_to_state(pv):
 def get_state(sv):
     """
     This method takes a state vector, sv.
-    It then return the index of the element that is "on,"
+    It then returns the index of the element that is "on,"
     or None if none are.
     """
     i = 0
