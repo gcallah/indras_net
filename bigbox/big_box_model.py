@@ -12,6 +12,9 @@ change the population dynamic.
 """
 
 import random
+import collections
+import numpy as np
+import indra.vector_space as vs
 import indra.markov as markov
 import indra.markov_agent as ma
 import indra.markov_env as menv
@@ -61,37 +64,44 @@ class Consumer(MarketParticipant):
         self.state = init_state
         self.allowance = allowance
         self.preference = MomAndPop
-        self.max_dist = None
+            # Test ... to un-hardcode later
+        self.max_dist = 100
 
     def survey_env(self):
         """
             Args: self
-            Returns: stores
+            Returns: 
+                store_count - a Counter object that records the number of agents
+                in the agent's purview. A Counter not only records the number of
+                stores of a given type, it also records the instances of the stores.
+                Both these aspects make it superior to a set for our purposes.
         """
-        if not self.max_dist:
-            self.max_dist = self.env.get_max_dist()
         view = self.env.get_square_view(self.pos, self.max_dist)
-        return self.neighbor_iter(view=view,
+            # Update n_census to use counters?
+        n_census = collections.Counter({MomAndPop:0, BigBox:0})
+        n_census.update(self.neighbor_iter(view=view,
                                   filt_func=lambda x:
-                                  x.sells(self.goal))
+                                  x.sells(self.goal)))
+        return n_census
 
-    def eval_env(self, stores):
+    def eval_env(self, n_census):
         """
             Args:
                 stores: a list of stores selling the agent's desired good
             Returns: a store of the preferred type
         """
-        state_pre = self.env.get_pre(self)
-        for store in stores:
-            if(type(store) is MomAndPop):
-                if(random.random() < state_pre.matrix.item(0)):
-                    return store
-            elif(type(store) is BigBox):
-                last_store = store  # We want to remember the last big box we see as last resort.
-                if(random.random() < state_pre.matrix.item(1)):
-                    return store
+        self.state_pre = self.env.get_pre(n_census, n_census)
+        self.state_vec = markov.probvec_to_state(self.state_pre.matrix)
+        self.state = markov.get_state(self.state_vec)
+        
+        if(self.state == 0):
+            self.preference = MomAndPop
+        if(self.state == 1):
+            self.preference = BigBox
 
-        return last_store
+        for store in n_census:
+            if type(store) is self.preference:
+                return store
                 
     def respond_to_cond(self, store):
         """
@@ -208,10 +218,32 @@ class EverytownUSA(menv.MarkovEnv):
         """
         self.remove_agent(business)
 
-    def get_pre(self, agent):
+    def get_pre(self, agent, n_census):
         """
         Returns a vector prehension describing
         the chance an agent will prefer to go to
-        a mom and pop or big box store.
+        type of vendor in his neighborhood.
         """
-        return markov.MarkovPre("0.7 0.3")
+        
+        trans_str = ""
+
+        if(self.there_is(n_census, MomAndPop)):
+                # Test ... to un-hardcode later
+            trans_str += "0.7 " 
+        else:
+            trans_str += "0.0 "
+
+        if(self.there_is(n_census, BigBox)):
+            trans_str += "0.3"
+        else:
+            trans_str += "0.0"
+
+        state_pre = markov.from_matrix(np.matrix(trans_str))
+        state_pre.matrix = vs.normalize(state_pre.matrix)
+        return state_pre
+
+    def there_is(self, n_census, vendor_type):
+        for store in n_census:
+            if type(store) is vendor_type:
+                return True
+        return False
