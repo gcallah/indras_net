@@ -13,6 +13,7 @@ change the population dynamic.
 
 import random
 import collections
+import math
 import numpy as np
 import indra.vector_space as vs
 import indra.markov as markov
@@ -55,8 +56,9 @@ class Consumer(MarketParticipant):
     small shops stores, but will buy occasionally from big boxes.
 
     Attributes:
-        state: Does agent want to buy from big boxes or small shops?
+        state: the number describing the agent's preference for a type of marketparticipant 
         allowance: The amount the agent will buy from a store.
+        preference: The marketparticipant the agent will buy from
     """
 
     def __init__(self, name, goal, init_state, allowance):
@@ -64,22 +66,20 @@ class Consumer(MarketParticipant):
         self.state = init_state
         self.allowance = allowance
         self.preference = MomAndPop
-            # Test ... to un-hardcode later
-        self.max_dist = 100
+            # max_dist agent can look for marketparticipants currently the entire env.
+        
 
     def survey_env(self):
         """
             Args: self
             Returns: 
-                store_count - a Counter object that records the number of agents
-                in the agent's purview. A Counter not only records the number of
-                stores of a given type, it also records the instances of the stores.
-                Both these aspects make it superior to a set for our purposes.
+                store_count - a list of all the marketparticipants in agent's travel distance
+                    that sell the good he wants.
         """
-        view = self.env.get_square_view(self.pos, self.max_dist)
-            # Update n_census to use counters?
-        n_census = collections.Counter({MomAndPop:0, BigBox:0})
-        n_census.update(self.neighbor_iter(view=view,
+        view = self.env.get_square_view(center=self.pos,
+                                        distance=math.sqrt(self.env.width**2 + self.env.height**2))
+        n_census = []
+        n_census.extend(self.neighbor_iter(view=view,
                                   filt_func=lambda x:
                                   x.sells(self.goal)))
         return n_census
@@ -87,10 +87,11 @@ class Consumer(MarketParticipant):
     def eval_env(self, n_census):
         """
             Args:
-                stores: a list of stores selling the agent's desired good
+                self: the agent himself
+                n_census: a list of stores selling the agent's desired good
             Returns: a store of the preferred type
         """
-        self.state_pre = self.env.get_pre(n_census, n_census)
+        self.state_pre = self.env.get_pre(self, n_census)
         self.state_vec = markov.probvec_to_state(self.state_pre.matrix)
         self.state = markov.get_state(self.state_vec)
         
@@ -106,7 +107,7 @@ class Consumer(MarketParticipant):
     def respond_to_cond(self, store):
         """
             Args:
-                close_store: the store to which we should move.
+                store: the store to which we should move and buy from
             Returns: None
         """
         # if we need to test that consumers are moving between stores,
@@ -118,12 +119,17 @@ class Consumer(MarketParticipant):
     def move(self, store):
         """
         Moves as close as possible to the store.
+            Arg:
+                store: marketparticipant to which we move
         """
         open_spot = self.env.free_spot_near(store)
         if(open_spot is not None):
             self.env.move(self, open_spot[X], open_spot[Y])
 
     def postact(self):
+        """
+        We cycle through the good the agent wants each turn.
+        """
         self.goal = (self.goal + 1) % NUM_GOODS
 
 
@@ -220,9 +226,13 @@ class EverytownUSA(menv.MarkovEnv):
 
     def get_pre(self, agent, n_census):
         """
-        Returns a vector prehension describing
-        the chance an agent will prefer to go to
-        type of vendor in his neighborhood.
+        Args:
+            self: the env 
+            agent: the agent who is considering where to go 
+            n_census: a list of stores to which the agent may go
+        Returns:
+            a state vector prehension giving the probablility the
+            agent will go to a kind of marketparticipant
         """
         
         trans_str = ""
@@ -243,6 +253,13 @@ class EverytownUSA(menv.MarkovEnv):
         return state_pre
 
     def there_is(self, n_census, vendor_type):
+        """
+        Is there this type of store in the area?
+        Args:
+            n_census: the complete list of stores
+            vendor_type: the type of marketparticipant 
+            we are looking to see is in the area
+        """
         for store in n_census:
             if type(store) is vendor_type:
                 return True
