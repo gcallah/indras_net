@@ -39,6 +39,10 @@ GOODS_MAP = {0: "Hardware", 1: "Haircut", 2: "Groceries",
              3: "Books", 4: "Coffee"}
 
 class MarketParticipant(ma.MarkovAgent):
+    """
+    All agents in the small town participate in the economy. Only some
+    sell goods of any type.
+    """
 
     def __init__(self, name, goal, init_state=0):
         super().__init__(name, goal, NUM_STATES, init_state)
@@ -65,16 +69,16 @@ class Consumer(MarketParticipant):
         super().__init__(name, goal, init_state)
         self.state = init_state
         self.allowance = allowance
-        self.preference = MomAndPop
-            # max_dist agent can look for marketparticipants currently the entire env.
-        
+        self.preference = MomAndPop        
 
     def survey_env(self):
         """
-            Args: self
-            Returns: 
-                store_count - a list of all the marketparticipants in agent's travel distance
-                    that sell the good he wants.
+        We survey the whole environment to see what stores sell the good we want.
+
+        Args: self
+        Returns: 
+            store_count: a list of all the marketparticipants in agent's travel distance
+                that sell the good he wants.
         """
         view = self.env.get_square_view(center=self.pos,
                                         distance=math.sqrt(self.env.width**2 + self.env.height**2))
@@ -176,10 +180,11 @@ class Retailer(MarketParticipant):
 
 class MomAndPop(Retailer):
     """
-    A small mom and pop store. It has a much smaller initial endowment than the
-    Big Box store.
+    A small mom and pop store. It sells only one kind of good.
 
     Attributes:
+        ntype: what it sells is its kind of store (e.g. if it sells groceries it is
+            called "groceries")
     """
 
     def __init__(self, name, goal, endowment, rent):
@@ -195,7 +200,9 @@ class MomAndPop(Retailer):
 
 class BigBox(Retailer):
     """
+    A BigBox store. It sells all goods.
     """
+    
     def __init__(self, name, goal, endowment, rent):
         super().__init__(name, goal, endowment, rent)
 
