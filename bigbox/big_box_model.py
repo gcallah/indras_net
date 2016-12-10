@@ -221,9 +221,15 @@ class EverytownUSA(menv.MarkovEnv):
     """
 
     def __init__(self, width, height, torus=False,
-                model_nm="Big Box Model"):
-        super().__init__(width=width, height=height, torus=torus, name=model_nm, postact=True)
+                 model_nm="Big Box Model"):
+        super().__init__(width=width, height=height, torus=torus,
+                         name=model_nm, postact=True)
 
+    def postact_loop():
+        """
+        """
+        super().postact_loop()
+        # add big box store if right time.
 
     def foreclose(self, business):
         """
@@ -241,7 +247,6 @@ class EverytownUSA(menv.MarkovEnv):
             a state vector prehension giving the probablility the
             agent will go to a kind of marketparticipant
         """
-        
         trans_str = ""
 
         if(self.there_is(n_census, MomAndPop)):
