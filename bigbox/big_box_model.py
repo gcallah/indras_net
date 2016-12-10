@@ -230,6 +230,8 @@ class EverytownUSA(menv.MarkovEnv):
         """
         super().postact_loop()
         # add big box store if right time.
+        if self.period > 20:   # must be parameter!
+            pass
 
     def foreclose(self, business):
         """
