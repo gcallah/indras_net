@@ -225,7 +225,7 @@ class EverytownUSA(menv.MarkovEnv):
         super().__init__(width=width, height=height, torus=torus,
                          name=model_nm, postact=True)
 
-    def postact_loop():
+    def postact_loop(self):
         """
         """
         super().postact_loop()
