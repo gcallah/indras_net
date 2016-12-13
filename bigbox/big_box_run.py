@@ -9,7 +9,7 @@ import indra.prop_args as props
 import big_box_model as bb
 
 # set up some file names:
-MODEL_NM = "big_box_model"
+MODEL_NM = "Big Box Model"
 (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
 
 # We store basic parameters in a "property" file; this allows us to save
@@ -28,6 +28,7 @@ if pa is None:
            int, default=20)
     # We should ask this for big boxes as well!
     pa.ask("rent", "What are the stores' rents?", int, default=10)
+    pa.ask("bb_start_period", "On what period should Big Boxes Appear?", int, default=20)
     # We should ask this for big boxes as well!
 
 # Now we create a meadow for our agents to act within:
@@ -47,9 +48,5 @@ for i in range(pa.get("num_mom_and_pops")):
                                  goal=(i % bb.NUM_GOODS),
                                  endowment=pa.get("endowment"),
                                  rent=pa.get("rent")))
-
-env.add_agent(bb.BigBox("Big Box", goal="Dominance",
-                        endowment=(pa.get("endowment") * 1000),
-                        rent=(pa.get("rent"))))
 
 utils.run_model(env, prog_file, results_file)
