@@ -14,6 +14,7 @@ change the population dynamic.
 import random
 import collections
 import math
+import indra.utils as utils
 import numpy as np
 import indra.vector_space as vs
 import indra.markov as markov
@@ -21,6 +22,8 @@ import indra.markov_agent as ma
 import indra.markov_env as menv
 
 MODEL_NM = "big_box_model"
+
+pa = utils.read_props(MODEL_NM)
 
 X = 0
 Y = 1
@@ -233,7 +236,7 @@ class EverytownUSA(menv.MarkovEnv):
         """
         super().postact_loop()
         # add big box store if right time.
-        if self.period == 20:   # must be parameter!
+        if self.period == self.props.get("bb_start_period"):   # must be parameter!
             self.add_agent(BigBox("Big Box", goal="Dominance",
                         endowment=(self.props.get("endowment") * 1000),
                         rent=(self.props.get("rent"))))
