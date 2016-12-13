@@ -20,6 +20,8 @@ import indra.markov as markov
 import indra.markov_agent as ma
 import indra.markov_env as menv
 
+MODEL_NM = "big_box_model"
+
 X = 0
 Y = 1
 
@@ -37,6 +39,7 @@ NUM_GOODS = 5
 
 GOODS_MAP = {0: "Hardware", 1: "Haircut", 2: "Groceries",
              3: "Books", 4: "Coffee"}
+
 
 class MarketParticipant(ma.MarkovAgent):
     """
@@ -69,7 +72,7 @@ class Consumer(MarketParticipant):
         super().__init__(name, goal, init_state)
         self.state = init_state
         self.allowance = allowance
-        self.preference = MomAndPop        
+        self.preference = MomAndPop
 
     def survey_env(self):
         """
@@ -222,16 +225,18 @@ class EverytownUSA(menv.MarkovEnv):
 
     def __init__(self, width, height, torus=False,
                  model_nm="Big Box Model"):
-        super().__init__(width=width, height=height, torus=torus,
-                         name=model_nm, postact=True)
+        super().__init__(width=width, name=model_nm, height=height, torus=torus, # Two names?
+                         model_nm=model_nm, postact=True)
 
     def postact_loop(self):
         """
         """
         super().postact_loop()
         # add big box store if right time.
-        if self.period > 20:   # must be parameter!
-            pass
+        if self.period == 20:   # must be parameter!
+            self.add_agent(BigBox("Big Box", goal="Dominance",
+                        endowment=(self.props.get("endowment") * 1000),
+                        rent=(self.props.get("rent"))))
 
     def foreclose(self, business):
         """
