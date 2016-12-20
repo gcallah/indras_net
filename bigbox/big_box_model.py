@@ -96,10 +96,13 @@ class Consumer(MarketParticipant):
 
     def eval_env(self, n_census):
         """
-            Args:
-                self: the agent himself
-                n_census: a list of stores selling the agent's desired good
-            Returns: a store of the preferred type
+        The Consumer determines who, of those who sell the good he desires,
+        he will buy from.
+
+        Args:
+            n_census: a list of stores selling the agent's desired good
+        Returns:
+            a store of the preferred type
         """
         self.state_pre = self.env.get_pre(self, n_census)
         self.state_vec = markov.probvec_to_state(self.state_pre.matrix)
@@ -116,9 +119,12 @@ class Consumer(MarketParticipant):
                 
     def respond_to_cond(self, store):
         """
-            Args:
-                store: the store to which we should move and buy from
-            Returns: None
+        The agent moves to a store and buys from it.
+
+        Args:
+            store: the store to which we should move and buy from
+        Returns:
+            None
         """
         # if we need to test that consumers are moving between stores,
         # uncomment the following line:
@@ -129,8 +135,9 @@ class Consumer(MarketParticipant):
     def move(self, store):
         """
         Moves as close as possible to the store.
-            Arg:
-                store: marketparticipant to which we move
+
+        Arg:
+            store: marketparticipant to which we move
         """
         open_spot = self.env.free_spot_near(store)
         if(open_spot is not None):
@@ -145,6 +152,10 @@ class Consumer(MarketParticipant):
 
 class Retailer(MarketParticipant):
     """
+    A Retailer is a MarketParticipant, who not only sells goods, but who
+    is also responsible for paying bills and maintianing sufficent funds
+    for operation.
+
     Attributes:
         funds: If less than zero, the business disappears.
         rent: how much is decremented from funds every step.
@@ -166,8 +177,7 @@ class Retailer(MarketParticipant):
 
     def buy_from(self, amt):
         """
-        Args:
-            amt: amount to buy
+        Agent buys from self, adding amt to self's funds.
         """
         self.funds += amt
 
@@ -233,6 +243,8 @@ class EverytownUSA(menv.MarkovEnv):
 
     def postact_loop(self):
         """
+        After all postactions, we add a BigBox store once we reach the 
+        period the User determines during runtime.
         """
         super().postact_loop()
         # add big box store if right time.
@@ -250,7 +262,6 @@ class EverytownUSA(menv.MarkovEnv):
     def get_pre(self, agent, n_census):
         """
         Args:
-            self: the env 
             agent: the agent who is considering where to go 
             n_census: a list of stores to which the agent may go
         Returns:
@@ -277,6 +288,7 @@ class EverytownUSA(menv.MarkovEnv):
     def there_is(self, n_census, vendor_type):
         """
         Is there this type of store in the area?
+
         Args:
             n_census: the complete list of stores
             vendor_type: the type of marketparticipant 
