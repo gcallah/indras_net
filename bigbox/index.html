@@ -189,43 +189,66 @@
                         he will travel to.
                     </p>
 
+                <h4>
+                    API
+                </h4>
+
+                <p>
+                    
+                <p>
 
                 <h4>
                     Detailed Description
                 </h4>
                     <p>
-                        Here is how a consumer "looks around" for where to shop
-                        next: 
+                        Here is how a <code>Consumer</code> "looks around" his env for 
+                        stores that sell his desired good.
                     </p>
 
                     <pre>
                     <code>
-                    def eval_env(self, stores):
-                        """
-                            Args:
-                                stores: a list of stores
-                            Returns: the closest store of prefered type.
-                        """
-                        
-                        other_pre = self.env.get_pre(self)
-                        super().eval_env(other_pre)
-                        self.state = self. next_state
-                        if(self.state == 0):
-                            self.preference = MomAndPop 
-                        else:
-                            self.preference = BigBox
-                
-                        close_store = None
-                        max_dist = self.env.get_max_dist()
-                        
-                        for store in stores:
-                            dist = self.env.dist(self, store)
-                            if(dist < max_dist):
-                                close_store = store
-                                max_dist = dist
-                                
-                        return close_store
+                        def survey_env(self):
+                            view = self.env.get_square_view(center=self.pos,
+                                                            distance=math.sqrt(self.env.width**2 + self.env.height**2))
+                            n_census = []
+                            n_census.extend(self.neighbor_iter(view=view,
+                                                    filt_func=lambda x:
+                                                    x.sells(self.goal)))
+                            return n_census
+                    </code>
+                    </pre>
+
+                    <p>
+                        Here is how a <code>Consumer</code> decides where to go.
+                    </p>
+
+                    <pre>
+                    <code>
+                        def eval_env(self, n_census):
+                            self.state_pre = self.env.get_pre(self, n_census)
+                            self.state_vec = markov.probvec_to_state(self.state_pre.matrix)
+                            self.state = markov.get_state(self.state_vec)
                             
+                            if(self.state == 0):
+                                self.preference = MomAndPop
+                            if(self.state == 1):
+                                self.preference = BigBox
+
+                            for store in n_census:
+                                if type(store) is self.preference:
+                                    return store                            
+                    </code>
+                    </pre>
+
+                    <p>
+                        After choosing where to go, he goes there.
+                    </p>
+
+                    <pre>
+                    <code>
+                        def respond_to_cond(self, store):
+                            self.move(store)
+                            store.buy_from(self.allowance)
                     </code>
                     </pre>
 
