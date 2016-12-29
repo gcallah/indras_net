@@ -142,10 +142,11 @@
                 The Indra System
             </h3>
                 <p>
-                    Indra is an agent based modeling (ABM) system built in Python. Our model
-                    runs on it, and this means that understanding our model requires
-                    some understanding how it concieves ABMs to work. And so it would be valuable
-                    to review its <a href="https://gcallah.github.io/Indra/index.html">architecture</a>.
+                    Indra is an agent based modeling (ABM) system built in Python.
+                    Our model runs on it, and this means that understanding our model
+                    requires some understanding how it concieves ABMs to work. And
+                    so it would be valuable to review its
+                    <a href="https://gcallah.github.io/Indra/index.html">architecture</a>.
                 </p>
 
             <h3>
@@ -155,61 +156,72 @@
                     Overview
                 </h4>
                     <p>
-                        In our model, the environment is EverytownUSA which is populated by agents called,
-                        MarketParticipants who may sell goods. Our model includes two kinds of MarketParticipant:
-                        Consumers and Retailers. Consumers buy goods, and Retailers sell them. Additional
-                        pressure is exerted on the Retailers: they must pay rent and, upon threat of forclosure,
-                        must not go bankrupt.
+                        In our model, the environment is EverytownUSA which
+                        is populated by agents called MarketParticipants who
+                        may sell goods. Our model includes two kinds of
+                        MarketParticipant: Consumers and Retailers. Consumers
+                        buy goods, and Retailers sell them. Additional pressure
+                        is exerted on the Retailers: they must pay rent
+                        and, upon threat of forclosure, must not go bankrupt.
                     </p>
             
                     <p>
-                        In addition to running on the base framework of agents and environments, our
-                        model includes Indra's Markov classes. These allow our Consumers to display
+                        In addition to running on the base framework of agents
+                        and environments, our model includes Indra's Markov
+                        classes. These allow our Consumers to display
                         psuedorandom shopping behavior according to the logic of
                         <a href="https://en.wikipedia.org/wiki/Markov_chain">Markov chains</a>. These 
-                        Consumers choose to either buy from a MomAndPop Retailer or a BigBox retailer;
-                        their preference is decided by use of a
+                        Consumers choose to either buy from a MomAndPop
+                        Retailer or a BigBox retailer; their preference is
+                        decided by use of a
                         <a href="https://en.wikipedia.org/wiki/https://en.wikipedia.org/wiki/Stochastic_matrix">transition matrix</a>.
                     </p>
 
                     <p>
-                        The way we read the transition matrix is as follows. Our Consumer sees that there 
-                        are both MomAndPop and BigBox retailers who sell his desired good. Further, he has
-                        a predilection for the MomAndPops such that he goes to them about 70% of the time;
-                        leaving the remaining 30% of shopping for the BigBox stores. In our program, this 
-                        would give our particular Consumer the transition matrix,
+                        The way we read the transition matrix is as follows.
+                        Suppose our Consumer sees that there are both MomAndPop
+                        and BigBox retailers who sell his desired good.
+                        Further, he has a predilection for the MomAndPops
+                        such that he goes to them about 70% of the time;
+                        leaving the remaining 30% of shopping for the BigBox
+                        stores. In our program, this would give our particular
+                        Consumer the 2x1 transition matrix,
                     </p>
 
                     <p>
-                        [0.7 0.3].
+                        [0.7; 0.3].
                     </p>
 
                     <p>
-                        After this a random number generator uses this information to calculate which store 
-                        he will travel to.
+                        After this we randomly pick a number between 0.0 and
+                        1.0. If it falls between 0.0 and 0.7, we choose the 
+                        MomAndPop; otherwise we choose the BigBox.
                     </p>
-
-                <h4>
-                    API
-                </h4>
-
-                <p>
-                    
-                <p>
 
                 <h4>
                     Detailed Description
                 </h4>
                     <p>
-                        Here is how a <code>Consumer</code> "looks around" his env for 
-                        stores that sell his desired good.
+                        Instead of a complete discription of the code, we will 
+                        take note of only its most significant processes.
+                    </p>
+
+                    <p>
+                        <b>survey_env</b> Here is how a <code>Consumer</code>
+                        "looks around" his env for stores that sell his
+                        desired good: he finds all the stores
+                        in the environment which sell the good
+                        and remembers them for his subsequent evaluation.
                     </p>
 
                     <pre>
                     <code>
                         def survey_env(self):
-                            view = self.env.get_square_view(center=self.pos,
-                                                            distance=math.sqrt(self.env.width**2 + self.env.height**2))
+                            view = self.env.get_square_view(
+                                                    center=self.pos,
+                                                    distance=math.sqrt(
+                                                        self.env.width**2 +
+                                                        self.env.height**2))
                             n_census = []
                             n_census.extend(self.neighbor_iter(view=view,
                                                     filt_func=lambda x:
@@ -219,14 +231,30 @@
                     </pre>
 
                     <p>
-                        Here is how a <code>Consumer</code> decides where to go.
+                        <b>eval_env</b> The <code>Consumer</code>
+                        now decides where to go. his survey of the environment,
+                        recorded in <code>n_census </code>, determines
+                        what his transition matrix (his state
+                        prehension), will be. If stores of both types are
+                        in the Environment, he has some probability (in a way
+                        determined by get_pre) of going to either; however if
+                        only <code>big_box</code> stores are in the env,
+                        he can only go to this type of store.
+                    </p>
+
+                    <p>
+                        Whatever his prehension of the Environment tells him,
+                        his preference for store type becomes. After this,
+                        he chooses the first store in <code>n_census</code>
+                        that fits this preference.
                     </p>
 
                     <pre>
                     <code>
                         def eval_env(self, n_census):
                             self.state_pre = self.env.get_pre(self, n_census)
-                            self.state_vec = markov.probvec_to_state(self.state_pre.matrix)
+                            self.state_vec = markov.probvec_to_state(
+                                                        self.state_pre.matrix)
                             self.state = markov.get_state(self.state_vec)
                             
                             if(self.state == 0):
@@ -241,7 +269,8 @@
                     </pre>
 
                     <p>
-                        After choosing where to go, he goes there.
+                        <b>respond_to_cond</b> After choosing where to go,
+                        he goes there and buys his long sought after good.
                     </p>
 
                     <pre>
@@ -249,6 +278,39 @@
                         def respond_to_cond(self, store):
                             self.move(store)
                             store.buy_from(self.allowance)
+                    </code>
+                    </pre>
+
+                    <p>
+                        Consumers obtain their (ap)prehension from the
+                        Environment. We build a 2x1 matrix. The (1,1) 
+                        entry represents the agent's chance of going to
+                        a <code>mom_and_pop</code>, and the (1,2) entry 
+                        is that of the <code>big_box<code>. If a type is
+                        not in the agents neighborhood, we cannot go there.
+                        Since this means there may be a zero entry, we 
+                        must normalize the vector. For the column must sum to
+                        1, according to the idea of a transition matrix.
+                    <p>
+
+                    <pre>
+                    <code>
+                            def get_pre(self, agent, n_census):
+                            trans_str = ""
+
+                            if(self.there_is(n_census, MomAndPop)):
+                                trans_str += "0.7 " 
+                            else:
+                                trans_str += "0.0 "
+
+                            if(self.there_is(n_census, BigBox)):
+                                trans_str += "0.3"
+                            else:
+                                trans_str += "0.0"
+
+                            state_pre = markov.from_matrix(np.matrix(trans_str))
+                            state_pre.matrix = vs.normalize(state_pre.matrix)
+                            return state_pre
                     </code>
                     </pre>
 
