@@ -272,12 +272,12 @@ class EverytownUSA(menv.MarkovEnv):
 
         if(self.there_is(n_census, MomAndPop)):
                 # Test ... to un-hardcode later
-            trans_str += "0.7 " 
+            trans_str += str(self.props.get("pref_for_mp")) + " "
         else:
             trans_str += "0.0 "
 
         if(self.there_is(n_census, BigBox)):
-            trans_str += "0.3"
+            trans_str += str(1-self.props.get("pref_for_mp"))
         else:
             trans_str += "0.0"
 
