@@ -181,8 +181,9 @@
                         The way we read the transition matrix is as follows.
                         Suppose our Consumer sees that there are both MomAndPop
                         and BigBox retailers who sell his desired good.
-                        Further, he has a predilection for the MomAndPops
-                        such that he goes to them about 70% of the time;
+                        Further, let us suppose he has a predilection for
+                        the MomAndPops such that he goes
+                        to them about 70% of the time;
                         leaving the remaining 30% of shopping for the BigBox
                         stores. In our program, this would give our particular
                         Consumer the 2x1 transition matrix,
@@ -202,16 +203,31 @@
                     Detailed Description
                 </h4>
                     <p>
-                        Instead of a complete discription of the code, we will 
-                        take note of only its most significant processes.
+                        Instead of a complete description of the code,
+                        we'll walk through the shopping logic of the program.
+                        It is important to note that the agents do not act all 
+                        at one time, but are called to act one at a time in 
+                        random order. Since our agents are all the environment's
+                        <code>MarketParticipants</code> we will consider what
+                        the consumers and retailers do separately.
                     </p>
 
                     <p>
-                        <b>survey_env</b> Here is how a <code>Consumer</code>
-                        "looks around" his env for stores that sell his
-                        desired good: he finds all the stores
-                        in the environment which sell the good
-                        and remembers them for his subsequent evaluation.
+                        When a <b>Consumer</b> is called forth to act his turn,
+                        he surveys the world around him, evaluates his world on
+                        the basis of this survey, and he responds according to 
+                        his evaluation. Naturally, therefore, we call these
+                        methods <code>survey_env</code>, <code>eval_env</code>,
+                        and <code>respond_to_cond</code>.
+                    </p>
+
+                    <p>
+                        The way the <code>Consumer</code> surveys his
+                        environment goes like this: he finds all the stores
+                        in his vicinity (which in our model happens to be the
+                        entire environment) selling his desired good,
+                        and then he remembers them for his subsequent
+                        evaluation.
                     </p>
 
                     <pre>
@@ -231,9 +247,9 @@
                     </pre>
 
                     <p>
-                        <b>eval_env</b> The <code>Consumer</code>
-                        now decides where to go. his survey of the environment,
-                        recorded in <code>n_census </code>, determines
+                        The <code>Consumer</code>
+                        now decides where to go. His survey of the environment,
+                        recorded in n_census, determines
                         what his transition matrix (his state
                         prehension), will be. If stores of both types are
                         in the Environment, he has some probability (in a way
@@ -269,19 +285,6 @@
                     </pre>
 
                     <p>
-                        <b>respond_to_cond</b> After choosing where to go,
-                        he goes there and buys his long sought after good.
-                    </p>
-
-                    <pre>
-                    <code>
-                        def respond_to_cond(self, store):
-                            self.move(store)
-                            store.buy_from(self.allowance)
-                    </code>
-                    </pre>
-
-                    <p>
                         Consumers obtain their (ap)prehension from the
                         Environment. We build a 2x1 matrix. The (1,1) 
                         entry represents the agent's chance of going to
@@ -313,7 +316,59 @@
                             return state_pre
                     </code>
                     </pre>
+                    <p>
+                        After choosing where to go,
+                        he goes there and buys his long sought after good.
+                    </p>
 
+                    <pre>
+                    <code>
+                        def respond_to_cond(self, store):
+                            self.move(store)
+                            store.buy_from(self.allowance)
+                    </code>
+                    </pre>
+
+                    <p>
+                        After this action, the consumer now desires a new good.
+                        This desire is to be acted during the next cycle of
+                        interactions.
+                    </p>
+
+                    <pre>
+                    <code>
+                        def postact(self):
+                            """
+                            We cycle through the good the agent wants each turn.
+                            """
+                            self.goal = (self.goal + 1) % NUM_GOODS
+                    </code>
+                    </pre>
+
+                    <p>
+                        The <b>Retailer's</b> action is much simpler. They
+                        merely pay their bills. If their funds go below
+                        zero, the city forecloses them, and they disappear
+                        from the environment never to reappear.
+                    </p>
+
+                    <pre>
+                    <code>
+                    def act(self):
+                        self.pay_bills(self.rent)
+                        if(self.funds <= 0):
+                            self.declare_bankruptcy()
+                    </code>
+                    </pre>
+
+                    <p>
+                        One important fact to note in reading the model is this:
+                        since all the agents are called in random order to act,
+                        stores might foreclose before a Consumer can save it.
+                        In other words, the Consumers do not all act first with
+                        Retailers acting second. The actions are intermingled in
+                        environment's action cycle.
+                    </p>
 
         <h2>
             Bibliography
