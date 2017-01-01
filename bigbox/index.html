@@ -156,32 +156,51 @@
                     Overview
                 </h4>
                     <p>
-                        In our model, the environment is EverytownUSA which
-                        is populated by agents called MarketParticipants who
-                        may sell goods. Our model includes two kinds of
-                        MarketParticipant: Consumers and Retailers. Consumers
-                        buy goods, and Retailers sell them. Additional pressure
-                        is exerted on the Retailers: they must pay rent
-                        and, upon threat of forclosure, must not go bankrupt.
-                    </p>
-            
-                    <p>
-                        In addition to running on the base framework of agents
-                        and environments, our model includes Indra's Markov
-                        classes. These allow our Consumers to display
-                        psuedorandom shopping behavior according to the logic of
-                        <a href="https://en.wikipedia.org/wiki/Markov_chain">Markov chains</a>. These 
-                        Consumers choose to either buy from a MomAndPop
-                        Retailer or a BigBox retailer; their preference is
-                        decided by use of a
-                        <a href="https://en.wikipedia.org/wiki/https://en.wikipedia.org/wiki/Stochastic_matrix">transition matrix</a>.
+                        The city where our agents buy and retailers sell is
+                        EverytownUSA. Initially the only retailers in the city 
+                        are the mom and pop stores; and under certain
+                        parameters, these thrive; however,
+                        at a time specified by the user,
+                        the big boxs move in and change the population dynamic.
                     </p>
 
                     <p>
-                        The way we read the transition matrix is as follows.
+                        For this reason the main agents within our environment
+                        are <code>Consumer</code>s, <code>BixBox</code>s, and
+                        <code>MomAndPop</code>s. Since the stores both have
+                        a pool of funds and must maintain rent, we say they
+                        are both a type of <code>Retailer</code>. Since the
+                        <code>Consumer</code> does have to worry about
+                        keeping his money in order (all stores cost the same),
+                        he is not counted as a <code>Retailer</code>. Now all
+                        three of our agents (<code>Consumer</code>s,
+                        <code>BigBox</code>s, and <code>MomAndPop</code>s),
+                        engage in the market, and so we put them all under the
+                        class <code>MarketParticipant</code>s; every
+                        <code>MarketParticipant</code>, can be asked by
+                        another agent whether or not he sells a particular good.
+                        <code>Consumer</code>s don't sell anything.
+                        <code>MomAndPop</code>s sell only one thing. And
+                        <code>BigBox</code> stores sell every good a Consumer
+                        could want.
+                    </p>
+
+                    <p>
+                        A key feature of our program is our
+                        <code>Consumer</code>'s ability to choose with
+                        some user-defined preferences about where they want to
+                        shop. The way we model this random choice is through
+                        a probability vector. Indra contains a class of agents,
+                        environments, and vectors that allows us to assess
+                        Markov processes, and so work with probability vectors.
+                    </p>
+
+                    <p>
+                        By way of example, let's review, how, abstractly, our
+                        model evaluates probability vector.
                         Suppose our Consumer sees that there are both MomAndPop
                         and BigBox retailers who sell his desired good.
-                        Further, let us suppose he has a predilection for
+                        Further, let us suppose we give him a predilection for
                         the MomAndPops such that he goes
                         to them about 70% of the time;
                         leaving the remaining 30% of shopping for the BigBox
