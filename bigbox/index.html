@@ -142,11 +142,6 @@
                 The Indra System
             </h3>
                 <p>
-                    Indra is an agent based modeling (ABM) system built in Python.
-                    Our model runs on it, and this means that understanding our model
-                    requires some understanding how it concieves ABMs to work. And
-                    so it would be valuable to review its
-                    <a href="https://gcallah.github.io/Indra/index.html">architecture</a>.
                 </p>
 
             <h3>
@@ -156,83 +151,82 @@
                     Overview
                 </h4>
                     <p>
-                        The city where our agents buy and retailers sell is
-                        EverytownUSA. Initially the only retailers in the city 
-                        are the mom and pop stores; and under certain
-                        parameters, these thrive; however,
-                        at a time specified by the user,
-                        the big boxs move in and change the population dynamic.
+                        Indra is the program we build upon to test our ABM.
+                        Thus a quick overview of Indra as agent based
+                        modeling software, followed by a conceptual overview
+                        of the Big Box Model is in order.
                     </p>
-
                     <p>
-                        For this reason the main agents within our environment
-                        are <code>Consumer</code>s, <code>BixBox</code>s, and
-                        <code>MomAndPop</code>s. Since the stores both have
-                        a pool of funds and must maintain rent, we say they
-                        are both a type of <code>Retailer</code>. Since the
-                        <code>Consumer</code> does not have to worry about
-                        keeping his money in order (all stores cost the same),
-                        he is not counted as a <code>Retailer</code>. Now all
-                        three of our agents (<code>Consumer</code>s,
-                        <code>BigBox</code>s, and <code>MomAndPop</code>s),
-                        engage in the market, and so we put them all under the
-                        class <code>MarketParticipant</code>s; every
-                        <code>MarketParticipant</code>, can be asked by
-                        another agent whether or not he sells a particular good.
-                        <code>Consumer</code>s don't sell anything.
-                        <code>MomAndPop</code>s sell only one thing. And
-                        <code>BigBox</code> stores sell every good a Consumer
-                        could want.
+                        Indra is an open-source Agent Based Modeling software
+                        built in Python. Its ultimate goal is to service both
+                        programmer and non-programmer modelers to aid their
+                        research. Generally speaking, Indra puts a
+                        philosophical study of agent based models right into
+                        its code. The two key concpets for it are agents and
+                        environments. In it, agents are recognized
+                        as actors within an environment, not merely things
+                        interating with other things in a vacuum.
+                        Philosophically, we can look at this from the agent's
+                        point of view: when he is about to act, he first surveys
+                        his entire world to see what's going on around him;
+                        then he makes some kind of evaluative decision based
+                        on what information he gathers from his view into
+                        things. Therefore for Indra, every model we have a
+                        class of objects that are environemts and a class of
+                        objects that are agents. And the cheif benefit of
+                        this conceptualization is ease of thought for the user
+                        of the program. All he needs to do is think carefully
+                        about the essential features of his model, and he
+                        can easily transfer them to a program where the
+                        conceptual space has been mapped out carefully.
                     </p>
-
                     <p>
-                        A key feature of our program is our
-                        <code>Consumer</code>'s ability to choose with
-                        some user-defined preferences about where they want to
-                        shop. The way we model this random choice is through
-                        a probability vector. Indra contains a class of agents,
-                        environments, and vectors that allows us to assess
-                        Markov processes, and so work with probability vectors.
+                        In this way, all the action in our model takes place
+                        within an environemt called, "EverytownUSA;" and the
+                        agents in this environment are consumers, mom and pops,
+                        and big box stores. Consumers decide where they can
+                        shop after polling their environment for what's in
+                        their purview.
                     </p>
-
                     <p>
-                        By way of example, let's review, how, abstractly, our
-                        model evaluates probability vector.
-                        Suppose our Consumer sees that there are both MomAndPop
-                        and BigBox retailers who sell his desired good.
-                        Further, let us suppose we give him a predilection for
-                        the MomAndPops such that he goes
-                        to them about 70% of the time;
-                        leaving the remaining 30% of shopping for the BigBox
-                        stores. In our program, this would give our particular
-                        Consumer the 2x1 transition matrix,
+                        When an agent sees a collection of stores he could
+                        possibly go to, he needs some way to choose. Let's say
+                        we define his preferences so that when there are
+                        multiple places to go, he goes to a mom and pop about
+                        70% of the time and to a big box 30% of the time. An
+                        option to simulate this is to generate random numbers:
+                        If a random number between 0.0 and 1.0 is less than 0.7,
+                        the agent goes to the mom and pop; otherwise he goes to
+                        the big box. We can do this by use of
+                        Indra's Markov classes, which provide the capability
+                        to work with a large array of phenomena that are, or,
+                        at least, look like, Markov processes.
                     </p>
-
                     <p>
-                        [0.7; 0.3].
+                        The models run in in unitary steps. On each step,
+                        each agent performs his action once. He can act again
+                        on the following steop. The agents act in random order
+                        per step. Consumers act by first looking for places
+                        that have what they want, then they choose from these,
+                        and then they act on it. Since all kinds of retail
+                        store are also agents, these also act each step;
+                        and they act by paying rent to the city. If they're 
+                        funding falls below zero, the city forcloses them, and
+                        they are henceforth closed.
                     </p>
-
-                    <p>
-                        After this we randomly pick a number between 0.0 and
-                        1.0. If it falls between 0.0 and 0.7, we choose the 
-                        MomAndPop; otherwise we choose the BigBox.
-                    </p>
-
                 <h4>
                     Detailed Description
                 </h4>
                     <p>
                         Instead of a complete description of the code,
-                        we'll walk through the shopping logic of the program.
-                        It is important to note that the agents do not act all 
-                        at one time, but are called to act one at a time in 
-                        random order. Since our agents are all the environment's
-                        <code>MarketParticipants</code> we will consider what
-                        the consumers and retailers do separately.
+                        we'll walk through the shopping logic of the program:
+                        how the agents act. Since consumers and retailers have
+                        different actions, we'll introduce and elaborate on
+                        their actions separately.
                     </p>
 
                     <p>
-                        When a <b>Consumer</b> is called forth to act his turn,
+                        When a <b>consumer</b> is called forth to act his turn,
                         he surveys the world around him, evaluates his world on
                         the basis of this survey, and he responds according to 
                         his evaluation. Naturally, therefore, we call these
@@ -240,13 +234,22 @@
                         and <code>respond_to_cond</code>.
                     </p>
 
+                    <pre>
+                    <code>
+                        def act(self):
+                            env_vars = self.survey_env()
+                            eval_vars = self.eval_env(env_vars)
+                            if eval_vars:
+                                self.respond_to_cond(eval_vars)
+                    </code>
+                    </pre>
+
                     <p>
-                        The way the <code>Consumer</code> surveys his
+                        The way the consumer surveys his
                         environment goes like this: he finds all the stores
-                        in his vicinity (which in our model happens to be the
-                        entire environment) selling his desired good,
-                        and then he remembers them for his subsequent
-                        evaluation.
+                        he can view (a view which happens to be the whole
+                        environment this model) and he only remembers the
+                        stores which sell the good he wants.
                     </p>
 
                     <pre>
@@ -266,22 +269,11 @@
                     </pre>
 
                     <p>
-                        The <code>Consumer</code>
-                        now decides where to go. His survey of the environment,
-                        recorded in n_census, determines
-                        what his transition matrix (his state
-                        prehension), will be. If stores of both types are
-                        in the Environment, he has some probability (in a way
-                        determined by get_pre) of going to either; however if
-                        only <code>big_box</code> stores are in the env,
-                        he can only go to this type of store.
-                    </p>
-
-                    <p>
-                        Whatever his prehension of the Environment tells him,
-                        his preference for store type becomes. After this,
-                        he chooses the first store in <code>n_census</code>
-                        that fits this preference.
+                        After remembering the stores which sell what he wants,
+                        the consumer now has to decide where to go. And, as
+                        stated above, this choice is simulated through random
+                        number generation. First, the consumer assesses his
+                        particular preferences.
                     </p>
 
                     <pre>
