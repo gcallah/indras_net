@@ -154,7 +154,7 @@
                         Indra is the program we build upon to test our ABM.
                         Thus a quick overview of Indra as agent based
                         modeling software, followed by a conceptual overview
-                        of the Big Box Model is in order.
+                        of the Big Box Model, is in order.
                     </p>
                     <p>
                         Indra is an open-source Agent Based Modeling software
@@ -163,18 +163,21 @@
                         research. Generally speaking, Indra puts a
                         philosophical study of agent based models right into
                         its code. The two key concepts for it are agents and
-                        environments. In it, agents are recognized
+                        environments. In Indra, agents are recognized
                         as actors within an environment, not merely things
                         interacting with other things in a vacuum.
                         Philosophically, we can look at this from the agent's
-                        point of view: when he is about to act, he first surveys
+                        point of view: when he
+                        is about to act, he first surveys
                         his entire world to see what's going on around him;
                         then he makes some kind of evaluative decision based
                         on what information he gathers from his view into
-                        things. Therefore for Indra, every model we have a
-                        class of objects that are environments and a class of
-                        objects that are agents. And the chief benefit of
-                        this conceptualization is ease of thought for the user
+                        things. Therefore, in Indra, every model has agents
+                        and environments, and these are conceived in the
+                        program as separate entities which the user can
+                        manipulate in a clear and logical manner.
+                        A benefit of this conceptualization
+                        is ease of thought for the user
                         of the program. All he needs to do is think carefully
                         about the essential features of his model, and he
                         can easily transfer them to a program where the
@@ -182,7 +185,7 @@
                     </p>
                     <p>
                         In this way, all the action in our model takes place
-                        within an environment called, "EverytownUSA;" and the
+                        within an environment called, "EverytownUSA" where the
                         agents in this environment are consumers, mom and pops,
                         and big box stores. Consumers decide where they can
                         shop after polling their environment for what's in
@@ -198,13 +201,14 @@
                         If a random number between 0.0 and 1.0 is less than 0.7,
                         the agent goes to the mom and pop; otherwise he goes to
                         the big box. We can do this by use of
-                        Indra's Markov classes, which provide the capability
+                        Indra's Markov files, which provide the capability
                         to work with a large array of phenomena that are, or,
                         at least, look like, Markov processes.
                     </p>
                     <p>
-                        The models run in in unitary steps. On each step,
-                        each agent performs his action once. He can act again
+                        All Indra's models run in
+                        discrete steps. On every step,
+                        each agent performs his action once. He acts again only
                         on the following step. The agents act in random order
                         per step. Consumers act by first looking for places
                         that have what they want, then they choose from these,
@@ -341,8 +345,9 @@
                     </pre>
 
                     <p>
-                        After this action, the consumer now desires a new good.
-                        This desire is to be acted during the next cycle of
+                        After this action, the consumer
+                        now decides his goal is to aquire a new good.
+                        This goal is to be acted out during the next cycle of
                         interactions.
                     </p>
 
@@ -357,9 +362,9 @@
                     </pre>
 
                     <p>
-                        The <b>Retailer's</b> action is much simpler. They
-                        merely pay their bills. If their funds go below
-                        zero, the city forecloses them, and they disappear
+                        The <b>retailer</b>'s action is much simpler. It
+                        merely pays its bills. If its funds go below
+                        zero, the city forecloses it, and it disappear
                         from the environment never to reappear.
                     </p>
 
@@ -371,7 +376,6 @@
                             self.declare_bankruptcy()
                     </code>
                     </pre>
-
                     <p>
                         One important fact to note in reading the model is this:
                         since all the agents are called in random order to act,
