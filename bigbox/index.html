@@ -25,10 +25,12 @@
                 Conventional wisdom from committed "free market"
                 economists would have it that moves to ban
                 "big box" retailers such as Walmart from certain localities
-                are rebellions against consumer sovereignty and must hurt consumer
-                welfare. After all, if consumers did not want to shop at the big box
-                retailer, they would simply not do so, correct? The fact that they
-                switch their shopping to the big box and away from "mom-and-pop" stores
+                are rebellions against consumer sovereignty 
+                and must hurt consumer welfare. After all,
+                if consumers did not want to shop at the big box
+                retailer, they would simply not do so, correct?
+                The fact that they switch their shopping to the
+                big box and away from "mom-and-pop" stores
                 shows they prefer the big box.
             </p>
 
@@ -36,8 +38,9 @@
             Theoretical Considerations
         </h2>
             <p>
-                This paper attempts to show that the above analysis is simplistic.
-                We present a model in which all consumers have the following 
+                This paper attempts to show that the above
+                analysis is simplistic.  We present a model
+                in which all consumers have the following 
                 preference ordering in some retail sector:
             </p>
             <ol>
@@ -46,17 +49,20 @@
                 <li>Have only a big box store.
             </ol>
             <p>
-                We then show that, under not outrageous assumptions, it is easy for
-                consumers, in trying to achieve their first preference, to instead wind
-                up with their third. This is due to consumers facing a collective action
-                problem, as well as a knowledge problem: Consumers might, if they had
-                perfect knowledge of the exit points of the local shops and the ability
+                We then show that, under not outrageous assumptions,
+                it is easy for consumers, in trying to achieve their
+                first preference, to instead wind up with their third.
+                This is due to consumers facing a collective action
+                problem, as well as a knowledge problem:
+                Consumers might, if they had perfect knowledge
+                of the exit points of the local shops and the ability
                 to finely coordinate their own shopping with that of others,
                 be able to achieve their first preference
                 (a mix of big box and mom-and-pop shopping available). But,
-                in general consumers have little knowledge of how much sales must be
-                reduced before a small shop will exit the industry, nor do they have
-                very much ability to coordinate their shopping with other consumers.
+                in general consumers have little knowledge of
+                how much sales must be reduced before a small shop
+                will exit the industry, nor do they have very much
+                ability to coordinate their shopping with other consumers.
                 (Meaning that even if they forego a certain amount of shopping
                 at the big box stores, which they would otherwise do, simply to
                 keep the small stores solvent, they cannot ensure their
@@ -65,18 +71,21 @@
                 regardless of the impact on the small shops.)
                 <br>
                 <br>
-                Therefore, since they cannot fine tune their shopping to achieve 1),
-                they shop at the big box store whenever it suits them for a particular
+                Therefore, since they cannot fine tune their
+                shopping to achieve 1), they shop at the big box
+                store whenever it suits them for a particular
                 purchase, without regards to the “macro” effects of their
                 choices. They shift "too" much of their shopping to the big
                 box, with the end result is that all of 
                 the mom-and-pops are driven out of business,
-                despite no consumer wanting that result. Thus, it may make sense, faced
-                with such knowledge and game theoretic difficulties, for consumers to
-                bind themselves in advance to 2), by banning a, or some, or all, big box
-                stores, or to trying to achieve 1) by, say, forcing big box
-                retailers to locate well outside the center of town, making
-                trips to them less convenient.
+                despite no consumer wanting that result. Thus, 
+                t may make sense, faced with such knowledge and
+                game theoretic difficulties, for consumers to
+                bind themselves in advance to 2), by banning a,
+                or some, or all, big box stores, or to trying to
+                achieve 1) by, say, forcing big box retailers to
+                locate well outside the center of town, making trips
+                to them less convenient.
                 <br>
                 <br>
                 We further suggest that our model they actually capture the
@@ -92,10 +101,11 @@
                 Our model avoids this pitfall: the big box stores do not need
                 to set prices below cost: they can rely
                 on their greater financial resources to ride out the period
-                during which <b>all</b> stores will be losing money, and once their
-                smaller competitors have exited, they can keep their prices right
-                where they were, and now be profitable. And new smaller
-                competitors will not enter the market, since that would merely
+                during which <b>all</b> stores will be losing money,
+                and once their smaller competitors have exited,
+                they can keep their prices right where they were,
+                and now be profitable. And new smaller competitors
+                will not enter the market, since that would merely
                 reestablish the situation in which all stores are losing money.
             </p>
         <h2>
@@ -122,13 +132,15 @@
                 have a much larger initial endowment of money then do the Ms.
                 The Cs like both (how much they like each is again a parameter),
                 and split their acquisition of goods (according to that
-                parameter) between the two types of agents. This split causes the money
-                supply of both types of agents to dwindle. But as the Bs have
-                much more money to start, they are able to survive this period
-                of coexistence, while the Ms gradually disappear. We are left with
-                an environment of only Bs and Cs, which the Cs did <em>not</em>
-                want. Thus, under very simple but not outrageous conditions,
-                our model shows our story above as plausible: it has what Weber
+                parameter) between the two types of agents.
+                This split causes the money supply of both types of
+                agents to dwindle. But as the Bs have much more
+                money to start, they are able to survive this period
+                of coexistence, while the Ms gradually disappear.
+                We are left with an environment of only Bs and Cs,
+                which the Cs did <em>not</em> want. Thus, under very
+                simple but not outrageous conditions, our model
+                shows our story above as plausible: it has what Weber
                 would call "explanatory adequacy." Empirical work
                 would be necessary to decide whether it has Weberian "causal
                 adequacy." (See Callahan and Horwitz, 2010.)
@@ -141,8 +153,43 @@
             <h3>
                 The Indra System
             </h3>
-                <p>
-                </p>
+                    <p>
+                        We built our big-box model in Indra. Indra is an
+                        open-source framework for creating ABMs,
+                        built in Python.
+                        Besides the rapid proto-typing benefits of working in
+                        Python, and the benefits of open-source, allowing the
+                        contributions of many people to the project, and the
+                        free availability of all the system's source code,
+                        Indra provides many features that are automatically
+                        incorporated into every model built in it:
+                    </p>
+                    <ul>
+                        <li>Looping over agents randomly, in order, in reverse
+                        order, or by type.
+                        <li>Automatic generation of line graphs and scatter
+                        plots.
+                        <li>The ability to enter model parameters
+                        interactively, from the command line, or from a file.
+                        <li>The ability to save parameters sets.
+                        <li>The ability to dump the state of the system to a
+                        JSON file.
+                        <li>A built-in, extensible interactive menu.
+                        <li>Automatic creation of network graphs showing the
+                        relationship among objects in the system.
+                        <li>Extensible Markov-matrix capabilities for easily
+                        specified, probabilistic behavior on the part of
+                        agents.
+                        <li>A flexible spacial environment model that allows
+                        the composition of agent views of the environment of
+                        any desired shape, easing the creation of models
+                        exploring limited, local agent knowledge.
+                        <li>In-line debugging capabilities, allowing, e.g., the
+                        screen display of all of an agent's attributes at any
+                        point during the run of a model.
+                        <li>The ability to step through a model to watch it
+                        develop in real time.
+                    </ul>
 
             <h3>
                 Implementing the Big Box Model in Indra
@@ -151,41 +198,8 @@
                     Overview
                 </h4>
                     <p>
-                        Indra is the program we build upon to test our ABM.
-                        Thus a quick overview of Indra as agent based
-                        modeling software, followed by a conceptual overview
-                        of the Big Box Model, is in order.
-                    </p>
-                    <p>
-                        Indra is an open-source Agent Based Modeling software
-                        built in Python. Its ultimate goal is to service both
-                        programmer and non-programmer modelers to aid their
-                        research. Generally speaking, Indra puts a
-                        philosophical study of agent based models right into
-                        its code. The two key concepts for it are agents and
-                        environments. In Indra, agents are recognized
-                        as actors within an environment, not merely things
-                        interacting with other things in a vacuum.
-                        Philosophically, we can look at this from the agent's
-                        point of view: when he
-                        is about to act, he first surveys
-                        his entire world to see what's going on around him;
-                        then he makes some kind of evaluative decision based
-                        on what information he gathers from his view into
-                        things. Therefore, in Indra, every model has agents
-                        and environments, and these are conceived in the
-                        program as separate entities which the user can
-                        manipulate in a clear and logical manner.
-                        A benefit of this conceptualization
-                        is ease of thought for the user
-                        of the program. All he needs to do is think carefully
-                        about the essential features of his model, and he
-                        can easily transfer them to a program where the
-                        conceptual space has been mapped out carefully.
-                    </p>
-                    <p>
                         In this way, all the action in our model takes place
-                        within an environment called, "EverytownUSA" where the
+                        within an environment called, "EverytownUSA;" and the
                         agents in this environment are consumers, mom and pops,
                         and big box stores. Consumers decide where they can
                         shop after polling their environment for what's in
@@ -201,14 +215,13 @@
                         If a random number between 0.0 and 1.0 is less than 0.7,
                         the agent goes to the mom and pop; otherwise he goes to
                         the big box. We can do this by use of
-                        Indra's Markov files, which provide the capability
+                        Indra's Markov classes, which provide the capability
                         to work with a large array of phenomena that are, or,
                         at least, look like, Markov processes.
                     </p>
                     <p>
-                        All Indra's models run in
-                        discrete steps. On every step,
-                        each agent performs his action once. He acts again only
+                        The models run in in unitary steps. On each step,
+                        each agent performs his action once. He can act again
                         on the following step. The agents act in random order
                         per step. Consumers act by first looking for places
                         that have what they want, then they choose from these,
