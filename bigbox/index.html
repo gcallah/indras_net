@@ -32,6 +32,13 @@
                 shows they prefer the big box.
             </p>
 
+            <figure>
+                <img
+                src="https://upload.wikimedia.org/wikipedia/commons/b/bf/Bastrop_Texas1.jpg">
+                <figcaption>
+                    Main Street, Anytown, USA
+                </figcaption>
+            </figure>
         <h2>
             Theoretical Considerations
         </h2>
@@ -63,12 +70,23 @@
                 neighbors will do the same. So their rational choice is to
                 "defect" and shop at the big box store as often as they wish,
                 regardless of the impact on the small shops.)
-                <br>
-                <br>
+            </p>
+            <figure>
+                <img
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Oradour-sur-Glane-Streets-1294.jpg/1024px-Oradour-sur-Glane-Streets-1294.jpg"
+                height="480" width="640">
+                <figcaption>
+                The same town, a few years after Walmart moved in.
+                </figcaption>
+            </figure>
+                
+            <p>
                 Therefore, since they cannot fine tune their shopping to achieve 1),
                 they shop at the big box store whenever it suits them for a particular
-                purchase, without regards to the “macro” effects of their
-                choices. They shift "too" much of their shopping to the big
+                purchase, without regards to the "macro" effects of their
+                choices. (See Schelling, 2006, for extensive analysis of the
+                potential gap between micromotives and macrobeahvior.)
+                They shift "too" much of their shopping to the big
                 box, with the end result is that all of 
                 the mom-and-pops are driven out of business,
                 despite no consumer wanting that result. Thus, it may make sense, faced
@@ -90,14 +108,39 @@
                 <br>
                 <br>
                 Our model avoids this pitfall: the big box stores do not need
-                to set prices below cost: they can rely
+                to set prices artificially low for a time: they can rely
                 on their greater financial resources to ride out the period
                 during which <b>all</b> stores will be losing money, and once their
                 smaller competitors have exited, they can keep their prices right
                 where they were, and now be profitable. And new smaller
                 competitors will not enter the market, since that would merely
                 reestablish the situation in which all stores are losing money.
+                Furthermore, our model has the advantage that we need not posit
+                any vicious intent on the part of big-box retailers: they need
+                not be <i>intending</i> to drive small retailers out of
+                business. They just know that in a year or so, their new outlet
+                will be making plenty of money.
             </p>
+
+            <p>
+                We note here that what we are describing, in suggesting the
+                possibility that some restriction on big-box retailing might be
+                rational, is an example of the general class of "constitutional
+                constraints" described by Jon Elster in <i>Ulysses Unbound</i>
+                (2000): we want to listen to the sirens, but we know that if we
+                do not tie ourselves to the mast in advance, we will not merely
+                listen, but fall prey too their sweet song. Or, to consider
+                more mundane circumstances, by the sober light of day, we
+                realize that we do not want to find ourselves in a bar at 4 AM,
+                but we also recognize that in the bar at 1 AM, we will not be thinking so
+                clearly. So we mandate a bar closing time. Similarly, we don't
+                want our own speech suppressed, but recognize 
+                that in power we might
+                give in to the temptation to suppress speech we don't like, and
+                that others in power might do so to us. So we pass the first
+                amendment to the U.S. Constitution.
+            </p>
+
         <h2>
             Model Design 
         </h2>
@@ -143,9 +186,9 @@
             </h3>
                 <p>
                     Indra is an agent based modeling (ABM) system built in Python. Our model
-                    runs on it, and this means that understanding our model requires
-                    some understanding how it concieves ABMs to work. And so it would be valuable
-                    to review its <a href="https://gcallah.github.io/Indra/index.html">architecture</a>.
+                    runs on it, and so it would be valuable
+                    to review its
+                    <a href="https://gcallah.github.io/Indra/index.html">architecture</a>.
                 </p>
 
             <h3>
@@ -155,29 +198,37 @@
                     Overview
                 </h4>
                     <p>
-                        In our model, the environment is EverytownUSA which is populated by agents called,
-                        MarketParticipants who may sell goods. Our model includes two kinds of MarketParticipant:
-                        Consumers and Retailers. Consumers buy goods, and Retailers sell them. Additional
-                        pressure is exerted on the Retailers: they must pay rent and, upon threat of forclosure,
+                        In our model, the environment is EverytownUSA which is
+                        populated by agents called, MarketParticipants who may
+                        sell goods. Our model includes two kinds of MarketParticipant:
+                        Consumers and Retailers. Consumers buy goods,
+                        and Retailers sell them. Additional pressure is exerted
+                        on the Retailers: they must pay rent and, upon threat of forclosure,
                         must not go bankrupt.
                     </p>
             
                     <p>
-                        In addition to running on the base framework of agents and environments, our
-                        model includes Indra's Markov classes. These allow our Consumers to display
+                        In addition to running on the base framework of
+                        agents and environments, our model includes Indra's Markov classes.
+                        These allow our Consumers to display
                         psuedorandom shopping behavior according to the logic of
-                        <a href="https://en.wikipedia.org/wiki/Markov_chain">Markov chains</a>. These 
-                        Consumers choose to either buy from a MomAndPop Retailer or a BigBox retailer;
+                        <a href="https://en.wikipedia.org/wiki/Markov_chain">Markov chains</a>. 
+                        These Consumers choose to either buy from a 
+                        MomAndPop Retailer or a BigBox retailer;
                         their preference is decided by use of a
                         <a href="https://en.wikipedia.org/wiki/https://en.wikipedia.org/wiki/Stochastic_matrix">transition matrix</a>.
                     </p>
 
                     <p>
-                        The way we read the transition matrix is as follows. Our Consumer sees that there 
-                        are both MomAndPop and BigBox retailers who sell his desired good. Further, he has
-                        a predilection for the MomAndPops such that he goes to them about 70% of the time;
-                        leaving the remaining 30% of shopping for the BigBox stores. In our program, this 
-                        would give our particular Consumer the transition matrix,
+                        The way we read the transition matrix is as follows.
+                        Our Consumer sees that there are both MomAndPop and
+                        BigBox retailers who sell his desired good. Further, he has
+                        a predilection for the MomAndPops such that he
+                        goes to them about 70% of the time;
+                        leaving the remaining 30% of shopping for
+                        the BigBox stores. In our program, this 
+                        would give our particular Consumer the transition
+                        matrix:
                     </p>
 
                     <p>
@@ -185,17 +236,9 @@
                     </p>
 
                     <p>
-                        After this a random number generator uses this information to calculate which store 
-                        he will travel to.
+                        After this a random number generator uses this 
+                        information to calculate which store he will travel to.
                     </p>
-
-                <h4>
-                    API
-                </h4>
-
-                <p>
-                    
-                <p>
 
                 <h4>
                     Detailed Description
@@ -219,7 +262,8 @@
                     </pre>
 
                     <p>
-                        Here is how a <code>Consumer</code> decides where to go.
+                        Here is how a <code>Consumer</code> decides where to go
+                        shopping:
                     </p>
 
                     <pre>
@@ -241,7 +285,7 @@
                     </pre>
 
                     <p>
-                        After choosing where to go, he goes there.
+                        And after choosing where to go, he goes there:
                     </p>
 
                     <pre>
@@ -264,12 +308,26 @@
                     14:205-24. Advances in Austrian
                     Economics 14. Emerald Group Publishing Limited, 2010.
                     http://www.emeraldinsight.com/doi/abs/10.1108/S1529-2134%282010%290000014013.
-                <li>DiLoernzo, Thomas. "The Myth of Predatory Pricing."
-                    Cato.org, 1992. https://www.cato.org/pubs/pas/pa-169.html.
+                <li>DiLoernzo, Thomas.
+                    "The Myth of Predatory Pricing."
+                    <i>Cato.org</i>,
+                    1992. https://www.cato.org/pubs/pas/pa-169.html.
+                <li>
+                    Elster, Jon.
+                    <i>Ulysses Unbound: Studies in Rationality,
+                        Precommitment, and Constraints</i>.
+                    Cambridge: Cambridge University Press, 2000.
+                <li>Schelling, Thomas C.
+                    <i>Micromotives and Macrobehavior</i>.
+                    New York: Norton, 2006.
                 <li>Slee, Tom.
                     <em>No One Makes You Shop At Walmart.</em>
                     Between the Lines, 2006.
             </ul>
 
+            <ul>
+                <li>Main Street image by Larry D. Moore, CC BY-SA 3.0,
+                    https://commons.wikimedia.org/w/index.php?curid=609290
+            </ul>
     </body>
 </html>
