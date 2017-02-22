@@ -29,6 +29,7 @@ if pa is None:
     # We should ask this for big boxes as well!
     pa.ask("rent", "What are the stores' rents?", int, default=10)
     pa.ask("bb_start_period", "On what period should Big Boxes Appear?", int, default=20)
+    pa.ask("pref_for_mp", "What's the consumer preference for mom and pops?", float, default=0.7)
     # We should ask this for big boxes as well!
 
 # Now we create a meadow for our agents to act within:
