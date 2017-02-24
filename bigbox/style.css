@@ -4,6 +4,7 @@ body {
     font-size: 16px;
     color: #333;
     background: #ddf;
+    font-family: Arial, Helvetica, sans-serif
 }
 
 table, th, td {
@@ -17,10 +18,20 @@ ol, ul, dl, li {
     margin: 8px 8px 8px 12px;
 }
 
+ol#present, ul#present, dl#present, li#present {
+    margin: 8px 24px 8px 24px;
+}
+
 p {
     margin: 8px 8px 8px 40px;
     padding: 0;
     line-height: 140%;
+}
+
+p#present {
+    margin: 16px 40px 16px 40px;
+    line-height: 180%;
+    font-size: 24px;
 }
 
 blockquote {
@@ -43,10 +54,19 @@ h1 {
     color: #cfc;
 }
 
+h1#present {
+    font-size: 36px;
+}
+
 h2 {
     font-size: 24px;
     margin: 20px 8px 12px 16px;
     color: #066;
+}
+
+h2#present {
+    font-size: 28px;
+    color: #a26;
 }
 
 h2.subhead {
@@ -63,6 +83,10 @@ h3 {
     font-weight: bold;
 }
 
+h3#present {
+    font-size: 26px;
+}
+
 h4 {
     font-size: 18px;
     margin: 16px 8px 12px 32px;
@@ -70,6 +94,9 @@ h4 {
     font-weight: bold;
 }
 
+h4#present {
+    font-size: 24px;
+}
 
 figure {
     text-align: center;
@@ -81,4 +108,8 @@ figcaption {
     font-style: italic;
     text-align: center;
     margin: 16px 20px 12px 20px;
+}
+
+li#present {
+    font-size: 24px;
 }
