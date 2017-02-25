@@ -110,6 +110,14 @@ figcaption {
     margin: 16px 20px 12px 20px;
 }
 
+figcaption#present {
+    font-size: 24px;
+}
+
 li#present {
     font-size: 24px;
+}
+
+code#present {
+    font-size: 22px;
 }

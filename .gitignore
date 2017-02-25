@@ -3,7 +3,6 @@
 *.log
 *.out
 *~
-*.png
 *.pyc
 .ropeproject
 __pycache__
