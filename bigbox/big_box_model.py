@@ -28,8 +28,8 @@ pa = utils.read_props(MODEL_NM)
 X = 0
 Y = 1
 
-MP = 0
-BB = 1
+MOM_POP = 0
+BIG_BOX = 1
 NUM_STATES = 2
 
 # types of goods sold
@@ -87,7 +87,8 @@ class Consumer(MarketParticipant):
                 that sell the good he wants.
         """
         view = self.env.get_square_view(center=self.pos,
-                                        distance=math.sqrt(self.env.width**2 + self.env.height**2))
+                                        distance=math.sqrt(self.env.width**2
+                                                           + self.env.height**2))
         n_census = []
         n_census.extend(self.neighbor_iter(view=view,
                                   filt_func=lambda x:
@@ -108,9 +109,9 @@ class Consumer(MarketParticipant):
         self.state_vec = markov.probvec_to_state(self.state_pre.matrix)
         self.state = markov.get_state(self.state_vec)
         
-        if(self.state == 0):
+        if(self.state == MOM_POP):
             self.preference = MomAndPop
-        if(self.state == 1):
+        else:
             self.preference = BigBox
 
         for store in n_census:
