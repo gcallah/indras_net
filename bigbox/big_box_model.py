@@ -16,10 +16,8 @@ import collections
 import math
 import indra.utils as utils
 import numpy as np
-import indra.vector_space as vs
-import indra.markov as markov
-import indra.markov_agent as ma
-import indra.markov_env as menv
+import indra.grid_agent as ga
+import indra.grid_env as ge
 
 MODEL_NM = "big_box_model"
 
@@ -44,7 +42,7 @@ GOODS_MAP = {0: "Hardware", 1: "Haircut", 2: "Groceries",
              3: "Books", 4: "Coffee"}
 
 
-class MarketParticipant(ma.MarkovAgent):
+class MarketParticipant(ga.GridAgent):
     """
     All agents in the small town participate in the economy. Only some
     sell goods of any type.
@@ -66,16 +64,15 @@ class Consumer(MarketParticipant):
     small shops stores, but will buy occasionally from big boxes.
 
     Attributes:
-        state: the number describing the agent's preference for a type of marketparticipant 
+        state: the number describing the agent's preference 
+        for a type of marketparticipant 
         allowance: The amount the agent will buy from a store.
-        preference: The marketparticipant the agent will buy from
     """
 
     def __init__(self, name, goal, init_state, allowance):
         super().__init__(name, goal, init_state)
         self.state = init_state
         self.allowance = allowance
-        self.preference = MomAndPop
 
     def survey_env(self):
         """
@@ -91,8 +88,7 @@ class Consumer(MarketParticipant):
                                                            + self.env.height**2))
         n_census = []
         n_census.extend(self.neighbor_iter(view=view,
-                                  filt_func=lambda x:
-                                  x.sells(self.goal)))
+                                  filt_func=lambda x: x.sells(self.goal)))
         return n_census
 
     def eval_env(self, n_census):
@@ -103,20 +99,9 @@ class Consumer(MarketParticipant):
         Args:
             n_census: a list of stores selling the agent's desired good
         Returns:
-            a store of the preferred type
+            a store selling that good
         """
-        self.state_pre = self.env.get_pre(self, n_census)
-        self.state_vec = markov.probvec_to_state(self.state_pre.matrix)
-        self.state = markov.get_state(self.state_vec)
-        
-        if(self.state == MOM_POP):
-            self.preference = MomAndPop
-        else:
-            self.preference = BigBox
-
-        for store in n_census:
-            if type(store) is self.preference:
-                return store
+        return random.choice(n_census)
                 
     def respond_to_cond(self, store):
         """
@@ -231,7 +216,7 @@ class BigBox(Retailer):
         return True
 
 
-class EverytownUSA(menv.MarkovEnv):
+class EverytownUSA(ge.GridEnv):
     """
     Just your typical city: filled with businesses and consumers.
     The city management will remove businesses that cannot pay rent!
@@ -239,7 +224,7 @@ class EverytownUSA(menv.MarkovEnv):
 
     def __init__(self, width, height, torus=False,
                  model_nm="Big Box Model"):
-        super().__init__(width=width, name=model_nm, height=height, torus=torus, # Two names?
+        super().__init__(width=width, name=model_nm, height=height, torus=torus,
                          model_nm=model_nm, postact=True)
 
     def postact_loop(self):
@@ -249,7 +234,7 @@ class EverytownUSA(menv.MarkovEnv):
         """
         super().postact_loop()
         # add big box store if right time.
-        if self.period == self.props.get("bb_start_period"):   # must be parameter!
+        if self.period == self.props.get("bb_start_period"):
             self.add_agent(BigBox("Big Box", goal="Dominance",
                         endowment=(self.props.get("endowment") * 1000),
                         rent=(self.props.get("rent"))))
@@ -259,43 +244,3 @@ class EverytownUSA(menv.MarkovEnv):
         Removes business from town.
         """
         self.remove_agent(business)
-
-    def get_pre(self, agent, n_census):
-        """
-        Args:
-            agent: the agent who is considering where to go 
-            n_census: a list of stores to which the agent may go
-        Returns:
-            a state vector prehension giving the probablility the
-            agent will go to a kind of marketparticipant
-        """
-        trans_str = ""
-
-        if(self.there_is(n_census, MomAndPop)):
-                # Test ... to un-hardcode later
-            trans_str += str(self.props.get("pref_for_mp")) + " "
-        else:
-            trans_str += "0.0 "
-
-        if(self.there_is(n_census, BigBox)):
-            trans_str += str(1-self.props.get("pref_for_mp"))
-        else:
-            trans_str += "0.0"
-
-        state_pre = markov.from_matrix(np.matrix(trans_str))
-        state_pre.matrix = vs.normalize(state_pre.matrix)
-        return state_pre
-
-    def there_is(self, n_census, vendor_type):
-        """
-        Is there this type of store in the area?
-
-        Args:
-            n_census: the complete list of stores
-            vendor_type: the type of marketparticipant 
-            we are looking to see is in the area
-        """
-        for store in n_census:
-            if type(store) is vendor_type:
-                return True
-        return False
