@@ -3,7 +3,7 @@
 """
 Created on Mon Mar  2 21:39:40 2015
 
-@author: Brandon
+@author: Brandon Logan and Gene Callahan
 
 Segregation Run File
 """
