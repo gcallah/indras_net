@@ -259,7 +259,9 @@ class EverytownUSA(ge.GridEnv):
         if self.period == self.props.get("bb_start_period"):
             self.add_agent(BigBox("Big Box", goal="Dominance",
                         endowment=(self.props.get("endowment") * BB_MULT),
-                        rent=(self.props.get("rent") * BB_MULT)))
+                        rent=(self.props.get("rent") * BB_MULT / 2)))
+            # div 2 because the better endowment / rent ratio is what lets
+            #  them outlast the M&Ps
 
     def foreclose(self, business):
         """
