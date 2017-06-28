@@ -26,9 +26,13 @@ pa = utils.read_props(MODEL_NM)
 X = 0
 Y = 1
 
+NA = -1.0    # good not available
+
 MOM_POP = 0
 BIG_BOX = 1
 NUM_STATES = 2
+
+BB_MULT = 1000
 
 # types of goods sold
 HARDWARE = 0
@@ -73,25 +77,29 @@ class Consumer(MarketParticipant):
         super().__init__(name, goal, init_state)
         self.state = init_state
         self.allowance = allowance
+        self.last_util = 0.0       # what statisfaction did they get from
+                                   # previous purchase?
+        self.view = None
 
     def survey_env(self):
         """
-        We survey the whole environment to see what stores sell the good we want.
+        We survey the whole environment to see what 
+        stores sell the good we want.
 
         Args: self
         Returns: 
-            store_count: a list of all the marketparticipants in agent's travel distance
-                that sell the good he wants.
+            store_count: a list of all the marketparticipants in agent's travel
+                distance that sell the good he wants.
         """
-        view = self.env.get_square_view(center=self.pos,
-                                        distance=math.sqrt(self.env.width**2
-                                                           + self.env.height**2))
-        n_census = []
-        n_census.extend(self.neighbor_iter(view=view,
+        if self.view is None:
+            self.view = self.env.get_square_view(center=self.pos,
+                distance=math.sqrt(self.env.width**2 + self.env.height**2))
+        sellers = []
+        sellers.extend(self.neighbor_iter(view=self.view,
                                   filt_func=lambda x: x.sells(self.goal)))
-        return n_census
+        return sellers
 
-    def eval_env(self, n_census):
+    def eval_env(self, sellers):
         """
         The Consumer determines who, of those who sell the good he desires,
         he will buy from.
@@ -101,8 +109,17 @@ class Consumer(MarketParticipant):
         Returns:
             a store selling that good
         """
-        return random.choice(n_census)
-                
+        top_seller = None
+        max_util = 0.0
+        for seller in sellers:
+            this_util = seller.utils_from_good(self.goal)
+            if this_util > max_util:
+                max_util = this_util
+                top_seller = seller
+        self.last_util = max_util
+        return top_seller
+
+
     def respond_to_cond(self, store):
         """
         The agent moves to a store and buys from it.
@@ -112,18 +129,17 @@ class Consumer(MarketParticipant):
         Returns:
             None
         """
-        # if we need to test that consumers are moving between stores,
-        # uncomment the following line:
-        # print(self.name + " heading to " + store.name)
-        self.move(store)
-        store.buy_from(self.allowance)
+        if store is not None:
+            # print(self.name + " heading to " + store.name)
+            self.move(store)
+            store.buy_from(self.allowance)
 
     def move(self, store):
         """
         Moves as close as possible to the store.
 
         Arg:
-            store: marketparticipant to which we move
+            store: retailer to which we move
         """
         open_spot = self.env.free_spot_near(store)
         if(open_spot is not None):
@@ -147,10 +163,11 @@ class Retailer(MarketParticipant):
         rent: how much is decremented from funds every step.
     """
 
-    def __init__(self, name, goal, endowment, rent):
+    def __init__(self, name, goal, endowment, rent, adj=0.0):
         super().__init__(name, goal)
         self.funds = endowment
         self.rent = rent
+        self.util_adj = adj
 
     def act(self):
         """
@@ -179,6 +196,11 @@ class Retailer(MarketParticipant):
         """
         self.funds -= amt
 
+    def utils_from_good(self, good):
+        if not self.sells(good):
+            return NA
+        else:
+            return random.random() + self.util_adj
 
 class MomAndPop(Retailer):
     """
@@ -189,8 +211,8 @@ class MomAndPop(Retailer):
             called "groceries")
     """
 
-    def __init__(self, name, goal, endowment, rent):
-        super().__init__(name, goal, endowment, rent)
+    def __init__(self, name, goal, endowment, rent, adj=0.0):
+        super().__init__(name, goal, endowment, rent, adj)
         self.ntype = GOODS_MAP[goal]
 
     def sells(self, good):
@@ -204,7 +226,7 @@ class BigBox(Retailer):
     """
     A BigBox store. It sells all goods.
     """
-    
+
     def __init__(self, name, goal, endowment, rent):
         super().__init__(name, goal, endowment, rent)
 
@@ -236,8 +258,8 @@ class EverytownUSA(ge.GridEnv):
         # add big box store if right time.
         if self.period == self.props.get("bb_start_period"):
             self.add_agent(BigBox("Big Box", goal="Dominance",
-                        endowment=(self.props.get("endowment") * 1000),
-                        rent=(self.props.get("rent"))))
+                        endowment=(self.props.get("endowment") * BB_MULT),
+                        rent=(self.props.get("rent") * BB_MULT)))
 
     def foreclose(self, business):
         """

@@ -24,13 +24,14 @@ if pa is None:
                         bb.NUM_GOODS)
     pa.ask("allowance", "What are the consumers' daily allowances?", 
            int, default=2)
+# right now, big box gets a multiple of m&p rent and endowment
     pa.ask("endowment", "What are the small shops' initial endowments?", 
            int, default=20)
-    # We should ask this for big boxes as well!
-    pa.ask("rent", "What are the stores' rents?", int, default=10)
-    pa.ask("bb_start_period", "On what period should Big Boxes Appear?", int, default=20)
-    pa.ask("pref_for_mp", "What's the consumer preference for mom and pops?", float, default=0.7)
-    # We should ask this for big boxes as well!
+    pa.ask("rent", "What are the stores' rents?", int, default=4)
+    pa.ask("bb_start_period", "At what period should big boxes Appear?",
+           int, default=20, limits=(1, 100))
+    pa.ask("pref_for_mp", "What's the consumer preference for mom and pops?",
+           float, default=0.2, limits=(0.0, 1.0))
 
 # Now we create a meadow for our agents to act within:
 env = bb.EverytownUSA(pa.get("grid_width"),
@@ -46,8 +47,10 @@ for i in range(pa.get("num_consumers")):
                               allowance=pa.get("allowance")))
 for i in range(pa.get("num_mom_and_pops")):
     env.add_agent(bb.MomAndPop("mom_and_pop" + str(i),
-                                 goal=(i % bb.NUM_GOODS),
-                                 endowment=pa.get("endowment"),
-                                 rent=pa.get("rent")))
+                               goal=(i % bb.NUM_GOODS),
+                               endowment=pa.get("endowment"),
+                               rent=pa.get("rent"),
+                               adj=pa.get("pref_for_mp")
+                               ))
 
 utils.run_model(env, prog_file, results_file)
