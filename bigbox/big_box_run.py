@@ -27,10 +27,12 @@ if pa is None:
 # right now, big box gets a multiple of m&p rent and endowment
     pa.ask("endowment", "What are the small shops' initial endowments?", 
            int, default=20)
-    pa.ask("rent", "What are the stores' rents?", int, default=4)
-    pa.ask("bb_start_period", "At what period should big boxes Appear?",
+    pa.ask("rent", "What are the small shops' rents?",
+           int, default=6)
+    pa.ask("bb_start_period", "At what period should big boxes appear?",
            int, default=20, limits=(1, 100))
-    pa.ask("pref_for_mp", "What's the consumer preference for mom and pops?",
+    pa.ask("pref_for_mp",
+           "What's the consumer preference for mom and pops?",
            float, default=0.2, limits=(0.0, 1.0))
 
 # Now we create a meadow for our agents to act within:

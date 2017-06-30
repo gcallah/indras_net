@@ -33,6 +33,7 @@ BIG_BOX = 1
 NUM_STATES = 2
 
 BB_MULT = 1000
+BB_EDGE = 8
 
 # types of goods sold
 HARDWARE = 0
@@ -42,8 +43,8 @@ BOOKS = 3
 COFFEE = 4
 NUM_GOODS = 5
 
-GOODS_MAP = {0: "Hardware", 1: "Haircut", 2: "Groceries",
-             3: "Books", 4: "Coffee"}
+GOODS_MAP = {0: "Hardware", 1: "Barber", 2: "Grocery",
+             3: "Book Store", 4: "Coffee Shop"}
 
 
 class MarketParticipant(ga.GridAgent):
@@ -173,7 +174,7 @@ class Retailer(MarketParticipant):
         """
         Loses money. If it goes bankrupt, the business goes away.
         """
-        print(self.funds)
+        print(self.name + " has capital of: " + str(self.funds))
         self.pay_bills(self.rent)
         if(self.funds <= 0):
             self.declare_bankruptcy()
@@ -212,8 +213,9 @@ class MomAndPop(Retailer):
     """
 
     def __init__(self, name, goal, endowment, rent, adj=0.0):
-        super().__init__(name, goal, endowment, rent, adj)
         self.ntype = GOODS_MAP[goal]
+        # name them after what good they sell:
+        super().__init__(self.ntype, goal, endowment, rent, adj)
 
     def sells(self, good):
         """
@@ -246,7 +248,8 @@ class EverytownUSA(ge.GridEnv):
 
     def __init__(self, width, height, torus=False,
                  model_nm="Big Box Model"):
-        super().__init__(width=width, name=model_nm, height=height, torus=torus,
+        super().__init__(width=width, name=model_nm,
+                         height=height, torus=torus,
                          model_nm=model_nm, postact=True)
 
     def postact_loop(self):
@@ -257,11 +260,12 @@ class EverytownUSA(ge.GridEnv):
         super().postact_loop()
         # add big box store if right time.
         if self.period == self.props.get("bb_start_period"):
-            self.add_agent(BigBox("Big Box", goal="Dominance",
+            self.add_agent(BigBox("Big Box Store",
+                        goal="Dominance",
                         endowment=(self.props.get("endowment") * BB_MULT),
-                        rent=(self.props.get("rent") * BB_MULT / 2)))
-            # div 2 because the better endowment / rent ratio is what lets
-            #  them outlast the M&Ps
+                        rent=(self.props.get("rent") * BB_MULT / BB_EDGE)))
+            # div BB_EDGE because the better endowment / rent
+            # ratio is what lets them outlast the M&Ps
 
     def foreclose(self, business):
         """
