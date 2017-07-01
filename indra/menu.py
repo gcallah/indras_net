@@ -106,21 +106,26 @@ class MainMenu(Menu):
 # view menu
         self.view = Menu("(v)iew", e, level=1)
         self.add_menu_item("v", self.view)
-        self.view.add_menu_item("l", MenuLeaf("(l)ist agents", e.list_agents))
+        self.view.add_menu_item("l", MenuLeaf("(l)ist agents",
+                                              e.list_agents))
         self.view.add_menu_item("p", MenuLeaf("(p)roperties", e.disp_props))
-        self.view.add_menu_item("v", MenuLeaf("(v)iew populations", e.view_pop))
+        self.view.add_menu_item("v", MenuLeaf("(v)iew line graph",
+                                              e.view_pop))
 # graph submenu
         self.graph = Menu("(g)raph", e, level=1)
         self.view.add_menu_item("g", self.graph)
         self.graph.add_menu_item("a", MenuLeaf("(a)gents", e.graph_agents))
-        self.graph.add_menu_item("c", MenuLeaf("(c)lasses", e.graph_class_tree))
-        self.graph.add_menu_item("e", MenuLeaf("(e)nvironment", e.graph_env))
+        self.graph.add_menu_item("c", MenuLeaf("(c)lasses",
+                                               e.graph_class_tree))
+        self.graph.add_menu_item("e", MenuLeaf("(e)nvironment",
+                                               e.graph_env))
         self.graph.add_menu_item("u", MenuLeaf("(u)niversals", e.graph_unv))
 
 # tools menu
         self.tools = Menu("(t)ools", e, level=1)
         self.add_menu_item("t", self.tools, default=True)
-        self.tools.add_menu_item("s", MenuLeaf("(s)tep", e.step), default=True)
+        self.tools.add_menu_item("s", MenuLeaf("(s)tep", e.step),
+                                 default=True)
         self.tools.add_menu_item("r", MenuLeaf("(r)un", e.cont_run))
         self.tools.add_menu_item("d", MenuLeaf("(d)ebug", e.debug))
         self.tools.add_menu_item("i", MenuLeaf("(i)Python", e.ipython))

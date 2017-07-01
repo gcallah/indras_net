@@ -14,10 +14,11 @@ change the population dynamic.
 import random
 import collections
 import math
-import indra.utils as utils
 import numpy as np
+import indra.utils as utils
 import indra.grid_agent as ga
 import indra.grid_env as ge
+import indra.display_methods as disp
 
 MODEL_NM = "big_box_model"
 
@@ -34,6 +35,8 @@ NUM_STATES = 2
 
 BB_MULT = 1000
 BB_EDGE = 200
+
+MIN_ADJ = 0.01  # never offer 0 utils for a purchase
 
 # types of goods sold
 HARDWARE = 0
@@ -164,7 +167,7 @@ class Retailer(MarketParticipant):
         rent: how much is decremented from funds every step.
     """
 
-    def __init__(self, name, goal, endowment, rent, adj=0.01):
+    def __init__(self, name, goal, endowment, rent, adj=MIN_ADJ):
         super().__init__(name, goal)
         self.funds = endowment
         self.rent = rent
@@ -212,7 +215,7 @@ class MomAndPop(Retailer):
         ntype: what it sells is its kind of store
     """
 
-    def __init__(self, name, goal, endowment, rent, adj=0.0):
+    def __init__(self, name, goal, endowment, rent, adj=MIN_ADJ):
         # name them after what good they sell:
         type = GOODS_MAP[goal]
         super().__init__(type, goal, endowment, rent, adj)
@@ -252,6 +255,7 @@ class EverytownUSA(ge.GridEnv):
         super().__init__(width=width, name=model_nm,
                          height=height, torus=torus,
                          model_nm=model_nm, postact=True)
+        self.utils_gained = 0.0
 
     def postact_loop(self):
         """
@@ -274,3 +278,26 @@ class EverytownUSA(ge.GridEnv):
         Removes business from town.
         """
         self.remove_agent(business)
+
+    def census(self, disp=True):
+        """
+        Take a census of our pops: here we want consumer util
+        graphed.
+        """
+        self.change_pop_data('Consumer', self.utils_gained)
+        for var in self.variety_iter(Consumer):
+            pop = self.get_pop_data(var)
+            self.append_pop_hist(var, pop)
+        self.change_pop_data('Consumer', -self.utils_gained)
+
+    def view_pop(self):
+        """
+        Draws a line graph of coupon exchanges
+        """
+        if self.period < 4:
+            print("Too little data to display")
+            return
+
+        (period, data) = self.line_data()
+        self.line_graph = disp.LineGraph("Consumer Utility",
+                                         data, period)

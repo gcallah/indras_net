@@ -57,12 +57,13 @@ class CoopEnv(env.Environment):
 
     def postact_loop(self):
         """
-        If an agent wants to go out, it hopes to find a babysitter, and pay them
+        If an agent wants to go out, it hopes to 
+        find a babysitter, and pay them
         """
         exchange = 0
         for agent in reversed(self.agents):
             if agent.goal == GO_OUT:
-                sitter = self.assignSitter()
+                sitter = self.assign_sitter()
                 if sitter is None:
                     pass
                 else:
@@ -74,7 +75,7 @@ class CoopEnv(env.Environment):
         print('\nCoupon exchanges in round ' + str(self.period)
               + ': ' + str(self.rd_exchanges) + '\n')
 
-    def assignSitter(self):
+    def assign_sitter(self):
         """
         Surveys the environment for available and willing babysitters
         """
