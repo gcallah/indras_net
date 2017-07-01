@@ -33,7 +33,7 @@ BIG_BOX = 1
 NUM_STATES = 2
 
 BB_MULT = 1000
-BB_EDGE = 8
+BB_EDGE = 200
 
 # types of goods sold
 HARDWARE = 0
@@ -133,7 +133,7 @@ class Consumer(MarketParticipant):
         if store is not None:
             # print(self.name + " heading to " + store.name)
             self.move(store)
-            store.buy_from(self.allowance)
+            store.purchase(self.allowance)
 
     def move(self, store):
         """
@@ -164,7 +164,7 @@ class Retailer(MarketParticipant):
         rent: how much is decremented from funds every step.
     """
 
-    def __init__(self, name, goal, endowment, rent, adj=0.0):
+    def __init__(self, name, goal, endowment, rent, adj=0.01):
         super().__init__(name, goal)
         self.funds = endowment
         self.rent = rent
@@ -174,14 +174,15 @@ class Retailer(MarketParticipant):
         """
         Loses money. If it goes bankrupt, the business goes away.
         """
-        print(self.name + " has capital of: " + str(self.funds))
+        print(self.name + " has capital of: " + str(self.funds)
+              + " and is paying rent of " + str(self.rent))
         self.pay_bills(self.rent)
         if(self.funds <= 0):
             self.declare_bankruptcy()
 
-    def buy_from(self, amt):
+    def purchase(self, amt):
         """
-        Agent buys from self, adding amt to self's funds.
+        Agent buys from retailer, adding amt to retailer's funds.
         """
         self.funds += amt
 
@@ -208,14 +209,14 @@ class MomAndPop(Retailer):
     A small mom and pop store. It sells only one kind of good.
 
     Attributes:
-        ntype: what it sells is its kind of store (e.g. if it sells groceries it is
-            called "groceries")
+        ntype: what it sells is its kind of store
     """
 
     def __init__(self, name, goal, endowment, rent, adj=0.0):
-        self.ntype = GOODS_MAP[goal]
         # name them after what good they sell:
-        super().__init__(self.ntype, goal, endowment, rent, adj)
+        type = GOODS_MAP[goal]
+        super().__init__(type, goal, endowment, rent, adj)
+        self.ntype = type
 
     def sells(self, good):
         """
@@ -263,7 +264,8 @@ class EverytownUSA(ge.GridEnv):
             self.add_agent(BigBox("Big Box Store",
                         goal="Dominance",
                         endowment=(self.props.get("endowment") * BB_MULT),
-                        rent=(self.props.get("rent") * BB_MULT / BB_EDGE)))
+                        rent=((self.props.get("rent") * BB_MULT)
+                              // BB_EDGE)))
             # div BB_EDGE because the better endowment / rent
             # ratio is what lets them outlast the M&Ps
 

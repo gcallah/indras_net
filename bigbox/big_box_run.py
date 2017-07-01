@@ -19,16 +19,17 @@ pa = utils.read_props(MODEL_NM)
 if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     utils.get_grid_dims(pa, 50)
-    utils.get_agent_num(pa, "num_consumers", "consumers", bb.NUM_GOODS * 5)
+    utils.get_agent_num(pa, "num_consumers", "consumers",
+                        bb.NUM_GOODS * 5 + 1)
     utils.get_agent_num(pa, "num_mom_and_pops", "mom and pop stores",
                         bb.NUM_GOODS)
     pa.ask("allowance", "What are the consumers' daily allowances?", 
            int, default=2)
 # right now, big box gets a multiple of m&p rent and endowment
     pa.ask("endowment", "What are the small shops' initial endowments?", 
-           int, default=20)
+           int, default=30)
     pa.ask("rent", "What are the small shops' rents?",
-           int, default=6)
+           int, default=10)
     pa.ask("bb_start_period", "At what period should big boxes appear?",
            int, default=20, limits=(1, 100))
     pa.ask("pref_for_mp",

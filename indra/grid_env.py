@@ -495,7 +495,7 @@ class GridEnv(se.SpatialEnv):
 
     def free_spot_near(self, agent):
         """
-        Looks for an empty cell near agent. If the board is full,
+        Looks for an empty cell near agent. If the grid is full,
         returns None. 
 
         Argument:
@@ -503,7 +503,7 @@ class GridEnv(se.SpatialEnv):
 
         Returns:
             Either (a) the position of this empty cell or
-            (b) null in which case the entire board is full
+            (b) null in which case the entire grid is full
             of agents.
         """
 
