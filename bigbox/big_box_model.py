@@ -35,7 +35,7 @@ BIG_BOX = 1
 NUM_STATES = 2
 
 BB_MULT = 1000
-BB_EDGE = 200
+BB_DIV = 200
 
 MIN_ADJ = 0.01  # never offer 0 utils for a purchase
 
@@ -100,8 +100,9 @@ class Consumer(MarketParticipant):
             self.view = self.env.get_square_view(center=self.pos,
                 distance=math.sqrt(self.env.width**2 + self.env.height**2))
         sellers = []
-        sellers.extend(self.neighbor_iter(view=self.view,
-                                  filt_func=lambda x: x.sells(self.goal)))
+        sellers.extend(self.neighbor_iter(
+                       view=self.view,
+                       filt_func=lambda x: x.sells(self.goal)))
         return sellers
 
     def eval_env(self, sellers):
@@ -123,7 +124,6 @@ class Consumer(MarketParticipant):
                 top_seller = seller
         self.last_utils = max_util
         return top_seller
-
 
     def respond_to_cond(self, store):
         """
@@ -277,9 +277,8 @@ class EverytownUSA(ge.GridEnv):
                         goal="Dominance",
                         endowment=(self.props.get("endowment") * BB_MULT),
                         expenses=((self.props.get("expenses") * BB_MULT)
-                              // BB_EDGE)))
-            # div BB_EDGE because the better endowment / expenses
-            # ratio is what lets them outlast the M&Ps
+                              // BB_DIV)))
+            # div BB_DIV sets the expense / capital ratio
 
     def foreclose(self, business):
         """

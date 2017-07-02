@@ -10,6 +10,7 @@ import big_box_model as bb
 
 # set up some file names:
 MODEL_NM = "BigBoxModel"
+
 (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
 
 # We store basic parameters in a "property" file; this allows us to save

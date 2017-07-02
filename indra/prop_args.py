@@ -12,6 +12,7 @@ import json
 import indra.node as node
 import indra.user as user
 
+SWITCH = '-'
 
 def in_range(low, val, high):
     return low <= val and val <= high
@@ -68,8 +69,8 @@ class PropArgs(node.Node):
         # process command line args and set them as properties:
         prop_nm = None
         for arg in sys.argv:
-            if arg.startswith('-'):
-                prop_nm = arg.lstrip('-')
+            if arg.startswith(SWITCH):
+                prop_nm = arg.lstrip(SWITCH)
             elif prop_nm is not None:
                 self.set(prop_nm, arg)
                 prop_nm = None
