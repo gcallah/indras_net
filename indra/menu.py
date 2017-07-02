@@ -109,7 +109,7 @@ class MainMenu(Menu):
         self.view.add_menu_item("l", MenuLeaf("(l)ist agents",
                                               e.list_agents))
         self.view.add_menu_item("p", MenuLeaf("(p)roperties", e.disp_props))
-        self.view.add_menu_item("v", MenuLeaf("(v)iew line graph",
+        self.view.add_menu_item("v", MenuLeaf("(v)iew populations",
                                               e.view_pop))
 # graph submenu
         self.graph = Menu("(g)raph", e, level=1)

@@ -51,6 +51,7 @@ class Environment(node.Node):
         self.postact = postact
         self.disp_census = False
         self.line_graph = None
+        self.line_graph_title = "Populations in "
         self.model_nm = model_nm
         if model_nm is not None:
             self.props = pa.PropArgs.get_props(model_nm)
@@ -68,6 +69,9 @@ class Environment(node.Node):
         self.graph.add_edge(self, self.menu)
         self.graph.add_edge(self, self.props)
         self.graph.add_edge(self, node.universals)
+
+    def add_variety(self, var):
+        self.agents.add_variety(var)
 
     def add_agent(self, agent):
         """
@@ -371,7 +375,7 @@ class Environment(node.Node):
             return
 
         (period, data) = self.line_data()
-        self.line_graph = disp.LineGraph('Populations in ' + self.name,
+        self.line_graph = disp.LineGraph(self.line_graph_title + self.name,
                                          data, period)
         self.line_graph.show()
 
@@ -397,11 +401,11 @@ class Environment(node.Node):
         """
         return self.agents.contains(agent_type)
 
-    def census(self, disp=True):
+    def census(self, disp=True, exclude_var=None):
         """
         Take a census of what is in the env.
         """
-        results = self.agents.census()
+        results = self.agents.census(exclude_var=exclude_var)
         if disp:
             self.user.tell("Populations in period "
                            + str(self.period) + ":")

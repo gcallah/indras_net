@@ -237,20 +237,21 @@ class AgentPop(node.Node):
         """
         self.vars[var]["pop_hist"].append(pop)
 
-    def census(self):
+    def census(self, exclude_var=None):
         """
         Take a census of agents by variety.
         Return a string of results for possible display.
         """
         ret = ""
         for v in self.varieties_iter():
-            pop = self.get_pop(v)
-            ret += v + ": " + str(pop) + "\n"
-            var = self.vars[v]
-            var["pop_hist"].append(pop)
-            # a type might enter the env after period 0!
-            # so we track that in my_periods
-            var["my_periods"] += 1
+            if v != exclude_var:
+                pop = self.get_pop(v)
+                ret += v + ": " + str(pop) + "\n"
+                var = self.vars[v]
+                var["pop_hist"].append(pop)
+                # a type might enter the env after period 0!
+                # so we track that in my_periods
+                var["my_periods"] += 1
         return ret
 
     def jsondump(self, obj):

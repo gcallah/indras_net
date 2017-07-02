@@ -16,6 +16,7 @@ import collections
 import math
 import numpy as np
 import indra.utils as utils
+import indra.menu as menu
 import indra.grid_agent as ga
 import indra.grid_env as ge
 import indra.display_methods as disp
@@ -81,7 +82,7 @@ class Consumer(MarketParticipant):
         super().__init__(name, goal, init_state)
         self.state = init_state
         self.allowance = allowance
-        self.last_util = 0.0       # what statisfaction did they get from
+        self.last_utils = 0.0      # what statisfaction did they get from
                                    # previous purchase?
         self.view = None
 
@@ -120,7 +121,7 @@ class Consumer(MarketParticipant):
             if this_util > max_util:
                 max_util = this_util
                 top_seller = seller
-        self.last_util = max_util
+        self.last_utils = max_util
         return top_seller
 
 
@@ -159,35 +160,37 @@ class Consumer(MarketParticipant):
 class Retailer(MarketParticipant):
     """
     A Retailer is a MarketParticipant, who not only sells goods, but who
-    is also responsible for paying bills and maintianing sufficent funds
+    is also responsible for paying bills and maintianing sufficent capital
     for operation.
 
     Attributes:
-        funds: If less than zero, the business disappears.
-        rent: how much is decremented from funds every step.
+        capital: If less than zero, the business disappears.
+        expenses: how much is decremented from capital every step.
     """
 
-    def __init__(self, name, goal, endowment, rent, adj=MIN_ADJ):
+    def __init__(self, name, goal, endowment, expenses, adj=MIN_ADJ):
         super().__init__(name, goal)
-        self.funds = endowment
-        self.rent = rent
+        self.capital = endowment
+        self.expenses = expenses
         self.util_adj = adj
 
     def act(self):
         """
         Loses money. If it goes bankrupt, the business goes away.
         """
-        print(self.name + " has capital of: " + str(self.funds)
-              + " and is paying rent of " + str(self.rent))
-        self.pay_bills(self.rent)
-        if(self.funds <= 0):
+        self.env.user.tell(self.name + " has capital of: "
+                           + str(self.capital)
+                           + " and is paying expenses of "
+                           + str(self.expenses))
+        self.pay_bills(self.expenses)
+        if(self.capital <= 0):
             self.declare_bankruptcy()
 
     def purchase(self, amt):
         """
-        Agent buys from retailer, adding amt to retailer's funds.
+        Agent buys from retailer, adding amt to retailer's capital.
         """
-        self.funds += amt
+        self.capital += amt
 
     def declare_bankruptcy(self):
         """
@@ -197,9 +200,9 @@ class Retailer(MarketParticipant):
 
     def pay_bills(self, amt):
         """
-        Lose funds.
+        Lose capital.
         """
-        self.funds -= amt
+        self.capital -= amt
 
     def utils_from_good(self, good):
         if not self.sells(good):
@@ -215,10 +218,10 @@ class MomAndPop(Retailer):
         ntype: what it sells is its kind of store
     """
 
-    def __init__(self, name, goal, endowment, rent, adj=MIN_ADJ):
+    def __init__(self, name, goal, endowment, expenses, adj=MIN_ADJ):
         # name them after what good they sell:
         type = GOODS_MAP[goal]
-        super().__init__(type, goal, endowment, rent, adj)
+        super().__init__(type, goal, endowment, expenses, adj)
         self.ntype = type
 
     def sells(self, good):
@@ -233,8 +236,8 @@ class BigBox(Retailer):
     A BigBox store. It sells all goods.
     """
 
-    def __init__(self, name, goal, endowment, rent):
-        super().__init__(name, goal, endowment, rent)
+    def __init__(self, name, goal, endowment, expenses):
+        super().__init__(name, goal, endowment, expenses)
 
     def sells(self, good):
         """
@@ -247,7 +250,7 @@ class BigBox(Retailer):
 class EverytownUSA(ge.GridEnv):
     """
     Just your typical city: filled with businesses and consumers.
-    The city management will remove businesses that cannot pay rent!
+    The city management will remove businesses that cannot pay expenses!
     """
 
     def __init__(self, width, height, torus=False,
@@ -255,7 +258,12 @@ class EverytownUSA(ge.GridEnv):
         super().__init__(width=width, name=model_nm,
                          height=height, torus=torus,
                          model_nm=model_nm, postact=True)
-        self.utils_gained = 0.0
+        self.utils = 0.0
+        self.line_graph_title = \
+            "Consumer utility versus # retailers in "
+        self.menu.view.add_menu_item("v", menu.MenuLeaf("(v)iew utility",
+                                     self.view_pop))
+        self.add_variety("BigBox")
 
     def postact_loop(self):
         """
@@ -268,9 +276,9 @@ class EverytownUSA(ge.GridEnv):
             self.add_agent(BigBox("Big Box Store",
                         goal="Dominance",
                         endowment=(self.props.get("endowment") * BB_MULT),
-                        rent=((self.props.get("rent") * BB_MULT)
+                        expenses=((self.props.get("expenses") * BB_MULT)
                               // BB_EDGE)))
-            # div BB_EDGE because the better endowment / rent
+            # div BB_EDGE because the better endowment / expenses
             # ratio is what lets them outlast the M&Ps
 
     def foreclose(self, business):
@@ -282,22 +290,11 @@ class EverytownUSA(ge.GridEnv):
     def census(self, disp=True):
         """
         Take a census of our pops: here we want consumer util
-        graphed.
+        graphed against numbers of other types.
         """
-        self.change_pop_data('Consumer', self.utils_gained)
-        for var in self.variety_iter(Consumer):
-            pop = self.get_pop_data(var)
-            self.append_pop_hist(var, pop)
-        self.change_pop_data('Consumer', -self.utils_gained)
-
-    def view_pop(self):
-        """
-        Draws a line graph of coupon exchanges
-        """
-        if self.period < 4:
-            print("Too little data to display")
-            return
-
-        (period, data) = self.line_data()
-        self.line_graph = disp.LineGraph("Consumer Utility",
-                                         data, period)
+        super().census(exclude_var="Consumer") # usual census for retailers
+        utils = 0
+        for shopper in self.variety_iter("Consumer"):
+            utils += shopper.last_utils
+        self.append_pop_hist("Consumer", utils)
+        self.user.tell("Utility gained this period: " + str(utils))
