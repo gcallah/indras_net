@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/Users/gcallah/miniconda3/bin/python
 """
 A script that runs big_box_model. It simulates the market economy
 of consumers, mom and pops, and big boxes.

@@ -1,19 +1,39 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(name='indras_net',
-      version='0.1',
-      description='A framework for agent-based modeling in Python.',
-      url='http://github.com/gcallah/indra',
-      author='Gene Callahan and Nathan Conroy',
-      author_email='gcallah@mac.com',
-      license='GNU',
-      packages=['indra'],
-      zip_safe=False
-      install_requires=[],
-      test_suite="",
-      entry_points={
-          "console_scripts": []
-  },
+    version='1.0',
+    description='A framework for agent-based modeling in Python.',
+    url='http://github.com/gcallah/indra',
+    author='Gene Callahan and Nathan Conroy',
+    author_email='gcallah@mac.com',
+    license='GNU',
+    zip_safe=False,
+    packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*",
+                                 "tests"]),
+    install_requires=[
+          "networkx",
+          "mkl",
+          "numpy",
+          "matplotlib",
+          "cycler",
+          "freetype",
+          "icu",
+          "libpng",
+          "matplotlib",
+          "pyqt",
+          "python-dateutil",
+          "pytz",
+          "qt",
+          "sip",
+          "clint",
+    ],
+    test_suite="",
+    entry_points={
+        "console_scripts": ["bigbox = bigbox.__main__:main",
+                            "schelling = schelling.__main__:main",
+                            "models = models.__main__:main"
+                           ]
+    },
 )
 
 
