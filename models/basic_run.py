@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/Users/gcallah/miniconda3/bin/python
 """
 This is a simple test script. It can be cloned to
 create new run scripts, and should be run to test

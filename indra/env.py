@@ -9,7 +9,6 @@ from collections import deque
 import time
 import pdb
 import getpass
-import IPython
 import networkx as nx
 import indra.display_methods as disp
 import indra.node as node
@@ -161,12 +160,6 @@ class Environment(node.Node):
         Invoke the python debugger.
         """
         pdb.set_trace()
-
-    def ipython(self):
-        """
-        Kick off iPython.
-        """
-        IPython.start_ipython(argv=[])
 
     def eval_code(self):
         """

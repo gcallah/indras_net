@@ -128,4 +128,3 @@ class MainMenu(Menu):
                                  default=True)
         self.tools.add_menu_item("r", MenuLeaf("(r)un", e.cont_run))
         self.tools.add_menu_item("d", MenuLeaf("(d)ebug", e.debug))
-        self.tools.add_menu_item("i", MenuLeaf("(i)Python", e.ipython))
