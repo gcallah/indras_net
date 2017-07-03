@@ -1,0 +1,15 @@
+networkx
+mkl
+numpy
+matplotlib
+cycler
+freetype
+icu
+libpng
+matplotlib
+pyqt
+python-dateutil
+pytz
+qt
+sip
+clint
