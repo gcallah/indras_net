@@ -9,7 +9,6 @@ memory will allow.
 
 # import logging
 from collections import OrderedDict
-import networkx as nx
 import indra.node as node
 import indra.user as user
 
@@ -21,9 +20,9 @@ class Menu(node.Node):
     Menu items off the main menu or a sub-menu.
     """
 
-    def __init__(self, name, env, level=0):
+    def __init__(self, name, user, level=0):
         super().__init__(name)
-        self.env = env
+        self.user = user
         self.menu_items = OrderedDict()
         self.def_act = None
         self.level = level
@@ -50,10 +49,10 @@ class Menu(node.Node):
         for _ltr, item in self.menu_items.items():
             disp_text += str(item) + " | "
         disp_text = disp_text.rstrip(" | ")
-        self.env.user.tell(disp_text, type=user.MENU,
+        self.user.tell(disp_text, type=user.MENU,
                            indnt=MENU_INDENT * self.level)
 
-        choice = self.env.user.ask_for_ltr(
+        choice = self.user.ask_for_ltr(
             "Choose one of the above and press Enter: ")
         if choice in self.menu_items:
             self.menu_items[choice].act()
@@ -74,57 +73,3 @@ class MenuLeaf(node.Node):
 
     def act(self):
         return self.func()
-
-
-class MainMenu(Menu):
-    """
-    Our basic menu.
-    """
-
-    def __init__(self, name, env):
-        super().__init__(name, env)
-        e = self.env
-        self.graph = nx.Graph()
-
-# file menu
-        self.file = Menu("(f)ile", e, level=1)
-        self.add_menu_item("f", self.file)
-        self.file.add_menu_item("e", MenuLeaf("(e)xamine log", e.disp_log))
-        self.file.add_menu_item("q", MenuLeaf("(q)uit", e.quit))
-        self.file.add_menu_item("w", MenuLeaf("(w)rite props", e.pwrite))
-
-# edit menu
-        self.edit = Menu("(e)dit", e, level=1)
-        self.add_menu_item("e", self.edit)
-        self.edit.add_menu_item("a", MenuLeaf("(a)dd agent", e.add))
-        self.edit.add_menu_item("i",
-                                MenuLeaf("(i)nspect agent",
-                                         e.agnt_inspect))
-        self.edit.add_menu_item("e",
-                                MenuLeaf("inspect (e)nv", e.env_inspect))
-
-# view menu
-        self.view = Menu("(v)iew", e, level=1)
-        self.add_menu_item("v", self.view)
-        self.view.add_menu_item("l", MenuLeaf("(l)ist agents",
-                                              e.list_agents))
-        self.view.add_menu_item("p", MenuLeaf("(p)roperties", e.disp_props))
-        self.view.add_menu_item("v", MenuLeaf("(v)iew populations",
-                                              e.view_pop))
-# graph submenu
-        self.graph = Menu("(g)raph", e, level=1)
-        self.view.add_menu_item("g", self.graph)
-        self.graph.add_menu_item("a", MenuLeaf("(a)gents", e.graph_agents))
-        self.graph.add_menu_item("c", MenuLeaf("(c)lasses",
-                                               e.graph_class_tree))
-        self.graph.add_menu_item("e", MenuLeaf("(e)nvironment",
-                                               e.graph_env))
-        self.graph.add_menu_item("u", MenuLeaf("(u)niversals", e.graph_unv))
-
-# tools menu
-        self.tools = Menu("(t)ools", e, level=1)
-        self.add_menu_item("t", self.tools, default=True)
-        self.tools.add_menu_item("s", MenuLeaf("(s)tep", e.step),
-                                 default=True)
-        self.tools.add_menu_item("r", MenuLeaf("(r)un", e.cont_run))
-        self.tools.add_menu_item("d", MenuLeaf("(d)ebug", e.debug))

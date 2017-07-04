@@ -4,6 +4,8 @@
 import sys
 import os
 
+from indra.menu import Menu, MenuLeaf
+
 models = {"Big Box": "big_box_run.py"}
 
 

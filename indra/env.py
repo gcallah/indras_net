@@ -12,7 +12,7 @@ import getpass
 import networkx as nx
 import indra.display_methods as disp
 import indra.node as node
-import indra.menu as menu
+import indra.main_menu as mm
 import indra.prop_args as pa
 import indra.agent_pop as ap
 import indra.user as user
@@ -64,7 +64,7 @@ class Environment(node.Node):
             user_type = self.props.get("user_type", user.TERMINAL)
         self.user = user.User(user_nm, user_type)
         self.graph.add_edge(self, self.user)
-        self.menu = menu.MainMenu("Main Menu", self)
+        self.menu = mm.MainMenu("Main Menu", self)
         self.graph.add_edge(self, self.menu)
         self.graph.add_edge(self, self.props)
         self.graph.add_edge(self, node.universals)
