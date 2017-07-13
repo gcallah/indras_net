@@ -259,11 +259,30 @@ class EverytownUSA(ge.GridEnv):
                          height=height, torus=torus,
                          model_nm=model_nm, postact=True)
         self.utils = 0.0
-        self.line_graph_title = \
-            "Consumer utility versus # retailers in "
         self.menu.view.add_menu_item("v", menu.MenuLeaf("(v)iew utility",
-                                     self.view_pop))
+                                     self.view_util))
         self.add_variety("BigBox")
+        self.mom_pop_pop = []
+        self.util_hist = []
+
+    def view_util(self):
+        """
+        Graph population of stores versus consumer utility.
+        """
+        if self.period < 4:
+            self.user.tell("Too little data to display")
+            return
+        data = disp.assemble_lgraph_data("Mom and Pops", self.mom_pop_pop,
+                                         disp.MAGENTA)
+        data = disp.assemble_lgraph_data("Consumer Utils", self.util_hist,
+                                         disp.GREEN, data=data)
+        data = disp.assemble_lgraph_data("Big Boxes",
+                                         self.agents.get_var_pop_hist("BigBox"),
+                                         disp.BLUE, data=data)
+
+        self.line_graph = disp.LineGraph("Consumer Utility vs. # Retailers",
+                                         data,
+                                         self.period)
 
     def postact_loop(self):
         """
@@ -295,6 +314,11 @@ class EverytownUSA(ge.GridEnv):
         utils = 0
         for shopper in self.variety_iter("Consumer"):
             utils += shopper.last_utils
-        self.append_pop_hist("Consumer", utils)
+        self.util_hist.append(utils)
         self.user.tell("Consumer utility gained this period: "
                        + str(int(utils)))
+        mp_count = 0
+        for agent in self.agents:
+            if isinstance(agent, MomAndPop):
+                mp_count += 1
+        self.mom_pop_pop.append(mp_count)

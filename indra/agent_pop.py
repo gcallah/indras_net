@@ -199,10 +199,13 @@ class AgentPop(node.Node):
         var = agent.get_type()
         return self.get_pop(var)
 
+    def get_var_pop_hist(self, var):
+        return self.vars[var]["pop_hist"]
+
     def get_pop_hist(self):
         """
         Make a list containing the population history
-        for each var in vars.
+        for each var in vars, if var is None.
         We should merge this with display_methods
         assemble data when we can.
         """

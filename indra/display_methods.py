@@ -87,9 +87,11 @@ def get_color(var, i):
     return color
 
 
-def assemble_lgraph_data(key, values, color):
+def assemble_lgraph_data(key, values, color, data=None):
     # put our data in right form for line graph
-    data = {}
+    if data is None:
+        data = {}
+
     data[key] = {}
     data[key]["data"] = values
     data[key]["color"] = color

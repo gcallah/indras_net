@@ -445,3 +445,6 @@ class Environment(node.Node):
 
     def append_pop_hist(self, var, pop):
         self.agents.append_pop_hist(var, pop)
+
+    def get_var_pop_hist(self, var):
+        return self.agents.get_var_pop_hist(var)
