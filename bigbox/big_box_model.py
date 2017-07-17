@@ -261,9 +261,22 @@ class EverytownUSA(ge.GridEnv):
         self.utils = 0.0
         self.menu.view.add_menu_item("v", menu.MenuLeaf("(v)iew utility",
                                      self.view_util))
+        self.menu.file.add_menu_item("u", menu.MenuLeaf("(u)tility report",
+                                     self.report_util))
         self.add_variety("BigBox")
         self.mom_pop_pop = []
         self.util_hist = []
+
+    def assemble_util_vars(self):
+        varieties = None
+        varieties = disp.assemble_lgraph_data("Mom and Pops", self.mom_pop_pop,
+                                         disp.MAGENTA)
+        varieties = disp.assemble_lgraph_data("Consumer Utils", self.util_hist,
+                                         disp.GREEN, data=varieties)
+        varieties = disp.assemble_lgraph_data("Big Boxes",
+                                         self.agents.get_var_pop_hist("BigBox"),
+                                         disp.BLUE, data=varieties)
+        return varieties
 
     def view_util(self):
         """
@@ -272,17 +285,36 @@ class EverytownUSA(ge.GridEnv):
         if self.period < 4:
             self.user.tell("Too little data to display")
             return
-        data = disp.assemble_lgraph_data("Mom and Pops", self.mom_pop_pop,
-                                         disp.MAGENTA)
-        data = disp.assemble_lgraph_data("Consumer Utils", self.util_hist,
-                                         disp.GREEN, data=data)
-        data = disp.assemble_lgraph_data("Big Boxes",
-                                         self.agents.get_var_pop_hist("BigBox"),
-                                         disp.BLUE, data=data)
 
         self.line_graph = disp.LineGraph("Consumer Utility vs. # Retailers",
-                                         data,
+                                         self.assemble_util_vars(),
                                          self.period)
+
+    def report_util(self):
+        """
+        Write CSV file with utility versus retail pop data.
+        """
+        file_nm = self.user.ask("Choose file name: ")
+        if len(file_nm) > 0:
+            f = open(file_nm, "w")
+            varieties = self.assemble_util_vars()
+            cols = []
+            head = ''
+            for i, var in enumerate(varieties):
+                head += (var + ",")
+                list = [] 
+                cols.append(
+                    varieties[var]["data"])
+            f.write(head + "\n")
+            num_cols = len(cols)
+            if num_cols > 0:
+                num_rows = len(cols[0])
+                for i in range(0, num_rows):
+                    srow = ''
+                    for j in range(0, num_cols):
+                        srow += (str(cols[j][i]) + ',')
+                    f.write(srow + "\n")
+            f.close()
 
     def postact_loop(self):
         """

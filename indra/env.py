@@ -254,7 +254,7 @@ class Environment(node.Node):
         Write out the properties to a file.
         """
         file_nm = self.user.ask("Choose file name: ")
-        if self.props is not None:
+        if len(file_nm) > 0 and self.props is not None:
             self.props.write(file_nm)
 
     def disp_props(self):
