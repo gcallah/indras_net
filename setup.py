@@ -28,5 +28,3 @@ setup(name='indras_net',
                            ]
     },
 )
-
-
