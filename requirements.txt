@@ -5,5 +5,5 @@ matplotlib
 cycler
 freetype
 icu
-libpng
+png
 matplotlib
