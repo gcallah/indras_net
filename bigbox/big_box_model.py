@@ -21,6 +21,7 @@ import indra.menu as menu
 import indra.grid_agent as ga
 import indra.grid_env as ge
 import indra.display_methods as disp
+import indra.data_methods as data
 
 MODEL_NM = "big_box_model"
 
@@ -296,26 +297,8 @@ class EverytownUSA(ge.GridEnv):
         Write CSV file with utility versus retail pop data.
         """
         file_nm = self.user.ask("Choose file name: ")
-        if len(file_nm) > 0:
-            f = open(file_nm, "w")
-            varieties = self.assemble_util_vars()
-            cols = []
-            head = ''
-            for i, var in enumerate(varieties):
-                head += (var + ",")
-                list = [] 
-                cols.append(
-                    varieties[var]["data"])
-            f.write(head + "\n")
-            num_cols = len(cols)
-            if num_cols > 0:
-                num_rows = len(cols[0])
-                for i in range(0, num_rows):
-                    srow = ''
-                    for j in range(0, num_cols):
-                        srow += (str(cols[j][i]) + ',')
-                    f.write(srow + "\n")
-            f.close()
+        varieties = self.assemble_util_vars()
+        data.pop_report(file_nm, varieties)
 
     def postact_loop(self):
         """
