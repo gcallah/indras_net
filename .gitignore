@@ -16,3 +16,4 @@ models/old_models/*
 *.swp
 *.sav
 ~$*
+.ipynb_checkpoints/
