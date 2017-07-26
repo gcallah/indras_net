@@ -1,6 +1,10 @@
 rm(list=ls())
 
-run.1 <- read.csv("mppref1.2/run1.csv")
+fileNames <- Sys.glob("mppref1.2/*.csv")
 
-run.1 <- run.1[-1, ]
-summary(run.1)
+for (fileName in fileNames) {
+    runX <- read.csv(fileName)
+
+    runX <- runX[-1, ]
+    print(summary(runX))
+}
