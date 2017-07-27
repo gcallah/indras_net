@@ -57,4 +57,5 @@ class MainMenu(Menu):
         self.tools.add_menu_item("s", MenuLeaf("(s)tep", e.step),
                                  default=True)
         self.tools.add_menu_item("r", MenuLeaf("(r)un", e.cont_run))
+        self.tools.add_menu_item("n", MenuLeaf("run (n) steps", e.n_steps))
         self.tools.add_menu_item("d", MenuLeaf("(d)ebug", e.debug))

@@ -233,6 +233,23 @@ class Environment(node.Node):
             else:
                 break
 
+    def n_steps(self):
+        """
+        Run for n steps.
+        """
+        steps = int(self.user.ask("Enter number of steps: "))
+        target = self.period + steps
+        self.user.tell("Running for %i steps; press Ctrl-c to halt!" % steps)
+        time.sleep(3)
+        try:
+            while self.period <= target:
+                step_msg = self.step()
+                if step_msg is not None:
+                    self.user.tell(step_msg)
+                    break
+        except KeyboardInterrupt:
+            pass
+
     def cont_run(self):
         """
         Run continuously.
