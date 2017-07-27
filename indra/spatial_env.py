@@ -7,6 +7,7 @@ from abc import abstractmethod
 import logging
 import indra.menu as menu
 import indra.env as env
+import indra.user as user
 import indra.display_methods as disp
 
 X = 0
@@ -63,6 +64,10 @@ class SpatialEnv(env.Environment):
         """
         Show where agents are in graphical form.
         """
+        if not disp.plt_present:
+            self.user.tell("No graphing package installed", type=user.ERROR)
+            return
+
         data = self.plot_data()
         self.scatter_plot = disp.ScatterPlot(
             self.plot_title, data,

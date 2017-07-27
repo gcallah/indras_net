@@ -8,10 +8,14 @@ for using matplotlib.
 from math import ceil
 import numpy as np
 import networkx as nx
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
 import logging
-plt.ion()
+plt_present = True
+try:
+    import matplotlib.pyplot as plt
+    import matplotlib.animation as animation
+    plt.ion()
+except ImportError:
+    plt_present = False
 
 
 BLUE = 'b'
@@ -70,12 +74,13 @@ def draw_graph(graph, title, hierarchy=False, root=None):
     graph is the graph to draw.
     hierarchy is whether we should draw it as a tree.
     """
-    pos = None
-    plt.title(title)
-    if hierarchy:
-        pos = hierarchy_pos(graph, root)
-    nx.draw(graph, pos=pos, with_labels=True)
-    plt.show()
+    if plt_present:
+        pos = None
+        plt.title(title)
+        if hierarchy:
+            pos = hierarchy_pos(graph, root)
+        nx.draw(graph, pos=pos, with_labels=True)
+        plt.show()
 
 
 def get_color(var, i):

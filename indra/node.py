@@ -31,6 +31,9 @@ class Node():
         """
         This draws our class hierarchy.
         """
+        if not disp.plt_present:
+            return
+
         if cls.class_graph is not None:
             disp.draw_graph(cls.class_graph, "Class Hierarchy",
                             hierarchy=True, root=Node.__name__)
@@ -67,6 +70,9 @@ class Node():
         The default is to draw a graph.
         Other types of nodes will need different draw functions.
         """
+        if not disp.plt_present:
+            return
+
         if self.graph is not None:
             disp.draw_graph(self.graph, self.name)
 

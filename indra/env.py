@@ -380,6 +380,9 @@ class Environment(node.Node):
         """
         Graph our population levels.
         """
+        if not disp.plt_present:
+            self.user.tell("No graphing package installed", type=user.ERROR)
+            return
         if self.period < 4:
             self.user.tell("Too little data to display", type=user.ERROR)
             return
