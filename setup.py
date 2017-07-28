@@ -12,7 +12,6 @@ setup(name='indras_net',
                                  "tests"]),
     install_requires=[
           "networkx",
-          "mkl",
           "numpy",
     ],
     test_suite="",
