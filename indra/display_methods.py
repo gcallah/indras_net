@@ -191,6 +191,7 @@ class ScatterPlot():
         plt.grid(True)
 
         if anim:
+            print("Animation is on.")
             animation.FuncAnimation(fig,
                                     self.update_plot,
                                     frames=1000,

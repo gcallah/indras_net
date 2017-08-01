@@ -13,20 +13,21 @@ import height_model as hm
 START_HEIGHT = 100.0
 
 MODEL_NM = "height_model"
-(prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
 
-pa = utils.read_props(MODEL_NM)
-if pa is None:
-    pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
-    utils.get_agent_num(pa, "num_agents", "agents", 80)
+def run():
+    (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
+    pa = utils.read_props(MODEL_NM)
+    if pa is None:
+        pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
+        utils.get_agent_num(pa, "num_agents", "agents", 80)
+    env = hm.HeightEnv(model_nm=MODEL_NM)
+    for i in range(pa.get("num_agents")):
+            env.add_agent(
+                hm.HeightAgentEng('Eng agent' + str(i),
+                                  START_HEIGHT, START_HEIGHT))
+            env.add_agent(
+                hm.HeightAgent('agent' + str(i), START_HEIGHT, START_HEIGHT))
+    utils.run_model(env, prog_file, results_file)
 
-env = hm.HeightEnv(model_nm=MODEL_NM)
-
-for i in range(pa.get("num_agents")):
-        env.add_agent(
-            hm.HeightAgentEng('Eng agent' + str(i),
-                              START_HEIGHT, START_HEIGHT))
-        env.add_agent(
-            hm.HeightAgent('agent' + str(i), START_HEIGHT, START_HEIGHT))
-
-utils.run_model(env, prog_file, results_file)
+if __name__ == "__main__":
+    run()
