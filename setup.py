@@ -16,9 +16,6 @@ setup(name='indras_net',
     ],
     test_suite="",
     entry_points={
-        "console_scripts": ["bigbox = bigbox.__main__:main",
-                            "schelling = schelling.__main__:main",
-                            "models = models.__main__:main"
-                           ]
+        "console_scripts": ['indra = indra.__main__:main']
     },
 )
