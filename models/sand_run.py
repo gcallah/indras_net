@@ -5,7 +5,7 @@ A script to test our grid capabilities.
 
 import indra.utils as utils
 import indra.prop_args as props
-import sand_model as sm
+import models.sand_model as sm
 
 # set up some file names:
 MODEL_NM = "grid_model"

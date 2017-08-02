@@ -8,7 +8,7 @@ Implements Paul Krugman's babysitting co-op model.
 
 import indra.utils as utils
 import indra.prop_args as props
-import coop_model as cm
+import models.coop_model as cm
 
 MODEL_NM = "coop_model"
 

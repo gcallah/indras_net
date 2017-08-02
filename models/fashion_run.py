@@ -5,7 +5,7 @@ Runs a fashion model with hipsters and followers.
 
 import indra.utils as utils
 import indra.prop_args as props
-import fashion_model as fm
+import models.fashion_model as fm
 
 # set up some file names:
 MODEL_NM = "fashion_model"

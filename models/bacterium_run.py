@@ -6,7 +6,7 @@ A script to run the bacterium model.
 import indra.utils as utils
 import indra.prop_args as props
 import indra.grid_env as ge
-import bacterium_model as bm
+import models.bacterium_model as bm
 
 # set up some file names:
 MODEL_NM = "grid_model"

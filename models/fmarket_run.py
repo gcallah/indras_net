@@ -5,7 +5,7 @@ Runs a financial market model with value investors and chart followers.
 
 import indra.utils as utils
 import indra.prop_args as props
-import fmarket_model as fm
+import models.fmarket_model as fm
 
 # set up some file names:
 MODEL_NM = "fmarket_model"

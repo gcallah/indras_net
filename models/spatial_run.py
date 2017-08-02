@@ -6,7 +6,7 @@ A script to test our spatial capabilities.
 import indra.utils as utils
 import indra.prop_args as props
 import indra.spatial_env as se
-import spatial_model as sm
+import models.spatial_model as sm
 
 # set up some file names:
 MODEL_NM = "spatial_model"

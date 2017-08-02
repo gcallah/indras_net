@@ -7,7 +7,7 @@ the system after library changes.
 
 import indra.utils as utils
 import indra.prop_args as props
-import menu_model as mm
+import models.menu_model as mm
 
 # set up some file names:
 MODEL_NM = "menu_model"

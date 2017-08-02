@@ -5,7 +5,7 @@ This file runs the forestfire_model.
 
 import indra.prop_args as props
 import indra.utils as utils
-import forestfire_model as fm
+import models.forestfire_model as fm
 
 DEF_GRID_DIM = 80
 DEF_DENS = .43

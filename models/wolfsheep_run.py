@@ -5,7 +5,7 @@ A predator-prey model with wolves and sheep.
 
 import indra.utils as utils
 import indra.prop_args as props
-import wolfsheep_model as wsm
+import models.wolfsheep_model as wsm
 
 # set up some file names:
 MODEL_NM = "wolfsheep_model"
