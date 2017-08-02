@@ -5,7 +5,7 @@ Set up and run the auditorium model.
 
 import indra.utils as utils
 import indra.prop_args as props
-import auditorium_model as am
+import schelling.auditorium_model as am
 
 # set up some file names:
 MODEL_NM = "auditorium_model"

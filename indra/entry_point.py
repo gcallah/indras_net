@@ -5,19 +5,12 @@ import sys
 import os
 
 MODEL_NAME = 0
-MODEL_SCRIPT = 1
+MODEL_RUN = 1
 
 
 def entry_point(args, models):
-    if args is None:
-        args = sys.argv[1:]
-
     print("In this module, the models available to run are: ")
     for num, model in models.items():
-        print(num + ". " + model[MODEL_NAME])
-    choice = input("Enter model number to run it: ")
-
-    try:
-        os.system("./" + models[choice][MODEL_SCRIPT])
-    except Exception:
-        print("Invalid choice.")
+        print(str(num) + ". " + model[MODEL_NAME])
+    choice = int(input("Enter model number to run it: "))
+    models[choice][MODEL_RUN]()

@@ -10,7 +10,7 @@ Segregation Run File
 
 import indra.utils as utils
 import indra.prop_args as props
-import segregation_model as sm
+import schelling.segregation_model as sm
 
 # set up some file names:
 MODEL_NM = "segregation_model"

@@ -8,7 +8,7 @@ Created on Thu Sep 18 16:45:50 2014
 
 import indra.utils as utils
 import indra.prop_args as props
-import height_model as hm
+import schelling.height_model as hm
 
 START_HEIGHT = 100.0
 
