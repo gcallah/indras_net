@@ -1,9 +1,2 @@
 networkx
-mkl
 numpy
-matplotlib
-cycler
-freetype
-icu
-png
-matplotlib
