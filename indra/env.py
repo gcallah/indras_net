@@ -62,11 +62,11 @@ class Environment(node.Node):
         if self.props is not None:
             self.props.set("user_name", user_nm)
             user_type = self.props.get("user_type", user.TERMINAL)
+            self.graph.add_edge(self, self.props)
         self.user = user.User(user_nm, user_type)
         self.graph.add_edge(self, self.user)
         self.menu = mm.MainMenu("Main Menu", self)
         self.graph.add_edge(self, self.menu)
-        self.graph.add_edge(self, self.props)
         self.graph.add_edge(self, node.universals)
 
     def add_variety(self, var):
@@ -181,11 +181,14 @@ class Environment(node.Node):
         """
         Add a new agent to the env.
         """
-        exec("import " + self.props.get("model")
-             + " as m")
-        constr = self.user.ask("Enter constructor for agent to add: ")
-        new_agent = eval("m." + constr)
-        self.add_agent(new_agent)
+        if self.props is not None:
+            exec("import " + self.props.get("model")
+                 + " as m")
+            constr = self.user.ask("Enter constructor for agent to add: ")
+            new_agent = eval("m." + constr)
+            self.add_agent(new_agent)
+        else:
+            self.user.tell("Props missing; can't add agent.")
 
     def agnt_inspect(self):
         """
@@ -278,7 +281,8 @@ class Environment(node.Node):
         """
         Display current system properties.
         """
-        self.user.tell(self.props.display())
+        if self.props is not None:
+            self.user.tell(self.props.display())
 
     def disp_log(self):
         """
@@ -286,8 +290,10 @@ class Environment(node.Node):
         """
 
         MAX_LINES = 16
+        logfile = None
 
-        logfile = self.props.get_logfile()
+        if self.props is not None:
+            logfile = self.props.get_logfile()
 
         if logfile is None:
             self.user.tell("No log file to examine!")
