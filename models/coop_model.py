@@ -50,9 +50,10 @@ class CoopEnv(env.Environment):
     An environment the co-op agents use to survey and interact
     """
 
-    def __init__(self, model_nm=ENV_NM):
+    def __init__(self, model_nm=ENV_NM, props=None):
         super().__init__("Co-op Environment",
-                         model_nm=model_nm, postact=True)
+                         model_nm=model_nm, postact=True,
+                         props=props)
         self.rd_exchanges = 0
 
     def postact_loop(self):

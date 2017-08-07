@@ -38,7 +38,8 @@ def run():
     # Now we create a town for our agents to act in:
     env = bb.EverytownUSA(pa.get("grid_width"),
                           pa.get("grid_height"),
-                          model_nm=MODEL_NM)
+                          model_nm=MODEL_NM,
+                          props=pa)
     # Now we loop creating multiple agents with numbered names
     # based on the number of agents of that type to create:
     for i in range(pa.get("num_consumers")):

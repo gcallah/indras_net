@@ -101,10 +101,10 @@ class SegregationEnv(grid.GridEnv):
     """
 
     def __init__(self, name, width, height, torus=False,
-                 model_nm="Segregation"):
+                 model_nm="Segregation", props=None):
 
         super().__init__(name, width, height, torus=False,
-                         model_nm=model_nm)
+                         model_nm=model_nm, props=props)
         self.plot_title = name
         # setting our colors adds varieties as well!
         self.set_var_color(AGENT_TYPES[BLUE], 'b')

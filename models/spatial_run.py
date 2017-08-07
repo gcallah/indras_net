@@ -22,7 +22,7 @@ if pa is None:
 
 # Now we create a minimal environment for our agents to act within:
 env = se.SpatialEnv("Test spatial env", 100.0, 100.0,
-                    model_nm=MODEL_NM)
+                    model_nm=MODEL_NM, props=pa)
 
 # Now we loop creating multiple agents with numbered names
 # based on the loop variable:

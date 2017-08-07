@@ -20,10 +20,11 @@ class SpatialEnv(env.Environment):
     complex plane.
     """
     def __init__(self, name, width, height, preact=True,
-                 postact=False, model_nm=None):
+                 postact=False, model_nm=None, props=None):
 
         super().__init__(name, preact=preact,
-                         postact=postact, model_nm=model_nm)
+                         postact=postact, model_nm=model_nm,
+                         props=props)
 
         self.disp_census = True
         self.width = width

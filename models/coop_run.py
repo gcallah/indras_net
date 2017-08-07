@@ -23,7 +23,7 @@ def run():
                "What is a co-op member's minimum desired holding of coupons?",
                float, default=7.5, limits=(1.0, 20.0))
     
-    env = cm.CoopEnv(model_nm=MODEL_NM)
+    env = cm.CoopEnv(model_nm=MODEL_NM, props=pa)
     
     for i in range(pa.get("num_agents")):
         env.add_agent(

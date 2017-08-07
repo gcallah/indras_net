@@ -69,9 +69,10 @@ class FinMarket(tp.TwoPopEnv):
     """
     A society of value investors and chart followers.
     """
-    def __init__(self, name, length, height, model_nm=None, torus=False):
+    def __init__(self, name, length, height, model_nm=None, torus=False,
+                props=None):
         super().__init__(name, length, height, model_nm=model_nm,
-                         torus=False, postact=True)
+                         torus=False, postact=True, props=props)
         self.total_pop = 0  # to be set once we add agents
         self.asset_price = INIT_PRICE  # an arbitrary starting point
         self.price_hist = []

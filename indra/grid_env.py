@@ -227,7 +227,7 @@ class GridEnv(se.SpatialEnv):
     """
 
     def __init__(self, name, width, height, torus=False,
-                preact=False, postact=False, model_nm=None):
+                preact=False, postact=False, model_nm=None, props=None):
         """
         Create a new grid.
 
@@ -235,7 +235,9 @@ class GridEnv(se.SpatialEnv):
             height, width: The height and width of the grid
             torus: Boolean whether the grid wraps or not.
         """
-        super().__init__(name, width, height, preact, postact, model_nm)
+        super().__init__(name, width, height,
+                         preact=preact, postact=postact,
+                         model_nm=model_nm, props=props)
 
         self.torus = torus
         self.num_cells = width * height

@@ -66,8 +66,9 @@ class HeightEnv(env.Environment):
     This class creates an environment for Schelling height agents
     """
 
-    def __init__(self, model_nm=None):
-        super().__init__("Height Environment", model_nm=model_nm, preact=True)
+    def __init__(self, model_nm=None, props=None):
+        super().__init__("Height Environment", model_nm=model_nm, preact=True,
+                        props=props)
         self.avg_height = {}
         self.runt_height = 0
 

@@ -25,7 +25,7 @@ def run():
         utils.get_agent_num(pa, "num_agents", "agents", 16)
     
     # Now we create a minimal environment for our agents to act within:
-    env = bm.BasicEnv(model_nm=MODEL_NM)
+    env = bm.BasicEnv(model_nm=MODEL_NM, props=pa)
     
     # Now we loop creating multiple agents
     #  with numbered names based on the loop variable:

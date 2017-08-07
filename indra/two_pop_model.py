@@ -120,9 +120,9 @@ class TwoPopEnv(ge.GridEnv):
         adding menu items, drawing a graph.
     """
     def __init__(self, name, length, height, model_nm=None, torus=False,
-                 postact=True):
+                 postact=True, props=None):
         super().__init__(name, length, height, model_nm=model_nm,
-                         torus=False, postact=postact)
+                         torus=False, postact=postact, props=props)
         # sub-models will override these vague names with something
         # meaningful in those models
         self.stances = ["yes", "no"]

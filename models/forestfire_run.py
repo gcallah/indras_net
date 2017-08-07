@@ -40,7 +40,8 @@ def run():
     # Now we create a forest environment for our agents to act within:
     env = fm.ForestEnv(grid_x, grid_y, density, pa.get("strike_freq"),
                        pa.get("regen_period"),
-                       model_nm=MODEL_NM, torus=False)
+                       model_nm=MODEL_NM, torus=False,
+                       props=pa)
     num_agents = int(grid_x * grid_y * density)
     
     for i in range(num_agents):

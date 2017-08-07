@@ -30,7 +30,8 @@ def run():
                      torus=False,
                      model_nm=MODEL_NM,
                      preact=True,
-                     postact=True)
+                     postact=True,
+                     props=pa)
     
     # Now we loop creating multiple agents with numbered names
     # based on the loop variable:

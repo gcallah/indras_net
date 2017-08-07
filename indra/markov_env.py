@@ -39,7 +39,7 @@ class MarkovEnv(ge.GridEnv):
 
     def __init__(self, name, width, height, trans_str=None, torus=False,
                  matrix_dim=2, model_nm=None, preact=False, postact=False,
-                 mobile_agents=False):
+                 mobile_agents=False, props=None):
         """
         Create a new markov env. By default the transition matrix is identity.
         """
@@ -48,7 +48,7 @@ class MarkovEnv(ge.GridEnv):
         else:
             self.def_trans_matrix = markov.MarkovPre(trans_str)
         super().__init__(name, width, height, torus, preact,
-                         postact, model_nm)
+                         postact, model_nm=model_nm, props=props)
 
     def __new_cell__(self, coords):
         return MarkovCell(coords, trans_matrix=self.def_trans_matrix)

@@ -25,7 +25,7 @@ def run():
         pa.set("num_agents", 10)
     
     # Now we create a minimal environment for our agents to act within:
-    env = mm.MenuEnv(model_nm=MODEL_NM)
+    env = mm.MenuEnv(model_nm=MODEL_NM, props=pa)
     
     # Now we loop creating multiple agents
     #  with numbered names based on the loop variable:

@@ -65,11 +65,12 @@ class BasicEnv(env.Environment):
     This environment doesn't really do anything.
     """
 
-    def __init__(self, model_nm=None):
+    def __init__(self, model_nm=None, props=None):
         super().__init__("Basic environment",
                          preact=True,
                          postact=True,
-                         model_nm=model_nm)
+                         model_nm=model_nm,
+                         props=props)
 
     def preact_loop(self):
         print("Preact loop: demonstrating backwards looping")

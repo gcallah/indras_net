@@ -256,10 +256,11 @@ class EverytownUSA(ge.GridEnv):
     """
 
     def __init__(self, width, height, torus=False,
-                 model_nm="Big Box Model"):
+                 model_nm="Big Box Model", props=None):
         super().__init__(width=width, name=model_nm,
                          height=height, torus=torus,
-                         model_nm=model_nm, postact=True)
+                         model_nm=model_nm, postact=True,
+                         props=props)
         self.utils = 0.0
         self.menu.view.add_menu_item("v", menu.MenuLeaf("(v)iew utility",
                                      self.view_util))

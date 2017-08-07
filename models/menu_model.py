@@ -13,7 +13,7 @@ class MenuAgent(ent.Agent):
 
     def __init__(self, name, goal):
         """
-        A very menu init.
+        A simple menu init.
         """
         super().__init__(name, goal)
 
@@ -29,6 +29,8 @@ class MenuEnv(env.Environment):
     This environment is to test menu features
     """
 
-    def __init__(self, model_nm=None):
+    def __init__(self, model_nm=None, props=None):
         super().__init__("Menu test",
-                         model_nm=model_nm, postact=True)
+                         model_nm=model_nm,
+                         postact=True,
+                         props=props)

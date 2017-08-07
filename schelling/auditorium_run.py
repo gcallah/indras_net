@@ -29,7 +29,8 @@ def run():
                         width=pa.get("grid_width"),
                         torus=False,
                         model_nm=MODEL_NM,
-                        num_agents=pa.get("num_agents"))
+                        num_agents=pa.get("num_agents"),
+                        props=pa)
     
     utils.run_model(env, prog_file, results_file)
 

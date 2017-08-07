@@ -79,7 +79,8 @@ class ForestEnv(menv.MarkovEnv):
     Simple Forest Fire model.
     '''
     def __init__(self, width, height, density, strike_freq, regen_period,
-                 torus=False, model_nm="ForestFire", postact=True):
+                 torus=False, model_nm="ForestFire", postact=True,
+                 props=None):
         '''
         Create a new forest fire model.
 
@@ -89,7 +90,8 @@ class ForestEnv(menv.MarkovEnv):
         '''
         # Initialize model parameters
         super().__init__("Forest Fire", width, height, NORMAL_TRANS,
-                         torus=False, model_nm=model_nm, postact=postact)
+                         torus=False, model_nm=model_nm, postact=postact,
+                         props=props)
         self.density = density
         self.plot_title = "A Forest Fire"
 

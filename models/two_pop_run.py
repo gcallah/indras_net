@@ -29,7 +29,8 @@ def run():
                      pa.get("grid_height"),
                      torus=False,
                      model_nm=MODEL_NM,
-                     postact=True)
+                     postact=True,
+                     props=pa)
     
     # Now we loop creating multiple agents with numbered names
     # based on the loop variable:

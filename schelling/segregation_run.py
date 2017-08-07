@@ -33,7 +33,8 @@ def run():
     # Now we create an environment for our agents to act within:
     env = sm.SegregationEnv("A city",
                             pa.get("grid_width"),
-                            pa.get("grid_height"))
+                            pa.get("grid_height"),
+                            props=pa)
     # Now we loop creating multiple agents with numbered names
     # based on the loop variable:
     for i in range(pa.get("num_B_agents")):

@@ -90,9 +90,9 @@ class Auditorium(ge.GridEnv):
                 raise StopIteration()
 
     def __init__(self, name, height=36, width=40, torus=False,
-                 model_nm="Auditorium", num_agents=800):
+                 model_nm="Auditorium", num_agents=800, props=None):
         super().__init__(name, width, height, torus=torus,
-                         model_nm=model_nm)
+                         model_nm=model_nm, props=props)
         self.total_agents = num_agents
         self.curr_agents = 0
 

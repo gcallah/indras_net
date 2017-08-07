@@ -31,9 +31,10 @@ class Society(tp.TwoPopEnv):
     """
     A society of hipsters and followers.
     """
-    def __init__(self, name, length, height, model_nm=None, torus=False):
+    def __init__(self, name, length, height, model_nm=None, torus=False,
+                props=None):
         super().__init__(name, length, height, model_nm=model_nm,
-                         torus=False, postact=True)
+                         torus=False, postact=True, props=props)
         self.stances = ["blue", "red"]
         self.line_graph_title = \
             "A. Smith's fashion model: Populations in %s adopting fashion %s"

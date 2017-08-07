@@ -20,7 +20,7 @@ def run():
     if pa is None:
         pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
         utils.get_agent_num(pa, "num_agents", "agents", 80)
-    env = hm.HeightEnv(model_nm=MODEL_NM)
+    env = hm.HeightEnv(model_nm=MODEL_NM, props=pa)
     for i in range(pa.get("num_agents")):
             env.add_agent(
                 hm.HeightAgentEng('Eng agent' + str(i),

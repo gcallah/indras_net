@@ -25,7 +25,8 @@ def run():
     env = sm.SandEnv("Abelian sand env",
                      pa.get("grid_width"),
                      pa.get("grid_height"),
-                     model_nm=MODEL_NM)
+                     model_nm=MODEL_NM,
+                     props=pa)
     
     # This env adds agents itself.
     

@@ -35,7 +35,7 @@ class Environment(node.Node):
     prev_period = 0  # in case we need to restore state
 
     def __init__(self, name, preact=False,
-                 postact=False, model_nm=None):
+                 postact=False, model_nm=None, props=None):
         super().__init__(name)
         self.graph = nx.Graph()
         pop_name = ""
@@ -52,10 +52,13 @@ class Environment(node.Node):
         self.line_graph = None
         self.line_graph_title = "Populations in "
         self.model_nm = model_nm
-        if model_nm is not None:
-            self.props = pa.PropArgs.get_props(model_nm)
+        if props is None:
+            if model_nm is not None:
+                self.props = pa.PropArgs.get_props(model_nm)
+            else:
+                self.props = None
         else:
-            self.props = None
+            self.props = props
 
         user_nm = getpass.getuser()
         user_type = user.TERMINAL
@@ -64,6 +67,10 @@ class Environment(node.Node):
             user_type = self.props.get("user_type", user.TERMINAL)
             self.graph.add_edge(self, self.props)
         self.user = user.User(user_nm, user_type)
+        # we have to wait until user is set to do...
+        if self.props is None:
+            self.user.tell("Could not get props; model_nm = " + str(model_nm),
+                           type=user.ERROR)
         self.graph.add_edge(self, self.user)
         self.menu = mm.MainMenu("Main Menu", self)
         self.graph.add_edge(self, self.menu)
@@ -188,7 +195,7 @@ class Environment(node.Node):
             new_agent = eval("m." + constr)
             self.add_agent(new_agent)
         else:
-            self.user.tell("Props missing; can't add agent.")
+            self.user.tell("Props missing; can't add agent.", type=user.ERROR)
 
     def agnt_inspect(self):
         """
@@ -283,6 +290,8 @@ class Environment(node.Node):
         """
         if self.props is not None:
             self.user.tell(self.props.display())
+        else:
+            self.user.tell("Props missing; cannot be displayed.")
 
     def disp_log(self):
         """
@@ -294,9 +303,14 @@ class Environment(node.Node):
 
         if self.props is not None:
             logfile = self.props.get_logfile()
+        else:
+            self.user.tell("Props missing; cannot identify log file!",
+                          type=user.ERROR)
+            return
 
         if logfile is None:
-            self.user.tell("No log file to examine!")
+            self.user.tell("No log file to examine!", type=user.ERROR)
+            return
 
         last_n_lines = deque(maxlen=MAX_LINES)  # for now hard-coded
 
