@@ -49,7 +49,6 @@ class MainMenu(Menu):
                                                e.graph_class_tree))
         self.graph.add_menu_item("e", MenuLeaf("(e)nvironment",
                                                e.graph_env))
-        self.graph.add_menu_item("u", MenuLeaf("(u)niversals", e.graph_unv))
 
 # tools menu
         self.tools = Menu("(t)ools", e.user, level=1)
