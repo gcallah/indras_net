@@ -29,11 +29,18 @@ class Menu(node.Node):
 
     def add_menu_item(self, letter, item, default=False):
         """
-        Add an item to the this menu.
+        Add an item to this menu.
         """
         self.menu_items[letter] = item
         if default:
             self.def_act = item.act
+
+    def del_menu_item(self, letter):
+        """
+        Delete an item from this menu.
+        """
+        if letter in self.menu_items:
+            del self.menu_items[letter]
 
     def act(self):
         """

@@ -111,6 +111,7 @@ class SegregationEnv(grid.GridEnv):
         self.set_var_color(AGENT_TYPES[RED], 'r')
         self.num_moves = 0
         self.move_hist = []
+        self.menu.view.del_menu_item("v")  # no line graph in this model
 
     def move_to_empty(self, agent, grid_view=None):
         super().move_to_empty(agent, grid_view)
