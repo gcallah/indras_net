@@ -291,11 +291,12 @@ class EverytownUSA(ge.GridEnv):
                                          self.assemble_util_vars(),
                                          self.period)
 
-    def pop_report(self):
+    def pop_report(self, file_nm=None):
         """
         Write CSV file with utility versus retail pop data.
         """
-        file_nm = self.user.ask("Choose file name: ")
+        if file_nm is None:
+            file_nm = self.user.ask("Choose file name: ")
         varieties = self.assemble_util_vars()
         data.pop_report(file_nm, varieties)
 
