@@ -20,6 +20,7 @@ class MainMenu(Menu):
         self.file = Menu("(f)ile", e.user, level=1)
         self.add_menu_item("f", self.file)
         self.file.add_menu_item("e", MenuLeaf("(e)xamine log", e.disp_log))
+        self.file.add_menu_item("p", MenuLeaf("(p)opulation report", e.pop_report))
         self.file.add_menu_item("q", MenuLeaf("(q)uit", e.quit))
         self.file.add_menu_item("w", MenuLeaf("(w)rite props", e.pwrite))
 
@@ -55,6 +56,5 @@ class MainMenu(Menu):
         self.add_menu_item("t", self.tools, default=True)
         self.tools.add_menu_item("s", MenuLeaf("(s)tep", e.step),
                                  default=True)
-        self.tools.add_menu_item("r", MenuLeaf("(r)un", e.cont_run))
         self.tools.add_menu_item("n", MenuLeaf("run (n) steps", e.n_steps))
         self.tools.add_menu_item("d", MenuLeaf("(d)ebug", e.debug))

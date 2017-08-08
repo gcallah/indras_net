@@ -13,6 +13,7 @@ import indra.node as node
 import indra.user as user
 
 SWITCH = '-'
+PERIODS = 'periods'
 
 def in_range(low, val, high):
     return low <= val and val <= high
@@ -69,8 +70,10 @@ class PropArgs(node.Node):
         # process command line args and set them as properties:
         prop_nm = None
         for arg in sys.argv:
+            # the first arg (-prop) names the property
             if arg.startswith(SWITCH):
                 prop_nm = arg.lstrip(SWITCH)
+            # the second arg is the property value
             elif prop_nm is not None:
                 self.set(prop_nm, arg)
                 prop_nm = None

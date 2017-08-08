@@ -264,8 +264,6 @@ class EverytownUSA(ge.GridEnv):
         self.utils = 0.0
         self.menu.view.add_menu_item("v", menu.MenuLeaf("(v)iew utility",
                                      self.view_util))
-        self.menu.file.add_menu_item("u", menu.MenuLeaf("(u)tility report",
-                                     self.report_util))
         self.add_variety("BigBox")
         self.mom_pop_pop = []
         self.util_hist = []
@@ -293,7 +291,7 @@ class EverytownUSA(ge.GridEnv):
                                          self.assemble_util_vars(),
                                          self.period)
 
-    def report_util(self):
+    def pop_report(self):
         """
         Write CSV file with utility versus retail pop data.
         """

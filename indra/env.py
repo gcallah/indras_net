@@ -11,12 +11,15 @@ import pdb
 import getpass
 import networkx as nx
 import indra.display_methods as disp
+import indra.data_methods as data
 import indra.node as node
 import indra.main_menu as mm
 import indra.prop_args as pa
 import indra.agent_pop as ap
 import indra.user as user
 
+NI = "Not implemented at present."
+RPT_EXT = ".csv"
 
 class Quit(Exception):
     def __init__(self, value):
@@ -123,23 +126,25 @@ class Environment(node.Node):
     def get_randagent_of_var(self, var):
         return self.agents.get_randagent_of_var(var)
 
-    def run(self, resume=False, loops=0):
+    def run(self, resume=False, periods=0):
         """
         This is the main menu loop for all models.
 
         resume: starts up from a previous period.
-        loops: run x loops, perhaps for timing purposes.
+        periods: run x periods, for batch mode or timing purposes.
         """
-
         if resume:
             self.period = Environment.prev_period
         else:
             self.period = 0
 
-        if loops > 0:
-            while self.period < loops:
+        print("Periods = " + str(periods))
+        if periods > 0:
+            while self.period < periods:
                 self.step()
             self.user.tell("Ran for " + str(self.period) + " periods.")
+            self.pop_report(file_nm=self.model_nm+RPT_EXT)
+            exit()
         else:
             self.user.tell("Welcome, " + self.user.name)
             self.user.tell("Running in " + self.name)
@@ -213,12 +218,15 @@ class Environment(node.Node):
             self.user.tell(agent.debug_info())
         self.edit_field(agent)
 
+    def pprint(self):
+        self.user.tell(NI)
+
     def env_inspect(self):
         """
         Have a look at (and possibly alter) the environment.
         """
         self.pprint()
-        self.edit_field(self)
+        # self.edit_field(self)
 
     def edit_field(self, entity):
         """
@@ -260,22 +268,6 @@ class Environment(node.Node):
         except KeyboardInterrupt:
             pass
 
-    def cont_run(self):
-        """
-        Run continuously.
-        """
-        self.user.tell(
-            "Running continously; press Ctrl-c to halt!")
-        time.sleep(3)
-        try:
-            while self.keep_running():
-                step_msg = self.step()
-                if step_msg is not None:
-                    self.user.tell(step_msg)
-                    break
-        except KeyboardInterrupt:
-            pass
-
     def pwrite(self):
         """
         Write out the properties to a file.
@@ -283,6 +275,9 @@ class Environment(node.Node):
         file_nm = self.user.ask("Choose file name: ")
         if len(file_nm) > 0 and self.props is not None:
             self.props.write(file_nm)
+        else:
+            self.user.tell("Props can't be written.",
+                          type=user.ERROR)
 
     def disp_props(self):
         """
@@ -291,13 +286,13 @@ class Environment(node.Node):
         if self.props is not None:
             self.user.tell(self.props.display())
         else:
-            self.user.tell("Props missing; cannot be displayed.")
+            self.user.tell("Props missing; cannot be displayed.",
+                          type=user.ERROR)
 
     def disp_log(self):
         """
         Display last 16 lines of log file.
         """
-
         MAX_LINES = 16
         logfile = None
 
@@ -414,6 +409,11 @@ class Environment(node.Node):
 
     def line_data(self):
         return (self.period, self.agents.get_pop_hist())
+
+    def pop_report(self, file_nm=None):
+        if file_nm is None:
+            file_nm = self.user.ask("Choose file name: ")
+        data.pop_report(file_nm, self.agents.get_pop_hist())
 
     def plot(self):
         """

@@ -6,6 +6,7 @@ Various helpful bits that don't fit elsewhere!
 import sys
 import logging
 import indra.prop_args as props
+import indra.data_methods as data
 
 # some values useful for checking valid ranges:
 BIG_INT = sys.maxsize
@@ -33,8 +34,13 @@ def run_model(env, prog_file, results_file):
     # Logging is automatically set up for the modeler:
     logging.info("Starting program " + prog_file)
 
+    periods = env.props.get(props.PERIODS)
+    if periods is None:
+        periods = 0
+    else:
+        periods = int(periods)
     # And now we set things running!
-    env.run()
+    env.run(periods=periods)
     env.record_results(results_file)
 
 
