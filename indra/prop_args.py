@@ -14,6 +14,7 @@ import indra.user as user
 
 SWITCH = '-'
 PERIODS = 'periods'
+DATAFILE = 'datafile'
 
 def in_range(low, val, high):
     return low <= val and val <= high

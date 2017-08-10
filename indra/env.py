@@ -143,7 +143,10 @@ class Environment(node.Node):
             while self.period < periods:
                 self.step()
             self.user.tell("Ran for " + str(self.period) + " periods.")
-            self.pop_report(file_nm=self.model_nm+RPT_EXT)
+            file_nm = self.props.get(pa.DATAFILE)
+            if file_nm is None:
+                file_nm = self.model_nm+RPT_EXT
+            self.pop_report(file_nm=file_nm)
             exit()
         else:
             self.user.tell("Welcome, " + self.user.name)
