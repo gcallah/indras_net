@@ -31,4 +31,7 @@ run file (basic_run.py or grid_run.py), and start modifying these files to
 understand how they work.
 If one has a model similar to one already built, copying that model's
 x_model.py file and x_run.py file might be a better bet.
+
+Although matplotlib and clint packages are not required, you can gain
+additional capabilities by installing them.
 """
