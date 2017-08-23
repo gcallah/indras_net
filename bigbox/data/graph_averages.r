@@ -9,9 +9,7 @@ rm(list=ls())
 
 files <- list.files(path = "./mppref1.2", pattern ="(.+)csv")
 
-filesWithPaths <- lapply(files, function(y) (paste("mppref1.2/", y, sep = "")))
-
-filesWithPaths <- unlist(filesWithPaths)
+filesWithPaths <- unlist(lapply(files, function(y) (paste("mppref1.2/", y, sep = ""))))
 
 dataSets <- lapply(filesWithPaths, read.csv)
 
