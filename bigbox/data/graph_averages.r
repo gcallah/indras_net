@@ -7,20 +7,14 @@ require(reshape2)
 
 rm(list=ls())
 
-x <- list.files(path = "./mppref1.2", pattern ="(.+)csv")
+files <- list.files(path = "./mppref1.2", pattern ="(.+)csv")
 
-print(x)
+filesWithPaths <- lapply(files, function(y) (paste("mppref1.2/", y, sep = "")))
 
-x <- lapply(x, function(y) (paste("mppref1.2/", y, sep = "")))
+filesWithPaths <- unlist(filesWithPaths)
 
-print(x)
+dataSets <- lapply(filesWithPaths, read.csv)
 
-x <- unlist(x)
+result <- Reduce("+", dataSets) / length(dataSets)
 
-print(x)
-
-x <- lapply(x, read.csv)
-
-x <- Reduce("+", x) / length(x)
-
-print(x)
+print(result)
