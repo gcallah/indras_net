@@ -3,6 +3,9 @@
 # and consumer utility in each .csv file in the directory
 # specified in the first argument from the command line.
 
+# Command to run:
+# Rscript graph_averages.r <data_directory> <desired_output_filename>
+
 rm(list=ls())
 
 args <- commandArgs(trailingOnly = TRUE)
@@ -23,5 +26,7 @@ average <- Reduce("+", dataSets) / length(dataSets)
 steps = as.numeric(rownames(average))
 average[,"step"] <- steps
 
-ggplot(melt(average, id.vars="step"), aes(step,value, col=variable)) + 
+plot <- ggplot(melt(average, id.vars="step"), aes(step,value, col=variable)) + 
   geom_line()
+
+ggsave(filename=args[2], plot=plot)
