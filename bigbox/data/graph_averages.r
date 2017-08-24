@@ -13,6 +13,17 @@ filesWithPaths <- unlist(lapply(files, function(y) (paste("mppref1.2/", y, sep =
 
 dataSets <- lapply(filesWithPaths, read.csv)
 
-result <- Reduce("+", dataSets) / length(dataSets)
+average <- Reduce("+", dataSets) / length(dataSets)
 
-print(result)
+print(average)
+
+steps = as.numeric(rownames(average))
+
+average[,"step"] <- steps
+
+print(average)
+
+average <- melt(average, id.vars="step")
+
+ggplot(average, aes(step,value, col=variable)) + 
+  geom_line()
