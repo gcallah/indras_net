@@ -4,11 +4,14 @@
 
 rm(list=ls())
 
+args <- commandArgs(trailingOnly = TRUE)
+csvDir <- args[1]
+
 require(ggplot2)
 require(reshape2)
 
-files <- list.files(path = "./mppref1.2", pattern ="(.+)csv")
-filesWithPaths <- unlist(lapply(files, function(y) (paste("mppref1.2/", y, sep = ""))))
+files <- list.files(path = csvDir, pattern ="(.+)csv")
+filesWithPaths <- unlist(lapply(files, function(y) (paste(csvDir, "/", y, sep = ""))))
 dataSets <- lapply(filesWithPaths, read.csv)
 
 # Get the average of the data sets.
