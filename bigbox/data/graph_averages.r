@@ -1,6 +1,7 @@
 # Nathan Conroy
 # Graphs the average amount of bigboxes, momandpops,
-# and consumer utility in each .csv file in the mppref1.2 directory.
+# and consumer utility in each .csv file in the directory
+# specified in the first argument from the command line.
 
 rm(list=ls())
 
