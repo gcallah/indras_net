@@ -13,6 +13,7 @@ require(reshape2)
 files <- list.files(path = csvDir, pattern ="(.+)csv")
 filesWithPaths <- unlist(lapply(files, function(y) (paste(csvDir, "/", y, sep = ""))))
 dataSets <- lapply(filesWithPaths, read.csv)
+dataSets <- lapply(dataSets, function(y) y[-1,])
 
 # Get the average of the data sets.
 average <- Reduce("+", dataSets) / length(dataSets)
