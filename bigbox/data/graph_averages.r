@@ -25,6 +25,7 @@ average <- Reduce("+", dataSets) / length(dataSets)
 # Add column for x-axis.
 steps = as.numeric(rownames(average))
 average[,"step"] <- steps
+average[,"Consumer.Utils"] <- average[,"Consumer.Utils"]/5
 
 plot <- ggplot(melt(average, id.vars="step"), aes(step,value, col=variable)) + 
   geom_line()
