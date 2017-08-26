@@ -8,6 +8,6 @@ dist: setup.py
 	python setup.py sdist upload	
 
 boxdata:
-	all_box_plots.sh
+	./all_box_plots.sh
 	git commit -a -m "Building new Big Box data sets."
 	git push origin master
