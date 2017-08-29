@@ -2,7 +2,7 @@
 
 BOX_DIR="bigbox"
 MODEL="$BOX_DIR.big_box_run"
-DATA_DIR="$BOX_DIR/tmp"
+DATA_DIR="$BOX_DIR/data"
 PREFS="prefs.json"
 NUM_RUNS=75
 PERIODS=75
