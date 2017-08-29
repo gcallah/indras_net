@@ -6,6 +6,11 @@
 # Command to run:
 # Rscript graph_averages.r <data_directory> <desired_output_filename>
 
+packages <- c("ggplot2", "reshape")
+if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
+  install.packages(setdiff(packages, rownames(installed.packages())))  
+}
+
 rm(list=ls())
 
 args <- commandArgs(trailingOnly = TRUE)
