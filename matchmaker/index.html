@@ -16,6 +16,34 @@
 
         <details>
             <summary class="sum1">
+                Overview
+            </summary>
+
+            <p>
+                This project aims to create a generic framework
+                to match consumers of a product with its
+                producers, &agrave; la Uber or AirBnB. The
+                reason such a framework might be desirable is 
+                that it could free producers from the
+                hegemony of the network provider, by allowing
+                then to easily bring up their own 
+                matching service.
+            </p>
+
+            <p>
+                It is a hypothesis of the project that 
+                this family of services have enough in
+                common that a generic framework can
+                cover a large enough portion of what
+                goes on that creating a specific service
+                can be done (mostly?) by non-programmers using
+                templates.
+            </p>
+
+        </details>
+
+        <details>
+            <summary class="sum1">
                 Server API
             </summary>
             
@@ -37,16 +65,22 @@
                     <br />
                     Load producer agents into env. Match consumer agent's
                     current prefs to best producers.
+                    <br />
+                    Returns list of matching agents.
                 </li>
                 <li>
                     book(agent, other, details)
                     <br />
                     Make a booking.
+                    <br />
+                    Returns Success or Error (with explanation).
                 </li>
                 <li>
                     cancel(booking_id)
                     <br />
                     Cancel a booking.
+                    <br />
+                    Returns Success or Error (with explanation).
                 </li>
             </ul>
 
