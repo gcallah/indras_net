@@ -8,7 +8,7 @@
 
 packages <- c("ggplot2", "reshape")
 if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
-  install.packages(setdiff(packages, rownames(installed.packages())))  
+  install.packages(setdiff(packages, rownames(installed.packages())),repos='http://cran.us.r-project.org')  
 }
 
 rm(list=ls())
@@ -25,7 +25,7 @@ dataSets <- lapply(filesWithPaths, read.csv)
 
 # Get the average of the data sets.
 average <- Reduce("+", dataSets) / length(dataSets)
-
+print(average)
 # Add column for x-axis.
 steps = as.numeric(rownames(average))
 average[,"step"] <- steps
