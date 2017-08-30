@@ -83,3 +83,33 @@ h5 {
 
 }
 
+summary.sum1 {
+    font-size: 1.7em;
+    color: #e69;
+    margin: .8em 1.2em .8em 1.2em;
+}
+
+summary.sum2 {
+    font-size: 1.6em;
+    color: #137;
+    margin: .6em 1.2em .6em 2em;
+}
+
+summary.sum3 {
+    font-size: 1.5em;
+    color: #339;
+    margin: .4em 1.2em .4em 2.8em;
+}
+
+summary.sum4 {
+    font-size: 1.4em;
+    color: #903;
+    margin: .4em 1.2em .4em 2.8em;
+}
+
+summary.menu_sum {
+    font-size: 1.4em;
+    color: #639;
+    margin: .5em 0em .5em 0em;
+}
+

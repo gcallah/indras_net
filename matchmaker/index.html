@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="../style.css" rel="stylesheet" type="text/css"/>
+        <title>
+            Matchmaker: A Generic Framework for Consumer-Producer
+            Matching
+        </title>
+    </head>
+
+    <body>
+        <h1>
+            Matchmaker: A Generic Framework for Consumer-Producer
+            Matching
+        </h1>
+
+        <details>
+            <summary class="sum1">
+                Server API
+            </summary>
+            
+            <h3>
+                End points
+            </h3>
+
+            <ul>
+                <li>
+                    get_agent(agent_id)
+                    <br />
+                    agent_id may be email address.
+                    <br />
+                    This loads and returns agent's 
+                    persistent characteristics.
+                </li>
+                <li>
+                    get_matches(agent, details (as part of agent?))
+                    <br />
+                    Load producer agents into env. Match consumer agent's
+                    current prefs to best producers.
+                </li>
+                <li>
+                    book(agent, other, details)
+                    <br />
+                    Make a booking.
+                </li>
+                <li>
+                    cancel(booking_id)
+                    <br />
+                    Cancel a booking.
+                </li>
+            </ul>
+
+        </details>
+
+    </body>
+</html>
