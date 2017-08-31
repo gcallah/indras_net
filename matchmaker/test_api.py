@@ -14,7 +14,6 @@ class APITestCase(TestCase):
         answer = get_agent("dummy_id")
         print(answer)
         self.assertTrue(answer["goal"] == TEST_GOAL)
-#        self.assertTrue(error.startswith(INVALID_INSTR))
 
 if __name__ == '__main__':
     main()
