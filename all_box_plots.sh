@@ -9,6 +9,8 @@ PERIODS=10
 
 echo $DATA_DIR
 
+rm "$DATA_DIR/mppref1."*"/"*".csv"
+
 OUT_DIR="$DATA_DIR/mppref1.0"
 ./runs.sh $NUM_RUNS $MODEL "$OUT_DIR/$PREFS" "$OUT_DIR/run" $PERIODS
 Rscript "$BOX_DIR/graph_averages.r" "$OUT_DIR" "$OUT_DIR/plot_mppref1.0.pdf"
