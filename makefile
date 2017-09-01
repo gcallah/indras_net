@@ -5,7 +5,7 @@ BOXPLOTS = $(shell ls $(BOX_DATA)/plot*.pdf)
 dist: setup.py
 	-git commit -a -m "Building new distribution"
 	git push origin master
-	python setup.py sdist upload	
+	python3 setup.py sdist upload	
 
 boxdata:
 	./all_box_plots.sh
