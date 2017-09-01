@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='indras_net',
-    version='2.0.5',
+    version='2.0.6',
     description='A framework for agent-based modeling in Python.',
     url='https://github.com/gcallah/indras_net.git',
     author='Gene Callahan and Nathan Conroy',
