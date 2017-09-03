@@ -39,6 +39,8 @@ NUM_STATES = 2
 BB_MULT = 1000
 BB_DIV = 200
 
+ADJ_SCALING_FACTOR = 0.2
+
 MIN_ADJ = 0.01  # never offer 0 utils for a purchase
 
 # types of goods sold
@@ -210,7 +212,7 @@ class Retailer(MarketParticipant):
         if not self.sells(good):
             return NA
         else:
-            return random.random() + self.util_adj
+            return (random.random() + self.util_adj) * ADJ_SCALING_FACTOR
 
 class MomAndPop(Retailer):
     """
