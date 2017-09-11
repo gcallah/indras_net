@@ -1,0 +1,36 @@
+
+
+Big Box Mathematical Preliminaries
+------------------
+------------------
+
+Consumer Utility
+------------------
+
+We model the consumer’s preference in the following way. Above all he prefers the mom and pop stores. Thus, his utility is his innate preference plus some random factor (to account for variations in his mood or in the quality of the product etc.) Thus,
+
+U = (pref_mp + randIntBetweenZeroAndOne) 
+
+Yet he also gains something from having the big box store present too. This does not have an innate preference. Therefore he only gains something of the random variation of the market:
+
+U = (pref_mp + randIntBetweenZeroAndOne) + randIntBetweenZeroAndOne
+
+The overall utility in the market is expressed as the sum of these factors.
+
+
+Big Box Statistics
+------------------
+
+Runs
+
+We ran seventy-five runs of seventy five periods each. The following graphs represent the average run time of models where consumer preference for mom and pops is 0.0, 0.2, 0.4, 0.6, and 0.8 respectively.
+
+[Graph 1.0]		[Graph 1.2]
+[Graph 1.4]		[Graph 1.6]
+[Graph 1.8]
+
+
+Mathematical Analysis
+------------------
+
+
