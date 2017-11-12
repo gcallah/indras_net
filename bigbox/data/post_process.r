@@ -6,7 +6,7 @@ summary_output <- ""
 for (fileName in fileNames) {
     runX <- read.csv(fileName)
 
-    runX <- runX[-1, ]
+    runX <- runX[-1, 2]
     summary_output <- paste( summary_output, summary(runX), sep='\n')
 }
 
