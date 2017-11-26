@@ -139,7 +139,6 @@ class Consumer(MarketParticipant):
             None
         """
         if store is not None:
-            # print(self.name + " heading to " + store.name)
             self.move(store)
             store.purchase(self.allowance)
 
