@@ -186,7 +186,7 @@ class ScatterPlot():
         ax.set_xlim(0, width)
         ax.set_ylim(0, height)
         self.create_scats(varieties)
-        ax.legend()
+        ax.legend(loc = 4)
         ax.set_title(title)
         plt.grid(True)
 

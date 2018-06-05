@@ -84,7 +84,7 @@ class ForestEnv(menv.MarkovEnv):
         '''
         Create a new forest fire model.
 
-        Args:
+        Args:g
             width, height: The size of the grid to model
             density: What fraction of grid cells have a tree in them.
         '''
@@ -104,20 +104,6 @@ class ForestEnv(menv.MarkovEnv):
         # set up our two possible transition matrices:
         self.normal = markov.MarkovPre(NORMAL_TRANS)
         self.fire = markov.MarkovPre(FIRE_TRANS)
-
-    def spread_fire(self, tree):
-        """
-        We change the transition matrix of the surrounding cells
-        to the fire matrix.
-        """
-        self.set_trans(tree.pos, self.fire)
-
-    def burn_out(self, tree):
-        """
-        We change the transition matrix of this tree
-        to the normal matrix.
-        """
-        self.set_trans(tree.pos, self.normal)
 
     def get_pre(self, agent, n_census):
         if (ON_FIRE in n_census) and (n_census[ON_FIRE] > 0):
