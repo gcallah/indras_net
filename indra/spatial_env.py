@@ -80,6 +80,8 @@ class SpatialEnv(env.Environment):
         data = {}
         for var in self.agents.varieties_iter():
             data[var] = {}
+            # matplotlib wants a list of x coordinates, and a list of y
+            # coordinates:
             data[var][X] = []
             data[var][Y] = []
             data[var]["color"] = self.agents.get_var_color(var)
