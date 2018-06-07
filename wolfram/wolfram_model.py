@@ -26,20 +26,19 @@ NSTATES = 2
         
 # Some rule dictionaries:
 RULE30 = {
-    (B, B, B): W
-    (B, B, W): W
-    (B, W, B): W
-    (B, W, W): B
-    (W, B, B): B
-    (W, B, W): B
-    (W, W, B): B
+    (B, B, B): W,
+    (B, B, W): W,
+    (B, W, B): W,
+    (B, W, W): B,
+    (W, B, B): B,
+    (W, B, W): B,
+    (W, W, B): B,
     (W, W, W): W
 }
 
 class WolframAgent(ga.GridAgent):
     """
-    An agent that collects sand particles until its stack collapses
-    onto its neighbors.
+    An agent that looks agents above it and react
     """
     def __init__(self, name, goal, cell, mark = False):
         super().__init__(name, goal)
@@ -50,18 +49,16 @@ class WolframAgent(ga.GridAgent):
         self.is_active = False
 
     def act(self):
-        """
-        Our main action goes here, in this case,
-        """
-        #Find the information needed
+        #make sure we only update the row we need to
         (x, y) = self.pos
         if y == self.env.height - 1 - self.env.period:
             self.is_active = True
+        #Trace the marked agents
         if self.marked:
             self.show_stats()
         if not self.is_active:
             return
-        #if(y >= self.env.height-1-)
+        #Find the information needed
         check_list = [(x - 1, y + 1),(x, y + 1), (x + 1, y + 1)]
         result = [W, W, W]
         for i in range(len(check_list)):
@@ -71,7 +68,7 @@ class WolframAgent(ga.GridAgent):
                     break
         
         #Make change
-        self.state = self.env.check_rules((result[0], result[1], result[2]))
+        self.state = self.env.check_rules(tuple(result))
         self.is_active = False
 
     def postact(self):
@@ -96,18 +93,19 @@ class WolframAgent(ga.GridAgent):
 
 class WolframEnv(ge.GridEnv):
     """
-    An environment for spilling sand all over the place.
+    An environment for updating agents from the top to the bottom.
     """
 
-    def __init__(self, name, width, height, model_nm=None, props=None):
+    def __init__(self, name, width, height, model_nm=None, props=None, 
+                 rules=RULE30):
         super().__init__(name, width, height, torus=False,
                          model_nm=model_nm, postact=True, props=props)
         
-        self.rules = {}
-        for i in STATE_MAP:
-            for j in STATE_MAP:
-                for k in STATE_MAP:
-                    self.rules[(i,j,k)] = None
+        self.rules = rules
+#        for i in STATE_MAP:
+#            for j in STATE_MAP:
+#                for k in STATE_MAP:
+#                    self.rules[(i,j,k)] = None
                     
         self.set_var_color(BLACK, disp.BLACK)
         self.set_var_color(WHITE, disp.WHITE)
@@ -116,7 +114,7 @@ class WolframEnv(ge.GridEnv):
         top_y = self.height-1
         print("center top = %i, %i" % (center_x, top_y))
 
-        self.set_rules()
+        #self.set_rules()
 
         for cell in self:
             (x, y) = cell.coords
@@ -128,26 +126,14 @@ class WolframEnv(ge.GridEnv):
                 old_type = agent.ntype
                 agent.set_type(new_type)
                 self.change_agent_type(agent, old_type, new_type)
-                agent.marked = True
+                #agent.marked = True
                 agent.is_active = False
-                print("First Black Grid")
-            if x == center_x - 1 and y == top_y - 1:
-                agent.marked = True
-            if x == center_x and y == top_y - 1:
-                agent.marked = True
-            if x == center_x + 1 and y == top_y - 1:
-                agent.marked = True
-
-    def set_rules(self):
-        self.rules[(B,B,B)] = W
-        self.rules[(B,B,W)] = W
-        self.rules[(B,W,B)] = W
-        self.rules[(B,W,W)] = B
-        self.rules[(W,B,B)] = B
-        self.rules[(W,B,W)] = B
-        self.rules[(W,W,B)] = B
-        self.rules[(W,W,W)] = W
-        
+#            if x == center_x - 1 and y == top_y - 1:
+#                agent.marked = True
+#            if x == center_x and y == top_y - 1:
+#                agent.marked = True
+#            if x == center_x + 1 and y == top_y - 1:
+#                agent.marked = True        
         
     def check_rules(self, combo):
         return self.rules[combo]
