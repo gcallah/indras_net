@@ -24,6 +24,18 @@ FULL_NEIGHBORHOOD = 4
 
 NSTATES = 2
         
+# Some rule dictionaries:
+RULE30 = {
+    (B, B, B): W
+    (B, B, W): W
+    (B, W, B): W
+    (B, W, W): B
+    (W, B, B): B
+    (W, B, W): B
+    (W, W, B): B
+    (W, W, W): W
+}
+
 class WolframAgent(ga.GridAgent):
     """
     An agent that collects sand particles until its stack collapses
@@ -40,7 +52,6 @@ class WolframAgent(ga.GridAgent):
     def act(self):
         """
         Our main action goes here, in this case,
-        tumbling sand onto our neighbors.
         """
         #Find the information needed
         (x, y) = self.pos
@@ -51,7 +62,7 @@ class WolframAgent(ga.GridAgent):
         if not self.is_active:
             return
         #if(y >= self.env.height-1-)
-        check_list = [(x-1,y+1),(x, y+1),(x+1, y+1)]
+        check_list = [(x - 1, y + 1),(x, y + 1), (x + 1, y + 1)]
         result = [W, W, W]
         for i in range(len(check_list)):
             for neighbor in self.neighbor_iter(moore=False, save_hood=True):
@@ -120,11 +131,11 @@ class WolframEnv(ge.GridEnv):
                 agent.marked = True
                 agent.is_active = False
                 print("First Black Grid")
-            if x == center_x-1 and y == top_y-1:
+            if x == center_x - 1 and y == top_y - 1:
                 agent.marked = True
-            if x == center_x and y == top_y-1:
+            if x == center_x and y == top_y - 1:
                 agent.marked = True
-            if x == center_x+1 and y == top_y-1:
+            if x == center_x + 1 and y == top_y - 1:
                 agent.marked = True
 
     def set_rules(self):
