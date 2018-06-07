@@ -17,6 +17,7 @@ try:
 except ImportError:
     plt_present = False
 
+anim_func = None
 
 BLUE = 'b'
 RED = 'r'
@@ -116,12 +117,14 @@ class LineGraph():
 
     def __init__(self, title, varieties, data_points,
                  anim=False, data_func=None):
+        global anim_func
+
         self.title = title
         self.anim = anim
         self.data_func = data_func
         self.draw_graph(data_points, varieties)
         if anim:
-            animation.FuncAnimation(self.fig,
+            anim_func = animation.FuncAnimation(self.fig,
                                     self.update_plot,
                                     frames=1000,
                                     interval=500,
@@ -170,6 +173,18 @@ class ScatterPlot():
     We are going to use a class here to save state for our animation
     """
 
+    def update_plot(self, i):
+        """
+        This is our animation function.
+        """
+        if self.scats is not None:
+            for scat in self.scats:
+                if scat is not None:
+                    scat.remove()
+        varieties = self.data_func()
+        self.create_scats(varieties)
+        return self.scats
+
     def __init__(self, title, varieties, width, height,
                  anim=True, data_func=None, legend_pos=4):
         """
@@ -178,6 +193,8 @@ class ScatterPlot():
         entities to show in the plot, which
         will get assigned different colors
         """
+        global anim_func
+
         self.scats = None
         self.anim = anim
         self.data_func = data_func
@@ -193,7 +210,7 @@ class ScatterPlot():
 
         if anim:
             print("Animation is on.")
-            animation.FuncAnimation(fig,
+            anim_func = animation.FuncAnimation(fig,
                                     self.update_plot,
                                     frames=1000,
                                     interval=500,
@@ -205,18 +222,6 @@ class ScatterPlot():
         """
         plt.show()
         plt.pause(1)
-
-    def update_plot(self, i):
-        """
-        This is our animation function.
-        """
-        if self.scats is not None:
-            for scat in self.scats:
-                if scat is not None:
-                    scat.remove()
-        varieties = self.data_func()
-        self.create_scats(varieties)
-        return self.scats
 
     def get_arrays(self, varieties, var):
         x_array = np.array(varieties[var][X])

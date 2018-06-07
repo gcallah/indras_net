@@ -493,7 +493,8 @@ class GridEnv(se.SpatialEnv):
         there are any applications where positions are given
         by nonintegral values, use caution.
         """
-        return math.sqrt((agent1.pos[X]-agent2.pos[X])**2 + (agent1.pos[Y]-agent2.pos[Y])**2)
+        return math.sqrt((agent1.pos[X]-agent2.pos[X])**2
+                         + (agent1.pos[Y]-agent2.pos[Y])**2)
 
     def free_spot_near(self, agent):
         """
