@@ -3,8 +3,8 @@
 import indra.display_methods as disp
 import indra.grid_agent as ga
 import indra.grid_env as ge
-import indra.user as user
 from math import floor
+import ast
 
 X = 0
 Y = 1
@@ -14,15 +14,10 @@ BLACK = "Black"
 WHITE = "White"
 
 # states
-B = 0
-W = 1
+B = 1
+W = 0
 
 STATE_MAP = { B: BLACK, W: WHITE }
-
-MAX_SAND = 4
-FULL_NEIGHBORHOOD = 4
-
-NSTATES = 2
         
 # Some rule dictionaries:
 RULE30 = {
@@ -97,11 +92,11 @@ class WolframEnv(ge.GridEnv):
     """
 
     def __init__(self, name, width, height, model_nm=None, props=None, 
-                 rules=RULE30):
+                 rule_id=30):
         super().__init__(name, width, height, torus=False,
                          model_nm=model_nm, postact=True, props=props)
         
-        self.rules = rules
+        self.rules = self.read_wolfram_rules("wolfram_rules.txt")[rule_id]
 #        for i in STATE_MAP:
 #            for j in STATE_MAP:
 #                for k in STATE_MAP:
@@ -140,3 +135,12 @@ class WolframEnv(ge.GridEnv):
 
     def step(self):
         super().step()
+        
+    def read_wolfram_rules(self,file):
+        rules_sets = []
+        f = open(file,"r")
+        all_rules = f.readlines()
+        for i in all_rules:
+            rules_sets.append(ast.literal_eval(i))
+        f.close()
+        return rules_sets

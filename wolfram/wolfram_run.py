@@ -19,13 +19,16 @@ def run():
     if pa is None:
         pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
         utils.get_grid_dims(pa, 50)
+        utils.get_rule_id(pa, 30)
+        
     
     # Now we create a minimal environment for our agents to act within:
     env = wm.WolframEnv("Wolfram Env",
                      pa.get("grid_width"),
                      pa.get("grid_height"),
                      model_nm=MODEL_NM,
-                     props=pa)
+                     props=pa,
+                     rule_id=pa.get("rule_id"))
     
     # This env adds agents itself.
     

@@ -17,6 +17,7 @@ MAX_GRID = 100000
 GRID_LIMITS = (1, MAX_GRID)  # this gives us a max grid of 1 billion elements!
 MAX_AGENTS = MAX_GRID * MAX_GRID  # enough to fill a maximum sized grid
 AGENT_LIMITS = (1, MAX_AGENTS)
+WOLFRAM_RULE_LIMITS = (0, 255)
 
 
 def gen_file_names(model_nm):
@@ -76,3 +77,7 @@ def get_max_move(pa, prop_nm, agent_type, def_move):
 def get_pct(pa, prop_nm, agent_type, param_descr, def_pct):
     pa.ask(prop_nm, "What is %s's %s?" % (agent_type, param_descr),
            float, default=def_pct, limits=BTWN_ZERO_ONE)
+    
+def get_rule_id(pa, def_id):
+    pa.ask("rule_id", "What is the rule id?", int, default=def_id,
+           limits=WOLFRAM_RULE_LIMITS)
