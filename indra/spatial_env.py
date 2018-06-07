@@ -13,6 +13,7 @@ import indra.display_methods as disp
 X = 0
 Y = 1
 
+RANDOM = -1
 
 class SpatialEnv(env.Environment):
     """
@@ -37,19 +38,19 @@ class SpatialEnv(env.Environment):
                                      menu.MenuLeaf("(s)catter plot",
                                                    self.plot))
 
-    def add_agent(self, agent, position=True):
+    def add_agent(self, agent, x=RANDOM, y=RANDOM, position=True):
         """
         Add a spatial agent to env
         """
         super().add_agent(agent)
         if position:
-            self.position_item(agent)
+            self.position_item(agent, x, y)
 
         logging.debug("Adding " + agent.__str__()
                       + " of variety " + agent.get_type())
 
     @abstractmethod
-    def position_item(self, agent):
+    def position_item(self, agent, x, y):
         """
         This must be implemented by descendents.
         """

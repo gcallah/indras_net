@@ -263,11 +263,11 @@ class GridEnv(se.SpatialEnv):
     def __new_cell__(self, coords):
         return Cell(coords)
 
-    def add_agent(self, agent, position=True):
+    def add_agent(self, agent, x=RANDOM, y=RANDOM, position=True):
         """
         Add an agent and link to cell if present in agent.
         """
-        super().add_agent(agent, position)
+        super().add_agent(agent, x, y, position)
         if agent.cell is not None:
             if agent.cell.contents is not agent:
                 agent.cell.add_item(agent)

@@ -84,7 +84,7 @@ class ForestEnv(menv.MarkovEnv):
         '''
         Create a new forest fire model.
 
-        Args:g
+        Args:
             width, height: The size of the grid to model
             density: What fraction of grid cells have a tree in them.
         '''

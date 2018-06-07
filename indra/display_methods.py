@@ -25,7 +25,8 @@ YELLOW = 'y'
 MAGENTA = 'm'
 CYAN = 'c'
 BLACK = 'k'
-colors = [BLUE, RED, GREEN, YELLOW, MAGENTA, CYAN, BLACK]
+WHITE = 'w'
+colors = [BLUE, RED, GREEN, YELLOW, MAGENTA, CYAN, BLACK, WHITE]
 NUM_COLORS = len(colors)
 X = 0
 Y = 1
@@ -170,7 +171,7 @@ class ScatterPlot():
     """
 
     def __init__(self, title, varieties, width, height,
-                 anim=True, data_func=None):
+                 anim=True, data_func=None, legend_pos=4):
         """
         Setup a scatter plot.
         varieties contains the different types of
@@ -186,7 +187,7 @@ class ScatterPlot():
         ax.set_xlim(0, width)
         ax.set_ylim(0, height)
         self.create_scats(varieties)
-        ax.legend(loc = 4)
+        ax.legend(loc = legend_pos)
         ax.set_title(title)
         plt.grid(True)
 
@@ -203,6 +204,7 @@ class ScatterPlot():
         Display the plot.
         """
         plt.show()
+        plt.pause(1)
 
     def update_plot(self, i):
         """
