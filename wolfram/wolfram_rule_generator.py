@@ -31,7 +31,7 @@ template = {
 }
 
 def generate_wolfram_rules():
-    f = open("wolfram_rules.txt","w+")
+    f = open("wolfram/wolfram_rules.txt","w+")
     for i in range(256):
         binary = bin(i + 256)[3:]
         for j in range(len(binary)):
