@@ -2,7 +2,7 @@ from django.conf.urls import url
 
 from . import views
 
-app_name = 'Emu86'
+app_name = 'IndrasNet'
 
 
 urlpatterns = [
