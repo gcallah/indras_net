@@ -5,7 +5,7 @@ A script to test our grid capabilities.
 
 import indra.utils as utils
 import indra.prop_args as props
-import wolfram_model as wm
+import wolfram.wolfram_model as wm
 # set up some file names:
 MODEL_NM = "wolfram_model"
 
