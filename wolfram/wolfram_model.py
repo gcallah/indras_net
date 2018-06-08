@@ -96,7 +96,7 @@ class WolframEnv(ge.GridEnv):
         super().__init__(name, width, height, torus=False,
                          model_nm=model_nm, postact=True, props=props)
         
-        self.rules = self.read_wolfram_rules("wolfram_rules.txt")[rule_id]
+        self.rules = self.read_wolfram_rules("wolfram/wolfram_rules.txt")[rule_id]
 #        for i in STATE_MAP:
 #            for j in STATE_MAP:
 #                for k in STATE_MAP:
