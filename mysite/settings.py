@@ -41,7 +41,7 @@ ALLOWED_HOSTS = ['emu86.pythonanywhere.com',
 # Application definition
 
 INSTALLED_APPS = [
-    'Emu86',
+    'IndrasNet',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -147,7 +147,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': 'Emu86.log',
+            'filename': 'IndrasNet.log',
             'formatter': 'verbose'
         },
     },
@@ -157,7 +157,7 @@ LOGGING = {
             'propagate': True,
             'level': 'DEBUG',
         },
-        'Emu86': {
+        'IndrasNet': {
             'handlers': ['file'],
             'level': 'DEBUG',
         },
