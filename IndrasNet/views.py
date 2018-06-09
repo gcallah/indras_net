@@ -9,8 +9,6 @@ from django.shortcuts import get_object_or_404, get_list_or_404, render
 from .models import AdminEmail
 from .models import Site
 from .forms import MainForm
-from assembler.virtual_machine import vmachine
-from assembler.assemble import assemble, add_debug
 
 CODE = 'code'
 NXT_KEY = 'nxt_key'
