@@ -1,0 +1,42 @@
+<html>
+<head>
+    <title>
+        {% block title %}
+        {{ header }}
+        {% endblock title %}
+    </title>
+{%  load static %}
+    {% block stylesheets %}
+        <link rel="stylesheet" type="text/css" href="/static/IndrasNet/style.css">
+
+    {% endblock stylesheets %}
+<script type="text/javascript" src="/static/IndrasNet/main.js"></script>
+</head>
+
+<body class="dashboard" onload="loadcode()">
+    <div id="container">
+        <div id="top-image">
+            <img src="/static/IndrasNet/logo.png" alt="Logo"/>
+            <br>
+        </div>
+        <div id="header">
+            <div id="branding">
+                <h1>{{ header }}</h1>
+            </div>
+            <div id="user-tools">
+                <a href="/IndrasNet">Home</a>
+                &nbsp; &nbsp; 
+                <a href="/IndrasNet/help">Help</a>
+                &nbsp; &nbsp; 
+                <a href="/IndrasNet/feedback">Feedback</a>
+            </div>
+        </div>
+        <div id="content">
+            <div id="content-main">
+                {% block content %}
+                {% endblock content %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>
