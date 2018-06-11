@@ -25,8 +25,10 @@ SECRET_KEY = '+1)z-a^)d22)!wzn4da910@1(p8hf8_2p)*%@6oiba3so62f74'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1:8000',
-        'indrasnet.pythonanywhere.com']
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'indrasnet.pythonanywhere.com',
+]
 
 
 # Application definition
