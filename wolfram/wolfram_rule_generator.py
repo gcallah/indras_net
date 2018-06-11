@@ -38,6 +38,7 @@ def generate_wolfram_rules():
             template[rules[j]] = int(binary[j])
         f.write(str(template) + "\n")
     f.close()
+    print("256 rules are successfully generated")
         
 def read_wolfram_rules(file):
     rules_sets = []
