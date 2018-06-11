@@ -4,4 +4,4 @@ if [ -z "$1" ]
     echo "You must provide the location of your Indra repo."
     exit 1
 fi
-docker run -it -p 8000:8000 -v $1:/home/IndrasNet --name indra gcallah/emu86:v4 bash
+docker run -it -p 8000:8000 -v $1:/home/IndrasNet --name indra gcallah/indra:v1 bash
