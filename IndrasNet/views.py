@@ -18,7 +18,7 @@ HEADER = 'header'
 
 
 def get_hdr():
-    site_hdr = "Indra's Net: an agent-based modeling system."
+    site_hdr = "Thomas's Net: an agent-based modeling system."
 #    site_list = Site.objects.all()
 #    for site in site_list:
 #        site_hdr = site.header
