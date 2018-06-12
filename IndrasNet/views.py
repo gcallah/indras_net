@@ -10,12 +10,9 @@ from .models import AdminEmail
 from .models import Site
 from .forms import MainForm
 
-CODE = 'code'
-NXT_KEY = 'nxt_key'
+RUN = 'run'
 STEP = 'step'
-CLEAR = 'clear'
 HEADER = 'header'
-
 
 def get_hdr():
     site_hdr = "Indra's Net: an agent-based modeling system."
@@ -31,13 +28,18 @@ def dump_dict(d, vmachine):
 
 def main_page(request):
     site_hdr = get_hdr()
-
+    response = "None"
     if request.method == 'GET':
         form = MainForm()
     else:
         form = MainForm(request.POST)
+    if RUN in request.POST:
+        response = "Run "
+    if STEP in request.POST:
+        response += request.POST[STEP] + " steps!"
     return render(request, 'main.html',
                   {'form': form,
+                   'response': response, 
                    HEADER: site_hdr
                   })
 

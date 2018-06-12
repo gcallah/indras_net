@@ -1,15 +1,18 @@
 {% extends "base.html" %}
 
 {% block content %}
-
     <div class="module">
         <form action="{% url 'IndrasNet:main_page' %}" method="post">
+            {% csrf_token %}
             <input type="hidden" name="nxt_key">
             <input type="hidden" name="unwritable">
-            <input type="submit" value="Run">
-            <input type="text" name="steps">
-            step(s)
+
+            <input type="submit" name="run">
+            <input type="text" name="step">
+            steps
+            
         </form>
+        {{ response }}
         <br>
         <br>
 
