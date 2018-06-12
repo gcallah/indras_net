@@ -7,16 +7,16 @@
     </title>
 {%  load static %}
     {% block stylesheets %}
-        <link rel="stylesheet" type="text/css" href="/static/IndrasNet/style.css">
+        <link rel="stylesheet" type="text/css" href="{% static '/IndrasNet/style.css' %}">
 
     {% endblock stylesheets %}
-<script type="text/javascript" src="/static/IndrasNet/main.js"></script>
+<script type="text/javascript" src="/IndrasNet/main.js"></script>
 </head>
 
 <body class="dashboard" onload="loadcode()">
     <div id="container">
         <div id="top-image">
-            <img src="/static/IndrasNet/logo.png" alt="Logo"/>
+            <img src="{% static '/IndrasNet/logo.png' %}" alt="Logo"/>
             <br>
         </div>
         <div id="header">
