@@ -11,9 +11,7 @@ from .models import Site
 from .forms import MainForm
 
 RUN = 'run'
-SAVE = 'save'
 STEP = 'step'
-CLEAR = 'clear'
 HEADER = 'header'
 
 def get_hdr():
@@ -36,13 +34,9 @@ def main_page(request):
     else:
         form = MainForm(request.POST)
     if RUN in request.POST:
-        response = "Run!"
-    if SAVE in request.POST:
-        response = "Save!"
+        response = "Run "
     if STEP in request.POST:
-        response = "Step!"
-    if CLEAR in request.POST:
-        response = "Clear!"
+        response += request.POST[STEP] + " steps!"
     return render(request, 'main.html',
                   {'form': form,
                    'response': response, 
