@@ -2,6 +2,13 @@ from django.db import models
 
 HEADER_LEN = 64
 
+ATYPE_CHOICES = (
+    ('', ''),
+    ('INT', 'Integer'),
+    ('DBL', 'Double'),
+    ('BOOL', 'Boolean'),
+    ('STR', 'String'),
+)
 
 class SingleNameModel(models.Model):
     name = models.CharField(max_length=256)
@@ -39,3 +46,23 @@ class AdminEmail(models.Model):
 # this model captures site specific info
 class Site(SingleNameModel, UrlModel, DescrModel):
     header = models.CharField(max_length=HEADER_LEN, default="")
+
+class ModelType(SingleNameModel, DescrModel):
+    pass
+
+class ModelParam(models.Model):
+    question = models.CharField(max_length=128)
+    atype = models.CharField(choices=ATYPE_CHOICES, max_length=12)
+    default_val = models.CharField(max_length=16, null=True)
+#    lowval = models.?(blank=True, null=True, default="")
+#    hival = models.?(blank=True, null=True, default="")
+
+    def __str__(self):
+        return self.question
+
+class Model(SingleNameModel, DescrModel):
+    mtype = models.ForeignKey(ModelType, models.SET_NULL, null=True, )
+    module = models.CharField(max_length=128)
+    params = models.ManyToManyField(
+        ModelParam, default="", related_name="parameters", blank=True,
+    )
