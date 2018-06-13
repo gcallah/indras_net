@@ -10,8 +10,11 @@ from .models import AdminEmail
 from .models import Site
 from .forms import MainForm
 
+from indra.api import get_agent
+
 RUN = 'run'
 STEP = 'step'
+SHOW = 'show'
 HEADER = 'header'
 
 def get_hdr():
@@ -28,7 +31,8 @@ def dump_dict(d, vmachine):
 
 def main_page(request):
     site_hdr = get_hdr()
-    response = "None"
+    response = ""
+    json = ""
     if request.method == 'GET':
         form = MainForm()
     else:
@@ -37,9 +41,12 @@ def main_page(request):
         response = "Run "
     if STEP in request.POST:
         response += request.POST[STEP] + " steps!"
+    if SHOW in request.POST:
+        json = get_agent(0)
     return render(request, 'main.html',
                   {'form': form,
                    'response': response, 
+                   'json': json, 
                    HEADER: site_hdr
                   })
 

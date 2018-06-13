@@ -9,13 +9,17 @@
             <input type="submit" name="run">
             <input type="text" name="step">
             steps
+            
+            <input type="submit" name="show">
         </form>
         {{ response }}
         <br>
         <br>
 
         <textarea rows="12" cols="60" readonly="readonly">
-            {{ debug }}
+            {% for name in json.items %}
+                {{name.0}}: {{name.1}}
+            {% endfor %}
         </textarea>
     </div>
 
