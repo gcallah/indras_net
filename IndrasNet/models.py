@@ -54,8 +54,8 @@ class ModelParam(models.Model):
     question = models.CharField(max_length=128)
     atype = models.CharField(choices=ATYPE_CHOICES, max_length=12)
     default_val = models.CharField(max_length=16, null=True)
-#    lowval = models.?(blank=True, null=True, default="")
-#    hival = models.?(blank=True, null=True, default="")
+    lowval = models.FloatField(blank=True, null=True)
+    hival = models.FloatField(blank=True, null=True)
 
     def __str__(self):
         return self.question
