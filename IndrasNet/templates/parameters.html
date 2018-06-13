@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% load humanize %}
+{% load formatting %}
+
+{% block content %}
+    <div class="module">
+    <table>
+        <caption>
+            Model Parameters
+        </caption>
+        <tr>
+            <th>Question</th>
+            <th>Range</th>
+            <th>Answer</th>
+        </tr>
+        {% for param in model.params.all %}
+            <tr>
+                <td> {{ param.question }} </td>
+                <td> 
+                {% if param.atype == "INT" %}
+                {{ param.lowval|to_int }}-{{ param.hival|to_int }}
+                {% elif param.atype == "DBL" %}
+                {{ param.lowval|intcomma }}-{{ param.hival|intcomma }}
+                {% endif %}
+                </td>
+                <td> {{ param.hival }} </td>
+            </tr>
+        {% endfor %}
+    </table>
+    </div>
+{% endblock content %}
