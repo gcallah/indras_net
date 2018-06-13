@@ -6,15 +6,20 @@
             {% csrf_token %}
             <input type="hidden" name="nxt_key">
             <input type="hidden" name="unwritable">
+
             <input type="submit" name="run">
             <input type="text" name="step">
             steps
             
+<<<<<<< HEAD
             <input type="submit" name="show">
+=======
+>>>>>>> b973bd27bb1b3cc976d860d4c299bbfb879dc7cd
         </form>
         {{ response }}
         <br>
         <br>
+
 
         <textarea rows="12" cols="60" readonly="readonly">
             {% for name in json.items %}
