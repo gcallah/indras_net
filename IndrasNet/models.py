@@ -57,6 +57,7 @@ class ModelParam(models.Model):
 					blank=True)
     lowval = models.FloatField(blank=True, null=True)
     hival = models.FloatField(blank=True, null=True)
+    prop_name = models.CharField(max_length=16, default="prop_default")
 
     def __str__(self):
         return self.question

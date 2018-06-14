@@ -47,13 +47,6 @@ def ab_models(request):
     template_data = {'models': models, HEADER: site_hdr}
     return render(request, 'abmodels.html', template_data)
 
-def run(request):
-    site_hdr = get_hdr()
-
-    models = Model.objects.order_by('mtype')
-    template_data = {'models': models, HEADER: site_hdr}
-    return render(request, 'run.html', template_data)
-
 def parameters(request):
     site_hdr = get_hdr()
     model_name = request.GET[MODEL]
@@ -61,6 +54,17 @@ def parameters(request):
     
     template_data = {'model': model, HEADER: site_hdr}
     return render(request, 'parameters.html', template_data)
+
+def run(request):
+    site_hdr = get_hdr()
+    model_name = request.POST[MODEL]
+    model = Model.objects.get(name=model_name)
+    questions = model.params.all()
+    answers = []
+    for q in questions:
+        answers.append(request.POST[q.question])
+    template_data = {'answers': answers, HEADER: site_hdr}
+    return render(request, 'run.html', template_data)
 
 #def main_page(request):
 #    site_hdr = get_hdr()

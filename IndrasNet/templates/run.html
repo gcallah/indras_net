@@ -7,20 +7,11 @@
             Models
         </caption>
         <tr>
-            <th>Name</th>
-            <th>Model Type</th>
-            <th>Description</th>
+            <th>Answer</th>
         </tr>
-        {% for model in models %}
+        {% for answer in answers %}
             <tr>
-                <td> 
-                <form action="{% url 'IndrasNet:parameters' %}" method="post">
-                {% csrf_token %}
-                <input type="submit" name="model" value="{{ model.name }}"/>
-                </form>
-                </td>
-                <td> {{ model.mtype }} </td>
-                <td> {{ model.descr }} </td>
+                <td> {{ answer }} </td>
                               
             </tr>
         {% endfor %}
