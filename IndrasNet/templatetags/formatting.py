@@ -9,9 +9,9 @@ def to_int(num):
 def to_int_comma(num):
     return intcomma(int(num))
 
-def to_float(num):
+def to_float_2(num):
     return round(float(num), 2)
 
 register.filter('to_int', to_int)
 register.filter('to_int_comma', to_int_comma)
-register.filter('to_float', to_float)
+register.filter('to_float_2', to_float_2)

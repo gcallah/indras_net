@@ -11,7 +11,7 @@ from .models import Site
 from .models import Model
 from .models import ModelParam
 
-from .forms import MainForm
+from django import forms
 
 from indra.api import get_agent
 
@@ -20,6 +20,8 @@ from indra.api import get_agent
 #SHOW = 'show'
 MODEL = 'model'
 HEADER = 'header'
+DEFAULT_HIGHVAL = 100000
+DEFAULT_LOWVAL = 0
 
 def get_hdr():
     site_hdr = "Indra's Net: an agent-based modeling system."
@@ -48,11 +50,43 @@ def ab_models(request):
     return render(request, 'abmodels.html', template_data)
 
 def parameters(request):
+    class ParamForm(forms.Form):
+        def __init__(self, *args, **kwargs):
+            questions = kwargs.pop('questions')
+            super(ParamForm, self).__init__(*args, **kwargs)
+            counter = 0
+            for q in questions:
+                print(q, q.atype)
+                default = ""
+                lowval, hival = DEFAULT_LOWVAL, DEFAULT_HIGHVAL
+                if q.default_val:
+                    default = q.default_val
+                if q.lowval:
+                    lowval = q.lowval
+                if q.hival:
+                    hival = q.hival
+                if q.atype == "STR":
+                    self.fields[q.question] = forms.CharField(label=q.question, 
+                               initial=default, max_length=128)
+                if q.atype == "INT":
+                    self.fields[q.question] = forms.IntegerField(label=q.question, 
+                               initial=default, min_value=lowval, 
+                               max_value=hival)
+                if q.atype == "DBL":
+                    self.fields[q.question] = forms.FloatField(label=q.question, 
+                               initial=default, min_value=lowval, 
+                               max_value=hival)
+                if q.atype == "BOOL":
+                    self.fields[q.question] = forms.BooleanField(label=q.question, 
+                               required=False)
+                counter += 1
+    
     site_hdr = get_hdr()
     model_name = request.GET[MODEL]
     model = Model.objects.get(name=model_name)
+    form = ParamForm(questions=model.params.all())
     
-    template_data = {'model': model, HEADER: site_hdr}
+    template_data = {'form': form, HEADER: site_hdr}
     return render(request, 'parameters.html', template_data)
 
 def run(request):

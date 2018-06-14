@@ -5,47 +5,12 @@
 
 {% block content %}
     <div class="module">
-    <table>
-        <caption>
-            Model Parameters
-        </caption>
-        <tr>
-            <th>Question</th>
-            <th>Range</th>
-            <th>Answer</th>
-        </tr>
-        <form action="{% url 'IndrasNet:run' %}" method="post">
+    <h1>Model Parameters</h1>
+    <form action="{% url 'IndrasNet:run' %}" method="post">
         {% csrf_token %}
         <input type="hidden" name="model" value="{{ model.name }}">
-        {% for param in model.params.all %}
-            <tr>
-                <td> {{ param.question }} </td>
-                <td> 
-                {% if param.atype == "INT" and param.lowval and param.hival %}
-                {{ param.lowval|to_int_comma }}-{{ param.hival|to_int_comma }}
-                {% elif param.atype == "DBL" and param.lowval and param.hival %}
-                {{ param.lowval|intcomma }}-{{ param.hival|intcomma }}
-                {% elif param.atype == "BOOL" %}
-                True/False
-                {% endif %}
-                </td>
-                <td>
-                {% if param.default_val and param.atype == "INT" %}
-                <input type="text" name="{{ param.question }}" value={{ param.default_val|to_int }}>
-                {% elif param.default_val and param.atype == "DBL" %}
-                <input type="text" name="{{ param.question }}" value={{ param.default_val|to_float }}>
-                {% elif param.default_val and param.atype == "BOOL" %}
-                <input type="checkbox" name="{{ param.question }}" checked>
-                {% elif param.atype == "INT" or param.atype == "DBL" %}
-                <input type="text" name="{{ param.question }}">
-                {% elif param.atype == "BOOL" %}
-                <input type="checkbox" name="{{ param.question }}">
-                {% endif %}
-                </td>
-            </tr>
-        {% endfor %}
+        {{ form.as_p }}
         <input type="submit" name="model" value="Run {{ model.name }}"/>
-        </form>
-    </table>
+    </form>
     </div>
 {% endblock content %}
