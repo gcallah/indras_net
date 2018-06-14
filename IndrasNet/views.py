@@ -56,7 +56,7 @@ def run(request):
 
 def parameters(request):
     site_hdr = get_hdr()
-    model_name = request.POST[MODEL]
+    model_name = request.GET[MODEL]
     model = Model.objects.get(name=model_name)
     
     template_data = {'model': model, HEADER: site_hdr}

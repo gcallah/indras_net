@@ -14,10 +14,9 @@
         {% for model in models %}
             <tr>
                 <td> 
-                <form action="{% url 'IndrasNet:parameters' %}" method="post">
-                {% csrf_token %}
-                <input type="submit" name="model" value="{{ model.name }}"/>
-                </form>
+                <a class="btn-link" href="{% url 'IndrasNet:parameters' %}?model={{ model.name }}">
+                {{ model.name }}
+                </a>
                 </td>
                 <td> {{ model.mtype }} </td>
                 <td> {{ model.descr }} </td>
