@@ -40,6 +40,13 @@ def main_page(request):
     template_data = {'models': models, HEADER: site_hdr}
     return render(request, 'main.html', template_data)
 
+def ab_models(request):
+    site_hdr = get_hdr()
+
+    models = Model.objects.order_by('mtype')
+    template_data = {'models': models, HEADER: site_hdr}
+    return render(request, 'abmodels.html', template_data)
+
 def parameters(request):
     site_hdr = get_hdr()
     model_name = request.POST[MODEL]

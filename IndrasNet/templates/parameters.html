@@ -18,13 +18,27 @@
             <tr>
                 <td> {{ param.question }} </td>
                 <td> 
-                {% if param.atype == "INT" %}
-                {{ param.lowval|to_int }}-{{ param.hival|to_int }}
+                {% if param.atype == "INT" and param.lowval and param.hival %}
+                {{ param.lowval|to_int_comma }}-{{ param.hival|to_int_comma }}
                 {% elif param.atype == "DBL" %}
                 {{ param.lowval|intcomma }}-{{ param.hival|intcomma }}
+                {% elif param.atype == "BOOL" %}
+                True/False
                 {% endif %}
                 </td>
-                <td> {{ param.hival }} </td>
+                <td>
+                {% if param.default_val and param.atype == "INT" %}
+                <input type="text" name="param" value={{ param.default_val|to_int }}>
+                {% elif param.default_val and param.atype == "DBL" %}
+                <input type="text" name="param" value={{ param.default_val|to_float }}>
+                {% elif param.default_val and param.atype == "BOOL" %}
+                <input type="text" name="param" value={{ param.default_val|to_int }}>
+                {% elif param.atype == "INT" or param.atype == "DBL" %}
+                <input type="text" name="param">
+                {% elif param.atype == "BOOL" %}
+                <input type="text" name="param">
+                {% endif %}
+                </td>
             </tr>
         {% endfor %}
     </table>
