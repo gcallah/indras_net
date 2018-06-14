@@ -8,13 +8,17 @@ from django.shortcuts import get_object_or_404, get_list_or_404, render
 
 from .models import AdminEmail
 from .models import Site
+from .models import Model
+from .models import ModelParam
+
 from .forms import MainForm
 
 from indra.api import get_agent
 
-RUN = 'run'
-STEP = 'step'
-SHOW = 'show'
+#RUN = 'run'
+#STEP = 'step'
+#SHOW = 'show'
+MODEL = 'model'
 HEADER = 'header'
 
 def get_hdr():
@@ -31,24 +35,41 @@ def dump_dict(d, vmachine):
 
 def main_page(request):
     site_hdr = get_hdr()
-    response = ""
-    json = ""
-    if request.method == 'GET':
-        form = MainForm()
-    else:
-        form = MainForm(request.POST)
-    if RUN in request.POST:
-        response = "Run "
-    if STEP in request.POST:
-        response += request.POST[STEP] + " steps!"
-    if SHOW in request.POST:
-        json = get_agent(0)
-    return render(request, 'main.html',
-                  {'form': form,
-                   'response': response, 
-                   'json': json, 
-                   HEADER: site_hdr
-                  })
+
+    models = Model.objects.order_by('mtype')
+    template_data = {'models': models, HEADER: site_hdr}
+    return render(request, 'main.html', template_data)
+
+def parameters(request):
+    site_hdr = get_hdr()
+    model_name = request.POST[MODEL]
+    model = Model.objects.get(name=model_name)
+    print("-----------")
+    print(model.params.all())
+    
+    template_data = {'model': model, HEADER: site_hdr}
+    return render(request, 'parameters.html', template_data)
+
+#def main_page(request):
+#    site_hdr = get_hdr()
+#    response = ""
+#    json = ""
+#    if request.method == 'GET':
+#        form = MainForm()
+#    else:
+#        form = MainForm(request.POST)
+#    if RUN in request.POST:
+#        response = "Run "
+#    if STEP in request.POST:
+#        response += request.POST[STEP] + " steps!"
+#    if SHOW in request.POST:
+#        json = get_agent(0)
+#    return render(request, 'main.html',
+#                  {'form': form,
+#                   'response': response, 
+#                   'json': json, 
+#                   HEADER: site_hdr
+#                  })
 
 def help(request):
     site_hdr = get_hdr()
