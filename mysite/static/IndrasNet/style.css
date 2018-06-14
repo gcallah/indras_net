@@ -21,7 +21,7 @@ a:link, a:visited {
 }
 
 a:focus, a:hover {
-    color: #036;
+    color: #acf;
 }
 
 a:focus {
@@ -818,7 +818,7 @@ td#unwritable {
 }
 
 td#contents, input#reg-cont, input#flag-cont {
-    background: #eff;
+    background: #000;
 }
 
 input#reg-cont, input#mem-cont, input#flag-cont, input#unwr-cont {
@@ -857,7 +857,7 @@ td#registers-cell {
 #user-tools a:focus, #user-tools a:hover {
     text-decoration: none;
     border-bottom-color: #285d91;
-    color: #285d91;
+    color: #ffcc33;
 }
 
 /* SIDEBAR */
