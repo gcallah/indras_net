@@ -2,25 +2,28 @@
 
 {% block content %}
     <div class="module">
-        <form action="{% url 'IndrasNet:main_page' %}" method="post">
-            {% csrf_token %}
-            <input type="hidden" name="nxt_key">
-            <input type="hidden" name="unwritable">
-            <input type="submit" name="run" value="Run">
-            <input type="text" name="step">
-            steps
-            
-            <input type="submit" name="show" value="Stats">
-        </form>
-        {{ response }}
-        <br>
-        <br>
-
-        <textarea rows="12" cols="60" readonly="readonly">
-            {% for name in json.items %}
-                {{name.0}}: {{name.1}}
-            {% endfor %}
-        </textarea>
+    <table>
+        <caption>
+            Models
+        </caption>
+        <tr>
+            <th>Name</th>
+            <th>Model Type</th>
+            <th>Description</th>
+        </tr>
+        {% for model in models %}
+            <tr>
+                <td> 
+                <form action="{% url 'IndrasNet:parameters' %}" method="post">
+                {% csrf_token %}
+                <input type="submit" name="model" value="{{ model.name }}"/>
+                </form>
+                </td>
+                <td> {{ model.mtype }} </td>
+                <td> {{ model.descr }} </td>
+                              
+            </tr>
+        {% endfor %}
+    </table>
     </div>
-
 {% endblock content %}
