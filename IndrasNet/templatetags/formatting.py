@@ -13,3 +13,5 @@ def to_float(num):
     return round(float(num), 2)
 
 register.filter('to_int', to_int)
+register.filter('to_int_comma', to_int_comma)
+register.filter('to_float', to_float)
