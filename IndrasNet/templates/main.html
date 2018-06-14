@@ -1,29 +1,18 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="module">
-    <table>
-        <caption>
-            Models
-        </caption>
-        <tr>
-            <th>Name</th>
-            <th>Model Type</th>
-            <th>Description</th>
-        </tr>
-        {% for model in models %}
-            <tr>
-                <td> 
-                <form action="{% url 'IndrasNet:parameters' %}" method="post">
-                {% csrf_token %}
-                <input type="submit" name="model" value="{{ model.name }}"/>
-                </form>
-                </td>
-                <td> {{ model.mtype }} </td>
-                <td> {{ model.descr }} </td>
-                              
-            </tr>
-        {% endfor %}
-    </table>
-    </div>
+    <p>
+    Welcome to Indra's Net, an open-source, agent-based modeling system
+    written in Python. You can see a lit of our <a
+    href="./ab_models">models here</a>, and browse our 
+    <a href="https://github.com/gcallah/indras_net">source code
+    here</a>.
+    </p>
+
+    <figure>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Indrasnet.jpg/600px-Indrasnet.jpg">
+        <figcaption>
+            A rendering of Indra's net.
+        </figcaption>
+    </figure>
 {% endblock content %}
