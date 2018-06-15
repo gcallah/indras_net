@@ -31,6 +31,7 @@ import indra.entity as ent
 TERMINAL = "terminal"
 IPYTHON = "iPython"
 IPYTHON_NB = "iPython Notebook"
+WEB = "Web browser"
 
 
 def ask(msg):
