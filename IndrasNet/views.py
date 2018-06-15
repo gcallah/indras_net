@@ -54,7 +54,6 @@ def parameters(request):
         def __init__(self, *args, **kwargs):
             questions = kwargs.pop('questions')
             super(ParamForm, self).__init__(*args, **kwargs)
-            counter = 0
             for q in questions:
                 default = ""
                 lowval, hival = DEFAULT_LOWVAL, DEFAULT_HIGHVAL
@@ -78,7 +77,6 @@ def parameters(request):
                 if q.atype == "BOOL":
                     self.fields[q.question] = forms.BooleanField(label=q.question, 
                                required=False)
-                counter += 1
     
     site_hdr = get_hdr()
     model_name = request.GET[MODEL]
