@@ -40,9 +40,9 @@ def generate_wolfram_rules():
 
     print("256 rules are successfully generated")
         
-def read_wolfram_rules(file):
+def read_wolfram_rules(file_name):
     rules_sets = []
-    with open(file, "r") as f:
+    with open(file_name, "r") as f:
         all_rules = f.readlines()
         for i in all_rules:
             rules_sets.append(ast.literal_eval(i))
