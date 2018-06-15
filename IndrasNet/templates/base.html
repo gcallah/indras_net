@@ -15,7 +15,11 @@
 <body class="dashboard" onload="loadcode()">
     <div id="container">
         <div id="top-image">
-            <img src="{% static '/IndrasNet/logo.png' %}" alt="Logo"/>
+            <img src="{% static '/IndrasNet/logo.png' %}" alt="Logo" width=50 height=50>
+            &nbsp; &nbsp;
+            <img src="{% static '/IndrasNet/logo.png' %}" alt="Logo" width=50 height=50>
+            &nbsp; &nbsp;
+            <img src="{% static '/IndrasNet/logo.png' %}" alt="Logo" width=50 height=50>
             <br>
         </div>
         <div id="header">
@@ -23,7 +27,10 @@
                 <h1>{{ header }}</h1>
             </div>
             <div id="user-tools">
+
                 <a href="/IndrasNet">Home</a>
+                &nbsp; &nbsp;
+                <a href="/IndrasNet/ab_models">Models</a>
                 &nbsp; &nbsp; 
                 <a href="/IndrasNet/help">Help</a>
                 &nbsp; &nbsp; 
