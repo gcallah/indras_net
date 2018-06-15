@@ -33,7 +33,7 @@ RULE30 = {
 
 class WolframAgent(ga.GridAgent):
     """
-    An agent that looks agents above it and react
+    An agent that looks at agents above it and reacts
     """
     def __init__(self, name, goal, cell, mark = False):
         super().__init__(name, goal)
@@ -138,9 +138,9 @@ class WolframEnv(ge.GridEnv):
         
     def read_wolfram_rules(self,file):
         rules_sets = []
-        f = open(file,"r")
-        all_rules = f.readlines()
-        for i in all_rules:
-            rules_sets.append(ast.literal_eval(i))
-        f.close()
+        with open(file,"r") as f:
+            all_rules = f.readlines()
+            for i in all_rules:
+                rules_sets.append(ast.literal_eval(i))
+
         return rules_sets

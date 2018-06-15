@@ -31,22 +31,22 @@ template = {
 }
 
 def generate_wolfram_rules():
-    f = open("wolfram/wolfram_rules.txt","w+")
-    for i in range(256):
-        binary = bin(i + 256)[3:]
-        for j in range(len(binary)):
-            template[rules[j]] = int(binary[j])
-        f.write(str(template) + "\n")
-    f.close()
+    with open("wolfram/wolfram_rules.txt","w+") as f: 
+        for i in range(256):
+            binary = bin(i + 256)[3:]
+            for j in range(len(binary)):
+                template[rules[j]] = int(binary[j])
+            f.write(str(template) + "\n")
+
     print("256 rules are successfully generated")
         
 def read_wolfram_rules(file):
     rules_sets = []
-    f = open(file,"r")
-    all_rules = f.readlines()
-    for i in all_rules:
-        rules_sets.append(ast.literal_eval(i))
-    f.close()
+    with open(file, "r") as f:
+        all_rules = f.readlines()
+        for i in all_rules:
+            rules_sets.append(ast.literal_eval(i))
+
     return rules_sets
     
 generate_wolfram_rules()
