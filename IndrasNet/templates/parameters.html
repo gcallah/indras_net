@@ -9,7 +9,18 @@
     <form action="{% url 'IndrasNet:run' %}" method="post">
         {% csrf_token %}
         <input type="hidden" name="model" value="{{ model.name }}">
-        {{ form.as_p }}
+        
+        {% for item in form %}
+            <p>
+            {{ item.errors }}
+            <label for="{{ item.id_for_label }}">{{ item.label_tag }}</label>
+            {{ item }}
+            {% if item.field.widget|class_name == "NumberInput" %}
+            ({{ item.field.min_value }}-{{ item.field.max_value }})
+            {% endif %}
+            </p>
+        {% endfor %}
+        
         <input type="submit" name="model" value="Run {{ model.name }}"/>
     </form>
     </div>

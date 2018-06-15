@@ -56,7 +56,6 @@ def parameters(request):
             super(ParamForm, self).__init__(*args, **kwargs)
             counter = 0
             for q in questions:
-                print(q, q.atype)
                 default = ""
                 lowval, hival = DEFAULT_LOWVAL, DEFAULT_HIGHVAL
                 if q.default_val:
@@ -67,7 +66,7 @@ def parameters(request):
                     hival = q.hival
                 if q.atype == "STR":
                     self.fields[q.question] = forms.CharField(label=q.question, 
-                               initial=default, max_length=128)
+                               initial=default, max_length=20)
                 if q.atype == "INT":
                     self.fields[q.question] = forms.IntegerField(label=q.question, 
                                initial=default, min_value=lowval, 
