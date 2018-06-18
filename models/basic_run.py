@@ -12,17 +12,22 @@ import models.basic_model as bm
 # set up some file names:
 MODEL_NM = "basic_model"
 
-def run():
+def run(dic=None):
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
     
     # We store basic parameters in a
     # "property" file; this allows us to save
     #  multiple parameter sets, which is important in simulation work.
     #  We can read these in from file or set them here.
-    pa = utils.read_props(MODEL_NM)
-    if pa is None:
+    pa = None
+    if dic is None:
+        pa = utils.read_props(MODEL_NM)   
+    if pa is None and dic is None:
         pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
         utils.get_agent_num(pa, "num_agents", "agents", 16)
+    elif dic is not None:
+        #dic[props.PERIODS] = 100
+        pa = props.PropArgs(MODEL_NM, logfile=log_file, props=dic)
 
     # Now we create a minimal environment for our agents to act within:
     env = bm.BasicEnv(model_nm=MODEL_NM, props=pa)

@@ -10,10 +10,9 @@ from .models import AdminEmail
 from .models import Site
 from .models import Model
 from .models import ModelParam
-
 from django import forms
 
-from indra.api import get_agent
+import models.basic_run
 
 #RUN = 'run'
 #STEP = 'step'
@@ -83,40 +82,30 @@ def parameters(request):
     model = Model.objects.get(name=model_name)
     form = ParamForm(questions=model.params.all())
     
-    template_data = {'form': form, HEADER: site_hdr}
+    template_data = {'form': form, HEADER: site_hdr, 'model': model}
     return render(request, 'parameters.html', template_data)
 
 def run(request):
     site_hdr = get_hdr()
     model_name = request.POST[MODEL]
     model = Model.objects.get(name=model_name)
+    module = model.module
     questions = model.params.all()
-    answers = []
+    print("Model name: ", model_name)
+    print("Module: ", module)
+    answers = {}
     for q in questions:
-        answers.append(request.POST[q.question])
+        answer = request.POST[q.question]
+        if q.atype == "INT":
+            answer = int(answer)
+        elif q.atype == "DBL":
+            answer = float(answer)
+        #Boolen is not considered yet
+        answers[q.prop_name] = answer
+    #locals()[module](answers)
+    models.basic_run.run(answers)
     template_data = {'answers': answers, HEADER: site_hdr}
     return render(request, 'run.html', template_data)
-
-#def main_page(request):
-#    site_hdr = get_hdr()
-#    response = ""
-#    json = ""
-#    if request.method == 'GET':
-#        form = MainForm()
-#    else:
-#        form = MainForm(request.POST)
-#    if RUN in request.POST:
-#        response = "Run "
-#    if STEP in request.POST:
-#        response += request.POST[STEP] + " steps!"
-#    if SHOW in request.POST:
-#        json = get_agent(0)
-#    return render(request, 'main.html',
-#                  {'form': form,
-#                   'response': response, 
-#                   'json': json, 
-#                   HEADER: site_hdr
-#                  })
 
 def help(request):
     site_hdr = get_hdr()
