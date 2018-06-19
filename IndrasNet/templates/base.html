@@ -7,7 +7,10 @@
     </title>
 {%  load static %}
     {% block stylesheets %}
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="{% static '/IndrasNet/style.css' %}">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     {% endblock stylesheets %}
 </head>
@@ -22,21 +25,31 @@
             <img src="{% static '/IndrasNet/logo.png' %}" alt="Logo" width=50 height=50>
             <br>
         </div>
-        <div id="header">
-            <div id="branding">
-                <h1>{{ header }}</h1>
-            </div>
-            <div id="user-tools">
+        <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <h1>{{ header }}</h1>
+                    <!--<div id="branding">-->
+                        <!--<h1>{{ header }}</h1>-->
+                    <!--</div>-->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <div class="collapse navbar-collapse" id="myNavbar">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="/IndrasNet">Home</a></li>
+                        <li><a href="/IndrasNet/ab_models">Models</a></li>
+                        <li><a href="/IndrasNet/help">Help</a></li>
+                        <li><a href="/IndrasNet/feedback">Feedback</a></li>
+                    </ul>
+                </div>
 
-                <a href="/IndrasNet">Home</a>
-                &nbsp; &nbsp;
-                <a href="/IndrasNet/ab_models">Models</a>
-                &nbsp; &nbsp; 
-                <a href="/IndrasNet/help">Help</a>
-                &nbsp; &nbsp; 
-                <a href="/IndrasNet/feedback">Feedback</a>
             </div>
-        </div>
+        </nav>
+
         <div id="content">
             <div id="content-main">
                 {% block content %}

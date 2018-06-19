@@ -24,7 +24,7 @@ DEFAULT_HIGHVAL = 100000
 DEFAULT_LOWVAL = 0
 
 def get_hdr():
-    site_hdr = "Indra's Net: an agent-based modeling system."
+    site_hdr = "Indra's Net"
 #    site_list = Site.objects.all()
 #    for site in site_list:
 #        site_hdr = site.header
