@@ -1,6 +1,7 @@
 # from collections import OrderedDict
 
 import logging
+import importlib
 logger = logging.getLogger(__name__)
 
 from django.http import HttpResponse
@@ -12,7 +13,7 @@ from .models import Model
 from .models import ModelParam
 from django import forms
 
-import models.basic_run
+import models
 
 #RUN = 'run'
 #STEP = 'step'
@@ -102,8 +103,8 @@ def run(request):
             answer = float(answer)
         #Boolen is not considered yet
         answers[q.prop_name] = answer
-    #locals()[module](answers)
-    models.basic_run.run(answers)
+    importlib.import_module(module[0:-4])
+    eval(module+"(answers)")
     template_data = {'answers': answers, HEADER: site_hdr}
     return render(request, 'run.html', template_data)
 

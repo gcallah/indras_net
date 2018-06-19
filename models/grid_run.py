@@ -7,21 +7,28 @@ import indra.utils as utils
 import indra.prop_args as props
 import indra.grid_env as ge
 import models.grid_model as gm
+import indra.user as u
 
 # set up some file names:
 MODEL_NM = "grid_model"
 
-def run():
+def run(dic=None):
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
     
     # We store basic parameters in a "property" file; this allows us to save
     #  multiple parameter sets, which is important in simulation work.
     #  We can read these in from file or set them here.
-    pa = utils.read_props(MODEL_NM)
-    if pa is None:
+    pa = None
+    if dic is None:
+        pa = utils.read_props(MODEL_NM)   
+    if pa is None and dic is None:
         pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
         utils.get_grid_dims(pa, 6)
         utils.get_agent_num(pa, "num_agents", "agents", 8)
+    elif dic is not None:
+        #dic[props.PERIODS] = 100
+        #dic["user_type"] = u.WEB
+        pa = props.PropArgs(MODEL_NM, logfile=log_file, props=dic)
     
     # Now we create a minimal environment for our agents to act within:
     env = ge.GridEnv("Test grid env",
@@ -45,7 +52,7 @@ def run():
         print("Contents of cell x = " + str(x)
               + " and y = " + str(y)
               + " is " + str(cell.contents))
-    
+        
     utils.run_model(env, prog_file, results_file)
 
 if __name__ == "__main__":
