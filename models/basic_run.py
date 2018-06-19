@@ -26,7 +26,7 @@ def run(dic=None):
         pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
         utils.get_agent_num(pa, "num_agents", "agents", 16)
     elif dic is not None:
-        #dic[props.PERIODS] = 100
+        dic[props.PERIODS] = 100
         pa = props.PropArgs(MODEL_NM, logfile=log_file, props=dic)
 
     # Now we create a minimal environment for our agents to act within:
