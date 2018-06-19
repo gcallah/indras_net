@@ -9,6 +9,7 @@ from math import ceil
 import numpy as np
 import networkx as nx
 import logging
+
 plt_present = True
 try:
     import matplotlib.pyplot as plt
@@ -186,7 +187,7 @@ class ScatterPlot():
         return self.scats
 
     def __init__(self, title, varieties, width, height,
-                 anim=True, data_func=None, legend_pos=4):
+                 anim=True, data_func=None, is_headless=False, legend_pos=4):
         """
         Setup a scatter plot.
         varieties contains the different types of
@@ -199,6 +200,7 @@ class ScatterPlot():
         self.anim = anim
         self.data_func = data_func
         self.s = ceil(4096 / width)
+        self.headless = is_headless
 
         fig, ax = plt.subplots()
         ax.set_xlim(0, width)
@@ -220,8 +222,10 @@ class ScatterPlot():
         """
         Display the plot.
         """
-        plt.show()
-        plt.pause(1)
+        if not self.headless:
+            plt.show()
+        else:
+            plt.savefig("/images/plot.png")
 
     def get_arrays(self, varieties, var):
         x_array = np.array(varieties[var][X])

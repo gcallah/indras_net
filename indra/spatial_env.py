@@ -69,12 +69,17 @@ class SpatialEnv(env.Environment):
         if not disp.plt_present:
             self.user.tell("No graphing package installed", type=user.ERROR)
             return
-
+        headless = False
+        if self.user.utype == user.WEB:
+            headless = True
+        
         data = self.plot_data()
         self.scatter_plot = disp.ScatterPlot(
             self.plot_title, data,
             int(self.width), int(self.height),
-            anim=True, data_func=self.plot_data)
+            anim=True, data_func=self.plot_data,
+            is_headless=headless
+            )
         self.scatter_plot.show()
 
     def plot_data(self):
