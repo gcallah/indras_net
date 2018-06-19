@@ -41,7 +41,10 @@ def run_model(env, prog_file, results_file):
     else:
         periods = int(periods)
     # And now we set things running!
-    env.run(periods=periods)
+    try:
+        env.run(periods=periods)
+    except SystemExit:
+        pass
     env.record_results(results_file)
 
 
