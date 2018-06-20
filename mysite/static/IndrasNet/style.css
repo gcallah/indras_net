@@ -429,8 +429,8 @@ input[type=button][disabled].default {
     font-weight: 400;
     font-size: 1.25em;
     text-align: left;
-    background: #285d91;
-    color: #fff;
+    background: #222;
+    color: #ffcc33;
 }
 
 .module caption,
