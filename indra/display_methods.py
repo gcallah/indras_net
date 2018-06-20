@@ -10,10 +10,15 @@ import numpy as np
 import networkx as nx
 import logging
 
+import matplotlib
+matplotlib.use('Agg')
+
 plt_present = True
 try:
     import matplotlib.pyplot as plt
     import matplotlib.animation as animation
+    from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+    from matplotlib.figure import Figure
     plt.ion()
 except ImportError:
     plt_present = False
@@ -202,6 +207,15 @@ class ScatterPlot():
         self.s = ceil(4096 / width)
         self.headless = is_headless
 
+#        fig = Figure()
+#        canvas = FigureCanvas(fig)
+#        ax = fig.add_subplot(111)
+#        ax.set_xlim(0, width)
+#        ax.set_ylim(0, height)
+#        ax.legend(loc = legend_pos)
+#        ax.set_title(title)
+#        plt.grid(True)
+        
         fig, ax = plt.subplots()
         ax.set_xlim(0, width)
         ax.set_ylim(0, height)
@@ -210,13 +224,13 @@ class ScatterPlot():
         ax.set_title(title)
         plt.grid(True)
 
-        if anim:
-            print("Animation is on.")
-            anim_func = animation.FuncAnimation(fig,
-                                    self.update_plot,
-                                    frames=1000,
-                                    interval=500,
-                                    blit=False)
+#        if anim:
+#            print("Animation is on.")
+#            anim_func = animation.FuncAnimation(fig,
+#                                    self.update_plot,
+#                                    frames=1000,
+#                                    interval=500,
+#                                    blit=False)
 
     def show(self):
         """
@@ -225,7 +239,7 @@ class ScatterPlot():
         if not self.headless:
             plt.show()
         else:
-            plt.savefig("/images/plot.png")
+            plt.savefig("plot.png")
 
     def get_arrays(self, varieties, var):
         x_array = np.array(varieties[var][X])
