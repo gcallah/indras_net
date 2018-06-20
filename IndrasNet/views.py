@@ -121,3 +121,7 @@ def feedback(request):
     comma_del_emails = comma_del_emails[:-1]
     return render(request, 'feedback.html', {'emails': comma_del_emails,
         HEADER: site_hdr})
+
+def about(request):
+    site_hdr = get_hdr()
+    return render(request, 'about.html', {HEADER: site_hdr})

@@ -96,6 +96,7 @@ h5 {
 }
 
 ul li {
+    font-size: 1.2em;
     list-style-type: square;
     padding: 1px 0;
 }
@@ -401,17 +402,17 @@ input[type=button][disabled].default {
 
 .module {
     border: none;
-    margin-bottom: 30px;
+    margin-bottom: 1.875em;
     background: #fff;
 }
 
 .module p, .module ul, .module h3, .module h4, .module dl, .module pre {
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: 0.625em;
+    padding-right: 0.625em;
 }
 
 .module blockquote {
-    margin-left: 12px;
+    margin-left: 0.75em;
 }
 
 .module ul, .module ol {
@@ -424,9 +425,9 @@ input[type=button][disabled].default {
 
 .module h2, .module caption, .inline-group h2 {
     margin: 0;
-    padding: 8px;
+    padding: 0.5em;
     font-weight: 400;
-    font-size: 20px;
+    font-size: 1.25em;
     text-align: left;
     background: #285d91;
     color: #fff;
@@ -434,8 +435,8 @@ input[type=button][disabled].default {
 
 .module caption,
 .inline-group h2 {
-    font-size: 20px;
-    letter-spacing: 0.5px;
+    font-size: 1.25em;
+    letter-spacing: 0.03125em;
     text-transform: uppercase;
 }
 
