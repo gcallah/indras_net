@@ -147,21 +147,23 @@ class Environment(node.Node):
             if file_nm is None:
                 file_nm = self.model_nm+RPT_EXT
             self.pop_report(file_nm=file_nm)
+            self.plot()
             exit()
         else:
             self.user.tell("Welcome, " + self.user.name)
             self.user.tell("Running in " + self.name)
-            msg = self.menu.display()
-            while msg is None:
-                try:
-                    msg = self.menu.display()
-                    self.user.tell("\nMain Menu; Period: " + str(self.period))
-                except Quit:
-                    break
+            #If run in a terminal, display the menu
+            if(self.user.utype in [user.TERMINAL, user.IPYTHON, user.IPYTHON_NB]):
+                msg = self.menu.display()
+                while msg is None:
+                    try:
+                        msg = self.menu.display()
+                        self.user.tell("\nMain Menu; Period: " + str(self.period))
+                    except Quit:
+                        break
+                self.user.tell(msg)
 
             Environment.prev_period = self.period
-
-            self.user.tell(msg)
 
     def add_menu_item(self, submenu, letter, text, func):
         """

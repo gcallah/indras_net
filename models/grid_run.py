@@ -26,8 +26,8 @@ def run(dic=None):
         utils.get_grid_dims(pa, 6)
         utils.get_agent_num(pa, "num_agents", "agents", 8)
     elif dic is not None:
-        #dic[props.PERIODS] = 100
-        #dic["user_type"] = u.WEB
+        dic[props.PERIODS] = 100
+        dic["user_type"] = u.WEB
         pa = props.PropArgs(MODEL_NM, logfile=log_file, props=dic)
     
     # Now we create a minimal environment for our agents to act within:
