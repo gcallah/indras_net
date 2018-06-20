@@ -14,6 +14,10 @@ from .models import ModelParam
 from django import forms
 
 import models
+import ast
+
+#Need this for using a global vaiable in it. Only for testing
+from indra import display_methods as dm
 
 #RUN = 'run'
 #STEP = 'step'
@@ -45,8 +49,8 @@ def main_page(request):
 def ab_models(request):
     site_hdr = get_hdr()
 
-    models = Model.objects.order_by('mtype')
-    template_data = {'models': models, HEADER: site_hdr}
+    model_list = Model.objects.order_by('mtype')
+    template_data = {'models': model_list, HEADER: site_hdr}
     return render(request, 'abmodels.html', template_data)
 
 def parameters(request):
@@ -103,10 +107,20 @@ def run(request):
             answer = float(answer)
         #Boolen is not considered yet
         answers[q.prop_name] = answer
+    template_data = {'answers': answers, HEADER: site_hdr, 'module': module}
+    return render(request, 'run.html', template_data)
+
+def plot(request):
+    answers_str = request.GET['answers']
+    module = request.GET['module']
+    print('module: ', module)
+    answers = ast.literal_eval(answers_str)
+    for i in answers:
+        print(i)
     importlib.import_module(module[0:-4])
     eval(module+"(answers)")
-    template_data = {'answers': answers, HEADER: site_hdr}
-    return render(request, 'run.html', template_data)
+    image = dm.imageIO.getvalue()
+    return HttpResponse(image, content_type="image/png")
 
 def help(request):
     site_hdr = get_hdr()

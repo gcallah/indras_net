@@ -9,12 +9,12 @@ from math import ceil
 import numpy as np
 import networkx as nx
 import logging
-
-import matplotlib
-matplotlib.use('Agg')
+import io
 
 plt_present = True
 try:
+    import matplotlib as mpl
+    mpl.use('Agg')
     import matplotlib.pyplot as plt
     import matplotlib.animation as animation
     from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
@@ -22,6 +22,8 @@ try:
     plt.ion()
 except ImportError:
     plt_present = False
+
+global imageIO
 
 anim_func = None
 
@@ -206,15 +208,6 @@ class ScatterPlot():
         self.data_func = data_func
         self.s = ceil(4096 / width)
         self.headless = is_headless
-
-#        fig = Figure()
-#        canvas = FigureCanvas(fig)
-#        ax = fig.add_subplot(111)
-#        ax.set_xlim(0, width)
-#        ax.set_ylim(0, height)
-#        ax.legend(loc = legend_pos)
-#        ax.set_title(title)
-#        plt.grid(True)
         
         fig, ax = plt.subplots()
         ax.set_xlim(0, width)
@@ -239,7 +232,10 @@ class ScatterPlot():
         if not self.headless:
             plt.show()
         else:
-            plt.savefig("plot.png")
+            file = io.BytesIO()  
+            plt.savefig(file, format="png")
+            global imageIO
+            imageIO = file
 
     def get_arrays(self, varieties, var):
         x_array = np.array(varieties[var][X])

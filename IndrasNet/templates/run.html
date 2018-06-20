@@ -2,19 +2,6 @@
 
 {% block content %}
     <div class="module">
-    <table>
-        <caption>
-            Models
-        </caption>
-        <tr>
-            <th>Answer</th>
-        </tr>
-        {% for answer in answers %}
-            <tr>
-                <td> {{ answer }} </td>
-                              
-            </tr>
-        {% endfor %}
-    </table>
+    <img src="{% url 'IndrasNet:plot' %}?answers={{answers}}&module={{module}}" />
     </div>
 {% endblock content %}
