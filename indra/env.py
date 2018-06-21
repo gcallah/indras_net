@@ -153,7 +153,7 @@ class Environment(node.Node):
             self.user.tell("Welcome, " + self.user.name)
             self.user.tell("Running in " + self.name)
             #If run in a terminal, display the menu
-            if(self.user.utype in [user.TERMINAL, user.IPYTHON, user.IPYTHON_NB]):
+            if(self.user.utype in [user.TERMINAL, user.IPYTHON, user.IPYTHON_NB, user.WEB]):
                 msg = self.menu.display()
                 while msg is None:
                     try:
@@ -493,3 +493,34 @@ class Environment(node.Node):
 
     def get_var_pop_hist(self, var):
         return self.agents.get_var_pop_hist(var)
+
+    def switch(self):
+        """
+        Switch to another model.
+        """
+        steps = int(self.user.ask("Enter number of steps: "))
+        target = self.period + steps
+        self.user.tell("Running for %i steps; press Ctrl-c to halt!" % steps)
+        time.sleep(3)
+        try:
+            while self.period <= target:
+                step_msg = self.step()
+                if step_msg is not None:
+                    self.user.tell(step_msg)
+                    break
+        except KeyboardInterrupt:
+            pass
+    
+class VWorlds():
+    
+    def __init__(self):
+        self.models = {}
+        
+    def __setitem__(self, key, item):
+        self.models[key] = item
+        
+    def __getitem__(self, key):
+        return self.models[key]
+        
+        
+    

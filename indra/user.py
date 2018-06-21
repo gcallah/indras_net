@@ -68,7 +68,7 @@ class User(ent.Entity):
         """
         Screen the details of output from models.
         """
-        if msg and self.utype in [TERMINAL, IPYTHON, IPYTHON_NB]:
+        if msg and self.utype in [TERMINAL, IPYTHON, IPYTHON_NB, WEB]:
             return tell(msg, type=type, indnt=indnt)
 
     def ask_for_ltr(self, msg):
@@ -82,6 +82,6 @@ class User(ent.Entity):
         """
         Screen the details of input from models.
         """
-        assert self.utype in [TERMINAL, IPYTHON, IPYTHON_NB]
-        if(self.utype in [TERMINAL, IPYTHON, IPYTHON_NB]):
+        assert self.utype in [TERMINAL, IPYTHON, IPYTHON_NB, WEB]
+        if(self.utype in [TERMINAL, IPYTHON, IPYTHON_NB, WEB]):
             return ask(msg)
