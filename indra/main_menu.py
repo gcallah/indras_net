@@ -58,3 +58,4 @@ class MainMenu(Menu):
                                  default=True)
         self.tools.add_menu_item("n", MenuLeaf("run (n) steps", e.n_steps))
         self.tools.add_menu_item("d", MenuLeaf("(d)ebug", e.debug))
+        self.tools.add_menu_item("m", MenuLeaf("switch (m)odel", e.switch))
