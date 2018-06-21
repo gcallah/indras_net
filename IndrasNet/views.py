@@ -40,13 +40,20 @@ def dump_dict(d, vmachine):
         add_debug(str(key) + ": " + str(val), vmachine)
 
 def main_page(request):
+    # Assign a new session id to a new user
+    assign_key(request)
+    
     site_hdr = get_hdr()
 
     models = Model.objects.order_by('mtype')
     template_data = {'models': models, HEADER: site_hdr}
+    
     return render(request, 'main.html', template_data)
 
 def ab_models(request):
+    # Assign a new session id to a new user
+    assign_key(request)
+    
     site_hdr = get_hdr()
 
     model_list = Model.objects.order_by('mtype')
@@ -82,6 +89,9 @@ def parameters(request):
                     self.fields[q.question] = forms.BooleanField(label=q.question, 
                                required=False)
     
+    # Assign a new session id to a new user
+    assign_key(request)
+    
     site_hdr = get_hdr()
     model_name = request.GET[MODEL]
     model = Model.objects.get(name=model_name)
@@ -111,6 +121,9 @@ def run(request):
     return render(request, 'run.html', template_data)
 
 def plot(request):
+    # Assign a new session id to a new user
+    assign_key(request)
+    
     answers_str = request.GET['answers']
     module = request.GET['module']
     print('module: ', module)
@@ -123,10 +136,16 @@ def plot(request):
     return HttpResponse(image, content_type="image/png")
 
 def help(request):
+    # Assign a new session id to a new user
+    assign_key(request)
+    
     site_hdr = get_hdr()
     return render(request, 'help.html', {HEADER: site_hdr})
 
 def feedback(request):
+    # Assign a new session id to a new user
+    assign_key(request)
+    
     site_hdr = get_hdr()
     email_list = AdminEmail.objects.all()
     comma_del_emails = ""
@@ -137,5 +156,30 @@ def feedback(request):
         HEADER: site_hdr})
 
 def about(request):
+    # Assign a new session id to a new user
+    assign_key(request)
+    
     site_hdr = get_hdr()
     return render(request, 'about.html', {HEADER: site_hdr})
+
+def assign_key(request):
+    if not 'session_id' in request.session:
+    
+        new_id = None
+        
+        with open("session_id.txt","w+") as f:
+            session_id = f.readline()
+            if not session_id:
+                session_id = 0
+            else:
+                session_id = int(session_id)
+            session_id += 1
+            new_id = session_id
+            f.write(str(session_id))
+            
+        request.session['session_id'] = new_id        
+        request.session.modified = True
+        
+    else:
+        print("This user has a session id: ", request.session['session_id'])
+    
