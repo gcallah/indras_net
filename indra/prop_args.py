@@ -16,12 +16,12 @@ SWITCH = '-'
 PERIODS = 'periods'
 DATAFILE = 'datafile'
 
+
 def in_range(low, val, high):
-    return low <= val and val <= high
+    return low <= val <= high
 
 
 class PropArgs(node.Node):
-
     """
     This class holds sets of named properties for program-wide values.
     It enables getting properties from a file, in-program,
