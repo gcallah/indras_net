@@ -13,15 +13,17 @@ import models.basic_model as bm
 MODEL_NM = "basic_model"
 
 
-def run(dic=None):
+def run(prop_dict=None):
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
 
     # We store basic parameters in a
     # "property" file; this allows us to save
     #  multiple parameter sets, which is important in simulation work.
     #  We can read these in from file or set them here.
-    if dic is not None:
-        pa = props.PropArgs(MODEL_NM, logfile=log_file, props=dic)
+
+    # TODO: Place this logic in prop_args
+    if prop_dict is not None:
+        pa = props.PropArgs(MODEL_NM, logfile=log_file, props=prop_dict)
     elif utils.read_props(MODEL_NM):
         pa = utils.read_props(MODEL_NM)
     else:
