@@ -6,7 +6,6 @@ Various helpful bits that don't fit elsewhere!
 import sys
 import logging
 import indra.prop_args as props
-import indra.data_methods as data
 
 # some values useful for checking valid ranges:
 BIG_INT = sys.maxsize
@@ -80,7 +79,8 @@ def get_max_move(pa, prop_nm, agent_type, def_move):
 def get_pct(pa, prop_nm, agent_type, param_descr, def_pct):
     pa.ask(prop_nm, "What is %s's %s?" % (agent_type, param_descr),
            float, default=def_pct, limits=BTWN_ZERO_ONE)
-    
+
+
 def get_rule_id(pa, def_id):
     pa.ask("rule_id", "What is the rule id?", int, default=def_id,
            limits=WOLFRAM_RULE_LIMITS)
