@@ -177,8 +177,6 @@ def about(request):
 def assign_key(request):
     if 'session_id' not in request.session:
 
-        new_id = None
-
         with open("session_id.txt", "w+") as f:
             session_id = f.readline()
             if not session_id:
