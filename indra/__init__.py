@@ -27,4 +27,16 @@ The indra module of Indra's Net contains the following sub-modules:
     *   vs_agent.py: base class for agents inhabiting a vector space.
 
 """
+import os, sys, django
 
+proj_path = "."
+
+# This is so Django knows where to find stuff.
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
+sys.path.append(proj_path)
+
+# This is so models get loaded.
+from django.core.wsgi import get_wsgi_application
+application = get_wsgi_application()
+
+django.setup()

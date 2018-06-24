@@ -3,25 +3,28 @@ prop_args.py
 Set, read, and write program-wide properties in one
 location. Includes logging.
 """
-
-import sys
 import logging
+import sys
 import platform
 import networkx as nx
 import json
 import indra.node as node
 import indra.user as user
 
+from IndrasNet.models import Model
+
 SWITCH = '-'
 PERIODS = 'periods'
 DATAFILE = 'datafile'
 
+type_dict = {'INT': int, 'DBL': float, 'BOOL': bool, 'STR': str}
+
+
 def in_range(low, val, high):
-    return low <= val and val <= high
+    return low <= val <= high
 
 
 class PropArgs(node.Node):
-
     """
     This class holds sets of named properties for program-wide values.
     It enables getting properties from a file, in-program,
@@ -60,7 +63,7 @@ class PropArgs(node.Node):
         PropArgs.prop_sets[model_nm] = self
         self.graph = nx.Graph()
         if props is None:
-            self.props = {}
+            self.set_props_from_db()
         else:
             self.props = props
             logfile = self.get("log_fname")
@@ -78,6 +81,30 @@ class PropArgs(node.Node):
             elif prop_nm is not None:
                 self.set(prop_nm, arg)
                 prop_nm = None
+
+    def set_props_from_db(self):
+        """
+        Asks user to set parameters associated with the model.
+        If an input isn't given, we use a default.
+
+        :return:
+        """
+        self.props = {}
+
+        # TODO: Our model names in the files differ from the
+        # model names in the DB. ... leading to this
+        # awkwardness in fetching the Model by its name.
+        # We should change our naming conventions for models.
+        db_model_name = self.model_nm.title()[:-len("_model")]
+        basic_model = Model.objects.get(name=db_model_name)
+
+        params_to_set = basic_model.params.all()
+        for param in params_to_set:
+            self.ask(nm=param.prop_name,
+                     msg=param.question,
+                     val_type=type_dict[param.atype],
+                     default=param.default_val,
+                     limits=(param.lowval, param.hival))
 
     def display(self):
         """
