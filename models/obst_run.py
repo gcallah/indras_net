@@ -20,9 +20,6 @@ def run():
     pa = utils.read_props(MODEL_NM)
     if pa is None:
         pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
-        utils.get_grid_dims(pa, 10)
-        pa.set("num_moving_agents", 2)
-        pa.set("num_obstacles", 4)
     
     # Now we create a minimal environment for our agents to act within:
     env = ge.GridEnv("Obstacle env",

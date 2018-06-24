@@ -19,14 +19,6 @@ def run():
     pa = utils.read_props(MODEL_NM)
     if pa is None:
         pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
-        utils.get_grid_dims(pa, 16)
-        utils.get_agent_num(pa, "num_wolves", "wolves", 5)
-        utils.get_agent_num(pa, "num_sheep", "sheep", 16)
-        pa.ask("wolf_repro", "What is the wolf reproduction age?", int, default=16)
-        pa.ask("wolf_lforce", "What is the wolf life force?", int, default=7)
-        pa.ask("sheep_repro", "What is the sheep reproduction age?", int,
-               default=3)
-        pa.ask("sheep_lforce", "What is the sheep life force?", int, default=6)
     
     # Now we create a meadow for our agents to act within:
     env = wsm.Meadow("Meadow",
