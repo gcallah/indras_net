@@ -19,6 +19,12 @@ def run():
     pa = utils.read_props(MODEL_NM)
     if pa is None:
         pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
+        utils.get_grid_dims(pa, 16)
+        utils.get_agent_num(pa, "num_followers", "followers", 48)
+        utils.get_agent_num(pa, "num_hipsters", "hipsters", 16)
+        utils.get_max_move(pa, "fmax_move", "follower", 4)
+        utils.get_max_move(pa, "hmax_move", "hipster", 4)
+        utils.get_pct(pa, "variability", "agent", "variability", .15)
     
     # Now we create a minimal environment for our agents to act within:
     env = fm.Society("Society",

@@ -19,6 +19,12 @@ def run():
     pa = utils.read_props(MODEL_NM)
     if pa is None:
         pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
+        utils.get_grid_dims(pa, 16)
+        utils.get_agent_num(pa, "num_followers", "followers", 32)
+        utils.get_agent_num(pa, "num_vinvestors", "value investors", 16)
+        utils.get_max_move(pa, "fmax_move", "chart follower", 4)
+        utils.get_max_move(pa, "vmax_move", "value investor", 4)
+        utils.get_pct(pa, "variability", "agent", "variability", .2)
     
     # Now we create a asset environment for our agents to act within:
     env = fm.FinMarket("Financial Market",

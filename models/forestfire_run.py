@@ -25,6 +25,17 @@ def run():
     pa = utils.read_props(MODEL_NM)
     if pa is None:
         pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
+        utils.get_grid_dims(pa, DEF_GRID_DIM)
+        utils.get_pct(pa, "density", "forest", "density", DEF_DENS)
+        pa.ask("strike_freq", "How many turns between lightning strikes?",
+               int, default=DEF_LIGHTNING, limits=utils.POS_INTS)
+        pa.ask("regen_period",
+               "How many turns before a new tree grows where one has burned?",
+               int, default=DEF_REGEN, limits=utils.POS_INTS)
+    
+    density = pa.get("density")
+    grid_x = pa.get("grid_width")
+    grid_y = pa.get("grid_height")
     
     # Now we create a forest environment for our agents to act within:
     env = fm.ForestEnv(grid_x, grid_y, density, pa.get("strike_freq"),

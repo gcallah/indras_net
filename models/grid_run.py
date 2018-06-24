@@ -23,6 +23,8 @@ def run(dic=None):
         pa = utils.read_props(MODEL_NM)   
     if pa is None and dic is None:
         pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
+        utils.get_grid_dims(pa, 6)
+        utils.get_agent_num(pa, "num_agents", "agents", 8)
     elif dic is not None:
         #dic[props.PERIODS] = 100
         dic["user_type"] = u.WEB
@@ -52,7 +54,6 @@ def run(dic=None):
               + " is " + str(cell.contents))
         
     utils.run_model(env, prog_file, results_file)
-
 
 if __name__ == "__main__":
     run()
