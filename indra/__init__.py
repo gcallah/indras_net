@@ -12,8 +12,7 @@ The indra module of Indra's Net contains the following sub-modules:
     *   grid_agent.py: the base class for all agents located on a grid.
     *   grid_env.py: the base env for all grid envs.
     *   main_menu.py: the default main menu for all models.
-    *   markov.py: basic code for Markov chains.
-    *   markov_agent.py: the base class for all Markov agents.
+    *   markov.py: basic code for Markov chains. *   markov_agent.py: the base class for all Markov agents.
     *   markov_env.py: the base class for Markov environments.
     *   menu.py: contains the basic menuing capabilities.
     *   node.py: the absolute base of everything in Indra's Net.
@@ -27,16 +26,16 @@ The indra module of Indra's Net contains the following sub-modules:
     *   vs_agent.py: base class for agents inhabiting a vector space.
 
 """
-import os, sys, django
-
-proj_path = "."
-
+# import os, sys, django
+#
+# proj_path = "."
+#
 # This is so Django knows where to find stuff.
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
-sys.path.append(proj_path)
-
+# os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
+# sys.path.append(proj_path)
+#
 # This is so models get loaded.
-from django.core.wsgi import get_wsgi_application
-application = get_wsgi_application()
-
-django.setup()
+# from django.core.wsgi import get_wsgi_application
+# application = get_wsgi_application()
+#
+# django.setup()
