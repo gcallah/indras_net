@@ -24,7 +24,7 @@ def run(dic=None):
     if pa is None and dic is None:
         pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
     elif dic is not None:
-        #dic[props.PERIODS] = 100
+        dic[props.PERIODS] = 100
         dic["user_type"] = u.WEB
         pa = props.PropArgs(MODEL_NM, logfile=log_file, props=dic)
     

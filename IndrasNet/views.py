@@ -14,9 +14,11 @@ from django import forms
 
 import models
 import ast
+import base64
 
 # Need this for using a global vaiable in it. Only for testing
 from indra import display_methods as dm
+from indra import user as u
 
 logger = logging.getLogger(__name__)
 
@@ -106,7 +108,6 @@ def parameters(request):
     template_data = {'form': form, HEADER: site_hdr, 'model': model}
     return render(request, 'parameters.html', template_data)
 
-
 def run(request):
     site_hdr = get_hdr()
     model_name = request.POST[MODEL]
@@ -124,25 +125,48 @@ def run(request):
             answer = float(answer)
         # Boolen is not considered yet
         answers[q.prop_name] = answer
-    template_data = {'answers': answers, HEADER: site_hdr, 'module': module}
-    return render(request, 'run.html', template_data)
-
-
-def plot(request):
-    # Assign a new session id to a new user
-    assign_key(request)
-
-    answers_str = request.GET['answers']
-    module = request.GET['module']
-    print('module: ', module)
-    answers = ast.literal_eval(answers_str)
-    for i in answers:
-        print(i)
     importlib.import_module(module[0:-4])
     eval(module + "(answers)")
-    image = dm.imageIO.getvalue()
-    return HttpResponse(image, content_type="image/png")
+    image_bytes = dm.imageIO.getvalue()
+    image = base64.b64encode(image_bytes).decode()
+    text = u.run_output
+    template_data = {'answers': answers, HEADER: site_hdr, 'module': module, 
+                     'text': text, 'image': image}
+    return render(request, 'run.html', template_data)
 
+#def run(request):
+#    site_hdr = get_hdr()
+#    model_name = request.POST[MODEL]
+#    model = Model.objects.get(name=model_name)
+#    module = model.module
+#    questions = model.params.all()
+#    print("Model name: ", model_name)
+#    print("Module: ", module)
+#    answers = {}
+#    for q in questions:
+#        answer = request.POST[q.question]
+#        if q.atype == "INT":
+#            answer = int(answer)
+#        elif q.atype == "DBL":
+#            answer = float(answer)
+#        # Boolen is not considered yet
+#        answers[q.prop_name] = answer
+#    template_data = {'answers': answers, HEADER: site_hdr, 'module': module}
+#    return render(request, 'run.html', template_data)
+
+# The model is run twice, improvement required
+#def plot(request):
+#
+#    answers_str = request.GET['answers']
+#    module = request.GET['module']
+#    print('module: ', module)
+#    answers = ast.literal_eval(answers_str)
+#    for i in answers:
+#        print(i)
+#    importlib.import_module(module[0:-4])
+#    eval(module + "(answers)")
+#    image = dm.imageIO.getvalue()
+#    return HttpResponse(image, content_type="image/png")
 
 def help(request):
     # Assign a new session id to a new user

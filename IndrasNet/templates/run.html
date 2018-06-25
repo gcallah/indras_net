@@ -2,6 +2,7 @@
 
 {% block content %}
     <div class="module">
-    <img src="{% url 'IndrasNet:plot' %}?answers={{answers}}&module={{module}}" />
+    {{text}}
+    <img src="data:image/png;base64, {{image}}" />
     </div>
 {% endblock content %}
