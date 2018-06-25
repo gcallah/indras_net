@@ -12,6 +12,5 @@ urlpatterns = [
     url(r'^run/*$', views.run, name='run'),
     url(r'^help/*$', views.help, name='help'),
     url(r'^feedback/*$', views.feedback, name='feedback'),
-    url(r'^about/*$', views.about, name='about'),
-    url(r'^plot/*$', views.plot, name='plot')
+    url(r'^about/*$', views.about, name='about')
 ]
