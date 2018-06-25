@@ -33,6 +33,7 @@ IPYTHON = "iPython"
 IPYTHON_NB = "iPython Notebook"
 WEB = "Web browser"
 
+run_output = ""
 
 def ask(msg):
     if clint_present:
@@ -41,20 +42,24 @@ def ask(msg):
         print(msg, end='')
     return input()
 
-def tell(msg, type=INFO, indnt=0):
-    if indnt <= 0:
-        if clint_present:
-            puts(text_colors[type](msg))
-        else:
-            print(msg)
+def tell(msg, type=INFO, indnt=0, utype=TERMINAL):
+    global run_output
+    if utype == WEB:
+        run_output += msg
     else:
-        if clint_present:
-            with indent(indnt):
+        if indnt <= 0:
+            if clint_present:
                 puts(text_colors[type](msg))
+            else:
+                print(msg)
         else:
-            for i in range(0, indnt):
-                msg = '  ' + msg
-            print(msg)
+            if clint_present:
+                with indent(indnt):
+                    puts(text_colors[type](msg))
+            else:
+                for i in range(0, indnt):
+                    msg = '  ' + msg
+                print(msg)
 
 class User(ent.Entity):
     """
@@ -69,7 +74,7 @@ class User(ent.Entity):
         Screen the details of output from models.
         """
         if msg and self.utype in [TERMINAL, IPYTHON, IPYTHON_NB, WEB]:
-            return tell(msg, type=type, indnt=indnt)
+            return tell(msg, type=type, indnt=indnt, utype=self.utype)
 
     def ask_for_ltr(self, msg):
         """
