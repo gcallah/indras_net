@@ -217,13 +217,13 @@ class ScatterPlot():
         ax.set_title(title)
         plt.grid(True)
 
-#        if anim:
-#            print("Animation is on.")
-#            anim_func = animation.FuncAnimation(fig,
-#                                    self.update_plot,
-#                                    frames=1000,
-#                                    interval=500,
-#                                    blit=False)
+        if anim and not self.headless:
+            print("Animation is on.")
+            anim_func = animation.FuncAnimation(fig,
+                                    self.update_plot,
+                                    frames=1000,
+                                    interval=500,
+                                    blit=False)
 
     def show(self):
         """
@@ -234,8 +234,7 @@ class ScatterPlot():
         else:
             file = io.BytesIO()  
             plt.savefig(file, format="png")
-            global imageIO
-            imageIO = file
+            return file
 
     def get_arrays(self, varieties, var):
         x_array = np.array(varieties[var][X])

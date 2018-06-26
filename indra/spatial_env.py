@@ -80,7 +80,7 @@ class SpatialEnv(env.Environment):
             anim=True, data_func=self.plot_data,
             is_headless=headless
             )
-        self.scatter_plot.show()
+        return self.scatter_plot.show()
 
     def plot_data(self):
         data = {}
