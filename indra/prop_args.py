@@ -20,7 +20,14 @@ type_dict = {'INT': int, 'DBL': float, 'BOOL': bool, 'STR': str}
 
 
 def in_range(low, val, high):
-    return low <= val <= high
+    if all([low, high]):
+        return low <= val <= high
+    elif low:
+        return low <= val
+    elif high:
+        return val <= high
+    else:
+        return True
 
 
 class PropArgs(node.Node):
