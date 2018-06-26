@@ -8,7 +8,7 @@ import indra.prop_args as props
 import bigbox.big_box_model as bb
 
 # set up some file names:
-MODEL_NM = "BigBoxModel"
+MODEL_NM = "Big Box"
 
 def run():
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)

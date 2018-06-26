@@ -12,7 +12,7 @@ import schelling.height_model as hm
 
 START_HEIGHT = 100.0
 
-MODEL_NM = "height_model"
+MODEL_NM = "Schelling Height"
 
 def run():
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)

@@ -10,7 +10,7 @@ import models.grid_model as gm
 import indra.user as u
 
 # set up some file names:
-MODEL_NM = "grid_model"
+MODEL_NM = "Grid"
 
 def run(dic=None):
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)

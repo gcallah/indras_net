@@ -7,7 +7,7 @@ import indra.utils as utils
 import indra.prop_args as props
 import wolfram.wolfram_model as wm
 # set up some file names:
-MODEL_NM = "wolfram_model"
+MODEL_NM = "Wolfram"
 
 def run():
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)

@@ -8,7 +8,7 @@ import indra.prop_args as props
 import models.wolfsheep_model as wsm
 
 # set up some file names:
-MODEL_NM = "wolfsheep_model"
+MODEL_NM = "Wolfsheep"
 
 def run():
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)

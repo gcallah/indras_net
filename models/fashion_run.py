@@ -8,7 +8,7 @@ import indra.prop_args as props
 import models.fashion_model as fm
 
 # set up some file names:
-MODEL_NM = "fashion_model"
+MODEL_NM = "Fashion"
 
 def run():
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)

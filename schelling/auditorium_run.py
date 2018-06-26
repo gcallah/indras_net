@@ -8,7 +8,7 @@ import indra.prop_args as props
 import schelling.auditorium_model as am
 
 # set up some file names:
-MODEL_NM = "auditorium_model"
+MODEL_NM = "Schelling Auditorium"
 
 def run():
     (prog_file, log_file, 

@@ -1,7 +1,6 @@
 """
 prop_args.py
-Set, read, and write program-wide properties in one
-location. Includes logging.
+Set, read, and write program-wide properties in one location. Includes logging.
 """
 import logging
 import sys
@@ -91,11 +90,7 @@ class PropArgs(node.Node):
         """
         self.props = {}
 
-        # TODO: Our model names in the files differ from the
-        # model names in the DB. ... leading to this
-        # awkwardness in fetching the Model by its name.
-        # We should change our naming conventions for models.
-        db_model_name = self.model_nm.title()[:-len("_model")]
+        db_model_name = self.model_nm
         basic_model = Model.objects.get(name=db_model_name)
 
         params_to_set = basic_model.params.all()

@@ -13,7 +13,7 @@ DEF_REGEN = 20
 DEF_LIGHTNING = 4
 
 # set up some file names:
-MODEL_NM = "forestfire_model"
+MODEL_NM = "Forest Fire"
 
 def run():
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)

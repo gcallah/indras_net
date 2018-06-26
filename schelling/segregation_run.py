@@ -13,7 +13,7 @@ import indra.prop_args as props
 import schelling.segregation_model as sm
 
 # set up some file names:
-MODEL_NM = "segregation_model"
+MODEL_NM = "Schelling Segregation"
 
 def run():
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)

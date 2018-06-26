@@ -8,7 +8,7 @@ import indra.prop_args as props
 import models.fmarket_model as fm
 
 # set up some file names:
-MODEL_NM = "fmarket_model"
+MODEL_NM = "Fmarket"
 
 def run():
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)

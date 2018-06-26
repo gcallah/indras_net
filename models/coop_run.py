@@ -10,7 +10,7 @@ import indra.utils as utils
 import indra.prop_args as props
 import models.coop_model as cm
 
-MODEL_NM = "coop_model"
+MODEL_NM = "Coop"
 
 def run():
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)

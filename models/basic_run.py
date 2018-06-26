@@ -10,7 +10,7 @@ import indra.utils as utils
 import models.basic_model as bm
 
 # set up some file names:
-MODEL_NM = "basic_model"
+MODEL_NM = "Basic"
 
 
 def run(prop_dict=None):
