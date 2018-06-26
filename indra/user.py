@@ -45,7 +45,7 @@ def ask(msg):
 def tell(msg, type=INFO, indnt=0, utype=TERMINAL):
     global run_output
     if utype == WEB:
-        run_output += msg
+        run_output = run_output + msg + "\n"
     else:
         if indnt <= 0:
             if clint_present:
