@@ -7,8 +7,6 @@ import sys
 import platform
 import networkx as nx
 import json
-import indra.node as node
-import indra.user as user
 
 from IndrasNet.models import Model
 
@@ -30,7 +28,7 @@ def in_range(low, val, high):
         return True
 
 
-class PropArgs(node.Node):
+class PropArgs():
     """
     This class holds sets of named properties for program-wide values.
     It enables getting properties from a file, in-program,
@@ -102,7 +100,7 @@ class PropArgs(node.Node):
 
         params_to_set = basic_model.params.all()
         for param in params_to_set:
-            self.ask(nm=param.prop_name,
+            self.check_val(nm=param.prop_name,
                      msg=param.question,
                      val_type=type_dict[param.atype],
                      default=param.default_val,
@@ -134,31 +132,27 @@ class PropArgs(node.Node):
             self.props[nm] = default
         return self.props[nm]
 
-    def ask(self, nm, msg, val_type, default=None, limits=None):
+    def check_val(self, nm, msg, val_type, default=None, limits=None):
         """
-        Ask the user for a property value, which might come
-        from the user via the command line.
         """
         rng_msg = ""
         if limits is not None:
             (low, high) = limits
-            rng_msg = " [" + str(low) + "-" + str(high) + "]"
         if default is not None:
             msg += " (" + str(default) + ")"
         msg += rng_msg + " "
         good_val = False
-        while not good_val:
-            if nm not in self.props:
-                val = user.ask(msg)
-                if len(val) == 0:
-                    val = default
-            else:  # was set from command line, but we still need to type it
-                val = self.get(nm)
-            typed_val = val_type(val)
-            if limits is not None:
-                good_val = in_range(low, typed_val, high)
-            else:
-                good_val = True
+        if nm not in self.props:
+            val = None
+        else:  # was set from command line, but we still need to type it
+            val = self.get(nm)
+        typed_val = val_type(val)
+        if limits is not None:
+            good_val = in_range(low, typed_val, high)
+        else:
+            good_val = True
+        if not good_val:
+            pass  // raise exception here: can use msg
         self.set(nm, typed_val)
 
     def get_logfile(self):
@@ -175,7 +169,7 @@ class PropArgs(node.Node):
         json.dump(self.props, open(file_nm, 'w'), indent=4)
 
 
-class Logger(node.Node):
+class Logger():
     """
     A class to track how we are logging.
     """
@@ -187,7 +181,6 @@ class Logger(node.Node):
 
     def __init__(self, props, logfile=None,
                  loglevel=logging.INFO):
-        super().__init__("Logger")
         if logfile is None:
             logfile = Logger.DEF_FILENAME
         fmt = props.get("log_format", Logger.DEF_FORMAT)

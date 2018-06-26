@@ -35,12 +35,19 @@ WEB = "Web browser"
 
 run_output = ""
 
-def ask(msg):
-    if clint_present:
-        puts(text_colors[PROMPT](msg), newline=False)
+def ask(msg, props=None, prop_nm=None):
+    answer = None
+    if props is not None:
+        if prop_nm is not None:
+            answer = props.get(prop_nm, default=None)
+    if answer is not None:
+        return answer
     else:
-        print(msg, end='')
-    return input()
+        if clint_present:
+            puts(text_colors[PROMPT](msg), newline=False)
+        else:
+            print(msg, end='')
+        return input()
 
 def tell(msg, type=INFO, indnt=0, utype=TERMINAL, text_output=None):
     if utype == WEB:
