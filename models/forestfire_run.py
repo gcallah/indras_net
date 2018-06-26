@@ -25,6 +25,10 @@ def run():
     pa = utils.read_props(MODEL_NM)
     if pa is None:
         pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
+
+    density = pa.get("density")
+    grid_x = pa.get("grid_width")
+    grid_y = pa.get("grid_height")
     
     # Now we create a forest environment for our agents to act within:
     env = fm.ForestEnv(grid_x, grid_y, density, pa.get("strike_freq"),
