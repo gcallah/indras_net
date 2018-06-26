@@ -41,10 +41,11 @@ def run_model(env, prog_file, results_file):
         periods = int(periods)
     # And now we set things running!
     try:
-        env.run(periods=periods)
+        results = env.run(periods=periods)
     except SystemExit:
         pass
     env.record_results(results_file)
+    return results
 
 
 def read_props(model_nm):

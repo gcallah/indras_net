@@ -51,7 +51,7 @@ def run(dic=None):
               + " and y = " + str(y)
               + " is " + str(cell.contents))
         
-    utils.run_model(env, prog_file, results_file)
+    return utils.run_model(env, prog_file, results_file)
 
 if __name__ == "__main__":
     run()

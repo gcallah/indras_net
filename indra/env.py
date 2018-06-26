@@ -78,6 +78,8 @@ class Environment(node.Node):
         self.menu = mm.MainMenu("Main Menu", self)
         self.graph.add_edge(self, self.menu)
         self.graph.add_edge(self, node.universals)
+        
+        self.image_bytes = None
 
     def add_variety(self, var):
         self.agents.add_variety(var)
@@ -147,7 +149,8 @@ class Environment(node.Node):
             if file_nm is None:
                 file_nm = self.model_nm+RPT_EXT
             self.pop_report(file_nm=file_nm)
-            self.plot()
+            self.image_bytes = self.plot()
+            return (self.user.text_output, self.image_bytes)
             exit()
         else:
             self.user.tell("Welcome, " + self.user.name)

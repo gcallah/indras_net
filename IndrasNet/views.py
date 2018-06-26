@@ -17,8 +17,6 @@ import ast
 import base64
 
 # Need this for using a global vaiable in it. Only for testing
-from indra import display_methods as dm
-from indra import user as u
 
 logger = logging.getLogger(__name__)
 
@@ -126,10 +124,8 @@ def run(request):
         # Boolen is not considered yet
         answers[q.prop_name] = answer
     importlib.import_module(module[0:-4])
-    eval(module + "(answers)")
-    image_bytes = dm.imageIO.getvalue()
-    image = base64.b64encode(image_bytes).decode()
-    text = u.run_output
+    text, image_bytes = eval(module + "(answers)")
+    image = base64.b64encode(image_bytes.getvalue()).decode()
     template_data = {'answers': answers, HEADER: site_hdr, 'module': module, 
                      'text': text, 'image': image}
     return render(request, 'run.html', template_data)
