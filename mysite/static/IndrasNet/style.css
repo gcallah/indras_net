@@ -1020,8 +1020,8 @@ summary.menu_sum {
 .dropbtn {
     background-color: #ccc;
     color: black;
-    padding: 0.7em;
-    font-size: 0.8em;
+    padding: 1em;
+    font-size: 0.9em;
     border: none;
     cursor: pointer;
 }
@@ -1067,13 +1067,7 @@ summary.menu_sum {
     font-size: 2.2em;
     color: #ffcc33;
 }
-.navbar-header p{
-    padding: 0;
-    margin: 0.25em 1em 0 0;
-    font-weight: 400;
-    font-size: 1.6em;
-    color: #000;
-}
+
 
 .navbar {
     border-radius:0;
