@@ -1,31 +1,48 @@
 {% extends "base.html" %}
+{% block menubar %}
+<nav class="navbar navbar" style="background-color:#ccc">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <p>Menu</p>
+        </div>
+        <ul class="nav navbar-nav">
+            <li>
+                <div class="dropdown">
+                    <button class="dropbtn">Dropdown</button>
+                    <div class="dropdown-content">
+                        <a href="#">Link 1</a>
+                        <a href="#">Link 2</a>
+                        <a href="#">Link 3</a>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="dropdown">
+                    <button class="dropbtn">Dropdown</button>
+                    <div class="dropdown-content">
+                        <a href="#">Link 1</a>
+                        <a href="#">Link 2</a>
+                        <a href="#">Link 3</a>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="dropdown">
+                    <button class="dropbtn">Dropdown</button>
+                    <div class="dropdown-content">
+                        <a href="#">Link 1</a>
+                        <a href="#">Link 2</a>
+                        <a href="#">Link 3</a>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+{% endblock menubar %}
 
 {% block content %}
     <div class="module">
-        <div class="dropdown">
-            <button class="dropbtn">Dropdown</button>
-            <div class="dropdown-content">
-                <a href="#">Link 1</a>
-                <a href="#">Link 2</a>
-                <a href="#">Link 3</a>
-            </div>
-        </div>
-        <div class="dropdown">
-            <button class="dropbtn">Dropdown</button>
-            <div class="dropdown-content">
-                <a href="#">Link 1</a>
-                <a href="#">Link 2</a>
-                <a href="#">Link 3</a>
-            </div>
-        </div>
-        <div class="dropdown">
-            <button class="dropbtn">Dropdown</button>
-            <div class="dropdown-content">
-                <a href="#">Link 1</a>
-                <a href="#">Link 2</a>
-                <a href="#">Link 3</a>
-            </div>
-        </div>
         <div class="scroll_box">{{text|linebreaks}}</div>
 
         <img src="data:image/png;base64, {{image}}" />
