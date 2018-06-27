@@ -152,7 +152,7 @@ class PropArgs():
         else:
             good_val = True
         if not good_val:
-            pass  // raise exception here: can use msg
+            pass  # raise exception here: can use msg
         self.set(nm, typed_val)
 
     def get_logfile(self):
