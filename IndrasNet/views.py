@@ -13,7 +13,6 @@ from .models import ModelParam
 from django import forms
 
 import models
-import ast
 import base64
 
 # Need this for using a global vaiable in it. Only for testing

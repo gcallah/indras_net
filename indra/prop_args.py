@@ -61,13 +61,12 @@ class PropArgs():
 
     def __init__(self, model_nm, logfile=None, props=None,
                  loglevel=logging.INFO):
-        super().__init__("Properties")
         self.model_nm = model_nm
         # store this instance as the value in the dict for 'model_nm'
         PropArgs.prop_sets[model_nm] = self
         self.graph = nx.Graph()
         if props is None:
-            self.set_props_from_db()
+            props = {}
         else:
             self.props = props
             logfile = self.get("log_fname")
@@ -131,23 +130,14 @@ class PropArgs():
         if nm not in self.props:
             self.props[nm] = default
         return self.props[nm]
-
-    def check_val(self, nm, msg, val_type, default=None, limits=None):
-        """
-        """
-        rng_msg = ""
+        
+    def check_val(self, nm, val, val_type, default=None, limits=None):  
+        if len(val) == 0:
+            val = default
+        typed_val = val_type(val)
+        good_val = False
         if limits is not None:
             (low, high) = limits
-        if default is not None:
-            msg += " (" + str(default) + ")"
-        msg += rng_msg + " "
-        good_val = False
-        if nm not in self.props:
-            val = None
-        else:  # was set from command line, but we still need to type it
-            val = self.get(nm)
-        typed_val = val_type(val)
-        if limits is not None:
             good_val = in_range(low, typed_val, high)
         else:
             good_val = True

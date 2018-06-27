@@ -8,6 +8,7 @@ import indra.node as node
 import indra.prop_args as props
 import edgebox_model as ebm
 import barter_model as bm
+import indra.user as u
 
 MODEL_NM = "barter_model"
 (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
@@ -19,10 +20,6 @@ pa = utils.read_props(MODEL_NM)
 if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file,
                         props=None)
-    pa.ask("max_detect", "What is the trader detect distance?", int,
-           default=ebm.GLOBAL_KNOWLEDGE, limits=utils.NTRL_NUMS)
-    pa.ask("grid_dim", "What is the length of the grid's sides?",
-           int, default=50, limits=utils.GRID_LIMITS)
 
 dim = pa.get("grid_dim")
 env = bm.BarterEnv("A barter market", dim, dim, model_nm=MODEL_NM)

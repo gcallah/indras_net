@@ -524,6 +524,3 @@ class VWorlds():
         
     def __getitem__(self, key):
         return self.models[key]
-        
-        
-    

@@ -11,6 +11,7 @@ Segregation Run File
 import indra.utils as utils
 import indra.prop_args as props
 import schelling.segregation_model as sm
+import indra.user as u
 
 # set up some file names:
 MODEL_NM = "Schelling Segregation"
@@ -23,13 +24,7 @@ def run():
     pa = utils.read_props(MODEL_NM)
     if pa is None:
         pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
-        utils.get_grid_dims(pa, 60)
-        utils.get_agent_num(pa, "num_R_agents", "red agents", 1100)
-        utils.get_agent_num(pa, "num_B_agents", "blue agents", 1100)
-        utils.get_pct(pa, "max_tolerance", "agent", "minimum intolerance", .10)
-        utils.get_pct(pa, "min_tolerance", "agent", "maximum intolerance", .70)
-        pa.ask("max_detect", "What is the agent's neighborhood size?",
-               int, default=4, limits=(1, 10))
+        
     # Now we create an environment for our agents to act within:
     env = sm.SegregationEnv("A city",
                             pa.get("grid_width"),

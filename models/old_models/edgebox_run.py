@@ -8,6 +8,7 @@ import indra.utils as utils
 import indra.prop_args as props
 import indra.node as node
 import edgebox_model as ebm
+import indra.user as u
 
 MODEL_NM = "edgebox_model"
 (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
@@ -15,16 +16,17 @@ MODEL_NM = "edgebox_model"
 pa = utils.read_props(MODEL_NM)
 if pa is None:
     pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
-    pa.ask("al_cheese", "What is Albert's cheese endowment?", int, default=20,
+    # Special case for setting up parameters?
+    u.ask("al_cheese", "What is Albert's cheese endowment?", int, default=20,
            limits=utils.NTRL_NUMS)
     pa.set("al_cutil", "10 - .75 * qty")
-    pa.ask("al_wine", "What is Albert's wine endowment?", int, default=0,
+    u.ask("al_wine", "What is Albert's wine endowment?", int, default=0,
            limits=utils.NTRL_NUMS)
     pa.set("al_wutil", "10 - .5 * qty")
-    pa.ask("bea_wine", "What is Beatrice's wine endowment?", int, default=20,
+    u.ask("bea_wine", "What is Beatrice's wine endowment?", int, default=20,
            limits=utils.NTRL_NUMS)
     pa.set("bea_wutil", "10 - .75 * qty")
-    pa.ask("bea_cheese", "What is Beatrice's cheese endowment?", int, default=0,
+    u.ask("bea_cheese", "What is Beatrice's cheese endowment?", int, default=0,
            limits=utils.NTRL_NUMS)
     pa.set("bea_cutil", "10 - .5 * qty")
 

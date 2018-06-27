@@ -26,6 +26,7 @@ except ImportError:
                    INFO: None}
 
 import indra.entity as ent
+import indra.prop_args as pa
 
 # user types
 TERMINAL = "terminal"
@@ -35,7 +36,8 @@ WEB = "Web browser"
 
 run_output = ""
 
-def ask(msg, props=None, prop_nm=None):
+def ask(msg, nm=None, val_type=None, default=None, limits=None, props=None, 
+        prop_nm=None):
     answer = None
     if props is not None:
         if prop_nm is not None:
@@ -43,11 +45,22 @@ def ask(msg, props=None, prop_nm=None):
     if answer is not None:
         return answer
     else:
+        rng_msg = ""
+        if limits is not None:
+            (low, high) = limits
+            rng_msg = " [" + str(low) + "-" + str(high) + "]"
+        if default is not None:
+            msg += " (" + str(default) + ")"
+        msg += rng_msg + " "
         if clint_present:
             puts(text_colors[PROMPT](msg), newline=False)
-        else:
+        else:           
             print(msg, end='')
-        return input()
+        
+        answer = input()
+        if props is not None:      
+            props.check_val(nm, answer, val_type, default, limits)
+        return answer
 
 def tell(msg, type=INFO, indnt=0, utype=TERMINAL, text_output=None):
     if utype == WEB:
