@@ -14,6 +14,8 @@ DATAFILE = 'datafile'
 
 type_dict = {'INT': int, 'DBL': float, 'BOOL': bool, 'STR': str}
 
+get_prop_from_env(prop_nm):
+    return None
 
 class PropArgs():
     """
@@ -32,10 +34,13 @@ class PropArgs():
             return PropArgs.prop_sets[model_nm]
 
     @staticmethod
-    def create_props(model_nm, props={}):
+    def create_props(model_nm, props=None):
         """
         Create a property object with values in 'props'.
         """
+        if props is None:
+            props = {}
+            get_prop_from_env("user_type")
         return PropArgs(model_nm, props=props)
 
     @staticmethod
