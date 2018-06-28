@@ -8,6 +8,7 @@ import logging
 
 from IndrasNet.models import Model
 from indra.prop_args import type_dict, PERIODS
+import indra.prop_args as prop_args
 import indra.user as u
 
 # some values useful for checking valid ranges:
@@ -107,7 +108,7 @@ def read_props(model_nm):
     if len(sys.argv) > 1:
         poss_props = sys.argv[1]
         if not poss_props.startswith('-'):  # not a property but a prop file
-            return props.PropArgs.read_props(model_nm, poss_props)
+            return prop_args.PropArgs.read_props(model_nm, poss_props)
 
     return None
 
