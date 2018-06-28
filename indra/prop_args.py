@@ -7,6 +7,7 @@ import sys
 import platform
 import networkx as nx
 import json
+import os
 
 SWITCH = '-'
 PERIODS = 'periods'
@@ -18,11 +19,18 @@ IPYTHON = "iPython"
 IPYTHON_NB = "iPython Notebook"
 WEB = "Web browser"
 
+global user_type
 user_type = TERMINAL
 
 type_dict = {'INT': int, 'DBL': float, 'BOOL': bool, 'STR': str}
 
-get_prop_from_env(prop_nm):
+def get_prop_from_env(prop_nm):
+    global user_type
+    try:
+        user_type = os.environ['USER_TYPE']
+    except KeyError:
+        print("Environment variable user type not found")
+        user_type = TERMINAL
     return None
 
 class PropArgs():
