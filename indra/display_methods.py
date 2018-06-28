@@ -10,11 +10,13 @@ import numpy as np
 import networkx as nx
 import logging
 import io
-
+from indra.prop_args import user_type
 plt_present = True
+
 try:
     import matplotlib as mpl
-    mpl.use('Agg')
+    if user_type == "Web":  # you can change this to right value!
+        mpl.use('Agg')
     import matplotlib.pyplot as plt
     import matplotlib.animation as animation
     from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
