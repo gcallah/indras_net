@@ -96,6 +96,9 @@ class PropArgs():
                 self.set(prop_nm, arg)
                 prop_nm = None
 
+    def add_props(self, props):
+        self.props.update(props)
+
     def display(self):
         """
         How to represent the properties on screen.
