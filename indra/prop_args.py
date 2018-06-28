@@ -31,7 +31,7 @@ def get_prop_from_env(prop_nm):
     except KeyError:
         print("Environment variable user type not found")
         user_type = TERMINAL
-    return None
+    return user_type
 
 class PropArgs():
     """

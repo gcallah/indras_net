@@ -15,7 +15,7 @@ plt_present = True
 
 try:
     import matplotlib as mpl
-    if user_type == "Web":  # you can change this to right value!
+    if user_type == "Web browser":  # you can change this to right value!
         mpl.use('Agg')
     import matplotlib.pyplot as plt
     import matplotlib.animation as animation

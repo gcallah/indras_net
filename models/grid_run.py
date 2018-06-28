@@ -2,31 +2,34 @@
 """
 A script to test our grid capabilities.
 """
+MODEL_NM = "Grid"
+
+import indra.prop_args as props
+pa = props.PropArgs.create_props(MODEL_NM)
 
 import indra.utils as utils
-import indra.prop_args as props
 import indra.grid_env as ge
 import models.grid_model as gm
 import indra.user as u
 
-# set up some file names:
-MODEL_NM = "Grid"
 
-def run(dic=None):
+def run(prop_dict=None):
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
     
     # We store basic parameters in a "property" file; this allows us to save
     #  multiple parameter sets, which is important in simulation work.
     #  We can read these in from file or set them here.
-    pa = None
-    if dic is None:
-        pa = utils.read_props(MODEL_NM)   
-    if pa is None and dic is None:
-        pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
-    elif dic is not None:
-        dic[props.PERIODS] = 100
-        dic["user_type"] = u.WEB
-        pa = props.PropArgs(MODEL_NM, logfile=log_file, props=dic)
+    global pa
+    
+    if prop_dict is not None:
+        prop_dict[props.PERIODS] = 100
+        pa.add_props(prop_dict)
+    else:
+        result = utils.read_props(MODEL_NM)
+        if result:
+            pa.add_props(result.props)
+        else:
+            utils.ask_for_params(pa)
     
     # Now we create a minimal environment for our agents to act within:
     env = ge.GridEnv("Test grid env",
