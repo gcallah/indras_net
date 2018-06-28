@@ -12,6 +12,14 @@ SWITCH = '-'
 PERIODS = 'periods'
 DATAFILE = 'datafile'
 
+# user types
+TERMINAL = "terminal"
+IPYTHON = "iPython"
+IPYTHON_NB = "iPython Notebook"
+WEB = "Web browser"
+
+user_type = TERMINAL
+
 type_dict = {'INT': int, 'DBL': float, 'BOOL': bool, 'STR': str}
 
 get_prop_from_env(prop_nm):
@@ -38,9 +46,12 @@ class PropArgs():
         """
         Create a property object with values in 'props'.
         """
+        global user_type
+
         if props is None:
             props = {}
-            get_prop_from_env("user_type")
+            user_type = get_prop_from_env("user_type")
+            props["user_type"] = user_type
         return PropArgs(model_nm, props=props)
 
     @staticmethod

@@ -29,10 +29,10 @@ import indra.entity as ent
 import indra.prop_args as pa
 
 # user types
-TERMINAL = "terminal"
-IPYTHON = "iPython"
-IPYTHON_NB = "iPython Notebook"
-WEB = "Web browser"
+TERMINAL = pa.TERMINAL
+IPYTHON = pa.IPYTHON
+IPYTHON_NB = pa.IPYTHON_NB
+WEB = pa.WEB
 
 run_output = ""
 
