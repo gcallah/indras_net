@@ -5,7 +5,9 @@ Various helpful bits that don't fit elsewhere!
 
 import sys
 import logging
-import indra.prop_args as props
+
+from IndrasNet.models import Model
+from indra.prop_args import type_dict, PERIODS
 import indra.user as u
 
 # some values useful for checking valid ranges:
@@ -13,12 +15,61 @@ BIG_INT = sys.maxsize
 BTWN_ZERO_ONE = (.01, .99)
 NTRL_NUMS = (0, BIG_INT)
 POS_INTS = (1, BIG_INT)
-MAX_GRID = 100000
-GRID_LIMITS = (1, MAX_GRID)  # this gives us a max grid of 1 billion elements!
+MAX_GRID = 1000
+GRID_LIMITS = (1, MAX_GRID)  
 MAX_AGENTS = MAX_GRID * MAX_GRID  # enough to fill a maximum sized grid
 AGENT_LIMITS = (1, MAX_AGENTS)
 WOLFRAM_RULE_LIMITS = (0, 255)
 
+
+def in_range(low, val, high):
+    if all([low, high]):
+        return low <= val <= high
+    elif low:
+        return low <= val
+    elif high:
+        return val <= high
+    else:
+        return True
+        
+def check_val(val, default=None, limits=None):  
+    if val is None:
+        return False
+
+    if limits is not None:
+        (low, high) = limits
+        return in_range(low, val, high)
+    else:
+        return True
+
+def ask_for_params(props):
+    """
+    Asks user to set parameters associated with the model.
+    We fetch the questions to ask from the django db.
+    If an input isn't given, we use a default.
+
+    return: the props object passed in
+    """
+    if props is None:
+        return None   # should raise some exception!
+
+    which_model = Model.objects.get(name=props.model_nm)
+    for param in which_model.params.all():
+        default = param.default_val
+        limits = (param.lowval, param.hival)
+        val = u.ask(msg=param.question,
+                 default=default,
+                 limits=limits)
+        val_type = type_dict[param.atype]
+        try:
+            typed_val = val_type(val)
+        except:
+            typed_val = default  # a temp kludge!
+
+        if not check_val(typed_val, default, limits):
+            typed_val = default
+        props.set(param.prop_name, typed_val)
+    return props
 
 def gen_file_names(model_nm):
     """
@@ -35,7 +86,7 @@ def run_model(env, prog_file, results_file):
     # Logging is automatically set up for the modeler:
     logging.info("Starting program " + prog_file)
 
-    periods = env.props.get(props.PERIODS)
+    periods = env.props.get(PERIODS)
     if periods is None:
         periods = 0
     else:
@@ -60,29 +111,3 @@ def read_props(model_nm):
 
     return None
 
-
-def get_grid_dims(pa, def_dims):
-    u.ask("grid_width", "What is the grid width?", int, default=def_dims,
-           limits=GRID_LIMITS)
-    u.ask("grid_height", "What is the grid height?", int, default=def_dims,
-           limits=GRID_LIMITS)
-
-
-def get_agent_num(pa, prop_nm, agent_type, def_num):
-    u.ask(prop_nm, "What is the number of %s?" % (agent_type),
-           int, default=def_num, limits=AGENT_LIMITS)
-
-
-def get_max_move(pa, prop_nm, agent_type, def_move):
-    u.ask(prop_nm, "What is %s's maximum move?" % (agent_type),
-           int, default=def_move, limits=AGENT_LIMITS)
-
-
-def get_pct(pa, prop_nm, agent_type, param_descr, def_pct):
-    u.ask(prop_nm, "What is %s's %s?" % (agent_type, param_descr),
-           float, default=def_pct, limits=BTWN_ZERO_ONE)
-
-
-def get_rule_id(pa, def_id):
-    u.ask("rule_id", "What is the rule id?", int, default=def_id,
-           limits=WOLFRAM_RULE_LIMITS)

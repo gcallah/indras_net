@@ -28,6 +28,7 @@ def run(prop_dict=None):
         pa = utils.read_props(MODEL_NM)
     else:
         pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
+        utils.ask_for_params(pa)
 
     # Now we create a minimal environment for our agents to act within:
     env = bm.BasicEnv(model_nm=MODEL_NM, props=pa)

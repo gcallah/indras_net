@@ -8,24 +8,11 @@ import platform
 import networkx as nx
 import json
 
-from IndrasNet.models import Model
-
 SWITCH = '-'
 PERIODS = 'periods'
 DATAFILE = 'datafile'
 
 type_dict = {'INT': int, 'DBL': float, 'BOOL': bool, 'STR': str}
-
-
-def in_range(low, val, high):
-    if all([low, high]):
-        return low <= val <= high
-    elif low:
-        return low <= val
-    elif high:
-        return val <= high
-    else:
-        return True
 
 
 class PropArgs():
@@ -66,7 +53,7 @@ class PropArgs():
         PropArgs.prop_sets[model_nm] = self
         self.graph = nx.Graph()
         if props is None:
-            props = {}
+            self.props = {}
         else:
             self.props = props
             logfile = self.get("log_fname")
@@ -84,26 +71,6 @@ class PropArgs():
             elif prop_nm is not None:
                 self.set(prop_nm, arg)
                 prop_nm = None
-
-    def set_props_from_db(self):
-        """
-        Asks user to set parameters associated with the model.
-        If an input isn't given, we use a default.
-
-        :return:
-        """
-        self.props = {}
-
-        db_model_name = self.model_nm
-        basic_model = Model.objects.get(name=db_model_name)
-
-        params_to_set = basic_model.params.all()
-        for param in params_to_set:
-            self.check_val(nm=param.prop_name,
-                     msg=param.question,
-                     val_type=type_dict[param.atype],
-                     default=param.default_val,
-                     limits=(param.lowval, param.hival))
 
     def display(self):
         """
@@ -130,20 +97,6 @@ class PropArgs():
         if nm not in self.props:
             self.props[nm] = default
         return self.props[nm]
-        
-    def check_val(self, nm, val, val_type, default=None, limits=None):  
-        if len(val) == 0:
-            val = default
-        typed_val = val_type(val)
-        good_val = False
-        if limits is not None:
-            (low, high) = limits
-            good_val = in_range(low, typed_val, high)
-        else:
-            good_val = True
-        if not good_val:
-            pass  # raise exception here: can use msg
-        self.set(nm, typed_val)
 
     def get_logfile(self):
         """
