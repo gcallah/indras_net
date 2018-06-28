@@ -56,12 +56,12 @@ def ask_for_params(props):
 
     which_model = Model.objects.get(name=props.model_nm)
     for param in which_model.params.all():
-        default = param.default_val
+        val_type = type_dict[param.atype]
+        default = val_type(param.default_val)
         limits = (param.lowval, param.hival)
         val = u.ask(msg=param.question,
                  default=default,
                  limits=limits)
-        val_type = type_dict[param.atype]
         try:
             typed_val = val_type(val)
         except:
