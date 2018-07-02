@@ -99,6 +99,9 @@ class PropArgs():
 
         return ret
 
+    def __iter__(self):
+        return iter(self.props)
+
     def __str__(self):
         return self.display()
 
@@ -130,11 +133,14 @@ class PropArgs():
     def __delitem__(self, key):
         del self.props[key]
 
+    def items(self):
+        return self.props.items()
+
     def get_logfile(self):
         """
         Special get function for logfile name
         """
-        return self.props.get("log_fname")
+        return self.props["log_fname"]
 
     def write(self, file_nm):
         """

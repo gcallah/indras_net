@@ -1,19 +1,19 @@
-#!/Users/gcallah/miniconda3/bin/python
+#!/usr/bin/env python3
 """
 This is a simple test script. It can be cloned to
 create new run scripts, and should be run to test
 the system after library changes.
 """
 
+MODEL_NM = "Basic"
+
 import indra.prop_args as props
 # we will create props here to set user_type:
+pa = props.PropArgs.create_props(MODEL_NM)
 
 
 import indra.utils as utils
 import models.basic_model as bm
-
-# set up some file names:
-MODEL_NM = "Basic"
 
 
 def run(prop_dict=None):
@@ -26,12 +26,18 @@ def run(prop_dict=None):
 
     # TODO: Place this logic in prop_args
     if prop_dict is not None:
-        pa = props.PropArgs(MODEL_NM, logfile=log_file, props=prop_dict)
-    elif utils.read_props(MODEL_NM):
-        pa = utils.read_props(MODEL_NM)
+        prop_dict[props.PERIODS] = 100
+        pa.add_props(prop_dict)
     else:
-        pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
-        utils.ask_for_params(pa)
+        result = utils.read_props(MODEL_NM)
+        if result:
+            pa.add_props(result.props)
+        else:
+            utils.ask_for_params(pa)
+
+    # test prop_args as an iterable:
+    for prop, val in pa.items():
+        print(prop + ": " + str(val))
 
     # Now we create a minimal environment for our agents to act within:
     env = bm.BasicEnv(model_nm=MODEL_NM, props=pa)
