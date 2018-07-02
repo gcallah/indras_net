@@ -35,19 +35,10 @@ def get_prop_from_env(prop_nm):
 
 class PropArgs():
     """
-    This class holds sets of named properties for program-wide values.
-    It enables getting properties from a file, in-program,
+    This class holds named properties for program-wide values.
+    It enables getting properties from a file, a database,
     or from the user, either via the command line or a prompt.
     """
-    prop_sets = {}
-
-    @staticmethod
-    def get_props(model_nm):
-        """
-        Get properties for model 'model_nm'.
-        """
-        if model_nm in PropArgs.prop_sets:
-            return PropArgs.prop_sets[model_nm]
 
     @staticmethod
     def create_props(model_nm, props=None):
@@ -70,11 +61,10 @@ class PropArgs():
         props = json.load(open(file_nm))
         return PropArgs.create_props(model_nm, props=props)
 
+
     def __init__(self, model_nm, logfile=None, props=None,
                  loglevel=logging.INFO):
         self.model_nm = model_nm
-        # store this instance as the value in the dict for 'model_nm'
-        PropArgs.prop_sets[model_nm] = self
         self.graph = nx.Graph()
         if props is None:
             self.props = {}
@@ -83,8 +73,8 @@ class PropArgs():
             logfile = self.get("log_fname")
         self.logger = Logger(self, logfile=logfile)
         self.graph.add_edge(self, self.logger)
-        self.set("OS", platform.system())
-        self.set("model", model_nm)
+        self["OS"] = platform.system()
+        self["model"] = model_nm
         # process command line args and set them as properties:
         prop_nm = None
         for arg in sys.argv:
@@ -93,7 +83,7 @@ class PropArgs():
                 prop_nm = arg.lstrip(SWITCH)
             # the second arg is the property value
             elif prop_nm is not None:
-                self.set(prop_nm, arg)
+                self[prop_nm] = arg
                 prop_nm = None
 
     def add_props(self, props):
@@ -109,11 +99,23 @@ class PropArgs():
 
         return ret
 
-    def set(self, nm, val):
+    def __str__(self):
+        return self.display()
+
+    def __len__(self):
+        return len(props)
+
+    def __contains__(self, key):
+        return key in self.props
+
+    def __setitem__(self, key, value):
         """
         Set a property value.
         """
-        self.props[nm] = val
+        self.props[key] = value
+
+    def __getitem__(self, key):
+        return self.props[key]
 
     def get(self, nm, default=None):
         """
@@ -124,6 +126,9 @@ class PropArgs():
         if nm not in self.props:
             self.props[nm] = default
         return self.props[nm]
+
+    def __delitem__(self, key):
+        del self.props[key]
 
     def get_logfile(self):
         """

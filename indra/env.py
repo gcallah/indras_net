@@ -66,7 +66,7 @@ class Environment(node.Node):
         user_nm = getpass.getuser()
         user_type = user.TERMINAL
         if self.props is not None:
-            self.props.set("user_name", user_nm)
+            self.props["user_name"] = user_nm
             user_type = self.props.get("user_type", user.TERMINAL)
             self.graph.add_edge(self, self.props)
         self.user = user.User(user_nm, user_type)

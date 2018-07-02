@@ -69,7 +69,7 @@ def ask_for_params(props):
 
         if not check_val(typed_val, default, limits):
             typed_val = default
-        props.set(param.prop_name, typed_val)
+        props[param.prop_name] = typed_val
     return props
 
 def gen_file_names(model_nm):
