@@ -6,7 +6,8 @@ It also is a handy tool to have around for testing
 new features added to the base system.
 """
 import indra.grid_agent as ga
-
+import logging
+import indra.user as u
 
 class TestGridAgent(ga.GridAgent):
     """
@@ -17,14 +18,12 @@ class TestGridAgent(ga.GridAgent):
 
     def preact(self):
         (x, y) = self.pos
-        print("With " + self.name
-              + " we are looking around "
-              + " x = " + str(x)
-              + " y = " + str(y))
-        print(self.name + " has neighbors: ")
+        #u.tell("With " + self.name + " we are looking around " + " x = " + str(x) + " y = " + str(y))
+        #u.tell(self.name + " has neighbors: ")
         for neighbor in self.neighbor_iter():
             (x1, y1) = neighbor.pos
-            print("    %i, %i" % (x1, y1))
+            #u.tell("    %i, %i" % (x1, y1))
 
     def postact(self):
-        print("Agent %s postacting" % (self.name))
+        pass
+        #u.tell("Agent %s postacting" % (self.name))

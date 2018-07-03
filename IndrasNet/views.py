@@ -19,9 +19,6 @@ import base64
 
 logger = logging.getLogger(__name__)
 
-# RUN = 'run'
-# STEP = 'step'
-# SHOW = 'show'
 MODEL = 'model'
 HEADER = 'header'
 DEFAULT_HIGHVAL = 100000
@@ -43,8 +40,6 @@ def dump_dict(d, vmachine):
 
 
 def main_page(request):
-    # Assign a new session id to a new user
-    assign_key(request)
 
     site_hdr = get_hdr()
 
@@ -55,8 +50,6 @@ def main_page(request):
 
 
 def ab_models(request):
-    # Assign a new session id to a new user
-    assign_key(request)
 
     site_hdr = get_hdr()
 
@@ -129,52 +122,14 @@ def run(request):
                      'text': text, 'image': image}
     return render(request, 'run.html', template_data)
 
-#def run(request):
-#    site_hdr = get_hdr()
-#    model_name = request.POST[MODEL]
-#    model = Model.objects.get(name=model_name)
-#    module = model.module
-#    questions = model.params.all()
-#    print("Model name: ", model_name)
-#    print("Module: ", module)
-#    answers = {}
-#    for q in questions:
-#        answer = request.POST[q.question]
-#        if q.atype == "INT":
-#            answer = int(answer)
-#        elif q.atype == "DBL":
-#            answer = float(answer)
-#        # Boolen is not considered yet
-#        answers[q.prop_name] = answer
-#    template_data = {'answers': answers, HEADER: site_hdr, 'module': module}
-#    return render(request, 'run.html', template_data)
-
-# The model is run twice, improvement required
-#def plot(request):
-#
-#    answers_str = request.GET['answers']
-#    module = request.GET['module']
-#    print('module: ', module)
-#    answers = ast.literal_eval(answers_str)
-#    for i in answers:
-#        print(i)
-#    importlib.import_module(module[0:-4])
-#    eval(module + "(answers)")
-#    image = dm.imageIO.getvalue()
-#    return HttpResponse(image, content_type="image/png")
-
 def help(request):
-    # Assign a new session id to a new user
-    assign_key(request)
 
     site_hdr = get_hdr()
     return render(request, 'help.html', {HEADER: site_hdr})
 
 
 def feedback(request):
-    # Assign a new session id to a new user
-    assign_key(request)
-
+    
     site_hdr = get_hdr()
     email_list = AdminEmail.objects.all()
     comma_del_emails = ""
@@ -186,8 +141,6 @@ def feedback(request):
 
 
 def about(request):
-    # Assign a new session id to a new user
-    assign_key(request)
 
     site_hdr = get_hdr()
     return render(request, 'about.html', {HEADER: site_hdr})
