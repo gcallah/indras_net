@@ -202,7 +202,7 @@ class Environment(node.Node):
         Add a new agent to the env.
         """
         if self.props is not None:
-            exec("import " + self.props.get("model")
+            exec("import " + self.props["model"]
                  + " as m")
             constr = self.user.ask("Enter constructor for agent to add: ")
             new_agent = eval("m." + constr)

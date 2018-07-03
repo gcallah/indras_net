@@ -39,6 +39,10 @@ def run(prop_dict=None):
     for prop, val in pa.items():
         print(prop + ": " + str(val))
 
+    # test that props work as a dictionary:
+    if "num_agents" in pa:
+        print("In is working!")
+
     # Now we create a minimal environment for our agents to act within:
     env = bm.BasicEnv(model_nm=MODEL_NM, props=pa)
 

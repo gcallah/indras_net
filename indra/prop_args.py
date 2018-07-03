@@ -106,7 +106,7 @@ class PropArgs():
         return self.display()
 
     def __len__(self):
-        return len(props)
+        return len(self.props)
 
     def __contains__(self, key):
         return key in self.props
