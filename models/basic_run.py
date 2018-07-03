@@ -43,6 +43,9 @@ def run(prop_dict=None):
     if "num_agents" in pa:
         print("In is working!")
 
+    # make sure we can get props length:
+    print("Props length = " + str(len(pa)))
+
     # Now we create a minimal environment for our agents to act within:
     env = bm.BasicEnv(model_nm=MODEL_NM, props=pa)
 
