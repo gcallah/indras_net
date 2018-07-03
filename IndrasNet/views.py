@@ -19,10 +19,6 @@ import base64
 
 logger = logging.getLogger(__name__)
 
-import os,sys,fcntl
-flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL)
-fcntl.fcntl(sys.stdout, fcntl.F_SETFL, flags&~os.O_NONBLOCK)
-
 MODEL = 'model'
 HEADER = 'header'
 DEFAULT_HIGHVAL = 100000
