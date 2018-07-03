@@ -1,1 +1,18 @@
-{"log_fmode": "w", "log_level": 20, "fshn_f_ratio": 1.3, "num_trndstr": 20, "user_name": "gcallah", "num_flwr": 80, "fshn_t_ratio": 1.5, "min_adv_periods": 8, "trnd_others": 5, "trnd_max_detect": 20.0, "log_format": "%(levelname)s:%(message)s", "flwr_others": 3, "log_fname": "fashion_model_log.txt", "flwr_max_detect": 20.0, "user_type": "iPython"}
+{
+    "user_type": "terminal",
+    "log_fname": null,
+    "log_format": "%(asctime)s:%(levelname)s:%(message)s",
+    "log_level": 20,
+    "log_fmode": "w",
+    "OS": "Darwin",
+    "model": "Fashion",
+    "num_followers": 4,
+    "num_hipsters": 4,
+    "fmax_move": 3,
+    "hmax_move": 5,
+    "variability": 0.3,
+    "grid_width": 5,
+    "grid_height": 2,
+    "user_name": "thomas",
+    "periods": null
+}

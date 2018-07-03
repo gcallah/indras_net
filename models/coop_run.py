@@ -6,18 +6,28 @@ Created on Tue Nov 11 21:13:15 2014
 Implements Paul Krugman's babysitting co-op model.
 """
 
+MODEL_NM = "Coop"
+import indra.prop_args as props
+pa = props.PropArgs.create_props(MODEL_NM)
 import indra.utils as utils
 import indra.prop_args as props
 import models.coop_model as cm
 
-MODEL_NM = "Coop"
 
-def run():
+def run(prop_dict=None):
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
-    
-    pa = utils.read_props(MODEL_NM)
-    if pa is None:
-        pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
+
+    global pa
+
+    if prop_dict is not None:
+        prop_dict[props.PERIODS] = 100
+        pa.add_props(prop_dict)
+    else:
+        result = utils.read_props(MODEL_NM)
+        if result:
+            pa.add_props(result.props)
+        else:
+            utils.ask_for_params(pa)
     
     env = cm.CoopEnv(model_nm=MODEL_NM, props=pa)
     
