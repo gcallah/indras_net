@@ -1,23 +1,36 @@
+#!/usr/bin/env python3
 """
 A script that runs big_box_model. It simulates the market economy
 of consumers, mom and pops, and big boxes.
 """
+MODEL_NM = "Big Box"
+
+import indra.prop_args as props
+pa = props.PropArgs.create_props(MODEL_NM)
 
 import indra.utils as utils
 import indra.prop_args as props
 import bigbox.big_box_model as bb
 
 # set up some file names:
-MODEL_NM = "Big Box"
 
-def run():
+
+def run(prop_dict=None):
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
     # We store basic parameters in a "property" file; this allows us to save
     #  multiple parameter sets, which is important in simulation work.
     #  We can read these in from file or set them here.
-    pa = utils.read_props(MODEL_NM)
-    if pa is None:
-        pa = props.PropArgs(MODEL_NM, logfile=log_file, props=None)
+    global pa
+
+    if prop_dict is not None:
+        prop_dict[props.PERIODS] = 100
+        pa.add_props(prop_dict)
+    else:
+        result = utils.read_props(MODEL_NM)
+        if result:
+            pa.add_props(result.props)
+        else:
+            utils.ask_for_params(pa)
     # Now we create a town for our agents to act in:
     env = bb.EverytownUSA(pa.get("grid_width"),
                           pa.get("grid_height"),
