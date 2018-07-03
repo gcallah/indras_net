@@ -10,7 +10,7 @@ pa = props.PropArgs.create_props(MODEL_NM)
 import indra.utils as utils
 import indra.grid_env as ge
 import models.grid_model as gm
-import indra.user as u
+import logging
 
 
 def run(prop_dict=None):
@@ -48,11 +48,11 @@ def run(prop_dict=None):
                       goal="taking up a grid space!"))
     
     # let's test our iterator
-#    for cell in env:
-#        (x, y) = cell.coords
-#        u.tell("Contents of cell x = " + str(x)
-#              + " and y = " + str(y)
-#              + " is " + str(cell.contents))
+    for cell in env:
+        (x, y) = cell.coords
+        logging.info("Contents of cell x = " + str(x)
+              + " and y = " + str(y)
+              + " is " + str(cell.contents))
         
     return utils.run_model(env, prog_file, results_file)
 
