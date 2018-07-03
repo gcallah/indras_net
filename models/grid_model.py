@@ -7,7 +7,7 @@ new features added to the base system.
 """
 import indra.grid_agent as ga
 import logging
-
+import indra.user as u
 
 class TestGridAgent(ga.GridAgent):
     """
@@ -18,14 +18,14 @@ class TestGridAgent(ga.GridAgent):
 
     def preact(self):
         (x, y) = self.pos
-        logging.info("With " + self.name
+        u.tell("With " + self.name
               + " we are looking around "
               + " x = " + str(x)
               + " y = " + str(y))
-        logging.info(self.name + " has neighbors: ")
+        u.tell(self.name + " has neighbors: ")
         for neighbor in self.neighbor_iter():
             (x1, y1) = neighbor.pos
-            logging.info("    %i, %i" % (x1, y1))
+            u.tell("    %i, %i" % (x1, y1))
 
     def postact(self):
-        logging.info("Agent %s postacting" % (self.name))
+        u.tell("Agent %s postacting" % (self.name))
