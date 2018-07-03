@@ -48,11 +48,11 @@ def run(prop_dict=None):
                       goal="taking up a grid space!"))
     
     # let's test our iterator
-    for cell in env:
-        (x, y) = cell.coords
-        u.tell("Contents of cell x = " + str(x)
-              + " and y = " + str(y)
-              + " is " + str(cell.contents))
+#    for cell in env:
+#        (x, y) = cell.coords
+#        u.tell("Contents of cell x = " + str(x)
+#              + " and y = " + str(y)
+#              + " is " + str(cell.contents))
         
     return utils.run_model(env, prog_file, results_file)
 
