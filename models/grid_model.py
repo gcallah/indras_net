@@ -18,12 +18,11 @@ class TestGridAgent(ga.GridAgent):
 
     def preact(self):
         (x, y) = self.pos
-        #u.tell("With " + self.name + " we are looking around " + " x = " + str(x) + " y = " + str(y))
-        #u.tell(self.name + " has neighbors: ")
+        u.tell("With " + self.name + " we are looking around " + " x = " + str(x) + " y = " + str(y))
+        u.tell(self.name + " has neighbors: ")
         for neighbor in self.neighbor_iter():
             (x1, y1) = neighbor.pos
-            #u.tell("    %i, %i" % (x1, y1))
+            u.tell("    %i, %i" % (x1, y1))
 
     def postact(self):
-        pass
-        #u.tell("Agent %s postacting" % (self.name))
+        u.tell("Agent %s postacting" % (self.name))

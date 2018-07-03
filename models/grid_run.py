@@ -50,7 +50,7 @@ def run(prop_dict=None):
     # let's test our iterator
     for cell in env:
         (x, y) = cell.coords
-        print("Contents of cell x = " + str(x)
+        u.tell("Contents of cell x = " + str(x)
               + " and y = " + str(y)
               + " is " + str(cell.contents))
         
