@@ -65,6 +65,14 @@ class PropArgs():
 
     def __init__(self, model_nm, logfile=None, props=None,
                  loglevel=logging.INFO):
+        """
+        Loads and sets properties in the following order:
+        1. The Database
+        2. The User's Environment (operating system, dev/prod settings, etc.)
+        3. Property File
+        4. Command Line
+        5. Questions Prompts During Run-Time
+        """
         self.model_nm = model_nm
         self.graph = nx.Graph()
         if props is None:
