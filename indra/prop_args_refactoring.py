@@ -19,10 +19,17 @@ IPYTHON = "iPython"
 IPYTHON_NB = "iPython Notebook"
 WEB = "Web browser"
 
+# Constants For Dictionary
+QUESTION = "question"
+TYPE = "type"
+VALUE = "value"
+DOMAIN = "domain"
+
 global user_type
 user_type = TERMINAL
 
 type_dict = {'INT': int, 'DBL': float, 'BOOL': bool, 'STR': str}
+
 
 def get_prop_from_env(prop_nm):
     global user_type
@@ -33,6 +40,7 @@ def get_prop_from_env(prop_nm):
         print("Environment variable user type not found")
         user_type = TERMINAL
     return user_type
+
 
 class PropArgs():
     """
@@ -62,8 +70,7 @@ class PropArgs():
         props = json.load(open(file_nm))
         return PropArgs.create_props(model_nm, props=props)
 
-
-    def __init__(self, model_nm, logfile=None, props=None,
+    def __init__(self, model_nm, logfile=None, prop_dict=None,
                  loglevel=logging.INFO):
         """
         Loads and sets properties in the following order:
@@ -73,18 +80,48 @@ class PropArgs():
         4. Command Line
         5. Questions Prompts During Run-Time
         """
+        self.logger = Logger(self, logfile=logfile)
         self.model_nm = model_nm
         self.graph = nx.Graph()
-        if props is None:
-            self.props = {}
-        else:
-            self.props = props
-            logfile = self.get("log_fname")
-        self.logger = Logger(self, logfile=logfile)
         self.graph.add_edge(self, self.logger)
-        self["OS"] = platform.system()
         self["model"] = model_nm
-        # process command line args and set them as properties:
+
+        # 1. The Database
+        self.set_props_from_db()
+
+        # 2. The Environment
+        self["OS"] = platform.system()
+        self.overwrite_props_from_env()
+
+        # 3. Property File
+        if prop_dict is not None:
+            self.overwrite_props_from_dict(prop_dict)
+
+        # 4. process command line args and set them as properties:
+        self.overwrite_props_from_command_line()
+
+        # 5. Ask the user questions.
+        self.overwrite_props_from_user()
+
+    def set_props_from_db(self):
+        basic_model = Model.objects.get(name=self.model_nm)
+        params = basic_model.params.all()
+        for param in params:
+            prop_name = param.prop_name
+            self[VALUE, prop_name] = param.default_val
+            self[DOMAIN, prop_name] = (param.lowval, param.hival)
+            self[QUESTION, prop_name] = param.question
+            self[TYPE, prop_name] = param.prop_name
+
+    def overwrite_props_from_env(self):
+        return
+
+    def overwrite_props_from_dict(self, prop_dict):
+        # TODO check existing prop_dicts to be compatible with our multi-indexed dictionary
+        self = {**self, **prop_dict}
+        logfile = self.get("log_fname")
+
+    def overwrite_props_from_command_line(self):
         prop_nm = None
         for arg in sys.argv:
             # the first arg (-prop) names the property
@@ -92,8 +129,12 @@ class PropArgs():
                 prop_nm = arg.lstrip(SWITCH)
             # the second arg is the property value
             elif prop_nm is not None:
-                self[prop_nm] = arg
+                self[VALUE, prop_nm] = arg
                 prop_nm = None
+
+    def overwrite_props_from_user(self):
+        for param_name in self:
+            self[VALUE, param_name] = input(self[QUESTION, param_name])
 
     def add_props(self, props):
         self.props.update(props)
