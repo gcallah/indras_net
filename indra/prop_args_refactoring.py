@@ -9,6 +9,8 @@ import networkx as nx
 import json
 import os
 
+from IndrasNet.models import Model
+
 SWITCH = '-'
 PERIODS = 'periods'
 DATAFILE = 'datafile'
@@ -62,7 +64,6 @@ class PropArgs():
             props["user_type"] = user_type
         return PropArgs(model_nm, props=props)
 
-    @staticmethod
     def read_props(model_nm, file_nm):
         """
         Create a new PropArgs object from a json file
@@ -90,12 +91,10 @@ class PropArgs():
         self.set_props_from_db()
 
         # 2. The Environment
-        self["OS"] = platform.system()
         self.overwrite_props_from_env()
 
         # 3. Property File
-        if prop_dict is not None:
-            self.overwrite_props_from_dict(prop_dict)
+        self.overwrite_props_from_dict(prop_dict)
 
         # 4. process command line args and set them as properties:
         self.overwrite_props_from_command_line()
@@ -114,12 +113,13 @@ class PropArgs():
             self[TYPE, prop_name] = param.prop_name
 
     def overwrite_props_from_env(self):
-        return
+        self["OS"] = platform.system()
 
     def overwrite_props_from_dict(self, prop_dict):
         # TODO check existing prop_dicts to be compatible with our multi-indexed dictionary
-        self = {**self, **prop_dict}
-        logfile = self.get("log_fname")
+        if prop_dict is not None:
+            self = {**self, **prop_dict}
+            logfile = self.get("log_fname")
 
     def overwrite_props_from_command_line(self):
         prop_nm = None
