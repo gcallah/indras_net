@@ -23,6 +23,7 @@ env_dic = {}
 
 MODEL = 'model'
 HEADER = 'header'
+ACTION = 'action'
 DEFAULT_HIGHVAL = 100000
 DEFAULT_LOWVAL = 0
 
@@ -101,30 +102,55 @@ def parameters(request):
     return render(request, 'parameters.html', template_data)
 
 def run(request):
+    class StepForm(forms.Form):
+        def __init__(self, *args, **kwargs):
+            super(StepForm, self).__init__(*args, **kwargs)
+            label_name = "steps"
+            self.fields[label_name] = forms.IntegerField(label=label_name, 
+                       initial=1, min_value=0, max_value=10000)
+            
+    try:
+        action = request.POST[ACTION]
+    except KeyError:
+        action = None
+    
+    if(action):
+        if action == "step":
+            env = env_dic[request.session['session_id']]
+            env.run(1)
+        if action == "n_steps":
+            steps = int(request.POST["steps"])
+            env = env_dic[request.session['session_id']]
+            env.run(steps)
+        
+    else:
+        model_name = request.POST[MODEL]
+        model = Model.objects.get(name=model_name)
+        module = model.module
+        questions = model.params.all()
+        answers = {}
+        for q in questions:
+            answer = request.POST[q.question]
+            if q.atype == "INT":
+                answer = int(answer)
+            elif q.atype == "DBL":
+                answer = float(answer)
+            # Boolen is not considered yet
+            answers[q.prop_name] = answer
+        importlib.import_module(module[0:-4])
+        env = eval(module + "(answers)")
+        env_dic[request.session['session_id']] = env
+              
     site_hdr = get_hdr()
-    model_name = request.POST[MODEL]
-    model = Model.objects.get(name=model_name)
-    module = model.module
-    questions = model.params.all()
-    print("Model name: ", model_name)
-    print("Module: ", module)
-    answers = {}
-    for q in questions:
-        answer = request.POST[q.question]
-        if q.atype == "INT":
-            answer = int(answer)
-        elif q.atype == "DBL":
-            answer = float(answer)
-        # Boolen is not considered yet
-        answers[q.prop_name] = answer
-    importlib.import_module(module[0:-4])
-    env = eval(module + "(answers)")
     text, image_bytes = env.user.text_output, env.image_bytes
-    env_dic[request.session['session_id']] = env
     logging.info(env_dic)
     image = base64.b64encode(image_bytes.getvalue()).decode()
-    template_data = {'answers': answers, HEADER: site_hdr, 'module': module, 
-                     'text': text, 'image': image}
+    
+    form = StepForm()
+    template_data = { HEADER: site_hdr, 
+                      'text': text, 'image': image, 
+                      'form': form}
+    
     return render(request, 'run.html', template_data)
 
 def help(request):
@@ -168,4 +194,4 @@ def assign_key(request):
         request.session.modified = True
 
     else:
-        print("This user has a session id: ", request.session['session_id'])
+        logging.info("This user has a session id: ", request.session['session_id'])
