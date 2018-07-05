@@ -33,6 +33,14 @@ def get_prop_from_env(prop_nm):
         user_type = TERMINAL
     return user_type
 
+def read_props(model_nm, file_nm):
+    """
+    Create a new PropArgs object from a json file
+    """
+    props = json.load(open(file_nm))
+    return PropArgs.create_props(model_nm, props=props)
+
+
 class PropArgs():
     """
     This class holds named properties for program-wide values.
@@ -52,14 +60,6 @@ class PropArgs():
             user_type = get_prop_from_env("user_type")
             props["user_type"] = user_type
         return PropArgs(model_nm, props=props)
-
-    @staticmethod
-    def read_props(model_nm, file_nm):
-        """
-        Create a new PropArgs object from a json file
-        """
-        props = json.load(open(file_nm))
-        return PropArgs.create_props(model_nm, props=props)
 
 
     def __init__(self, model_nm, logfile=None, props=None,

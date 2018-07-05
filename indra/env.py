@@ -204,21 +204,24 @@ class Environment(node.Node):
         else:
             self.user.tell("Props missing; can't add agent.", type=user.ERROR)
 
-    def agnt_inspect(self):
+    def agent_inspect(self, agent_nm=None):
         """
         View (and possibly alter) an agent's data.
         """
-        name = self.user.ask(
-            "Type the name of the agent to inspect: ")
         if not name:
-            return
+            name = self.user.ask(
+                "Type the name of the agent to inspect: ")
+            if not name:
+                return None
 
         agent = self.find_agent(name.strip())
         if agent is None:
             self.user.tell("No such agent")
         else:
             self.user.tell(agent.debug_info())
-        self.edit_field(agent)
+        # self.edit_field(agent)
+        # above line out until we get first test working
+        return agent
 
     def pprint(self):
         self.user.tell(NI)

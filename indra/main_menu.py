@@ -30,7 +30,7 @@ class MainMenu(Menu):
         self.edit.add_menu_item("a", MenuLeaf("(a)dd agent", e.add))
         self.edit.add_menu_item("i",
                                 MenuLeaf("(i)nspect agent",
-                                         e.agnt_inspect))
+                                         e.agent_inspect))
         self.edit.add_menu_item("e",
                                 MenuLeaf("inspect (e)nv", e.env_inspect))
 
