@@ -150,8 +150,8 @@ class Environment(node.Node):
                 file_nm = self.model_nm+RPT_EXT
             self.pop_report(file_nm=file_nm)
             self.image_bytes = self.plot()
-            return (self.user.text_output, self.image_bytes)
-            exit()
+            return self
+            #exit()
         else:
             self.user.tell("Welcome, " + self.user.name)
             self.user.tell("Running in " + self.name)

@@ -22,7 +22,7 @@ def run(prop_dict=None):
     global pa
     
     if prop_dict is not None:
-        prop_dict[props.PERIODS] = 100
+        prop_dict[props.PERIODS] = 1
         pa.add_props(prop_dict)
     else:
         result = utils.read_props(MODEL_NM)

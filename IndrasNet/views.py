@@ -118,7 +118,10 @@ def run(request):
         # Boolen is not considered yet
         answers[q.prop_name] = answer
     importlib.import_module(module[0:-4])
-    text, image_bytes = eval(module + "(answers)")
+    env = eval(module + "(answers)")
+    text, image_bytes = env.user.text_output, env.image_bytes
+    env_dic[request.session['session_id']] = env
+    logging.info(env_dic)
     image = base64.b64encode(image_bytes.getvalue()).decode()
     template_data = {'answers': answers, HEADER: site_hdr, 'module': module, 
                      'text': text, 'image': image}
