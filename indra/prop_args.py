@@ -28,9 +28,8 @@ def get_prop_from_env(prop_nm):
     global user_type
     try:
         user_type = os.environ['user_type']
-        print(user_type)
     except KeyError:
-        print("Environment variable user type not found")
+        logging.info("Environment variable user type not found")
         user_type = TERMINAL
     return user_type
 

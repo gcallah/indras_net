@@ -19,6 +19,8 @@ import base64
 
 logger = logging.getLogger(__name__)
 
+env_dic = {}
+
 MODEL = 'model'
 HEADER = 'header'
 DEFAULT_HIGHVAL = 100000
