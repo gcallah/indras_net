@@ -108,7 +108,7 @@ def read_props(model_nm):
     if len(sys.argv) > 1:
         poss_props = sys.argv[1]
         if not poss_props.startswith('-'):  # not a property but a prop file
-            return prop_args.PropArgs.read_props(model_nm, poss_props)
+            return prop_args.read_props(model_nm, poss_props)
 
     return None
 
