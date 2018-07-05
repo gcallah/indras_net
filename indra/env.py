@@ -35,8 +35,6 @@ class Environment(node.Node):
     stepping, inspection and editing of key objects,  etc.
     """
 
-    prev_period = 0  # in case we need to restore state
-
     def __init__(self, name, preact=False,
                  postact=False, model_nm=None, props=None):
         super().__init__(name)
@@ -128,23 +126,21 @@ class Environment(node.Node):
     def get_randagent_of_var(self, var):
         return self.agents.get_randagent_of_var(var)
 
-    def run(self, resume=False, periods=0):
+    def run(self, periods=0):
         """
         This is the main menu loop for all models.
 
         resume: starts up from a previous period.
         periods: run x periods, for batch mode or timing purposes.
         """
-        if resume:
-            self.period = Environment.prev_period
-        else:
-            self.period = 0
 
         print("Periods = " + str(periods))
         if periods > 0:
-            while self.period < periods:
+            count = 0
+            while count < periods:
                 self.step()
-            self.user.tell("Ran for " + str(self.period) + " periods.")
+                count += 1
+            self.user.tell("Ran for " + str(count) + " periods.\n")
             file_nm = self.props.get(pa.DATAFILE)
             if file_nm is None:
                 file_nm = self.model_nm+RPT_EXT
@@ -165,8 +161,6 @@ class Environment(node.Node):
                     except Quit:
                         break
                 self.user.tell(msg)
-
-            Environment.prev_period = self.period
 
     def add_menu_item(self, submenu, letter, text, func):
         """
@@ -452,8 +446,7 @@ class Environment(node.Node):
         results = self.agents.census(exclude_var=exclude_var)
         if disp:
             self.user.tell("Populations in period "
-                           + str(self.period) + ":")
-            self.user.tell(results)
+                           + str(self.period) + ":\n" + results)
 
     def varieties_iter(self):
         return self.agents.varieties_iter()
@@ -502,7 +495,7 @@ class Environment(node.Node):
 
     def switch(self):
         """
-        Switch to another model.
+        Switch to another model. Needs implementation!
         """
         steps = int(self.user.ask("Enter number of steps: "))
         target = self.period + steps

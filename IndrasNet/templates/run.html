@@ -43,8 +43,21 @@
                 <div class="dropdown">
                     <button class="dropbtn">Tools</button>
                     <div class="dropdown-content">
-                        <a href="#">Step</a>
-                        <a href="#">Run Steps</a>
+                        <form action="{% url 'IndrasNet:run' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="step">
+                            <input type="submit" name="menu_item" value="Step"/>
+                        </form>
+                        <form action="{% url 'IndrasNet:run' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="n_steps">
+                            {% for item in form %}
+                                {{ item.errors }}
+                                <label for="{{ item.id_for_label }}">{{ item.label_tag }}</label>
+                                {{ item }}
+                            {% endfor %}
+                            <input type="submit" name="menu_item" value="Run N Steps"/>
+                        </form>
                         <a href="#">Debug</a>
                         <a href="#">Switch Model</a>
                     </div>
