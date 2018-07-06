@@ -97,10 +97,6 @@ class WolframEnv(ge.GridEnv):
                          model_nm=model_nm, postact=True, props=props)
         
         self.rules = self.read_wolfram_rules("wolfram/wolfram_rules.txt")[rule_id]
-#        for i in STATE_MAP:
-#            for j in STATE_MAP:
-#                for k in STATE_MAP:
-#                    self.rules[(i,j,k)] = None
                     
         self.set_var_color(BLACK, disp.BLACK)
         self.set_var_color(WHITE, disp.WHITE)
@@ -121,14 +117,7 @@ class WolframEnv(ge.GridEnv):
                 old_type = agent.ntype
                 agent.set_type(new_type)
                 self.change_agent_type(agent, old_type, new_type)
-                #agent.marked = True
-                agent.is_active = False
-#            if x == center_x - 1 and y == top_y - 1:
-#                agent.marked = True
-#            if x == center_x and y == top_y - 1:
-#                agent.marked = True
-#            if x == center_x + 1 and y == top_y - 1:
-#                agent.marked = True        
+                agent.is_active = False       
         
     def check_rules(self, combo):
         return self.rules[combo]

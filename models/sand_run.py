@@ -22,7 +22,7 @@ def run(prop_dict=None):
     #  We can read these in from file or set them here.
 
     if prop_dict is not None:
-        prop_dict[props.PERIODS] = 100
+        prop_dict[props.PERIODS] = 1
         pa.add_props(prop_dict)
     else:
         result = utils.read_props(MODEL_NM)
@@ -33,14 +33,14 @@ def run(prop_dict=None):
     
     # Now we create a minimal environment for our agents to act within:
     env = sm.SandEnv("Abelian sand env",
-                     pa.get("grid_width"),
-                     pa.get("grid_height"),
+                     pa["grid_width"],
+                     pa["grid_height"],
                      model_nm=MODEL_NM,
                      props=pa)
     
     # This env adds agents itself.
     
-    utils.run_model(env, prog_file, results_file)
+    return utils.run_model(env, prog_file, results_file)
 
 if __name__ == "__main__":
     run()
