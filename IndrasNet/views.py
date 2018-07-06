@@ -120,7 +120,7 @@ def run(request):
     
     if(action):
         logging.info("Session id: " + str(session_id))
-        logging.info("Env dictionary id: " + id(env_dic))
+        logging.info("Env dictionary id: " + str(id(env_dic)))
         logging.info("Global env dictionary: " + str(env_dic))
         
         if action == "step":            
