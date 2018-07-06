@@ -117,7 +117,8 @@ def run(request):
     session_id = int(request.session['session_id'])
     
     if(action):
-        if action == "step":
+        dic = env_dic
+        if action == "step":            
             env = env_dic[session_id]
             env.run(1)
         if action == "n_steps":
