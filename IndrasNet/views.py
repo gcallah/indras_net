@@ -116,11 +116,10 @@ def run(request):
     session_id = int(request.session['session_id'])
     
     if(action):
-        dic = env_dic
         logging.info("Session id: " + str(session_id))
-        logging.info("Local reference: " + str(dic))
-        logging.info("Global reference: " + str(env_dic))
+        logging.info("Global env dictionary: " + str(env_dic))
         
+        global env_dic
         if action == "step":            
             env = env_dic[session_id]
             env.run(1)
@@ -145,6 +144,7 @@ def run(request):
             answers[q.prop_name] = answer
         importlib.import_module(module[0:-4])
         env = eval(module + "(answers)")
+        global env_dic
         env_dic[session_id] = env
               
     site_hdr = get_hdr()
