@@ -19,7 +19,7 @@ import base64
 
 logger = logging.getLogger(__name__)
 
-env_dic = {}
+env_dic = {0: "default"}
 
 MODEL = 'model'
 HEADER = 'header'
@@ -118,6 +118,10 @@ def run(request):
     
     if(action):
         dic = env_dic
+        logging.info("Session id: ", session_id)
+        logging.info("Local reference: ", dic)
+        logging.info("Global reference: ", env_dic)
+        
         if action == "step":            
             env = env_dic[session_id]
             env.run(1)
@@ -146,7 +150,6 @@ def run(request):
               
     site_hdr = get_hdr()
     text, image_bytes = env.user.text_output, env.image_bytes
-    env.user.tell(str(env_dic))
     image = base64.b64encode(image_bytes.getvalue()).decode()
     
     form = StepForm()
