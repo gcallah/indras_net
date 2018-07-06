@@ -118,9 +118,9 @@ def run(request):
     
     if(action):
         dic = env_dic
-        logging.info("Session id: ", session_id)
-        logging.info("Local reference: ", dic)
-        logging.info("Global reference: ", env_dic)
+        logging.info("Session id: " + str(session_id))
+        logging.info("Local reference: " + str(dic))
+        logging.info("Global reference: " + str(env_dic))
         
         if action == "step":            
             env = env_dic[session_id]
