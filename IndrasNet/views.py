@@ -11,6 +11,7 @@ from .models import Site
 from .models import Model
 from .models import ModelParam
 from django import forms
+
 from .env_dic import env_dic
 
 import models
@@ -119,6 +120,7 @@ def run(request):
     
     if(action):
         logging.info("Session id: " + str(session_id))
+        logging.info("Env dictionary id: " + id(env_dic))
         logging.info("Global env dictionary: " + str(env_dic))
         
         if action == "step":            
