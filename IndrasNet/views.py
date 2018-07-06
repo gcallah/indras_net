@@ -11,6 +11,7 @@ from .models import Site
 from .models import Model
 from .models import ModelParam
 from django import forms
+from .env_dic import env_dic
 
 import models
 import base64
@@ -18,8 +19,6 @@ import base64
 # Need this for using a global vaiable in it. Only for testing
 
 logger = logging.getLogger(__name__)
-
-env_dic = {0: "default"}
 
 MODEL = 'model'
 HEADER = 'header'
