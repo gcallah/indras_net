@@ -114,7 +114,7 @@ def run(request):
     except KeyError:
         action = None
         
-    session_id = request.session['session_id']
+    session_id = int(request.session['session_id'])
     
     if(action):
         if action == "step":
