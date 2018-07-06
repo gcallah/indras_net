@@ -113,14 +113,16 @@ def run(request):
         action = request.POST[ACTION]
     except KeyError:
         action = None
+        
+    session_id = request.session['session_id']
     
     if(action):
         if action == "step":
-            env = env_dic[request.session['session_id']]
+            env = env_dic[session_id]
             env.run(1)
         if action == "n_steps":
             steps = int(request.POST["steps"])
-            env = env_dic[request.session['session_id']]
+            env = env_dic[session_id]
             env.run(steps)
         
     else:
@@ -139,11 +141,11 @@ def run(request):
             answers[q.prop_name] = answer
         importlib.import_module(module[0:-4])
         env = eval(module + "(answers)")
-        env_dic[request.session['session_id']] = env
+        env_dic[session_id] = env
               
     site_hdr = get_hdr()
     text, image_bytes = env.user.text_output, env.image_bytes
-    logging.info(env_dic)
+    env.user.tell(str(env_dic))
     image = base64.b64encode(image_bytes.getvalue()).decode()
     
     form = StepForm()
