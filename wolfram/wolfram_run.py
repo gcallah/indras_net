@@ -10,7 +10,6 @@ pa = props.PropArgs.create_props(MODEL_NM)
 import indra.utils as utils
 import indra.prop_args as props
 import wolfram.wolfram_model as wm
-# set up some file names:
 
 def run(prop_dict=None):
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
@@ -21,7 +20,7 @@ def run(prop_dict=None):
     global pa
 
     if prop_dict is not None:
-        prop_dict[props.PERIODS] = 100
+        prop_dict[props.PERIODS] = 1
         pa.add_props(prop_dict)
     else:
         result = utils.read_props(MODEL_NM)
@@ -33,15 +32,15 @@ def run(prop_dict=None):
     
     # Now we create a minimal environment for our agents to act within:
     env = wm.WolframEnv("Wolfram Env",
-                     pa.get("grid_width"),
-                     pa.get("grid_height"),
+                     pa["grid_width"],
+                     pa["grid_height"],
                      model_nm=MODEL_NM,
                      props=pa,
-                     rule_id=pa.get("rule_id"))
+                     rule_id=pa["rule_id"])
     
     # This env adds agents itself.
     
-    utils.run_model(env, prog_file, results_file)
+    return utils.run_model(env, prog_file, results_file)
 
 if __name__ == "__main__":
     run()

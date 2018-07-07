@@ -15,7 +15,6 @@ pa = props.PropArgs.create_props(MODEL_NM)
 import indra.utils as utils
 import indra.prop_args as props
 import schelling.segregation_model as sm
-import indra.user as u
 
 # set up some file names:
 
@@ -27,7 +26,7 @@ def run(prop_dict=None):
     global pa
 
     if prop_dict is not None:
-        prop_dict[props.PERIODS] = 100
+        prop_dict[props.PERIODS] = 1
         pa.add_props(prop_dict)
     else:
         result = utils.read_props(MODEL_NM)
@@ -38,8 +37,8 @@ def run(prop_dict=None):
         
     # Now we create an environment for our agents to act within:
     env = sm.SegregationEnv("A city",
-                            pa.get("grid_width"),
-                            pa.get("grid_height"),
+                            pa["grid_width"],
+                            pa["grid_height"],
                             props=pa)
     # Now we loop creating multiple agents with numbered names
     # based on the loop variable:
@@ -49,13 +48,15 @@ def run(prop_dict=None):
                       min_tol=pa.get('min_tolerance'),
                       max_tol=pa.get('max_tolerance'),
                       max_detect=pa.get('max_detect')))
+        
     for i in range(pa.get("num_R_agents")):
         env.add_agent(sm.RedAgent(name="Red agent" + str(i),
                       goal="A good neighborhood.",
                       min_tol=pa.get('min_tolerance'),
                       max_tol=pa.get('max_tolerance'),
                       max_detect=pa.get('max_detect')))
-    utils.run_model(env, prog_file, results_file)
+        
+    return utils.run_model(env, prog_file, results_file)
 
 if __name__ == "__main__":
     run()

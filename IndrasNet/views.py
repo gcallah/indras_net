@@ -12,14 +12,16 @@ from .models import Model
 from .models import ModelParam
 from django import forms
 
+from .env_dic import env_dic
+
 import models
+import schelling
+import wolfram
 import base64
 
 # Need this for using a global vaiable in it. Only for testing
 
 logger = logging.getLogger(__name__)
-
-env_dic = {}
 
 MODEL = 'model'
 HEADER = 'header'
@@ -113,14 +115,22 @@ def run(request):
         action = request.POST[ACTION]
     except KeyError:
         action = None
+        
+    session_id = int(request.session['session_id'])
+    
+    global env_dic
     
     if(action):
-        if action == "step":
-            env = env_dic[request.session['session_id']]
+        logging.info("Session id: " + str(session_id))
+        logging.info("Env dictionary id: " + str(id(env_dic)))
+        logging.info("Global env dictionary: " + str(env_dic))
+        
+        if action == "step":            
+            env = env_dic[session_id]
             env.run(1)
         if action == "n_steps":
             steps = int(request.POST["steps"])
-            env = env_dic[request.session['session_id']]
+            env = env_dic[session_id]
             env.run(steps)
         
     else:
@@ -139,11 +149,10 @@ def run(request):
             answers[q.prop_name] = answer
         importlib.import_module(module[0:-4])
         env = eval(module + "(answers)")
-        env_dic[request.session['session_id']] = env
+        env_dic[session_id] = env
               
     site_hdr = get_hdr()
     text, image_bytes = env.user.text_output, env.image_bytes
-    logging.info(env_dic)
     image = base64.b64encode(image_bytes.getvalue()).decode()
     
     form = StepForm()
