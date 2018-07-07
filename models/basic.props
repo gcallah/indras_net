@@ -1,11 +1,4 @@
 {
-    "model": "basic_model",
-    "user_type": "terminal",
-    "user_name": "gcallah",
-    "OS": "Darwin",
-    "log_level": 20,
-    "log_fmode": "w",
-    "log_fname": "basic_model.log",
-    "log_format": "%(asctime)s:%(levelname)s:%(message)s",
-    "num_agents": 3
+    "A": 1,
+    "B": 2
 }

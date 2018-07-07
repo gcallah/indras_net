@@ -208,13 +208,13 @@ class Environment(node.Node):
         """
         View (and possibly alter) an agent's data.
         """
-        if not name:
-            name = self.user.ask(
+        if not agent_nm:
+            agent_nm = self.user.ask(
                 "Type the name of the agent to inspect: ")
-            if not name:
+            if not agent_nm:
                 return None
 
-        agent = self.find_agent(name.strip())
+        agent = self.find_agent(agent_nm.strip())
         if agent is None:
             self.user.tell("No such agent")
         else:
@@ -273,11 +273,12 @@ class Environment(node.Node):
         except KeyboardInterrupt:
             pass
 
-    def pwrite(self):
+    def pwrite(self, file_nm=None):
         """
         Write out the properties to a file.
         """
-        file_nm = self.user.ask("Choose file name: ")
+        if file_nm is None:
+            file_nm = self.user.ask("Choose file name: ")
         if len(file_nm) > 0 and self.props is not None:
             self.props.write(file_nm)
         else:
