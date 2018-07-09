@@ -21,12 +21,6 @@ IPYTHON = "iPython"
 IPYTHON_NB = "iPython Notebook"
 WEB = "Web browser"
 
-# Constants For Dictionary
-QUESTION = "question"
-TYPE = "type"
-VALUE = "value"
-DOMAIN = "domain"
-
 global user_type
 user_type = TERMINAL
 
@@ -81,11 +75,11 @@ class PropArgs():
         4. Command Line
         5. Questions Prompts During Run-Time
         """
-        self.logger = Logger(self, logfile=logfile)
+        self.logfile = logfile
         self.model_nm = model_nm
         self.graph = nx.Graph()
-        self.graph.add_edge(self, self.logger)
-        self["model"] = model_nm
+        self.model_nm = model_nm
+        self.props = {}
 
         # 1. The Database
         self.set_props_from_db()
@@ -102,24 +96,47 @@ class PropArgs():
         # 5. Ask the user questions.
         self.overwrite_props_from_user()
 
+        self.logger = Logger(self, logfile=logfile)
+        self.graph.add_edge(self, self.logger)
+
     def set_props_from_db(self):
         basic_model = Model.objects.get(name=self.model_nm)
         params = basic_model.params.all()
         for param in params:
-            prop_name = param.prop_name
-            self[VALUE, prop_name] = param.default_val
-            self[DOMAIN, prop_name] = (param.lowval, param.hival)
-            self[QUESTION, prop_name] = param.question
-            self[TYPE, prop_name] = param.prop_name
+            self.props[param.prop_name] = param
+            self.props[param.prop_name].value = param.default_val
 
     def overwrite_props_from_env(self):
-        self["OS"] = platform.system()
+        self.os = platform.system()
 
     def overwrite_props_from_dict(self, prop_dict):
-        # TODO check existing prop_dicts to be compatible with our multi-indexed dictionary
+        """
+        General Form of Dict:
+
+            {
+                prop_name:
+                    question
+                    atype
+                    default_val
+                    lowval
+                    hival
+            }
+
+        Sample Dict:
+
+            {
+                "num_agents":
+                    "gimme number of agents",
+                    "int",
+                    3,
+                    0,
+                    100
+            }
+
+        """
         if prop_dict is not None:
-            self = {**self, **prop_dict}
-            logfile = self.get("log_fname")
+            self = {**self.props, **prop_dict}
+            self.logfile = self.get("log_fname")
 
     def overwrite_props_from_command_line(self):
         prop_nm = None
@@ -129,12 +146,13 @@ class PropArgs():
                 prop_nm = arg.lstrip(SWITCH)
             # the second arg is the property value
             elif prop_nm is not None:
-                self[VALUE, prop_nm] = arg
+                self.props[prop_nm] = arg
                 prop_nm = None
 
     def overwrite_props_from_user(self):
-        for param_name in self:
-            self[VALUE, param_name] = input(self[QUESTION, param_name])
+        for prop_nm in self:
+            question = self.props[prop_nm].question
+            self.props[prop_nm] = input(question)
 
     def add_props(self, props):
         self.props.update(props)
