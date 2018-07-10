@@ -24,7 +24,7 @@ def run(prop_dict=None):
     global pa
 
     if prop_dict is not None:
-        prop_dict[props.PERIODS] = 100
+        prop_dict[props.PERIODS] = 1
         pa.add_props(prop_dict)
     else:
         result = utils.read_props(MODEL_NM)
@@ -35,14 +35,14 @@ def run(prop_dict=None):
     
     # Now we create a minimal environment for our agents to act within:
     env = am.Auditorium("Auditorium",
-                        height=pa.get("grid_height"),
-                        width=pa.get("grid_width"),
+                        height=pa["grid_height"],
+                        width=pa["grid_width"],
                         torus=False,
                         model_nm=MODEL_NM,
-                        num_agents=pa.get("num_agents"),
+                        num_agents=pa["num_agents"],
                         props=pa)
     
-    utils.run_model(env, prog_file, results_file)
+    return utils.run_model(env, prog_file, results_file)
 
 if __name__ == "__main__":
     run()

@@ -17,6 +17,7 @@ from .env_dic import env_dic
 import models
 import schelling
 import wolfram
+import bigbox
 import base64
 
 # Need this for using a global vaiable in it. Only for testing

@@ -6,12 +6,12 @@ MODEL_NM = "Fmarket"
 
 import indra.prop_args as props
 pa = props.PropArgs.create_props(MODEL_NM)
+
 import indra.utils as utils
 import indra.prop_args as props
 import models.fmarket_model as fm
 
 # set up some file names:
-
 
 def run(prop_dict=None):
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
@@ -22,7 +22,7 @@ def run(prop_dict=None):
     global pa
 
     if prop_dict is not None:
-        prop_dict[props.PERIODS] = 100
+        prop_dict[props.PERIODS] = 1
         pa.add_props(prop_dict)
     else:
         result = utils.read_props(MODEL_NM)
@@ -33,25 +33,25 @@ def run(prop_dict=None):
 
     # Now we create a asset environment for our agents to act within:
     env = fm.FinMarket("Financial Market",
-                       pa.get("grid_height"),
-                       pa.get("grid_width"),
+                       pa["grid_height"],
+                       pa["grid_width"],
                        torus=False,
                        model_nm=MODEL_NM,
                        props=pa)
     
     # Now we loop creating multiple agents with numbered names
     # based on the loop variable:
-    for i in range(pa.get("num_followers")):
+    for i in range(pa["num_followers"]):
         env.add_agent(fm.ChartFollower("follower" + str(i),
                                        "Following trend",
-                                       pa.get("fmax_move"),
-                                       pa.get("variability")))
-    for i in range(pa.get("num_vinvestors")):
+                                       pa["fmax_move"],
+                                       pa["variability"]))
+    for i in range(pa["num_vinvestors"]):
         env.add_agent(fm.ValueInvestor("value_inv" + str(i), "Buying value",
-                                       pa.get("vmax_move"),
-                                       pa.get("variability")))
+                                       pa["vmax_move"],
+                                       pa["variability"]))
     
-    utils.run_model(env, prog_file, results_file)
+    return utils.run_model(env, prog_file, results_file)
 
 if __name__ == "__main__":
     run()
