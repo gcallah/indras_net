@@ -17,6 +17,7 @@ from .env_dic import env_dic
 import models
 import schelling
 import wolfram
+import bigbox
 import base64
 
 # Need this for using a global vaiable in it. Only for testing
@@ -104,12 +105,6 @@ def parameters(request):
     return render(request, 'parameters.html', template_data)
 
 def run(request):
-    class StepForm(forms.Form):
-        def __init__(self, *args, **kwargs):
-            super(StepForm, self).__init__(*args, **kwargs)
-            label_name = "steps"
-            self.fields[label_name] = forms.IntegerField(label=label_name, 
-                       initial=1, min_value=0, max_value=10000)
             
     try:
         action = request.POST[ACTION]
@@ -155,10 +150,8 @@ def run(request):
     text, image_bytes = env.user.text_output, env.image_bytes
     image = base64.b64encode(image_bytes.getvalue()).decode()
     
-    form = StepForm()
     template_data = { HEADER: site_hdr, 
-                      'text': text, 'image': image, 
-                      'form': form}
+                      'text': text, 'image': image}
     
     return render(request, 'run.html', template_data)
 

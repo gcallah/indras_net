@@ -22,7 +22,7 @@ def run(prop_dict=None):
     global pa
 
     if prop_dict is not None:
-        prop_dict[props.PERIODS] = 100
+        prop_dict[props.PERIODS] = 1
         pa.add_props(prop_dict)
     else:
         result = utils.read_props(MODEL_NM)
@@ -31,13 +31,14 @@ def run(prop_dict=None):
         else:
             utils.ask_for_params(pa)
     env = hm.HeightEnv(model_nm=MODEL_NM, props=pa)
-    for i in range(pa.get("num_agents")):
+    for i in range(pa["num_agents"]):
             env.add_agent(
                 hm.HeightAgentEng('Eng agent' + str(i),
                                   START_HEIGHT, START_HEIGHT))
             env.add_agent(
                 hm.HeightAgent('agent' + str(i), START_HEIGHT, START_HEIGHT))
-    utils.run_model(env, prog_file, results_file)
+    
+    return utils.run_model(env, prog_file, results_file)
 
 if __name__ == "__main__":
     run()
