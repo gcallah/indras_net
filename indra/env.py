@@ -256,11 +256,12 @@ class Environment(node.Node):
             else:
                 break
 
-    def n_steps(self):
+    def n_steps(self, steps=None):
         """
         Run for n steps.
         """
-        steps = int(self.user.ask("Enter number of steps: "))
+        if steps is None:
+            steps = int(self.user.ask("Enter number of steps: "))
         target = self.period + steps
         self.user.tell("Running for %i steps; press Ctrl-c to halt!" % steps)
         time.sleep(3)

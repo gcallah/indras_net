@@ -6,6 +6,7 @@ the system after library changes.
 """
 
 from unittest import TestCase, main
+import random
 
 MODEL_NM = "Basic"
 
@@ -39,9 +40,11 @@ class BasicTestCase(TestCase):
                                         goal="acting up!"))
         self.env.add_agent(bm.BasicAgent(name="agent for tracking",
                                          goal="acting up!"))
+        self.env.n_steps(random.randint(10, 20))
 
     def test_agent_inspect(self):
         agent = self.env.agent_inspect("agent for tracking")
+        print("running test 1")
         self.assertEqual(agent.name, "agent for tracking")
 
     def test_add_agent(self):
@@ -49,6 +52,7 @@ class BasicTestCase(TestCase):
         # test if the add worked!
         # test by running 
         new_agent = self.env.agent_inspect("Gozer the Destructor")
+        print("running test 2")
         self.assertIsNotNone(new_agent)
 
     def test_props_write(self):
@@ -66,8 +70,50 @@ class BasicTestCase(TestCase):
                     if props_written[key] != self.env.props.props[key]:
                         report = False
                         break
+        print("running test 3")
         self.assertEquals(report, True)
 
+    def test_population_report(self):
+        # self.env.n_steps(random.randint(10,20)) ??????????
+        report = True
+        self.env.pop_report(self.env.model_nm+".csv")
+        f = open(self.env.model_nm+".csv", "r")
+        head = f.readline()
+        head = head.strip("\n")
+        head_list = head.split(",")
+        print("check1!!!!!!!", head_list)
+        dic_for_reference = self.env.agents.get_pop_hist()
+        print("check2!!!!!!!", dic_for_reference)
+        for i in head_list:
+            if i not in dic_for_reference:
+                report = False
+                break
+        if report == True:
+            dic_for_check = {}
+            for i in head_list:
+                dic_for_check[i] = []
+            print("check3!!!!!!!", dic_for_check)
+            for line in f:
+                line = line.strip("\n")
+                line_list = line.split(",")
+                if len(line_list)==len(head_list):
+                    for i in range(len(line_list)):
+                        dic_for_check[head_list[i]].append(int(line_list[i]))
+                else:
+                    report = False
+                    break
+            print("check4!!!!!!!", dic_for_check)
 
+        if report == True:
+            if len(dic_for_check) != len(dic_for_reference):
+                report = False
+            if report is True:
+                for key in dic_for_check:
+                    if dic_for_check[key] != dic_for_reference[key]["data"]:
+                        report = False
+                        break
+        self.assertEquals(report, True)
+
+#     can I modify the contain of the function i want to test or I can only use it directly??????????
 if __name__ == '__main__':
     main()

@@ -18,8 +18,7 @@ def pop_report(file_nm, varieties):
         for i, var in enumerate(varieties):
             head += (var + ",")
             list = []
-            cols.append(
-                varieties[var]["data"])
+            cols.append(varieties[var]["data"])
         head = head[:-1]  # remove last comma!
         f.write(head + "\n")
         num_cols = len(cols)
