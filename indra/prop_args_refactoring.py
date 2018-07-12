@@ -103,8 +103,11 @@ class PropArgs():
         basic_model = Model.objects.get(name=self.model_nm)
         params = basic_model.params.all()
         for param in params:
-            self.props[param.prop_name] = param
+            self.props[param.prop_name].question = param.question
+            self.props[param.prop_name].atype = param.atype
             self.props[param.prop_name].value = param.default_val
+            self.props[param.prop_name].lowval = param.lowval
+            self.props[param.prop_name].hival = param.hival
 
     def overwrite_props_from_env(self):
         self.os = platform.system()
