@@ -26,7 +26,7 @@ def run(prop_dict=None):
 
     # TODO: Place this logic in prop_args
     if prop_dict is not None:
-        prop_dict[props.PERIODS] = 100
+        prop_dict[props.PERIODS] = 1
         pa.add_props(prop_dict)
     else:
         result = utils.read_props(MODEL_NM)
@@ -51,11 +51,11 @@ def run(prop_dict=None):
 
     # Now we loop creating multiple agents
     #  with numbered names based on the loop variable:
-    for i in range(pa.get("num_agents")):
+    for i in range(pa["num_agents"]):
         env.add_agent(bm.BasicAgent(name="agent" + str(i),
                                     goal="acting up!"))
 
-    utils.run_model(env, prog_file, results_file)
+    return utils.run_model(env, prog_file, results_file)
 
 
 if __name__ == "__main__":

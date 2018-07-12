@@ -17,6 +17,7 @@ import indra.main_menu as mm
 import indra.prop_args as pa
 import indra.agent_pop as ap
 import indra.user as user
+import json
 
 NI = "Not implemented at present."
 RPT_EXT = ".csv"
@@ -494,23 +495,36 @@ class Environment(node.Node):
 
     def get_var_pop_hist(self, var):
         return self.agents.get_var_pop_hist(var)
+    
+    def to_json(self):
+        #Serialize the env itself
+        safe_fields = super().to_json()
+        safe_fields["period"] = self.period
+        safe_fields["model_nm"] = self.model_nm
+        safe_fields["image_bytes"] = self.image_bytes
+        
+        #Serialize agents
+        count = 0
+        for agent in self.agents:
+            safe_fields[count] = agent.to_json()
+            count += 1
+            
+        return json.dumps(safe_fields)
 
-    def switch(self):
+    def save_session(self):
         """
-        Switch to another model. Needs implementation!
+        Save the current session to a json file
         """
-        steps = int(self.user.ask("Enter number of steps: "))
-        target = self.period + steps
-        self.user.tell("Running for %i steps; press Ctrl-c to halt!" % steps)
-        time.sleep(3)
-        try:
-            while self.period <= target:
-                step_msg = self.step()
-                if step_msg is not None:
-                    self.user.tell(step_msg)
-                    break
-        except KeyboardInterrupt:
-            pass
+        json_output = str(self.to_json())
+        print(json_output)
+        with open("json/" + self.model_nm + ".txt","w+") as f: 
+            f.write(json_output)
+        
+    def restore_session(self):
+        """
+        Restore a previous session from a json file
+        """
+        pass
     
 class VWorlds():
     
