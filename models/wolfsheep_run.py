@@ -13,7 +13,6 @@ import models.wolfsheep_model as wsm
 
 # set up some file names:
 
-
 def run(prop_dict=None):
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
     
@@ -23,7 +22,7 @@ def run(prop_dict=None):
     global pa
 
     if prop_dict is not None:
-        prop_dict[props.PERIODS] = 100
+        prop_dict[props.PERIODS] = 1
         pa.add_props(prop_dict)
     else:
         result = utils.read_props(MODEL_NM)
@@ -34,8 +33,8 @@ def run(prop_dict=None):
     
     # Now we create a meadow for our agents to act within:
     env = wsm.Meadow("Meadow",
-                     pa.get("grid_width"),
-                     pa.get("grid_height"),
+                     pa["grid_width"],
+                     pa["grid_height"],
                      model_nm=MODEL_NM,
                      preact=True,
                      postact=True,
@@ -43,18 +42,18 @@ def run(prop_dict=None):
     
     # Now we loop creating multiple agents with numbered names
     # based on the number of agents of that type to create:
-    for i in range(pa.get("num_wolves")):
+    for i in range(pa["num_wolves"]):
         env.add_agent(wsm.Wolf("wolf" + str(i), "Eating sheep",
-                               pa.get("wolf_repro"),
-                               pa.get("wolf_lforce"),
+                               pa["wolf_repro"],
+                               pa["wolf_lforce"],
                                rand_age=True))
-    for i in range(pa.get("num_sheep")):
+    for i in range(pa["num_sheep"]):
         env.add_agent(wsm.Sheep("sheep" + str(i), "Reproducing",
-                                pa.get("sheep_repro"),
-                                pa.get("sheep_lforce"),
+                                pa["sheep_repro"],
+                                pa["sheep_lforce"],
                                 rand_age=True))
     
-    utils.run_model(env, prog_file, results_file)
+    return utils.run_model(env, prog_file, results_file)
 
 if __name__ == "__main__":
     run()

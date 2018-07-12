@@ -5,6 +5,7 @@ Runs a fashion model with hipsters and followers.
 MODEL_NM = "Fashion"
 import indra.prop_args as props
 pa = props.PropArgs.create_props(MODEL_NM)
+
 import indra.utils as utils
 import indra.prop_args as props
 import models.fashion_model as fm
@@ -20,7 +21,7 @@ def run(prop_dict=None):
     global pa
 
     if prop_dict is not None:
-        prop_dict[props.PERIODS] = 100
+        prop_dict[props.PERIODS] = 1
         pa.add_props(prop_dict)
     else:
         result = utils.read_props(MODEL_NM)
@@ -31,25 +32,25 @@ def run(prop_dict=None):
     
     # Now we create a minimal environment for our agents to act within:
     env = fm.Society("Society",
-                     pa.get("grid_height"),
-                     pa.get("grid_width"),
+                     pa["grid_height"],
+                     pa["grid_width"],
                      torus=False,
                      model_nm=MODEL_NM,
                      props=pa)
     
     # Now we loop creating multiple agents with numbered names
     # based on the loop variable:
-    for i in range(pa.get("num_followers")):
+    for i in range(pa["num_followers"]):
         env.add_agent(fm.Follower("follower" + str(i), 
                                   "Looking like hipsters",
-                                  pa.get("fmax_move"), 
-                                  pa.get("variability")))
-    for i in range(pa.get("num_hipsters")):
+                                  pa["fmax_move"], 
+                                  pa["variability"]))
+    for i in range(pa["num_hipsters"]):
         env.add_agent(fm.Hipster("hipster" + str(i), "Looking trendy",
-                                 pa.get("hmax_move"), 
-                                 pa.get("variability")))
+                                 pa["hmax_move"], 
+                                 pa["variability"]))
     
-    utils.run_model(env, prog_file, results_file)
+    return utils.run_model(env, prog_file, results_file)
 
 if __name__ == "__main__":
     run()

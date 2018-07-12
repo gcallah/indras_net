@@ -51,12 +51,26 @@
                         <form action="{% url 'IndrasNet:run' %}" method="post">
                             {% csrf_token %}
                             <input type="hidden" name="action" value="n_steps">
-                            {% for item in form %}
-                                {{ item.errors }}
-                                <label for="{{ item.id_for_label }}">{{ item.label_tag }}</label>
-                                {{ item }}
-                            {% endfor %}
-                            <input type="submit" name="menu_item" value="Run N Steps"/>
+                            <input type="hidden" name="steps" value="5">
+                            <input type="submit" name="menu_item" value="Run 5 Steps"/>
+                        </form>
+                        <form action="{% url 'IndrasNet:run' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="n_steps">
+                            <input type="hidden" name="steps" value="10">
+                            <input type="submit" name="menu_item" value="Run 10 Steps"/>
+                        </form>
+                        <form action="{% url 'IndrasNet:run' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="n_steps">
+                            <input type="hidden" name="steps" value="25">
+                            <input type="submit" name="menu_item" value="Run 25 Steps"/>
+                        </form>
+                        <form action="{% url 'IndrasNet:run' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="n_steps">
+                            <input type="hidden" name="steps" value="50">
+                            <input type="submit" name="menu_item" value="Run 50 Steps"/>
                         </form>
                         <a href="#">Debug</a>
                         <a href="#">Switch Model</a>
