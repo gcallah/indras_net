@@ -516,15 +516,30 @@ class Environment(node.Node):
         Save the current session to a json file
         """
         json_output = str(self.to_json())
-        print(json_output)
         with open("json/" + self.model_nm + ".txt","w+") as f: 
             f.write(json_output)
+        self.user.tell("Session saved")
         
     def restore_session(self):
         """
         Restore a previous session from a json file
         """
-        pass
+        with open("json/" + self.model_nm + ".txt", "r") as f:
+            json_input = f.readline()
+        json_input = json.loads(json_input)
+        self.period = json_input["period"]
+        self.model_nm = json_input["model_nm"]
+        self.image_bytes = json_input["image_bytes"]
+        
+        pop_name = self.model_nm + "Agents"
+        self.agents = ap.AgentPop(pop_name)
+        count = 0
+        import models.basic_model as bm
+        while str(count) in json_input:
+            self.add_agent(bm.BasicAgent(json_input[str(count)]["name"], 
+                                         json_input[str(count)]["goal"]))
+            count += 1
+        self.user.tell("Session restored")
     
 class VWorlds():
     
