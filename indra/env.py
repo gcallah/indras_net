@@ -45,7 +45,7 @@ class Environment(node.Node):
             pop_name += model_nm + " "
         pop_name += "Agents"
         self.agents = ap.AgentPop(pop_name)
-        self.graph.add_edge(self, self.agents)
+        self.__init_unrestorables()
         self.womb = []
         self.period = 0
         self.preact = preact
@@ -80,6 +80,10 @@ class Environment(node.Node):
         
         self.image_bytes = None
 
+    def __init_unrestorables(self):
+        # anything that can't be restored from JSON file init here
+        self.graph.add_edge(self, self.agents)
+        
     def add_variety(self, var):
         self.agents.add_variety(var)
 
@@ -502,6 +506,11 @@ class Environment(node.Node):
         safe_fields["period"] = self.period
         safe_fields["model_nm"] = self.model_nm
         safe_fields["image_bytes"] = self.image_bytes
+        safe_fields["preact"] = self.preact
+        safe_fields["postact"] = self.postact
+        
+        #Serialize props
+        safe_fields["props"] = self.props.to_json()
         
         #Serialize agents
         count = 0
@@ -509,45 +518,51 @@ class Environment(node.Node):
             safe_fields[count] = agent.to_json()
             count += 1
             
-        return json.dumps(safe_fields)
+        return safe_fields
 
-    def save_session(self):
+    def save_session(self, session_id=None):
         """
         Save the current session to a json file
         """
-        json_output = str(self.to_json())
-        with open("json/" + self.model_nm + ".txt","w+") as f: 
+        if session_id is None:
+            session_id = str(self.user.ask("Enter session id: "))
+        json_output = str(json.dumps(self.to_json()))
+        with open("json/" + self.model_nm + session_id + ".json","w+") as f: 
             f.write(json_output)
         self.user.tell("Session saved")
         
-    def restore_session(self):
+    def restore_session(self, session_id=None):
         """
         Restore a previous session from a json file
         """
-        with open("json/" + self.model_nm + ".txt", "r") as f:
+        if session_id is None:
+            session_id = str(self.user.ask("Enter session id: "))
+            
+        with open("json/" + self.model_nm + session_id + ".json", "r") as f:
             json_input = f.readline()
         json_input = json.loads(json_input)
+        
+        try:
+            self.restore_env(json_input)
+            
+            pop_name = self.model_nm + "Agents"
+            self.agents = ap.AgentPop(pop_name)
+            self.restore_agents(json_input)
+        except KeyError as e:
+            self.user.tell("Error: " + str(e))
+            return
+        
+        self.user.tell("Session restored")
+        
+    def restore_env(self, json_input):
+        self.__init__(json_input["name"], preact=json_input["preact"], 
+                      postact=json_input["postact"], 
+                      model_nm=json_input["model_nm"], 
+                      props=self.props)
+        
         self.period = json_input["period"]
-        self.model_nm = json_input["model_nm"]
         self.image_bytes = json_input["image_bytes"]
         
-        pop_name = self.model_nm + "Agents"
-        self.agents = ap.AgentPop(pop_name)
-        count = 0
-        import models.basic_model as bm
-        while str(count) in json_input:
-            self.add_agent(bm.BasicAgent(json_input[str(count)]["name"], 
-                                         json_input[str(count)]["goal"]))
-            count += 1
-        self.user.tell("Session restored")
-    
-class VWorlds():
-    
-    def __init__(self):
-        self.models = {}
-        
-    def __setitem__(self, key, item):
-        self.models[key] = item
-        
-    def __getitem__(self, key):
-        return self.models[key]
+    def restore_agents(self, json_input):
+        self.user.tell("restore_agents not implemented in this model", 
+                       type=user.ERROR)
