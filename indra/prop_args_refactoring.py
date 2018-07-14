@@ -15,6 +15,7 @@ SWITCH = '-'
 PERIODS = 'periods'
 DATAFILE = 'datafile'
 
+OS = "OS"
 # user types
 TERMINAL = "terminal"
 IPYTHON = "iPython"
@@ -36,6 +37,14 @@ def get_prop_from_env(prop_nm):
         print("Environment variable user type not found")
         user_type = TERMINAL
     return user_type
+
+class Prop():
+    """
+    Placeholder for prop attributes.
+    """
+
+    def __init__(self):
+        pass
 
 
 class PropArgs():
@@ -100,17 +109,18 @@ class PropArgs():
         self.graph.add_edge(self, self.logger)
 
     def set_props_from_db(self):
-        basic_model = Model.objects.get(name=self.model_nm)
-        params = basic_model.params.all()
+        params = Model.objects.get(name=self.model_nm).params.all()
         for param in params:
-            self.props[param.prop_name].question = param.question
-            self.props[param.prop_name].atype = param.atype
-            self.props[param.prop_name].value = param.default_val
-            self.props[param.prop_name].lowval = param.lowval
-            self.props[param.prop_name].hival = param.hival
+            self[param.prop_name] = Prop()
+            self[param.prop_name].question = param.question
+            self[param.prop_name].atype = param.atype
+            self[param.prop_name].default_val = param.default_val
+            self[param.prop_name].val = param.default_val
+            self[param.prop_name].lowval = param.lowval
+            self[param.prop_name].hival = param.hival
 
     def overwrite_props_from_env(self):
-        self.os = platform.system()
+        self["OS"] = platform.system()
 
     def overwrite_props_from_dict(self, prop_dict):
         """
@@ -154,8 +164,36 @@ class PropArgs():
 
     def overwrite_props_from_user(self):
         for prop_nm in self:
-            question = self.props[prop_nm].question
-            self.props[prop_nm] = input(question)
+            if hasattr(self[prop_nm], 'question'):
+                self._keep_asking_until_correct(prop_nm)
+                
+    def _keep_asking_until_correct(self, prop_nm):
+        while True:
+            answer = input(self._get_question(prop_nm))
+            typed_answer = self._type_answer(prop_nm, answer)
+            if not self._answer_valid(prop_nm, typed_answer):
+                print("Input must be between {lowval} and {hival} inclusive."\
+                      .format(lowval=self[prop_nm].lowval,
+                              hival=self[prop_nm].hival))
+            return typed_answer
+
+    def _get_question(self, prop_nm):
+            return "{question} {lowval}-{hival} [{default}] "\
+                   .format(question=self[prop_nm].question, 
+                           lowval=self[prop_nm].lowval,
+                           hival=self[prop_nm].hival,
+                           default=self[prop_nm].val)
+
+    def _type_answer(self, prop_nm, answer):
+        type_cast = type_dict[self[prop_nm].atype]
+        return type_cast(answer)
+
+    def _answer_valid(self, prop_nm, typed_answer):
+        if hasattr(self[prop_nm], "lowval") and self[prop_nm].lowval > typed_answer:
+            return False
+        if hasattr(self[prop_nm], "hival") and self[prop_nm].hival < typed_answer:
+            return False
+        return True
 
     def add_props(self, props):
         self.props.update(props)
