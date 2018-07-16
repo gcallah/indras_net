@@ -6,6 +6,8 @@ the system after library changes.
 """
 
 from unittest import TestCase, main
+import sys
+
 import random
 
 MODEL_NM = "Basic"
@@ -16,7 +18,6 @@ pa = props.PropArgs.create_props(MODEL_NM)
 
 import json
 import models.basic_model as bm
-
 
 class BasicTestCase(TestCase):
     def __init__(self, methodName, prop_file="basic.props"):
@@ -40,7 +41,7 @@ class BasicTestCase(TestCase):
                                         goal="acting up!"))
         self.env.add_agent(bm.BasicAgent(name="agent for tracking",
                                          goal="acting up!"))
-        self.env.n_steps(random.randint(10, 20))
+        # self.env.n_steps(random.randint(10, 20))
 
     def test_agent_inspect(self):
         agent = self.env.agent_inspect("agent for tracking")
@@ -74,7 +75,7 @@ class BasicTestCase(TestCase):
         self.assertEquals(report, True)
 
     def test_population_report(self):
-        # self.env.n_steps(random.randint(10,20)) ??????????
+        self.env.n_steps(random.randint(10,20))
         report = True
         self.env.pop_report(self.env.model_nm+".csv")
         f = open(self.env.model_nm+".csv", "r")
@@ -114,6 +115,46 @@ class BasicTestCase(TestCase):
                         break
         self.assertEquals(report, True)
 
-#     can I modify the contain of the function i want to test or I can only use it directly??????????
+    def test_list_agents(self):
+        report = True
+        orig_out = sys.stdout
+        sys.stdout = open("checkfile.txt", "w")
+        self.env.list_agents()
+        sys.stdout.close()
+        sys.stdout = orig_out
+        f = open("checkfile.txt", "r")
+        f.readline()
+        for agent in self.env.agents:
+            line = f.readline()
+            line_list = line.split(" with a goal of ")
+            line_list[1] = line_list[1].strip()
+            if agent.name != line_list[0] or agent.goal != line_list[1]:
+                report = False
+                break
+        self.assertEquals(report, True)
+
+    def test_display_props(self):
+        report = True
+        orig_out = sys.stdout
+        sys.stdout = open("checkprops.txt", "w")
+        self.env.disp_props()
+        sys.stdout.close()
+        sys.stdout = orig_out
+        f = open("checkprops.txt", "r")
+        title = f.readline()
+        title_list = title.split("for")
+        if self.env.model_nm != title_list[1].strip():
+            report = False
+        dic_for_check = {}
+        if report is True:
+            for line in f:
+                if line != "\n":
+                    line_list = line.split(": ")
+                    line_list[0] = line_list[0].strip()
+                    line_list[1] = line_list[1].strip()
+                    dic_for_check[line_list[0]] = line_list[1]
+        if dic_for_check != self.env.props.props:
+            report = False
+
 if __name__ == '__main__':
     main()
