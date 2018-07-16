@@ -17,6 +17,7 @@ import indra.main_menu as mm
 import indra.prop_args as pa
 import indra.agent_pop as ap
 import indra.user as user
+import json
 
 NI = "Not implemented at present."
 RPT_EXT = ".csv"
@@ -44,7 +45,7 @@ class Environment(node.Node):
             pop_name += model_nm + " "
         pop_name += "Agents"
         self.agents = ap.AgentPop(pop_name)
-        self.graph.add_edge(self, self.agents)
+        self.__init_unrestorables()
         self.womb = []
         self.period = 0
         self.preact = preact
@@ -79,6 +80,10 @@ class Environment(node.Node):
         
         self.image_bytes = None
 
+    def __init_unrestorables(self):
+        # anything that can't be restored from JSON file init here
+        self.graph.add_edge(self, self.agents)
+        
     def add_variety(self, var):
         self.agents.add_variety(var)
 
@@ -494,31 +499,70 @@ class Environment(node.Node):
 
     def get_var_pop_hist(self, var):
         return self.agents.get_var_pop_hist(var)
+    
+    def to_json(self):
+        #Serialize the env itself
+        safe_fields = super().to_json()
+        safe_fields["period"] = self.period
+        safe_fields["model_nm"] = self.model_nm
+        safe_fields["image_bytes"] = self.image_bytes
+        safe_fields["preact"] = self.preact
+        safe_fields["postact"] = self.postact
+        
+        #Serialize props
+        safe_fields["props"] = self.props.to_json()
+        
+        #Serialize agents
+        count = 0
+        for agent in self.agents:
+            safe_fields[count] = agent.to_json()
+            count += 1
+            
+        return safe_fields
 
-    def switch(self):
+    def save_session(self, session_id=None):
         """
-        Switch to another model. Needs implementation!
+        Save the current session to a json file
         """
-        steps = int(self.user.ask("Enter number of steps: "))
-        target = self.period + steps
-        self.user.tell("Running for %i steps; press Ctrl-c to halt!" % steps)
-        time.sleep(3)
+        if session_id is None:
+            session_id = str(self.user.ask("Enter session id: "))
+        json_output = str(json.dumps(self.to_json()))
+        with open("json/" + self.model_nm + session_id + ".json","w+") as f: 
+            f.write(json_output)
+        self.user.tell("Session saved")
+        
+    def restore_session(self, session_id=None):
+        """
+        Restore a previous session from a json file
+        """
+        if session_id is None:
+            session_id = str(self.user.ask("Enter session id: "))
+            
+        with open("json/" + self.model_nm + session_id + ".json", "r") as f:
+            json_input = f.readline()
+        json_input = json.loads(json_input)
+        
         try:
-            while self.period <= target:
-                step_msg = self.step()
-                if step_msg is not None:
-                    self.user.tell(step_msg)
-                    break
-        except KeyboardInterrupt:
-            pass
-    
-class VWorlds():
-    
-    def __init__(self):
-        self.models = {}
+            self.restore_env(json_input)
+            
+            pop_name = self.model_nm + "Agents"
+            self.agents = ap.AgentPop(pop_name)
+            self.restore_agents(json_input)
+        except KeyError as e:
+            self.user.tell("Error: " + str(e))
+            return
         
-    def __setitem__(self, key, item):
-        self.models[key] = item
+        self.user.tell("Session restored")
         
-    def __getitem__(self, key):
-        return self.models[key]
+    def restore_env(self, json_input):
+        self.__init__(json_input["name"], preact=json_input["preact"], 
+                      postact=json_input["postact"], 
+                      model_nm=json_input["model_nm"], 
+                      props=self.props)
+        
+        self.period = json_input["period"]
+        self.image_bytes = json_input["image_bytes"]
+        
+    def restore_agents(self, json_input):
+        self.user.tell("restore_agents not implemented in this model", 
+                       type=user.ERROR)

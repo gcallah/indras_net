@@ -148,6 +148,10 @@ class PropArgs():
         Useful for storing interesting parameter sets.
         """
         json.dump(self.props, open(file_nm, 'w'), indent=4)
+        
+    def to_json(self):
+        return self.props
+        
 
 
 class Logger():

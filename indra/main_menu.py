@@ -58,4 +58,5 @@ class MainMenu(Menu):
                                  default=True)
         self.tools.add_menu_item("n", MenuLeaf("run (n) steps", e.n_steps))
         self.tools.add_menu_item("d", MenuLeaf("(d)ebug", e.debug))
-        self.tools.add_menu_item("m", MenuLeaf("switch (m)odel", e.switch))
+        self.tools.add_menu_item("v", MenuLeaf("sa(v)e session", e.save_session))
+        self.tools.add_menu_item("r", MenuLeaf("(r)estore session", e.restore_session))
