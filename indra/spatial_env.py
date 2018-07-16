@@ -97,3 +97,40 @@ class SpatialEnv(env.Environment):
                     data[var][X].append(x)
                     data[var][Y].append(y)
         return data
+    
+    def to_json(self):
+        #Serialize the env itself
+        safe_fields = super().to_json()
+        safe_fields["disp_census"] = self.disp_census
+        safe_fields["width"] = self.width
+        safe_fields["height"] = self.height
+        safe_fields["max_dist"] = self.max_dist
+        safe_fields["plot_title"] = self.plot_title
+            
+        return safe_fields
+    
+    def restore_env(self, json_input):
+        super().restore_env(json_input)
+        
+        self.disp_census = json_input["disp_census"]
+        self.width = json_input["width"]
+        self.height = json_input["height"]
+        self.max_dist = json_input["max_dist"]
+        self.plot_title = json_input["plot_title"]
+        
+        #Regenerate plot
+        self.plot()
+
+    def restore_agents(self, json_input):
+        import indra.spatial_agent as sa
+        
+        count = 0
+        while str(count) in json_input:
+            agent = sa.SpatialAgent(json_input[str(count)]["name"], 
+                                   json_input[str(count)]["goal"],
+                                   json_input[str(count)]["max_move"],
+                                   json_input[str(count)]["max_detect"])
+            agent.__pos = json_input[str(count)]["__pos"]
+            self.add_agent(agent)
+            
+            count += 1

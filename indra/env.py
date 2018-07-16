@@ -564,17 +564,7 @@ class Environment(node.Node):
         self.preact = json_input["preact"]
         self.postact = json_input["postact"]
         self.model_nm = json_input["model_nm"]
-        
-        #Convert strings back to numbers
-        props = json_input["props"]
-#        for i in props:
-#            value = props[i]
-#            if value.isdigit():
-#                value = float(value)
-#                if value.is_integer():
-#                    value = int(value)
-#                props[i] = value
-        self.props = pa.PropArgs(self.model_nm, props=props)
+        self.props = pa.PropArgs(self.model_nm, props=json_input["props"])
         
         self.period = json_input["period"]
         self.image_bytes = json_input["image_bytes"]
