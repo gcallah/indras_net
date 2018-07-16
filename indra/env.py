@@ -39,14 +39,11 @@ class Environment(node.Node):
     def __init__(self, name, preact=False,
                  postact=False, model_nm=None, props=None):
         super().__init__(name)
-        self.graph = nx.Graph()
         pop_name = ""
         if model_nm:
             pop_name += model_nm + " "
         pop_name += "Agents"
         self.agents = ap.AgentPop(pop_name)
-        self.__init_unrestorables()
-        self.womb = []
         self.period = 0
         self.preact = preact
         self.postact = postact
@@ -67,22 +64,28 @@ class Environment(node.Node):
         if self.props is not None:
             self.props["user_name"] = user_nm
             user_type = self.props.get("user_type", user.TERMINAL)
-            self.graph.add_edge(self, self.props)
         self.user = user.User(user_nm, user_type)
         # we have to wait until user is set to do...
         if self.props is None:
             self.user.tell("Could not get props; model_nm = " + str(model_nm),
                            type=user.ERROR)
-        self.graph.add_edge(self, self.user)
         self.menu = mm.MainMenu("Main Menu", self)
-        self.graph.add_edge(self, self.menu)
-        self.graph.add_edge(self, node.universals)
         
         self.image_bytes = None
+        
+        self.__init_unrestorables()
 
     def __init_unrestorables(self):
         # anything that can't be restored from JSON file init here
+        self.womb = []
+        self.graph = nx.Graph()
         self.graph.add_edge(self, self.agents)
+        if self.props is not None:
+            self.graph.add_edge(self, self.props)
+        self.graph.add_edge(self, self.user)        
+        self.graph.add_edge(self, self.menu)
+        self.graph.add_edge(self, node.universals)
+        
         
     def add_variety(self, var):
         self.agents.add_variety(var)
@@ -555,10 +558,23 @@ class Environment(node.Node):
         self.user.tell("Session restored")
         
     def restore_env(self, json_input):
-        self.__init__(json_input["name"], preact=json_input["preact"], 
-                      postact=json_input["postact"], 
-                      model_nm=json_input["model_nm"], 
-                      props=self.props)
+        self.__init_unrestorables()
+        
+        self.name = json_input["name"]
+        self.preact = json_input["preact"]
+        self.postact = json_input["postact"]
+        self.model_nm = json_input["model_nm"]
+        
+        #Convert strings back to numbers
+        props = json_input["props"]
+#        for i in props:
+#            value = props[i]
+#            if value.isdigit():
+#                value = float(value)
+#                if value.is_integer():
+#                    value = int(value)
+#                props[i] = value
+        self.props = pa.PropArgs(self.model_nm, props=props)
         
         self.period = json_input["period"]
         self.image_bytes = json_input["image_bytes"]
