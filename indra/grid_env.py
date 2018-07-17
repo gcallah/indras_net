@@ -84,6 +84,12 @@ class Cell(node.Node):
         """
         if item == self.contents:
             self.contents = None
+            
+    def to_json(self):
+        safe_fields = {}
+        safe_fields["coordx"] = self.coords[0]
+        safe_fields["coordy"] = self.coords[1]
+        
 
 
 class OutOfBounds(Exception):
