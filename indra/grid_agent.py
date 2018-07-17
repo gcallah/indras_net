@@ -129,7 +129,7 @@ class GridAgent(sa.SpatialAgent):
         """
         safe_fields = super().to_json()
         safe_fields["cell"] = self.__cell.to_json()
-        safe_fields["neighborhood"] = self.neighborhood #Try if we can to_json lists
+        safe_fields["neighborhood"] = None#self.neighborhood #Try if we can to_json lists
         safe_fields["hood_size"] = self.hood_size
         safe_fields["my_view"] = self.my_view.to_json() if self.my_view else None
         
