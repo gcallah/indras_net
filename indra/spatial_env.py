@@ -117,10 +117,7 @@ class SpatialEnv(env.Environment):
         self.height = json_input["height"]
         self.max_dist = json_input["max_dist"]
         self.plot_title = json_input["plot_title"]
-        
-        #Regenerate plot
-        self.plot()
-
+    
     def restore_agents(self, json_input):
         import indra.spatial_agent as sa
         
