@@ -125,21 +125,20 @@ def run(request):
         logging.info("Env dictionary id: " + str(id(env_dic)))
         logging.info("Global env dictionary: " + str(env_dic))
         
+        
+        env = env_dic[session_id]
+        
         if action == "step":            
-            env = env_dic[session_id]
             env.run(1)
             real_time_text = env.user.text_output.split("Census:")[0] + real_time_text
         if action == "n_steps":
             steps = int(request.POST["steps"])
-            env = env_dic[session_id]
             env.run(steps)
             real_time_text = env.user.text_output.split("Census:")[0] + real_time_text
         if action == "list_agents":
-            env = env_dic[session_id]
             env.list_agents()
             text_for_box2 = env.user.text_output.split("Active agents in environment:")[0]
         if action == "properties":
-            env = env_dic[session_id]
             text_for_box2 = env.props.display()
         # if action == "view_pop":
         #     # env = env_dic[session_id]
@@ -173,8 +172,8 @@ def run(request):
     text, image_bytes = env.user.text_output, env.image_bytes
     image = base64.b64encode(image_bytes.getvalue()).decode()
     
-    template_data = { HEADER: site_hdr, 
-                      'text': real_time_text, 'image': image, 'text2': text_for_box2}
+    template_data = { HEADER: site_hdr, 'text': real_time_text, 'image': image, 
+                     'text2': text_for_box2, 'model': model}
     
     return render(request, 'run.html', template_data)
 
