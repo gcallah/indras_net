@@ -13,8 +13,6 @@ from .models import Model
 from .models import ModelParam
 from django import forms
 
-from .env_dic import env_dic
-
 import models
 import schelling
 import wolfram
@@ -113,20 +111,14 @@ def run(request):
     except KeyError:
         action = None
 
-    session_id = int(request.session['session_id'])
-    text_for_box2 = None
-
-    
-    global env_dic
     global real_time_text
     
+    session_id = int(request.session['session_id'])
+    text_for_box2 = None
+    
     if(action):
-        logging.info("Session id: " + str(session_id))
-        logging.info("Env dictionary id: " + str(id(env_dic)))
-        logging.info("Global env dictionary: " + str(env_dic))
         
-        
-        env = env_dic[session_id]
+        env = #env_dic[session_id]
         
         if action == "step":            
             env.run(1)
@@ -141,11 +133,8 @@ def run(request):
         if action == "properties":
             text_for_box2 = env.props.display()
         # if action == "view_pop":
-        #     # env = env_dic[session_id]
         #     #     if env.period < 4:
         #     #         text_for_box2 = "Too little data to display"
-
-
 
     else:
         model_name = request.POST[MODEL]
@@ -163,7 +152,7 @@ def run(request):
             answers[q.prop_name] = answer
         importlib.import_module(module[0:-4])
         env = eval(module + "(answers)")
-        env_dic[session_id] = env
+        env.save_session()
         real_time_text = ''
         real_time_text += env.user.text_output
               
