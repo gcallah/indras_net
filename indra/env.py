@@ -142,6 +142,7 @@ class Environment(node.Node):
         print("Periods = " + str(periods))
         if periods > 0:
             count = 0
+            self.user.tell("Census:")
             while count < periods:
                 self.step()
                 count += 1

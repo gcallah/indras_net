@@ -7,7 +7,7 @@ the system after library changes.
 
 from unittest import TestCase, main
 import sys
-
+import indra.user as user
 import random
 
 MODEL_NM = "Basic"
@@ -131,6 +131,7 @@ class BasicTestCase(TestCase):
             if agent.name != line_list[0] or agent.goal != line_list[1]:
                 report = False
                 break
+
         self.assertEquals(report, True)
 
     def test_display_props(self):

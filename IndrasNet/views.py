@@ -2,6 +2,7 @@
 
 import logging
 import importlib
+import sys
 
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, get_list_or_404, render
@@ -27,8 +28,12 @@ logger = logging.getLogger(__name__)
 MODEL = 'model'
 HEADER = 'header'
 ACTION = 'action'
+LIST_AGENTS = 'list_agents'
+PROPERTIES = "properties"
+VIEW_POP = "view_pop"
 DEFAULT_HIGHVAL = 100000
 DEFAULT_LOWVAL = 0
+real_time_text = ""
 
 
 def get_hdr():
@@ -110,10 +115,28 @@ def run(request):
         action = request.POST[ACTION]
     except KeyError:
         action = None
-        
+
+    try:
+        list_agents = request.POST[LIST_AGENTS]
+    except KeyError:
+        list_agents = None
+
+    try:
+        properties = request.POST[PROPERTIES]
+    except KeyError:
+        properties = None
+
+    try:
+        view_population = request.POST[VIEW_POP]
+    except KeyError:
+        view_population = None
+
     session_id = int(request.session['session_id'])
+    text_for_box2 = None
+
     
     global env_dic
+    global real_time_text
     
     if(action):
         logging.info("Session id: " + str(session_id))
@@ -123,11 +146,27 @@ def run(request):
         if action == "step":            
             env = env_dic[session_id]
             env.run(1)
+            real_time_text = env.user.text_output.split("Census:")[0] + real_time_text
         if action == "n_steps":
             steps = int(request.POST["steps"])
             env = env_dic[session_id]
             env.run(steps)
-        
+            real_time_text = env.user.text_output.split("Census:")[0] + real_time_text
+
+    elif(properties):
+        env = env_dic[session_id]
+        text_for_box2 = env.props.display()
+
+    # elif(view_population):
+    #     env = env_dic[session_id]
+    #     if env.period < 4:
+    #         text_for_box2 = "Too little data to display"
+
+    elif(list_agents):
+        env = env_dic[session_id]
+        env.list_agents()
+        text_for_box2 = env.user.text_output.split("Active agents in environment:")[0]
+
     else:
         model_name = request.POST[MODEL]
         model = Model.objects.get(name=model_name)
@@ -145,13 +184,16 @@ def run(request):
         importlib.import_module(module[0:-4])
         env = eval(module + "(answers)")
         env_dic[session_id] = env
+        real_time_text = ''
+        real_time_text += env.user.text_output
               
     site_hdr = get_hdr()
+
     text, image_bytes = env.user.text_output, env.image_bytes
     image = base64.b64encode(image_bytes.getvalue()).decode()
     
     template_data = { HEADER: site_hdr, 
-                      'text': text, 'image': image}
+                      'text': real_time_text, 'image': image, 'text2': text_for_box2}
     
     return render(request, 'run.html', template_data)
 
