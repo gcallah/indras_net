@@ -10,6 +10,7 @@ pa = props.PropArgs.create_props(MODEL_NM)
 import indra.utils as utils
 import indra.prop_args as props
 import wolfram.wolfram_model as wm
+import os
 
 def run(prop_dict=None):
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
@@ -29,6 +30,8 @@ def run(prop_dict=None):
         else:
             utils.ask_for_params(pa)
         
+    if pa["user_type"] == props.WEB:
+        pa["path"] = os.path.dirname(os.path.abspath(__file__))
     
     # Now we create a minimal environment for our agents to act within:
     env = wm.WolframEnv("Wolfram Env",

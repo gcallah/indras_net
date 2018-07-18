@@ -4,7 +4,6 @@ import sys
 
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
-    os.environ["base_path"] = os.path.dirname(os.path.abspath(__file__))
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

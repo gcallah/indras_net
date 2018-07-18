@@ -96,8 +96,12 @@ class WolframEnv(ge.GridEnv):
         super().__init__(name, width, height, torus=False,
                          model_nm=model_nm, postact=True, props=props)
         
-        path = os.path.join(os.environ["base_path"], "wolfram/wolfram_rules.txt") \
-        if os.environ["base_path"] else "wolfram/wolfram_rules.txt"
+        try:
+            base_path = props["path"]
+        except:
+            base_path = ""
+        
+        path = os.path.join(base_path, "wolfram_rules.txt")
         self.rules = self.read_wolfram_rules(path)[rule_id]
                     
         self.set_var_color(BLACK, disp.BLACK)
