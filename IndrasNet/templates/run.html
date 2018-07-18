@@ -21,6 +21,11 @@
                 <div class="dropdown">
                     <button class="dropbtn">Edit</button>
                     <div class="dropdown-content">
+                        <form action="{% url 'IndrasNet:run' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="add_agent" value="yes">
+                            <input type="submit" name="menu_item" value="Add Agent"/>
+                        </form>
                         <a href="#">Add Agent</a>
                         <a href="#">Inspect Agent</a>
                         <a href="#">Inspect Env</a>
@@ -31,6 +36,21 @@
                 <div class="dropdown">
                     <button class="dropbtn">View</button>
                     <div class="dropdown-content">
+                        <form action="{% url 'IndrasNet:run' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="list_agents" value="yes">
+                            <input type="submit" name="menu_item" value="List Agent"/>
+                        </form>
+                        <form action="{% url 'IndrasNet:run' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="properties" value="yes">
+                            <input type="submit" name="menu_item" value="Properties"/>
+                        </form>
+                        <form action="{% url 'IndrasNet:run' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="view_pop" value="yes">
+                            <input type="submit" name="menu_item" value="View Population"/>
+                        </form>
                         <a href="#">List Agents</a>
                         <a href="#">Properties</a>
                         <a href="#">View Populations</a>
@@ -85,6 +105,7 @@
 {% block content %}
     <div class="module">
         <div class="scroll_box">{{text|linebreaks}}</div>
+        <div class="scroll_box">{{text2|linebreaks}}</div>
 
         <img src="data:image/png;base64, {{image}}" />
     </div>

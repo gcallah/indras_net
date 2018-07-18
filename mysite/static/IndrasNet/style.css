@@ -1011,10 +1011,12 @@ summary.menu_sum {
     width: 20em;
     height: 20em;
     overflow: scroll;
-    float:right;
+    float:left;
     padding:1em;
     border:0.2em solid black;
 }
+
+
 
 /* dropdown */
 .dropbtn {
