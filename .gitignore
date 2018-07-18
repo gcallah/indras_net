@@ -17,3 +17,4 @@ models/old_models/*
 *.sav
 ~$*
 .ipynb_checkpoints/
+*.csv
