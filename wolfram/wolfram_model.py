@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import indra.display_methods as disp
 import indra.grid_agent as ga
 import indra.grid_env as ge
@@ -85,7 +86,6 @@ class WolframAgent(ga.GridAgent):
         print("Active: ", self.is_active)
         print("-----------------")
 
-
 class WolframEnv(ge.GridEnv):
     """
     An environment for updating agents from the top to the bottom.
@@ -96,7 +96,9 @@ class WolframEnv(ge.GridEnv):
         super().__init__(name, width, height, torus=False,
                          model_nm=model_nm, postact=True, props=props)
         
-        self.rules = self.read_wolfram_rules("wolfram/wolfram_rules.txt")[rule_id]
+        path = os.path.join(os.environ["base_path"], "wolfram/wolfram_rules.txt") \
+        if os.environ["base_path"] else "wolfram/wolfram_rules.txt"
+        self.rules = self.read_wolfram_rules(path)[rule_id]
                     
         self.set_var_color(BLACK, disp.BLACK)
         self.set_var_color(WHITE, disp.WHITE)
