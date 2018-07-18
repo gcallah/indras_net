@@ -11,6 +11,7 @@ import indra.utils as utils
 import indra.grid_env as ge
 import models.grid_model as gm
 import logging
+import os
 
 
 def run(prop_dict=None):
