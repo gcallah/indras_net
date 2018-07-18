@@ -31,6 +31,9 @@ def run(prop_dict=None):
         else:
             utils.ask_for_params(pa)
     
+    if pa["user_type"] == props.WEB:
+        pa["path"] = os.path.dirname(os.path.abspath(__file__))
+    
     # Now we create a minimal environment for our agents to act within:
     env = ge.GridEnv("Test grid env",
                      pa["grid_width"],
