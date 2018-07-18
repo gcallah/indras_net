@@ -30,7 +30,6 @@ DEFAULT_HIGHVAL = 100000
 DEFAULT_LOWVAL = 0
 real_time_text = ""
 
-
 def get_hdr():
     site_hdr = "Indra's Net"
     #    site_list = Site.objects.all()
@@ -122,10 +121,19 @@ def run(request):
     module = model.module
     importlib.import_module(module[0:-4])
     
+    questions = model.params.all()
+    
     #Take actions on a running model
     if(action):
-        
         prop_dic = {}
+        for q in questions:
+            value = q.default_val
+            if q.atype == "INT":
+                value = int(value)
+            elif q.atype == "DBL":
+                value = float(value)
+            prop_dic[q.prop_name] = value
+        
         env = eval(module + "(prop_dic)")
         env.restore_session(session_id)
         
@@ -144,10 +152,10 @@ def run(request):
         # if action == "view_pop":
         #     #     if env.period < 4:
         #     #         text_for_box2 = "Too little data to display"
-
+        env.save_session(session_id)
+        
     #Run a model for the first time
     else:
-        questions = model.params.all()
         answers = {}
         for q in questions:
             answer = request.POST[q.question]

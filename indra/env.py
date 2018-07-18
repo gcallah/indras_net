@@ -18,6 +18,7 @@ import indra.prop_args as pa
 import indra.agent_pop as ap
 import indra.user as user
 import json
+import os
 
 NI = "Not implemented at present."
 RPT_EXT = ".csv"
@@ -509,7 +510,6 @@ class Environment(node.Node):
         safe_fields = super().to_json()
         safe_fields["period"] = self.period
         safe_fields["model_nm"] = self.model_nm
-        safe_fields["image_bytes"] = self.image_bytes
         safe_fields["preact"] = self.preact
         safe_fields["postact"] = self.postact
         
@@ -528,21 +528,36 @@ class Environment(node.Node):
         """
         Save the current session to a json file
         """
+        try:
+            base_path = self.props["path"]
+        except:
+            base_path = ""
+        
         if session_id is None:
-            session_id = str(self.user.ask("Enter session id: "))
+            session_id = self.user.ask("Enter session id: ")           
+        session_id = str(session_id)
+        
         json_output = str(json.dumps(self.to_json()))
-        with open("json/" + self.model_nm + session_id + ".json","w+") as f: 
+        path = os.path.join(base_path, "json/" + self.model_nm + session_id + ".json")
+        with open(path, "w+") as f: 
             f.write(json_output)
         self.user.tell("Session saved")
-        
+    
     def restore_session(self, session_id=None):
         """
         Restore a previous session from a json file
         """
+        try:
+            base_path = self.props["path"]
+        except:
+            base_path = ""
+        
         if session_id is None:
             session_id = str(self.user.ask("Enter session id: "))
+        session_id = str(session_id)
             
-        with open("json/" + self.model_nm + session_id + ".json", "r") as f:
+        path = os.path.join(base_path, "json/" + self.model_nm + session_id + ".json")
+        with open(path, "r") as f:
             json_input = f.readline()
         json_input = json.loads(json_input)
         
@@ -553,7 +568,7 @@ class Environment(node.Node):
             self.agents = ap.AgentPop(pop_name)
             self.restore_agents(json_input)
         except KeyError as e:
-            self.user.tell("Error: " + str(e))
+            self.user.tell("Error: " + str(e) + " not found")
             return
         
         self.user.tell("Session restored")
@@ -565,10 +580,9 @@ class Environment(node.Node):
         self.preact = json_input["preact"]
         self.postact = json_input["postact"]
         self.model_nm = json_input["model_nm"]
-        self.props = pa.PropArgs(self.model_nm, props=json_input["props"])
-        
+        self.props = pa.PropArgs(self.model_nm, props=json_input["props"])      
         self.period = json_input["period"]
-        self.image_bytes = json_input["image_bytes"]
+        self.image_bytes = self.plot()
         
     def restore_agents(self, json_input):
         self.user.tell("restore_agents not implemented in this model", 
