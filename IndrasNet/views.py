@@ -28,9 +28,6 @@ logger = logging.getLogger(__name__)
 MODEL = 'model'
 HEADER = 'header'
 ACTION = 'action'
-LIST_AGENTS = 'list_agents'
-PROPERTIES = "properties"
-VIEW_POP = "view_pop"
 DEFAULT_HIGHVAL = 100000
 DEFAULT_LOWVAL = 0
 real_time_text = ""
@@ -116,21 +113,6 @@ def run(request):
     except KeyError:
         action = None
 
-    try:
-        list_agents = request.POST[LIST_AGENTS]
-    except KeyError:
-        list_agents = None
-
-    try:
-        properties = request.POST[PROPERTIES]
-    except KeyError:
-        properties = None
-
-    try:
-        view_population = request.POST[VIEW_POP]
-    except KeyError:
-        view_population = None
-
     session_id = int(request.session['session_id'])
     text_for_box2 = None
 
@@ -152,20 +134,19 @@ def run(request):
             env = env_dic[session_id]
             env.run(steps)
             real_time_text = env.user.text_output.split("Census:")[0] + real_time_text
+        if action == "list_agents":
+            env = env_dic[session_id]
+            env.list_agents()
+            text_for_box2 = env.user.text_output.split("Active agents in environment:")[0]
+        if action == "properties":
+            env = env_dic[session_id]
+            text_for_box2 = env.props.display()
+        # if action == "view_pop":
+        #     # env = env_dic[session_id]
+        #     #     if env.period < 4:
+        #     #         text_for_box2 = "Too little data to display"
 
-    elif(properties):
-        env = env_dic[session_id]
-        text_for_box2 = env.props.display()
 
-    # elif(view_population):
-    #     env = env_dic[session_id]
-    #     if env.period < 4:
-    #         text_for_box2 = "Too little data to display"
-
-    elif(list_agents):
-        env = env_dic[session_id]
-        env.list_agents()
-        text_for_box2 = env.user.text_output.split("Active agents in environment:")[0]
 
     else:
         model_name = request.POST[MODEL]

@@ -23,7 +23,7 @@
                     <div class="dropdown-content">
                         <form action="{% url 'IndrasNet:run' %}" method="post">
                             {% csrf_token %}
-                            <input type="hidden" name="add_agent" value="yes">
+                            <input type="hidden" name="action" value="add_agent">
                             <input type="submit" name="menu_item" value="Add Agent"/>
                         </form>
                         <a href="#">Add Agent</a>
@@ -38,17 +38,17 @@
                     <div class="dropdown-content">
                         <form action="{% url 'IndrasNet:run' %}" method="post">
                             {% csrf_token %}
-                            <input type="hidden" name="list_agents" value="yes">
+                            <input type="hidden" name="action" value="list_agents">
                             <input type="submit" name="menu_item" value="List Agent"/>
                         </form>
                         <form action="{% url 'IndrasNet:run' %}" method="post">
                             {% csrf_token %}
-                            <input type="hidden" name="properties" value="yes">
+                            <input type="hidden" name="action" value="properties">
                             <input type="submit" name="menu_item" value="Properties"/>
                         </form>
                         <form action="{% url 'IndrasNet:run' %}" method="post">
                             {% csrf_token %}
-                            <input type="hidden" name="view_pop" value="yes">
+                            <input type="hidden" name="action" value="view_pop">
                             <input type="submit" name="menu_item" value="View Population"/>
                         </form>
                         <a href="#">List Agents</a>

@@ -50,6 +50,7 @@ class BasicTestCase(TestCase):
 
     def test_add_agent(self):
         self.env.add_agent(bm.Gozer())
+        print(self.env.props.props)
         # test if the add worked!
         # test by running 
         new_agent = self.env.agent_inspect("Gozer the Destructor")
