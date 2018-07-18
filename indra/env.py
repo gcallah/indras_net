@@ -204,7 +204,6 @@ class Environment(node.Node):
         """
         Add a new agent to the env.
         """
-        print(self.props.props)
         if self.props is not None:
             exec("import " + self.props["model"]
                  + " as m")
