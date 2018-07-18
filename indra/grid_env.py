@@ -48,7 +48,6 @@ class Cell(node.Node):
         super().__init__(None)
         self.__contents = None
         self.coords = coords
-        self.contents = contents
 
     @property
     def contents(self):
@@ -84,7 +83,12 @@ class Cell(node.Node):
         """
         if item == self.contents:
             self.contents = None
-
+            
+    def to_json(self):
+        safe_fields = {}
+        safe_fields["coordx"] = self.coords[0]
+        safe_fields["coordy"] = self.coords[1]
+        return safe_fields
 
 class OutOfBounds(Exception):
     def __init__(self, value):
@@ -170,6 +174,14 @@ class GridView():
         Return all of the occupied cells in this view.
         """
         return self.filter_view(lambda x: not x.is_empty())
+    
+    def to_json(self):
+        safe_fields = {}
+        safe_fields["x1"] = self.x1
+        safe_fields["x2"] = self.x2
+        safe_fields["y1"] = self.y1
+        safe_fields["y2"] = self.y2
+        return safe_fields
 
 
 class CompositeView(GridView):
@@ -242,6 +254,9 @@ class GridEnv(se.SpatialEnv):
         self.torus = torus
         self.num_cells = width * height
 
+        self.__init_unrestorables()
+            
+    def __init_unrestorables(self):
         self.grid = []
         self.empties = []
         for y in range(self.height):
@@ -518,3 +533,43 @@ class GridEnv(se.SpatialEnv):
                     return cell.coords
 
         return None
+    
+    def to_json(self):
+        """
+        We're going to make a dictionary of the 'safe' parts of the object to
+        output to a json file. (We can't output the env, for instance, since
+        IT contains a reference to each agent!)
+        """
+        safe_fields = super().to_json()
+        safe_fields["torus"] = self.torus
+        safe_fields["num_cells"] = self.num_cells
+        
+        return safe_fields
+    
+    def restore_env(self, json_input):
+        super().restore_env(json_input)
+        self.__init_unrestorables()
+        self.torus = json_input["torus"]
+        self.num_cells = json_input["num_cells"]
+    
+    def restore_agents(self, json_input):
+        import indra.grid_agent as ga
+        
+        count = 0
+        while str(count) in json_input:
+            agent = json_input[str(count)]
+            new_agent = ga.GridAgent(agent["name"], agent["goal"], 
+                                  agent["max_move"], agent["max_detect"],
+                                  Cell((agent["cell"]["coordx"], 
+                                        agent["cell"]["coordy"])))
+            new_agent.cell.contents = new_agent
+            new_agent.neighborhood = agent["neighborhood"]
+            new_agent.hood_size = agent["hood_size"]
+            if agent["my_view"]:
+                new_agent.my_view = GridView(self, agent["my_view"]["x1"], 
+                                             agent["my_view"]["y1"], 
+                                             agent["my_view"]["x2"], 
+                                             agent["my_view"]["y2"])
+            self.add_agent(new_agent)
+            
+            count += 1

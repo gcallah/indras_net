@@ -175,6 +175,7 @@ class PropArgs():
                 print("Input must be between {lowval} and {hival} inclusive."\
                       .format(lowval=self[prop_nm].lowval,
                               hival=self[prop_nm].hival))
+                continue
             return typed_answer
 
     def _get_question(self, prop_nm):
