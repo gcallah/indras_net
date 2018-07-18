@@ -116,9 +116,18 @@ def run(request):
     session_id = int(request.session['session_id'])
     text_for_box2 = None
     
+    #Load module
+    model_name = request.POST[MODEL]
+    model = Model.objects.get(name=model_name)
+    module = model.module
+    importlib.import_module(module[0:-4])
+    
+    #Take actions on a running model
     if(action):
         
-        env = #env_dic[session_id]
+        prop_dic = {}
+        env = eval(module + "(prop_dic)")
+        env.restore_session(session_id)
         
         if action == "step":            
             env.run(1)
@@ -136,10 +145,8 @@ def run(request):
         #     #     if env.period < 4:
         #     #         text_for_box2 = "Too little data to display"
 
+    #Run a model for the first time
     else:
-        model_name = request.POST[MODEL]
-        model = Model.objects.get(name=model_name)
-        module = model.module
         questions = model.params.all()
         answers = {}
         for q in questions:
@@ -150,9 +157,8 @@ def run(request):
                 answer = float(answer)
             # Boolen is not considered yet
             answers[q.prop_name] = answer
-        importlib.import_module(module[0:-4])
         env = eval(module + "(answers)")
-        env.save_session()
+        env.save_session(session_id)
         real_time_text = ''
         real_time_text += env.user.text_output
               
@@ -161,7 +167,7 @@ def run(request):
     text, image_bytes = env.user.text_output, env.image_bytes
     image = base64.b64encode(image_bytes.getvalue()).decode()
     
-    template_data = { HEADER: site_hdr, 'text': real_time_text, 'image': image, 
+    template_data = { HEADER: site_hdr, 'text': real_time_text, 'image': image,
                      'text2': text_for_box2, 'model': model}
     
     return render(request, 'run.html', template_data)
@@ -170,7 +176,6 @@ def help(request):
 
     site_hdr = get_hdr()
     return render(request, 'help.html', {HEADER: site_hdr})
-
 
 def feedback(request):
     
@@ -182,7 +187,6 @@ def feedback(request):
     comma_del_emails = comma_del_emails[:-1]
     return render(request, 'feedback.html', {'emails': comma_del_emails,
                                              HEADER: site_hdr})
-
 
 def about(request):
 
