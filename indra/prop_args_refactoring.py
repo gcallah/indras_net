@@ -111,7 +111,8 @@ class PropArgs():
     def set_props_from_db(self):
         params = Model.objects.get(name=self.model_nm).params.all()
         for param in params:
-            self[param.prop_name] = Prop()
+            if param.prop_name not in self:
+                self[param.prop_name] = Prop()
             self[param.prop_name].question = param.question
             self[param.prop_name].atype = param.atype
             self[param.prop_name].default_val = param.default_val
@@ -120,36 +121,31 @@ class PropArgs():
             self[param.prop_name].hival = param.hival
 
     def overwrite_props_from_env(self):
-        self["OS"] = platform.system()
+        if OS not in self:
+            self[OS] = Prop()
+        self[OS].val = platform.system()
 
     def overwrite_props_from_dict(self, prop_dict):
         """
         General Form of Dict:
 
             {
-                prop_name:
-                    question
-                    atype
-                    default_val
-                    lowval
-                    hival
+                prop_name: value,
+                prop_name: value
             }
 
         Sample Dict:
 
             {
-                "num_agents":
-                    "gimme number of agents",
-                    "int",
-                    3,
-                    0,
-                    100
+                "num_agents": 100,
+                "agent_speed": 3
             }
 
         """
-        if prop_dict is not None:
-            self = {**self.props, **prop_dict}
-            self.logfile = self.get("log_fname")
+        for prop_nm in prop_dict:
+            if prop_nm not in self.props:
+                self[prop_nm] = Prop()
+            self[prop_nm].val = prop_dict[prop_nm]
 
     def overwrite_props_from_command_line(self):
         prop_nm = None
@@ -159,17 +155,21 @@ class PropArgs():
                 prop_nm = arg.lstrip(SWITCH)
             # the second arg is the property value
             elif prop_nm is not None:
-                self.props[prop_nm] = arg
+                if prop_nm not in self:
+                    self[prop_nm] = Prop
+                self.props[prop_nm].val = arg
                 prop_nm = None
 
     def overwrite_props_from_user(self):
         for prop_nm in self:
             if hasattr(self[prop_nm], 'question'):
-                self._keep_asking_until_correct(prop_nm)
+                self[prop_nm].val = self._keep_asking_until_correct(prop_nm)
                 
     def _keep_asking_until_correct(self, prop_nm):
         while True:
             answer = input(self._get_question(prop_nm))
+            if not answer:
+                return None
             typed_answer = self._type_answer(prop_nm, answer)
             if not self._answer_valid(prop_nm, typed_answer):
                 print("Input must be between {lowval} and {hival} inclusive."\
@@ -236,9 +236,9 @@ class PropArgs():
         that gets stored if the property is not there
         at the time of the call.
         """
-        if nm not in self.props:
-            self.props[nm] = default
-        return self.props[nm]
+        if nm not in self:
+            self.props[nm].val = default
+        return self.props[nm].val
 
     def __delitem__(self, key):
         del self.props[key]
