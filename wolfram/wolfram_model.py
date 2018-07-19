@@ -101,7 +101,7 @@ class WolframEnv(ge.GridEnv):
         except:
             base_path = ""
         
-        path = os.path.join(base_path, "wolfram_rules.txt")
+        path = os.path.join(base_path, "wolfram/wolfram_rules.txt")
         self.rules = self.read_wolfram_rules(path)[rule_id]
                     
         self.set_var_color(BLACK, disp.BLACK)
