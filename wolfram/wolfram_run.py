@@ -31,7 +31,7 @@ def run(prop_dict=None):
             utils.ask_for_params(pa)
         
     if pa["user_type"] == props.WEB:
-        pa["path"] = os.environ['base_path']
+        pa["base_dir"] = os.environ['base_dir']
     
     # Now we create a minimal environment for our agents to act within:
     env = wm.WolframEnv("Wolfram Env",

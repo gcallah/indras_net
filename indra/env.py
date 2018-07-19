@@ -529,9 +529,9 @@ class Environment(node.Node):
         Save the current session to a json file
         """
         try:
-            base_path = self.props["path"]
+            base_dir = self.props["base_dir"]
         except:
-            base_path = ""
+            base_dir = ""
         
         if session_id is None:
             session_id = self.user.ask("Enter session id: ")           
@@ -548,15 +548,15 @@ class Environment(node.Node):
         Restore a previous session from a json file
         """
         try:
-            base_path = self.props["path"]
+            base_dir = self.props["base_dir"]
         except:
-            base_path = ""
+            base_dir = ""
         
         if session_id is None:
             session_id = str(self.user.ask("Enter session id: "))
         session_id = str(session_id)
             
-        path = os.path.join(base_path, "json/" + self.model_nm + session_id + ".json")
+        path = os.path.join(base_dir, "json/" + self.model_nm + session_id + ".json")
         with open(path, "r") as f:
             json_input = f.readline()
         json_input = json.loads(json_input)

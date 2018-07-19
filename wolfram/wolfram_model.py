@@ -97,11 +97,11 @@ class WolframEnv(ge.GridEnv):
                          model_nm=model_nm, postact=True, props=props)
         
         try:
-            base_path = props["path"]
+            base_dir = props["base_dir"]
         except:
-            base_path = ""
+            base_dir = ""
         
-        path = os.path.join(base_path, "wolfram/wolfram_rules.txt")
+        path = os.path.join(base_dir, "wolfram/wolfram_rules.txt")
         self.rules = self.read_wolfram_rules(path)[rule_id]
                     
         self.set_var_color(BLACK, disp.BLACK)
