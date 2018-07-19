@@ -538,7 +538,7 @@ class Environment(node.Node):
         session_id = str(session_id)
         
         json_output = str(json.dumps(self.to_json()))
-        path = os.path.join(base_path, "json/" + self.model_nm + session_id + ".json")
+        path = os.path.join(base_dir, "json/" + self.model_nm + session_id + ".json")
         with open(path, "w+") as f: 
             f.write(json_output)
         self.user.tell("Session saved")
