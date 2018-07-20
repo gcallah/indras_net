@@ -396,6 +396,26 @@ input[type=submit][disabled].default,
 input[type=button][disabled].default {
     opacity: 0.4;
 }
+/* MENU ITEMS BUTTONS */
+.menu_item {
+    padding:0;
+}
+.menu_item input[type=submit]{
+    width:100%;
+    height:100%;
+    background: #000;
+    padding: 0.625em 0.9375em;
+    margin:0;
+    border: none;
+    border-radius: 0;
+    color: #ffcc33;
+    cursor: pointer;
+}
+.menu_item input[type=submit]:active,
+.menu_item input[type=submit]:focus,
+.menu_item input[type=submit]:hover{
+    background:#555;
+}
 
 
 /* MODULES */
@@ -1093,4 +1113,10 @@ summary.menu_sum {
 .navbar {
     border-radius:0;
     margin:0;
+}
+.nav navbar-nav{
+    margin-left:0;
+}
+.remove_left_space{
+    padding-left:0;
 }

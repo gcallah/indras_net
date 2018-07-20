@@ -1,10 +1,8 @@
 {% extends "base.html" %}
 {% block menubar %}
 <nav class="navbar navbar" style="background-color:#ccc">
-    <div class="container-fluid">
-        <div class="navbar-header">
+    <div class="container-fluid remove_left_space" >
 
-        </div>
         <ul class="nav navbar-nav">
             <li>
                 <div class="dropdown">
@@ -18,7 +16,7 @@
                 <div class="dropdown">
                     <button class="dropbtn">Edit</button>
                     <div class="dropdown-content">
-                        <form action="{% url 'IndrasNet:run' %}" method="post">
+                        <form class="menu_item" action="{% url 'IndrasNet:run' %}" method="post">
                             {% csrf_token %}
                             <input type="hidden" name="model" value={{ model }}>
                             <input type="hidden" name="action" value="add_agent">
@@ -31,19 +29,19 @@
                 <div class="dropdown">
                     <button class="dropbtn">View</button>
                     <div class="dropdown-content">
-                        <form action="{% url 'IndrasNet:run' %}" method="post">
+                        <form class="menu_item" action="{% url 'IndrasNet:run' %}" method="post">
                             {% csrf_token %}
                             <input type="hidden" name="model" value={{ model }}>
                             <input type="hidden" name="action" value="list_agents">
                             <input type="submit" name="menu_item" value="List Agents"/>
                         </form>
-                        <form action="{% url 'IndrasNet:run' %}" method="post">
+                        <form class="menu_item" action="{% url 'IndrasNet:run' %}" method="post">
                             {% csrf_token %}
                             <input type="hidden" name="model" value={{ model }}>
                             <input type="hidden" name="action" value="properties">
                             <input type="submit" name="menu_item" value="Properties"/>
                         </form>
-                        <form action="{% url 'IndrasNet:run' %}" method="post">
+                        <form class="menu_item" action="{% url 'IndrasNet:run' %}" method="post">
                             {% csrf_token %}
                             <input type="hidden" name="model" value={{ model }}>
                             <input type="hidden" name="action" value="view_pop">
@@ -57,34 +55,34 @@
                 <div class="dropdown">
                     <button class="dropbtn">Tools</button>
                     <div class="dropdown-content">
-                        <form action="{% url 'IndrasNet:run' %}" method="post">
+                        <form class="menu_item" action="{% url 'IndrasNet:run' %}" method="post">
                             {% csrf_token %}
                             <input type="hidden" name="model" value={{ model }}>
                             <input type="hidden" name="action" value="step">
                             <input type="submit" name="menu_item" value="Step"/>
                         </form>
-                        <form action="{% url 'IndrasNet:run' %}" method="post">
+                        <form class="menu_item" action="{% url 'IndrasNet:run' %}" method="post">
                             {% csrf_token %}
                             <input type="hidden" name="model" value={{ model }}>
                             <input type="hidden" name="action" value="n_steps">
                             <input type="hidden" name="steps" value="5">
                             <input type="submit" name="menu_item" value="Run 5 Steps"/>
                         </form>
-                        <form action="{% url 'IndrasNet:run' %}" method="post">
+                        <form class="menu_item" action="{% url 'IndrasNet:run' %}" method="post">
                             {% csrf_token %}
                             <input type="hidden" name="model" value={{ model }}>
                             <input type="hidden" name="action" value="n_steps">
                             <input type="hidden" name="steps" value="10">
                             <input type="submit" name="menu_item" value="Run 10 Steps"/>
                         </form>
-                        <form action="{% url 'IndrasNet:run' %}" method="post">
+                        <form class="menu_item" action="{% url 'IndrasNet:run' %}" method="post">
                             {% csrf_token %}
                             <input type="hidden" name="model" value={{ model }}>
                             <input type="hidden" name="action" value="n_steps">
                             <input type="hidden" name="steps" value="25">
                             <input type="submit" name="menu_item" value="Run 25 Steps"/>
                         </form>
-                        <form action="{% url 'IndrasNet:run' %}" method="post">
+                        <form class="menu_item" action="{% url 'IndrasNet:run' %}" method="post">
                             {% csrf_token %}
                             <input type="hidden" name="model" value={{ model }}>
                             <input type="hidden" name="action" value="n_steps">
