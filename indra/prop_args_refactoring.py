@@ -41,6 +41,14 @@ def get_prop_from_env(prop_nm):
 class Prop():
     """
     Placeholder for prop attributes.
+
+    Attributes include:
+        val - the value to be used in the model run
+        question - a question prompt for the user's input for the prop value
+        atype - the user's answer type (INT, DBL, BOOL, STR, etc.)
+        default_val - the property's default value
+        lowval - the lowest value val can take on
+        hival - the highest value val can take on
     """
 
     def __init__(self):
@@ -111,19 +119,15 @@ class PropArgs():
     def set_props_from_db(self):
         params = Model.objects.get(name=self.model_nm).params.all()
         for param in params:
-            if param.prop_name not in self:
-                self[param.prop_name] = Prop()
-            self[param.prop_name].question = param.question
-            self[param.prop_name].atype = param.atype
-            self[param.prop_name].default_val = param.default_val
-            self[param.prop_name].val = param.default_val
-            self[param.prop_name].lowval = param.lowval
-            self[param.prop_name].hival = param.hival
+            self[param.prop_name] = param.default_val
+            self.props[param.prop_name].question = param.question
+            self.props[param.prop_name].atype = param.atype
+            self.props[param.prop_name].default_val = param.default_val
+            self.props[param.prop_name].lowval = param.lowval
+            self.props[param.prop_name].hival = param.hival
 
     def overwrite_props_from_env(self):
-        if OS not in self:
-            self[OS] = Prop()
-        self[OS].val = platform.system()
+        self[OS] = platform.system()
 
     def overwrite_props_from_dict(self, prop_dict):
         """
@@ -143,9 +147,7 @@ class PropArgs():
 
         """
         for prop_nm in prop_dict:
-            if prop_nm not in self.props:
-                self[prop_nm] = Prop()
-            self[prop_nm].val = prop_dict[prop_nm]
+            self[prop_nm] = prop_dict[prop_nm]
 
     def overwrite_props_from_command_line(self):
         prop_nm = None
@@ -155,15 +157,13 @@ class PropArgs():
                 prop_nm = arg.lstrip(SWITCH)
             # the second arg is the property value
             elif prop_nm is not None:
-                if prop_nm not in self:
-                    self[prop_nm] = Prop
-                self.props[prop_nm].val = arg
+                self[prop_nm] = arg
                 prop_nm = None
 
     def overwrite_props_from_user(self):
         for prop_nm in self:
-            if hasattr(self[prop_nm], 'question'):
-                self[prop_nm].val = self._keep_asking_until_correct(prop_nm)
+            if hasattr(self.props[prop_nm], 'question'):
+                self[prop_nm] = self._keep_asking_until_correct(prop_nm)
                 
     def _keep_asking_until_correct(self, prop_nm):
         while True:
@@ -173,26 +173,26 @@ class PropArgs():
             typed_answer = self._type_answer(prop_nm, answer)
             if not self._answer_valid(prop_nm, typed_answer):
                 print("Input must be between {lowval} and {hival} inclusive."\
-                      .format(lowval=self[prop_nm].lowval,
-                              hival=self[prop_nm].hival))
+                      .format(lowval=self.props[prop_nm].lowval,
+                              hival=self.props[prop_nm].hival))
                 continue
             return typed_answer
 
     def _get_question(self, prop_nm):
             return "{question} {lowval}-{hival} [{default}] "\
-                   .format(question=self[prop_nm].question, 
-                           lowval=self[prop_nm].lowval,
-                           hival=self[prop_nm].hival,
-                           default=self[prop_nm].val)
+                   .format(question=self.props[prop_nm].question, 
+                           lowval=self.props[prop_nm].lowval,
+                           hival=self.props[prop_nm].hival,
+                           default=self[prop_nm])
 
     def _type_answer(self, prop_nm, answer):
-        type_cast = type_dict[self[prop_nm].atype]
+        type_cast = type_dict[self.props[prop_nm].atype]
         return type_cast(answer)
 
     def _answer_valid(self, prop_nm, typed_answer):
-        if hasattr(self[prop_nm], "lowval") and self[prop_nm].lowval > typed_answer:
+        if hasattr(self.props[prop_nm], "lowval") and self.props[prop_nm].lowval > typed_answer:
             return False
-        if hasattr(self[prop_nm], "hival") and self[prop_nm].hival < typed_answer:
+        if hasattr(self.props[prop_nm], "hival") and self.props[prop_nm].hival < typed_answer:
             return False
         return True
 
@@ -204,8 +204,8 @@ class PropArgs():
         How to represent the properties on screen.
         """
         ret = "Properties for " + self.model_nm + "\n"
-        for prop in self.props:
-            ret += "\t" + prop + ": " + str(self.props[prop]) + "\n"
+        for prop_nm in self:
+            ret += "\t" + prop_nm + ": " + str(self[prop_nm]) + "\n"
 
         return ret
 
@@ -225,10 +225,12 @@ class PropArgs():
         """
         Set a property value.
         """
-        self.props[key] = value
+        if key not in self:
+            self.props[key] = Prop()
+        self.props[key].val = value
 
     def __getitem__(self, key):
-        return self.props[key]
+        return self.props[key].val
 
     def get(self, nm, default=None):
         """
