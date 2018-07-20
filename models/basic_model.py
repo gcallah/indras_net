@@ -78,8 +78,6 @@ class BasicEnv(env.Environment):
             print("Agent: " + agent.name)
             
     def restore_agents(self, json_input):
-        count = 0
-        while str(count) in json_input:
-            self.add_agent(BasicAgent(json_input[str(count)]["name"], 
-                                      json_input[str(count)]["goal"]))
-            count += 1
+        for agent in json_input["agents"]:
+            self.add_agent(BasicAgent(agent["name"], 
+                                      agent["goal"]))

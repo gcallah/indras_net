@@ -24,6 +24,8 @@ import itertools
 import logging
 import indra.node as node
 import indra.spatial_env as se
+import models.grid_model as ta
+import indra.grid_agent as ga
 
 RANDOM = -1
 
@@ -102,94 +104,7 @@ class OutOfBounds(Exception):
     def __str__(self):
         return repr(self.value)
 
-
-class GridView():
-    """
-    Defines a subsection of the entire grid env.
-    """
-
-    class CellIter:
-        """
-        Iterate through the view's cells.
-        """
-        def __init__(self, view):
-            self.view = view
-            self.x = view.x1
-            self.y = view.y1
-
-        def __iter__(self):
-            return self
-
-        def __next__(self):
-            while self.y < self.view.y2:
-                while self.x < self.view.x2:
-                    ret = self.view.grid[self.y][self.x]
-                    self.x += 1
-                    return ret
-                self.x = self.view.x1
-                self.y += 1
-
-            raise StopIteration()
-
-    def __init__(self, grid, x1, y1, x2, y2):
-        """
-        see if view is in grid
-        adjust x, y to fit if not
-        """
-        if x1 < 0:
-            x1 = 0
-        if y1 < 0:
-            y1 = 0
-        if x2 > grid.width:
-            x2 = grid.width
-        if y2 > grid.height:
-            y2 = grid.height
-        self.grid = grid
-        self.x1 = x1
-        self.x2 = x2
-        self.y1 = y1
-        self.y2 = y2
-
-    def __iter__(self):
-        """
-        Iterate through the cells in this view.
-        """
-        return GridView.CellIter(self)
-
-    def out_of_bounds(self, x, y):
-        """
-        Returns False if x, y in view, else True.
-        """
-        return out_of_bounds(x, y, self.x1, self.y1, self.x2, self.y2)
-
-    def filter_view(self, lam):
-        """
-        Returns a view filtered with lambda functionlam.
-        """
-        return list(filter(lam, iter(self)))
-
-    def get_empties(self):
-        """
-        Return all of the unoccupied cells in this view.
-        """
-        return self.filter_view(lambda x: x.is_empty())
-
-    def get_neighbors(self):
-        """
-        Return all of the occupied cells in this view.
-        """
-        return self.filter_view(lambda x: not x.is_empty())
-    
-    def to_json(self):
-        safe_fields = {}
-        safe_fields["x1"] = self.x1
-        safe_fields["x2"] = self.x2
-        safe_fields["y1"] = self.y1
-        safe_fields["y2"] = self.y2
-        return safe_fields
-
-
-class CompositeView(GridView):
+class CompositeView(ga.GridView):
     """
     A composite view combines several other views.
     """
@@ -332,7 +247,7 @@ class GridEnv(se.SpatialEnv):
             low = 0
         if high is None:
             high = self.height
-        return GridView(self, col, low, col + 1, high)
+        return ga.GridView(self, col, low, col + 1, high)
 
     def get_row_view(self, row, left=None, right=None):
         """
@@ -344,7 +259,7 @@ class GridEnv(se.SpatialEnv):
             left = 0
         if right is None:
             right = self.width
-        return GridView(self, left, row, right, row + 1)
+        return ga.GridView(self, left, row, right, row + 1)
 
     def _adjust_coords(self, center, distance, max_val):
         coord1 = max(0, center - distance)
@@ -372,7 +287,7 @@ class GridEnv(se.SpatialEnv):
         (center_x, center_y) = center
         (x1, x2) = self._adjust_coords(center_x, distance, self.width)
         (y1, y2) = self._adjust_coords(center_y, distance, self.height)
-        return GridView(self, x1, y1, x2, y2)
+        return ga.GridView(self, x1, y1, x2, y2)
 
     def neighbor_iter(self, x, y, distance=1, moore=True, view=None):
         """
@@ -558,21 +473,11 @@ class GridEnv(se.SpatialEnv):
         self.num_cells = json_input["num_cells"]
     
     def restore_agents(self, json_input):
-        import models.grid_model as ta
-        
-        count = 0
-        while str(count) in json_input:
-            agent = json_input[str(count)]
+
+        for agent in json_input["agents"]:
             new_agent = ta.TestGridAgent(agent["name"], agent["goal"], 
                                       agent["max_move"], agent["max_detect"],
-                                      Cell((agent["cell"]["coordx"], 
-                                            agent["cell"]["coordy"])))
-            new_agent.from_json(agent)
-            if agent["my_view"]:
-                new_agent.my_view = GridView(self, agent["my_view"]["x1"], 
-                                             agent["my_view"]["y1"], 
-                                             agent["my_view"]["x2"], 
-                                             agent["my_view"]["y2"])
+                                      self.grid[agent["cell"]["coordy"]]\
+                                      [agent["cell"]["coordx"]])
             self.add_agent(new_agent)
-            
-            count += 1
+            new_agent.from_json(agent)

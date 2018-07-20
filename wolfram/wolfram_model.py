@@ -33,6 +33,12 @@ RULE30 = {
     (W, W, W): W
 }
 
+#Convert tuples to stings
+new_dic = {}
+for i in RULE30:
+    new_dic[str(i)] = RULE30[i]
+RULE30 = new_dic
+
 class WolframAgent(ga.GridAgent):
     """
     An agent that looks at agents above it and reacts
@@ -123,7 +129,7 @@ class WolframEnv(ge.GridEnv):
 
         for cell in self:
             (x, y) = cell.coords
-            agent = WolframAgent("Grid", "Show color", cell)
+            agent = WolframAgent("Cell" + str((x, y)), "Show color", cell)
             self.add_agent(agent, position=False)
             if x == center_x and y == top_y:
                 agent.state = B
@@ -131,10 +137,10 @@ class WolframEnv(ge.GridEnv):
                 old_type = agent.ntype
                 agent.set_type(new_type)
                 self.change_agent_type(agent, old_type, new_type)
-                agent.is_active = False       
+                agent.is_active = False
         
     def check_rules(self, combo):
-        return self.rules[combo]
+        return self.rules[str(combo)]
 
     def step(self):
         super().step()
@@ -155,6 +161,14 @@ class WolframEnv(ge.GridEnv):
         
         return safe_fields
     
-    def from_json(self):
-        
+    def from_json(self, json_input):
+        super().from_json(json_input)
+        self.rules = json_input["rules"]
     
+    def restore_agents(self, json_input):
+        for agent in json_input["agents"]:
+            new_agent = WolframAgent(agent["name"], agent["goal"],
+                                      self.grid[agent["cell"]["coordy"]]\
+                                      [agent["cell"]["coordx"]])
+            self.add_agent(new_agent)
+            new_agent.from_json(agent)

@@ -10,6 +10,90 @@ import indra.spatial_agent as sa
 X = 0
 Y = 1
 
+class GridView():
+    """
+    Defines a subsection of the entire grid env.
+    """
+
+    class CellIter:
+        """
+        Iterate through the view's cells.
+        """
+        def __init__(self, view):
+            self.view = view
+            self.x = view.x1
+            self.y = view.y1
+
+        def __iter__(self):
+            return self
+
+        def __next__(self):
+            while self.y < self.view.y2:
+                while self.x < self.view.x2:
+                    ret = self.view.grid[self.y][self.x]
+                    self.x += 1
+                    return ret
+                self.x = self.view.x1
+                self.y += 1
+
+            raise StopIteration()
+
+    def __init__(self, grid, x1, y1, x2, y2):
+        """
+        see if view is in grid
+        adjust x, y to fit if not
+        """
+        if x1 < 0:
+            x1 = 0
+        if y1 < 0:
+            y1 = 0
+        if x2 > grid.width:
+            x2 = grid.width
+        if y2 > grid.height:
+            y2 = grid.height
+        self.grid = grid
+        self.x1 = x1
+        self.x2 = x2
+        self.y1 = y1
+        self.y2 = y2
+
+    def __iter__(self):
+        """
+        Iterate through the cells in this view.
+        """
+        return GridView.CellIter(self)
+
+    def out_of_bounds(self, x, y):
+        """
+        Returns False if x, y in view, else True.
+        """
+        return out_of_bounds(x, y, self.x1, self.y1, self.x2, self.y2)
+
+    def filter_view(self, lam):
+        """
+        Returns a view filtered with lambda functionlam.
+        """
+        return list(filter(lam, iter(self)))
+
+    def get_empties(self):
+        """
+        Return all of the unoccupied cells in this view.
+        """
+        return self.filter_view(lambda x: x.is_empty())
+
+    def get_neighbors(self):
+        """
+        Return all of the occupied cells in this view.
+        """
+        return self.filter_view(lambda x: not x.is_empty())
+    
+    def to_json(self):
+        safe_fields = {}
+        safe_fields["x1"] = self.x1
+        safe_fields["x2"] = self.x2
+        safe_fields["y1"] = self.y1
+        safe_fields["y2"] = self.y2
+        return safe_fields
 
 class GridAgent(sa.SpatialAgent):
     """
@@ -38,8 +122,8 @@ class GridAgent(sa.SpatialAgent):
 
     @property
     def pos(self):
-        if self.cell:
-            return self.cell.coords
+        if self.__cell:
+            return self.__cell.coords
         else:
             return None
 
@@ -133,6 +217,10 @@ class GridAgent(sa.SpatialAgent):
     def from_json(self, json_input):
         super().from_json(json_input)
         
-        self.cell.contents = self
-        #self.neighborhood = json_input["neighborhood"]
+        if json_input["my_view"]:
+            self.my_view = GridView(self.env, json_input["my_view"]["x1"], 
+                                     json_input["my_view"]["y1"], 
+                                     json_input["my_view"]["x2"], 
+                                     json_input["my_view"]["y2"])
+        
         self.hood_size = json_input["hood_size"]

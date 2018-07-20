@@ -19,23 +19,15 @@ rules = [
     (W, W, W)
 ]
 
-template = {
-    (B, B, B): W,
-    (B, B, W): W,
-    (B, W, B): W,
-    (B, W, W): B,
-    (W, B, B): B,
-    (W, B, W): B,
-    (W, W, B): B,
-    (W, W, W): W
-}
+template = {}
 
 def generate_wolfram_rules():
     with open("wolfram/wolfram_rules.txt","w+") as f: 
         for i in range(256):
             binary = bin(i + 256)[3:]
             for j in range(len(binary)):
-                template[rules[j]] = int(binary[j])
+                rule = str(rules[j])
+                template[rule] = int(binary[j])
             f.write(str(template) + "\n")
 
     print("256 rules are successfully generated")

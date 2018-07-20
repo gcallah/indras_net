@@ -19,6 +19,7 @@ import indra.agent_pop as ap
 import indra.user as user
 import json
 import os
+import logging
 
 NI = "Not implemented at present."
 RPT_EXT = ".csv"
@@ -40,11 +41,7 @@ class Environment(node.Node):
     def __init__(self, name, preact=False,
                  postact=False, model_nm=None, props=None):
         super().__init__(name)
-        pop_name = ""
-        if model_nm:
-            pop_name += model_nm + " "
-        pop_name += "Agents"
-        self.agents = ap.AgentPop(pop_name)
+        
         self.period = 0
         self.preact = preact
         self.postact = postact
@@ -78,6 +75,12 @@ class Environment(node.Node):
 
     def __init_unrestorables(self):
         # anything that can't be restored from JSON file init here
+        pop_name = ""
+        if self.model_nm:
+            pop_name += self.model_nm + " "
+        pop_name += "Agents"
+        self.agents = ap.AgentPop(pop_name)
+        
         self.womb = []
         self.graph = nx.Graph()
         self.graph.add_edge(self, self.agents)
@@ -86,7 +89,6 @@ class Environment(node.Node):
         self.graph.add_edge(self, self.user)        
         self.graph.add_edge(self, self.menu)
         self.graph.add_edge(self, node.universals)
-        
         
     def add_variety(self, var):
         self.agents.add_variety(var)
@@ -518,10 +520,10 @@ class Environment(node.Node):
         safe_fields["user"] = self.user.to_json()
         
         #Serialize agents
-        count = 0
+        agents = []
         for agent in self.agents:
-            safe_fields[count] = agent.to_json()
-            count += 1
+            agents.append(agent.to_json())
+        safe_fields["agents"] = agents
             
         return safe_fields
 
@@ -548,6 +550,8 @@ class Environment(node.Node):
         """
         Restore a previous session from a json file
         """
+        logging.info("-------------------------Start Restoration of states-------------------------------")
+        
         try:
             base_dir = self.props["base_dir"]
         except:

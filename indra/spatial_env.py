@@ -121,13 +121,10 @@ class SpatialEnv(env.Environment):
     def restore_agents(self, json_input):
         import indra.spatial_agent as sa
         
-        count = 0
-        while str(count) in json_input:
-            agent = sa.SpatialAgent(json_input[str(count)]["name"], 
-                                   json_input[str(count)]["goal"],
-                                   json_input[str(count)]["max_move"],
-                                   json_input[str(count)]["max_detect"])
-            agent.from_json(json_input[str(count)])
+        for agent in json_input["agents"]:
+            agent = sa.SpatialAgent(agent["name"], 
+                                   agent["goal"],
+                                   agent["max_move"],
+                                   agent["max_detect"])
+            agent.from_json(agent)
             self.add_agent(agent)
-            
-            count += 1
