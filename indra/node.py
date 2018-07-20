@@ -109,8 +109,19 @@ class Node():
         self.ntype = new_type
 
     def to_json(self):
+        """
+        We're going to make a dictionary of the 'safe' parts of the object to
+        output to a json file. (We can't output the env, for instance, since
+        IT contains a reference to each agent!)
+        """
         return {"name": self.name}
-
+    
+    def from_json(self, json_input):
+        """
+        Whatever information not properly restored by the constructor 
+        parameters goes here
+        """
+        pass
 
 class Universals(Node):
     """
