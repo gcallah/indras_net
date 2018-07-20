@@ -122,15 +122,17 @@ class GridAgent(sa.SpatialAgent):
         return s
 
     def to_json(self):
-        """
-        We're going to make a dictionary of the 'safe' parts of the object to
-        output to a json file. (We can't output the env, for instance, since
-        IT contains a reference to each agent!)
-        """
         safe_fields = super().to_json()
         safe_fields["cell"] = self.__cell.to_json()
-        safe_fields["neighborhood"] = None#self.neighborhood #Try if we can to_json lists
+        #safe_fields["neighborhood"] = None#self.neighborhood #Try if we can to_json lists
         safe_fields["hood_size"] = self.hood_size
         safe_fields["my_view"] = self.my_view.to_json() if self.my_view else None
         
         return safe_fields
+
+    def from_json(self, json_input):
+        super().from_json(json_input)
+        
+        self.cell.contents = self
+        #self.neighborhood = json_input["neighborhood"]
+        self.hood_size = json_input["hood_size"]

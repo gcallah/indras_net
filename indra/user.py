@@ -106,3 +106,13 @@ class User(ent.Entity):
         assert self.utype in [TERMINAL, IPYTHON, IPYTHON_NB, WEB]
         if(self.utype in [TERMINAL, IPYTHON, IPYTHON_NB, WEB]):
             return ask(msg)
+        
+    def to_json(self):
+        safe_fields = super().to_json()
+        
+        safe_fields["text_output"] = self.text_output
+        
+        return safe_fields
+    
+    def from_json(self, json_input):
+        self.text_output = json_input["text_output"]

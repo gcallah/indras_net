@@ -109,8 +109,8 @@ class SpatialEnv(env.Environment):
             
         return safe_fields
     
-    def restore_env(self, json_input):
-        super().restore_env(json_input)
+    def from_json(self, json_input):
+        super().from_json(json_input)
         
         self.disp_census = json_input["disp_census"]
         self.width = json_input["width"]
@@ -127,7 +127,7 @@ class SpatialEnv(env.Environment):
                                    json_input[str(count)]["goal"],
                                    json_input[str(count)]["max_move"],
                                    json_input[str(count)]["max_detect"])
-            agent.__pos = json_input[str(count)]["__pos"]
+            agent.from_json(json_input[str(count)])
             self.add_agent(agent)
             
             count += 1

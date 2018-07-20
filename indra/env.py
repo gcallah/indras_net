@@ -506,15 +506,16 @@ class Environment(node.Node):
         return self.agents.get_var_pop_hist(var)
     
     def to_json(self):
-        #Serialize the env itself
+        #Serialize the env
         safe_fields = super().to_json()
         safe_fields["period"] = self.period
         safe_fields["model_nm"] = self.model_nm
         safe_fields["preact"] = self.preact
         safe_fields["postact"] = self.postact
         
-        #Serialize props
+        #Serialize objects
         safe_fields["props"] = self.props.to_json()
+        safe_fields["user"] = self.user.to_json()
         
         #Serialize agents
         count = 0
@@ -562,7 +563,7 @@ class Environment(node.Node):
         json_input = json.loads(json_input)
         
         try:
-            self.restore_env(json_input)
+            self.from_json(json_input)
             
             pop_name = self.model_nm + "Agents"
             self.agents = ap.AgentPop(pop_name)
@@ -573,7 +574,7 @@ class Environment(node.Node):
         
         self.user.tell("Session restored")
         
-    def restore_env(self, json_input):
+    def from_json(self, json_input):
         self.__init_unrestorables()
         
         self.name = json_input["name"]
@@ -583,6 +584,7 @@ class Environment(node.Node):
         self.props = pa.PropArgs(self.model_nm, props=json_input["props"])      
         self.period = json_input["period"]
         self.image_bytes = self.plot()
+        self.user.from_json(json_input["user"])
         
     def restore_agents(self, json_input):
         self.user.tell("restore_agents not implemented in this model", 

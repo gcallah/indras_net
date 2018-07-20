@@ -85,6 +85,11 @@ class Cell(node.Node):
             self.contents = None
             
     def to_json(self):
+        """
+        We're going to make a dictionary of the 'safe' parts of the object to
+        output to a json file. (We can't output the env, for instance, since
+        IT contains a reference to each agent!)
+        """
         safe_fields = {}
         safe_fields["coordx"] = self.coords[0]
         safe_fields["coordy"] = self.coords[1]
@@ -546,25 +551,23 @@ class GridEnv(se.SpatialEnv):
         
         return safe_fields
     
-    def restore_env(self, json_input):
-        super().restore_env(json_input)
+    def from_json(self, json_input):
+        super().from_json(json_input)
         self.__init_unrestorables()
         self.torus = json_input["torus"]
         self.num_cells = json_input["num_cells"]
     
     def restore_agents(self, json_input):
-        import indra.grid_agent as ga
+        import models.grid_model as ta
         
         count = 0
         while str(count) in json_input:
             agent = json_input[str(count)]
-            new_agent = ga.GridAgent(agent["name"], agent["goal"], 
-                                  agent["max_move"], agent["max_detect"],
-                                  Cell((agent["cell"]["coordx"], 
-                                        agent["cell"]["coordy"])))
-            new_agent.cell.contents = new_agent
-            new_agent.neighborhood = agent["neighborhood"]
-            new_agent.hood_size = agent["hood_size"]
+            new_agent = ta.TestGridAgent(agent["name"], agent["goal"], 
+                                      agent["max_move"], agent["max_detect"],
+                                      Cell((agent["cell"]["coordx"], 
+                                            agent["cell"]["coordy"])))
+            new_agent.from_json(agent)
             if agent["my_view"]:
                 new_agent.my_view = GridView(self, agent["my_view"]["x1"], 
                                              agent["my_view"]["y1"], 

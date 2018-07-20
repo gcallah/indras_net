@@ -18,3 +18,4 @@ models/old_models/*
 ~$*
 .ipynb_checkpoints/
 *.csv
+*.json

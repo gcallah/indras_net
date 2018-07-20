@@ -30,13 +30,14 @@ class SpatialAgent(ent.Agent):
         self.__pos = pos
         
     def to_json(self):
-        """
-        We're going to make a dictionary of the 'safe' parts of the object to
-        output to a json file. (We can't output the env, for instance, since
-        IT contains a reference to each agent!)
-        """
         safe_fields = super().to_json()
         safe_fields["max_move"] = self.max_move
         safe_fields["max_detect"] = self.max_detect
         safe_fields["__pos"] = self.__pos
         return safe_fields
+    
+    def from_json(self, json_input):
+        super().from_json(json_input)
+        
+        self.__pos = json_input["__pos"]
+        

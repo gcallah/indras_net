@@ -6,6 +6,7 @@ import indra.grid_agent as ga
 import indra.grid_env as ge
 from math import floor
 import ast
+import logging
 
 X = 0
 Y = 1
@@ -36,12 +37,10 @@ class WolframAgent(ga.GridAgent):
     """
     An agent that looks at agents above it and reacts
     """
-    def __init__(self, name, goal, cell, mark = False):
-        super().__init__(name, goal)
-        self.cell = cell
+    def __init__(self, name, goal, cell):
+        super().__init__(name, goal, cell=cell)
         self.state = W
         self.ntype = STATE_MAP[self.state]
-        self.marked = mark
         self.is_active = False
 
     def act(self):
@@ -49,9 +48,6 @@ class WolframAgent(ga.GridAgent):
         (x, y) = self.pos
         if y == self.env.height - 1 - self.env.period:
             self.is_active = True
-        #Trace the marked agents
-        if self.marked:
-            self.show_stats()
         if not self.is_active:
             return
         #Find the information needed
@@ -77,14 +73,21 @@ class WolframAgent(ga.GridAgent):
             self.set_type(new_type)
             self.env.change_agent_type(self, old_type, new_type)
             
-    def show_stats(self):
-        print("-----------------")
-        print("Period: ", self.env.period)
-        print("Position: ", self.pos)
-        print("State: ", self.state)
-        print("Type: ", self.ntype)
-        print("Active: ", self.is_active)
-        print("-----------------")
+    def to_json(self):
+        safe_fields = super().to_json()
+
+        safe_fields["state"] = self.state
+        safe_fields["ntype"] = self.ntype
+        safe_fields["is_active"] = self.is_active
+        
+        return safe_fields
+    
+    def from_json(self, json_input):
+        super().from_json(json_input)
+        
+        self.state = json_input["state"]
+        self.ntype = json_input["ntype"]
+        self.is_active = json_input["is_active"]
 
 class WolframEnv(ge.GridEnv):
     """
@@ -102,7 +105,12 @@ class WolframEnv(ge.GridEnv):
             base_dir = ""
         
         path = os.path.join(base_dir, "wolfram/wolfram_rules.txt")
-        self.rules = self.read_wolfram_rules(path)[rule_id]
+        
+        try:
+            self.rules = self.read_wolfram_rules(path)[rule_id]
+        except:
+            self.rules = RULE30
+            logging.info("Rule dictionary not found. Using the default rule.")
                     
         self.set_var_color(BLACK, disp.BLACK)
         self.set_var_color(WHITE, disp.WHITE)
@@ -139,3 +147,14 @@ class WolframEnv(ge.GridEnv):
                 rules_sets.append(ast.literal_eval(i))
 
         return rules_sets
+    
+    def to_json(self):
+        safe_fields = super().to_json()
+        
+        safe_fields["rules"] = self.rules
+        
+        return safe_fields
+    
+    def from_json(self):
+        
+    
