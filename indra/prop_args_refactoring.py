@@ -52,7 +52,12 @@ class Prop():
     """
 
     def __init__(self):
-        pass
+        self.val = None
+        self.question = None
+        self.atype = None
+        self.default_val = None
+        self.lowval = None
+        self.hival = None
 
 
 class PropArgs():
@@ -119,7 +124,7 @@ class PropArgs():
     def set_props_from_db(self):
         params = Model.objects.get(name=self.model_nm).params.all()
         for param in params:
-            self[param.prop_name] = param.default_val
+            self.props[param.prop_name].val = param.default_val
             self.props[param.prop_name].question = param.question
             self.props[param.prop_name].atype = param.atype
             self.props[param.prop_name].default_val = param.default_val
@@ -127,7 +132,7 @@ class PropArgs():
             self.props[param.prop_name].hival = param.hival
 
     def overwrite_props_from_env(self):
-        self[OS] = platform.system()
+        self.props[OS].val = platform.system()
 
     def overwrite_props_from_dict(self, prop_dict):
         """
@@ -147,7 +152,7 @@ class PropArgs():
 
         """
         for prop_nm in prop_dict:
-            self[prop_nm] = prop_dict[prop_nm]
+            self.props[prop_nm].val = prop_dict[prop_nm]
 
     def overwrite_props_from_command_line(self):
         prop_nm = None
@@ -157,13 +162,13 @@ class PropArgs():
                 prop_nm = arg.lstrip(SWITCH)
             # the second arg is the property value
             elif prop_nm is not None:
-                self[prop_nm] = arg
+                self.props[prop_nm].val = arg
                 prop_nm = None
 
     def overwrite_props_from_user(self):
         for prop_nm in self:
             if hasattr(self.props[prop_nm], 'question'):
-                self[prop_nm] = self._keep_asking_until_correct(prop_nm)
+                self.props[prop_nm].val = self._keep_asking_until_correct(prop_nm)
                 
     def _keep_asking_until_correct(self, prop_nm):
         while True:
@@ -183,7 +188,7 @@ class PropArgs():
                    .format(question=self.props[prop_nm].question, 
                            lowval=self.props[prop_nm].lowval,
                            hival=self.props[prop_nm].hival,
-                           default=self[prop_nm])
+                           default=self.props[prop_nm].val)
 
     def _type_answer(self, prop_nm, answer):
         type_cast = type_dict[self.props[prop_nm].atype]
@@ -205,7 +210,7 @@ class PropArgs():
         """
         ret = "Properties for " + self.model_nm + "\n"
         for prop_nm in self:
-            ret += "\t" + prop_nm + ": " + str(self[prop_nm]) + "\n"
+            ret += "\t" + prop_nm + ": " + str(self.props[prop_nm].val) + "\n"
 
         return ret
 
@@ -225,22 +230,10 @@ class PropArgs():
         """
         Set a property value.
         """
-        if key not in self:
-            self.props[key] = Prop()
-        self.props[key].val = value
+        self.props[key] = value
 
     def __getitem__(self, key):
-        return self.props[key].val
-
-    def get(self, nm, default=None):
-        """
-        Get a property value, with a default
-        that gets stored if the property is not there
-        at the time of the call.
-        """
-        if nm not in self:
-            self.props[nm].val = default
-        return self.props[nm].val
+        return self.props[key]
 
     def __delitem__(self, key):
         del self.props[key]
@@ -260,6 +253,60 @@ class PropArgs():
         Useful for storing interesting parameter sets.
         """
         json.dump(self.props, open(file_nm, 'w'), indent=4)
+
+    def get_val(self, key):
+        if key in self and hasattr(self.props[key], "val"):
+            return self.props[key].val
+        return None
+
+    def set_val(self, key, value):
+        if key in self:
+            self.props[key].val = value
+
+    def get_question(self, key):
+        if key in self and hasattr(self.props[key], "que"):
+            return self.props[key].question
+        return None
+
+    def set_question(self, key, value):
+        if key in self:
+            self.props[key].question = value
+
+    def get_atype(self, key):
+        if key in self and hasattr(self.props[key], "aty"):
+            return self.props[key].atype
+        return None
+
+    def set_atype(self, key, value):
+        if key in self:
+            self.props[key].atype = value
+
+    def get_default_val(self, key):
+        if key in self and hasattr(self.props[key], "def"):
+            return self.props[key].default_val
+        return None
+
+    def set_default_val(self, key, value):
+        if key in self:
+            self.props[key].default_val = value
+
+    def get_hival(self, key):
+        if key in self and hasattr(self.props[key], "hiv"):
+            return self.props[key].hival
+        return None
+
+    def set_hival(self, key, value):
+        if key in self:
+            self.props[key].hival = value
+
+    def get_lowval(self, key):
+        if key in self and hasattr(self.props[key], "lov"):
+            return self.props[key].lowval
+        return None
+
+    def set_hival(self, value, value):
+        if key in self:
+            self.props[key].hival = value
 
 
 class Logger():
