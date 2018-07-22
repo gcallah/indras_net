@@ -28,7 +28,7 @@ user_type = TERMINAL
 type_dict = {'INT': int, 'DBL': float, 'BOOL': bool, 'STR': str}
 
 
-def get_prop_from_env(prop_nm):
+def get_prop_from_env():
     global user_type
     try:
         user_type = os.environ['user_type']
@@ -37,6 +37,7 @@ def get_prop_from_env(prop_nm):
         print("Environment variable user type not found")
         user_type = TERMINAL
     return user_type
+
 
 class Prop():
     """
@@ -60,7 +61,7 @@ class Prop():
         self.hival = None
 
 
-class PropArgs():
+class PropArgs:
     """
     This class holds named properties for program-wide values.
     It enables getting properties from a file, a database,
@@ -76,10 +77,11 @@ class PropArgs():
 
         if props is None:
             props = {}
-            user_type = get_prop_from_env("user_type")
+            user_type = get_prop_from_env()
             props["user_type"] = user_type
-        return PropArgs(model_nm, props=props)
+        return PropArgs(model_nm, prop_dict=props)
 
+    @staticmethod
     def read_props(model_nm, file_nm):
         """
         Create a new PropArgs object from a json file
@@ -139,20 +141,39 @@ class PropArgs():
         General Form of Dict:
 
             {
-                prop_name: value,
-                prop_name: value
+                prop_name:
+                    {
+                        value: <something>,
+                        question: <something>,
+                        atype: <something>,
+                    }
+                prop_name:
+                    {
+                        value: <something>,
+                        hival: <something>,
+                        lowval: <something>,
+                    }
             }
 
         Sample Dict:
 
             {
-                "num_agents": 100,
-                "agent_speed": 3
+                "num_agents":
+                    {
+                        value: 100,
+                        question: "how many agents should be initially present in the model?",
+                        atype: "INT",
+                    }
+                 "agent_speed":
+                    {
+                        value: 3,
+                    }
             }
 
         """
         for prop_nm in prop_dict:
-            self.props[prop_nm].val = prop_dict[prop_nm]
+            for attribute in prop_dict[prop_nm]:
+                self.props[prop_nm] = prop_dict[prop_nm].get(attribute)
 
     def overwrite_props_from_command_line(self):
         prop_nm = None
@@ -177,7 +198,7 @@ class PropArgs():
                 return None
             typed_answer = self._type_answer(prop_nm, answer)
             if not self._answer_valid(prop_nm, typed_answer):
-                print("Input must be between {lowval} and {hival} inclusive."\
+                print("Input must be between {lowval} and {hival} inclusive."
                       .format(lowval=self.props[prop_nm].lowval,
                               hival=self.props[prop_nm].hival))
                 continue
@@ -254,62 +275,62 @@ class PropArgs():
         """
         json.dump(self.props, open(file_nm, 'w'), indent=4)
 
-    def get_val(self, key):
-        if key in self and hasattr(self.props[key], "val"):
+    def get_val(self, key, default=None):
+        if key in self and hasattr(self.props[key], "val") and self.props[key].val is not None:
             return self.props[key].val
-        return None
+        return default
 
     def set_val(self, key, value):
         if key in self:
             self.props[key].val = value
 
-    def get_question(self, key):
-        if key in self and hasattr(self.props[key], "que"):
+    def get_question(self, key, default=None):
+        if key in self and hasattr(self.props[key], "question") and self.props[key].question is not None:
             return self.props[key].question
-        return None
+        return default
 
     def set_question(self, key, value):
         if key in self:
             self.props[key].question = value
 
-    def get_atype(self, key):
-        if key in self and hasattr(self.props[key], "aty"):
+    def get_atype(self, key, default=None):
+        if key in self and hasattr(self.props[key], "atype") and self.props[key].atype is not None:
             return self.props[key].atype
-        return None
+        return default
 
     def set_atype(self, key, value):
         if key in self:
             self.props[key].atype = value
 
-    def get_default_val(self, key):
-        if key in self and hasattr(self.props[key], "def"):
+    def get_default_val(self, key, default=None):
+        if key in self and hasattr(self.props[key], "default_val") and self.props[key].default_val is not None:
             return self.props[key].default_val
-        return None
+        return default
 
     def set_default_val(self, key, value):
         if key in self:
             self.props[key].default_val = value
 
-    def get_hival(self, key):
-        if key in self and hasattr(self.props[key], "hiv"):
+    def get_hival(self, key, default=None):
+        if key in self and hasattr(self.props[key], "hival") and self.props[key].hival is not None:
             return self.props[key].hival
-        return None
+        return default
 
     def set_hival(self, key, value):
         if key in self:
             self.props[key].hival = value
 
-    def get_lowval(self, key):
-        if key in self and hasattr(self.props[key], "lov"):
+    def get_lowval(self, key, default=None):
+        if key in self and hasattr(self.props[key], "lowval") and self.props[key].lowval is not None:
             return self.props[key].lowval
-        return None
+        return default
 
-    def set_hival(self, value, value):
+    def set_hival(self, key, value):
         if key in self:
             self.props[key].hival = value
 
 
-class Logger():
+class Logger:
     """
     A class to track how we are logging.
     """
@@ -323,10 +344,10 @@ class Logger():
                  loglevel=logging.INFO):
         if logfile is None:
             logfile = Logger.DEF_FILENAME
-        fmt = props.get("log_format", Logger.DEF_FORMAT)
-        lvl = props.get("log_level", Logger.DEF_LEVEL)
-        fmd = props.get("log_fmode", Logger.DEF_FILEMODE)
-        fnm = props.get("log_fname", logfile)
+        fmt = props.get_val("log_format", Logger.DEF_FORMAT)
+        lvl = props.get_val("log_level", Logger.DEF_LEVEL)
+        fmd = props.get_val("log_fmode", Logger.DEF_FILEMODE)
+        fnm = props.get_val("log_fname", logfile)
         logging.basicConfig(format=fmt,
                             level=lvl,
                             filemode=fmd,
