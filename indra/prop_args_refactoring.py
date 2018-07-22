@@ -22,6 +22,13 @@ IPYTHON = "iPython"
 IPYTHON_NB = "iPython Notebook"
 WEB = "Web browser"
 
+VALUE = "val"
+QUESTION = "question"
+DEFAULT_VAL = "default_val"
+ATYPE = "atype"
+HIVAL = "hival"
+LOWVAL = "lowval"
+
 global user_type
 user_type = TERMINAL
 
@@ -188,7 +195,7 @@ class PropArgs:
 
     def overwrite_props_from_user(self):
         for prop_nm in self:
-            if hasattr(self.props[prop_nm], 'question'):
+            if hasattr(self.props[prop_nm], QUESTION):
                 self.props[prop_nm].val = self._keep_asking_until_correct(prop_nm)
                 
     def _keep_asking_until_correct(self, prop_nm):
@@ -216,9 +223,9 @@ class PropArgs:
         return type_cast(answer)
 
     def _answer_valid(self, prop_nm, typed_answer):
-        if hasattr(self.props[prop_nm], "lowval") and self.props[prop_nm].lowval > typed_answer:
+        if hasattr(self.props[prop_nm], LOWVAL) and self.props[prop_nm].lowval > typed_answer:
             return False
-        if hasattr(self.props[prop_nm], "hival") and self.props[prop_nm].hival < typed_answer:
+        if hasattr(self.props[prop_nm], HIVAL) and self.props[prop_nm].hival < typed_answer:
             return False
         return True
 
@@ -276,7 +283,7 @@ class PropArgs:
         json.dump(self.props, open(file_nm, 'w'), indent=4)
 
     def get_val(self, key, default=None):
-        if key in self and hasattr(self.props[key], "val") and self.props[key].val is not None:
+        if key in self and hasattr(self.props[key], VALUE) and self.props[key].val is not None:
             return self.props[key].val
         return default
 
@@ -285,7 +292,7 @@ class PropArgs:
             self.props[key].val = value
 
     def get_question(self, key, default=None):
-        if key in self and hasattr(self.props[key], "question") and self.props[key].question is not None:
+        if key in self and hasattr(self.props[key], QUESTION) and self.props[key].question is not None:
             return self.props[key].question
         return default
 
@@ -294,7 +301,7 @@ class PropArgs:
             self.props[key].question = value
 
     def get_atype(self, key, default=None):
-        if key in self and hasattr(self.props[key], "atype") and self.props[key].atype is not None:
+        if key in self and hasattr(self.props[key], ATYPE) and self.props[key].atype is not None:
             return self.props[key].atype
         return default
 
@@ -303,7 +310,7 @@ class PropArgs:
             self.props[key].atype = value
 
     def get_default_val(self, key, default=None):
-        if key in self and hasattr(self.props[key], "default_val") and self.props[key].default_val is not None:
+        if key in self and hasattr(self.props[key], DEFAULT_VAL) and self.props[key].default_val is not None:
             return self.props[key].default_val
         return default
 
@@ -312,7 +319,7 @@ class PropArgs:
             self.props[key].default_val = value
 
     def get_hival(self, key, default=None):
-        if key in self and hasattr(self.props[key], "hival") and self.props[key].hival is not None:
+        if key in self and hasattr(self.props[key], HIVAL) and self.props[key].hival is not None:
             return self.props[key].hival
         return default
 
@@ -321,7 +328,7 @@ class PropArgs:
             self.props[key].hival = value
 
     def get_lowval(self, key, default=None):
-        if key in self and hasattr(self.props[key], "lowval") and self.props[key].lowval is not None:
+        if key in self and hasattr(self.props[key], LOWVAL) and self.props[key].lowval is not None:
             return self.props[key].lowval
         return default
 
