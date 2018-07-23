@@ -29,7 +29,8 @@ def get_prop_from_env(prop_nm):
     try:
         user_type = os.environ['user_type']
     except KeyError:
-        logging.info("Environment variable user type not found")
+# this can't be done before logging is set up!
+#        logging.info("Environment variable user type not found")
         user_type = TERMINAL
     return user_type
 
@@ -168,12 +169,14 @@ class Logger():
                  loglevel=logging.INFO):
         if logfile is None:
             logfile = Logger.DEF_FILENAME
+        print("About to init logging.")
         fmt = props.get("log_format", Logger.DEF_FORMAT)
         lvl = props.get("log_level", Logger.DEF_LEVEL)
         fmd = props.get("log_fmode", Logger.DEF_FILEMODE)
-        fnm = props.get("log_fname", logfile)
+# we put the following back in once the model names are fixed
+#  fnm = props.get("log_fname", logfile)
         logging.basicConfig(format=fmt,
                             level=lvl,
                             filemode=fmd,
-                            filename=fnm)
+                            filename=logfile)
         logging.info("Logging initialized.")
