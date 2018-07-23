@@ -463,6 +463,7 @@ class GridEnv(se.SpatialEnv):
         safe_fields = super().to_json()
         safe_fields["torus"] = self.torus
         safe_fields["num_cells"] = self.num_cells
+        self.print_grid()
         
         return safe_fields
     
@@ -473,11 +474,21 @@ class GridEnv(se.SpatialEnv):
         self.num_cells = json_input["num_cells"]
     
     def restore_agents(self, json_input):
-
-        for agent in json_input["agents"]:
+        for agent in json_input["agents"]:          
+            x, y = agent["cell"]["coordx"], agent["cell"]["coordy"]
+            cell = self[y][x]
+            
             new_agent = ta.TestGridAgent(agent["name"], agent["goal"], 
                                       agent["max_move"], agent["max_detect"],
-                                      self.grid[agent["cell"]["coordy"]]\
-                                      [agent["cell"]["coordx"]])
-            self.add_agent(new_agent)
+                                      cell=cell)
+
+            self.add_agent(new_agent, x, y, True)
             new_agent.from_json(agent)
+            
+        self.print_grid()
+            
+    def print_grid(self):
+        for row in self.grid:
+            for cell in row:
+                print(cell.contents, end=", ")
+            print()

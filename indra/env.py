@@ -569,8 +569,6 @@ class Environment(node.Node):
         try:
             self.from_json(json_input)
             
-            pop_name = self.model_nm + "Agents"
-            self.agents = ap.AgentPop(pop_name)
             self.restore_agents(json_input)
         except KeyError as e:
             self.user.tell("Error: " + str(e) + " not found")
@@ -587,7 +585,6 @@ class Environment(node.Node):
         self.model_nm = json_input["model_nm"]
         self.props = pa.PropArgs(self.model_nm, props=json_input["props"])      
         self.period = json_input["period"]
-        self.image_bytes = self.plot()
         self.user.from_json(json_input["user"])
         
     def restore_agents(self, json_input):
