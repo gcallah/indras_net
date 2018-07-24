@@ -59,13 +59,14 @@ class Prop():
         hival - the highest value val can take on
     """
 
-    def __init__(self):
-        self.val = None
-        self.question = None
-        self.atype = None
-        self.default_val = None
-        self.lowval = None
-        self.hival = None
+    def __init__(self, val=None, question=None, atype=None, default_val=None,
+                        lowval=None, hival=None):
+        self.val = val
+        self.question = question
+        self.atype = atype
+        self.default_val = default_val
+        self.lowval = lowval
+        self.hival = hival
 
 
 class PropArgs:
@@ -133,15 +134,15 @@ class PropArgs:
     def set_props_from_db(self):
         params = Model.objects.get(name=self.model_nm).params.all()
         for param in params:
-            self.props[param.prop_name].val = param.default_val
-            self.props[param.prop_name].question = param.question
-            self.props[param.prop_name].atype = param.atype
-            self.props[param.prop_name].default_val = param.default_val
-            self.props[param.prop_name].lowval = param.lowval
-            self.props[param.prop_name].hival = param.hival
+            self.props[param.prop_name] = Prop(val=param.default_val,
+                                               question=param.question,
+                                               atype=param.atype,
+                                               default_val=param.default_val,
+                                               lowval=param.lowval,
+                                               hival=param.hival)
 
     def overwrite_props_from_env(self):
-        self.props[OS].val = platform.system()
+        self.props[OS] = Prop(val=platform.system())
 
     def overwrite_props_from_dict(self, prop_dict):
         """
@@ -150,13 +151,13 @@ class PropArgs:
             {
                 prop_name:
                     {
-                        value: <something>,
+                        val: <something>,
                         question: <something>,
                         atype: <something>,
                     }
                 prop_name:
                     {
-                        value: <something>,
+                        val: <something>,
                         hival: <something>,
                         lowval: <something>,
                     }
@@ -167,20 +168,28 @@ class PropArgs:
             {
                 "num_agents":
                     {
-                        value: 100,
+                        val: 100,
                         question: "how many agents should be initially present in the model?",
                         atype: "INT",
                     }
                  "agent_speed":
                     {
-                        value: 3,
+                        val: 3,
                     }
             }
 
         """
         for prop_nm in prop_dict:
             for attribute in prop_dict[prop_nm]:
-                self.props[prop_nm] = prop_dict[prop_nm].get(attribute)
+                print("Type is")
+                print(type(prop_dict))
+                val = prop_dict[prop_nm].get(VALUE, None)
+                question = prop_dict[prop_nm].get(QUESTION, None)
+                atype = prop_dict[prop_nm].get(ATYPE, None)
+                hival = prop_dict[prop_nm].get(HIVAL, None)
+                lowval = prop_dict[prop_nm].get(LOWVAL, None)
+                self.props[prop_nm] = Prop(val=val, question=question, atype=atype,
+                                           hival=hival, lowval=lowval)
 
     def overwrite_props_from_command_line(self):
         prop_nm = None
@@ -200,7 +209,7 @@ class PropArgs:
                 
     def _keep_asking_until_correct(self, prop_nm):
         while True:
-            answer = input(self._get_question(prop_nm))
+            answer = input(self.get_question(prop_nm))
             if not answer:
                 return None
             typed_answer = self._type_answer(prop_nm, answer)
@@ -290,6 +299,17 @@ class PropArgs:
                            lowval=self.props[prop_nm].lowval,
                            hival=self.props[prop_nm].hival,
                            default=self.props[prop_nm].val)
+
+    def get(self, nm, default=None):
+        """
+        Get a property value, with a default
+        that gets stored if the property is not there
+        at the time of the call.
+        """
+        if nm not in self:
+            self.props[nm].val = default
+        return self.props[nm].val
+
 
 class Logger:
     """
