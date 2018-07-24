@@ -9,6 +9,7 @@ import indra.menu as menu
 import indra.env as env
 import indra.user as user
 import indra.display_methods as disp
+import indra.spatial_agent as sa
 
 X = 0
 Y = 1
@@ -117,14 +118,20 @@ class SpatialEnv(env.Environment):
         self.height = json_input["height"]
         self.max_dist = json_input["max_dist"]
         self.plot_title = json_input["plot_title"]
-    
-    def restore_agents(self, json_input):
-        import indra.spatial_agent as sa
+
+    def restore_agent(self, agent_json):
+        """
+        Restore the states of one agent
+        """
+        agent = sa.SpatialAgent(agent_json["name"], 
+                                   agent_json["goal"],
+                                   agent_json["max_move"],
+                                   agent_json["max_detect"])
+        self.add_agent_from_json(agent)
         
-        for agent in json_input["agents"]:
-            agent = sa.SpatialAgent(agent["name"], 
-                                   agent["goal"],
-                                   agent["max_move"],
-                                   agent["max_detect"])
-            agent.from_json(agent)
-            self.add_agent(agent)
+    def add_agent_from_json(self, agent, agent_json):
+        """
+        Add a restored agent to the env
+        """
+        agent.from_json(agent_json)
+        self.add_agent(agent_json)

@@ -569,13 +569,12 @@ class Environment(node.Node):
         try:
             self.from_json(json_input)
             
-            pop_name = self.model_nm + "Agents"
-            self.agents = ap.AgentPop(pop_name)
             self.restore_agents(json_input)
         except KeyError as e:
             self.user.tell("Error: " + str(e) + " not found")
             return
         
+        self.print_env()
         self.user.tell("Session restored")
         
     def from_json(self, json_input):
@@ -587,9 +586,17 @@ class Environment(node.Node):
         self.model_nm = json_input["model_nm"]
         self.props = pa.PropArgs(self.model_nm, props=json_input["props"])      
         self.period = json_input["period"]
-        self.image_bytes = self.plot()
         self.user.from_json(json_input["user"])
         
     def restore_agents(self, json_input):
-        self.user.tell("restore_agents not implemented in this model", 
-                       type=user.ERROR)
+        """
+        Restore the states of all agents
+        """
+        for agent in json_input["agents"]:
+            self.restore_agent(agent)
+            
+    def restore_agent(self, agent_json):
+        logging.info("restore_agent not implemented")
+        
+    def print_env(self):
+        logging.info("print_env not implemented")
