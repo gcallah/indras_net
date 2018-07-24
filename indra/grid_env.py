@@ -463,7 +463,6 @@ class GridEnv(se.SpatialEnv):
         safe_fields = super().to_json()
         safe_fields["torus"] = self.torus
         safe_fields["num_cells"] = self.num_cells
-        self.print_env()
         
         return safe_fields
     
@@ -478,9 +477,9 @@ class GridEnv(se.SpatialEnv):
                                      agent_json["goal"],
                                      agent_json["max_move"], 
                                      agent_json["max_detect"])
-        self.add_agent_from_json(new_agent, agent_json)
+        self.add_agent_to_grid(new_agent, agent_json)
         
-    def add_agent_from_json(self, agent, agent_json):
+    def add_agent_to_grid(self, agent, agent_json):
         x, y = agent_json["cell"]["coordx"], agent_json["cell"]["coordy"]
         self.add_agent(agent, x, y, True)
         agent.from_json(agent_json)

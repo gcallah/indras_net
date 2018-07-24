@@ -544,6 +544,8 @@ class Environment(node.Node):
         path = os.path.join(base_dir, "json/" + self.model_nm + session_id + ".json")
         with open(path, "w+") as f: 
             f.write(json_output)
+            
+        self.print_env()
         self.user.tell("Session saved")
     
     def restore_session(self, session_id=None):
@@ -566,13 +568,9 @@ class Environment(node.Node):
             json_input = f.readline()
         json_input = json.loads(json_input)
         
-        try:
-            self.from_json(json_input)
+        self.from_json(json_input)
             
-            self.restore_agents(json_input)
-        except KeyError as e:
-            self.user.tell("Error: " + str(e) + " not found")
-            return
+        self.restore_agents(json_input)
         
         self.print_env()
         self.user.tell("Session restored")
