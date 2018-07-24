@@ -211,13 +211,6 @@ class PropArgs:
                 continue
             return typed_answer
 
-    def _get_question(self, prop_nm):
-            return "{question} {lowval}-{hival} [{default}] "\
-                   .format(question=self.props[prop_nm].question, 
-                           lowval=self.props[prop_nm].lowval,
-                           hival=self.props[prop_nm].hival,
-                           default=self.props[prop_nm].val)
-
     def _type_answer(self, prop_nm, answer):
         type_cast = type_dict[self.props[prop_nm].atype]
         return type_cast(answer)
@@ -291,51 +284,22 @@ class PropArgs:
         if key in self:
             self.props[key].val = value
 
-    def get_question(self, key, default=None):
-        if key in self and hasattr(self.props[key], QUESTION) and self.props[key].question is not None:
-            return self.props[key].question
-        return default
-
-    def set_question(self, key, value):
-        if key in self:
-            self.props[key].question = value
-
-    def get_atype(self, key, default=None):
-        if key in self and hasattr(self.props[key], ATYPE) and self.props[key].atype is not None:
-            return self.props[key].atype
-        return default
-
-    def set_atype(self, key, value):
-        if key in self:
-            self.props[key].atype = value
-
-    def get_default_val(self, key, default=None):
-        if key in self and hasattr(self.props[key], DEFAULT_VAL) and self.props[key].default_val is not None:
-            return self.props[key].default_val
-        return default
-
-    def set_default_val(self, key, value):
-        if key in self:
-            self.props[key].default_val = value
+    def get_question(self, prop_nm):
+            return "{question} [{lowval}-{hival}] ({default}) "\
+                   .format(question=self.props[prop_nm].question, 
+                           lowval=self.props[prop_nm].lowval,
+                           hival=self.props[prop_nm].hival,
+                           default=self.props[prop_nm].val)
 
     def get_hival(self, key, default=None):
         if key in self and hasattr(self.props[key], HIVAL) and self.props[key].hival is not None:
             return self.props[key].hival
         return default
 
-    def set_hival(self, key, value):
-        if key in self:
-            self.props[key].hival = value
-
     def get_lowval(self, key, default=None):
         if key in self and hasattr(self.props[key], LOWVAL) and self.props[key].lowval is not None:
             return self.props[key].lowval
         return default
-
-    def set_hival(self, key, value):
-        if key in self:
-            self.props[key].hival = value
-
 
 class Logger:
     """
