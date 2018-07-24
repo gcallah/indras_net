@@ -72,7 +72,7 @@ class PropArgs():
         else:
             self.props = props
             logfile = self.get("log_fname")
-        self.logger = Logger(self, logfile=logfile)
+        self.logger = Logger(self, model_name=model_nm,logfile=logfile)
         self.graph.add_edge(self, self.logger)
         self["OS"] = platform.system()
         self["model"] = model_nm
@@ -163,16 +163,16 @@ class Logger():
     DEF_FORMAT = '%(asctime)s:%(levelname)s:%(message)s'
     DEF_LEVEL = logging.INFO
     DEF_FILEMODE = 'w'
-    DEF_FILENAME = 'log.txt'
+    # DEF_FILENAME = 'Basic.log'
 
-    def __init__(self, props, logfile=None,
+    def __init__(self, props, model_name, logfile=None,
                  loglevel=logging.INFO):
         if logfile is None:
-            logfile = Logger.DEF_FILENAME
-        print("About to init logging.")
+            logfile = model_name + ".log"
         fmt = props.get("log_format", Logger.DEF_FORMAT)
         lvl = props.get("log_level", Logger.DEF_LEVEL)
         fmd = props.get("log_fmode", Logger.DEF_FILEMODE)
+        props["log_fname"] = logfile
 # we put the following back in once the model names are fixed
 #  fnm = props.get("log_fname", logfile)
         logging.basicConfig(format=fmt,
