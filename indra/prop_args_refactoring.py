@@ -291,16 +291,6 @@ class PropArgs:
                            hival=self.props[prop_nm].hival,
                            default=self.props[prop_nm].val)
 
-    def get_hival(self, key, default=None):
-        if key in self and hasattr(self.props[key], HIVAL) and self.props[key].hival is not None:
-            return self.props[key].hival
-        return default
-
-    def get_lowval(self, key, default=None):
-        if key in self and hasattr(self.props[key], LOWVAL) and self.props[key].lowval is not None:
-            return self.props[key].lowval
-        return default
-
 class Logger:
     """
     A class to track how we are logging.
