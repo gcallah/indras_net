@@ -278,7 +278,7 @@ class Environment(node.Node):
         self.user.tell("Running for %i steps; press Ctrl-c to halt!" % steps)
         time.sleep(3)
         try:
-            while self.period <= target:
+            while self.period < target:
                 step_msg = self.step()
                 if step_msg is not None:
                     self.user.tell(step_msg)

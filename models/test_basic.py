@@ -9,6 +9,7 @@ from unittest import TestCase, main
 import sys
 import indra.user as user
 import random
+from collections import deque
 
 MODEL_NM = "Basic"
 
@@ -45,18 +46,19 @@ class BasicTestCase(TestCase):
 
     def test_agent_inspect(self):
         agent = self.env.agent_inspect("agent for tracking")
-        print("running test 1")
+        print("running test agent inspect")
         self.assertEqual(agent.name, "agent for tracking")
 
     def test_add_agent(self):
+        print("running test add agent")
         self.env.add_agent(bm.Gozer())
         # test if the add worked!
         # test by running 
         new_agent = self.env.agent_inspect("Gozer the Destructor")
-        print("running test 2")
         self.assertIsNotNone(new_agent)
 
     def test_props_write(self):
+        print("running test props write")
         report = True
         self.env.pwrite(self.env.model_nm + ".props")
         props_written = json.load(open(self.env.model_nm + ".props"))
@@ -71,10 +73,10 @@ class BasicTestCase(TestCase):
                     if props_written[key] != self.env.props.props[key]:
                         report = False
                         break
-        print("running test 3")
         self.assertEquals(report, True)
 
     def test_population_report(self):
+        # need to test step method first!!!!!!!!!!!!
         self.env.n_steps(random.randint(10,20))
         report = True
         self.env.pop_report(self.env.model_nm+".csv")
@@ -84,7 +86,7 @@ class BasicTestCase(TestCase):
         head_list = head.split(",")
         print("check1!!!!!!!", head_list)
         dic_for_reference = self.env.agents.get_pop_hist()
-        print("check2!!!!!!!", dic_for_reference)
+        # print("check2!!!!!!!", dic_for_reference)
         for i in head_list:
             if i not in dic_for_reference:
                 report = False
@@ -93,7 +95,7 @@ class BasicTestCase(TestCase):
             dic_for_check = {}
             for i in head_list:
                 dic_for_check[i] = []
-            print("check3!!!!!!!", dic_for_check)
+            # print("check3!!!!!!!", dic_for_check)
             for line in f:
                 line = line.strip("\n")
                 line_list = line.split(",")
@@ -103,7 +105,7 @@ class BasicTestCase(TestCase):
                 else:
                     report = False
                     break
-            print("check4!!!!!!!", dic_for_check)
+            # print("check4!!!!!!!", dic_for_check)
 
         if report == True:
             if len(dic_for_check) != len(dic_for_reference):
@@ -154,8 +156,59 @@ class BasicTestCase(TestCase):
                     line_list[0] = line_list[0].strip()
                     line_list[1] = line_list[1].strip()
                     dic_for_check[line_list[0]] = line_list[1]
-        if dic_for_check != self.env.props.props:
+        for key in self.env.props.props:
+            if str(self.env.props.props[key]) != dic_for_check[key]:
+                report = False
+        self.assertEquals(report, True)
+
+    def test_examine_log(self):
+        report = True
+        logfile_name = self.env.props.props["model"] + ".log"
+        list_for_reference = deque(maxlen=16)
+
+        with open(logfile_name, 'rt') as log:
+            for line in log:
+                list_for_reference.append(line)
+        orig_out = sys.stdout
+        sys.stdout = open("checklog.txt", "w")
+        self.env.disp_log()
+        sys.stdout.close()
+        sys.stdout = orig_out
+        f = open("checklog.txt", "r")
+        first_line = f.readline().strip()
+        first_line = first_line.split(" ")
+        if logfile_name != first_line[-1]:
             report = False
+        if report == True:
+            for i, line in enumerate(f):
+                if list_for_reference[i] != line:
+                    report = False
+
+        self.assertEquals(report, True)
+
+    def test_step(self):
+        report = True
+        period_before_run = self.env.period
+        self.env.step()
+        period_after_run = self.env.period
+        print(period_before_run)
+        print(period_after_run)
+        if period_before_run + 1 != period_after_run:
+            report = False
+        self.assertEquals(report, True)
+
+    def test_n_step(self):
+        report = True
+        period_before_run = self.env.period
+        random_steps = random.randint(3,30)
+        self.env.n_steps(random_steps)
+        period_after_run = self.env.period
+        print(period_before_run)
+        print(period_after_run)
+        print(random_steps)
+        if (period_before_run + random_steps) != period_after_run:
+            report = False
+        self.assertEquals(report, True)
 
 if __name__ == '__main__':
     main()
