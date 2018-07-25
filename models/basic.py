@@ -76,3 +76,8 @@ class BasicEnv(env.Environment):
         print("Preact loop: demonstrating backwards looping")
         for agent in reversed(self.agents):
             print("Agent: " + agent.name)
+            
+    def restore_agents(self, json_input):
+        for agent in json_input["agents"]:
+            self.add_agent(BasicAgent(agent["name"], 
+                                      agent["goal"]))
