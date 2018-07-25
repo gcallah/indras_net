@@ -9,7 +9,7 @@ pa = props.PropArgs.create_props(MODEL_NM)
 
 import indra.utils as utils
 import indra.grid_env as ge
-import models.grid_model as gm
+import models.grid as gm
 import logging
 import os
 

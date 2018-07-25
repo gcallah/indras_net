@@ -24,7 +24,7 @@ import itertools
 import logging
 import indra.node as node
 import indra.spatial_env as se
-import models.grid_model as ta
+import models.grid as ta
 import indra.grid_agent as ga
 
 RANDOM = -1
