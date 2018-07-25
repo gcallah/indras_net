@@ -10,7 +10,7 @@ pa = props.PropArgs.create_props(MODEL_NM)
 
 import indra.utils as utils
 import indra.prop_args as props
-import bigbox.bigbox as bb
+import bigbox as bb
 
 # set up some file names:
 

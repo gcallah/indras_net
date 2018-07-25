@@ -2,14 +2,14 @@
 """
 A script to test our grid capabilities.
 """
-MODEL_NM = "Wolfram"
+MODEL_NM = "wolfram"
 
 import indra.prop_args as props
 pa = props.PropArgs.create_props(MODEL_NM)
 
 import indra.utils as utils
 import indra.prop_args as props
-import wolfram.wolfram as wm
+import wolfram as wm
 import os
 
 def run(prop_dict=None):
