@@ -1038,7 +1038,7 @@ summary.menu_sum {
     float:right;
 }
 .scroll_box {
-    background-color: lightblue;
+    background-color: white;
     width: 20em;
     height: 20em;
     overflow: scroll;
@@ -1047,7 +1047,7 @@ summary.menu_sum {
     border:0.2em solid black;
 }
 .scroll_box_2 {
-    background-color: lightblue;
+    background-color: white;
     width: 20em;
     height: 20em;
     overflow: scroll;
