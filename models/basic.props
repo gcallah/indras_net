@@ -1,11 +1,11 @@
 {
     "user_type": "terminal",
-    "log_fname": null,
+    "log_fname": "basic.log",
     "log_format": "%(asctime)s:%(levelname)s:%(message)s",
     "log_level": 20,
     "log_fmode": "w",
     "OS": "Darwin",
-    "model": "Basic",
+    "model": "basic",
     "periods": null,
     "num_agents": 100,
     "user_name": "thomas"

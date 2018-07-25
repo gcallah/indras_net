@@ -113,7 +113,7 @@ def run(request):
     global real_time_text
     
     session_id = int(request.session['session_id'])
-    text_for_box2 = None
+    text_for_box2 = ''
     
     #Load module
     model_name = request.POST[MODEL]

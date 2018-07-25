@@ -11,14 +11,14 @@ import indra.user as user
 import random
 from collections import deque
 
-MODEL_NM = "Basic"
+MODEL_NM = "basic"
 
 import indra.prop_args as props
 # we will create props here to set user_type:
 pa = props.PropArgs.create_props(MODEL_NM)
 
 import json
-import models.basic_model as bm
+import models.basic as bm
 
 class BasicTestCase(TestCase):
     def __init__(self, methodName, prop_file="basic.props"):
@@ -73,6 +73,30 @@ class BasicTestCase(TestCase):
                     if props_written[key] != self.env.props.props[key]:
                         report = False
                         break
+        self.assertEquals(report, True)
+
+    def test_step(self):
+        report = True
+        period_before_run = self.env.period
+        self.env.step()
+        period_after_run = self.env.period
+        print(period_before_run)
+        print(period_after_run)
+        if period_before_run + 1 != period_after_run:
+            report = False
+        self.assertEquals(report, True)
+
+    def test_n_step(self):
+        report = True
+        period_before_run = self.env.period
+        random_steps = random.randint(3,30)
+        self.env.n_steps(random_steps)
+        period_after_run = self.env.period
+        print(period_before_run)
+        print(period_after_run)
+        print(random_steps)
+        if (period_before_run + random_steps) != period_after_run:
+            report = False
         self.assertEquals(report, True)
 
     def test_population_report(self):
@@ -186,29 +210,6 @@ class BasicTestCase(TestCase):
 
         self.assertEquals(report, True)
 
-    def test_step(self):
-        report = True
-        period_before_run = self.env.period
-        self.env.step()
-        period_after_run = self.env.period
-        print(period_before_run)
-        print(period_after_run)
-        if period_before_run + 1 != period_after_run:
-            report = False
-        self.assertEquals(report, True)
-
-    def test_n_step(self):
-        report = True
-        period_before_run = self.env.period
-        random_steps = random.randint(3,30)
-        self.env.n_steps(random_steps)
-        period_after_run = self.env.period
-        print(period_before_run)
-        print(period_after_run)
-        print(random_steps)
-        if (period_before_run + random_steps) != period_after_run:
-            report = False
-        self.assertEquals(report, True)
 
 if __name__ == '__main__':
     main()
