@@ -3,14 +3,14 @@
 A script that runs big_box_model. It simulates the market economy
 of consumers, mom and pops, and big boxes.
 """
-MODEL_NM = "Big Box"
+MODEL_NM = "bigbox"
 
 import indra.prop_args as props
 pa = props.PropArgs.create_props(MODEL_NM)
 
 import indra.utils as utils
 import indra.prop_args as props
-import bigbox.big_box_model as bb
+import bigbox.bigbox as bb
 
 # set up some file names:
 

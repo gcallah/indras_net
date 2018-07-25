@@ -7,14 +7,14 @@ Created on Mon Mar  2 21:39:40 2015
 
 Segregation Run File
 """
-MODEL_NM = "Schelling Segregation"
+MODEL_NM = "segregation"
 
 import indra.prop_args as props
 pa = props.PropArgs.create_props(MODEL_NM)
 
 import indra.utils as utils
 import indra.prop_args as props
-import schelling.segregation_model as sm
+import schelling.segregation as sm
 
 # set up some file names:
 

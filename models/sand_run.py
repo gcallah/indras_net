@@ -2,14 +2,14 @@
 """
 A script to test our grid capabilities.
 """
-MODEL_NM = "Sand"
+MODEL_NM = "sand"
 
 import indra.prop_args as props
 # we will create props here to set user_type:
 pa = props.PropArgs.create_props(MODEL_NM)
 import indra.utils as utils
 import indra.prop_args as props
-import models.sand_model as sm
+import models.sand as sm
 
 # set up some file names:
 

@@ -6,7 +6,7 @@ A script to test our two pop capabilities.
 import indra.utils as utils
 import indra.prop_args as props
 import indra.two_pop_model as itpm
-import models.two_pop_model as tpm
+import models.two_pop as tpm
 
 # set up some file names:
 MODEL_NM = "two_pop_model"

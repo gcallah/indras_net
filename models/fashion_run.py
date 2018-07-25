@@ -2,13 +2,13 @@
 """
 Runs a fashion model with hipsters and followers.
 """
-MODEL_NM = "Fashion"
+MODEL_NM = "fashion"
 import indra.prop_args as props
 pa = props.PropArgs.create_props(MODEL_NM)
 
 import indra.utils as utils
 import indra.prop_args as props
-import models.fashion_model as fm
+import models.fashion as fm
 
 # set up some file names:
 

@@ -5,14 +5,14 @@ Created on Thu Sep 18 16:45:50 2014
 
 @author: Gene Callahan and Brandon Logan
 """
-MODEL_NM = "Schelling Height"
+MODEL_NM = "height"
 
 import indra.prop_args as props
 pa = props.PropArgs.create_props(MODEL_NM)
 
 import indra.utils as utils
 import indra.prop_args as props
-import schelling.height_model as hm
+import schelling.height as hm
 
 START_HEIGHT = 100.0
 

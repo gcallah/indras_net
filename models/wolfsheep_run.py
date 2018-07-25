@@ -2,14 +2,14 @@
 """
 A predator-prey model with wolves and sheep.
 """
-MODEL_NM = "Wolfsheep"
+MODEL_NM = "wolfsheep"
 
 import indra.prop_args as props
 pa = props.PropArgs.create_props(MODEL_NM)
 
 import indra.utils as utils
 import indra.prop_args as props
-import models.wolfsheep_model as wsm
+import models.wolfsheep as wsm
 
 # set up some file names:
 

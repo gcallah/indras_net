@@ -6,7 +6,7 @@ A script to test our grid capabilities.
 import indra.utils as utils
 import indra.prop_args as props
 import indra.grid_env as ge
-import models.obst_model as om
+import models.obst as om
 
 # set up some file names:
 MODEL_NM = "obst_model"

@@ -2,14 +2,14 @@
 """
 Set up and run the auditorium model.
 """
-MODEL_NM = "Schelling Auditorium"
+MODEL_NM = "auditorium"
 
 import indra.prop_args as props
 pa = props.PropArgs.create_props(MODEL_NM)
 
 import indra.utils as utils
 import indra.prop_args as props
-import schelling.auditorium_model as am
+import schelling.auditorium as am
 
 # set up some file names:
 

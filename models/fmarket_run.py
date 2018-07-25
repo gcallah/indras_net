@@ -2,14 +2,14 @@
 """
 Runs a financial market model with value investors and chart followers.
 """
-MODEL_NM = "Fmarket"
+MODEL_NM = "fmarket"
 
 import indra.prop_args as props
 pa = props.PropArgs.create_props(MODEL_NM)
 
 import indra.utils as utils
 import indra.prop_args as props
-import models.fmarket_model as fm
+import models.fmarket as fm
 
 # set up some file names:
 

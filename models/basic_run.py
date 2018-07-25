@@ -5,7 +5,7 @@ create new run scripts, and should be run to test
 the system after library changes.
 """
 
-MODEL_NM = "Basic"
+MODEL_NM = "basic"
 
 import indra.prop_args as props
 # we will create props here to set user_type:
@@ -13,7 +13,7 @@ pa = props.PropArgs.create_props(MODEL_NM)
 
 
 import indra.utils as utils
-import models.basic_model as bm
+import models.basic as bm
 
 
 def run(prop_dict=None):

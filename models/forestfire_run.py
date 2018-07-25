@@ -2,13 +2,13 @@
 """
 This file runs the forestfire_model.
 """
-MODEL_NM = "Forest Fire"
+MODEL_NM = "forestfire"
 
 import indra.prop_args as props
 pa = props.PropArgs.create_props(MODEL_NM)
 
 import indra.utils as utils
-import models.forestfire_model as fm
+import models.forestfire as fm
 
 # set up some file names:
 

@@ -23,7 +23,7 @@ import indra.grid_env as ge
 import indra.display_methods as disp
 import indra.data_methods as data
 
-MODEL_NM = "big_box_model"
+MODEL_NM = "bigbox"
 
 pa = utils.read_props(MODEL_NM)
 
