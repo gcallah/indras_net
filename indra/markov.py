@@ -108,3 +108,12 @@ class MarkovPre(pre.Prehension):
             return from_matrix(self.matrix * other.matrix)
         else:
             return from_matrix(other.matrix * self.matrix)
+        
+    def to_json(self):
+        safe_fields = {}
+        safe_fields["matrix"] = self.matrix.tostring()
+        
+        return safe_fields
+
+    def from_json(self, json_input):
+        self.matrix = np.matrix(json_input["matrix"])

@@ -14,9 +14,13 @@
         {% for model in models %}
             <tr>
                 <td> 
-                <a class="btn-link" href="{% url 'IndrasNet:parameters' %}?model={{ model.name }}">
-                {{ model.name }}
-                </a>
+                {% if model.functional %}
+                    <a class="btn-link" href="{% url 'IndrasNet:parameters' %}?model={{ model.name }}">
+                    {{ model.name }}
+                    </a>
+                {% else %}    
+                    {{ model.name }}
+                {% endif %}
                 </td>
                 <td> {{ model.mtype }} </td>
                 <td> {{ model.descr }} </td>

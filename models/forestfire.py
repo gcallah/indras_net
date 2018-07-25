@@ -94,13 +94,7 @@ class ForestEnv(menv.MarkovEnv):
                          props=props)
         self.density = density
         self.plot_title = "A Forest Fire"
-
-        # setting our colors adds varieties as well!
-        self.set_var_color(BURNED_OUT, disp.BLACK)
-        self.set_var_color(ON_FIRE, disp.RED)
-        self.set_var_color(HEALTHY, disp.GREEN)
-        self.set_var_color(NEW_GROWTH, disp.CYAN)
-
+        
         # set up our two possible transition matrices:
         self.normal = markov.MarkovPre(NORMAL_TRANS)
         self.fire = markov.MarkovPre(FIRE_TRANS)
@@ -110,3 +104,11 @@ class ForestEnv(menv.MarkovEnv):
             return self.fire
         else:
             return self.normal
+        
+    def set_agent_color(self):
+        # setting our colors adds varieties as well!
+        self.set_var_color(BURNED_OUT, disp.BLACK)
+        self.set_var_color(ON_FIRE, disp.RED)
+        self.set_var_color(HEALTHY, disp.GREEN)
+        self.set_var_color(NEW_GROWTH, disp.CYAN)
+

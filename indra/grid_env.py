@@ -24,6 +24,10 @@ import itertools
 import logging
 import indra.node as node
 import indra.spatial_env as se
+<<<<<<< HEAD
+=======
+import models.grid as ta
+>>>>>>> 376138bab3fd50db06756908ed3c41243f5a834d
 import indra.grid_agent as ga
 
 RANDOM = -1
@@ -172,7 +176,7 @@ class GridEnv(se.SpatialEnv):
 
         self.torus = torus
         self.num_cells = width * height
-
+        
         self.__init_unrestorables()
             
     def __init_unrestorables(self):
@@ -185,6 +189,8 @@ class GridEnv(se.SpatialEnv):
                 row.append(cell)
                 self.empties.append(cell)
             self.grid.append(row)
+        
+        self.set_agent_color()
 
     def __iter__(self):
         # create an iterator that chains the
@@ -490,3 +496,9 @@ class GridEnv(se.SpatialEnv):
                 msg += (str(cell.contents) + ", ")
             msg += "\n"
         logging.info(msg)
+<<<<<<< HEAD
+=======
+        
+    def set_agent_color(self):
+        logging.info("set_agent_color is not implemented")
+>>>>>>> 376138bab3fd50db06756908ed3c41243f5a834d

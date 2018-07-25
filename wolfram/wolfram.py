@@ -115,8 +115,6 @@ class WolframEnv(ge.GridEnv):
         except:
             self.rules = RULE30
             logging.info("Rule dictionary not found. Using the default rule.")
-                    
-        self.set_agent_color()
 
         center_x = floor(self.width // 2)
         top_y = self.height-1
@@ -156,8 +154,6 @@ class WolframEnv(ge.GridEnv):
     def from_json(self, json_input):
         super().from_json(json_input)
         self.rules = json_input["rules"]
-        
-        self.set_agent_color()
     
     def restore_agent(self, agent_json):
         new_agent = WolframAgent(agent_json["name"], agent_json["goal"])
