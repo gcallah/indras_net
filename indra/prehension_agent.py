@@ -35,3 +35,5 @@ class PrehensionAgent(ga.GridAgent):
         """
         s = super().debug_info() + "\nstance: " + str(self.stance)
         return s
+    
+    

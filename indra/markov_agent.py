@@ -41,3 +41,15 @@ class MarkovAgent(pa.PrehensionAgent):
         self.state_pre.matrix = markov.probvec_to_state(prob_pre.matrix)
         # print("self_pre after = " + str(self.state_pre))
         self.next_state = markov.get_state(self.state_pre.matrix)
+
+    def to_json(self):
+        safe_fields = super().to_json()
+        safe_fields["state_pre"] = self.state_pre.to_json()
+        safe_fields["state"] = self.state
+        
+        return safe_fields
+    
+    def from_json (self, json_input):
+        super().from_json(json_input)
+        self.state_pre.from_json(json_input["state_pre"])
+        self.state = json_input["state"]
