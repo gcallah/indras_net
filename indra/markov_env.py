@@ -79,14 +79,18 @@ class MarkovEnv(ge.GridEnv):
     def to_json(self):
         safe_fields = super().to_json()
         safe_fields["def_trans_matrix"] = self.def_trans_matrix.to_json()
+        
+        return safe_fields
     
     def from_json(self, json_input):
+        super().from_json(json_input)
         self.def_trans_matrix.from_json(json_input["def_trans_matrix"])
     
-    def restore_agent(self, agent_json):            
-        new_agent = ta.TestGridAgent(agent_json["name"], 
-                                     agent_json["goal"],
-                                     agent_json["max_move"], 
-                                     agent_json["max_detect"])
-        self.add_agent_to_grid(new_agent, agent_json)
+    def restore_agent(self, agent_json):           
+        pass
+#        new_agent = ma.MarkovAgent(agent_json["name"], 
+#                                     agent_json["goal"],
+#                                     
+#                                     agent_json["max_detect"])
+#        self.add_agent_to_grid(new_agent, agent_json)
         

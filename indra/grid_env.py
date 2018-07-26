@@ -483,8 +483,8 @@ class GridEnv(se.SpatialEnv):
         
     def add_agent_to_grid(self, agent, agent_json):
         x, y = agent_json["cell"]["coordx"], agent_json["cell"]["coordy"]
-        self.add_agent(agent, x, y, True)
         agent.from_json(agent_json)
+        self.add_agent(agent, x, y, True)
             
     def print_env(self):
         msg = ""
