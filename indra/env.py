@@ -546,7 +546,7 @@ class Environment(node.Node):
             f.write(json_output)
             
         #self.print_env()
-        self.user.tell("Session saved")
+        #self.user.tell("Session saved")
     
     def restore_session(self, session_id=None):
         """
@@ -573,7 +573,7 @@ class Environment(node.Node):
         self.restore_agents(json_input)
         
         #self.print_env()
-        self.user.tell("Session restored")
+        #self.user.tell("Session restored")
         
     def from_json(self, json_input):
         self.__init_unrestorables()
