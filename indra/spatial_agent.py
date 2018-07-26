@@ -3,7 +3,6 @@ Filename: spatial_agent.py
 Author: Gene Callahan
 """
 
-from collections import deque
 # import logging
 import indra.entity as ent
 
@@ -36,8 +35,8 @@ class SpatialAgent(ent.Agent):
         safe_fields["__pos"] = self.__pos
         return safe_fields
     
-    def from_json(self, json_input):
-        super().from_json(json_input)
+    def from_json_preadd(self, json_input):
+        super().from_json_preadd(json_input)
         
         self.__pos = json_input["__pos"]
         

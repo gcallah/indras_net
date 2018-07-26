@@ -81,8 +81,8 @@ class Tree(ma.MarkovAgent):
         
         return safe_fields
     
-    def from_json (self, json_input):
-        super().from_json(json_input)
+    def from_json_preadd(self, json_input):
+        super().from_json_preadd(json_input)
         self.state = json_input["state"]
         self.ntype = json_input["ntype"]
         self.next_state = json_input["next_state"]

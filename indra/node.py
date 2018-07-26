@@ -116,10 +116,21 @@ class Node():
         """
         return {"name": self.name}
     
-    def from_json(self, json_input):
+    def from_json_preadd(self, json_input):
         """
         Whatever information not properly restored by the constructor 
         parameters goes here
+        These parameters need to be restored before the agent is added to an
+        envronment
+        """
+        pass
+    
+    def from_json_postadd(self, json_input):
+        """
+        Whatever information not properly restored by the constructor 
+        parameters goes here
+        These parameters need to be restored after the agent is added to an
+        envronment
         """
         pass
 

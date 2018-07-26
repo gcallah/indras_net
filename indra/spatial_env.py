@@ -133,5 +133,6 @@ class SpatialEnv(env.Environment):
         """
         Add a restored agent to the env
         """
-        agent.from_json(agent_json)
-        self.add_agent(agent_json)
+        agent.from_json_preadd(agent_json)
+        self.add_agent(agent)
+        agent.from_json_postadd(agent_json)
