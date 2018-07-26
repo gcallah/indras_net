@@ -70,6 +70,7 @@ class ModelParam(models.Model):
 class Model(SingleNameModel, DescrModel):
     mtype = models.ForeignKey(ModelType, models.SET_NULL, null=True, )
     module = models.CharField(max_length=128)
+    disp_name = models.CharField(max_length=128)
     functional = models.BooleanField(default=False)
     params = models.ManyToManyField(
         ModelParam, default="", related_name="parameters", blank=True,

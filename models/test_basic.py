@@ -19,6 +19,7 @@ pa = props.PropArgs.create_props(MODEL_NM)
 
 import json
 import models.basic as bm
+import os
 
 class BasicTestCase(TestCase):
     def __init__(self, methodName, prop_file="basic.props"):
@@ -108,7 +109,7 @@ class BasicTestCase(TestCase):
         head = f.readline()
         head = head.strip("\n")
         head_list = head.split(",")
-        print("check1!!!!!!!", head_list)
+        # print("check1!!!!!!!", head_list)
         dic_for_reference = self.env.agents.get_pop_hist()
         # print("check2!!!!!!!", dic_for_reference)
         for i in head_list:
@@ -139,6 +140,8 @@ class BasicTestCase(TestCase):
                     if dic_for_check[key] != dic_for_reference[key]["data"]:
                         report = False
                         break
+        f.close()
+        os.remove(self.env.model_nm + ".csv")
         self.assertEquals(report, True)
 
     def test_list_agents(self):
@@ -157,7 +160,8 @@ class BasicTestCase(TestCase):
             if agent.name != line_list[0] or agent.goal != line_list[1]:
                 report = False
                 break
-
+        f.close()
+        os.remove("checkfile.txt")
         self.assertEquals(report, True)
 
     def test_display_props(self):
@@ -183,6 +187,8 @@ class BasicTestCase(TestCase):
         for key in self.env.props.props:
             if str(self.env.props.props[key]) != dic_for_check[key]:
                 report = False
+        f.close()
+        os.remove("checkprops.txt")
         self.assertEquals(report, True)
 
     def test_examine_log(self):
@@ -207,9 +213,45 @@ class BasicTestCase(TestCase):
             for i, line in enumerate(f):
                 if list_for_reference[i] != line:
                     report = False
+        f.close()
+
+        os.remove("checklog.txt")
 
         self.assertEquals(report, True)
 
+    def test_save_session(self):
+        report = True
+        try:
+            base_dir = self.env.props["base_dir"]
+        except:
+            base_dir = ""
+        session_id = random.randint(1, 10)
+        self.env.save_session(session_id)
+        session_id = str(session_id)
+        path = base_dir + self.env.model_nm + session_id + ".json"
+        with open(path, "r") as f:
+            json_input = f.readline()
+        json_input = json.loads(json_input)
+        if json_input["period"] != self.env.period:
+            report = False
+        if json_input["model_nm"] != self.env.model_nm:
+            report = False
+        if json_input["preact"] != self.env.preact:
+            report = False
+        if json_input["postact"] != self.env.postact:
+            report = False
+        if json_input["props"] != self.env.props.to_json():
+            report = False
+        if json_input["user"] != self.env.user.to_json():
+            report = False
+        agents = []
+        for agent in self.env.agents:
+            agents.append(agent.to_json())
+        if json_input["agents"] != agents:
+            report = False
+
+        os.remove(path)
+        self.assertEquals(report, True)
 
 if __name__ == '__main__':
     main()
