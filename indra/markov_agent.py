@@ -49,7 +49,7 @@ class MarkovAgent(pa.PrehensionAgent):
         
         return safe_fields
     
-    def from_json (self, json_input):
-        super().from_json(json_input)
+    def from_json_preadd(self, json_input):
+        super().from_json_preadd(json_input)
         self.state_pre.from_json(json_input["state_pre"])
         self.state = json_input["state"]

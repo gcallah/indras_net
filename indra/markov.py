@@ -4,7 +4,7 @@ The way agents interact is through prehensions.
 This implements prehensions as markov chains.
 """
 
-import math
+import base64
 import numpy as np
 import random
 import indra.prehension as pre
@@ -111,9 +111,22 @@ class MarkovPre(pre.Prehension):
         
     def to_json(self):
         safe_fields = {}
-        safe_fields["matrix"] = self.matrix.tostring()
+        safe_fields["matrix"] = [str(self.matrix.dtype), base64.b64encode(self.matrix.A).decode('utf-8'), self.matrix.shape]
         
         return safe_fields
 
     def from_json(self, json_input):
-        self.matrix = np.matrix(json_input["matrix"])
+        # get the encoded json dump
+        enc = json_input["matrix"]
+        
+        # build the numpy data type
+        dataType = np.dtype(enc[0])
+        
+        # decode the base64 encoded numpy array data and create a new numpy array with this data & type
+        dataArray = np.frombuffer(base64.decodestring(enc[1].encode('utf-8')), dataType)
+        
+        # if the array had more than one data set it has to be reshaped
+        if len(enc) > 2:
+             dataArray = dataArray.reshape(enc[2]) # return the reshaped numpy array containing several data sets
+             
+        self.matrix = np.matrix(dataArray)

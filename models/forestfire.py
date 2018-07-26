@@ -73,6 +73,19 @@ class Tree(ma.MarkovAgent):
 
         return self.pos
 
+    def to_json(self):
+        safe_fields = super().to_json()
+        safe_fields["state"] = self.state
+        safe_fields["ntype"] = self.ntype
+        safe_fields["next_state"] = self.next_state
+        
+        return safe_fields
+    
+    def from_json_preadd(self, json_input):
+        super().from_json_preadd(json_input)
+        self.state = json_input["state"]
+        self.ntype = json_input["ntype"]
+        self.next_state = json_input["next_state"]
 
 class ForestEnv(menv.MarkovEnv):
     '''
@@ -112,3 +125,22 @@ class ForestEnv(menv.MarkovEnv):
         self.set_var_color(HEALTHY, disp.GREEN)
         self.set_var_color(NEW_GROWTH, disp.CYAN)
 
+    def to_json(self):
+        safe_fields = super().to_json()
+        safe_fields["density"] = self.density
+        safe_fields["plot_title"] = self.plot_title
+        safe_fields["normal"] = self.normal.to_json()
+        safe_fields["fire"] = self.fire.to_json()
+        
+        return safe_fields
+    
+    def from_json(self, json_input):
+        super().from_json(json_input)
+        self.density = json_input["density"]
+        self.plot_title = json_input["plot_title"]
+        self.normal.from_json(json_input["normal"])
+        self.fire.from_json(json_input["fire"])
+    
+    def restore_agent(self, agent_json):            
+        new_agent = Tree(name=agent_json["name"])
+        self.add_agent_to_grid(new_agent, agent_json)

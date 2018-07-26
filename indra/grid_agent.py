@@ -213,14 +213,17 @@ class GridAgent(sa.SpatialAgent):
         safe_fields["my_view"] = self.my_view.to_json() if self.my_view else None
         
         return safe_fields
-
-    def from_json(self, json_input):
-        super().from_json(json_input)
+    
+    def from_json_preadd(self, json_input):
+        super().from_json_preadd(json_input)
+        
+        self.hood_size = json_input["hood_size"]
+    
+    def from_json_postadd(self, json_input):
+        super().from_json_postadd(json_input)
         
         if json_input["my_view"]:
             self.my_view = GridView(self.env, json_input["my_view"]["x1"], 
                                      json_input["my_view"]["y1"], 
                                      json_input["my_view"]["x2"], 
                                      json_input["my_view"]["y2"])
-        
-        self.hood_size = json_input["hood_size"]

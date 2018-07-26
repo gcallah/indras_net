@@ -9,6 +9,7 @@ pa = props.PropArgs.create_props(MODEL_NM)
 
 import indra.utils as utils
 import models.forestfire as fm
+import os
 
 # set up some file names:
 
@@ -31,6 +32,9 @@ def run(prop_dict=None):
             pa.add_props(result.props)
         else:
             utils.ask_for_params(pa)
+            
+    if pa["user_type"] == props.WEB:
+        pa["base_dir"] = os.environ["base_dir"]
     
     density = pa["density"]
     grid_x = pa["grid_width"]
