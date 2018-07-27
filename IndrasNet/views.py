@@ -28,7 +28,7 @@ HEADER = 'header'
 ACTION = 'action'
 DEFAULT_HIGHVAL = 100000
 DEFAULT_LOWVAL = 0
-real_time_text = ""
+
 
 def get_hdr():
     site_hdr = "Indra's Net"
@@ -110,7 +110,6 @@ def run(request):
     except KeyError:
         action = None
 
-    global real_time_text
     
     session_id = int(request.session['session_id'])
     text_for_box2 = ''
@@ -139,11 +138,11 @@ def run(request):
         
         if action == "step":            
             env.run(1)
-            real_time_text = env.user.text_output.split("Census:")[0] + real_time_text
+
         if action == "n_steps":
             steps = int(request.POST["steps"])
             env.run(steps)
-            real_time_text = env.user.text_output.split("Census:")[0] + real_time_text
+
         if action == "list_agents":
             env.list_agents()
             text_for_box2 = env.user.text_output.split("Active agents in environment:")[0]
@@ -167,15 +166,16 @@ def run(request):
             answers[q.prop_name] = answer
         env = eval(module + "(answers)")
         env.save_session(session_id)
-        real_time_text = ''
-        real_time_text += env.user.text_output
               
     site_hdr = get_hdr()
 
     text, image_bytes = env.user.text_output, env.image_bytes
     image = base64.b64encode(image_bytes.getvalue()).decode()
+    index1 = env.user.text_output.find("Ran for")
+    index2 = env.user.text_output.find("Census:")
+    text_for_box1 = env.user.text_output[index1:index2]
     
-    template_data = { HEADER: site_hdr, 'text': real_time_text, 'image': image,
+    template_data = { HEADER: site_hdr, 'text': text_for_box1, 'image': image,
                      'text2': text_for_box2, 'model': model}
     
     return render(request, 'run.html', template_data)
