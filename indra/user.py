@@ -89,11 +89,13 @@ class User(ent.Entity):
         """
         if msg and self.utype in [TERMINAL, IPYTHON, IPYTHON_NB]:
             return tell(msg, type=type, indnt=indnt, utype=self.utype)
-        elif msg and self.utype == WEB:
+        elif msg and self.utype == WEB:                
             self.text_output[text_id] = tell(msg, type=type, indnt=indnt, 
                                     utype=self.utype, 
                                     text_output=self.text_output[text_id], 
                                     reverse=reverse)
+            
+                
             return self.text_output
 
     def ask_for_ltr(self, msg):

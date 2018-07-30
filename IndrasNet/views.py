@@ -135,6 +135,11 @@ def run(request):
         env = eval(module + "(prop_dic)")
         env.restore_session(session_id)
         
+        #CLear textboxs except for the first one
+        for i in range(len(env.user.text_output)):
+            if i != 0:
+                env.user.text_output[i] = ''
+        
         if action == "step":            
             env.run(1)
 
@@ -144,6 +149,7 @@ def run(request):
 
         if action == "list_agents":
             env.list_agents()
+            
         if action == "properties":
             pass#text_box[1] = env.props.display()
         # if action == "view_pop":
