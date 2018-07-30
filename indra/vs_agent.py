@@ -6,7 +6,6 @@ import indra.grid_agent as ga
 import indra.vector_space as vs
 import indra.prehension_agent as pa
 
-
 class VSAgent(pa.PrehensionAgent):
     """
     An agent that use Prehensions to understand its environment.
@@ -27,3 +26,14 @@ class VSAgent(pa.PrehensionAgent):
             # accumulate prehensions:
             other_pre = other.visible_stance().prehend(other_pre)
         return other_pre
+    
+    def to_json(self):
+        safe_fields = super().to_json()
+        
+        safe_fields["stance"] = self.stance.to_json()
+        
+        return safe_fields
+    def from_json_pre_add(self, agent_json):
+        super().from_json_preadd(agent_json)
+        
+        self.stance.from_json(agent_json["stance"])

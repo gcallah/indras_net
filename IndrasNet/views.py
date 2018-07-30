@@ -112,7 +112,6 @@ def run(request):
 
     
     session_id = int(request.session['session_id'])
-    text_for_box2 = ''
     
     #Load module
     model_name = request.POST[MODEL]
@@ -145,9 +144,8 @@ def run(request):
 
         if action == "list_agents":
             env.list_agents()
-            text_for_box2 = env.user.text_output.split("Active agents in environment:")[0]
         if action == "properties":
-            text_for_box2 = env.props.display()
+            pass#text_box[1] = env.props.display()
         # if action == "view_pop":
         #     #     if env.period < 4:
         #     #         text_for_box2 = "Too little data to display"
@@ -169,14 +167,11 @@ def run(request):
               
     site_hdr = get_hdr()
 
-    text, image_bytes = env.user.text_output, env.image_bytes
+    text_box, image_bytes = env.user.text_output, env.image_bytes
     image = base64.b64encode(image_bytes.getvalue()).decode()
-    index1 = env.user.text_output.find("Ran for")
-    index2 = env.user.text_output.find("Census:")
-    text_for_box1 = env.user.text_output[index1:index2]
     
-    template_data = { HEADER: site_hdr, 'text': text_for_box1, 'image': image,
-                     'text2': text_for_box2, 'model': model}
+    template_data = { HEADER: site_hdr, 'text0': text_box[0], 'image': image,
+                     'text1': text_box[1], 'model': model}
     
     return render(request, 'run.html', template_data)
 
