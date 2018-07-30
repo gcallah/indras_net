@@ -24,7 +24,8 @@ BLUE_PRE = vs.VectorSpace.Y_PRE
 RED_AGENT = "RedAgent"
 BLUE_AGENT = "BlueAgent"
 AGENT_TYPES = {RED: RED_AGENT, BLUE: BLUE_AGENT}
-
+MIN_TOL = 0.1
+MAX_TOL = 0.7
 
 class SegregationAgent(va.VSAgent):
     """
@@ -67,32 +68,62 @@ class SegregationAgent(va.VSAgent):
         It is just our "color."
         """
         return self.visible_pre
+    
+    def to_json(self):
+        safe_fields = super().to_json()
+        
+        safe_fields["orientation"] = self.orientation
+        safe_fields["visible_pre"] = self.visible_pre.to_json()
+        safe_fields["tolerance"] = self.tolerance
+        
+        return safe_fields
+        
+    def from_json_pre_add(self, agent_json):
+        super().from_json_preadd(agent_json)
+        
+        self.orientation = agent_json["orientation"]
+        self.visible_pre.from_json(agent_json["visible_pre"])
+        self.tolerance = agent_json["tolerance"]
 
 
 class BlueAgent(SegregationAgent):
     """
     We set our stance.
     """
-    def __init__(self, name, goal, min_tol, max_tol, max_move=100,
+    def __init__(self, name, goal, min_tol=MAX_TOL, max_tol=MIN_TOL, max_move=100,
                  max_detect=1):
         super().__init__(name, goal, min_tol, max_tol,
                          max_move=max_move, max_detect=max_detect)
         self.orientation = BLUE
         self.visible_pre = BLUE_PRE
         self.stance = vs.stance_pct_to_pre(self.tolerance, BLUE)
+        
+    def to_json(self):
+        safe_fields = super().to_json()
+        
+        safe_fields["color"] = "Blue"
+        
+        return safe_fields
 
 
 class RedAgent(SegregationAgent):
     """
     We set our stance.
     """
-    def __init__(self, name, goal, min_tol, max_tol, max_move=100,
+    def __init__(self, name, goal, min_tol=MAX_TOL, max_tol=MIN_TOL, max_move=100,
                  max_detect=1):
         super().__init__(name, goal, min_tol, max_tol,
                          max_move=max_move, max_detect=max_detect)
         self.orientation = RED
         self.visible_pre = RED_PRE
         self.stance = vs.stance_pct_to_pre(self.tolerance, RED)
+        
+    def to_json(self):
+        safe_fields = super().to_json()
+        
+        safe_fields["color"] = "Red"
+        
+        return safe_fields
 
 
 class SegregationEnv(grid.GridEnv):
@@ -107,8 +138,8 @@ class SegregationEnv(grid.GridEnv):
                          model_nm=model_nm, props=props)
         self.plot_title = name
         # setting our colors adds varieties as well!
-        self.set_var_color(AGENT_TYPES[BLUE], 'b')
-        self.set_var_color(AGENT_TYPES[RED], 'r')
+        self.set_agent_color()
+        
         self.num_moves = 0
         self.move_hist = []
         self.menu.view.del_menu_item("v")  # no line graph in this model
@@ -132,3 +163,34 @@ class SegregationEnv(grid.GridEnv):
         for num_moves in self.move_hist:
             f.write(str(num_moves) + '\n')
         f.close()
+
+    def set_agent_color(self):
+        self.set_var_color(AGENT_TYPES[BLUE], 'b')
+        self.set_var_color(AGENT_TYPES[RED], 'r')
+        
+    def to_json(self):
+        safe_fields = super().to_json()
+        safe_fields["plot_title"] = self.plot_title
+        safe_fields["move_hist"] = self.move_hist
+        
+        return safe_fields
+        
+    def from_json(self, json_input):
+        super().from_json(json_input)
+        self.plot_title = json_input["plot_title"]
+        self.move_hist = json_input["move_hist"]
+        
+    def restore_agent(self, agent_json):     
+        color = agent_json["color"]
+        if color == "Blue":            
+            new_agent = BlueAgent(agent_json["name"], 
+                                 agent_json["goal"],
+                                 max_move=agent_json["max_move"], 
+                                 max_detect=agent_json["max_detect"])
+        if color == "Red":            
+            new_agent = RedAgent(agent_json["name"], 
+                                 agent_json["goal"],
+                                 max_move=agent_json["max_move"], 
+                                 max_detect=agent_json["max_detect"])
+            
+        self.add_agent_to_grid(new_agent, agent_json)

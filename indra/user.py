@@ -53,9 +53,12 @@ def ask(msg, default=None, limits=None):
     return input()
 
 
-def tell(msg, type=INFO, indnt=0, utype=TERMINAL, text_output=None):
+def tell(msg, type=INFO, indnt=0, utype=TERMINAL, text_output=None, reverse=True):
     if utype == WEB:
-        return msg + "\n" + text_output
+        if reverse:
+            return msg + "\n" + text_output
+        else:
+            return text_output + "\n" + msg
     else:
         if indnt <= 0:
             if clint_present:
@@ -78,18 +81,21 @@ class User(ent.Entity):
     def __init__(self, nm, utype=TERMINAL):
         super().__init__(nm)
         self.utype = utype
-        self.text_output = ''
+        self.text_output = ['', '']
 
-    def tell(self, msg, type=INFO, indnt=0):
+    def tell(self, msg, type=INFO, indnt=0, text_id=0, reverse=True):
         """
         Screen the details of output from models.
         """
         if msg and self.utype in [TERMINAL, IPYTHON, IPYTHON_NB]:
             return tell(msg, type=type, indnt=indnt, utype=self.utype)
-        elif msg and self.utype == WEB:
-            self.text_output = tell(msg, type=type, indnt=indnt, 
+        elif msg and self.utype == WEB:                
+            self.text_output[text_id] = tell(msg, type=type, indnt=indnt, 
                                     utype=self.utype, 
-                                    text_output=self.text_output)
+                                    text_output=self.text_output[text_id], 
+                                    reverse=reverse)
+            
+                
             return self.text_output
 
     def ask_for_ltr(self, msg):

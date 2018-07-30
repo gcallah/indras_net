@@ -197,11 +197,11 @@ class Environment(node.Node):
         """
         List all agents in env.
         """
-        self.user.tell("Active agents in environment:")
+        self.user.tell("Active agents in environment:", text_id=1, reverse=False)
         for agent in self.agents:
             self.user.tell(agent.name
                            + " with a goal of "
-                           + agent.goal)
+                           + agent.goal, text_id=1, reverse=False)
 
     def add(self):
         """

@@ -16,10 +16,10 @@
                 <td> 
                 {% if model.functional %}
                     <a class="btn-link" href="{% url 'IndrasNet:parameters' %}?model={{ model.name }}">
-                    {{ model.name }}
+                    {{ model.disp_name }}
                     </a>
                 {% else %}    
-                    {{ model.name }}
+                    {{ model.disp_name }}
                 {% endif %}
                 </td>
                 <td> {{ model.mtype }} </td>

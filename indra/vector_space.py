@@ -7,6 +7,7 @@ This implements prehensions as vector spaces.
 import math
 import numpy as np
 import indra.prehension as pre
+import base64
 # import logging
 
 # x and y indices
@@ -116,7 +117,22 @@ class VectorSpace(pre.Prehension):
             return VectorSpace.NULL_PRE
         else:
             return from_vector(normalize(self.vector))
+        
+    def to_json(self):
+        safe_fields = {}
+        safe_fields["vector"] = [str(self.vector.dtype), base64.b64encode(self.vector).decode('utf-8')]
+        
+        return safe_fields
 
+    def from_json(self, json_input):
+        # get the encoded json dump
+        enc = json_input["vector"]
+        
+        # build the numpy data type
+        dataType = np.dtype(enc[0])
+        
+        # decode the base64 encoded numpy array data and create a new numpy array with this data & type
+        self.vector = np.frombuffer(base64.decodestring(enc[1].encode('utf-8')), dataType)
 
 # Now we actually initialize the prehensions we declared above.
 #  This can't be done earlier, since VectorSpace was just defined.
@@ -124,7 +140,6 @@ VectorSpace.X_PRE = from_vector(X_VEC)
 VectorSpace.Y_PRE = from_vector(Y_VEC)
 VectorSpace.NULL_PRE = from_vector(NULL_VEC)
 VectorSpace.NEUT_PRE = from_vector(NEUT_VEC)
-
 
 def stance_pct_to_pre(pct, x_or_y):
     """

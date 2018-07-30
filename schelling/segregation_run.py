@@ -15,6 +15,7 @@ pa = props.PropArgs.create_props(MODEL_NM)
 import indra.utils as utils
 import indra.prop_args as props
 import schelling.segregation as sm
+import os
 
 # set up some file names:
 
@@ -34,27 +35,31 @@ def run(prop_dict=None):
             pa.add_props(result.props)
         else:
             utils.ask_for_params(pa)
+            
+    if pa["user_type"] == props.WEB:
+        pa["base_dir"] = os.environ['base_dir']
         
     # Now we create an environment for our agents to act within:
     env = sm.SegregationEnv("A city",
                             pa["grid_width"],
                             pa["grid_height"],
                             props=pa)
+    
     # Now we loop creating multiple agents with numbered names
     # based on the loop variable:
-    for i in range(pa.get("num_B_agents")):
+    for i in range(pa["num_B_agents"]):
         env.add_agent(sm.BlueAgent(name="Blue agent" + str(i),
                       goal="A good neighborhood.",
-                      min_tol=pa.get('min_tolerance'),
-                      max_tol=pa.get('max_tolerance'),
-                      max_detect=pa.get('max_detect')))
+                      min_tol=pa['min_tolerance'],
+                      max_tol=pa['max_tolerance'],
+                      max_detect=pa['max_detect']))
         
-    for i in range(pa.get("num_R_agents")):
+    for i in range(pa["num_R_agents"]):
         env.add_agent(sm.RedAgent(name="Red agent" + str(i),
                       goal="A good neighborhood.",
-                      min_tol=pa.get('min_tolerance'),
-                      max_tol=pa.get('max_tolerance'),
-                      max_detect=pa.get('max_detect')))
+                      min_tol=pa['min_tolerance'],
+                      max_tol=pa['max_tolerance'],
+                      max_detect=pa['max_detect']))
         
     return utils.run_model(env, prog_file, results_file)
 

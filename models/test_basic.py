@@ -43,6 +43,7 @@ class BasicTestCase(TestCase):
                                         goal="acting up!"))
         self.env.add_agent(bm.BasicAgent(name="agent for tracking",
                                          goal="acting up!"))
+        self.session_id = random.randint(1, 10)
         # self.env.n_steps(random.randint(10, 20))
 
     def test_agent_inspect(self):
@@ -81,8 +82,6 @@ class BasicTestCase(TestCase):
         period_before_run = self.env.period
         self.env.step()
         period_after_run = self.env.period
-        print(period_before_run)
-        print(period_after_run)
         if period_before_run + 1 != period_after_run:
             report = False
         self.assertEquals(report, True)
@@ -93,9 +92,6 @@ class BasicTestCase(TestCase):
         random_steps = random.randint(3,30)
         self.env.n_steps(random_steps)
         period_after_run = self.env.period
-        print(period_before_run)
-        print(period_after_run)
-        print(random_steps)
         if (period_before_run + random_steps) != period_after_run:
             report = False
         self.assertEquals(report, True)
@@ -213,6 +209,7 @@ class BasicTestCase(TestCase):
             for i, line in enumerate(f):
                 if list_for_reference[i] != line:
                     report = False
+                    break
         f.close()
 
         os.remove("checklog.txt")
@@ -225,10 +222,9 @@ class BasicTestCase(TestCase):
             base_dir = self.env.props["base_dir"]
         except:
             base_dir = ""
-        session_id = random.randint(1, 10)
-        self.env.save_session(session_id)
-        session_id = str(session_id)
-        path = base_dir + self.env.model_nm + session_id + ".json"
+        self.env.save_session(self.session_id)
+
+        path = base_dir + self.env.model_nm + str(self.session_id) + ".json"
         with open(path, "r") as f:
             json_input = f.readline()
         json_input = json.loads(json_input)
@@ -251,6 +247,44 @@ class BasicTestCase(TestCase):
             report = False
 
         os.remove(path)
+
+        self.assertEquals(report, True)
+
+    def test_restore_session(self):
+        report = True
+        try:
+            base_dir = self.env.props["base_dir"]
+        except:
+            base_dir = ""
+        self.env.save_session(self.session_id)
+        # make sure the session we want to restore is differennt from our current env status
+        self.env.n_steps(random.randint(1,10))
+        self.env.restore_session(self.session_id)
+
+        path = base_dir + self.env.model_nm + str(self.session_id) + ".json"
+        with open(path, "r") as f:
+            json_input = f.readline()
+        json_input = json.loads(json_input)
+        if json_input["period"] != self.env.period:
+            report = False
+        if json_input["model_nm"] != self.env.model_nm:
+            report = False
+        if json_input["preact"] != self.env.preact:
+            report = False
+        if json_input["postact"] != self.env.postact:
+            report = False
+        if json_input["props"] != self.env.props.to_json():
+            report = False
+        if json_input["user"] != self.env.user.to_json():
+            report = False
+        agents = []
+        for agent in self.env.agents:
+            agents.append(agent.to_json())
+        if json_input["agents"] != agents:
+            report = False
+
+        os.remove(path)
+
         self.assertEquals(report, True)
 
 if __name__ == '__main__':

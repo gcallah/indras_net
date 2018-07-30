@@ -28,7 +28,7 @@ HEADER = 'header'
 ACTION = 'action'
 DEFAULT_HIGHVAL = 100000
 DEFAULT_LOWVAL = 0
-real_time_text = ""
+
 
 def get_hdr():
     site_hdr = "Indra's Net"
@@ -110,10 +110,8 @@ def run(request):
     except KeyError:
         action = None
 
-    global real_time_text
     
     session_id = int(request.session['session_id'])
-    text_for_box2 = ''
     
     #Load module
     model_name = request.POST[MODEL]
@@ -137,18 +135,23 @@ def run(request):
         env = eval(module + "(prop_dic)")
         env.restore_session(session_id)
         
+        #CLear textboxs except for the first one
+        for i in range(len(env.user.text_output)):
+            if i != 0:
+                env.user.text_output[i] = ''
+        
         if action == "step":            
             env.run(1)
-            real_time_text = env.user.text_output.split("Census:")[0] + real_time_text
+
         if action == "n_steps":
             steps = int(request.POST["steps"])
             env.run(steps)
-            real_time_text = env.user.text_output.split("Census:")[0] + real_time_text
+
         if action == "list_agents":
             env.list_agents()
-            text_for_box2 = env.user.text_output.split("Active agents in environment:")[0]
+            
         if action == "properties":
-            text_for_box2 = env.props.display()
+            pass#text_box[1] = env.props.display()
         # if action == "view_pop":
         #     #     if env.period < 4:
         #     #         text_for_box2 = "Too little data to display"
@@ -167,16 +170,14 @@ def run(request):
             answers[q.prop_name] = answer
         env = eval(module + "(answers)")
         env.save_session(session_id)
-        real_time_text = ''
-        real_time_text += env.user.text_output
               
     site_hdr = get_hdr()
 
-    text, image_bytes = env.user.text_output, env.image_bytes
+    text_box, image_bytes = env.user.text_output, env.image_bytes
     image = base64.b64encode(image_bytes.getvalue()).decode()
     
-    template_data = { HEADER: site_hdr, 'text': real_time_text, 'image': image,
-                     'text2': text_for_box2, 'model': model}
+    template_data = { HEADER: site_hdr, 'text0': text_box[0], 'image': image,
+                     'text1': text_box[1], 'model': model}
     
     return render(request, 'run.html', template_data)
 
