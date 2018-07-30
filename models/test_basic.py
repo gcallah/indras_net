@@ -254,4 +254,10 @@ class BasicTestCase(TestCase):
         self.assertEquals(report, True)
 
 if __name__ == '__main__':
-    main()
+    if len(sys.argv) > 1:
+        if sys.argv[1] == '--one':
+            # put up menu of tests, "Press 1 for ..."
+            print("We are going to run a single test. Please select...")
+            pass
+    else:
+        main()
