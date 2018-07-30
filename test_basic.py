@@ -22,7 +22,7 @@ import models.basic as bm
 import os
 
 class BasicTestCase(TestCase):
-    def __init__(self, methodName, prop_file="basic.props"):
+    def __init__(self, methodName, prop_file="models/basic.props"):
     
         super().__init__(methodName=methodName)
     
@@ -224,7 +224,7 @@ class BasicTestCase(TestCase):
             base_dir = ""
         self.env.save_session(self.session_id)
 
-        path = base_dir + self.env.model_nm + str(self.session_id) + ".json"
+        path = base_dir + "json/" + self.env.model_nm + str(self.session_id) + ".json"
         with open(path, "r") as f:
             json_input = f.readline()
         json_input = json.loads(json_input)
@@ -261,7 +261,7 @@ class BasicTestCase(TestCase):
         self.env.n_steps(random.randint(1,10))
         self.env.restore_session(self.session_id)
 
-        path = base_dir + self.env.model_nm + str(self.session_id) + ".json"
+        path = base_dir + "json/" + self.env.model_nm + str(self.session_id) + ".json"
         with open(path, "r") as f:
             json_input = f.readline()
         json_input = json.loads(json_input)
@@ -288,10 +288,4 @@ class BasicTestCase(TestCase):
         self.assertEquals(report, True)
 
 if __name__ == '__main__':
-    if len(sys.argv) > 1:
-        if sys.argv[1] == '--one':
-            # put up menu of tests, "Press 1 for ..."
-            print("We are going to run a single test. Please select...")
-            pass
-    else:
-        main()
+    main()
