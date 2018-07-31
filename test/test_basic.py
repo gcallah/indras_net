@@ -20,7 +20,7 @@ pa = props.PropArgs.create_props(MODEL_NM)
 import json
 import models.basic as bm
 import os
-
+# make sure to run test file from root directory!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 class BasicTestCase(TestCase):
     def __init__(self, methodName, prop_file="models/basic.props"):
     
@@ -76,6 +76,7 @@ class BasicTestCase(TestCase):
                     if props_written[key] != self.env.props.props[key]:
                         report = False
                         break
+        os.remove(self.env.model_nm + ".props")
         self.assertEqual(report, True)
 
     def test_step(self):
@@ -290,3 +291,5 @@ class BasicTestCase(TestCase):
 
 if __name__ == '__main__':
     main()
+    os.remove("test/basic.log")
+    os.remove("basic.log")
