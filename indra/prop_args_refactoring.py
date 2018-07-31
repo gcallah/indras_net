@@ -16,6 +16,7 @@ PERIODS = 'periods'
 DATAFILE = 'datafile'
 
 OS = "OS"
+UTYPE = "user_type"
 # user types
 TERMINAL = "terminal"
 IPYTHON = "iPython"
@@ -32,18 +33,26 @@ LOWVAL = "lowval"
 global user_type
 user_type = TERMINAL
 
-type_dict = {'INT': int, 'DBL': float, 'BOOL': bool, 'STR': str}
-
+TYPE_DICT = {'INT': int, 'DBL': float, 'BOOL': bool, 'STR': str}
 
 def get_prop_from_env():
     global user_type
     try:
-        user_type = os.environ['user_type']
-        print(user_type)
+        user_type = os.environ[UTYPE]
     except KeyError:
-        print("Environment variable user type not found")
+# this can't be done before logging is set up!
+#        logging.info("Environment variable user type not found")
         user_type = TERMINAL
     return user_type
+
+
+def read_props(model_nm, file_nm):
+    """
+    Create a new PropArgs object from a json file
+    """
+    props = json.load(open(file_nm))
+    return PropArgs.create_props(model_nm, props=props)
+
 
 
 class Prop():
@@ -69,7 +78,7 @@ class Prop():
         self.hival = hival
 
 
-class PropArgs:
+class PropArgs():
     """
     This class holds named properties for program-wide values.
     It enables getting properties from a file, a database,
@@ -83,19 +92,13 @@ class PropArgs:
         """
         global user_type
 
+        user_type = get_prop_from_env()
+        props = {UTYPE: {"val": user_type}}
+
         if props is None:
             props = {}
-            user_type = get_prop_from_env()
-            props["user_type"] = user_type
         return PropArgs(model_nm, prop_dict=props)
 
-    @staticmethod
-    def read_props(model_nm, file_nm):
-        """
-        Create a new PropArgs object from a json file
-        """
-        props = json.load(open(file_nm))
-        return PropArgs.create_props(model_nm, props=props)
 
     def __init__(self, model_nm, logfile=None, prop_dict=None,
                  loglevel=logging.INFO):
@@ -122,31 +125,35 @@ class PropArgs:
         # 3. Property File
         self.overwrite_props_from_dict(prop_dict)
 
-        # 4. process command line args and set them as properties:
-        self.overwrite_props_from_command_line()
+        if self[UTYPE].val in (TERMINAL, IPYTHON, IPYTHON_NB):
 
-        # 5. Ask the user questions.
-        self.overwrite_props_from_user()
+            # 4. process command line args and set them as properties:
+            self.overwrite_props_from_command_line()
 
-        self.logger = Logger(self, logfile=logfile)
+            # 5. Ask the user questions.
+            self.overwrite_props_from_user()
+
+        self.logger = Logger(self, model_name=model_nm, logfile=logfile)
         self.graph.add_edge(self, self.logger)
 
     def set_props_from_db(self):
         params = Model.objects.get(name=self.model_nm).params.all()
         for param in params:
-            self.props[param.prop_name] = Prop(val=param.default_val,
+            atype = param.atype
+            typed_default_val = self._type_val_if_possible(param.default_val, param.atype)
+            self[param.prop_name] = Prop(val=typed_default_val,
                                                question=param.question,
-                                               atype=param.atype,
-                                               default_val=param.default_val,
+                                               atype=atype,
+                                               default_val=typed_default_val,
                                                lowval=param.lowval,
                                                hival=param.hival)
 
     def overwrite_props_from_env(self):
-        self.props[OS] = Prop(val=platform.system())
+        self[OS] = Prop(val=platform.system())
 
     def overwrite_props_from_dict(self, prop_dict):
         """
-        General Form of Dict:
+        General Dict:
 
             {
                 prop_name:
@@ -163,34 +170,31 @@ class PropArgs:
                     }
             }
 
-        Sample Dict:
+        Simple Dict:
 
             {
-                "num_agents":
-                    {
-                        val: 100,
-                        question: "how many agents should be initially present in the model?",
-                        atype: "INT",
-                    }
-                 "agent_speed":
-                    {
-                        val: 3,
-                    }
+                prop_name: val,
+                prop_name: val
             }
 
         """
         for prop_nm in prop_dict:
-            for attribute in prop_dict[prop_nm]:
-                print("Type is")
-                print(type(prop_dict))
-                val = prop_dict[prop_nm].get(VALUE, None)
-                question = prop_dict[prop_nm].get(QUESTION, None)
+            if type(prop_dict[prop_nm]) is dict:
                 atype = prop_dict[prop_nm].get(ATYPE, None)
+                val = self._type_val_if_possible(prop_dict[prop_nm].get(VALUE, None), atype)
+                question = prop_dict[prop_nm].get(QUESTION, None)
                 hival = prop_dict[prop_nm].get(HIVAL, None)
                 lowval = prop_dict[prop_nm].get(LOWVAL, None)
-                self.props[prop_nm] = Prop(val=val, question=question, atype=atype,
+                self[prop_nm] = Prop(val=val, question=question, atype=atype,
                                            hival=hival, lowval=lowval)
+            else:
+                val = prop_dict[prop_nm]
 
+            if not self._answer_valid(prop_nm, val):
+                raise ValueError("{val} for {prop_nm} is not valid."
+                                 "lower_bound: {lowval} upper_bound: {hival}"
+                                 .format(val=val, prop_nm=prop_nm, lowval=lowval, hival=hival))
+ 
     def overwrite_props_from_command_line(self):
         prop_nm = None
         for arg in sys.argv:
@@ -198,41 +202,41 @@ class PropArgs:
             if arg.startswith(SWITCH):
                 prop_nm = arg.lstrip(SWITCH)
             # the second arg is the property value
-            elif prop_nm is not None:
-                self.props[prop_nm].val = arg
+            if prop_nm is not None:
+                self[prop_nm].val = arg
                 prop_nm = None
 
     def overwrite_props_from_user(self):
         for prop_nm in self:
-            if hasattr(self.props[prop_nm], QUESTION):
-                self.props[prop_nm].val = self._keep_asking_until_correct(prop_nm)
+            if hasattr(self[prop_nm], QUESTION) and self[prop_nm].question:
+                self[prop_nm].val = self._keep_asking_until_correct(prop_nm)
+
+    def _type_val_if_possible(self, val, atype):
+        if atype in TYPE_DICT:
+            type_cast = TYPE_DICT[atype]
+            return type_cast(val)
+        else:
+            return val
                 
     def _keep_asking_until_correct(self, prop_nm):
         while True:
             answer = input(self.get_question(prop_nm))
             if not answer:
-                return None
-            typed_answer = self._type_answer(prop_nm, answer)
+                return self[prop_nm].val
+            typed_answer = self._type_val_if_possible(answer, self[prop_nm].atype)
             if not self._answer_valid(prop_nm, typed_answer):
                 print("Input must be between {lowval} and {hival} inclusive."
-                      .format(lowval=self.props[prop_nm].lowval,
-                              hival=self.props[prop_nm].hival))
+                      .format(lowval=self[prop_nm].lowval,
+                              hival=self[prop_nm].hival))
                 continue
             return typed_answer
 
-    def _type_answer(self, prop_nm, answer):
-        type_cast = type_dict[self.props[prop_nm].atype]
-        return type_cast(answer)
-
     def _answer_valid(self, prop_nm, typed_answer):
-        if hasattr(self.props[prop_nm], LOWVAL) and self.props[prop_nm].lowval > typed_answer:
+        if hasattr(self[prop_nm], LOWVAL) and self[prop_nm].lowval and self[prop_nm].lowval > typed_answer:
             return False
-        if hasattr(self.props[prop_nm], HIVAL) and self.props[prop_nm].hival < typed_answer:
+        if hasattr(self[prop_nm], HIVAL) and self[prop_nm].hival and self[prop_nm].hival < typed_answer:
             return False
         return True
-
-    def add_props(self, props):
-        self.props.update(props)
 
     def display(self):
         """
@@ -240,7 +244,7 @@ class PropArgs:
         """
         ret = "Properties for " + self.model_nm + "\n"
         for prop_nm in self:
-            ret += "\t" + prop_nm + ": " + str(self.props[prop_nm].val) + "\n"
+            ret += "\t" + prop_nm + ": " + str(self[prop_nm].val) + "\n"
 
         return ret
 
@@ -275,7 +279,7 @@ class PropArgs:
         """
         Special get function for logfile name
         """
-        return self.props["log_fname"]
+        return self.props["log_fname"].val
 
     def write(self, file_nm):
         """
@@ -284,21 +288,27 @@ class PropArgs:
         """
         json.dump(self.props, open(file_nm, 'w'), indent=4)
 
+    def to_json(self):
+        return self.props
+
     def get_val(self, key, default=None):
-        if key in self and hasattr(self.props[key], VALUE) and self.props[key].val is not None:
+        if key in self.props and self.props[key].val:
             return self.props[key].val
         return default
 
     def set_val(self, key, value):
         if key in self:
+            print("{} in self".format(key))
             self.props[key].val = value
+        else:
+            self.props[key] = Prop(val=value)
 
     def get_question(self, prop_nm):
             return "{question} [{lowval}-{hival}] ({default}) "\
-                   .format(question=self.props[prop_nm].question, 
-                           lowval=self.props[prop_nm].lowval,
-                           hival=self.props[prop_nm].hival,
-                           default=self.props[prop_nm].val)
+                   .format(question=self[prop_nm].question, 
+                           lowval=self[prop_nm].lowval,
+                           hival=self[prop_nm].hival,
+                           default=self[prop_nm].val)
 
     def get(self, nm, default=None):
         """
@@ -307,11 +317,11 @@ class PropArgs:
         at the time of the call.
         """
         if nm not in self:
-            self.props[nm].val = default
+            self.props[nm] = Prop(val=default)
         return self.props[nm].val
 
 
-class Logger:
+class Logger():
     """
     A class to track how we are logging.
     """
@@ -319,18 +329,21 @@ class Logger:
     DEF_FORMAT = '%(asctime)s:%(levelname)s:%(message)s'
     DEF_LEVEL = logging.INFO
     DEF_FILEMODE = 'w'
-    DEF_FILENAME = 'log.txt'
+    # DEF_FILENAME = 'log.txt'
 
-    def __init__(self, props, logfile=None,
+    def __init__(self, props, model_name, logfile=None,
                  loglevel=logging.INFO):
         if logfile is None:
-            logfile = Logger.DEF_FILENAME
+            logfile = model_name + ".log"
         fmt = props.get_val("log_format", Logger.DEF_FORMAT)
         lvl = props.get_val("log_level", Logger.DEF_LEVEL)
         fmd = props.get_val("log_fmode", Logger.DEF_FILEMODE)
-        fnm = props.get_val("log_fname", logfile)
+        props.set_val("log_fname", logfile)
+# we put the following back in once the model names are fixed
+#  fnm = props.get("log_fname", logfile)
         logging.basicConfig(format=fmt,
                             level=lvl,
                             filemode=fmd,
-                            filename=fnm)
+                            filename=logfile)
         logging.info("Logging initialized.")
+
