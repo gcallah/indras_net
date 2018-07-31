@@ -319,11 +319,13 @@ class Environment(node.Node):
             logfile = self.props.get_logfile()
         else:
             self.user.tell("Props missing; cannot identify log file!",
-                          type=user.ERROR)
+                          type=user.ERROR, text_id=1, 
+                       reverse=False)
             return
 
         if logfile is None:
-            self.user.tell("No log file to examine!", type=user.ERROR)
+            self.user.tell("No log file to examine!", type=user.ERROR, text_id=1, 
+                       reverse=False)
             return
 
         last_n_lines = deque(maxlen=MAX_LINES)  # for now hard-coded
@@ -333,9 +335,11 @@ class Environment(node.Node):
                 last_n_lines.append(line)
 
         self.user.tell("Displaying the last " + str(MAX_LINES)
-                       + " lines of logfile " + logfile)
+                       + " lines of logfile " + logfile, text_id=1, 
+                       reverse=False)
         for line in last_n_lines:
-            self.user.tell(line.strip())
+            self.user.tell(line.strip(), text_id=1, 
+                       reverse=False)
 
     def step(self):
         """

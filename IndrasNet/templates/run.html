@@ -36,10 +36,9 @@
                         <form class="menu_item" action="{% url 'IndrasNet:run' %}" method="post">
                             {% csrf_token %}
                             <input type="hidden" name="model" value={{ model }}>
-                            <input type="hidden" name="action" value="view_pop">
-                            <input type="submit" name="menu_item" value="View Population"/>
+                            <input type="hidden" name="action" value="disp_log">
+                            <input type="submit" name="menu_item" value="Examine Log"/>
                         </form>
-
                     </div>
                 </div>
             </li>
