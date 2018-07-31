@@ -286,10 +286,10 @@ class BasicTestCase(TestCase):
             report = False
 
         os.remove(path)
+        os.remove("basic.log")
 
         self.assertEqual(report, True)
 
 if __name__ == '__main__':
     main()
-    os.remove("test/basic.log")
-    os.remove("basic.log")
+
