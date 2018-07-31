@@ -139,7 +139,7 @@ def run(request):
         for i in range(len(env.user.text_output)):
             if i != 0:
                 env.user.text_output[i] = ''
-        
+        #Tools
         if action == "step":            
             env.step()
 
@@ -147,14 +147,21 @@ def run(request):
             steps = int(request.POST["steps"])
             env.n_steps(steps)
 
+        #View
         if action == "list_agents":
             env.list_agents()
             
         if action == "properties":
-            pass#text_box[1] = env.props.display()
-        # if action == "view_pop":
-        #     #     if env.period < 4:
-        #     #         text_for_box2 = "Too little data to display"
+            env.user.text_output[1] = env.props.display()
+        
+        #File
+        if action == "disp_log":
+            env.disp_log()
+            
+        #Edit
+        if action == "add":
+            pass
+            
         env.save_session(session_id)
         
     #Run a model for the first time
