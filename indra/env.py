@@ -137,7 +137,7 @@ class Environment(node.Node):
     def get_randagent_of_var(self, var):
         return self.agents.get_randagent_of_var(var)
 
-    def run(self, periods=0):
+    def run(self, periods=-1):
         """
         This is the main menu loop for all models.
 
@@ -146,18 +146,18 @@ class Environment(node.Node):
         """
 
         print("Periods = " + str(periods))
-        if periods > 0:
+        if periods > -1:
             count = 0
             self.user.tell("Census:")
             while count < periods:
                 self.step()
                 count += 1
-            self.user.tell("Ran for " + str(count) + " periods.\n")
+            if count > 0:
+                self.user.tell("Ran for " + str(count) + " periods.\n")
             file_nm = self.props.get(pa.DATAFILE)
             if file_nm is None:
                 file_nm = self.model_nm+RPT_EXT
             self.pop_report(file_nm=file_nm)
-            self.image_bytes = self.plot()
             return self
             #exit()
         else:
@@ -342,7 +342,6 @@ class Environment(node.Node):
         Step period-by-period through agent actions.
         """
         self.census(disp=self.disp_census)
-
         self.period += 1
 
 # agents might be waiting to be born
