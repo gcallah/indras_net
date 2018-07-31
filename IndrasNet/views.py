@@ -141,11 +141,11 @@ def run(request):
                 env.user.text_output[i] = ''
         
         if action == "step":            
-            env.run(1)
+            env.step()
 
         if action == "n_steps":
             steps = int(request.POST["steps"])
-            env.run(steps)
+            env.n_steps(steps)
 
         if action == "list_agents":
             env.list_agents()
@@ -173,7 +173,7 @@ def run(request):
               
     site_hdr = get_hdr()
 
-    text_box, image_bytes = env.user.text_output, env.image_bytes
+    text_box, image_bytes = env.user.text_output, env.plot()
     image = base64.b64encode(image_bytes.getvalue()).decode()
     
     template_data = { HEADER: site_hdr, 'text0': text_box[0], 'image': image,

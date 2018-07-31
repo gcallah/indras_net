@@ -10,6 +10,7 @@ import indra.env as env
 import indra.user as user
 import indra.display_methods as disp
 import indra.spatial_agent as sa
+import io
 
 X = 0
 Y = 1
@@ -38,6 +39,7 @@ class SpatialEnv(env.Environment):
         self.menu.view.add_menu_item("s",
                                      menu.MenuLeaf("(s)catter plot",
                                                    self.plot))
+        self.image_bytes = io.BytesIO()
 
     def add_agent(self, agent, x=RANDOM, y=RANDOM, position=True):
         """
@@ -81,7 +83,8 @@ class SpatialEnv(env.Environment):
             anim=True, data_func=self.plot_data,
             is_headless=headless
             )
-        return self.scatter_plot.show()
+        self.image_bytes = self.scatter_plot.show()
+        return self.image_bytes
 
     def plot_data(self):
         data = {}
