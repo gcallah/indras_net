@@ -63,7 +63,8 @@ class BasicTestCase(TestCase):
         print("running test props write")
         report = True
         self.env.pwrite(self.env.model_nm + ".props")
-        props_written = json.load(open(self.env.model_nm + ".props"))
+        with open(self.env.model_nm + ".props", "r") as f:
+            props_written = json.load(f)
         if len(props_written) != len(self.env.props.props):
             report = False
         if report == True:
