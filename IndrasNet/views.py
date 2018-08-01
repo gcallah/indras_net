@@ -139,22 +139,29 @@ def run(request):
         for i in range(len(env.user.text_output)):
             if i != 0:
                 env.user.text_output[i] = ''
-        
+        #Tools
         if action == "step":            
-            env.run(1)
+            env.step()
 
         if action == "n_steps":
             steps = int(request.POST["steps"])
-            env.run(steps)
+            env.n_steps(steps)
 
+        #View
         if action == "list_agents":
             env.list_agents()
             
         if action == "properties":
-            pass#text_box[1] = env.props.display()
-        # if action == "view_pop":
-        #     #     if env.period < 4:
-        #     #         text_for_box2 = "Too little data to display"
+            env.user.text_output[1] = env.props.display()
+        
+        #File
+        if action == "disp_log":
+            env.disp_log()
+            
+        #Edit
+        if action == "add":
+            pass
+            
         env.save_session(session_id)
         
     #Run a model for the first time
@@ -173,7 +180,7 @@ def run(request):
               
     site_hdr = get_hdr()
 
-    text_box, image_bytes = env.user.text_output, env.image_bytes
+    text_box, image_bytes = env.user.text_output, env.plot()
     image = base64.b64encode(image_bytes.getvalue()).decode()
     
     template_data = { HEADER: site_hdr, 'text0': text_box[0], 'image': image,

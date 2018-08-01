@@ -89,7 +89,7 @@ def run_model(env, prog_file, results_file):
 
     periods = env.props.get(PERIODS)
     if periods is None:
-        periods = 0
+        periods = -1
     else:
         periods = int(periods)
     # And now we set things running!

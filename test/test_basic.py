@@ -20,7 +20,7 @@ pa = props.PropArgs.create_props(MODEL_NM)
 import json
 import models.basic as bm
 import os
-
+# make sure to run test file from root directory!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 class BasicTestCase(TestCase):
     def __init__(self, methodName, prop_file="models/basic.props"):
     
@@ -63,7 +63,8 @@ class BasicTestCase(TestCase):
         print("running test props write")
         report = True
         self.env.pwrite(self.env.model_nm + ".props")
-        props_written = json.load(open(self.env.model_nm + ".props"))
+        with open(self.env.model_nm + ".props", "r") as f:
+            props_written = json.load(f)
         if len(props_written) != len(self.env.props.props):
             report = False
         if report == True:
@@ -75,7 +76,8 @@ class BasicTestCase(TestCase):
                     if props_written[key] != self.env.props.props[key]:
                         report = False
                         break
-        self.assertEquals(report, True)
+        os.remove(self.env.model_nm + ".props")
+        self.assertEqual(report, True)
 
     def test_step(self):
         report = True
@@ -84,7 +86,7 @@ class BasicTestCase(TestCase):
         period_after_run = self.env.period
         if period_before_run + 1 != period_after_run:
             report = False
-        self.assertEquals(report, True)
+        self.assertEqual(report, True)
 
     def test_n_step(self):
         report = True
@@ -94,7 +96,7 @@ class BasicTestCase(TestCase):
         period_after_run = self.env.period
         if (period_before_run + random_steps) != period_after_run:
             report = False
-        self.assertEquals(report, True)
+        self.assertEqual(report, True)
 
     def test_population_report(self):
         # need to test step method first!!!!!!!!!!!!
@@ -138,7 +140,7 @@ class BasicTestCase(TestCase):
                         break
         f.close()
         os.remove(self.env.model_nm + ".csv")
-        self.assertEquals(report, True)
+        self.assertEqual(report, True)
 
     def test_list_agents(self):
         report = True
@@ -158,7 +160,7 @@ class BasicTestCase(TestCase):
                 break
         f.close()
         os.remove("checkfile.txt")
-        self.assertEquals(report, True)
+        self.assertEqual(report, True)
 
     def test_display_props(self):
         report = True
@@ -185,7 +187,7 @@ class BasicTestCase(TestCase):
                 report = False
         f.close()
         os.remove("checkprops.txt")
-        self.assertEquals(report, True)
+        self.assertEqual(report, True)
 
     def test_examine_log(self):
         report = True
@@ -214,7 +216,7 @@ class BasicTestCase(TestCase):
 
         os.remove("checklog.txt")
 
-        self.assertEquals(report, True)
+        self.assertEqual(report, True)
 
     def test_save_session(self):
         report = True
@@ -248,7 +250,7 @@ class BasicTestCase(TestCase):
 
         os.remove(path)
 
-        self.assertEquals(report, True)
+        self.assertEqual(report, True)
 
     def test_restore_session(self):
         report = True
@@ -284,8 +286,10 @@ class BasicTestCase(TestCase):
             report = False
 
         os.remove(path)
+        os.remove("basic.log")
 
-        self.assertEquals(report, True)
+        self.assertEqual(report, True)
 
 if __name__ == '__main__':
     main()
+

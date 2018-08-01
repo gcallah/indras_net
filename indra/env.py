@@ -137,7 +137,7 @@ class Environment(node.Node):
     def get_randagent_of_var(self, var):
         return self.agents.get_randagent_of_var(var)
 
-    def run(self, periods=0):
+    def run(self, periods=-1):
         """
         This is the main menu loop for all models.
 
@@ -146,18 +146,18 @@ class Environment(node.Node):
         """
 
         print("Periods = " + str(periods))
-        if periods > 0:
+        if periods > -1:
             count = 0
             self.user.tell("Census:")
             while count < periods:
                 self.step()
                 count += 1
-            self.user.tell("Ran for " + str(count) + " periods.\n")
+            if count > 0:
+                self.user.tell("Ran for " + str(count) + " periods.\n")
             file_nm = self.props.get(pa.DATAFILE)
             if file_nm is None:
                 file_nm = self.model_nm+RPT_EXT
             self.pop_report(file_nm=file_nm)
-            self.image_bytes = self.plot()
             return self
             #exit()
         else:
@@ -319,11 +319,13 @@ class Environment(node.Node):
             logfile = self.props.get_logfile()
         else:
             self.user.tell("Props missing; cannot identify log file!",
-                          type=user.ERROR)
+                          type=user.ERROR, text_id=1, 
+                       reverse=False)
             return
 
         if logfile is None:
-            self.user.tell("No log file to examine!", type=user.ERROR)
+            self.user.tell("No log file to examine!", type=user.ERROR, text_id=1, 
+                       reverse=False)
             return
 
         last_n_lines = deque(maxlen=MAX_LINES)  # for now hard-coded
@@ -333,16 +335,17 @@ class Environment(node.Node):
                 last_n_lines.append(line)
 
         self.user.tell("Displaying the last " + str(MAX_LINES)
-                       + " lines of logfile " + logfile)
+                       + " lines of logfile " + logfile, text_id=1, 
+                       reverse=False)
         for line in last_n_lines:
-            self.user.tell(line.strip())
+            self.user.tell(line.strip(), text_id=1, 
+                       reverse=False)
 
     def step(self):
         """
         Step period-by-period through agent actions.
         """
         self.census(disp=self.disp_census)
-
         self.period += 1
 
 # agents might be waiting to be born

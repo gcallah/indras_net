@@ -10,6 +10,12 @@ ATYPE_CHOICES = (
     ('STR', 'String'),
 )
 
+PLOT_CHOICES = (
+    ('NO', 'None'),
+    ('SC', 'Scatterplot'),
+    ('LN', 'Line'),
+)
+
 
 class SingleNameModel(models.Model):
     name = models.CharField(max_length=256)
@@ -72,6 +78,8 @@ class Model(SingleNameModel, DescrModel):
     module = models.CharField(max_length=128)
     disp_name = models.CharField(max_length=130)
     functional = models.BooleanField(default=False)
+    plot_type = models.CharField(choices=PLOT_CHOICES, max_length=2, 
+                                 blank=False, null=True, default=None)
     params = models.ManyToManyField(
         ModelParam, default="", related_name="parameters", blank=True,
     )
