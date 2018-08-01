@@ -133,6 +133,10 @@ class PropArgs():
             # 5. Ask the user questions.
             self.overwrite_props_from_user()
 
+        elif self[UTYPE].val == WEB:
+            self[PERIODS] = Prop(val=1)
+            self["base_dir"] = Prop(val=os.environ["base_dir"])
+
         self.logger = Logger(self, model_name=model_nm, logfile=logfile)
         self.graph.add_edge(self, self.logger)
 
