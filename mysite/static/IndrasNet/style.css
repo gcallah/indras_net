@@ -1192,6 +1192,7 @@ summary.menu_sum {
     color: white;
     padding: 0.5em;
     text-align: center;
+    text-decoration:none;
 }
 .home-page a:hover, .home-page a:active{
     background:#346E94;
