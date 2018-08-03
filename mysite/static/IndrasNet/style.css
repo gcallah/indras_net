@@ -8,15 +8,14 @@ body {
     margin: 0;
     padding: 0;
     font-size: 100%;
-    font-family: "Roboto","Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif;
-    color: #333;
-    background: #fff;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+
 }
 
 /* LINKS */
 
 a:link, a:visited {
-    color: #447e9b;
+
     text-decoration: none;
 }
 
@@ -33,7 +32,7 @@ a img {
 }
 
 a.section:link, a.section:visited {
-    color: #fff;
+
     text-decoration: none;
 }
 
@@ -61,7 +60,7 @@ h1 {
     margin: 0 0 20px;
     font-weight: 300;
     font-size: 2.2em;
-    color: #666;
+
 }
 
 h2 {
@@ -77,7 +76,7 @@ h2.subhead {
 h3 {
     font-size: 1.8em;
     margin: 48px 12px 12px 12px;
-    color: #945;
+
     font-weight: bold;
 }
 
@@ -90,7 +89,7 @@ h4 {
 h5 {
     font-size: 1.3em;
     margin: 1.5em 0 .5em 0;
-    color: #666;
+
     text-transform: uppercase;
     letter-spacing: 1px;
 }
@@ -137,7 +136,7 @@ fieldset {
 
 blockquote {
     font-size: 1em;
-    color: #777;
+
     margin-left: 2px;
     padding-left: 10px;
     border-left: 5px solid #ddd;
@@ -145,24 +144,24 @@ blockquote {
 
 code, pre {
     font-family: "Bitstream Vera Sans Mono", Monaco, "Courier New", Courier, monospace;
-    color: #666;
+
     font-size: 1.1em;
 }
 
 pre.literal-block {
     margin: 10px;
-    background: #eee;
+
     padding: 6px 8px;
 }
 
 code strong {
-    color: #930;
+
 }
 
 hr {
     clear: both;
-    color: #eee;
-    background-color: #eee;
+
+
     height: 1px;
     border: none;
     margin: 0;
@@ -213,7 +212,7 @@ p.mini {
 
 .help, p.help, form p.help {
     font-size: 11px;
-    color: #999;
+
 }
 
 .help-tooltip {
@@ -225,7 +224,7 @@ p img, h1 img, h2 img, h3 img, h4 img, td img {
 }
 
 .quiet, a.quiet:link, a.quiet:visited {
-    color: #999;
+
     font-weight: normal;
 }
 
@@ -252,7 +251,7 @@ p img, h1 img, h2 img, h3 img, h4 img, td img {
 .example {
     margin: 10px 0;
     padding: 5px 10px;
-    background: #efefef;
+
 }
 
 .nowrap {
@@ -273,26 +272,24 @@ td, th {
     border-bottom: 1px solid #111;
     vertical-align: top;
     padding: 8px;
-    font-family: "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
 }
 
 th {
     text-align: center;
-    background: #afd;
+
 }
 
 th#MemStack {
     text-align: center;
-    background: #435;
-    color: #dbf;
+
 }
 
 thead th,
 tfoot td {
-    color: #666;
+
     padding: 5px 10px;
     font-size: 11px;
-    background: #fff;
+
     border: none;
     border-top: 1px solid #eee;
     border-bottom: 1px solid #eee;
@@ -304,15 +301,15 @@ tfoot td {
 }
 
 tr.alt {
-    background: #f6f6f6;
+
 }
 
 .row1 {
-    background: #fff;
+
 }
 
 .row2 {
-    background: #f9f9f9;
+
 }
 
 
@@ -322,7 +319,7 @@ input, textarea, select, .form-row p, form .button {
     margin: 2px 0;
     padding: 2px 3px;
     vertical-align: middle;
-    font-family: "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
+
     font-weight: normal;
     font-size: 14px;
 }
@@ -356,11 +353,11 @@ select[multiple] {
 /* FORM BUTTONS */
 
 .button, input[type=submit], input[type=button], .submit-row input, a.button {
-    background: #285d91;
+
     padding: 10px 15px;
     border: none;
     border-radius: 4px;
-    color: #ffcc33;
+    background:#64C2EC;
     cursor: pointer;
 }
 
@@ -376,13 +373,14 @@ a.button {
 
 .button[disabled], input[type=submit][disabled], input[type=button][disabled] {
     opacity: 0.4;
+    background:#64C2EC;
 }
 
 .button.default, input[type=submit].default, .submit-row input.default {
     float: right;
     border: none;
     font-weight: 400;
-    background: #285D91;
+    background:#64C2EC;
 }
 
 .button.default:active, input[type=submit].default:active,
@@ -403,19 +401,19 @@ input[type=button][disabled].default {
 .menu_item input[type=submit]{
     width:100%;
     height:100%;
-    background: #000;
+
     padding: 0.625em 0.9375em;
     margin:0;
     text-align:left;
     border: none;
     border-radius: 0;
-    color: #ffcc33;
+
     cursor: pointer;
 }
 .menu_item input[type=submit]:active,
 .menu_item input[type=submit]:focus,
 .menu_item input[type=submit]:hover{
-    background:#555;
+    background:#888;
 }
 
 
@@ -424,7 +422,7 @@ input[type=button][disabled].default {
 .module {
     border: none;
     margin-bottom: 1.875em;
-    background: #fff;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
 }
 
 .module p, .module ul, .module h3, .module h4, .module dl, .module pre {
@@ -450,8 +448,7 @@ input[type=button][disabled].default {
     font-weight: 400;
     font-size: 1.25em;
     text-align: left;
-    background: #222;
-    color: #ffcc33;
+
 }
 
 .module caption,
@@ -477,7 +474,7 @@ ul.messagelist li {
     margin: 0 0 10px 0;
     background: #dfd url(../img/icon-yes.svg) 40px 12px no-repeat;
     background-size: 16px auto;
-    color: #333;
+
 }
 
 ul.messagelist li.warning {
@@ -496,18 +493,17 @@ ul.messagelist li.error {
     display: block;
     padding: 10px 12px;
     margin: 0 0 10px 0;
-    color: #ba2121;
+
     border: 1px solid #ba2121;
     border-radius: 4px;
-    background-color: #fff;
+
     background-position: 5px 12px;
 }
 
 ul.errorlist {
     margin: 0 0 4px;
     padding: 0;
-    color: #ba2121;
-    background: #fff;
+
 }
 
 ul.errorlist li {
@@ -550,7 +546,7 @@ td ul.errorlist li {
 }
 
 div.system-message {
-    background: #ffc;
+
     margin: 10px;
     padding: 6px 8px;
     font-size: .8em;
@@ -559,7 +555,7 @@ div.system-message {
 div.system-message p.system-message-title {
     padding: 4px 5px 4px 25px;
     margin: 0;
-    color: #c11;
+
     background: #ffefef url(../img/icon-no.svg) 5px 5px no-repeat;
 }
 
@@ -571,16 +567,16 @@ div.system-message p.system-message-title {
 /* BREADCRUMBS */
 
 div.breadcrumbs {
-    background: #285d91;
+
     padding: 10px 40px;
     border: none;
     font-size: 14px;
-    color: #c4dce8;
+
     text-align: left;
 }
 
 div.breadcrumbs a {
-    color: #fff;
+
 }
 
 div.breadcrumbs a:focus, div.breadcrumbs a:hover {
@@ -605,11 +601,11 @@ div.breadcrumbs a:focus, div.breadcrumbs a:hover {
 }
 
 a.deletelink:link, a.deletelink:visited {
-    color: #CC3434;
+
 }
 
 a.deletelink:focus, a.deletelink:hover {
-    color: #993333;
+
     text-decoration: none;
 }
 
@@ -647,12 +643,12 @@ a.deletelink:focus, a.deletelink:hover {
     display: block;
     float: left;
     padding: 3px 12px;
-    background: #999;
+
     font-weight: 400;
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: #fff;
+
 }
 
 .object-tools a:focus, .object-tools a:hover {
@@ -696,7 +692,7 @@ a.deletelink:focus, a.deletelink:hover {
 .dashboard #content {
     margin-right: 5em;
     margin-left: 5em;
-
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
 }
 
 #content-main {
@@ -745,14 +741,14 @@ a.deletelink:focus, a.deletelink:hover {
     width: auto;
     height: 40px;
     padding: 10px 40px;
-    background: #285D91;
+
     line-height: 40px;
-    color: #ffc;
+
     overflow: hidden;
 }
 
 #header a:link, #header a:visited {
-    color: #fff;
+
 }
 
 #header a:focus , #header a:hover {
@@ -770,11 +766,11 @@ a.deletelink:focus, a.deletelink:hover {
     margin: 5px 0 0 0;
     font-weight: 300;
     font-size: 2.2em;
-    color: #ffcc33;
+
 }
 
 #branding h1, #branding h1 a:link, #branding h1 a:visited {
-    color: #ffcc33;
+
     font-family:fantasy
 }
 
@@ -783,7 +779,7 @@ a.deletelink:focus, a.deletelink:hover {
     font-size: 22px;
     margin: -8px 0 8px 0;
     font-weight: normal;
-    color: #ffc;
+
 }
 
 #branding a:hover {
@@ -791,7 +787,9 @@ a.deletelink:focus, a.deletelink:hover {
 }
 
 #top-image {
-    text-align: center;
+    height:8em;
+    background-image: url("top logo.jpg");
+    background-size:cover;
 }
 
 
@@ -800,7 +798,7 @@ a.deletelink:focus, a.deletelink:hover {
     text-align: center;
     font-size: 13px;
     margin: 10px 5px 20px 5px;
-    background: #075;
+
     border-radius: 10px;
     border: 1px solid #003366;
 }
@@ -808,8 +806,8 @@ a.deletelink:focus, a.deletelink:hover {
 #step-button {
     margin: 10px 5px 20px 5px;
     font-size: 13px;
-    color: #285D91;
-    background: #ffcc33;
+
+
     border-radius: 10px;
     border: 1px solid #003366;
 }
@@ -818,8 +816,8 @@ a.deletelink:focus, a.deletelink:hover {
     
     font-size: 13px;
     margin: 10px 1px 20px 2px;
-    color:#ffcc33;
-    background: blue;;
+
+
     border-radius: 10px;
     border: 1px solid #003366;
 }
@@ -828,25 +826,23 @@ a.deletelink:focus, a.deletelink:hover {
     float: left;
     font-size: 13px;
     margin: 10px 10px 20px 15px;
-    background: #91285d;
+
     border-radius: 10px;
     border: 1px solid #003366;
 }
 
 td#flag, td#register, td#mem-loc {
-    color: #ffc;
-    background: #285D91;
+
     vertical-align: middle
 }
 
 td#unwritable {
-    color: #ffc;
-    background: #936;
+
     vertical-align: middle
 }
 
 td#contents, input#reg-cont, input#flag-cont {
-    background: #000;
+
 }
 
 input#reg-cont, input#mem-cont, input#flag-cont, input#unwr-cont {
@@ -855,16 +851,15 @@ input#reg-cont, input#mem-cont, input#flag-cont, input#unwr-cont {
 }
 
 input#unwr-cont {
-    background: #eff;
-    color: #936;
+
 }
 
 td#form-cell {
-    background: #dde;
+
 }
 
 td#registers-cell {
-    background: #edd;
+
 }
 
 #user-tools {
@@ -886,13 +881,13 @@ td#registers-cell {
     text-decoration: none;
     border-bottom-color: #285d91;
     color: #ffcc33;
-    font-family:fantasy
+
 }
 
 /* SIDEBAR */
 
 #content-related {
-    background: #f8f8f8;
+
 }
 
 #content-related .module {
@@ -901,7 +896,7 @@ td#registers-cell {
 
 #content-related h3 {
     font-size: 14px;
-    color: #666;
+
     padding: 0 16px;
     margin: 0 0 16px;
 }
@@ -932,14 +927,14 @@ td#registers-cell {
     margin-bottom: 16px;
     border-bottom: 1px solid #eaeaea;
     font-size: 22px;
-    color: #333;
+
 }
 
 .delete-confirmation form input[type="submit"] {
-    background: #ba2121;
+
     border-radius: 4px;
     padding: 10px 15px;
-    color: #fff;
+
 }
 
 .delete-confirmation form input[type="submit"]:active,
@@ -953,17 +948,17 @@ td#registers-cell {
     vertical-align: middle;
     height: 15px;
     line-height: 15px;
-    background: #ddd;
+
     border-radius: 4px;
     padding: 10px 15px;
-    color: #333;
+
     margin: 0 0 0 10px;
 }
 
 .delete-confirmation form .cancel-link:active,
 .delete-confirmation form .cancel-link:focus,
 .delete-confirmation form .cancel-link:hover {
-    background: #ccc;
+
 }
 
 /* POPUP */
@@ -989,7 +984,7 @@ figure.lead-figure {
 }
 
 figcaption {
-    color: #369;
+
     font-style: italic;
     text-align: center;
     margin: .8em 1em .6em 1em;
@@ -998,32 +993,32 @@ figcaption {
 /* summary tags */
 summary.sum1 {
     font-size: 2em;
-    color: #903;
+
     margin: 1em 1.2em 1em 1.2em;
 }
 
 summary.sum2 {
     font-size: 1.6em;
-    color: #937;
+
     font-weight: 500;
     margin: .8em 1.2em .8em 2em;
 }
 
 summary.sum3 {
     font-size: 1.5em;
-    color: #339;
+
     margin: .6em 1.2em .6em 2.8em;
 }
 
 summary.sum4 {
     font-size: 1.4em;
-    color: #825;
+
     margin: .4em 1.2em .4em 2.8em;
 }
 
 summary.menu_sum {
     font-size: 1.4em;
-    color: #639;
+
     margin: .5em 0em .5em 0em;
 }
 
@@ -1060,64 +1055,144 @@ summary.menu_sum {
 
 /* dropdown */
 .dropbtn {
-    background-color: #ccc;
+    background:#6AA5FD;
     color: black;
     padding: 1em;
     font-size: 0.9em;
-    border: none;
+    border-style: none;
     cursor: pointer;
 }
 
 .dropdown {
     position: relative;
     display: inline-block;
+    border-style: none;
+
 }
 
 .dropdown-content {
     display: none;
     position: absolute;
-    background-color: #f9f9f9;
+
     min-width: 10em;
     box-shadow: 0em 1em 2em 0em rgba(0,0,0,0.2);
     z-index: 1;
 }
 
 .dropdown-content a {
-    color: black;
+
     font-size:0.8em;
     padding: 0.4em 0.6em;
     text-decoration: none;
     display: block;
 }
 
-.dropdown-content a:hover {background-color: #aaa}
+.dropdown-content a:hover { }
 
 .dropdown:hover .dropdown-content {
     display: block;
 }
 
 .dropdown:hover .dropbtn {
-    background-color: #aaa;
+    background:#888;
 }
 
 /* navbar */
 .navbar-header h1{
     font-family: fantasy;
-    padding: 0;
+    padding-left: 1.4em;
     margin: 0.5em 0 0 0;
     font-weight: 300;
     font-size: 2.2em;
-    color: #ffcc33;
+    color:#403f63;
 }
 
 
 .navbar {
     border-radius:0;
     margin:0;
+
 }
-.nav navbar-nav{
+.nav {
+
+}
+
+.navbar-nav{
     margin-left:0;
+
 }
 .remove_left_space{
     padding-left:0;
+}
+
+.container-fluid {
+    background:#64C2EC;
+    margin-bottom:0;
+}
+.navbar-inverse{
+    border-style:none;
+    margin-bottom:0;
+}
+.collapse {
+    margin-bottom:0;
+}
+
+.navbar-collapse {
+    margin-bottom:0;
+}
+.navbar-right {
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+
+}
+
+.nav.navbar-nav.navbar-right li a {
+    color:white;
+}
+.nav.navbar-nav.navbar-right li a:focus, .nav.navbar-nav.navbar-right li a:hover {
+    color:#cbcbcb;
+}
+.navbar.navbar {
+    border-style:none;
+}
+.container-fluid.remove_left_space {
+    background:#6AA5FD;
+}
+.container-fluid.remove_left_space .nav.navbar-nav li {
+    padding:0;
+}
+#myNavbar{
+    margin-bottom:0;
+}
+
+
+/* Background */
+.dashboard {
+    background-image: url("indra wallpaper.jpg");
+}
+
+/* Home Page */
+.home-page {
+
+}
+.home-page p {
+    background-image: url("home page background.jpg");
+    background-size:cover;
+    margin:0;
+    height:100%;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+    color:white;
+    padding-left:1.5em;
+    padding-top:3em;
+    font-size:2.7em;
+}
+.home-page a:link, .home-page a:visited {
+    border-radius:0.3em;
+    background:#64C2EC;
+    font-size:0.75em;
+    color: white;
+    padding: 0.5em;
+    text-align: center;
+}
+.home-page a:hover, .home-page a:active{
+    background:#346E94;
 }

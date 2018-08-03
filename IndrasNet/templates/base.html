@@ -18,12 +18,8 @@
 <body class="dashboard" onload="loadcode()">
     <div id="container">
         <div id="top-image">
-            <img src="{% static '/IndrasNet/logo.png' %}" alt="Logo" width=50 height=50>
-            &nbsp; &nbsp;
-            <img src="{% static '/IndrasNet/logo.png' %}" alt="Logo" width=50 height=50>
-            &nbsp; &nbsp;
-            <img src="{% static '/IndrasNet/logo.png' %}" alt="Logo" width=50 height=50>
-            <br>
+
+
         </div>
         <nav class="navbar navbar-inverse">
             <div class="container-fluid">
@@ -53,6 +49,10 @@
         {% block menubar %}
         {% endblock menubar %}
 
+        <div class="home-page">
+            {% block homepage %}
+            {% endblock homepage %}
+        </div>
 
         <div id="content">
             <div id="content-main">
