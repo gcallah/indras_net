@@ -69,22 +69,18 @@ class SpatialEnv(env.Environment):
         """
         Show where agents are in graphical form.
         """
-        if not disp.plt_present:
-            self.user.tell("No graphing package installed", type=user.ERROR)
-            return
-        headless = False
-        if self.user.utype == user.WEB:
-            headless = True
-        
-        data = self.plot_data()
-        self.scatter_plot = disp.ScatterPlot(
-            self.plot_title, data,
-            int(self.width), int(self.height),
-            anim=True, data_func=self.plot_data,
-            is_headless=headless
-            )
-        self.image_bytes = self.scatter_plot.show()
-        return self.image_bytes
+        if self.props["plot_type"] == "LN":
+            return super().plot()
+        elif self.props["plot_type"] == "SC":       
+            data = self.plot_data()
+            self.scatter_plot = disp.ScatterPlot(
+                self.plot_title, data,
+                int(self.width), int(self.height),
+                anim=True, data_func=self.plot_data,
+                is_headless=self.if_headless()
+                )
+            self.image_bytes = self.scatter_plot.show()
+            return self.image_bytes
 
     def plot_data(self):
         data = {}

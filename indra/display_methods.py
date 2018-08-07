@@ -126,14 +126,16 @@ class LineGraph():
     """
 
     def __init__(self, title, varieties, data_points,
-                 anim=False, data_func=None):
+                 anim=False, data_func=None, is_headless=False, legend_pos=4):
         global anim_func
 
         self.title = title
         self.anim = anim
         self.data_func = data_func
         self.draw_graph(data_points, varieties)
-        if anim:
+        self.headless = is_headless
+        
+        if anim and not self.headless:
             anim_func = animation.FuncAnimation(self.fig,
                                     self.update_plot,
                                     frames=1000,
@@ -165,7 +167,12 @@ class LineGraph():
         """
         Display the plot.
         """
-        plt.show()
+        if not self.headless:
+            plt.show()
+        else:
+            file = io.BytesIO()  
+            plt.savefig(file, format="png")
+            return file
 
     def update_plot(self, i):
         """
@@ -220,7 +227,6 @@ class ScatterPlot():
         plt.grid(True)
 
         if anim and not self.headless:
-            print("Animation is on.")
             anim_func = animation.FuncAnimation(fig,
                                     self.update_plot,
                                     frames=1000,
