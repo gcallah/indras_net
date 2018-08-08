@@ -132,6 +132,9 @@ class LineGraph():
         self.title = title
         self.anim = anim
         self.data_func = data_func
+        for i in varieties:
+            data_points = len(varieties[i]["data"])
+            break
         self.draw_graph(data_points, varieties)
         self.headless = is_headless
         
