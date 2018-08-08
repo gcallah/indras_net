@@ -33,7 +33,11 @@ LOWVAL = "lowval"
 global user_type
 user_type = TERMINAL
 
-TYPE_DICT = {'INT': int, 'DBL': float, 'BOOL': bool, 'STR': str}
+INT = 'INT'
+FLT = 'DBL'
+BOOL = 'BOOL'
+STR = 'STR'
+TYPE_DICT = {INT: int, FLT: float, BOOL: bool, STR: str}
 
 def get_prop_from_env():
     global user_type
@@ -194,7 +198,7 @@ class PropArgs():
             else:
                 val = prop_dict[prop_nm]
 
-            if not self._answer_valid(prop_nm, val):
+            if not self._answer_within_bounds(prop_nm, val):
                 raise ValueError("{val} for {prop_nm} is not valid."
                                  "lower_bound: {lowval} upper_bound: {hival}"
                                  .format(val=val, prop_nm=prop_nm, lowval=lowval, hival=hival))
@@ -214,8 +218,9 @@ class PropArgs():
         for prop_nm in self:
             if hasattr(self[prop_nm], QUESTION) and self[prop_nm].question:
                 self[prop_nm].val = self._keep_asking_until_correct(prop_nm)
-
-    def _type_val_if_possible(self, val, atype):
+    
+    @staticmethod
+    def _type_val_if_possible(val, atype):
         if atype in TYPE_DICT:
             type_cast = TYPE_DICT[atype]
             return type_cast(val)
@@ -228,17 +233,17 @@ class PropArgs():
             if not answer:
                 return self[prop_nm].val
             typed_answer = self._type_val_if_possible(answer, self[prop_nm].atype)
-            if not self._answer_valid(prop_nm, typed_answer):
+            if not self._answer_within_bounds(prop_nm, typed_answer):
                 print("Input must be between {lowval} and {hival} inclusive."
                       .format(lowval=self[prop_nm].lowval,
                               hival=self[prop_nm].hival))
                 continue
             return typed_answer
 
-    def _answer_valid(self, prop_nm, typed_answer):
-        if hasattr(self[prop_nm], LOWVAL) and self[prop_nm].lowval and self[prop_nm].lowval > typed_answer:
+    def _answer_within_bounds(self, prop_nm, typed_answer):
+        if hasattr(self[prop_nm], LOWVAL) and self[prop_nm].lowval is not None and self[prop_nm].lowval > typed_answer:
             return False
-        if hasattr(self[prop_nm], HIVAL) and self[prop_nm].hival and self[prop_nm].hival < typed_answer:
+        if hasattr(self[prop_nm], HIVAL) and self[prop_nm].hival is not None and self[prop_nm].hival < typed_answer:
             return False
         return True
 

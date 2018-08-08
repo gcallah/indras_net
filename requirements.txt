@@ -2,3 +2,4 @@ networkx
 numpy
 django
 django-extensions
+pytest
