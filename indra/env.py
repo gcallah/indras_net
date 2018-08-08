@@ -144,8 +144,8 @@ class Environment(node.Node):
         resume: starts up from a previous period.
         periods: run x periods, for batch mode or timing purposes.
         """
-
-        print("Periods = " + str(periods))
+        
+        print("Periods = " + str(self.period))
         if periods > -1:
             count = 0
             self.user.tell("Census:")
@@ -439,9 +439,22 @@ class Environment(node.Node):
 
     def plot(self):
         """
-        Placeholder
+        Draw a line graph
         """
-        self.user.tell("Plot not implemented in this model", type=user.ERROR)
+        (period, data) = self.line_data()
+        self.line_graph = disp.LineGraph(self.line_graph_title + self.name,
+                                         data, period, is_headless=self.if_headless())
+        self.image_bytes = self.line_graph.show()
+        return self.image_bytes
+    
+    def if_headless(self):
+        if not disp.plt_present:
+            self.user.tell("No graphing package installed", type=user.ERROR)
+            return
+        headless = False
+        if self.user.utype == user.WEB:
+            headless = True
+        return headless
 
     def quit(self):
         """

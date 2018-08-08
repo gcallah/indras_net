@@ -117,6 +117,7 @@ def run(request):
     model_name = request.POST[MODEL]
     model = Model.objects.get(name=model_name)
     module = model.module
+    plot_type = model.plot_type
     importlib.import_module(module[0:-4])
     
     questions = model.params.all()
@@ -167,6 +168,7 @@ def run(request):
     #Run a model for the first time
     else:
         answers = {}
+        answers["plot_type"] = plot_type
         for q in questions:
             answer = request.POST[q.question]
             if q.atype == "INT":
@@ -208,7 +210,6 @@ def about(request):
 
     site_hdr = get_hdr()
     return render(request, 'about.html', {HEADER: site_hdr})
-
 
 def assign_key(request):
     if 'session_id' not in request.session:
