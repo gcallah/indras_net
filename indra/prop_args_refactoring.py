@@ -13,9 +13,11 @@ from IndrasNet.models import Model
 
 SWITCH = '-'
 PERIODS = 'periods'
+BASE_DIR = 'base_dir'
 DATAFILE = 'datafile'
 
 OS = "OS"
+
 UTYPE = "user_type"
 # user types
 TERMINAL = "terminal"
@@ -39,6 +41,7 @@ BOOL = 'BOOL'
 STR = 'STR'
 TYPE_DICT = {INT: int, FLT: float, BOOL: bool, STR: str}
 
+
 def get_prop_from_env():
     global user_type
     try:
@@ -56,7 +59,6 @@ def read_props(model_nm, file_nm):
     """
     props = json.load(open(file_nm))
     return PropArgs.create_props(model_nm, props=props)
-
 
 
 class Prop():
@@ -90,18 +92,13 @@ class PropArgs():
     """
 
     @staticmethod
-    def create_props(model_nm, props=None):
+    def create_props(model_nm, prop_dict=None):
         """
         Create a property object with values in 'props'.
         """
-        global user_type
-
-        user_type = get_prop_from_env()
-        props = {UTYPE: {"val": user_type}}
-
-        if props is None:
-            props = {}
-        return PropArgs(model_nm, prop_dict=props)
+        if prop_dict is None:
+            prop_dict = {}
+        return PropArgs(model_nm, prop_dict=prop_dict)
 
 
     def __init__(self, model_nm, logfile=None, prop_dict=None,
@@ -139,7 +136,7 @@ class PropArgs():
 
         elif self[UTYPE].val == WEB:
             self[PERIODS] = Prop(val=1)
-            self["base_dir"] = Prop(val=os.environ["base_dir"])
+            self[BASE_DIR] = Prop(val=os.environ[BASE_DIR])
 
         self.logger = Logger(self, model_name=model_nm, logfile=logfile)
         self.graph.add_edge(self, self.logger)
@@ -157,6 +154,9 @@ class PropArgs():
                                                hival=param.hival)
 
     def overwrite_props_from_env(self):
+        global user_type
+        user_type = get_prop_from_env()
+        self[UTYPE] = Prop(val=user_type)
         self[OS] = Prop(val=platform.system())
 
     def overwrite_props_from_dict(self, prop_dict):
@@ -198,10 +198,10 @@ class PropArgs():
             else:
                 val = prop_dict[prop_nm]
 
-            if not self._answer_within_bounds(prop_nm, val):
-                raise ValueError("{val} for {prop_nm} is not valid."
-                                 "lower_bound: {lowval} upper_bound: {hival}"
-                                 .format(val=val, prop_nm=prop_nm, lowval=lowval, hival=hival))
+#            if not self._answer_within_bounds(prop_nm, val):
+#                raise ValueError("{val} for {prop_nm} is not valid."
+#                                 "lower_bound: {lowval} upper_bound: {hival}"
+#                                 .format(val=val, prop_nm=prop_nm, lowval=lowval, hival=hival))
  
     def overwrite_props_from_command_line(self):
         prop_nm = None
@@ -226,25 +226,42 @@ class PropArgs():
             return type_cast(val)
         else:
             return val
-                
+
     def _keep_asking_until_correct(self, prop_nm):
+        atype = None
+        if hasattr(self[prop_nm], ATYPE):
+            atype = self[prop_nm].atype
+
         while True:
             answer = input(self.get_question(prop_nm))
             if not answer:
                 return self[prop_nm].val
-            typed_answer = self._type_val_if_possible(answer, self[prop_nm].atype)
+
+            try:
+                typed_answer = self._type_val_if_possible(answer, atype)
+            except ValueError:
+                print("Input of invalid type. Should be {atype}"
+                      .format(atype=atype))
+                continue
+
             if not self._answer_within_bounds(prop_nm, typed_answer):
                 print("Input must be between {lowval} and {hival} inclusive."
                       .format(lowval=self[prop_nm].lowval,
                               hival=self[prop_nm].hival))
                 continue
+
             return typed_answer
 
     def _answer_within_bounds(self, prop_nm, typed_answer):
-        if hasattr(self[prop_nm], LOWVAL) and self[prop_nm].lowval is not None and self[prop_nm].lowval > typed_answer:
+        if self[prop_nm].atype is None or self[prop_nm].atype in (STR, BOOL):
+            return True
+
+        if self[prop_nm].lowval is not None and self[prop_nm].lowval > typed_answer:
             return False
-        if hasattr(self[prop_nm], HIVAL) and self[prop_nm].hival is not None and self[prop_nm].hival < typed_answer:
+
+        if self[prop_nm].hival is not None and self[prop_nm].hival < typed_answer:
             return False
+
         return True
 
     def display(self):
@@ -318,16 +335,6 @@ class PropArgs():
                            lowval=self[prop_nm].lowval,
                            hival=self[prop_nm].hival,
                            default=self[prop_nm].val)
-
-    def get(self, nm, default=None):
-        """
-        Get a property value, with a default
-        that gets stored if the property is not there
-        at the time of the call.
-        """
-        if nm not in self:
-            self.props[nm] = Prop(val=default)
-        return self.props[nm].val
 
 
 class Logger():
