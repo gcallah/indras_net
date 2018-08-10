@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import time
 import os
 import indra.display_methods as disp
 import indra.grid_agent as ga
@@ -130,6 +130,14 @@ class WolframEnv(ge.GridEnv):
                 agent.state = B
                 agent.postact()
                 agent.is_active = False
+    
+    def act_loop(self, random=False):
+        for cell in self.get_row_view(self.height - 1 - self.period):
+            cell.contents.act()
+            
+    def postact_loop(self, random=False):
+        for cell in self.get_row_view(self.height - 1 - self.period):
+            cell.contents.postact()
         
     def check_rules(self, combo):
         return self.rules[str(combo)]
