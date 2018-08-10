@@ -365,12 +365,16 @@ class Environment(node.Node):
         if self.postact:
             self.postact_loop()
 
-    def act_loop(self):
+    def act_loop(self, random=False):
         """
         Loop through randomly through agents calling their act() func.
         """
-        for agent in self.agents.agent_random_iter():
-            agent.act()
+        if random:
+            for agent in self.agents.agent_random_iter():
+                agent.act()
+        else:
+            for agent in self.agents:
+                agent.act()
 
     def preact_loop(self):
         """
@@ -379,12 +383,16 @@ class Environment(node.Node):
         for agent in self.agents:
             agent.preact()
 
-    def postact_loop(self):
+    def postact_loop(self, random=False):
         """
         Loop through agents calling their postact() func.
         """
-        for agent in self.agents.agent_random_iter():
-            agent.postact()
+        if random:
+            for agent in self.agents.agent_random_iter():
+                agent.postact()
+        else:
+            for agent in self.agents:
+                agent.postact()
 
     def graph_agents(self):
         """
