@@ -131,11 +131,11 @@ class WolframEnv(ge.GridEnv):
                 agent.postact()
                 agent.is_active = False
     
-    def act_loop(self):
+    def act_loop(self, random=False):
         for cell in self.get_row_view(self.height - 1 - self.period):
             cell.contents.act()
             
-    def postact_loop(self):
+    def postact_loop(self, random=False):
         for cell in self.get_row_view(self.height - 1 - self.period):
             cell.contents.postact()
         
