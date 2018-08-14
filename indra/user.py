@@ -115,9 +115,7 @@ class User(ent.Entity):
         
     def to_json(self):
         safe_fields = super().to_json()
-        
         safe_fields["text_output"] = self.text_output
-        
         return safe_fields
     
     def from_json(self, json_input):
