@@ -5,6 +5,7 @@ create new run scripts, and should be run to test
 the system after library changes.
 """
 import pytest
+import json
 from unittest.mock import patch
 
 from indra.prop_args_refactoring import PropArgs
@@ -18,7 +19,8 @@ def prop_args():
     A bare-bones prop_args object. To use - make `prop_args` a test argument.
     """
     with patch('builtins.input', side_effect=ANSWERS_FOR_INPUT_PROMPTS):
-        return PropArgs.create_props("basic", props=None)
+        return PropArgs.create_props("basic", prop_dict=None)
+
 
 @pytest.mark.parametrize('lowval,test_val,hival,expected', [
         (None,  7, None, True),
@@ -36,3 +38,11 @@ def test_bounds(lowval, test_val, hival, expected, prop_args):
                                            typed_answer=test_val) \
            == expected
 
+
+def test_props_overwriting_through_prop_file(prop_args):
+    prop_json = "{{ \"{prop_name}\": {{\"val\": 7}} }}".format(prop_name=NUM_AGENTS)
+    prop_dict = json.loads(prop_json)
+    prop_args[NUM_AGENTS].val = 100
+    prop_args.overwrite_props_from_dict(prop_dict)
+    
+    assert prop_args[NUM_AGENTS].val == 7
