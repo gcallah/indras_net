@@ -61,7 +61,7 @@ class Environment(node.Node):
         user_type = user.TERMINAL
         if self.props is not None:
             self.props["user_name"] = user_nm
-            user_type = self.props.get("user_type", user.TERMINAL)
+            user_type = self.props["user_type"]
         self.user = user.User(user_nm, user_type)
         # we have to wait until user is set to do...
         if self.props is None:

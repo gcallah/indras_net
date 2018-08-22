@@ -7,7 +7,7 @@ the system after library changes.
 
 MODEL_NM = "basic"
 
-import indra.prop_args as props
+import indra.prop_args2 as props
 # we will create props here to set user_type:
 pa = props.PropArgs.create_props(MODEL_NM)
 
@@ -22,18 +22,7 @@ def run(prop_dict=None):
     # We store basic parameters in a
     # "property" file; this allows us to save
     #  multiple parameter sets, which is important in simulation work.
-    #  We can read these in from file or set them here.
-
-    # TODO: Place this logic in prop_args
-    if prop_dict is not None:
-        prop_dict[props.PERIODS] = 1
-        pa.add_props(prop_dict)
-    else:
-        result = utils.read_props(MODEL_NM)
-        if result:
-            pa.add_props(result.props)
-        else:
-            utils.ask_for_params(pa)
+    pa = props.PropArgs.create_props(MODEL_NM)
 
     # test prop_args as an iterable:
     for prop, val in pa.items():
@@ -43,6 +32,10 @@ def run(prop_dict=None):
     if "num_agents" in pa:
         print("In is working!")
 
+    # test what pa["num_agents"] is:
+    num_agents = pa["num_agents"]
+    print("num_agents = " + str(num_agents))
+
     # make sure we can get props length:
     print("Props length = " + str(len(pa)))
 
@@ -51,7 +44,7 @@ def run(prop_dict=None):
 
     # Now we loop creating multiple agents
     #  with numbered names based on the loop variable:
-    for i in range(pa["num_agents"]):
+    for i in range(num_agents):
         env.add_agent(bm.BasicAgent(name="agent" + str(i),
                                     goal="acting up!"))
 

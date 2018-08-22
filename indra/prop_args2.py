@@ -63,7 +63,7 @@ def read_props(model_nm, file_nm):
 
 class Prop():
     """
-    Placeholder for prop attributes.
+    Container for prop attributes.
 
     Attributes include:
         val - the value to be used in the model run
@@ -82,6 +82,9 @@ class Prop():
         self.default_val = default_val
         self.lowval = lowval
         self.hival = hival
+
+    def __str__(self):
+        return str(self.val)
 
 
 class PropArgs():
@@ -127,7 +130,6 @@ class PropArgs():
         self.overwrite_props_from_dict(prop_dict)
 
         if self[UTYPE].val in (TERMINAL, IPYTHON, IPYTHON_NB):
-
             # 4. process command line args and set them as properties:
             self.overwrite_props_from_command_line()
 
@@ -286,14 +288,22 @@ class PropArgs():
     def __contains__(self, key):
         return key in self.props
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key, v):
         """
         Set a property value.
         """
-        self.props[key] = value
+        if key in self:
+            self.props[key].val = v
+        else:
+            self.props[key] = Prop(val=v)
 
     def __getitem__(self, key):
-        return self.props[key]
+        print("We are actually in getitem of props, "
+              + " looking for key "
+              + key
+              + " and going to return " 
+             + str(self.props[key].val))
+        return self.props[key].val
 
     def __delitem__(self, key):
         del self.props[key]
@@ -317,17 +327,10 @@ class PropArgs():
     def to_json(self):
         return self.props
 
-    def get_val(self, key, default=None):
+    def get(self, key, default=None):
         if key in self.props and self.props[key].val:
             return self.props[key].val
         return default
-
-    def set_val(self, key, value):
-        if key in self:
-            print("{} in self".format(key))
-            self.props[key].val = value
-        else:
-            self.props[key] = Prop(val=value)
 
     def get_question(self, prop_nm):
             return "{question} [{lowval}-{hival}] ({default}) "\
@@ -351,10 +354,10 @@ class Logger():
                  loglevel=logging.INFO):
         if logfile is None:
             logfile = model_name + ".log"
-        fmt = props.get_val("log_format", Logger.DEF_FORMAT)
-        lvl = props.get_val("log_level", Logger.DEF_LEVEL)
-        fmd = props.get_val("log_fmode", Logger.DEF_FILEMODE)
-        props.set_val("log_fname", logfile)
+        fmt = props.get("log_format", Logger.DEF_FORMAT)
+        lvl = props.get("log_level", Logger.DEF_LEVEL)
+        fmd = props.get("log_fmode", Logger.DEF_FILEMODE)
+        props["log_fname"] = logfile
 # we put the following back in once the model names are fixed
 #  fnm = props.get("log_fname", logfile)
         logging.basicConfig(format=fmt,
