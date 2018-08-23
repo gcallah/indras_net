@@ -8,6 +8,7 @@ the system after library changes.
 MODEL_NM = "basic"
 
 import indra.prop_args2 as props
+
 # we will create props here to set user_type:
 pa = props.PropArgs.create_props(MODEL_NM)
 
@@ -19,10 +20,7 @@ import models.basic as bm
 def run(prop_dict=None):
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
 
-    # We store basic parameters in a
-    # "property" file; this allows us to save
-    #  multiple parameter sets, which is important in simulation work.
-    pa = props.PropArgs.create_props(MODEL_NM)
+    # now we run some tests:
 
     # test prop_args as an iterable:
     for prop, val in pa.items():

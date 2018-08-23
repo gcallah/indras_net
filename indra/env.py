@@ -14,7 +14,7 @@ import indra.display_methods as disp
 import indra.data_methods as data
 import indra.node as node
 import indra.main_menu as mm
-import indra.prop_args as pa
+import indra.prop_args2 as pa
 import indra.agent_pop as ap
 import indra.user as user
 import json

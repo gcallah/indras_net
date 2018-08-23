@@ -39,7 +39,7 @@ INT = 'INT'
 FLT = 'DBL'
 BOOL = 'BOOL'
 STR = 'STR'
-TYPE_DICT = {INT: int, FLT: float, BOOL: bool, STR: str}
+type_dict = {INT: int, FLT: float, BOOL: bool, STR: str}
 
 
 def get_prop_from_env():
@@ -223,8 +223,8 @@ class PropArgs():
     
     @staticmethod
     def _type_val_if_possible(val, atype):
-        if atype in TYPE_DICT:
-            type_cast = TYPE_DICT[atype]
+        if atype in type_dict:
+            type_cast = type_dict[atype]
             return type_cast(val)
         else:
             return val
@@ -298,13 +298,6 @@ class PropArgs():
             self.props[key] = Prop(val=v)
 
     def __getitem__(self, key):
-        print("We are actually in getitem of props, "
-              + " looking for key "
-              + key
-              + " and going to return " 
-             + str(self.props[key].val)
-             + "it has type"
-             + str(type(self.props[key].val)))
         return self.props[key].val
 
     def __delitem__(self, key):

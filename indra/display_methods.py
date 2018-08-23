@@ -10,7 +10,7 @@ import numpy as np
 import networkx as nx
 import logging
 import io
-from indra.prop_args import user_type
+from indra.prop_args2 import user_type
 plt_present = True
 
 try:

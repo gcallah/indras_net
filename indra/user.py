@@ -26,7 +26,7 @@ except ImportError:
                    INFO: None}
 
 import indra.entity as ent
-import indra.prop_args as pa
+import indra.prop_args2 as pa
 
 # user types
 TERMINAL = pa.TERMINAL

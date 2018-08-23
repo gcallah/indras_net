@@ -69,9 +69,10 @@ class SpatialEnv(env.Environment):
         """
         Show where agents are in graphical form.
         """
-        if self.props["plot_type"] == "LN":
+        plot_type = self.props.get("plot_type", "SC")
+        if plot_type == "LN":
             return super().plot()
-        elif self.props["plot_type"] == "SC":       
+        elif plot_type == "SC":       
             data = self.plot_data()
             self.scatter_plot = disp.ScatterPlot(
                 self.plot_title, data,
