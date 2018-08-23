@@ -129,16 +129,16 @@ class PropArgs():
         # 3. Property File
         self.overwrite_props_from_dict(prop_dict)
 
-        if self[UTYPE].val in (TERMINAL, IPYTHON, IPYTHON_NB):
+        if self.props[UTYPE].val in (TERMINAL, IPYTHON, IPYTHON_NB):
             # 4. process command line args and set them as properties:
             self.overwrite_props_from_command_line()
 
             # 5. Ask the user questions.
             self.overwrite_props_from_user()
 
-        elif self[UTYPE].val == WEB:
-            self[PERIODS] = Prop(val=1)
-            self[BASE_DIR] = Prop(val=os.environ[BASE_DIR])
+        elif self.props[UTYPE].val == WEB:
+            self.props[PERIODS] = Prop(val=1)
+            self.props[BASE_DIR] = Prop(val=os.environ[BASE_DIR])
 
         self.logger = Logger(self, model_name=model_nm, logfile=logfile)
         self.graph.add_edge(self, self.logger)
@@ -148,7 +148,7 @@ class PropArgs():
         for param in params:
             atype = param.atype
             typed_default_val = self._type_val_if_possible(param.default_val, param.atype)
-            self[param.prop_name] = Prop(val=typed_default_val,
+            self.props[param.prop_name] = Prop(val=typed_default_val,
                                                question=param.question,
                                                atype=atype,
                                                default_val=typed_default_val,
@@ -158,8 +158,8 @@ class PropArgs():
     def overwrite_props_from_env(self):
         global user_type
         user_type = get_prop_from_env()
-        self[UTYPE] = Prop(val=user_type)
-        self[OS] = Prop(val=platform.system())
+        self.props[UTYPE] = Prop(val=user_type)
+        self.props[OS] = Prop(val=platform.system())
 
     def overwrite_props_from_dict(self, prop_dict):
         """
@@ -195,7 +195,7 @@ class PropArgs():
                 question = prop_dict[prop_nm].get(QUESTION, None)
                 hival = prop_dict[prop_nm].get(HIVAL, None)
                 lowval = prop_dict[prop_nm].get(LOWVAL, None)
-                self[prop_nm] = Prop(val=val, question=question, atype=atype,
+                self.props[prop_nm] = Prop(val=val, question=question, atype=atype,
                                            hival=hival, lowval=lowval)
             else:
                 val = prop_dict[prop_nm]
@@ -213,13 +213,13 @@ class PropArgs():
                 prop_nm = arg.lstrip(SWITCH)
             # the second arg is the property value
             if prop_nm is not None:
-                self[prop_nm].val = arg
+                self.props[prop_nm].val = arg
                 prop_nm = None
 
     def overwrite_props_from_user(self):
         for prop_nm in self:
-            if hasattr(self[prop_nm], QUESTION) and self[prop_nm].question:
-                self[prop_nm].val = self._keep_asking_until_correct(prop_nm)
+            if hasattr(self.props[prop_nm], QUESTION) and self.props[prop_nm].question:
+                self.props[prop_nm].val = self._keep_asking_until_correct(prop_nm)
     
     @staticmethod
     def _type_val_if_possible(val, atype):
@@ -231,13 +231,13 @@ class PropArgs():
 
     def _keep_asking_until_correct(self, prop_nm):
         atype = None
-        if hasattr(self[prop_nm], ATYPE):
-            atype = self[prop_nm].atype
+        if hasattr(self.props[prop_nm], ATYPE):
+            atype = self.props[prop_nm].atype
 
         while True:
             answer = input(self.get_question(prop_nm))
             if not answer:
-                return self[prop_nm].val
+                return self.props[prop_nm].val
 
             try:
                 typed_answer = self._type_val_if_possible(answer, atype)
@@ -248,20 +248,20 @@ class PropArgs():
 
             if not self._answer_within_bounds(prop_nm, typed_answer):
                 print("Input must be between {lowval} and {hival} inclusive."
-                      .format(lowval=self[prop_nm].lowval,
-                              hival=self[prop_nm].hival))
+                      .format(lowval=self.props[prop_nm].lowval,
+                              hival=self.props[prop_nm].hival))
                 continue
 
             return typed_answer
 
     def _answer_within_bounds(self, prop_nm, typed_answer):
-        if self[prop_nm].atype is None or self[prop_nm].atype in (STR, BOOL):
+        if self.props[prop_nm].atype is None or self.props[prop_nm].atype in (STR, BOOL):
             return True
 
-        if self[prop_nm].lowval is not None and self[prop_nm].lowval > typed_answer:
+        if self.props[prop_nm].lowval is not None and self.props[prop_nm].lowval > typed_answer:
             return False
 
-        if self[prop_nm].hival is not None and self[prop_nm].hival < typed_answer:
+        if self.props[prop_nm].hival is not None and self.props[prop_nm].hival < typed_answer:
             return False
 
         return True
@@ -272,7 +272,7 @@ class PropArgs():
         """
         ret = "Properties for " + self.model_nm + "\n"
         for prop_nm in self:
-            ret += "\t" + prop_nm + ": " + str(self[prop_nm].val) + "\n"
+            ret += "\t" + prop_nm + ": " + str(self.props[prop_nm].val) + "\n"
 
         return ret
 
@@ -302,7 +302,9 @@ class PropArgs():
               + " looking for key "
               + key
               + " and going to return " 
-             + str(self.props[key].val))
+             + str(self.props[key].val)
+             + "it has type"
+             + str(type(self.props[key].val)))
         return self.props[key].val
 
     def __delitem__(self, key):
@@ -334,10 +336,10 @@ class PropArgs():
 
     def get_question(self, prop_nm):
             return "{question} [{lowval}-{hival}] ({default}) "\
-                   .format(question=self[prop_nm].question, 
-                           lowval=self[prop_nm].lowval,
-                           hival=self[prop_nm].hival,
-                           default=self[prop_nm].val)
+                   .format(question=self.props[prop_nm].question, 
+                           lowval=self.props[prop_nm].lowval,
+                           hival=self.props[prop_nm].hival,
+                           default=self.props[prop_nm].val)
 
 
 class Logger():
@@ -354,9 +356,9 @@ class Logger():
                  loglevel=logging.INFO):
         if logfile is None:
             logfile = model_name + ".log"
-        fmt = props.get("log_format", Logger.DEF_FORMAT)
-        lvl = props.get("log_level", Logger.DEF_LEVEL)
-        fmd = props.get("log_fmode", Logger.DEF_FILEMODE)
+        fmt = props["log_format"] if "log_format" in props else Logger.DEF_FORMAT
+        lvl = props["log_level"] if "log_level" in props else Logger.DEF_LEVEL
+        fmd = props["log_fmode"] if "log_fmode" in props else Logger.DEF_FILEMODE
         props["log_fname"] = logfile
 # we put the following back in once the model names are fixed
 #  fnm = props.get("log_fname", logfile)
