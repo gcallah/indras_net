@@ -9,7 +9,7 @@ Segregation Run File
 """
 MODEL_NM = "segregation"
 
-import indra.prop_args as props
+import indra.prop_args2 as props
 pa = props.PropArgs.create_props(MODEL_NM)
 
 import indra.utils as utils
@@ -26,16 +26,6 @@ def run(prop_dict=None):
     #  We can read these in from file or set them here.
     global pa
 
-    if prop_dict is not None:
-        prop_dict[props.PERIODS] = 0
-        pa.add_props(prop_dict)
-    else:
-        result = utils.read_props(MODEL_NM)
-        if result:
-            pa.add_props(result.props)
-        else:
-            utils.ask_for_params(pa)
-            
     if pa["user_type"] == props.WEB:
         pa["base_dir"] = os.environ['base_dir']
         
