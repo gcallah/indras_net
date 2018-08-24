@@ -7,7 +7,7 @@ Implements Paul Krugman's babysitting co-op model.
 """
 
 MODEL_NM = "coop"
-import indra.prop_args as props
+import indra.prop_args2 as props
 pa = props.PropArgs.create_props(MODEL_NM)
 
 import indra.utils as utils
@@ -20,16 +20,6 @@ def run(prop_dict=None):
 
     global pa
 
-    if prop_dict is not None:
-        prop_dict[props.PERIODS] = 1
-        pa.add_props(prop_dict)
-    else:
-        result = utils.read_props(MODEL_NM)
-        if result:
-            pa.add_props(result.props)
-        else:
-            utils.ask_for_params(pa)
-    
     env = cm.CoopEnv(model_nm=MODEL_NM, props=pa)
     
     for i in range(pa["num_agents"]):
