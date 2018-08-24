@@ -90,6 +90,10 @@ class SandEnv(ge.GridEnv):
             if x == center_x and y == center_y:
                 self.center_agent = agent
 
-    def step(self):
-        super().step()
+    def step(self, random=True):
+        super().step(random=random)
         self.center_agent.add_grains(1)
+
+    def run(self, periods=-1):
+        super().run(periods=periods, random=True)
+

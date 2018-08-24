@@ -20,3 +20,7 @@ prod: $(SRCS) $(OBJ)
 
 db:
 	./db.sh
+
+repo:
+	-git commit -a
+	git push origin master

@@ -137,7 +137,7 @@ class Environment(node.Node):
     def get_randagent_of_var(self, var):
         return self.agents.get_randagent_of_var(var)
 
-    def run(self, periods=-1):
+    def run(self, periods=-1, random=False):
         """
         This is the main menu loop for all models.
 
@@ -150,7 +150,7 @@ class Environment(node.Node):
             count = 0
             self.user.tell("Census:")
             while count < periods:
-                self.step()
+                self.step(random=random)
                 count += 1
             if count > 0:
                 self.user.tell("Ran for " + str(count) + " periods.\n")
@@ -159,7 +159,6 @@ class Environment(node.Node):
                 file_nm = self.model_nm+RPT_EXT
             self.pop_report(file_nm=file_nm)
             return self
-            #exit()
         else:
             self.user.tell("Welcome, " + self.user.name)
             self.user.tell("Running in " + self.name)
@@ -268,7 +267,7 @@ class Environment(node.Node):
             else:
                 break
 
-    def n_steps(self, steps=None):
+    def n_steps(self, steps=None, random=False):
         """
         Run for n steps.
         """
@@ -279,7 +278,7 @@ class Environment(node.Node):
         time.sleep(3)
         try:
             while self.period < target:
-                step_msg = self.step()
+                step_msg = self.step(random=random)
                 if step_msg is not None:
                     self.user.tell(step_msg)
                     break
@@ -341,7 +340,7 @@ class Environment(node.Node):
             self.user.tell(line.strip(), text_id=1, 
                        reverse=False)
 
-    def step(self):
+    def step(self, random=False):
         """
         Step period-by-period through agent actions.
         """
@@ -358,8 +357,8 @@ class Environment(node.Node):
         if self.preact:
             self.preact_loop()
 
-# now have everyone act in random order
-        self.act_loop()
+# now have everyone act 
+        self.act_loop(random)
 
 # there might be state-setting to do after acting
         if self.postact:
