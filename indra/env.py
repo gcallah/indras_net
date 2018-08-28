@@ -605,7 +605,7 @@ class Environment(node.Node):
         self.preact = json_input["preact"]
         self.postact = json_input["postact"]
         self.model_nm = json_input["model_nm"]
-        self.props = pa.PropArgs(self.model_nm, props=json_input["props"])      
+        self.props = pa.PropArgs(self.model_nm, prop_dict=json_input["props"])      
         self.period = json_input["period"]
         self.user.from_json(json_input["user"])
         

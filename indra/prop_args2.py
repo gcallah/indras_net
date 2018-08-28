@@ -83,6 +83,14 @@ class Prop():
         self.lowval = lowval
         self.hival = hival
 
+    def to_json(self):
+        return {"val": self.val,
+                "question": self.question,
+                "atype": self.atype,
+                "default_val": self.default_val,
+                "lowval": self.lowval,
+                "hival": self.hival}
+
     def __str__(self):
         return str(self.val)
 
@@ -320,7 +328,7 @@ class PropArgs():
         json.dump(self.props, open(file_nm, 'w'), indent=4)
 
     def to_json(self):
-        return self.props
+        return { prop_nm: self.props[prop_nm].to_json() for prop_nm in self.props }
 
     def get(self, key, default=None):
         if key in self.props and self.props[key].val:
