@@ -206,7 +206,7 @@ class PropArgs():
                 self.props[prop_nm] = Prop(val=val, question=question, atype=atype,
                                            hival=hival, lowval=lowval)
             else:
-                val = prop_dict[prop_nm]
+                self[prop_nm] = prop_dict[prop_nm]
 
 #            if not self._answer_within_bounds(prop_nm, val):
 #                raise ValueError("{val} for {prop_nm} is not valid."

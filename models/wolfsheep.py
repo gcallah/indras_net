@@ -6,11 +6,11 @@ that get near them.
 Available under the terms of the GNU GPL
 """
 import random
+import logging
 import indra.markov as markov
 import indra.markov_agent as ma
 import indra.markov_env as menv
 import numpy as np
-import operator as op
 import math
 
 X = 0
@@ -30,6 +30,8 @@ E = 2
 W = 3
 
 STATE_MAP = { N: NORTH, S: SOUTH, E: EAST, W: WEST }
+WOLF_NTYPE = "Wolf"
+SHEEP_NTYPE = "Sheep"
 
 class Creature(ma.MarkovAgent): 
     """
@@ -135,6 +137,16 @@ class Creature(ma.MarkovAgent):
                                       self.repro_age, self.init_life_force)
             self.env.add_agent(creature)
 
+    def to_json(self):
+        safe_fields = super().to_json()
+        safe_fields["ntype"] = self.ntype
+        safe_fields["repro_age"] = self.repro_age
+        safe_fields["life_force"] = self.life_force
+        safe_fields["max_detect"] = self.max_detect
+        safe_fields["age"] = self.age
+        safe_fields["speed"] = self.speed
+
+        return safe_fields
 
 class Wolf(Creature):
     """
@@ -151,9 +163,9 @@ class Wolf(Creature):
                     rand_age=False, speed=2):
         init_state = random.randint(0,3)
         super().__init__(name, goal, repro_age, life_force, init_state,
-                            max_detect=max_detect, rand_age=rand_age, speed=speed)
+                         max_detect=max_detect, rand_age=rand_age, speed=speed)
         self.other = Sheep
-        self.ntype = "Wolf"
+        self.ntype = WOLF_NTYPE
 
     def preact(self):
         """
@@ -188,7 +200,7 @@ class Sheep(Creature):
         super().__init__(name, goal, repro_age, life_force, init_state,
                          max_detect=max_detect, rand_age=rand_age, speed=speed)
         self.other = Wolf
-        self.ntype = "Sheep"
+        self.ntype = SHEEP_NTYPE
 
 
 class Meadow(menv.MarkovEnv):
@@ -415,3 +427,32 @@ class Meadow(menv.MarkovEnv):
         trans_str += str(WN) + " " + str(WS) + " " + str(WE) + " " + str(WW)
 
         return trans_str
+
+    def restore_agent(self, agent_json):
+        new_agent = None
+        if agent_json["ntype"] == WOLF_NTYPE:
+            new_agent = Wolf(name=agent_json["name"],
+                             goal=agent_json["goal"],
+                             repro_age=agent_json["repro_age"],
+                             life_force=agent_json["life_force"],
+                             max_detect=agent_json["max_detect"],
+                             rand_age=agent_json["age"],
+                             speed=agent_json["speed"])
+
+        elif agent_json["ntype"] == SHEEP_NTYPE:
+            new_agent = Sheep(name=agent_json["name"],
+                              goal=agent_json["goal"],
+                              repro_age=agent_json["repro_age"],
+                              life_force=agent_json["life_force"],
+                              max_detect=agent_json["max_detect"],
+                              rand_age=agent_json["age"],
+                              speed=agent_json["speed"])
+
+        else:
+            logging.error("agent found whose NTYPE is neither "
+                          "{} nor {}, but rather {}".format(WOLF_NTYPE,
+                                                            SHEEP_NTYPE,
+                                                            agent_json["ntype"]))
+
+        if new_agent:
+            self.add_agent_to_grid(new_agent, agent_json)

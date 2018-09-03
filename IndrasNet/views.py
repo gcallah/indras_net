@@ -124,16 +124,16 @@ def run(request):
     
     #Take actions on a running model
     if(action):
-        prop_dic = {}
+        prop_dict = {}
         for q in questions:
             value = q.default_val
             if q.atype == "INT":
                 value = int(value)
             elif q.atype == "DBL":
                 value = float(value)
-            prop_dic[q.prop_name] = value
-        
-        env = eval(module + "(prop_dic)")
+            prop_dict[q.prop_name] = value
+
+        env = eval(module + "(prop_dict)")
         env.restore_session(session_id)
         
         #CLear textboxs except for the first one
@@ -175,7 +175,7 @@ def run(request):
                 answer = int(answer)
             elif q.atype == "DBL":
                 answer = float(answer)
-            # Boolen is not considered yet
+            # Boolean is not considered yet
             answers[q.prop_name] = answer
         env = eval(module + "(answers)")
         env.save_session(session_id)
