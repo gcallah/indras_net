@@ -3,7 +3,7 @@ fashion_model.py
 A fashion model that includes followers and hipsters
 changing fashions based on each other's choices.
 """
-# import logging
+import logging
 import indra.display_methods as disp
 import indra.menu as menu
 import indra.two_pop_model as tp
@@ -43,3 +43,24 @@ class Society(tp.TwoPopEnv):
         self.menu.view.add_menu_item("v",
                                      menu.MenuLeaf("(v)iew fashions",
                                                    self.view_pop))
+
+    def restore_agent(self, agent_json):
+        new_agent = None
+        if agent_json["ntype"] == Hipster.__name__:
+            new_agent = Hipster(name=agent_json["name"],
+                                goal=agent_json["goal"],
+                                max_move=agent_json["max_move"])
+
+        elif agent_json["ntype"] == Follower.__name__:
+            new_agent = Follower(name=agent_json["name"],
+                                 goal=agent_json["goal"],
+                                 max_move=agent_json["max_move"])
+
+        else:
+            logging.error("agent found whose NTYPE is neither "
+                          "{} nor {}, but rather {}".format(Hipster.__name__,
+                                                            Follower.__name__,
+                                                            agent_json["ntype"]))
+
+        if new_agent:
+            self.add_agent_to_grid(new_agent, agent_json)

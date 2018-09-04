@@ -137,9 +137,6 @@ class TwoPopEnv(ge.GridEnv):
         Return the total adopting STANCE_TRACKED.
         """
         total_w_stance = 0
-        self.user.tell("Populations in period " + str(self.period) +
-                       " adopting " +
-                       self.stances[STANCE_TINDEX] + ":")
         for var in self.varieties_iter():
             pop = 0
             for agent in self.get_agents_of_var(var):
@@ -148,6 +145,11 @@ class TwoPopEnv(ge.GridEnv):
             total_w_stance += pop
             self.user.tell(var + ": " + str(pop))
             self.append_pop_hist(var, pop)
+
+        self.user.tell("Populations in period " + str(self.period) +
+                       " adopting " +
+                       self.stances[STANCE_TINDEX] + ": " + str(total_w_stance))
+
         return total_w_stance
 
     def view_pop(self):

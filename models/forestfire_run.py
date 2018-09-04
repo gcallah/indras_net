@@ -2,12 +2,10 @@
 """
 This file runs the forestfire_model.
 """
-MODEL_NM = "forestfire"
-
 import indra.prop_args2 as props
 import os
 
-# set up some file names:
+MODEL_NM = "forestfire"
 
 
 def run(prop_dict=None):
