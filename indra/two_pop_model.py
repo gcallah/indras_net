@@ -152,16 +152,13 @@ class TwoPopEnv(ge.GridEnv):
 
         return total_w_stance
 
-    def view_pop(self):
+    def plot(self):
         """
         Draw a graph of our changing pops.
         """
-        if self.period < 4:
-            self.user.tell("Too little data to display")
-            return
-
         (period, data) = self.line_data()
-        self.line_graph = disp.LineGraph(self.line_graph_title
-                                         % (self.name,
-                                            self.stances[STANCE_TINDEX]),
-                                         data, period)
+        self.line_graph = disp.LineGraph(self.line_graph_title.format(self.name,
+                                                                      self.stances[STANCE_TINDEX]),
+                                         data, period, is_headless=self.if_headless())
+        self.image_bytes = self.line_graph.show()
+        return self.image_bytes

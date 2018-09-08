@@ -547,6 +547,7 @@ class Environment(node.Node):
         for agent in self.agents:
             agents.append(agent.to_json())
         safe_fields["agents"] = agents
+        safe_fields["pop_hist"] = self.agents.get_pop_hist()
             
         return safe_fields
 
@@ -592,8 +593,9 @@ class Environment(node.Node):
         json_input = json.loads(json_input)
         
         self.from_json(json_input)
-            
+
         self.restore_agents(json_input)
+        self.agents.restore_hist_from(json_input["pop_hist"])
         
         #self.print_env()
         #self.user.tell("Session restored")
@@ -618,6 +620,6 @@ class Environment(node.Node):
             
     def restore_agent(self, agent_json):
         logging.info("restore_agent not implemented")
-        
+
     def print_env(self):
         logging.info("print_env not implemented")

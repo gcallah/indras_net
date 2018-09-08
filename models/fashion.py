@@ -37,7 +37,7 @@ class Society(tp.TwoPopEnv):
                          torus=False, postact=True, props=props)
         self.stances = ["blue", "red"]
         self.line_graph_title = \
-            "A. Smith's fashion model: Populations in %s adopting fashion %s"
+            "A. Smith's fashion model: Populations in {} adopting fashion {}"
         self.set_var_color('Hipster', disp.GREEN)
         self.set_var_color('Follower', disp.MAGENTA)
         self.menu.view.add_menu_item("v",
@@ -45,6 +45,9 @@ class Society(tp.TwoPopEnv):
                                                    self.view_pop))
 
     def restore_agent(self, agent_json):
+        """
+        Restore agent.
+        """
         new_agent = None
         if agent_json["ntype"] == Hipster.__name__:
             new_agent = Hipster(name=agent_json["name"],
@@ -63,4 +66,4 @@ class Society(tp.TwoPopEnv):
                                                             agent_json["ntype"]))
 
         if new_agent:
-            self.add_agent_to_grid(new_agent, agent_json)
+            self.add_agent_from_json(new_agent, agent_json)

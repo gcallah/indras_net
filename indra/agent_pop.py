@@ -240,6 +240,15 @@ class AgentPop(node.Node):
         """
         self.vars[var]["pop_hist"].append(pop)
 
+    def restore_hist_from(self, pop_hist_json):
+        """
+        Restore histogram from the client. (The inverse of get_pop_hist.)
+        """
+        for var in pop_hist_json:
+            self.vars[var]["pop_hist"] = pop_hist_json[var]["data"]
+            self.vars[var]["disp_color"] = pop_hist_json[var]["color"]
+            logging.debug("Setting color for {} to {}".format(var, pop_hist_json[var]["color"]))
+
     def census(self, exclude_var=None):
         """
         Take a census of agents by variety.

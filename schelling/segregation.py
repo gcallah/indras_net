@@ -78,7 +78,7 @@ class SegregationAgent(va.VSAgent):
         
         return safe_fields
         
-    def from_json_pre_add(self, agent_json):
+    def from_json_preadd(self, agent_json):
         super().from_json_preadd(agent_json)
         
         self.orientation = agent_json["orientation"]
