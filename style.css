@@ -1,7 +1,7 @@
 body {
     margin: 0;
     padding: 0;
-    font-size: 20px;
+    font-size: 100%;
     color: #ddd;
     background: #444;
 }
@@ -36,80 +36,73 @@ p {
 }
 
 h1,h2,h3,h4,h5 {
-    font-weight: bold;
+    font-weight: 400;
 }
 
 h1 {
     margin: 28px 8px 24px 8px;
     text-align: center;
-    font-weight: 300;
-    font-size: 32px;
+    font-size: 2em;
     color: #339;
     background-color: #cfc;
 }
 
 h2 {
-    font-size: 26px;
+    font-size: 1.8em;
     margin: 20px 24px 12px 24px;
     color: #9cc;
 }
 
 h2.subhead {
-    font-weight:
-    normal;
-    margin-top:
-    0;
+    font-weight: normal;
+    margin-top: 0;
 }
 
 h3 {
-    font-size: 20px;
+    font-size: 1.6em;
     margin: 20px 32px 12px 32px;
     color: #ecb;
-    font-weight: bold;
 }
 
 h4 {
-    font-size: 18px;
+    font-size: 1.5em;
     margin: 16px 40px 12px 40px;
-    color: #339;
-    font-weight: bold;
+    color: #aaf;
 }
 
 h5 {
-    font-size: 16px;
+    font-size: 1.4em;
     margin: 16px 48px 12px 48px;
-    color: #600;
-    font-weight: bold;
-
+    color: #faa;
 }
 
 summary.sum1 {
-    font-size: 1.7em;
+    font-size: 1.6em;
     color: #e69;
     margin: .8em 1.2em .8em 1.2em;
 }
 
 summary.sum2 {
-    font-size: 1.6em;
-    color: #137;
+    font-size: 1.5em;
+    color: #acf;
     margin: .6em 1.2em .6em 2em;
 }
 
 summary.sum3 {
-    font-size: 1.5em;
-    color: #339;
+    font-size: 1.4em;
+    color: #aac;
     margin: .4em 1.2em .4em 2.8em;
 }
 
 summary.sum4 {
-    font-size: 1.4em;
-    color: #903;
+    font-size: 1.3em;
+    color: #fac;
     margin: .4em 1.2em .4em 2.8em;
 }
 
 summary.menu_sum {
     font-size: 1.4em;
-    color: #639;
+    color: #fac;
     margin: .5em 0em .5em 0em;
 }
 
