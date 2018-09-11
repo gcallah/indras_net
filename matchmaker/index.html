@@ -15,7 +15,7 @@
         </h1>
 
         <details>
-            <summary class="sum1">
+            <summary class="sum2">
                 Overview
             </summary>
 
@@ -39,64 +39,89 @@
                 cover a large enough portion of what
                 goes on that creating a specific service
                 can be done (mostly?) by non-programmers using
-                templates.
-            </p>
-
-            <p>
-                <a href="https://en.wikipedia.org/wiki/Platform_cooperative">
-                Wikipedia on platform cooperatives
-                </a>
+                templates. So, we are looking at providing
+                "Platform-as-a-Service" (PaaS), with an open-source 
+                core.
             </p>
 
         </details>
 
         <details>
-            <summary class="sum1">
-                Server API
+            <summary class="sum2">
+                Financing Model
             </summary>
-            
-            <p>
-                This is the very beginning of the sketch of an API
-                for a matchmaker server.
-            </p>
 
-            <h3>
-                End points
-            </h3>
+            <p>
+                Taking our cue from previously successful projects of this
+                type, such as GitHub, Docker, Kubernetes, Jira, etc., our
+                model will be to keep the whole core of the system open source,
+                and basic use of it free.
+                This will assure potential users that they are not "locking in"
+                to a new proprietary platform by choosing to commit to our
+                PaaS. Instead, revenue will be derived from:
+            </p>
 
             <ul>
                 <li>
-                    get_agent(agent_id)
-                    <br />
-                    agent_id may be email address.
-                    <br />
-                    This loads and returns agent's 
-                    persistent characteristics.
+                    Providing a fee-based hosting environment that will make putting up
+                    a "matchmaker" service extremely easy; and
                 </li>
+
                 <li>
-                    get_matches(agent, details (as part of agent?))
-                    <br />
-                    Load producer agents into env. Match consumer agent's
-                    current prefs to best producers.
-                    <br />
-                    Returns list of matching agents.
-                </li>
-                <li>
-                    book(agent, other, details)
-                    <br />
-                    Make a booking.
-                    <br />
-                    Returns Success or Error (with explanation).
-                </li>
-                <li>
-                    cancel(booking_id)
-                    <br />
-                    Cancel a booking.
-                    <br />
-                    Returns Success or Error (with explanation).
+                    Selling consulting and other specialized services as
+                    add-ons to the freely avialable code base.
                 </li>
             </ul>
 
+        </details>
+
+        <details>
+            <summary class="sum2">
+                Related Material
+            </summary>
+
+            <ul>
+                <li>
+                    For some background on this sort of idea in its broad form,
+                    please read
+                    <a href="https://en.wikipedia.org/wiki/Platform_cooperative">
+                    Wikipedia on platform cooperatives</a>.
+                </li>
+
+                <li>
+                    More economic background for the project
+                    <a href="https://www.theamericanconservative.com/articles/distributism-is-the-future/">
+                        can be found here</a>.
+                </li>
+
+                <li>
+                    There are many
+                    <a href="https://www.fastcompany.com/40575728/worker-owned-co-ops-are-coming-for-the-digital-gig-economy">
+                        platform co-operatives</a>
+                    in existence, but as far as we can tell, they are not
+                    providing potential users with a PaaS. Instead, they are,
+                    for instance, "developing a platform with the help of the
+                    Kit."
+                    But we need to explore the
+                    <a href="https://platform.coop/about/why-platform-co-ops">
+                        Platform Co-operative</a> space further as part of our
+                    due diligence.
+                </li>
+
+                <li>
+                    <a href="api.html">
+                        A way-too-early design of an API
+                    </a>
+                    for a PaaS like this.
+                </li>
+
+                <li>
+                    Possible 
+                    <a href="vec.html">vector-space design</a>
+                    for matching producers and consumers.
+                </li>
+
+            </ul>
         </details>
 
     </body>
