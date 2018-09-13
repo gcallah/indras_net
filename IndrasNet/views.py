@@ -162,7 +162,7 @@ def run(request):
         #Edit
         if action == "add":
             pass
-            
+
         env.save_session(session_id)
         
     #Run a model for the first time
@@ -177,6 +177,8 @@ def run(request):
                 answer = float(answer)
             # Boolean is not considered yet
             answers[q.prop_name] = answer
+        print("here")
+        print("module: " + module)
         env = eval(module + "(answers)")
         env.save_session(session_id)
               

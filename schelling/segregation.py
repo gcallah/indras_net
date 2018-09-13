@@ -132,7 +132,7 @@ class SegregationEnv(grid.GridEnv):
     """
 
     def __init__(self, name, width, height, torus=False,
-                 model_nm="Segregation", props=None):
+                 model_nm="segregation", props=None):
 
         super().__init__(name, width, height, torus=False,
                          model_nm=model_nm, props=props)

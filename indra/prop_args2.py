@@ -125,7 +125,6 @@ class PropArgs():
         self.logfile = logfile
         self.model_nm = model_nm
         self.graph = nx.Graph()
-        self.model_nm = model_nm
         self.props = {}
 
         # 1. The Database
