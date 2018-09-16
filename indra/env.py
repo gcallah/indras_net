@@ -590,7 +590,6 @@ class Environment(node.Node):
         with open(path, "r") as f:
             json_input = f.readline()
         json_input = json.loads(json_input)
-        
         self.from_json(json_input)
 
         self.restore_agents(json_input)
@@ -609,7 +608,7 @@ class Environment(node.Node):
         self.props = pa.PropArgs(self.model_nm, prop_dict=json_input["props"])
         self.period = json_input["period"]
         self.user.from_json(json_input["user"])
-        
+
     def restore_agents(self, json_input):
         """
         Restore the states of all agents
