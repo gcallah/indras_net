@@ -374,6 +374,7 @@ class EverytownUSA(ge.GridEnv):
         utils = 0
         for shopper in self.variety_iter("Consumer"):
             utils += shopper.last_utils
+        print("utils: " + str(utils))
         self.util_hist.append(utils)
         self.user.tell("Consumer utility gained this period: "
                        + str(int(utils)))
@@ -395,7 +396,8 @@ class EverytownUSA(ge.GridEnv):
             new_agent = MomAndPop(name=agent_json["name"],
                                   goal=agent_json["goal"],
                                   endowment=agent_json["endowment"],
-                                  expenses=agent_json["expenses"])
+                                  expenses=agent_json["expenses"],
+                                  adj=agent_json["adj"])
 
         elif agent_json["ntype"] == BigBox.__name__:
             new_agent = BigBox(name=agent_json["name"],
