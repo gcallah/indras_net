@@ -19,7 +19,7 @@ class AgentPopTestCase(TestCase):
         # then we will fill the Agent Pop class, using dict_for_reference as source
         # The OrderedDict in Agent Pop should be the same as dic_for_reference. That will test if append works
         # If append works and we have the OrderedDict in Agent Pop,
-        # we will test rest of the functions with reference of dict_for_reference if they return correct result
+        # we will test rest of the functions if they return correct result, with reference of dict_for_reference
         # format: {var:{"agents": [], "pop_data": 0,"pop_hist": [],"my_periods": 0,"disp_color": None}}
         self.dic_for_reference = OrderedDict()
         self.agentpop = ap.AgentPop("test")
@@ -29,13 +29,19 @@ class AgentPopTestCase(TestCase):
         for i in range(3):
             # add color to each variety
             self.dic_for_reference[str(i)][DISP_COLOR] = "#" + str(i)
-            # add agents
+            # add agents; agent type is Node
             for r in range(random.randint(1,7)):
                 self.dic_for_reference[str(i)][AGENTS].append(node.Node("agent"+str(r)))
         for var in self.dic_for_reference:
             for a in self.dic_for_reference[var][AGENTS]:
                 a.ntype = var
-    #     finish building dic_for_reference
+                #assign ntype for each agent; each dic_for_reference's variety should be the same as its agents' ntype!
+    #     finish building dic_for_reference,
+    #     dic_for_reference should look like: {
+    #       '0':{"agents": [1-7 agents of ntype('0')], "pop_data": 0,"pop_hist": [],"my_periods": 0,"disp_color": '#0'}
+    #       '1':{"agents": [1-7 agents of ntype('1')], "pop_data": 0,"pop_hist": [],"my_periods": 0,"disp_color": '#1'}
+    #       '2':{"agents": [1-7 agents of ntype('2')], "pop_data": 0,"pop_hist": [],"my_periods": 0,"disp_color": '#2'}
+    # }
 
     def test_add_variety(self):
         report = True
@@ -285,6 +291,9 @@ class AgentPopTestCase(TestCase):
                 break
 
         self.assertEqual(report, True)
+
+    def test_get_pop_data(self):
+        
 
 if __name__ == '__main__':
     main()
