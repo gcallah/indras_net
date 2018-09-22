@@ -8,6 +8,7 @@ import platform
 import networkx as nx
 import json
 import os
+from django.core.exceptions import ObjectDoesNotExist
 
 from IndrasNet.models import Model
 
@@ -152,16 +153,20 @@ class PropArgs():
         self.graph.add_edge(self, self.logger)
 
     def set_props_from_db(self):
-        params = Model.objects.get(name=self.model_nm).params.all()
-        for param in params:
-            atype = param.atype
-            typed_default_val = self._type_val_if_possible(param.default_val, param.atype)
-            self.props[param.prop_name] = Prop(val=typed_default_val,
-                                               question=param.question,
-                                               atype=atype,
-                                               default_val=typed_default_val,
-                                               lowval=param.lowval,
-                                               hival=param.hival)
+        try:
+            params = Model.objects.get(name=self.model_nm).params.all()
+            for param in params:
+                atype = param.atype
+                typed_default_val = self._type_val_if_possible(param.default_val,
+                                                               param.atype)
+                self.props[param.prop_name] = Prop(val=typed_default_val,
+                                                   question=param.question,
+                                                   atype=atype,
+                                                   default_val=typed_default_val,
+                                                   lowval=param.lowval,
+                                                   hival=param.hival)
+        except ObjectDoesNotExist:
+            print("Model not found in db: " + self.model_nm)
 
     def overwrite_props_from_env(self):
         global user_type
