@@ -1,3 +1,5 @@
+import random
+
 class Route:
     count = 0
     name = "not set"
@@ -48,3 +50,23 @@ class Slow:
             if move <= road.slow_p:
                 route.travelRoute()
         return
+
+class Fast:
+    name = "DEFAULT"
+    avaiable = []
+
+def __init__(self):
+    self.name = "FAST"
+    self.avaiable = []
+    return
+
+def travel(self):
+    for route in self.avaiable:
+        travel = random.random()
+        if travel <= road.fast_p:
+            route.travelRoute()
+    return
+
+def addRoute(self, route):
+    avaiable.append(route)
+    return
