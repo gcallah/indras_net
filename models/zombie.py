@@ -1,10 +1,3 @@
-"""
-grid_model.py
-You can clone this file and its companion grid_run.py
-to easily get started on a new grid model.
-It also is a handy tool to have around for testing
-new features added to the base system.
-"""
 import indra.grid_agent as ga
 import logging
 
