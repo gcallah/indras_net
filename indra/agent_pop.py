@@ -233,6 +233,8 @@ class AgentPop(node.Node):
     def change_agent_type(self, agent, old_type, new_type):
         self.remove(agent, v=old_type)
         self.append(agent, v=new_type)
+        #need to change agent's ntype as well
+        agent.ntype = new_type
 
     def append_pop_hist(self, var, pop):
         """
