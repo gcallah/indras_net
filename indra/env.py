@@ -163,7 +163,8 @@ class Environment(node.Node):
             self.user.tell("Welcome, " + self.user.name)
             self.user.tell("Running in " + self.name)
             #If run in a terminal, display the menu
-            if(self.user.utype in [user.TERMINAL, user.IPYTHON, user.IPYTHON_NB, user.WEB]):
+            if(self.user.utype in
+               [user.TERMINAL, user.IPYTHON, user.IPYTHON_NB, user.WEB]):
                 msg = self.menu.display()
                 while msg is None:
                     try:
@@ -450,11 +451,11 @@ class Environment(node.Node):
         """
         (period, data) = self.line_data()
         self.line_graph = disp.LineGraph(self.line_graph_title + self.name,
-                                         data, period, is_headless=self.if_headless())
+                                         data, period, is_headless=self.headless())
         self.image_bytes = self.line_graph.show()
         return self.image_bytes
     
-    def if_headless(self):
+    def headless(self):
         if not disp.plt_present:
             self.user.tell("No graphing package installed", type=user.ERROR)
             return
@@ -484,6 +485,9 @@ class Environment(node.Node):
         if disp:
             self.user.tell("Populations in period "
                            + str(self.period) + ":\n" + results)
+
+    def test_hook(self, **kwargs):
+        return None
 
     def varieties_iter(self):
         return self.agents.varieties_iter()
