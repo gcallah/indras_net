@@ -21,8 +21,6 @@ def run(prop_dict=None):
     import indra.utils as utils
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
 
-    # now we run some tests:
-
     # test prop_args as an iterable:
     for prop, val in pa.items():
         print(prop + ": " + str(val))

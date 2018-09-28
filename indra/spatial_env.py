@@ -78,7 +78,7 @@ class SpatialEnv(env.Environment):
                 self.plot_title, data,
                 int(self.width), int(self.height),
                 anim=True, data_func=self.plot_data,
-                is_headless=self.if_headless()
+                is_headless=self.headless()
                 )
             self.image_bytes = self.scatter_plot.show()
             return self.image_bytes
