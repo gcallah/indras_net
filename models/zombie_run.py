@@ -19,7 +19,7 @@ def run(prop_dict=None):
     global pa
 
     # we create a meadow for our agents to act within:
-    env = wsm.Meadow("Infected Zone",
+    env = wsm.Zone("Infected Zone",
                      pa["grid_width"],
                      pa["grid_height"],
                      model_nm=MODEL_NM,
@@ -30,12 +30,12 @@ def run(prop_dict=None):
     # Now we loop creating multiple agents with numbered names
     # based on the number of agents of that type to create:
     for i in range(pa["num_zombies"]):
-        env.add_agent(wsm.Wolf("Zombie" + str(i), "Eating Human",
+        env.add_agent(wsm.Zombie("Zombie" + str(i), "Eating Human",
                                pa["zombie_repro"],
                                pa["zombie_lforce"],
                                rand_age=True))
     for i in range(pa["num_humans"]):
-        env.add_agent(wsm.Sheep("Human" + str(i), "Reproducing",
+        env.add_agent(wsm.Human("Human" + str(i), "Reproducing",
                                 pa["human_repro"],
                                 pa["human_lforce"],
                                 rand_age=True))
