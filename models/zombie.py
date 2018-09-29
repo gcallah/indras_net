@@ -1,5 +1,6 @@
 import indra.grid_agent as ga
 import logging
+import random as r
 
 class TestGridAgent(ga.GridAgent):
     """
@@ -8,6 +9,18 @@ class TestGridAgent(ga.GridAgent):
     from our ancestor.
     """
 
+    def randomPermutation(n): #gets a random permutation of g=grid locations
+        def swap(i,j):
+            return (j,i)
+        g = []
+        for i in range(1,n+1):
+            g.append(i)
+        for i in range(0,r.randint(10,20)):
+            x,y = (r.randint(0,n-1),r.randint(0,n-1))
+            (g[x],g[y])  =  swap(g[x],g[y])
+        return g  
+               
+    
     def preact(self):
         (x, y) = self.pos
         logging.info("With " + self.name + " we are looking around " + " x = " + str(x) + " y = " + str(y))
@@ -18,3 +31,4 @@ class TestGridAgent(ga.GridAgent):
 
     def postact(self):
         logging.info("Agent %s postacting" % (self.name))
+
