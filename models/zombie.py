@@ -1,32 +1,29 @@
-<<<<<<< HEAD
-import indra.grid_agent as ga
 import logging
 import random as r
+import random
+import indra.markov as markov
+import indra.markov_agent as ma
+import indra.markov_env as menv
+import numpy as np
+import operator as op
+import math
+
 
 X = 0
 Y = 1
 
-<<<<<<< HEAD
-    def randomPermutation(n): #gets a random permutation of g=grid locations
-        def swap(i,j):
-            return (j,i)
-        g = []
-        for i in range(1,n+1):
-            g.append(i)
-        for i in range(0,r.randint(10,20)):
-            x,y = (r.randint(0,n-1),r.randint(0,n-1))
-            (g[x],g[y])  =  swap(g[x],g[y])
-        return g  
-               
-    
-    def preact(self):
-        (x, y) = self.pos
-        logging.info("With " + self.name + " we are looking around " + " x = " + str(x) + " y = " + str(y))
-        logging.info(self.name + " has neighbors: ")
-        for neighbor in self.neighbor_iter():
-            (x1, y1) = neighbor.pos
-            logging.info("    %i, %i" % (x1, y1))
-=======
+def randomPermutation(n): #gets a random permutation of g=grid locations
+    def swap(i,j):
+        return (j,i)
+    g = []
+    for i in range(1,n+1):
+        g.append(i)
+    for i in range(0,r.randint(10,20)):
+        x,y = (r.randint(0,n-1),r.randint(0,n-1))
+        (g[x],g[y])  =  swap(g[x],g[y])
+    return g  
+
+
 humanTot = 0
 zombieTot = 0
 
@@ -86,7 +83,7 @@ class Beings(ma.MarkovAgent):
         if self.alive:
             self.alive = False
             self.env.decayed(self)
->>>>>>> 50f81d53b6cf5a6413f210bcf5626317db4f9281
+
 
     def act(self):
         
@@ -113,11 +110,9 @@ class Beings(ma.MarkovAgent):
                 self.env.move(self, x+1,y)
             
     def postact(self):
-<<<<<<< HEAD
+
         logging.info("Agent %s postacting" % (self.name))
 
-=======
-        
         self.age += 1
         self.life_force -= 1
         if self.life_force <= 0:
@@ -381,5 +376,5 @@ class Zone(menv.MarkovEnv):
         trans_str += str(EN) + " " + str(ES) + " " + str(EE) + " " + str(EW) + ";"
         trans_str += str(WN) + " " + str(WS) + " " + str(WE) + " " + str(WW)
 
-return trans_str
->>>>>>> 50f81d53b6cf5a6413f210bcf5626317db4f9281
+    return trans_str
+
