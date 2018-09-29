@@ -198,7 +198,7 @@ class Zone(menv.MarkovEnv):
 
     def dir_info(self, agent):
         """
-        We count wolves and sheep that are North, South, East, West 
+        We count zombies and humans that are North, South, East, West 
         of the agent in question. What quadrant they're in, and how
         far they are from the agent factors into the information returned.
         -----------------------------------
@@ -262,8 +262,8 @@ class Zone(menv.MarkovEnv):
 
     def zombie_trans(self, d, total):
         """
-        The wolf uses its survey of the environment to see which
-        directions have the closest and most sheep. He'll probably
+        The zombie uses its survey of the environment to see which
+        directions have the closest and most human. He'll probably
         go in the direction with the highest reward.
         Args:
             d: a dictionary containing information about where wolves are
@@ -271,7 +271,7 @@ class Zone(menv.MarkovEnv):
             total: the sum of all the numerical elements of d; used in
              computation
         Returns:
-            trans_str: the string representing the sheep's possibilities
+            trans_str: the string representing the human's possibilities
             for movement
         """
         trans_str = ""
@@ -317,11 +317,11 @@ class Zone(menv.MarkovEnv):
 
     def human_trans(self, d, total):
         """
-        The sheep uses it's survey of the environment to determine which
+        The human uses it's survey of the environment to determine which
         directions are the least dangerious. He'll go one of these directions.
         Args:
-            d: a dictionary containing information about where wolves are
-             relative to the sheep 
+            d: a dictionary containing information about where zomb13s are
+             relative to the human 
             total: the sum of all the numerical elements of d; used in
              computation
         Returns:
