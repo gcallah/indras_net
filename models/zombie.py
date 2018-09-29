@@ -376,5 +376,5 @@ class Zone(menv.MarkovEnv):
         trans_str += str(EN) + " " + str(ES) + " " + str(EE) + " " + str(EW) + ";"
         trans_str += str(WN) + " " + str(WS) + " " + str(WE) + " " + str(WW)
 
-    return trans_str
+        return trans_str
 
