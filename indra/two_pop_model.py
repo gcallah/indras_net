@@ -76,6 +76,16 @@ class TwoPopAgent(va.VSAgent):
         """
         return self.stance.direction()
 
+    def to_json(self):
+        safe_fields = super().to_json()
+        safe_fields["new_stance"] = self.new_stance.to_json()
+        safe_fields["variability"] = self.variability
+        return safe_fields
+
+    def from_json_preadd(self, agent_json):
+        super().from_json_preadd(agent_json)
+        self.new_stance = vs.VectorSpace.from_json(agent_json["new_stance"])
+
 
 class Follower(TwoPopAgent):
     """

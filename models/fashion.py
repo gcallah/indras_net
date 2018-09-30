@@ -52,12 +52,14 @@ class Society(tp.TwoPopEnv):
         if agent_json["ntype"] == Hipster.__name__:
             new_agent = Hipster(name=agent_json["name"],
                                 goal=agent_json["goal"],
-                                max_move=agent_json["max_move"])
+                                max_move=agent_json["max_move"],
+                                variability=agent_json["variability"])
 
         elif agent_json["ntype"] == Follower.__name__:
             new_agent = Follower(name=agent_json["name"],
                                  goal=agent_json["goal"],
-                                 max_move=agent_json["max_move"])
+                                 max_move=agent_json["max_move"],
+                                 variability=agent_json["variability"])
 
         else:
             logging.error("agent found whose NTYPE is neither "
