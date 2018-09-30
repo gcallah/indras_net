@@ -374,7 +374,6 @@ class EverytownUSA(ge.GridEnv):
         utils = 0
         for shopper in self.variety_iter("Consumer"):
             utils += shopper.last_utils
-        print("utils: " + str(utils))
         self.util_hist.append(utils)
         self.user.tell("Consumer utility gained this period: "
                        + str(int(utils)))
