@@ -13,7 +13,7 @@ from collections import deque
 
 MODEL_NM = "basic"
 
-import indra.prop_args as props
+import indra.prop_args2 as props
 # we will create props here to set user_type:
 pa = props.PropArgs.create_props(MODEL_NM)
 
@@ -255,6 +255,7 @@ class BasicTestCase(TestCase):
 
     def test_restore_session(self):
         report = True
+        print("check0!!!", self.env.props.props)
         random_session_id = random.randint(1, 10)
         try:
             base_dir = self.env.props["base_dir"]
@@ -277,8 +278,8 @@ class BasicTestCase(TestCase):
             report = False
         if json_input_dic["postact"] != self.env.postact:
             report = False
-        # if json_input_dic["props"] != self.env.props.to_json():
-        #     report = False
+        if json_input_dic["props"] != self.env.props.to_json():
+            report = False
         if json_input_dic["user"] != self.env.user.to_json():
             report = False
         agents = []
@@ -286,6 +287,9 @@ class BasicTestCase(TestCase):
             agents.append(agent.to_json())
         if json_input_dic["agents"] != agents:
             report = False
+
+        print("check1!!!", self.env.props.props)
+        print("check2!!!!", json_input_dic["props"])
 
         os.remove(path)
         os.remove("basic.log")
