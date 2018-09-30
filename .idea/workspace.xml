@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9558e15a-fba1-4864-a76c-420e1f079ead" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/models/party.py" afterDir="false" />
-    </list>
+    <list default="true" id="9558e15a-fba1-4864-a76c-420e1f079ead" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,12 +21,12 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="20" />
+          <entry key="py" value="21" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="20" />
+          <entry key="Python" value="21" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
@@ -47,10 +45,10 @@
     <splitter split-orientation="horizontal" split-proportion="0.5">
       <split-first>
         <leaf>
-          <file pinned="false" current-in-tab="false">
+          <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/models/forestfire.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-121">
+                <state relative-caret-position="150">
                   <caret line="10" lean-forward="true" selection-start-line="6" selection-end-line="10" />
                   <folding>
                     <element signature="e#136#172#0" expanded="true" />
@@ -70,7 +68,7 @@
               </provider>
             </entry>
           </file>
-          <file pinned="false" current-in-tab="true">
+          <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/models/zombie.py">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="-1534">
@@ -266,7 +264,7 @@
     <editor active="true" />
     <layout>
       <window_info id="Favorites" side_tool="true" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.12804006" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.12804006" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" show_stripe_button="false" />
@@ -299,9 +297,6 @@
     <entry file="file://$PROJECT_DIR$/models/__init__.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/models/sim_interactive.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/models/fmarket.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-17">
@@ -312,9 +307,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/models/fashion.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/models/forestfire_run.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/models/hiv.py">
@@ -351,16 +343,6 @@
     <entry file="file://$PROJECT_DIR$/indra/markov_agent.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/models/forestfire.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-121">
-          <caret line="10" lean-forward="true" selection-start-line="6" selection-end-line="10" />
-          <folding>
-            <element signature="e#136#172#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/models/zombie.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1534">
@@ -371,16 +353,21 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/models/sim_interactive.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/models/party.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/forestfire_run.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/forestfire.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="705">
-          <caret line="47" column="30" selection-start-line="47" selection-start-column="30" selection-end-line="47" selection-end-column="30" />
+        <state relative-caret-position="150">
+          <caret line="10" lean-forward="true" selection-start-line="6" selection-end-line="10" />
           <folding>
-            <element signature="e#0#36#0" expanded="true" />
-            <marker date="1538267130757" expanded="true" signature="233:234" ph="..." />
-            <marker date="1538267130757" expanded="true" signature="233:239" ph="..." />
-            <marker date="1538267130757" expanded="true" signature="1354:1363" ph="..." />
-            <marker date="1538267130757" expanded="true" signature="1730:1768" ph="..." />
+            <element signature="e#136#172#0" expanded="true" />
           </folding>
         </state>
       </provider>
