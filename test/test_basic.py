@@ -255,7 +255,7 @@ class BasicTestCase(TestCase):
 
     def test_restore_session(self):
         report = True
-        print("check0!!!", self.env.props.props)
+        # print("check0!!!", self.env.props.props)
         random_session_id = random.randint(1, 10)
         try:
             base_dir = self.env.props["base_dir"]
@@ -288,8 +288,8 @@ class BasicTestCase(TestCase):
         if json_input_dic["agents"] != agents:
             report = False
 
-        print("check1!!!", self.env.props.props)
-        print("check2!!!!", json_input_dic["props"])
+        # print("check1!!!", self.env.props.props)
+        # print("check2!!!!", json_input_dic["props"])
 
         os.remove(path)
         os.remove("basic.log")
