@@ -159,6 +159,6 @@ class TwoPopEnv(ge.GridEnv):
         (period, data) = self.line_data()
         self.line_graph = disp.LineGraph(self.line_graph_title.format(self.name,
                                                                       self.stances[STANCE_TINDEX]),
-                                         data, period, is_headless=self.if_headless())
+                                         data, period, is_headless=self.headless())
         self.image_bytes = self.line_graph.show()
         return self.image_bytes

@@ -331,7 +331,7 @@ class EverytownUSA(ge.GridEnv):
         """
         self.line_graph = disp.LineGraph("Consumer Utility vs. # Retailers",
                                          self.assemble_util_vars(),
-                                         self.period, is_headless=self.if_headless())
+                                         self.period, is_headless=self.headless())
         self.image_bytes = self.line_graph.show()
         return self.image_bytes
 

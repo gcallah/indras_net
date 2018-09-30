@@ -169,8 +169,7 @@ class Wolf(Creature):
 
     def preact(self):
         """
-        After (or before depending on how you view it) everything moves, 
-        wolves eat nearby sheep.
+        Before everything moves, wolves eat nearby sheep.
         """
         creatures = self.neighbor_iter()
         for creature in creatures:
@@ -427,6 +426,11 @@ class Meadow(menv.MarkovEnv):
         trans_str += str(WN) + " " + str(WS) + " " + str(WE) + " " + str(WW)
 
         return trans_str
+
+    def from_json(self, json_input):
+        super().from_json(json_input)
+        self.add_variety("Wolf")
+        self.add_variety("Sheep")
 
     def restore_agent(self, agent_json):
         new_agent = None
