@@ -7,7 +7,7 @@ Created on Thu Sep 18 16:45:50 2014
 """
 MODEL_NM = "height"
 
-import indra.prop_args as props
+import indra.prop_args2 as props
 pa = props.PropArgs.create_props(MODEL_NM)
 
 import indra.utils as utils
@@ -19,17 +19,9 @@ START_HEIGHT = 100.0
 
 def run(prop_dict=None):
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
+
     global pa
 
-    if prop_dict is not None:
-        prop_dict[props.PERIODS] = 1
-        pa.add_props(prop_dict)
-    else:
-        result = utils.read_props(MODEL_NM)
-        if result:
-            pa.add_props(result.props)
-        else:
-            utils.ask_for_params(pa)
     env = hm.HeightEnv(model_nm=MODEL_NM, props=pa)
     for i in range(pa["num_agents"]):
             env.add_agent(

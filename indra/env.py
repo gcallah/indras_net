@@ -14,7 +14,7 @@ import indra.display_methods as disp
 import indra.data_methods as data
 import indra.node as node
 import indra.main_menu as mm
-import indra.prop_args as pa
+import indra.prop_args2 as pa
 import indra.agent_pop as ap
 import indra.user as user
 import json
@@ -61,7 +61,7 @@ class Environment(node.Node):
         user_type = user.TERMINAL
         if self.props is not None:
             self.props["user_name"] = user_nm
-            user_type = self.props.get("user_type", user.TERMINAL)
+            user_type = self.props["user_type"]
         self.user = user.User(user_nm, user_type)
         # we have to wait until user is set to do...
         if self.props is None:
@@ -137,7 +137,7 @@ class Environment(node.Node):
     def get_randagent_of_var(self, var):
         return self.agents.get_randagent_of_var(var)
 
-    def run(self, periods=-1):
+    def run(self, periods=-1, random=False):
         """
         This is the main menu loop for all models.
 
@@ -150,7 +150,7 @@ class Environment(node.Node):
             count = 0
             self.user.tell("Census:")
             while count < periods:
-                self.step()
+                self.step(random=random)
                 count += 1
             if count > 0:
                 self.user.tell("Ran for " + str(count) + " periods.\n")
@@ -159,12 +159,12 @@ class Environment(node.Node):
                 file_nm = self.model_nm+RPT_EXT
             self.pop_report(file_nm=file_nm)
             return self
-            #exit()
         else:
             self.user.tell("Welcome, " + self.user.name)
             self.user.tell("Running in " + self.name)
             #If run in a terminal, display the menu
-            if(self.user.utype in [user.TERMINAL, user.IPYTHON, user.IPYTHON_NB, user.WEB]):
+            if(self.user.utype in
+               [user.TERMINAL, user.IPYTHON, user.IPYTHON_NB, user.WEB]):
                 msg = self.menu.display()
                 while msg is None:
                     try:
@@ -268,7 +268,7 @@ class Environment(node.Node):
             else:
                 break
 
-    def n_steps(self, steps=None):
+    def n_steps(self, steps=None, random=False):
         """
         Run for n steps.
         """
@@ -279,7 +279,7 @@ class Environment(node.Node):
         time.sleep(3)
         try:
             while self.period < target:
-                step_msg = self.step()
+                step_msg = self.step(random=random)
                 if step_msg is not None:
                     self.user.tell(step_msg)
                     break
@@ -341,7 +341,7 @@ class Environment(node.Node):
             self.user.tell(line.strip(), text_id=1, 
                        reverse=False)
 
-    def step(self):
+    def step(self, random=False):
         """
         Step period-by-period through agent actions.
         """
@@ -358,8 +358,8 @@ class Environment(node.Node):
         if self.preact:
             self.preact_loop()
 
-# now have everyone act in random order
-        self.act_loop()
+# now have everyone act 
+        self.act_loop(random)
 
 # there might be state-setting to do after acting
         if self.postact:
@@ -451,11 +451,11 @@ class Environment(node.Node):
         """
         (period, data) = self.line_data()
         self.line_graph = disp.LineGraph(self.line_graph_title + self.name,
-                                         data, period, is_headless=self.if_headless())
+                                         data, period, is_headless=self.headless())
         self.image_bytes = self.line_graph.show()
         return self.image_bytes
     
-    def if_headless(self):
+    def headless(self):
         if not disp.plt_present:
             self.user.tell("No graphing package installed", type=user.ERROR)
             return
@@ -485,6 +485,9 @@ class Environment(node.Node):
         if disp:
             self.user.tell("Populations in period "
                            + str(self.period) + ":\n" + results)
+
+    def test_hook(self, **kwargs):
+        return None
 
     def varieties_iter(self):
         return self.agents.varieties_iter()
@@ -548,7 +551,8 @@ class Environment(node.Node):
         for agent in self.agents:
             agents.append(agent.to_json())
         safe_fields["agents"] = agents
-            
+        safe_fields["pop_hist"] = self.agents.get_pop_hist()
+
         return safe_fields
 
     def save_session(self, session_id=None):
@@ -566,7 +570,7 @@ class Environment(node.Node):
         
         json_output = str(json.dumps(self.to_json()))
         path = os.path.join(base_dir, "json/" + self.model_nm + session_id + ".json")
-        with open(path, "w+") as f: 
+        with open(path, "w+") as f:
             f.write(json_output)
             
         #self.print_env()
@@ -577,7 +581,7 @@ class Environment(node.Node):
         Restore a previous session from a json file
         """
         logging.info("-------------------------Start Restoration of states-------------------------------")
-        
+
         try:
             base_dir = self.props["base_dir"]
         except:
@@ -586,16 +590,15 @@ class Environment(node.Node):
         if session_id is None:
             session_id = str(self.user.ask("Enter session id: "))
         session_id = str(session_id)
-            
         path = os.path.join(base_dir, "json/" + self.model_nm + session_id + ".json")
         with open(path, "r") as f:
             json_input = f.readline()
         json_input = json.loads(json_input)
-        
         self.from_json(json_input)
-            
+
         self.restore_agents(json_input)
-        
+        self.agents.restore_hist_from(json_input["pop_hist"])
+
         #self.print_env()
         #self.user.tell("Session restored")
         
@@ -606,10 +609,10 @@ class Environment(node.Node):
         self.preact = json_input["preact"]
         self.postact = json_input["postact"]
         self.model_nm = json_input["model_nm"]
-        self.props = pa.PropArgs(self.model_nm, props=json_input["props"])      
+        self.props = pa.PropArgs(self.model_nm, prop_dict=json_input["props"])
         self.period = json_input["period"]
         self.user.from_json(json_input["user"])
-        
+
     def restore_agents(self, json_input):
         """
         Restore the states of all agents
@@ -619,6 +622,6 @@ class Environment(node.Node):
             
     def restore_agent(self, agent_json):
         logging.info("restore_agent not implemented")
-        
+
     def print_env(self):
         logging.info("print_env not implemented")

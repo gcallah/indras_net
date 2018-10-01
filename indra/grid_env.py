@@ -97,6 +97,12 @@ class Cell(node.Node):
         safe_fields["coordy"] = self.coords[1]
         return safe_fields
 
+    @classmethod
+    def from_json(cls, json_input):
+        coords = (json_input["coordx"],
+                  json_input["coordy"])
+        return cls(coords=coords)
+
 class OutOfBounds(Exception):
     def __init__(self, value):
         self.value = value

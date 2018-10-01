@@ -124,15 +124,16 @@ class VectorSpace(pre.Prehension):
         
         return safe_fields
 
-    def from_json(self, json_input):
+    @classmethod
+    def from_json(cls, json_input):
         # get the encoded json dump
         enc = json_input["vector"]
         
         # build the numpy data type
         dataType = np.dtype(enc[0])
-        
+
         # decode the base64 encoded numpy array data and create a new numpy array with this data & type
-        self.vector = np.frombuffer(base64.decodestring(enc[1].encode('utf-8')), dataType)
+        return from_vector(np.frombuffer(base64.decodestring(enc[1].encode('utf-8')), dataType))
 
 # Now we actually initialize the prehensions we declared above.
 #  This can't be done earlier, since VectorSpace was just defined.

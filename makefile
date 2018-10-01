@@ -17,3 +17,10 @@ prod: $(SRCS) $(OBJ)
 	-git commit -a -m "Building production."
 	git push origin master
 	ssh indrasnet@ssh.pythonanywhere.com 'cd /home/indrasnet/indras_net; /home/indrasnet/indras_net/rebuild.sh'
+
+db:
+	./db.sh
+
+repo:
+	-git commit -a
+	git push origin master

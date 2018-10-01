@@ -2,36 +2,21 @@
 """
 A script to test our grid capabilities.
 """
-MODEL_NM = "grid"
-
-import indra.prop_args as props
-pa = props.PropArgs.create_props(MODEL_NM)
-
-import indra.utils as utils
-import indra.grid_env as ge
-import models.grid as gm
+import indra.prop_args2 as props
 import logging
 import os
 
+MODEL_NM = "grid"
+
 
 def run(prop_dict=None):
+    pa = props.PropArgs.create_props(MODEL_NM, prop_dict)
+
+    import indra.utils as utils
+    import indra.grid_env as ge
+    import models.grid as gm
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
-    
-    # We store basic parameters in a "property" file; this allows us to save
-    #  multiple parameter sets, which is important in simulation work.
-    #  We can read these in from file or set them here.
-    global pa
-    
-    if prop_dict is not None:
-        prop_dict[props.PERIODS] = 0
-        pa.add_props(prop_dict)
-    else:
-        result = utils.read_props(MODEL_NM)
-        if result:
-            pa.add_props(result.props)
-        else:
-            utils.ask_for_params(pa)
-    
+
     if pa["user_type"] == props.WEB:
         pa["base_dir"] = os.environ["base_dir"]
     
@@ -59,6 +44,7 @@ def run(prop_dict=None):
               + " is " + str(cell.contents))
         
     return utils.run_model(env, prog_file, results_file)
+
 
 if __name__ == "__main__":
     run()

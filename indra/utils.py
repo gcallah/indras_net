@@ -7,8 +7,8 @@ import sys
 import logging
 
 from IndrasNet.models import Model
-from indra.prop_args import type_dict, PERIODS
-import indra.prop_args as prop_args
+from indra.prop_args2 import type_dict, PERIODS
+import indra.prop_args2 as prop_args
 import indra.user as u
 
 # some values useful for checking valid ranges:
