@@ -109,7 +109,7 @@ class SandEnv(ge.GridEnv):
         super().step(random=random)
         self.center_agent.add_grains(1)
 
-    def run(self, periods=-1):
+    def run(self, periods=-1, random=True):
         return super().run(periods=periods, random=True)
 
     def restore_agent(self, agent_json):
