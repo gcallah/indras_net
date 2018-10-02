@@ -32,7 +32,7 @@ class SandAgent(ga.GridAgent):
         """
         if self.sand_amt >= MAX_SAND:
             i = 0
-            for neighbor in self.neighbor_iter(moore=False, save_hood=True):
+            for neighbor in self.neighbor_iter(moore=False, save_hood=True, shuffle=True):
                 i += 1
                 if self.sand_amt > 0:
                     neighbor.add_grains(1)
