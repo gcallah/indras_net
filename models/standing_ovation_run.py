@@ -11,8 +11,7 @@ import indra.prop_args2 as props
 pa = props.PropArgs.create_props(MODEL_NM)
 
 import indra.utils as utils
-import indra.prop_args as props
-import models.test_model as stov
+import models.standing_ovation as stov
 
 def run(prop_dict=None):
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
@@ -30,9 +29,9 @@ def run(prop_dict=None):
     #Generate audience members
     for i in range(30): #change this to width x height somehow
         noise = random.uniform(0.7,9.0)
-        env.add_agent(wsm.Wolf("Member" + str(i), "Enjoying show",
+        env.add_agent(stov.AudienceAgent("Member" + str(i), "Enjoying show",
                                pa["member_sitting"],
-                               pa["member_noise"],
+                               pa["noise_level"],
                                pa["member_standard"],
                                rand_age=True))
     #Saving these in case I have to test this
