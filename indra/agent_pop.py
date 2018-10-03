@@ -233,12 +233,23 @@ class AgentPop(node.Node):
     def change_agent_type(self, agent, old_type, new_type):
         self.remove(agent, v=old_type)
         self.append(agent, v=new_type)
+        #need to change agent's ntype as well
+        agent.ntype = new_type
 
     def append_pop_hist(self, var, pop):
         """
         Add the most recent pop to pop_hist.
         """
         self.vars[var]["pop_hist"].append(pop)
+
+    def restore_hist_from(self, pop_hist_json):
+        """
+        Restore histogram from the client. (The inverse of get_pop_hist.)
+        """
+        for var in pop_hist_json:
+            self.vars[var]["pop_hist"] = pop_hist_json[var]["data"]
+            self.vars[var]["disp_color"] = pop_hist_json[var]["color"]
+            logging.debug("Setting color for {} to {}".format(var, pop_hist_json[var]["color"]))
 
     def census(self, exclude_var=None):
         """

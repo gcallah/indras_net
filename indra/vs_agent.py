@@ -33,7 +33,8 @@ class VSAgent(pa.PrehensionAgent):
         safe_fields["stance"] = self.stance.to_json()
         
         return safe_fields
-    def from_json_pre_add(self, agent_json):
+
+    def from_json_preadd(self, agent_json):
         super().from_json_preadd(agent_json)
         
-        self.stance.from_json(agent_json["stance"])
+        self.stance = vs.VectorSpace.from_json(agent_json["stance"])

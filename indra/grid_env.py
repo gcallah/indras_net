@@ -97,6 +97,12 @@ class Cell(node.Node):
         safe_fields["coordy"] = self.coords[1]
         return safe_fields
 
+    @classmethod
+    def from_json(cls, json_input):
+        coords = (json_input["coordx"],
+                  json_input["coordy"])
+        return cls(coords=coords)
+
 class OutOfBounds(Exception):
     def __init__(self, value):
         self.value = value
@@ -291,11 +297,13 @@ class GridEnv(se.SpatialEnv):
         (y1, y2) = self._adjust_coords(center_y, distance, self.height)
         return ga.GridView(self, x1, y1, x2, y2)
 
-    def neighbor_iter(self, x, y, distance=1, moore=True, view=None):
+    def neighbor_iter(self, x, y, distance=1, moore=True, view=None, shuffle=False):
         """
         Iterate over our neighbors.
         """
         neighbors = self.get_neighbors(x, y, distance, moore, view)
+        if shuffle:
+            random.shuffle(neighbors)
         return map(lambda x: x.contents, iter(neighbors))
 
     def get_neighbors(self, x, y, distance=1, moore=True, view=None):

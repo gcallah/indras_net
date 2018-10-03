@@ -114,7 +114,7 @@ class Node():
         output to a json file. (We can't output the env, for instance, since
         IT contains a reference to each agent!)
         """
-        return {"name": self.name}
+        return {"name": self.name, "ntype": self.ntype}
     
     def from_json_preadd(self, json_input):
         """

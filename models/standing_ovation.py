@@ -1,8 +1,10 @@
 """
 standing_ovation.py
 This model simulates how a standing ovation spreads
-across an audience. Of course, it'll model whether
-a performance gets a standing ovation from some people first.
+across an audience. It'll first model whether
+a performance gets a standing ovation from at least a
+few individual first, and then model how the pressure to
+stand or sit affects the rest of the audience.
 """
 import random
 import indra.display_methods as disp
@@ -20,7 +22,10 @@ class AudienceAgent(ma.MarkovAgent):
             confronted to make a choice
         standard: a double that determines the odds of the member enjoying the
             performance
-
+    Functions:
+        isSitting: returns a boolean. Checks whether agent is sitting
+        setState: takes a boolean state as an argument. Sets agent state to the new state
+        reaction: Checks whether the performance was up to the agent's standards
     """
 
     def __init__(self, name, goal, sitting = True, noise = 0.95, standard = 0.2):
@@ -65,7 +70,7 @@ class AudienceAgent(ma.MarkovAgent):
     def postact(self):
         print("I am agent" + self.name + "and I am postacting")
 
-
+# Maybe I'll use something like this later? Maybe a paid audience member
 # class Gozer(BasicAgent):
 #     """
 #     A silly agent that destroys others, for demo purposes

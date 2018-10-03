@@ -4,34 +4,20 @@ A script to test our grid capabilities.
 """
 MODEL_NM = "wolfram"
 
-import indra.prop_args as props
-pa = props.PropArgs.create_props(MODEL_NM)
 
-import indra.utils as utils
-import indra.prop_args as props
-import wolfram.wolfram as wm
+import indra.prop_args2 as props
 import os
 
 def run(prop_dict=None):
-    (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
-    
     # We store basic parameters in a "property" file; this allows us to save
     #  multiple parameter sets, which is important in simulation work.
     #  We can read these in from file or set them here.
-    global pa
+    pa = props.PropArgs.create_props(MODEL_NM, prop_dict)
 
-    if prop_dict is not None:
-        prop_dict[props.PERIODS] = 0
-        pa.add_props(prop_dict)
-    else:
-        result = utils.read_props(MODEL_NM)
-        if result:
-            pa.add_props(result.props)
-        else:
-            utils.ask_for_params(pa)
-        
-    if pa["user_type"] == props.WEB:
-        pa["base_dir"] = os.environ['base_dir']
+    import wolfram.wolfram as wm
+    import indra.utils as utils
+    (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
+
     
     # Now we create a minimal environment for our agents to act within:
     env = wm.WolframEnv("Wolfram Env",

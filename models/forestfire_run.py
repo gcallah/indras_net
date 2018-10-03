@@ -2,23 +2,19 @@
 """
 This file runs the forestfire_model.
 """
-MODEL_NM = "forestfire"
-
 import indra.prop_args2 as props
-pa = props.PropArgs.create_props(MODEL_NM)
-
-import indra.utils as utils
-import models.forestfire as fm
 import os
 
-# set up some file names:
+MODEL_NM = "forestfire"
 
 
 def run(prop_dict=None):
+    pa = props.PropArgs.create_props(MODEL_NM, prop_dict)
+
+    import indra.utils as utils
+    import models.forestfire as fm
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
     
-    global pa
-
     if pa["user_type"] == props.WEB:
         pa["base_dir"] = os.environ["base_dir"]
     

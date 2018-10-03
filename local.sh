@@ -1,6 +1,7 @@
 #!/bin/sh
 
-# Run this from inside your container to launch Emu86.
+# Run this from inside your container to launch Indra.
+# Or run it directly if you have Django set up locally.
 # Although *inside* the container the web server runs at 0.0.0.0:8000,
 # from outside it appears at 127.0.0.1:8000.
 

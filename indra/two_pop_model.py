@@ -76,6 +76,16 @@ class TwoPopAgent(va.VSAgent):
         """
         return self.stance.direction()
 
+    def to_json(self):
+        safe_fields = super().to_json()
+        safe_fields["new_stance"] = self.new_stance.to_json()
+        safe_fields["variability"] = self.variability
+        return safe_fields
+
+    def from_json_preadd(self, agent_json):
+        super().from_json_preadd(agent_json)
+        self.new_stance = vs.VectorSpace.from_json(agent_json["new_stance"])
+
 
 class Follower(TwoPopAgent):
     """
@@ -137,9 +147,6 @@ class TwoPopEnv(ge.GridEnv):
         Return the total adopting STANCE_TRACKED.
         """
         total_w_stance = 0
-        self.user.tell("Populations in period " + str(self.period) +
-                       " adopting " +
-                       self.stances[STANCE_TINDEX] + ":")
         for var in self.varieties_iter():
             pop = 0
             for agent in self.get_agents_of_var(var):
@@ -148,18 +155,20 @@ class TwoPopEnv(ge.GridEnv):
             total_w_stance += pop
             self.user.tell(var + ": " + str(pop))
             self.append_pop_hist(var, pop)
+
+        self.user.tell("Populations in period " + str(self.period) +
+                       " adopting " +
+                       self.stances[STANCE_TINDEX] + ": " + str(total_w_stance))
+
         return total_w_stance
 
-    def view_pop(self):
+    def plot(self):
         """
         Draw a graph of our changing pops.
         """
-        if self.period < 4:
-            self.user.tell("Too little data to display")
-            return
-
         (period, data) = self.line_data()
-        self.line_graph = disp.LineGraph(self.line_graph_title
-                                         % (self.name,
-                                            self.stances[STANCE_TINDEX]),
-                                         data, period)
+        self.line_graph = disp.LineGraph(self.line_graph_title.format(self.name,
+                                                                      self.stances[STANCE_TINDEX]),
+                                         data, period, is_headless=self.headless())
+        self.image_bytes = self.line_graph.show()
+        return self.image_bytes
