@@ -78,7 +78,7 @@ class SegregationAgent(va.VSAgent):
         
         return safe_fields
         
-    def from_json_pre_add(self, agent_json):
+    def from_json_preadd(self, agent_json):
         super().from_json_preadd(agent_json)
         
         self.orientation = agent_json["orientation"]
@@ -132,7 +132,7 @@ class SegregationEnv(grid.GridEnv):
     """
 
     def __init__(self, name, width, height, torus=False,
-                 model_nm="Segregation", props=None):
+                 model_nm="segregation", props=None):
 
         super().__init__(name, width, height, torus=False,
                          model_nm=model_nm, props=props)

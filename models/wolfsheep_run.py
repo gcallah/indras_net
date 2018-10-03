@@ -2,21 +2,18 @@
 """
 A predator-prey model with wolves and sheep.
 """
-MODEL_NM = "wolfsheep"
 
 import indra.prop_args2 as props
-pa = props.PropArgs.create_props(MODEL_NM)
 
-import indra.utils as utils
-import indra.prop_args as props
-import models.wolfsheep as wsm
+MODEL_NM = "wolfsheep"
 
-# set up some file names:
 
 def run(prop_dict=None):
+    pa = props.PropArgs.create_props(MODEL_NM, prop_dict)
+
+    import indra.utils as utils
+    import models.wolfsheep as wsm
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
-    
-    global pa
 
     # we create a meadow for our agents to act within:
     env = wsm.Meadow("Meadow",
@@ -41,6 +38,7 @@ def run(prop_dict=None):
                                 rand_age=True))
     
     return utils.run_model(env, prog_file, results_file)
+
 
 if __name__ == "__main__":
     run()

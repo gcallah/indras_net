@@ -551,7 +551,8 @@ class Environment(node.Node):
         for agent in self.agents:
             agents.append(agent.to_json())
         safe_fields["agents"] = agents
-            
+        safe_fields["pop_hist"] = self.agents.get_pop_hist()
+
         return safe_fields
 
     def save_session(self, session_id=None):
@@ -569,7 +570,7 @@ class Environment(node.Node):
         
         json_output = str(json.dumps(self.to_json()))
         path = os.path.join(base_dir, "json/" + self.model_nm + session_id + ".json")
-        with open(path, "w+") as f: 
+        with open(path, "w+") as f:
             f.write(json_output)
             
         #self.print_env()
@@ -580,7 +581,7 @@ class Environment(node.Node):
         Restore a previous session from a json file
         """
         logging.info("-------------------------Start Restoration of states-------------------------------")
-        
+
         try:
             base_dir = self.props["base_dir"]
         except:
@@ -589,16 +590,15 @@ class Environment(node.Node):
         if session_id is None:
             session_id = str(self.user.ask("Enter session id: "))
         session_id = str(session_id)
-            
         path = os.path.join(base_dir, "json/" + self.model_nm + session_id + ".json")
         with open(path, "r") as f:
             json_input = f.readline()
         json_input = json.loads(json_input)
-        
         self.from_json(json_input)
-            
+
         self.restore_agents(json_input)
-        
+        self.agents.restore_hist_from(json_input["pop_hist"])
+
         #self.print_env()
         #self.user.tell("Session restored")
         
@@ -609,10 +609,10 @@ class Environment(node.Node):
         self.preact = json_input["preact"]
         self.postact = json_input["postact"]
         self.model_nm = json_input["model_nm"]
-        self.props = pa.PropArgs(self.model_nm, prop_dict=json_input["props"])      
+        self.props = pa.PropArgs(self.model_nm, prop_dict=json_input["props"])
         self.period = json_input["period"]
         self.user.from_json(json_input["user"])
-        
+
     def restore_agents(self, json_input):
         """
         Restore the states of all agents
@@ -622,6 +622,6 @@ class Environment(node.Node):
             
     def restore_agent(self, agent_json):
         logging.info("restore_agent not implemented")
-        
+
     def print_env(self):
         logging.info("print_env not implemented")

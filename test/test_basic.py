@@ -241,6 +241,9 @@ class BasicTestCase(TestCase):
             report = False
         if json_input_dic["props"] != self.env.props.to_json():
             report = False
+        #Here is why test_save_session fail before.
+        #The env will generate a new prop_arg 2 type proparg when restoring
+        #session(check env.from_json function), but we were using old prop_arg in this test file.
         if json_input_dic["user"] != self.env.user.to_json():
             report = False
         agents = []

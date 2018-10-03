@@ -7,24 +7,24 @@ Created on Mon Mar  2 21:39:40 2015
 
 Segregation Run File
 """
-MODEL_NM = "segregation"
 
 import indra.prop_args2 as props
-pa = props.PropArgs.create_props(MODEL_NM)
-
-import indra.utils as utils
-import indra.prop_args as props
-import schelling.segregation as sm
 import os
 
-# set up some file names:
+MODEL_NM = "segregation"
+
 
 def run(prop_dict=None):
+    pa = props.PropArgs.create_props(MODEL_NM, prop_dict)
+
+    import indra.utils as utils
+    import schelling.segregation as sm
+
+    # set up some file names:
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
     # We store basic parameters in a "property" file; this allows us to save
     #  multiple parameter sets, which is important in simulation work.
     #  We can read these in from file or set them here.
-    global pa
 
     if pa["user_type"] == props.WEB:
         pa["base_dir"] = os.environ['base_dir']
@@ -33,6 +33,7 @@ def run(prop_dict=None):
     env = sm.SegregationEnv("A city",
                             pa["grid_width"],
                             pa["grid_height"],
+                            model_nm=pa.model_nm,
                             props=pa)
     
     # Now we loop creating multiple agents with numbered names

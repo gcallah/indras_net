@@ -72,7 +72,7 @@ class SpatialEnv(env.Environment):
         plot_type = self.props.get("plot_type", "SC")
         if plot_type == "LN":
             return super().plot()
-        elif plot_type == "SC":       
+        elif plot_type == "SC":
             data = self.plot_data()
             self.scatter_plot = disp.ScatterPlot(
                 self.plot_title, data,
@@ -129,10 +129,10 @@ class SpatialEnv(env.Environment):
                                    agent_json["max_detect"])
         self.add_agent_from_json(agent)
         
-    def add_agent_from_json(self, agent, agent_json):
+    def add_agent_from_json(self, agent, agent_json, x=RANDOM, y=RANDOM):
         """
         Add a restored agent to the env
         """
         agent.from_json_preadd(agent_json)
-        self.add_agent(agent)
+        self.add_agent(agent, x, y)
         agent.from_json_postadd(agent_json)

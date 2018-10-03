@@ -2,23 +2,21 @@
 """
 A script to test our grid capabilities.
 """
-MODEL_NM = "grid"
-
 import indra.prop_args2 as props
-pa = props.PropArgs.create_props(MODEL_NM)
-
-import indra.utils as utils
-import indra.grid_env as ge
-import models.grid as gm
 import logging
 import os
 
+MODEL_NM = "grid"
+
 
 def run(prop_dict=None):
+    pa = props.PropArgs.create_props(MODEL_NM, prop_dict)
+
+    import indra.utils as utils
+    import indra.grid_env as ge
+    import models.grid as gm
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
-    
-    global pa
-    
+
     if pa["user_type"] == props.WEB:
         pa["base_dir"] = os.environ["base_dir"]
     
@@ -46,6 +44,7 @@ def run(prop_dict=None):
               + " is " + str(cell.contents))
         
     return utils.run_model(env, prog_file, results_file)
+
 
 if __name__ == "__main__":
     run()
