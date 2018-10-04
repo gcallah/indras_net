@@ -15,25 +15,27 @@ import models.standing_ovation as stov
 
 def run(prop_dict=None):
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
-
     global pa
+    num_agents = pa["grid_width"] * pa["grid_height"]
+    num_agents = 100
+
     #Create audience with width x height
-    env = stov.AudienceEnv("Audience",
-                           pa["grid_width"],
-                           pa["grid_height"],
-                           model_nm = MODEL_NM,
-                           preact = True,
-                           act = True,
-                           props = pa
-                           )
+    env = stov.Auditorium(
+                     #10,#pa["grid_width"],
+                     #10,#pa["grid_height"],
+                     model_nm=MODEL_NM,
+                     #act=True,
+                     props=pa
+                     )
     #Generate audience members
-    for i in range(30): #change this to width x height somehow
+    for i in range(num_agents): #change this to width x height somehow
         noise = random.uniform(0.7,9.0)
-        env.add_agent(stov.AudienceAgent("Member" + str(i), "Enjoying show",
-                               pa["member_sitting"],
-                               pa["noise_level"],
-                               pa["member_standard"],
-                               rand_age=True))
+        env.add_agent(stov.AudienceAgent("Member" + str(i), "Enjoying the show", pa["noise_level"]))
+        # env.add_agent(stov.AudienceAgent("Member" + str(i), "Enjoying show"
+        #                        #pa["member_sitting"],
+        #                        #pa["noise_level"]
+        #                        #pa["member_standard"],
+        #                        ))
     #Saving these in case I have to test this
     # # test prop_args as an iterable:
     # for prop, val in pa.items():
