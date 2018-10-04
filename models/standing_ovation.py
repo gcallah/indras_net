@@ -12,7 +12,10 @@ import indra.markov as markov
 import indra.markov_agent as ma
 import indra.markov_env as menv
 
-class AudienceAgent(ma.MarkovAgent):
+import indra.entity as ent
+import indra.env as env
+
+class AudienceAgent(ent.Agent):
     """
     A member of an audience that will decide whether to remain sitting or stand
 
@@ -27,14 +30,15 @@ class AudienceAgent(ma.MarkovAgent):
         setState: takes a boolean state as an argument. Sets agent state to the new state
         reaction: Checks whether the performance was up to the agent's standards
     """
-
-    def __init__(self, name, goal, sitting = True, noise = 0.95, standard = 0.2):
-        super().__init__(name, goal, sitting, noise)
+    def __init__(self, name, goal, noise
+                 #, standard = 0.2
+                 ):
+        super().__init__(name, goal)
         self.name = name
         self.goal = goal
-        self.sitting = sitting
-        self.noise = noise
-        self.standard = standard
+        self.sitting = True
+        self.noise = 0.95#noise
+        self.standard = 0.2
 
     def isSitting(self):
         return self.sitting == True
@@ -98,7 +102,7 @@ class AudienceAgent(ma.MarkovAgent):
 #                     return
 
 
-class AudienceEnv(menv.MarkovEnv):
+class Auditorium(env.Environment):
     """
     This environment represents the entire audience
     Arguments:
@@ -106,12 +110,11 @@ class AudienceEnv(menv.MarkovEnv):
         height: int
     """
 
-    def __init__(self, width, height, model_nm=None, props=None):
-        super().__init__("St Ovation Env",
+    def __init__(self, width=80, height=80, model_nm="standing_ovation", props=None):
+        #print("I'm in super init")
+        super().__init__("Testing Environment",
                          width,
                          height,
-                         preact=True,
-                         postact=True,
                          model_nm=model_nm,
                          props=props)
 
