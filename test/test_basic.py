@@ -28,7 +28,7 @@ class BasicTestCase(TestCase):
     
         result = props.read_props(MODEL_NM, prop_file)
         if result:
-            pa.add_props(result.props)
+            pa.overwrite_props_from_dict(result.props)
         else:
             print("Oh-oh, no props to read in!")
             exit(1)
@@ -38,7 +38,7 @@ class BasicTestCase(TestCase):
     
         # Now we loop creating multiple agents
         #  with numbered names based on the loop variable:
-        for i in range(pa.get("num_agents")):
+        for i in range(pa.get("num_agents").val):
             self.env.add_agent(bm.BasicAgent(name="agent" + str(i),
                                         goal="acting up!"))
         self.env.add_agent(bm.BasicAgent(name="agent for tracking",
