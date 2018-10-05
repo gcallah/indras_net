@@ -19,11 +19,11 @@ MOVE = True
 STAY = False
 FEMALE = vs.X
 MALE = vs.Y
-RED_PRE = vs.VectorSpace.X_PRE
-BLUE_PRE = vs.VectorSpace.Y_PRE
+FEM_PRE = vs.VectorSpace.X_PRE
+MALE_PRE = vs.VectorSpace.Y_PRE
 FEM_AGENT = "Woman"
 MALE_AGENT = "Man"
-AGENT_TYPES = {RED: FEM_AGENT, BLUE: MALE_AGENT}
+AGENT_TYPES = {FEMALE: FEM_AGENT, MALE: MALE_AGENT}
 MIN_TOL = 0.1
 MAX_TOL = 0.7
 
@@ -86,7 +86,7 @@ class PartyAgent(va.VSAgent):
         self.tolerance = agent_json["tolerance"]
 
 
-class Man(SegregationAgent):
+class Man(PartyAgent):
     """
     We set our stance.
     """
@@ -96,7 +96,7 @@ class Man(SegregationAgent):
                          max_move=max_move, max_detect=max_detect)
         self.orientation = MALE
         self.visible_pre = MALE_PRE
-        self.stance = vs.stance_pct_to_pre(self.tolerance, BLUE)
+        self.stance = vs.stance_pct_to_pre(self.tolerance, MALE)
         
     def to_json(self):
         safe_fields = super().to_json()
@@ -106,7 +106,7 @@ class Man(SegregationAgent):
         return safe_fields
 
 
-class Woman(SegregationAgent):
+class Woman(PartyAgent):
     """
     We set our stance.
     """
@@ -132,7 +132,7 @@ class PartyEnv(grid.GridEnv):
     """
 
     def __init__(self, name, width, height, torus=False,
-                 model_nm="segregation", props=None):
+                 model_nm="party", props=None):
 
         super().__init__(name, width, height, torus=False,
                          model_nm=model_nm, props=props)
@@ -165,8 +165,8 @@ class PartyEnv(grid.GridEnv):
         f.close()
 
     def set_agent_color(self):
-        self.set_var_color(AGENT_TYPES[BLUE], 'b')
-        self.set_var_color(AGENT_TYPES[RED], 'r')
+        self.set_var_color(AGENT_TYPES[MALE], 'b')
+        self.set_var_color(AGENT_TYPES[FEMALE], 'r')
         
     def to_json(self):
         safe_fields = super().to_json()
@@ -183,12 +183,12 @@ class PartyEnv(grid.GridEnv):
     def restore_agent(self, agent_json):     
         color = agent_json["color"]
         if color == "Blue":            
-            new_agent = BlueAgent(agent_json["name"], 
+            new_agent = Man(agent_json["name"],
                                  agent_json["goal"],
                                  max_move=agent_json["max_move"], 
                                  max_detect=agent_json["max_detect"])
         if color == "Red":            
-            new_agent = RedAgent(agent_json["name"], 
+            new_agent = Woman(agent_json["name"],
                                  agent_json["goal"],
                                  max_move=agent_json["max_move"], 
                                  max_detect=agent_json["max_detect"])

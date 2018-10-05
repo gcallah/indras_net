@@ -18,7 +18,7 @@ def run(prop_dict=None):
     pa = props.PropArgs.create_props(MODEL_NM, prop_dict)
 
     import indra.utils as utils
-    import schelling.segregation as sm
+    import models.party as pm
 
     # set up some file names:
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
@@ -30,7 +30,7 @@ def run(prop_dict=None):
         pa["base_dir"] = os.environ['base_dir']
         
     # Now we create an environment for our agents to act within:
-    env = sm.PartyEnv("A city",
+    env = pm.PartyEnv("A bar",
                             pa["grid_width"],
                             pa["grid_height"],
                             model_nm=pa.model_nm,
@@ -39,17 +39,17 @@ def run(prop_dict=None):
     # Now we loop creating multiple agents with numbered names
     # based on the loop variable:
     for i in range(pa["num_men"]):
-        env.add_agent(sm.Man(name="Blue agent" + str(i),
+        env.add_agent(pm.Man(name="Man" + str(i),
                       goal="A good party.",
-                      min_tol=pa['min_tolerance'],
-                      max_tol=pa['max_tolerance'],
+                      min_tol=0.2,
+                      max_tol=0.8,
                       max_detect=pa['max_detect']))
         
     for i in range(pa["num_women"]):
-        env.add_agent(sm.Female(name="Woman" + str(i),
+        env.add_agent(pm.Woman(name="Woman" + str(i),
                       goal="A good party.",
-                      min_tol=pa['min_tolerance'],
-                      max_tol=pa['max_tolerance'],
+                      min_tol=0.1,
+                      max_tol=0.7,
                       max_detect=pa['max_detect']))
         
     return utils.run_model(env, prog_file, results_file)
