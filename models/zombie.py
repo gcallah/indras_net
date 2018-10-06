@@ -47,13 +47,13 @@ COND_MAP = {H: HEALTHY, I: INFECTED, Z: ZOMBIFIED, D: DECAYED}
 
 class Beings(ma.MarkovAgent): 
     
-    def __init__(self, name, goal, repro_age, life_force, init_state, max_detect=1,
+    def __init__(self, name, goal, repro_age, life_force, init_state, init_cond=0, max_detect=1,
                  rand_age=False, speed=1):
-        super().__init__(name, goal, NSTATES, NCOND, init_state, init_cond, max_detect=max_detect)
+        super().__init__(name, goal, NCOND, init_state, max_detect) # ERROR # init_cond is not set by this point 10/6/18
         if not rand_age:
             self.age = 0
         else:
-            self.age = random.randint(0, repro_age - 2)
+            self.age = random.randint(0,repro_age+1) # If repro age is < 2 this broke so changed #
             self.alive = True
             self.other = None
             self.repro_age = repro_age
