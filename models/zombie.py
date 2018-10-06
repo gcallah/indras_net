@@ -49,6 +49,7 @@ class Beings(ma.MarkovAgent):
     
     def __init__(self, name, goal, repro_age, life_force, init_state, max_detect=1,
                  rand_age=False, speed=1):
+		init_cond = H
         super().__init__(name, goal, NSTATES, NCOND, init_state, init_cond, max_detect=max_detect)
         if not rand_age:
             self.age = 0
@@ -80,14 +81,12 @@ class Beings(ma.MarkovAgent):
             self.cond = Z
 
     def act(self):
-        
         for i in range(self.speed):
             super().act()
             self.state = self.next_state
             self.move(self.state)
             
     def move(self, state):
-        
         x = self.pos[X]
         y = self.pos[Y]
         if self.cond != I:   #   if somebody is infected they can't move
@@ -107,7 +106,6 @@ class Beings(ma.MarkovAgent):
             self.infectionTime()
             
     def postact(self):
-        
         self.age += 1
         self.life_force -= 1
         if self.life_force <= 0:
@@ -123,7 +121,7 @@ class Beings(ma.MarkovAgent):
         
         if self.alive:
             creature = self.__class__(self.name + "x", self.goal,
-                                      self.repro_age, self.init_life_force)
+                self.repro_age, self.init_life_force)
             self.env.add_agent(creature)
     '''
 
@@ -137,8 +135,7 @@ class Human(Beings):
         self.other = Zombie
         self.ntype = "Human"
 
-class Zombie(Beings):
-    
+class Zombie(Beings):#is this is an inheretance?
     def __init__(self, name, goal, repro_age, life_force, max_detect=10,
                     rand_age=False, speed=2):
         init_state = random.randint(0,3)
@@ -148,17 +145,20 @@ class Zombie(Beings):
         self.ntype = "Zombie"
 
     def preact(self):
-        
         creatures = self.neighbor_iter()
         for creature in creatures:
             if type(creature) is Human:
                 self.eat(creature)
 
     def eat(self, human):
+<<<<<<< HEAD
         
         if human.cond != I:   #   humans who are infected can't be eaten (if no infection)
+=======
+        if human.cond != I:
+>>>>>>> 172aea2f8fae27e689d4f356bc6cf5709f59615c
             self.life_force += human.life_force
-            human.died()
+            human.died()#lol am ded
 
 
 class Zone(menv.MarkovEnv):
@@ -194,8 +194,7 @@ class Zone(menv.MarkovEnv):
         trans_matrix = markov.from_matrix(np.matrix(trans_str))
         return trans_matrix
 
-    def dir_info(self, agent):
-        """
+    def dir_info(self, agent):"""
         We count wolves and sheep that are North, South, East, West 
         of the agent in question. What quadrant they're in, and how
         far they are from the agent factors into the information returned.
