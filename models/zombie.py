@@ -61,17 +61,23 @@ class Beings(ma.MarkovAgent):
             self.init_life_force = life_force
             self.speed = speed
             self.state = init_state
-            self.cond = init_cond
-            self.infectTime = 5
+            self.cond = init_cond   #   whether the person is human, turning, or a zombie
+            self.infectTime = 5   #   num of turns till Human becomes zombie
 
-    def decayed(self):
+    def decayed(self):   #   function is called when a zombie's life force is gone (zombie is removed)
         
         if self.alive:
             self.alive = False
             self.env.decayed(self)
             
-    def infected(self):
+    def infected(self):   #   function is called when a zombie eats a human (the human is now infected)
         self.cond = I
+        
+    def infectionTimer(self):   #   function is called once somebody is infected
+        if self.cond == I:   #   start counting the steps till zombification
+            self.infectTime -= 1
+        if self.infectTime <= 0:   #   the human is now a zombie
+            self.cond = Z
 
     def act(self):
         
@@ -84,7 +90,7 @@ class Beings(ma.MarkovAgent):
         
         x = self.pos[X]
         y = self.pos[Y]
-        if self.cond != I:
+        if self.cond != I:   #   if somebody is infected they can't move
             if state == N:
                 if self.env.is_cell_empty(x, y+1):
                     self.env.move(self, x,y+1)
@@ -97,6 +103,8 @@ class Beings(ma.MarkovAgent):
             else:
                 if self.env.is_cell_empty(x+1, y):
                     self.env.move(self, x+1,y)
+        else:   #   count down steps till zombified
+            self.infectionTime()
             
     def postact(self):
         
@@ -108,11 +116,6 @@ class Beings(ma.MarkovAgent):
         elif self.age % self.repro_age == 0:
             self.reproduce()
     
-    def infectionTimer(self):
-        if self.cond == I:
-            self.infectTime -= 1
-        if self.infectTime <= 0:
-            self.cond = Z
     '''
     def reproduce(self):
         allGroups = 
@@ -153,7 +156,7 @@ class Zombie(Beings):
 
     def eat(self, human):
         
-        if human.cond != I:
+        if human.cond != I:   #   humans who are infected can't be eaten (if no infection)
             self.life_force += human.life_force
             human.died()
 
