@@ -1,5 +1,3 @@
-import logging
-import random as r
 import random
 import indra.markov as markov
 import indra.markov_agent as ma
@@ -8,21 +6,8 @@ import numpy as np
 import operator as op
 import math
 
-
 X = 0
 Y = 1
-
-def randomPermutation(n): #gets a random permutation of g=grid locations
-    def swap(i,j):
-        return (j,i)
-    g = []
-    for i in range(1,n+1):
-        g.append(i)
-    for i in range(0,r.randint(10,20)):
-        x,y = (r.randint(0,n-1),r.randint(0,n-1))
-        (g[x],g[y])  =  swap(g[x],g[y])
-    return g  
-
 
 humanTot = 0
 zombieTot = 0
@@ -69,21 +54,24 @@ class Beings(ma.MarkovAgent):
             self.age = 0
         else:
             self.age = random.randint(0, repro_age - 2)
-        self.alive = True
-        self.other = None
-        self.repro_age = repro_age
-        self.life_force = life_force
-        self.init_life_force = life_force
-        self.speed = speed
-        self.state = init_state
-        self.cond = init_cond
+            self.alive = True
+            self.other = None
+            self.repro_age = repro_age
+            self.life_force = life_force
+            self.init_life_force = life_force
+            self.speed = speed
+            self.state = init_state
+            self.cond = init_cond
+            self.infectTime = 5
 
     def decayed(self):
         
         if self.alive:
             self.alive = False
             self.env.decayed(self)
-
+            
+    def infected(self):
+        self.cond = I
 
     def act(self):
         
@@ -96,29 +84,35 @@ class Beings(ma.MarkovAgent):
         
         x = self.pos[X]
         y = self.pos[Y]
-        if state == N:
-            if self.env.is_cell_empty(x, y+1):
-                self.env.move(self, x,y+1)
-        elif state == S:
-            if self.env.is_cell_empty(x, y-1):
-                self.env.move(self, x,y-1)
-        elif state == E:
-            if self.env.is_cell_empty(x-1, y):
-                self.env.move(self, x-1,y)
-        else:
-            if self.env.is_cell_empty(x+1, y):
-                self.env.move(self, x+1,y)
+        if self.cond != I:
+            if state == N:
+                if self.env.is_cell_empty(x, y+1):
+                    self.env.move(self, x,y+1)
+            elif state == S:
+                if self.env.is_cell_empty(x, y-1):
+                    self.env.move(self, x,y-1)
+            elif state == E:
+                if self.env.is_cell_empty(x-1, y):
+                    self.env.move(self, x-1,y)
+            else:
+                if self.env.is_cell_empty(x+1, y):
+                    self.env.move(self, x+1,y)
             
     def postact(self):
-
-        logging.info("Agent %s postacting" % (self.name))
-
+        
         self.age += 1
         self.life_force -= 1
         if self.life_force <= 0:
-            self.died()
+            #self.died()
+            self.infected()   #change the agent's condition to infected when thew lifeforce is dead
         elif self.age % self.repro_age == 0:
             self.reproduce()
+    
+    def infectionTimer(self):
+        if self.cond == I:
+            self.infectTime -= 1
+        if self.infectTime <= 0:
+            self.cond = Z
     '''
     def reproduce(self):
         allGroups = 
@@ -159,8 +153,9 @@ class Zombie(Beings):
 
     def eat(self, human):
         
-        self.life_force += human.life_force
-        sheep.died()
+        if human.cond != I:
+            self.life_force += human.life_force
+            human.died()
 
 
 class Zone(menv.MarkovEnv):
@@ -198,7 +193,7 @@ class Zone(menv.MarkovEnv):
 
     def dir_info(self, agent):
         """
-        We count zombies and humans that are North, South, East, West 
+        We count wolves and sheep that are North, South, East, West 
         of the agent in question. What quadrant they're in, and how
         far they are from the agent factors into the information returned.
         -----------------------------------
@@ -262,8 +257,8 @@ class Zone(menv.MarkovEnv):
 
     def zombie_trans(self, d, total):
         """
-        The zombie uses its survey of the environment to see which
-        directions have the closest and most human. He'll probably
+        The wolf uses its survey of the environment to see which
+        directions have the closest and most sheep. He'll probably
         go in the direction with the highest reward.
         Args:
             d: a dictionary containing information about where wolves are
@@ -271,7 +266,7 @@ class Zone(menv.MarkovEnv):
             total: the sum of all the numerical elements of d; used in
              computation
         Returns:
-            trans_str: the string representing the human's possibilities
+            trans_str: the string representing the sheep's possibilities
             for movement
         """
         trans_str = ""
@@ -317,11 +312,11 @@ class Zone(menv.MarkovEnv):
 
     def human_trans(self, d, total):
         """
-        The human uses it's survey of the environment to determine which
+        The sheep uses it's survey of the environment to determine which
         directions are the least dangerious. He'll go one of these directions.
         Args:
-            d: a dictionary containing information about where zomb13s are
-             relative to the human 
+            d: a dictionary containing information about where wolves are
+             relative to the sheep 
             total: the sum of all the numerical elements of d; used in
              computation
         Returns:
@@ -377,4 +372,3 @@ class Zone(menv.MarkovEnv):
         trans_str += str(WN) + " " + str(WS) + " " + str(WE) + " " + str(WW)
 
         return trans_str
-
