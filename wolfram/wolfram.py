@@ -142,8 +142,8 @@ class WolframEnv(ge.GridEnv):
     def check_rules(self, combo):
         return self.rules[str(combo)]
 
-    def step(self):
-        super().step()
+    def step(self, random=False):
+        super().step(random)
         
     def read_wolfram_rules(self,file):
         rules_sets = []

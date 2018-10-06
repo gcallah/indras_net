@@ -2,20 +2,17 @@
 """
 A script to test our grid capabilities.
 """
-MODEL_NM = "sand"
-
 import indra.prop_args2 as props
-# we will create props here to set user_type:
-pa = props.PropArgs.create_props(MODEL_NM)
 
-import indra.utils as utils
-import indra.prop_args as props
-import models.sand as sm
-
-# set up some file names:
+MODEL_NM = "sand"
 
 
 def run(prop_dict=None):
+    pa = props.PropArgs.create_props(MODEL_NM, prop_dict)
+
+    import indra.utils as utils
+    import models.sand as sm
+    # set up some file names:
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
     
     # Now we create a minimal environment for our agents to act within:

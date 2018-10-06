@@ -19,10 +19,10 @@ class SandAgent(ga.GridAgent):
     An agent that collects sand particles until its stack collapses
     onto its neighbors.
     """
-    def __init__(self, name, goal, cell):
+    def __init__(self, name, goal, cell, sand_amt=0):
         super().__init__(name, goal)
         self.cell = cell
-        self.sand_amt = 0
+        self.sand_amt = sand_amt
         self.ntype = str(self.sand_amt)  # we get our color from our sand amount
 
     def act(self):
@@ -32,7 +32,7 @@ class SandAgent(ga.GridAgent):
         """
         if self.sand_amt >= MAX_SAND:
             i = 0
-            for neighbor in self.neighbor_iter(moore=False, save_hood=True):
+            for neighbor in self.neighbor_iter(moore=False, save_hood=True, shuffle=True):
                 i += 1
                 if self.sand_amt > 0:
                     neighbor.add_grains(1)
@@ -60,6 +60,11 @@ class SandAgent(ga.GridAgent):
         Get some sand.
         """
         self.sand_amt += amt
+
+    def to_json(self):
+        safe_json = super().to_json()
+        safe_json["sand_amt"] = self.sand_amt
+        return safe_json
 
 
 class SandEnv(ge.GridEnv):
@@ -90,10 +95,34 @@ class SandEnv(ge.GridEnv):
             if x == center_x and y == center_y:
                 self.center_agent = agent
 
+    def from_json(self, json_input):
+        super().from_json(json_input)
+        self.set_var_color('0', disp.BLACK)
+        self.set_var_color('1', disp.MAGENTA)
+        self.set_var_color('2', disp.BLUE)
+        self.set_var_color('3', disp.CYAN)
+        self.set_var_color('4', disp.RED)
+        self.set_var_color('5', disp.YELLOW)
+        self.set_var_color('6', disp.GREEN)
+
     def step(self, random=True):
         super().step(random=random)
         self.center_agent.add_grains(1)
 
-    def run(self, periods=-1):
-        super().run(periods=periods, random=True)
+    def run(self, periods=-1, random=True):
+        return super().run(periods=periods, random=True)
 
+    def restore_agent(self, agent_json):
+        new_agent = SandAgent(name=agent_json["name"],
+                              goal=agent_json["goal"],
+                              cell=ge.Cell.from_json(agent_json["cell"]),
+                              sand_amt=agent_json["sand_amt"])
+
+        (x, y) = new_agent.cell.coords
+        self.add_agent_from_json(new_agent, agent_json, x=x, y=y)
+
+        center_x = floor(self.width // 2)
+        center_y = floor(self.height // 2)
+
+        if x == center_x and y == center_y:
+            self.center_agent = new_agent

@@ -13,6 +13,7 @@ change the population dynamic.
 """
 
 import random
+import logging
 import collections
 import math
 import numpy as np
@@ -24,8 +25,6 @@ import indra.display_methods as disp
 import indra.data_methods as data
 
 MODEL_NM = "bigbox"
-
-pa = utils.read_props(MODEL_NM)
 
 X = 0
 Y = 1
@@ -61,8 +60,8 @@ class MarketParticipant(ga.GridAgent):
     sell goods of any type.
     """
 
-    def __init__(self, name, goal, init_state=0):
-        super().__init__(name, goal, NUM_STATES, init_state)
+    def __init__(self, name, goal):
+        super().__init__(name, goal, NUM_STATES)
 
     def sells(self, good):
         """
@@ -83,7 +82,7 @@ class Consumer(MarketParticipant):
     """
 
     def __init__(self, name, goal, init_state, allowance):
-        super().__init__(name, goal, init_state)
+        super().__init__(name, goal)
         self.state = init_state
         self.allowance = allowance
         self.last_utils = 0.0      # what statisfaction did they get from
@@ -159,6 +158,18 @@ class Consumer(MarketParticipant):
         """
         self.goal = (self.goal + 1) % NUM_GOODS
 
+    def from_json_preadd(self, json_input):
+        super().from_json_preadd(json_input)
+
+        self.last_utils = json_input["last_utils"]
+
+    def to_json(self):
+        safe_json = super().to_json()
+        safe_json["state"] = self.state
+        safe_json["allowance"] = self.allowance
+        safe_json["last_utils"] = self.last_utils
+        return safe_json
+
 
 class Retailer(MarketParticipant):
     """
@@ -212,6 +223,15 @@ class Retailer(MarketParticipant):
             return NA
         else:
             return (random.random() + self.util_adj) * ADJ_SCALING_FACTOR
+
+    def to_json(self):
+        safe_json = super().to_json()
+        safe_json["endowment"] = self.capital
+        safe_json["expenses"] = self.expenses
+        safe_json["adj"] = self.util_adj
+
+        return safe_json
+
 
 class MomAndPop(Retailer):
     """
@@ -269,6 +289,31 @@ class EverytownUSA(ge.GridEnv):
         self.mom_pop_pop = []
         self.util_hist = []
 
+    def to_json(self):
+        safe_fields = super().to_json()
+        safe_fields["mom_pop_pop"] = self.mom_pop_pop
+        safe_fields["util_hist"] = self.util_hist
+        safe_fields["utils"] = self.utils
+
+        return safe_fields
+
+    def from_json(self, json_input):
+        super().from_json(json_input)
+        self.utils = json_input["utils"]
+        self.util_hist = json_input["util_hist"]
+        self.mom_pop_pop = json_input["mom_pop_pop"]
+
+        # When any of these stores aren't present, the
+        # variety is lost in passing and restoring the
+        # json.
+        self.add_variety("BigBox")
+        for var in GOODS_MAP.values():
+            self.add_variety(var)
+
+    def plot(self):
+        self.view_util()
+        return self.image_bytes
+
     def assemble_util_vars(self):
         varieties = None
         varieties = disp.assemble_lgraph_data("Mom and Pops", self.mom_pop_pop,
@@ -284,13 +329,11 @@ class EverytownUSA(ge.GridEnv):
         """
         Graph population of stores versus consumer utility.
         """
-        if self.period < 4:
-            self.user.tell("Too little data to display")
-            return
-
         self.line_graph = disp.LineGraph("Consumer Utility vs. # Retailers",
                                          self.assemble_util_vars(),
-                                         self.period)
+                                         self.period, is_headless=self.headless())
+        self.image_bytes = self.line_graph.show()
+        return self.image_bytes
 
     def pop_report(self, file_nm=None):
         """
@@ -339,3 +382,34 @@ class EverytownUSA(ge.GridEnv):
             if isinstance(agent, MomAndPop):
                 mp_count += 1
         self.mom_pop_pop.append(mp_count)
+
+    def restore_agent(self, agent_json):
+        new_agent = None
+        if agent_json["ntype"] == Consumer.__name__:
+            new_agent = Consumer(name=agent_json["name"],
+                                 goal=agent_json["goal"],
+                                 init_state=agent_json["state"],
+                                 allowance=agent_json["allowance"])
+
+        elif agent_json["ntype"] in GOODS_MAP.values():
+            new_agent = MomAndPop(name=agent_json["name"],
+                                  goal=agent_json["goal"],
+                                  endowment=agent_json["endowment"],
+                                  expenses=agent_json["expenses"],
+                                  adj=agent_json["adj"])
+
+        elif agent_json["ntype"] == BigBox.__name__:
+            new_agent = BigBox(name=agent_json["name"],
+                               goal=agent_json["goal"],
+                               endowment=agent_json["endowment"],
+                               expenses=agent_json["expenses"])
+
+        else:
+            logging.error("agent found whose NTYPE is neither "
+                          "{}, {}, nor {}, but rather {}".format(Consumer.__name__,
+                                                                 Retailer.__name__,
+                                                                 BigBox.__name__,
+                                                                 agent_json["ntype"]))
+
+        if new_agent:
+            self.add_agent_from_json(new_agent, agent_json)

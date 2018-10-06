@@ -5,19 +5,20 @@ create new run scripts, and should be run to test
 the system after library changes.
 """
 
-MODEL_NM = "basic"
 
 import indra.prop_args2 as props
 
-# we will create props here to set user_type:
-pa = props.PropArgs.create_props(MODEL_NM)
-
-
-import indra.utils as utils
-import models.basic as bm
+MODEL_NM = "basic"
 
 
 def run(prop_dict=None):
+    # We need to create props before we import the basic model,
+    # as our choice of display_method is dependent on the user_type.
+
+    pa = props.PropArgs.create_props(MODEL_NM, prop_dict)
+
+    import models.basic as bm
+    import indra.utils as utils
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
 
     # test prop_args as an iterable:

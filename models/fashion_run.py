@@ -2,21 +2,18 @@
 """
 Runs a fashion model with hipsters and followers.
 """
-MODEL_NM = "fashion"
 import indra.prop_args2 as props
-pa = props.PropArgs.create_props(MODEL_NM)
 
-import indra.utils as utils
-import indra.prop_args as props
-import models.fashion as fm
+MODEL_NM = "fashion"
 
-# set up some file names:
 
 def run(prop_dict=None):
+    pa = props.PropArgs.create_props(MODEL_NM, prop_dict)
+
+    import indra.utils as utils
+    import models.fashion as fm
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
     
-    global pa
-
     # Now we create a minimal environment for our agents to act within:
     env = fm.Society("Society",
                      pa["grid_height"],
@@ -38,6 +35,7 @@ def run(prop_dict=None):
                                  pa["variability"]))
     
     return utils.run_model(env, prog_file, results_file)
+
 
 if __name__ == "__main__":
     run()
