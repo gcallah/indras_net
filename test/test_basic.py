@@ -13,7 +13,7 @@ from collections import deque
 
 MODEL_NM = "basic"
 
-import indra.prop_args as props
+import indra.prop_args2 as props
 # we will create props here to set user_type:
 pa = props.PropArgs.create_props(MODEL_NM)
 
@@ -28,7 +28,7 @@ class BasicTestCase(TestCase):
     
         result = props.read_props(MODEL_NM, prop_file)
         if result:
-            pa.add_props(result.props)
+            pa.overwrite_props_from_dict(result.props)
         else:
             print("Oh-oh, no props to read in!")
             exit(1)
@@ -38,7 +38,7 @@ class BasicTestCase(TestCase):
     
         # Now we loop creating multiple agents
         #  with numbered names based on the loop variable:
-        for i in range(pa.get("num_agents")):
+        for i in range(pa.get("num_agents").val):
             self.env.add_agent(bm.BasicAgent(name="agent" + str(i),
                                         goal="acting up!"))
         self.env.add_agent(bm.BasicAgent(name="agent for tracking",
@@ -241,6 +241,9 @@ class BasicTestCase(TestCase):
             report = False
         if json_input_dic["props"] != self.env.props.to_json():
             report = False
+        #Here is why test_save_session fail before.
+        #The env will generate a new prop_arg 2 type proparg when restoring
+        #session(check env.from_json function), but we were using old prop_arg in this test file.
         if json_input_dic["user"] != self.env.user.to_json():
             report = False
         agents = []
@@ -255,6 +258,7 @@ class BasicTestCase(TestCase):
 
     def test_restore_session(self):
         report = True
+        # print("check0!!!", self.env.props.props)
         random_session_id = random.randint(1, 10)
         try:
             base_dir = self.env.props["base_dir"]
@@ -277,8 +281,8 @@ class BasicTestCase(TestCase):
             report = False
         if json_input_dic["postact"] != self.env.postact:
             report = False
-        # if json_input_dic["props"] != self.env.props.to_json():
-        #     report = False
+        if json_input_dic["props"] != self.env.props.to_json():
+            report = False
         if json_input_dic["user"] != self.env.user.to_json():
             report = False
         agents = []
@@ -286,6 +290,9 @@ class BasicTestCase(TestCase):
             agents.append(agent.to_json())
         if json_input_dic["agents"] != agents:
             report = False
+
+        # print("check1!!!", self.env.props.props)
+        # print("check2!!!!", json_input_dic["props"])
 
         os.remove(path)
         os.remove("basic.log")

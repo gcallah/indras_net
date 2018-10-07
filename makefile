@@ -1,6 +1,7 @@
 BOX_DIR = bigbox
 BOX_DATA = $(BOX_DIR)/data
 BOXPLOTS = $(shell ls $(BOX_DATA)/plot*.pdf)
+DOCKER_DIR = docker
 
 dist: setup.py
 	-git commit -a -m "Building new distribution"
@@ -20,6 +21,9 @@ prod: $(SRCS) $(OBJ)
 
 db:
 	./db.sh
+
+container: $(DOCKER_DIR)/Dockerfile  $(DOCKER_DIR)/requirements.txt
+	docker build -t indra docker
 
 repo:
 	-git commit -a

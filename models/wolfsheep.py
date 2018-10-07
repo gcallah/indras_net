@@ -171,8 +171,7 @@ class Wolf(Creature):
         """
         Before everything moves, wolves eat nearby sheep.
         """
-        creatures = self.neighbor_iter()
-        for creature in creatures:
+        for creature in self.neighbor_iter():
             if type(creature) is Sheep:
                 self.eat(creature)
 
