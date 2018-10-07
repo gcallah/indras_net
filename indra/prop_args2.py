@@ -139,7 +139,7 @@ class PropArgs():
 
         if self.props[UTYPE].val in (TERMINAL, IPYTHON, IPYTHON_NB):
             # 4. process command line args and set them as properties:
-            self.overwrite_props_from_command_line()
+            self.overwrite_props_from_cl()
 
             # 5. Ask the user questions.
             self.overwrite_props_from_user()
@@ -217,7 +217,7 @@ class PropArgs():
 #                                 "lower_bound: {lowval} upper_bound: {hival}"
 #                                 .format(val=val, prop_nm=prop_nm, lowval=lowval, hival=hival))
  
-    def overwrite_props_from_command_line(self):
+    def overwrite_props_from_cl(self):
         prop_nm = None
         for arg in sys.argv:
             # the first arg (-prop) names the property
