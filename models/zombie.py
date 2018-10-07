@@ -53,7 +53,7 @@ class Beings(ma.MarkovAgent):
         if not rand_age:
             self.age = 0
         else:
-            self.age = random.randint(0,repro_age+1) # If repro age is < 2 this broke so changed #
+            self.age = random.randint(0,repro_age+1) ## If repro age is < 2 this broke so changed #
             self.alive = True
             self.other = None
             self.repro_age = repro_age
@@ -65,19 +65,21 @@ class Beings(ma.MarkovAgent):
             self.infectTime = 5   #   num of turns till Human becomes zombie
 
     def decayed(self):   #   function is called when a zombie's life force is gone (zombie is removed)
-        
+        ## This should be in the zombie class my guy
         if self.alive:
             self.alive = False
             self.env.decayed(self)
             
     def infected(self):   #   function is called when a zombie eats a human (the human is now infected)
         self.cond = I
+		## HUMANS AND ZOMBIES ARE DIFFERENT CLASSES WE NEED TO TALK...
         
     def infectionTimer(self):   #   function is called once somebody is infected
         if self.cond == I:   #   start counting the steps till zombification
             self.infectTime -= 1
         if self.infectTime <= 0:   #   the human is now a zombie
-            self.cond = Z
+            self.cond = Z ##This is insufficient we need to kill
+##                          him and make a zombie appear
 
     def act(self):
         
@@ -104,18 +106,21 @@ class Beings(ma.MarkovAgent):
                 if self.env.is_cell_empty(x+1, y):
                     self.env.move(self, x+1,y)
         else:   #   count down steps till zombified
-            self.infectionTime()
+            self.infectionTimer()
             
     def postact(self):
         
-        self.age += 1
-        self.life_force -= 1
+        self.age += 1        ## This is the ??
+        self.life_force -= 1 ## same as this??
         if self.life_force <= 0:
             #self.died()
-            self.infected()   #change the agent's condition to infected when thew lifeforce is dead
-        elif self.age % self.repro_age == 0:
-            self.reproduce()
-    
+            self.infected()   #change the agent's condition to infected when the lifeforce is dead
+        ##ZOMBIES DO NOT REPRODUCE LIKE THIS (NOM NOM NOM BIH) 
+		##Instead let's just have nothing happen :)
+		##Add this functionality specific to humans
+		##elif self.age % self.repro_age == 0:
+		##		self.reproduce()
+		##
     '''
     def reproduce(self):
         allGroups = 
