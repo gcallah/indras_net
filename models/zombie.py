@@ -49,8 +49,9 @@ class Beings(ma.MarkovAgent):
     
     def __init__(self, name, goal, repro_age, life_force, init_state, init_cond=0, max_detect=1,
                  rand_age=False, speed=1):
-        super().__init__(name, goal, NCOND, init_state, max_detect) # ERROR # init_cond is not set by this point 10/6/18
-        if not rand_age:
+        super().__init__(name, goal, NCOND, init_state, max_detect)
+        if not rand_age: #### Does this imply that if rand age isn't, that all
+		                 #### variables in the else aren't meant to be set???
             self.age = 0
         else:
             self.age = random.randint(0,repro_age+1) ## If repro age is < 2 this broke so changed #
@@ -141,6 +142,12 @@ class Human(Beings):
                          max_detect=max_detect, rand_age=rand_age, speed=speed)
         self.other = Zombie
         self.ntype = "Human"
+    def died(self):##this function is incomplete. Plz halp!
+        self.cond = Z
+        print("A"*99)
+        print(self.cond)
+        print(self.age)
+        print(input("STAHP"))
 
 class Zombie(Beings):
     
