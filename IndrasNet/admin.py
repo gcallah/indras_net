@@ -1,3 +1,8 @@
+"""
+This is where we register models so that they are avialable
+for data entry in Django's admin interface.
+"""
+
 from django.contrib import admin
 
 # Register your models here.
