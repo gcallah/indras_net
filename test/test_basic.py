@@ -5,6 +5,13 @@ create new run scripts, and should be run to test
 the system after library changes.
 """
 
+VALUE = "val"
+QUESTION = "question"
+DEFAULT_VAL = "default_val"
+ATYPE = "atype"
+HIVAL = "hival"
+LOWVAL = "lowval"
+
 from unittest import TestCase, main
 import sys
 import indra.user as user
@@ -80,6 +87,14 @@ class BasicTestCase(TestCase):
                     report = False
                     break
                 else:
+                    if type(props_written[key]) is dict:
+                        atype = props_written[key].get(ATYPE, None)
+                        val = props_written[key].get(VALUE, None)
+                        question = props_written[key].get(QUESTION, None)
+                        hival = props_written[key].get(HIVAL, None)
+                        lowval = props_written[key].get(LOWVAL, None)
+                        props_written[key] = props.Prop(val=val, question=question, atype=atype,hival=hival, lowval=lowval)
+
                     if props_written[key] != self.env.props.props[key]:
                         report = False
                         break
