@@ -5,6 +5,13 @@ create new run scripts, and should be run to test
 the system after library changes.
 """
 
+VALUE = "val"
+QUESTION = "question"
+DEFAULT_VAL = "default_val"
+ATYPE = "atype"
+HIVAL = "hival"
+LOWVAL = "lowval"
+
 from unittest import TestCase, main
 import sys
 import indra.user as user
@@ -20,11 +27,12 @@ pa = props.PropArgs.create_props(MODEL_NM)
 import json
 import models.basic as bm
 import os
-from datetime import now
+from datetime import date
 
 # announce which test we are running:
 def announce(name):
-    print("Running " + name + " at " + now(), file=sys.stderr)
+    present = date.today()
+    print("Running " + name + " at " + str(present), file=sys.stderr)
 
 # make sure to run test file from root directory!
 class BasicTestCase(TestCase):
@@ -79,6 +87,14 @@ class BasicTestCase(TestCase):
                     report = False
                     break
                 else:
+                    if type(props_written[key]) is dict:
+                        atype = props_written[key].get(ATYPE, None)
+                        val = props_written[key].get(VALUE, None)
+                        question = props_written[key].get(QUESTION, None)
+                        hival = props_written[key].get(HIVAL, None)
+                        lowval = props_written[key].get(LOWVAL, None)
+                        props_written[key] = props.Prop(val=val, question=question, atype=atype,hival=hival, lowval=lowval)
+
                     if props_written[key] != self.env.props.props[key]:
                         report = False
                         break

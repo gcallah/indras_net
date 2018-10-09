@@ -1,5 +1,5 @@
 """
-This is where we register models so that they are avialable
+This is where we register models so that they are available
 for data entry in Django's admin interface.
 """
 
