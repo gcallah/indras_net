@@ -1,7 +1,6 @@
-from django import forms
 
+"""
+    This is where we should put our forms.
+"""
 
-class MainForm(forms.Form):
-    code = forms.CharField(widget=forms.Textarea(attrs={
-                                            'cols': 50,
-                                            'rows': 24}))
+#from django import forms
