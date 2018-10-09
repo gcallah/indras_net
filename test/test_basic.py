@@ -20,11 +20,12 @@ pa = props.PropArgs.create_props(MODEL_NM)
 import json
 import models.basic as bm
 import os
-from datetime import now
+from datetime import date
 
 # announce which test we are running:
 def announce(name):
-    print("Running " + name + " at " + now(), file=sys.stderr)
+    present = date.today()
+    print("Running " + name + " at " + str(present), file=sys.stderr)
 
 # make sure to run test file from root directory!
 class BasicTestCase(TestCase):
