@@ -10,6 +10,9 @@ __pycache__/*
 Graphics
 debugs
 backup
+build/*
+dist/*
+docs/OthersDocs/*
 indra_backup
 menger_fail
 models/old_models/*
@@ -19,3 +22,8 @@ models/old_models/*
 .ipynb_checkpoints/
 *.csv
 *.json
+bigbox/data/mppref1.2/.RData
+bigbox/data/mppref1.2/.Rhistory
+bigbox/tmp/*
+docs/GenericGraphics/*
+indras_net.egg-info/*
