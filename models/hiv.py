@@ -13,6 +13,9 @@ avg_test_frequency = 1 # 0-2
 infection_chance = 50 # 0-100
 symptoms_show = 200
 
+NORMAL_TRANS =
+INFECT_TRANS =
+
 class neg(ma.MarkovAgent):
     """
         An HIV-negative individual
@@ -97,11 +100,37 @@ class poz(neg):
         if (random.randint(0, 52) < self.test_frequency) && self.status_known == False:
             self.status_known = True
 
+class individual(ma.MarkovAgent):
+    def __init__(self, name, init_state, max_detect=1, coupling_tendency, commitment, condom_use, test_frequency, coupled, couple_length, partner):
+        super().__init__(name, 4, init_state, max_detect=max_detect)
+        
+        self.coupling_tendency = avg_coupling_tendency
+        self.commitment = avg_commitment
+        self.condom_use = avg_condom_use
+        self.test_frequency = avg_test_frequency
+        
+        self.coupled = False
+        self.coupled_length = 0
+        self.partner = None
+
 
 class People(menv.MarkovEnv):
     """
         Individuals wander around randomly when they are not in couples. Upon coming into contact with a suitable partner, there is a chance the two individuals will couple together. When this happens, the two individuals no longer move around, they stand next to each other holding hands as a representation of two people in a sexual relationship.
     """
+    
+    def __init__(self, width, height, ini_ppl, avg_coup_tend, avg_test_freq, avg_commitment, avg_condom_use, torus=False, model_nm="HIV", preact=True, props=None)
+        super().__init__("HIV", width, height, NORMAL_TRANS, torus=False, model_nm=model_nm, preact=preact, props=props)
+        
+        self.ini_ppl = ini_ppl
+        self.avg_coup_tend = avg_coup_tend
+        self.avg_test_freq = avg_test_freq
+        self.avg_commitment = avg_commitment
+        self.avg_condom_use = avg_condom_use
+
+        self.normal = markov.MarkovPre(NORMAL_TRANS)
+        self.infect = markov.MarkovPre(INFECT_TRANS)
+
     def get_pre(self, agent):
         pass
 

@@ -46,6 +46,17 @@ class FinancialAgent(tp.TwoPopAgent):
             self.funds -= self.env.asset_price
             self.calc_profit()
 
+    def to_json(self):
+        safe_json = super().to_json()
+        safe_json["funds"] = self.funds
+
+        return safe_json
+
+    def from_json_preadd(self, agent_json):
+        super().from_json_preadd(agent_json)
+
+        self.funds = agent_json["funds"]
+
 
 class ChartFollower(FinancialAgent, tp.Follower):
     """
@@ -80,7 +91,7 @@ class FinMarket(tp.TwoPopEnv):
         self.stances = ["buy", "sell"]
         self.menu.view.add_menu_item("v",
                                      menu.MenuLeaf("(v)iew asset price",
-                                                   self.view_price))
+                                                   self.plot))
         self.follower_profit = 0.0
         self.value_profit = 0.0
 
@@ -121,17 +132,54 @@ class FinMarket(tp.TwoPopEnv):
                 move = -max_move
         self.asset_price += move
 
-    def view_price(self):
+    def plot(self):
         """
         Draw a graph of our changing asset price.
         """
-        if self.period < 4:
-            self.user.tell("Too little data to display")
-            return
-
         # put our data in right form for line graph
         data = disp.assemble_lgraph_data("asset price", self.price_hist,
                                          disp.MAGENTA)
 
         self.line_graph = disp.LineGraph("Asset price history", data,
-                                         self.period)
+                                         self.period, is_headless=self.headless())
+        self.image_bytes = self.line_graph.show()
+        return self.image_bytes
+
+    def to_json(self):
+        safe_json = super().to_json()
+        safe_json["total_pop"] = self.total_pop
+        safe_json["asset_price"] = self.asset_price
+        safe_json["price_hist"] = self.price_hist
+        safe_json["max_abs_pmove"] = self.max_abs_pmove
+
+        return safe_json
+
+    def from_json(self, json_input):
+        super().from_json(json_input)
+        self.total_pop = json_input["total_pop"]
+        self.asset_price = json_input["asset_price"]
+        self.price_hist = json_input["price_hist"]
+        self.max_abs_pmove = json_input["max_abs_pmove"]
+
+    def restore_agent(self, agent_json):
+        new_agent = None
+        if agent_json["ntype"] == ChartFollower.__name__:
+            new_agent = ChartFollower(name=agent_json["name"],
+                                      goal=agent_json["goal"],
+                                      max_move=agent_json["max_move"],
+                                      variability=agent_json["variability"])
+
+        elif agent_json["ntype"] == ValueInvestor.__name__:
+            new_agent = ValueInvestor(name=agent_json["name"],
+                                      goal=agent_json["goal"],
+                                      max_move=agent_json["max_move"],
+                                      variability=agent_json["variability"])
+
+        else:
+            logging.error("agent found whose NTYPE is neither "
+                          "{} nor {}, but rather {}".format(ChartFollower.__name__,
+                                                            ValueInvestor.__name__,
+                                                            agent_json["ntype"]))
+
+        if new_agent:
+            self.add_agent_from_json(new_agent, agent_json)

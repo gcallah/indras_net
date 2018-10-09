@@ -27,7 +27,14 @@ pa = props.PropArgs.create_props(MODEL_NM)
 import json
 import models.basic as bm
 import os
-# make sure to run test file from root directory!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+from datetime import date
+
+# announce which test we are running:
+def announce(name):
+    present = date.today()
+    print("Running " + name + " at " + str(present), file=sys.stderr)
+
+# make sure to run test file from root directory!
 class BasicTestCase(TestCase):
     def __init__(self, methodName, prop_file="models/basic.props"):
     
@@ -54,12 +61,12 @@ class BasicTestCase(TestCase):
         # self.env.n_steps(random.randint(10, 20))
 
     def test_agent_inspect(self):
+        announce('test_agent_inspect')
         agent = self.env.agent_inspect("agent for tracking")
-        print("running test_agent_inspect")
         self.assertEqual(agent.name, "agent for tracking")
 
     def test_add_agent(self):
-        print("running test add agent")
+        announce('test_add_agent')
         self.env.add_agent(bm.Gozer())
         # test if the add worked!
         # test by running 
@@ -67,7 +74,7 @@ class BasicTestCase(TestCase):
         self.assertIsNotNone(new_agent)
 
     def test_props_write(self):
-        print("running test props write")
+        announce('test_props_write')
         report = True
         self.env.pwrite(self.env.model_nm + ".props")
         with open(self.env.model_nm + ".props", "r") as f:
@@ -95,6 +102,7 @@ class BasicTestCase(TestCase):
         self.assertEqual(report, True)
 
     def test_step(self):
+        announce('test_step')
         report = True
         period_before_run = self.env.period
         self.env.step()
@@ -104,6 +112,7 @@ class BasicTestCase(TestCase):
         self.assertEqual(report, True)
 
     def test_n_step(self):
+        announce('test_n_step')
         report = True
         period_before_run = self.env.period
         random_steps = random.randint(3,30)
@@ -114,6 +123,7 @@ class BasicTestCase(TestCase):
         self.assertEqual(report, True)
 
     def test_population_report(self):
+        announce('test_population_report')
         # need to test step method first!!!!!!!!!!!!
         self.env.n_steps(random.randint(10,20))
         report = True
@@ -158,6 +168,7 @@ class BasicTestCase(TestCase):
         self.assertEqual(report, True)
 
     def test_list_agents(self):
+        announce('test_list_agents')
         report = True
         orig_out = sys.stdout
         sys.stdout = open("checkfile.txt", "w")
@@ -178,6 +189,7 @@ class BasicTestCase(TestCase):
         self.assertEqual(report, True)
 
     def test_display_props(self):
+        announce('test_display_props')
         report = True
         orig_out = sys.stdout
         sys.stdout = open("checkprops.txt", "w")
@@ -205,6 +217,7 @@ class BasicTestCase(TestCase):
         self.assertEqual(report, True)
 
     def test_examine_log(self):
+        announce('test_examine_log')
         report = True
         logfile_name = self.env.props.props["model"] + ".log"
         list_for_reference = deque(maxlen=16)
@@ -234,15 +247,16 @@ class BasicTestCase(TestCase):
         self.assertEqual(report, True)
 
     def test_save_session(self):
+        announce('test_save_session')
         report = True
-        random_session_id = random.randint(1, 10)
+        rand_sess_id = random.randint(1, 10)
         try:
             base_dir = self.env.props["base_dir"]
         except:
             base_dir = ""
-        self.env.save_session(random_session_id)
+        self.env.save_session(rand_sess_id)
 
-        path = base_dir + "json/" + self.env.model_nm + str(random_session_id) + ".json"
+        path = base_dir + "json/" + self.env.model_nm + str(rand_sess_id) + ".json"
         with open(path, "r") as f:
             json_input = f.readline()
             json_input_dic = json.loads(json_input)
@@ -258,7 +272,8 @@ class BasicTestCase(TestCase):
             report = False
         #Here is why test_save_session fail before.
         #The env will generate a new prop_arg 2 type proparg when restoring
-        #session(check env.from_json function), but we were using old prop_arg in this test file.
+        #session(check env.from_json function), but 
+        # we were using old prop_arg in this test file.
         if json_input_dic["user"] != self.env.user.to_json():
             report = False
         agents = []
@@ -272,19 +287,21 @@ class BasicTestCase(TestCase):
         self.assertEqual(report, True)
 
     def test_restore_session(self):
+        announce('test_restore_session')
         report = True
         # print("check0!!!", self.env.props.props)
-        random_session_id = random.randint(1, 10)
+        rand_sess_id = random.randint(1, 10)
         try:
             base_dir = self.env.props["base_dir"]
         except:
             base_dir = ""
-        self.env.save_session(random_session_id)
-        # make sure the session we want to restore is different from our current env status
+        self.env.save_session(rand_sess_id)
+        # make sure the session we want to restore is different 
+        #  from our current env status
         self.env.n_steps(random.randint(1,10))
-        self.env.restore_session(random_session_id)
+        self.env.restore_session(rand_sess_id)
 
-        path = base_dir + "json/" + self.env.model_nm + str(random_session_id) + ".json"
+        path = base_dir + "json/" + self.env.model_nm + str(rand_sess_id) + ".json"
         with open(path, "r") as f:
             json_input = f.readline()
         json_input_dic = json.loads(json_input)
@@ -315,5 +332,6 @@ class BasicTestCase(TestCase):
         self.assertEqual(report, True)
 
 if __name__ == '__main__':
+    announce("main")
     main()
 

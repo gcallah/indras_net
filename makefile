@@ -2,6 +2,10 @@ BOX_DIR = bigbox
 BOX_DATA = $(BOX_DIR)/data
 BOXPLOTS = $(shell ls $(BOX_DATA)/plot*.pdf)
 DOCKER_DIR = docker
+DJANGO_DIR = IndrasNet
+PYLINT = pylint
+PYLINTFLAGS = -rn
+PYTHONFILES = $(shell ls $(DJANGO_DIR)/*.py)
 
 dist: setup.py
 	-git commit -a -m "Building new distribution"
@@ -16,15 +20,25 @@ boxdata:
 prod: $(SRCS) $(OBJ)
 	./test/all_tests.sh
 	-git commit -a -m "Building production."
+	git pull origin master
 	git push origin master
 	ssh indrasnet@ssh.pythonanywhere.com 'cd /home/indrasnet/indras_net; /home/indrasnet/indras_net/rebuild.sh'
 
-db:
+pylint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
+
+%.pylint:
+	pylint $(PYLINTFLAGS) $*.py
+
+db: $(DJANGO_DIR)/models.py
 	./db.sh
+	git add $(DJANGO_DIR)/migrations/*.py
+	-git commit $(DJANGO_DIR)/migrations/*.py
+	git push origin master
 
 container: $(DOCKER_DIR)/Dockerfile  $(DOCKER_DIR)/requirements.txt
 	docker build -t indra docker
 
 repo:
 	-git commit -a
+	git pull origin master
 	git push origin master

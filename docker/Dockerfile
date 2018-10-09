@@ -6,4 +6,7 @@ RUN pip install --upgrade pip
 
 RUN pip install -r requirements.txt
 
+ENV user_type TERMINAL
+ENV PYTHONPATH "/home/IndrasNet:${PYTHONPATH}"
+
 WORKDIR /home/IndrasNet/

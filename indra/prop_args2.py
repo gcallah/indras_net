@@ -1,5 +1,5 @@
 """
-prop_args.py
+prop_args2.py
 Set, read, and write program-wide properties in one location. Includes logging.
 """
 import logging
@@ -139,7 +139,7 @@ class PropArgs():
 
         if self.props[UTYPE].val in (TERMINAL, IPYTHON, IPYTHON_NB):
             # 4. process command line args and set them as properties:
-            self.overwrite_props_from_command_line()
+            self.overwrite_props_from_cl()
 
             # 5. Ask the user questions.
             self.overwrite_props_from_user()
@@ -203,7 +203,9 @@ class PropArgs():
         for prop_nm in prop_dict:
             if type(prop_dict[prop_nm]) is dict:
                 atype = prop_dict[prop_nm].get(ATYPE, None)
-                val = self._type_val_if_possible(prop_dict[prop_nm].get(VALUE, None), atype)
+                val = self._type_val_if_possible(prop_dict[prop_nm].get(VALUE,
+                                                                        None),
+                                                 atype)
                 question = prop_dict[prop_nm].get(QUESTION, None)
                 hival = prop_dict[prop_nm].get(HIVAL, None)
                 lowval = prop_dict[prop_nm].get(LOWVAL, None)
@@ -212,12 +214,7 @@ class PropArgs():
             else:
                 self[prop_nm] = prop_dict[prop_nm]
 
-#            if not self._answer_within_bounds(prop_nm, val):
-#                raise ValueError("{val} for {prop_nm} is not valid."
-#                                 "lower_bound: {lowval} upper_bound: {hival}"
-#                                 .format(val=val, prop_nm=prop_nm, lowval=lowval, hival=hival))
- 
-    def overwrite_props_from_command_line(self):
+    def overwrite_props_from_cl(self):
         prop_nm = None
         for arg in sys.argv:
             # the first arg (-prop) names the property
@@ -230,7 +227,8 @@ class PropArgs():
 
     def overwrite_props_from_user(self):
         for prop_nm in self:
-            if hasattr(self.props[prop_nm], QUESTION) and self.props[prop_nm].question:
+            if (hasattr(self.props[prop_nm], QUESTION)
+                and self.props[prop_nm].question):
                 self.props[prop_nm].val = self._keep_asking_until_correct(prop_nm)
     
     @staticmethod
@@ -267,13 +265,16 @@ class PropArgs():
             return typed_answer
 
     def _answer_within_bounds(self, prop_nm, typed_answer):
-        if self.props[prop_nm].atype is None or self.props[prop_nm].atype in (STR, BOOL):
+        if (self.props[prop_nm].atype is None 
+            or self.props[prop_nm].atype in (STR, BOOL)):
             return True
 
-        if self.props[prop_nm].lowval is not None and self.props[prop_nm].lowval > typed_answer:
+        if (self.props[prop_nm].lowval is not None 
+            and self.props[prop_nm].lowval > typed_answer):
             return False
 
-        if self.props[prop_nm].hival is not None and self.props[prop_nm].hival < typed_answer:
+        if (self.props[prop_nm].hival is not None 
+            and self.props[prop_nm].hival < typed_answer):
             return False
 
         return True

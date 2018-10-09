@@ -1,5 +1,3 @@
-import logging
-import random as r
 import random
 import indra.markov as markov
 import indra.markov_agent as ma
@@ -8,21 +6,8 @@ import numpy as np
 import operator as op
 import math
 
-
 X = 0
 Y = 1
-
-def randomPermutation(n): #gets a random permutation of g=grid locations
-    def swap(i,j):
-        return (j,i)
-    g = []
-    for i in range(1,n+1):
-        g.append(i)
-    for i in range(0,r.randint(10,20)):
-        x,y = (r.randint(0,n-1),r.randint(0,n-1))
-        (g[x],g[y])  =  swap(g[x],g[y])
-    return g  
-
 
 humanTot = 0
 zombieTot = 0
@@ -62,28 +47,40 @@ COND_MAP = {H: HEALTHY, I: INFECTED, Z: ZOMBIFIED, D: DECAYED}
 
 class Beings(ma.MarkovAgent): 
     
-    def __init__(self, name, goal, repro_age, life_force, init_state, max_detect=1,
+    def __init__(self, name, goal, repro_age, life_force, init_state, init_cond=0, max_detect=1,
                  rand_age=False, speed=1):
-        super().__init__(name, goal, NSTATES, NCOND, init_state, init_cond, max_detect=max_detect)
-        if not rand_age:
+        super().__init__(name, goal, NCOND, init_state, max_detect)
+        if not rand_age: #### Does this imply that if rand age isn't, that all
+		                 #### variables in the else aren't meant to be set???
             self.age = 0
         else:
-            self.age = random.randint(0, repro_age - 2)
-        self.alive = True
-        self.other = None
-        self.repro_age = repro_age
-        self.life_force = life_force
-        self.init_life_force = life_force
-        self.speed = speed
-        self.state = init_state
-        self.cond = init_cond
+            self.age = random.randint(0,repro_age+1) ## If repro age is < 2 this broke so changed #
+            self.alive = True
+            self.other = None
+            self.repro_age = repro_age
+            self.life_force = life_force
+            self.init_life_force = life_force
+            self.speed = speed
+            self.state = init_state
+            self.cond = init_cond   #   whether the person is human, turning, or a zombie
+            self.infectTime = 5   #   num of turns till Human becomes zombie
 
-    def decayed(self):
-        
+    def decayed(self):   #   function is called when a zombie's life force is gone (zombie is removed)
+        ## This should be in the zombie class my guy
         if self.alive:
             self.alive = False
             self.env.decayed(self)
-
+            
+    def infected(self):   #   function is called when a zombie eats a human (the human is now infected)
+        self.cond = I
+		## HUMANS AND ZOMBIES ARE DIFFERENT CLASSES WE NEED TO TALK...
+        
+    def infectionTimer(self):   #   function is called once somebody is infected
+        if self.cond == I:   #   start counting the steps till zombification
+            self.infectTime -= 1
+        if self.infectTime <= 0:   #   the human is now a zombie
+            self.cond = Z ##This is insufficient we need to kill
+##                          him and make a zombie appear
 
     def act(self):
         
@@ -96,29 +93,35 @@ class Beings(ma.MarkovAgent):
         
         x = self.pos[X]
         y = self.pos[Y]
-        if state == N:
-            if self.env.is_cell_empty(x, y+1):
-                self.env.move(self, x,y+1)
-        elif state == S:
-            if self.env.is_cell_empty(x, y-1):
-                self.env.move(self, x,y-1)
-        elif state == E:
-            if self.env.is_cell_empty(x-1, y):
-                self.env.move(self, x-1,y)
-        else:
-            if self.env.is_cell_empty(x+1, y):
-                self.env.move(self, x+1,y)
+        if self.cond != I:   #   if somebody is infected they can't move
+            if state == N:
+                if self.env.is_cell_empty(x, y+1):
+                    self.env.move(self, x,y+1)
+            elif state == S:
+                if self.env.is_cell_empty(x, y-1):
+                    self.env.move(self, x,y-1)
+            elif state == E:
+                if self.env.is_cell_empty(x-1, y):
+                    self.env.move(self, x-1,y)
+            else:
+                if self.env.is_cell_empty(x+1, y):
+                    self.env.move(self, x+1,y)
+        else:   #   count down steps till zombified
+            self.infectionTimer()
             
     def postact(self):
-
-        logging.info("Agent %s postacting" % (self.name))
-
-        self.age += 1
-        self.life_force -= 1
+        
+        self.age += 1        ## This is the ??
+        self.life_force -= 1 ## same as this??
         if self.life_force <= 0:
-            self.died()
-        elif self.age % self.repro_age == 0:
-            self.reproduce()
+            #self.died()
+            self.infected()   #change the agent's condition to infected when the lifeforce is dead
+        ##ZOMBIES DO NOT REPRODUCE LIKE THIS (NOM NOM NOM BIH) 
+		##Instead let's just have nothing happen :)
+		##Add this functionality specific to humans
+		##elif self.age % self.repro_age == 0:
+		##		self.reproduce()
+		##
     '''
     def reproduce(self):
         allGroups = 
@@ -139,6 +142,12 @@ class Human(Beings):
                          max_detect=max_detect, rand_age=rand_age, speed=speed)
         self.other = Zombie
         self.ntype = "Human"
+    def died(self):##this function is incomplete. Plz halp!
+        self.cond = Z
+        print("A"*99)
+        print(self.cond)
+        print(self.age)
+        print(input("STAHP"))
 
 class Zombie(Beings):
     
@@ -159,8 +168,9 @@ class Zombie(Beings):
 
     def eat(self, human):
         
-        self.life_force += human.life_force
-        sheep.died()
+        if human.cond != I:   #   humans who are infected can't be eaten (if no infection)
+            self.life_force += human.life_force
+            human.died()
 
 
 class Zone(menv.MarkovEnv):
@@ -198,7 +208,7 @@ class Zone(menv.MarkovEnv):
 
     def dir_info(self, agent):
         """
-        We count zombies and humans that are North, South, East, West 
+        We count wolves and sheep that are North, South, East, West 
         of the agent in question. What quadrant they're in, and how
         far they are from the agent factors into the information returned.
         -----------------------------------
@@ -262,8 +272,8 @@ class Zone(menv.MarkovEnv):
 
     def zombie_trans(self, d, total):
         """
-        The zombie uses its survey of the environment to see which
-        directions have the closest and most human. He'll probably
+        The wolf uses its survey of the environment to see which
+        directions have the closest and most sheep. He'll probably
         go in the direction with the highest reward.
         Args:
             d: a dictionary containing information about where wolves are
@@ -271,7 +281,7 @@ class Zone(menv.MarkovEnv):
             total: the sum of all the numerical elements of d; used in
              computation
         Returns:
-            trans_str: the string representing the human's possibilities
+            trans_str: the string representing the sheep's possibilities
             for movement
         """
         trans_str = ""
@@ -317,11 +327,11 @@ class Zone(menv.MarkovEnv):
 
     def human_trans(self, d, total):
         """
-        The human uses it's survey of the environment to determine which
+        The sheep uses it's survey of the environment to determine which
         directions are the least dangerious. He'll go one of these directions.
         Args:
-            d: a dictionary containing information about where zomb13s are
-             relative to the human 
+            d: a dictionary containing information about where wolves are
+             relative to the sheep 
             total: the sum of all the numerical elements of d; used in
              computation
         Returns:
@@ -377,4 +387,3 @@ class Zone(menv.MarkovEnv):
         trans_str += str(WN) + " " + str(WS) + " " + str(WE) + " " + str(WW)
 
         return trans_str
-
