@@ -1,3 +1,7 @@
+"""
+    This file will determine what view any particular URL
+    will map to.
+"""
 from django.conf.urls import url
 
 from . import views

@@ -104,26 +104,26 @@ def parameters(request):
     return render(request, 'parameters.html', template_data)
 
 def run(request):
-            
+
     try:
         action = request.POST[ACTION]
     except KeyError:
         action = None
 
-    
+
     session_id = int(request.session['session_id'])
-    
+
     #Load module
     model_name = request.POST[MODEL]
     model = Model.objects.get(name=model_name)
     module = model.module
     plot_type = model.plot_type
     importlib.import_module(module[0:-4])
-    
+
     questions = model.params.all()
-    
+
     #Take actions on a running model
-    if(action):
+    if action:
         prop_dict = {}
         for q in questions:
             value = q.default_val
@@ -135,13 +135,13 @@ def run(request):
 
         env = eval(module + "(prop_dict)")
         env.restore_session(session_id)
-        
+
         #CLear textboxs except for the first one
         for i in range(len(env.user.text_output)):
             if i != 0:
                 env.user.text_output[i] = ''
         #Tools
-        if action == "step":            
+        if action == "step":
             env.step()
 
         if action == "n_steps":
@@ -151,20 +151,20 @@ def run(request):
         #View
         if action == "list_agents":
             env.list_agents()
-            
+
         if action == "properties":
             env.user.text_output[1] = env.props.display()
-        
+
         #File
         if action == "disp_log":
             env.disp_log()
-            
+
         #Edit
         if action == "add":
             pass
 
         env.save_session(session_id)
-        
+
     #Run a model for the first time
     else:
         answers = {}
@@ -179,15 +179,15 @@ def run(request):
             answers[q.prop_name] = answer
         env = eval(module + "(answers)")
         env.save_session(session_id)
-              
+
     site_hdr = get_hdr()
 
     text_box, image_bytes = env.user.text_output, env.plot()
     image = base64.b64encode(image_bytes.getvalue()).decode()
-    
-    template_data = { HEADER: site_hdr, 'text0': text_box[0], 'image': image,
-                     'text1': text_box[1], 'model': model}
-    
+
+    template_data = {HEADER: site_hdr, 'text0': text_box[0], 'image': image,
+                      'text1': text_box[1], 'model': model}
+
     return render(request, 'run.html', template_data)
 
 def help(request):
@@ -196,7 +196,7 @@ def help(request):
     return render(request, 'help.html', {HEADER: site_hdr})
 
 def feedback(request):
-    
+
     site_hdr = get_hdr()
     email_list = AdminEmail.objects.all()
     comma_del_emails = ""
