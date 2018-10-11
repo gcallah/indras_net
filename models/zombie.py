@@ -168,9 +168,9 @@ class Zombie(Beings):
 
     def eat(self, human):
         
-        if human.cond != I:   #   humans who are infected can't be eaten (if no infection)
-            self.life_force += human.life_force
-            human.died()
+        #if human.cond != I:   #   humans who are infected can't be eaten (if no infection)
+        self.life_force += human.life_force
+        human.died()
 
 
 class Zone(menv.MarkovEnv):
