@@ -1,27 +1,26 @@
-# from collections import OrderedDict
+"""
+    This file implements the views for our web-based
+    agent modelling system.
+"""
 
 import logging
 import importlib
-import sys
-
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, get_list_or_404, render
-
-from .models import AdminEmail
-from .models import Site
-from .models import Model
-from .models import ModelParam
-from django import forms
-
-import models
-import schelling
-import wolfram
-import bigbox
 import base64
 
-# Need this for using a global vaiable in it. Only for testing
+from django.shortcuts import render
+from django import forms
+
+
+from .models import AdminEmail
+from .models import Model
+
 
 logger = logging.getLogger(__name__)
+
+STR = "STR"
+INT = "INT"
+DBL = "DBL"
+BOOL = "BOOL"
 
 MODEL = 'model'
 HEADER = 'header'
@@ -31,21 +30,18 @@ DEFAULT_LOWVAL = 0
 
 
 def get_hdr():
+    """
+        This gets the site header: one day, we may have a dev version
+        of the server, and we may have different headers then.
+    """
     site_hdr = "Indra's Net"
-    #    site_list = Site.objects.all()
-    #    for site in site_list:
-    #        site_hdr = site.header
-    #        break   # since we only expect a single site record!
     return site_hdr
 
 
-def dump_dict(d, vmachine):
-    for key, val in d.items():
-        add_debug(str(key) + ": " + str(val), vmachine)
-
-
-def main_page(request):
-
+def index(request):
+    """
+        This renders the index page of the site.
+    """
     site_hdr = get_hdr()
 
     models = Model.objects.order_by('mtype')
@@ -55,7 +51,9 @@ def main_page(request):
 
 
 def ab_models(request):
-
+    """
+        This is the view of all of our agent-based models.
+    """
     site_hdr = get_hdr()
 
     model_list = Model.objects.order_by('mtype')
@@ -64,7 +62,13 @@ def ab_models(request):
 
 
 def parameters(request):
+    """
+        This view renders our parameters for a model.
+    """
     class ParamForm(forms.Form):
+        """
+            And this class implements the parameters in a form.
+        """
         def __init__(self, *args, **kwargs):
             questions = kwargs.pop('questions')
             super(ParamForm, self).__init__(*args, **kwargs)
@@ -77,21 +81,23 @@ def parameters(request):
                     lowval = q.lowval
                 if q.hival:
                     hival = q.hival
-                if q.atype == "STR":
+                if q.atype == STR:
                     self.fields[q.question] = forms.CharField(label=q.question,
-                                                              initial=default, max_length=20)
-                if q.atype == "INT":
+                                                              initial=default,
+                                                              max_length=20)
+                elif q.atype == INT:
                     self.fields[q.question] = forms.IntegerField(label=q.question,
-                                                                 initial=default, min_value=lowval,
+                                                                 initial=default,
+                                                                 min_value=lowval,
                                                                  max_value=hival)
-                if q.atype == "DBL":
+                elif q.atype == DBL:
                     self.fields[q.question] = forms.FloatField(label=q.question,
-                                                               initial=default, min_value=lowval,
+                                                               initial=default,
+                                                               min_value=lowval,
                                                                max_value=hival)
-                if q.atype == "BOOL":
+                elif q.atype == BOOL:
                     self.fields[q.question] = forms.BooleanField(label=q.question,
                                                                  required=False)
-
     # Assign a new session id to a new user
     assign_key(request)
 
@@ -104,16 +110,17 @@ def parameters(request):
     return render(request, 'parameters.html', template_data)
 
 def run(request):
-
+    """
+        This runs the chosen model.
+    """
     try:
         action = request.POST[ACTION]
     except KeyError:
         action = None
 
-
     session_id = int(request.session['session_id'])
 
-    #Load module
+    # Load module
     model_name = request.POST[MODEL]
     model = Model.objects.get(name=model_name)
     module = model.module
@@ -186,17 +193,21 @@ def run(request):
     image = base64.b64encode(image_bytes.getvalue()).decode()
 
     template_data = {HEADER: site_hdr, 'text0': text_box[0], 'image': image,
-                      'text1': text_box[1], 'model': model}
+                     'text1': text_box[1], 'model': model}
 
     return render(request, 'run.html', template_data)
 
-def help(request):
-
+def help_page(request):
+    """
+        This function renders our help page.
+    """
     site_hdr = get_hdr()
     return render(request, 'help.html', {HEADER: site_hdr})
 
 def feedback(request):
-
+    """
+        This function renders our feedback page.
+    """
     site_hdr = get_hdr()
     email_list = AdminEmail.objects.all()
     comma_del_emails = ""
@@ -207,13 +218,17 @@ def feedback(request):
                                              HEADER: site_hdr})
 
 def about(request):
-
+    """
+        This function renders our about page.
+    """
     site_hdr = get_hdr()
     return render(request, 'about.html', {HEADER: site_hdr})
 
 def assign_key(request):
+    """
+        Assign a key to a user.
+    """
     if 'session_id' not in request.session:
-
         with open("session_id.txt", "w+") as f:
             session_id = f.readline()
             if not session_id:
@@ -226,6 +241,5 @@ def assign_key(request):
 
         request.session['session_id'] = new_id
         request.session.modified = True
-
     else:
         logging.info("This user has a session id: ", request.session['session_id'])
