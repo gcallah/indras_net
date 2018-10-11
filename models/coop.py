@@ -10,6 +10,7 @@ This implements Paul Krugman's babysitting co-op model.
 import indra.entity as ent
 import indra.env as env
 import indra.display_methods as disp
+import logging
 import random
 
 ''' These are our possible goals'''
@@ -43,6 +44,17 @@ class CoopAgent(ent.Agent):
     def pay(self, sitter):
         self.coupons -= 1
         sitter.coupons += 1
+
+    def to_json(self):
+        safe_json = super().to_json()
+        safe_json["coupons"] = self.coupons
+        safe_json["min_holdings"] = self.min_holdings
+        safe_json["sitting"] = self.sitting
+
+        return safe_json
+
+    def from_json_preadd(self, agent_json):
+        self.sitting = agent_json["sitting"]
 
 
 class CoopEnv(env.Environment):
@@ -111,3 +123,37 @@ class CoopEnv(env.Environment):
         (period, data) = self.line_data()
         self.line_graph = disp.LineGraph("History of Coupon Exchanges",
                                          data, period)
+
+    def to_json(self):
+        safe_json = super().to_json()
+        safe_json["rd_exchanges"] = self.rd_exchanges
+
+        return safe_json
+
+    def from_json(self, json_input):
+        super().from_json(json_input)
+
+        self.rd_exchanges = json_input["rd_exchanges"]
+
+    def restore_agent(self, agent_json):
+        new_agent = None
+        if agent_json["ntype"] == CoopAgent.__name__:
+            new_agent = CoopAgent(name=agent_json["name"],
+                                  coupons=agent_json["coupons"],
+                                  min_holdings=agent_json["min_holdings"])
+
+        else:
+            logging.error("agent found whose NTYPE is not "
+                          "{}, but is rather {}".format(CoopAgent.__name__,
+                                                        agent_json["ntype"]))
+
+        if new_agent:
+            self.add_agent_from_json(new_agent, agent_json)
+
+    def add_agent_from_json(self, agent, agent_json):
+        """
+        Add a restored agent to the env
+        """
+        agent.from_json_preadd(agent_json)
+        self.add_agent(agent)
+        agent.from_json_postadd(agent_json)

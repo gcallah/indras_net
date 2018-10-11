@@ -59,7 +59,7 @@ def read_props(model_nm, file_nm):
     Create a new PropArgs object from a json file
     """
     props = json.load(open(file_nm))
-    return PropArgs.create_props(model_nm, props=props)
+    return PropArgs.create_props(model_nm, props)
 
 
 class Prop():
