@@ -64,13 +64,14 @@ class Beings(ma.MarkovAgent):
             self.state = init_state
             self.cond = init_cond   #   whether the person is human, turning, or a zombie
             self.infectTime = 5   #   num of turns till Human becomes zombie
-
+    '''
     def decayed(self):   #   function is called when a zombie's life force is gone (zombie is removed)
         ## This should be in the zombie class my guy
         if self.alive:
             self.alive = False
             self.env.decayed(self)
-            
+    ''' 
+    
     def infected(self):   #   function is called when a zombie eats a human (the human is now infected)
         self.cond = I
 		## HUMANS AND ZOMBIES ARE DIFFERENT CLASSES WE NEED TO TALK...
@@ -81,6 +82,7 @@ class Beings(ma.MarkovAgent):
         if self.infectTime <= 0:   #   the human is now a zombie
             self.cond = Z ##This is insufficient we need to kill
 ##                          him and make a zombie appear
+    
 
     def act(self):
         
@@ -171,6 +173,12 @@ class Zombie(Beings):
         #if human.cond != I:   #   humans who are infected can't be eaten (if no infection)
         self.life_force += human.life_force
         human.died()
+        
+    def decayed(self):   #   function is called when a zombie's life force is gone (zombie is removed)
+        ## This should be in the zombie class my guy
+        if self.alive:
+            self.alive = False
+            self.env.decayed(self)
 
 
 class Zone(menv.MarkovEnv):
@@ -387,3 +395,38 @@ class Zone(menv.MarkovEnv):
         trans_str += str(WN) + " " + str(WS) + " " + str(WE) + " " + str(WW)
 
         return trans_str
+    
+    def from_json(self, json_input):
+        super().from_json(json_input)
+        self.add_variety("Zombie")
+        self.add_variety("Human")
+
+    def restore_agent(self, agent_json):
+        new_agent = None
+        if agent_json["ntype"] == ZOMBIE_NTYPE:
+            new_agent = Zombie(name=agent_json["name"],
+                             goal=agent_json["goal"],
+                             repro_age=agent_json["repro_age"],
+                             life_force=agent_json["life_force"],
+                             max_detect=agent_json["max_detect"],
+                             rand_age=agent_json["age"],
+                             speed=agent_json["speed"])
+
+        elif agent_json["ntype"] == HUMAN_NTYPE:
+            new_agent = Human(name=agent_json["name"],
+                              goal=agent_json["goal"],
+                              repro_age=agent_json["repro_age"],
+                              life_force=agent_json["life_force"],
+                              max_detect=agent_json["max_detect"],
+                              rand_age=agent_json["age"],
+                              speed=agent_json["speed"])
+
+        else:
+            logging.error("agent found whose NTYPE is neither "
+                          "{} nor {}, but rather {}".format(ZOMBIE_NTYPE,
+                                                            HUMAN_NTYPE,
+                                                            agent_json["ntype"]))
+
+        if new_agent:
+            self.add_agent_to_grid(new_agent, agent_json)
+
