@@ -22,7 +22,7 @@ MODEL_NM = "basic"
 
 import indra.prop_args2 as props
 # we will create props here to set user_type:
-pa = props.PropArgs.create_props(MODEL_NM)
+# pa = props.PropArgs.create_props(MODEL_NM)
 
 import json
 import models.basic as bm
@@ -36,23 +36,23 @@ def announce(name):
 
 # make sure to run test file from root directory!
 class BasicTestCase(TestCase):
-    def __init__(self, methodName, prop_file="models/basic.props"):
+    def __init__(self, methodName, prop_file="models/basic_for_test.props"):
     
         super().__init__(methodName=methodName)
     
-        result = props.read_props(MODEL_NM, prop_file)
-        if result:
-            pa.overwrite_props_from_dict(result.props)
-        else:
-            print("Oh-oh, no props to read in!")
-            exit(1)
+        pa = props.read_props(MODEL_NM, prop_file)
+        # if result:
+        #     pa.overwrite_props_from_dict(result.props)
+        # else:
+        #     print("Oh-oh, no props to read in!")
+        #     exit(1)
     
         # Now we create a minimal environment for our agents to act within:
         self.env = bm.BasicEnv(model_nm=MODEL_NM, props=pa)
     
         # Now we loop creating multiple agents
         #  with numbered names based on the loop variable:
-        for i in range(pa.get("num_agents").val):
+        for i in range(pa.props.get("num_agents").val):
             self.env.add_agent(bm.BasicAgent(name="agent" + str(i),
                                         goal="acting up!"))
         self.env.add_agent(bm.BasicAgent(name="agent for tracking",
