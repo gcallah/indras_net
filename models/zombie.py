@@ -585,11 +585,11 @@ class Human(Beings):
         #print(self.age)
         #print(input("STAHP"))
         
-    def infectionTime(self):
+    def infectionTime(self): #determines how long a person has until zombification
         if self.isInfect:
             self.infectionTimer -= 1
         if self.infectionTimer == 0:
-            self.env.decayed(self)
+            self.env.decayed(self) # will remove the human and add a zombie (eventually)
         
 class Zombie(Beings):
     
