@@ -589,6 +589,13 @@ class Human(Beings):
         if self.isInfect:
             self.infectionTimer -= 1
         if self.infectionTimer == 0:
+            creatures = self.neighbor_iter()
+            zombCreature = ""
+            for creature in creatures:
+                if type(creature) is Human:
+                    zombCreature = creature.__class__(creature.name, creature.goal, creature.repo_age
+                                                     creature.init_life_force)
+            self.add_agent(zombCreature)            
             self.env.decayed(self) # will remove the human and add a zombie (eventually)
         
 class Zombie(Beings):
