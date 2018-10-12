@@ -500,7 +500,7 @@ class Beings(ma.MarkovAgent):
         if self.alive:
             self.alive = False
             self.env.decayed(self)
-    ''' 
+     
     
     def infected(self):   #   function is called when a zombie eats a human (the human is now infected)
         self.cond = I
@@ -513,7 +513,7 @@ class Beings(ma.MarkovAgent):
             self.cond = Z ##This is insufficient we need to kill
 ##                          him and make a zombie appear
     
-
+   '''
     def act(self):
         
         for i in range(self.speed):
@@ -540,14 +540,15 @@ class Beings(ma.MarkovAgent):
                     self.env.move(self, x+1,y)
         else:   #   count down steps till zombified
             self.infectionTimer()
-            
+    '''        
     def postact(self):
         
         self.age += 1        ## This is the ??
         self.life_force -= 1 ## same as this??
         if self.life_force <= 0:
-            #self.died()
-            self.infected()   #change the agent's condition to infected when the lifeforce is dead
+            self.decayed()
+    '''
+            #self.infected()   #change the agent's condition to infected when the lifeforce is dead
         ##ZOMBIES DO NOT REPRODUCE LIKE THIS (NOM NOM NOM BIH) 
 		##Instead let's just have nothing happen :)
 		##Add this functionality specific to humans
@@ -574,13 +575,22 @@ class Human(Beings):
                          max_detect=max_detect, rand_age=rand_age, speed=speed)
         self.other = Zombie
         self.ntype = "Human"
-    def died(self):##this function is incomplete. Plz halp!
-        self.cond = Z
-        print("A"*99)
-        print(self.cond)
-        print(self.age)
-        print(input("STAHP"))
-
+        self.isInfect = False
+        self.infectionTimer = 5
+    def bit(self):##this function is incomplete. Plz halp!
+        self.isInfect = True
+        #self.cond = Z
+        #print("A"*99)
+        #print(self.cond)
+        #print(self.age)
+        #print(input("STAHP"))
+        
+    def infectionTime(self):
+        if self.isInfect:
+            self.infectionTimer -= 1
+        if self.infectionTimer == 0:
+            self.env.decayed(self)
+        
 class Zombie(Beings):
     
     def __init__(self, name, goal, repro_age, life_force, max_detect=10,
@@ -602,7 +612,7 @@ class Zombie(Beings):
         
         #if human.cond != I:   #   humans who are infected can't be eaten (if no infection)
         self.life_force += human.life_force
-        human.died()
+        human.bit()
         
     def decayed(self):   #   function is called when a zombie's life force is gone (zombie is removed)
         ## This should be in the zombie class my guy
