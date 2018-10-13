@@ -124,10 +124,10 @@ class SpatialEnv(env.Environment):
         Restore the states of one agent
         """
         agent = sa.SpatialAgent(agent_json["name"], 
-                                   agent_json["goal"],
-                                   agent_json["max_move"],
-                                   agent_json["max_detect"])
-        self.add_agent_from_json(agent)
+                                agent_json["goal"],
+                                agent_json["max_move"],
+                                agent_json["max_detect"])
+        self.add_agent_from_json(agent, agent_json)
         
     def add_agent_from_json(self, agent, agent_json, x=RANDOM, y=RANDOM):
         """
