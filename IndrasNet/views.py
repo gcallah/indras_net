@@ -102,18 +102,17 @@ def parameters(request):
     # Assign a new session id to a new user
     assign_key(request)
 
-    site_hdr = get_hdr()
-    model_name = request.GET[MODEL]
-    model = ABMModel.objects.get(name=model_name)
+    model = ABMModel.objects.get(name=request.GET[MODEL])
     form = ParamForm(questions=model.params.all())
 
-    template_data = {'form': form, HEADER: site_hdr, 'model': model}
+    template_data = {'form': form, HEADER: get_hdr(), 'model': model}
     return render(request, 'parameters.html', template_data)
 
 def run(request):
     """
-        This runs the chosen model.
+        This runs the model that was picked.
     """
+    env = None
     try:
         action = request.POST[ACTION]
     except KeyError:
@@ -132,62 +131,11 @@ def run(request):
 
     # Take actions on a running model
     if action:
-        prop_dict = {}
-        for q in questions:
-            value = q.default_val
-            if q.atype == "INT":
-                value = int(value)
-            elif q.atype == "DBL":
-                value = float(value)
-            prop_dict[q.prop_name] = value
-
-        env = eval(entry_point)(prop_dict)
-        env.restore_session(session_id)
-
-        # Clear textboxes except for the first one
-        for i in range(len(env.user.text_output)):
-            if i != 0:
-                env.user.text_output[i] = ''
-        # Tools
-        if action == "step":
-            env.step()
-
-        if action == "n_steps":
-            steps = int(request.POST["steps"])
-            env.n_steps(steps)
-
-        # View
-        if action == "list_agents":
-            env.list_agents()
-
-        if action == "properties":
-            env.user.text_output[1] = env.props.display()
-
-        # File
-        if action == "disp_log":
-            env.disp_log()
-
-        # Edit
-        if action == "add":
-            pass
-
-        env.save_session(session_id)
-
+        env = running_model(request, action, entry_point, questions, session_id)
     # Run a model for the first time
     else:
-        answers = {}
-        answers["plot_type"] = plot_type
-        for q in questions:
-            answer = request.POST[q.question]
-            if q.atype == "INT":
-                answer = int(answer)
-            elif q.atype == "DBL":
-                answer = float(answer)
-            # Boolean is not considered yet
-            answers[q.prop_name] = answer
-        env = eval(entry_point)(answers)
-        # env = entry_point(answers)
-        env.save_session(session_id)
+        env = model_first_run(request, action, entry_point, questions,
+                              session_id, plot_type)
 
     site_hdr = get_hdr()
 
@@ -198,6 +146,66 @@ def run(request):
                      'text1': text_box[1], 'model': model}
 
     return render(request, 'run.html', template_data)
+
+def running_model(request, action, entry_point, questions, session_id):
+    prop_dict = {}
+    for q in questions:
+        value = q.default_val
+        if q.atype == "INT":
+            value = int(value)
+        elif q.atype == "DBL":
+            value = float(value)
+        prop_dict[q.prop_name] = value
+
+    env = eval(entry_point)(prop_dict)
+    env.restore_session(session_id)
+
+    # Clear textboxes except for the first one
+    for i in range(len(env.user.text_output)):
+        if i != 0:
+            env.user.text_output[i] = ''
+    # Tools
+    if action == "step":
+        env.step()
+
+    if action == "n_steps":
+        steps = int(request.POST["steps"])
+        env.n_steps(steps)
+
+    # View
+    if action == "list_agents":
+        env.list_agents()
+
+    if action == "properties":
+        env.user.text_output[1] = env.props.display()
+
+    # File
+    if action == "disp_log":
+        env.disp_log()
+
+    # Edit
+    if action == "add":
+        pass
+
+    env.save_session(session_id)
+    return env
+
+def model_first_run(request, action, entry_point, questions, session_id,
+                    plot_type):
+    answers = {}
+    answers["plot_type"] = plot_type
+    for q in questions:
+        answer = request.POST[q.question]
+        if q.atype == "INT":
+            answer = int(answer)
+        elif q.atype == "DBL":
+            answer = float(answer)
+        # Boolean is not considered yet
+        answers[q.prop_name] = answer
+    env = eval(entry_point)(answers)
+    # env = entry_point(answers)
+    env.save_session(session_id)
+    return env
 
 def help_page(request):
     """
