@@ -33,6 +33,7 @@ TERMINAL = pa.TERMINAL
 IPYTHON = pa.IPYTHON
 IPYTHON_NB = pa.IPYTHON_NB
 WEB = pa.WEB
+DUMMY = pa.DUMMY
 
 run_output = ""
 
@@ -87,7 +88,7 @@ class User(ent.Entity):
         """
         Screen the details of output from models.
         """
-        if msg and self.utype in [TERMINAL, IPYTHON, IPYTHON_NB]:
+        if msg and self.utype in [TERMINAL, IPYTHON, IPYTHON_NB, DUMMY]:
             return tell(msg, type=type, indnt=indnt, utype=self.utype)
         elif msg and self.utype == WEB:                
             self.text_output[text_id] = tell(msg, type=type, indnt=indnt, 

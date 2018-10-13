@@ -10,7 +10,7 @@ import json
 import os
 from django.core.exceptions import ObjectDoesNotExist
 
-from IndrasNet.models import Model
+from IndrasNet.models import ABMModel
 
 SWITCH = '-'
 PERIODS = 'periods'
@@ -20,11 +20,12 @@ DATAFILE = 'datafile'
 OS = "OS"
 
 UTYPE = "user_type"
-# user types
+# user types (DUMMY type is only for automated test)
 TERMINAL = "terminal"
 IPYTHON = "iPython"
 IPYTHON_NB = "iPython Notebook"
 WEB = "Web browser"
+DUMMY = "dummy"
 
 VALUE = "val"
 QUESTION = "question"
@@ -153,7 +154,7 @@ class PropArgs():
 
     def set_props_from_db(self):
         try:
-            params = Model.objects.get(name=self.model_nm).params.all()
+            params = ABMModel.objects.get(name=self.model_nm).params.all()
             for param in params:
                 atype = param.atype
                 typed_default_val = self._type_val_if_possible(param.default_val,
@@ -165,7 +166,7 @@ class PropArgs():
                                                    lowval=param.lowval,
                                                    hival=param.hival)
         except ObjectDoesNotExist:
-            print("Model not found in db: " + self.model_nm)
+            print("ABMModel not found in db: " + self.model_nm)
 
     def overwrite_props_from_env(self):
         global user_type

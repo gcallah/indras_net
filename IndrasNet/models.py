@@ -107,7 +107,7 @@ class ModelParam(models.Model):
         return self.question
 
 
-class Model(SingleNameModel, DescrModel):
+class ABMModel(SingleNameModel, DescrModel):
     """
         This table describes each model available in Indra.
     """
