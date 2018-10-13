@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-
+"""
+A basic zombie model
+"""
 MODEL_NM = "zombie"
 
 import indra.prop_args2 as props
