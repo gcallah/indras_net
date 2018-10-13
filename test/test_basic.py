@@ -176,10 +176,12 @@ class BasicTestCase(TestCase):
         sys.stdout.close()
         sys.stdout = orig_out
         f = open("checkfile.txt", "r")
-        f.readline()
+        line1 = f.readline()
+
         for agent in self.env.agents:
             line = f.readline()
             line_list = line.split(" with a goal of ")
+
             line_list[1] = line_list[1].strip()
             if agent.name != line_list[0] or agent.goal != line_list[1]:
                 report = False
@@ -219,7 +221,7 @@ class BasicTestCase(TestCase):
     def test_examine_log(self):
         announce('test_examine_log')
         report = True
-        logfile_name = self.env.props.props["model"] + ".log"
+        logfile_name = self.env.props.props["model"].val + ".log"
         list_for_reference = deque(maxlen=16)
 
         with open(logfile_name, 'rt') as log:
