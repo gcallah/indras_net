@@ -10,9 +10,7 @@ import base64
 from django.shortcuts import render
 from django import forms
 
-
-from .models import AdminEmail
-from .models import Model
+import .models
 
 
 logger = logging.getLogger(__name__)
@@ -44,7 +42,7 @@ def index(request):
     """
     site_hdr = get_hdr()
 
-    models = Model.objects.order_by('mtype')
+    models = models.Model.objects.order_by('mtype')
     template_data = {'models': models, HEADER: site_hdr}
 
     return render(request, 'main.html', template_data)
@@ -209,7 +207,7 @@ def feedback(request):
         This function renders our feedback page.
     """
     site_hdr = get_hdr()
-    email_list = AdminEmail.objects.all()
+    email_list = models.AdminEmail.objects.all()
     comma_del_emails = ""
     for email in email_list:
         comma_del_emails = comma_del_emails + email.email_addr + ","
