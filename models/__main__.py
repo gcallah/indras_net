@@ -9,7 +9,6 @@ models = {
              2: ("Forest Fire", models.forestfire_run.run),
              3: ("Abelian Sandpile", models.sand_run.run),
              4: ("Wolf Sheep", models.wolfsheep_run.run),
-             5: ("Epic Zombie Invasion", models.zombie_run)
          }
 
 
