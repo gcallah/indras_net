@@ -30,7 +30,9 @@ pylint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
 	pylint $(PYLINTFLAGS) $*.py
 
 db: $(DJANGO_DIR)/models.py
-	./db.sh
+	python ./manage.py makemigrations IndrasNet
+	python ./manage.py migrate
+	git add IndrasNet/migrations/*.py
 	git add $(DJANGO_DIR)/migrations/*.py
 	-git commit $(DJANGO_DIR)/migrations/*.py
 	git push origin master

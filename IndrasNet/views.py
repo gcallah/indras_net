@@ -6,11 +6,15 @@
 import logging
 import importlib
 import base64
+import models
+import schelling
+import wolfram
+import bigbox
 
 from django.shortcuts import render
 from django import forms
 
-import .models
+from .models import ABMModel, AdminEmail
 
 
 logger = logging.getLogger(__name__)
@@ -42,8 +46,7 @@ def index(request):
     """
     site_hdr = get_hdr()
 
-    models = models.Model.objects.order_by('mtype')
-    template_data = {'models': models, HEADER: site_hdr}
+    template_data = {HEADER: site_hdr}
 
     return render(request, 'main.html', template_data)
 
@@ -54,7 +57,7 @@ def ab_models(request):
     """
     site_hdr = get_hdr()
 
-    model_list = Model.objects.order_by('mtype')
+    model_list = ABMModel.objects.order_by('mtype')
     template_data = {'models': model_list, HEADER: site_hdr}
     return render(request, 'abmodels.html', template_data)
 
@@ -101,7 +104,7 @@ def parameters(request):
 
     site_hdr = get_hdr()
     model_name = request.GET[MODEL]
-    model = Model.objects.get(name=model_name)
+    model = ABMModel.objects.get(name=model_name)
     form = ParamForm(questions=model.params.all())
 
     template_data = {'form': form, HEADER: site_hdr, 'model': model}
@@ -118,16 +121,16 @@ def run(request):
 
     session_id = int(request.session['session_id'])
 
-    # Load module
+    # Load entry_point
     model_name = request.POST[MODEL]
-    model = Model.objects.get(name=model_name)
-    module = model.module
+    model = ABMModel.objects.get(name=model_name)
+    entry_point = model.module
     plot_type = model.plot_type
-    importlib.import_module(module[0:-4])
+    importlib.import_module(entry_point[0:-4])
 
     questions = model.params.all()
 
-    #Take actions on a running model
+    # Take actions on a running model
     if action:
         prop_dict = {}
         for q in questions:
@@ -138,14 +141,14 @@ def run(request):
                 value = float(value)
             prop_dict[q.prop_name] = value
 
-        env = eval(module + "(prop_dict)")
+        env = eval(entry_point)(prop_dict)
         env.restore_session(session_id)
 
-        #CLear textboxs except for the first one
+        # Clear textboxes except for the first one
         for i in range(len(env.user.text_output)):
             if i != 0:
                 env.user.text_output[i] = ''
-        #Tools
+        # Tools
         if action == "step":
             env.step()
 
@@ -153,24 +156,24 @@ def run(request):
             steps = int(request.POST["steps"])
             env.n_steps(steps)
 
-        #View
+        # View
         if action == "list_agents":
             env.list_agents()
 
         if action == "properties":
             env.user.text_output[1] = env.props.display()
 
-        #File
+        # File
         if action == "disp_log":
             env.disp_log()
 
-        #Edit
+        # Edit
         if action == "add":
             pass
 
         env.save_session(session_id)
 
-    #Run a model for the first time
+    # Run a model for the first time
     else:
         answers = {}
         answers["plot_type"] = plot_type
@@ -182,7 +185,8 @@ def run(request):
                 answer = float(answer)
             # Boolean is not considered yet
             answers[q.prop_name] = answer
-        env = eval(module + "(answers)")
+        env = eval(entry_point)(answers)
+        # env = entry_point(answers)
         env.save_session(session_id)
 
     site_hdr = get_hdr()
@@ -207,7 +211,7 @@ def feedback(request):
         This function renders our feedback page.
     """
     site_hdr = get_hdr()
-    email_list = models.AdminEmail.objects.all()
+    email_list = AdminEmail.objects.all()
     comma_del_emails = ""
     for email in email_list:
         comma_del_emails = comma_del_emails + email.email_addr + ","
