@@ -2,7 +2,6 @@ import random
 
 class Route:
     count = 0
-    name = "not set"
     fast_p = 100
     slow_p = 100
     intersections = []
@@ -50,6 +49,9 @@ class Slow:
             if move <= road.slow_p:
                 route.travelRoute()
         return
+    def addRoute(self, route):
+        avaiable.append(route)
+        return
 
 class Fast:
     name = "DEFAULT"
@@ -70,3 +72,30 @@ def travel(self):
 def addRoute(self, route):
     avaiable.append(route)
     return
+
+class Intersection:
+    neighbours = []
+    name = None
+    count = 0
+
+    def __init__(self, name):
+        self.neighbours = []
+        self.name = name
+        self.count = 0
+        return
+    
+    def intersaction(self):
+        count = conut + 1
+    
+    def getCount(self):
+        return count
+
+    def addNeighbour(self, node):
+        self.neighbours.append(node)
+        return
+
+class Graph:
+    intersactionArr = []
+    def __init__(self):
+        self.intersactionArr = []
+        return
