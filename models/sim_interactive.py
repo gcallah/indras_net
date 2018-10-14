@@ -99,3 +99,10 @@ class Graph:
     def __init__(self):
         self.intersactionArr = []
         return
+    def addRelation(self, intersaction1, Intersection2):
+        intersaction1.add(intersaction2)
+        return
+    def addTwoRelation(self, inter1, inter2):
+        self.addRelation(inter1, inter2)
+        self.addRelation(inter2, inter1)
+        return
