@@ -594,7 +594,7 @@ class Human(Beings):
             for creature in creatures:
                 if type(creature) is Human:
                     zombCreature = creature.__class__(creature.name, creature.goal, creature.repo_age
-                                                     creature.init_life_force)
+                                                     creature.life_force)
             self.add_agent(zombCreature)            
             self.env.decayed(self) # will remove the human and add a zombie (eventually)
         
