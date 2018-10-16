@@ -41,7 +41,7 @@ class Environment(node.Node):
     def __init__(self, name, preact=False,
                  postact=False, model_nm=None, props=None):
         super().__init__(name)
-        
+
         self.period = 0
         self.preact = preact
         self.postact = postact
@@ -68,9 +68,9 @@ class Environment(node.Node):
             self.user.tell("Could not get props; model_nm = " + str(model_nm),
                            type=user.ERROR)
         self.menu = mm.MainMenu("Main Menu", self)
-        
+
         self.image_bytes = None
-        
+
         self.__init_unrestorables()
 
     def __init_unrestorables(self):
@@ -80,16 +80,16 @@ class Environment(node.Node):
             pop_name += self.model_nm + " "
         pop_name += "Agents"
         self.agents = ap.AgentPop(pop_name)
-        
+
         self.womb = []
         self.graph = nx.Graph()
         self.graph.add_edge(self, self.agents)
         if self.props is not None:
             self.graph.add_edge(self, self.props)
-        self.graph.add_edge(self, self.user)        
+        self.graph.add_edge(self, self.user)
         self.graph.add_edge(self, self.menu)
         self.graph.add_edge(self, node.universals)
-        
+
     def add_variety(self, var):
         self.agents.add_variety(var)
 
@@ -144,7 +144,7 @@ class Environment(node.Node):
         resume: starts up from a previous period.
         periods: run x periods, for batch mode or timing purposes.
         """
-        
+
         print("Periods = " + str(self.period))
         if periods > -1:
             count = 0
@@ -319,12 +319,12 @@ class Environment(node.Node):
             logfile = self.props.get_logfile()
         else:
             self.user.tell("Props missing; cannot identify log file!",
-                          type=user.ERROR, text_id=1, 
+                          type=user.ERROR, text_id=1,
                        reverse=False)
             return
 
         if logfile is None:
-            self.user.tell("No log file to examine!", type=user.ERROR, text_id=1, 
+            self.user.tell("No log file to examine!", type=user.ERROR, text_id=1,
                        reverse=False)
             return
 
@@ -335,10 +335,10 @@ class Environment(node.Node):
                 last_n_lines.append(line)
 
         self.user.tell("Displaying the last " + str(MAX_LINES)
-                       + " lines of logfile " + logfile, text_id=1, 
+                       + " lines of logfile " + logfile, text_id=1,
                        reverse=False)
         for line in last_n_lines:
-            self.user.tell(line.strip(), text_id=1, 
+            self.user.tell(line.strip(), text_id=1,
                        reverse=False)
 
     def step(self, random=False):
@@ -358,7 +358,7 @@ class Environment(node.Node):
         if self.preact:
             self.preact_loop()
 
-# now have everyone act 
+# now have everyone act
         self.act_loop(random)
 
 # there might be state-setting to do after acting
@@ -454,7 +454,7 @@ class Environment(node.Node):
                                          data, period, is_headless=self.headless())
         self.image_bytes = self.line_graph.show()
         return self.image_bytes
-    
+
     def headless(self):
         if not disp.plt_present:
             self.user.tell("No graphing package installed", type=user.ERROR)
@@ -533,7 +533,7 @@ class Environment(node.Node):
 
     def get_var_pop_hist(self, var):
         return self.agents.get_var_pop_hist(var)
-    
+
     def to_json(self):
         #Serialize the env
         safe_fields = super().to_json()
@@ -541,19 +541,20 @@ class Environment(node.Node):
         safe_fields["model_nm"] = self.model_nm
         safe_fields["preact"] = self.preact
         safe_fields["postact"] = self.postact
-        
+
         #Serialize objects
         safe_fields["props"] = self.props.to_json()
         safe_fields["user"] = self.user.to_json()
-        
+
         #Serialize agents
-        agents = []
-        for agent in self.agents:
-            agents.append(agent.to_json())
-        safe_fields["agents"] = agents
+        safe_fields["agents"] = self.serialize_list(self.agents)
         safe_fields["pop_hist"] = self.agents.get_pop_hist()
+        safe_fields["womb"] = self.serialize_list(self.womb)
 
         return safe_fields
+
+    def serialize_list(self, serializable_list):
+        return [agent.to_json() for agent in serializable_list]
 
     def save_session(self, session_id=None):
         """
@@ -563,19 +564,19 @@ class Environment(node.Node):
             base_dir = self.props["base_dir"]
         except:
             base_dir = ""
-        
+
         if session_id is None:
-            session_id = self.user.ask("Enter session id: ")           
+            session_id = self.user.ask("Enter session id: ")
         session_id = str(session_id)
-        
+
         json_output = str(json.dumps(self.to_json()))
         path = os.path.join(base_dir, "json/" + self.model_nm + session_id + ".json")
         with open(path, "w+") as f:
             f.write(json_output)
-            
+
         #self.print_env()
         #self.user.tell("Session saved")
-    
+
     def restore_session(self, session_id=None):
         """
         Restore a previous session from a json file
@@ -586,7 +587,7 @@ class Environment(node.Node):
             base_dir = self.props["base_dir"]
         except:
             base_dir = ""
-        
+
         if session_id is None:
             session_id = str(self.user.ask("Enter session id: "))
         session_id = str(session_id)
@@ -597,14 +598,15 @@ class Environment(node.Node):
         self.from_json(json_input)
 
         self.restore_agents(json_input)
+        self.restore_womb(json_input)
         self.agents.restore_hist_from(json_input["pop_hist"])
 
         #self.print_env()
         #self.user.tell("Session restored")
-        
+
     def from_json(self, json_input):
         self.__init_unrestorables()
-        
+
         self.name = json_input["name"]
         self.preact = json_input["preact"]
         self.postact = json_input["postact"]
@@ -619,7 +621,14 @@ class Environment(node.Node):
         """
         for agent in json_input["agents"]:
             self.restore_agent(agent)
-            
+
+    def restore_womb(self, json_input):
+        for agent in json_input["womb"]:
+            self.restore_womb_agent(agent)
+
+    def restore_womb_agent(self, agent_json):
+        logging.info("restore_womb_agent not implemented")
+
     def restore_agent(self, agent_json):
         logging.info("restore_agent not implemented")
 

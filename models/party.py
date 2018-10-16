@@ -24,17 +24,16 @@ MALE_PRE = vs.VectorSpace.Y_PRE
 FEM_AGENT = "Woman"
 MALE_AGENT = "Man"
 AGENT_TYPES = {FEMALE: FEM_AGENT, MALE: MALE_AGENT}
-MIN_TOL = 0.1
-MAX_TOL = 0.7
+TOL=0.5
 
 class PartyAgent(va.VSAgent):
     """
     An agent that moves location based on its neighbors' types
     """
-    def __init__(self, name, goal, min_tol, max_tol, max_move=100,
+    def __init__(self, name, goal, tol, max_move=100,
                  max_detect=1):
         super().__init__(name, goal, max_move=max_move, max_detect=max_detect)
-        self.tolerance = random.uniform(max_tol, min_tol)
+        self.tolerance = tol
         self.stance = None
         self.orientation = None
         self.visible_pre = None
@@ -43,18 +42,24 @@ class PartyAgent(va.VSAgent):
         """
         Use the results of surveying the env to decide what to do.
         """
-        # no neighbors, we stay put:
+        # no neighbors, we move:
         if other_pre.equals(vs.VectorSpace.NULL_PRE):
-            return STAY
+            return MOVE
 
         # otherwise, see how we like the hood
-        other_pre = other_pre.normalize()
-        other_projection = other_pre.project(self.orientation)
-        my_projection = self.stance.project(self.orientation)
-        if other_projection < my_projection:
-            return MOVE
-        else:
+        # count the percentage of opposite sex
+        num_opp_sex = 0
+        total_people = 1
+        for agent in self.neighbor_iter():
+            total_people += 1
+            if type(agent) != type(self):
+                num_opp_sex += 1
+        opp_sex_percentage = num_opp_sex / total_people
+
+        if opp_sex_percentage <= self.tolerance:
             return STAY
+        else:
+            return MOVE
 
     def respond_to_cond(self, eval_vars=None):
         """
@@ -90,9 +95,9 @@ class Man(PartyAgent):
     """
     We set our stance.
     """
-    def __init__(self, name, goal, min_tol=MAX_TOL, max_tol=MIN_TOL, max_move=100,
+    def __init__(self, name, goal, tol=TOL, max_move=100,
                  max_detect=1):
-        super().__init__(name, goal, min_tol, max_tol,
+        super().__init__(name, goal, tol,
                          max_move=max_move, max_detect=max_detect)
         self.orientation = MALE
         self.visible_pre = MALE_PRE
@@ -110,9 +115,9 @@ class Woman(PartyAgent):
     """
     We set our stance.
     """
-    def __init__(self, name, goal, min_tol=MAX_TOL, max_tol=MIN_TOL, max_move=100,
+    def __init__(self, name, goal, tol=TOL, max_move=100,
                  max_detect=1):
-        super().__init__(name, goal, min_tol, max_tol,
+        super().__init__(name, goal, tol,
                          max_move=max_move, max_detect=max_detect)
         self.orientation = FEMALE
         self.visible_pre = FEM_PRE

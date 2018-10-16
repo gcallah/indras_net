@@ -1,5 +1,3 @@
-"""
-#JOHN TRYING SOMETHING NEW
 import random
 import indra.markov as markov
 import indra.markov_agent as ma
@@ -51,7 +49,7 @@ class Beings(ma.MarkovAgent):
         if not rand_age:
             self.age = 0
         else:
-            self.age = random.randint(0, repro_age - 2)
+            self.age = random.randint(0, repro_age)
         self.alive = True
         self.other = None
         self.repro_age = repro_age
@@ -412,20 +410,6 @@ class Zone(menv.MarkovEnv):
         return trans_str
 
 """
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 import random
@@ -877,3 +861,4 @@ class Zone(menv.MarkovEnv):
         if new_agent:
             self.add_agent_to_grid(new_agent, agent_json)
 
+"""

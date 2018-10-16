@@ -5,6 +5,7 @@ Author: Gene Callahan and Brandon Logan
 
 import indra.entity as ent
 import indra.env as env
+import logging
 import random
 import indra.display_methods as disp
 
@@ -49,6 +50,22 @@ class HeightAgent(ent.Agent):
                                       new_height, self.height)
         self.env.add_child(self.mychild)
 
+    def to_json(self):
+        safe_fields = super().to_json()
+        safe_fields["height"] = self.height
+        safe_fields["alive"] = self.alive
+        if self.mychild:
+            safe_fields["mychild"] = self.mychild.to_json()
+        safe_fields["parent_height"] = self.parent_height
+
+        return safe_fields
+
+    def from_json_preadd(self, json_input):
+        self.alive = json_input["alive"]
+        self.mychild = self.__class__(name=json_input["mychild"]["name"],
+                                      height=json_input["mychild"]["height"],
+                                      parent_height=json_input["mychild"]["parent_height"])
+
 
 class HeightAgentEng(HeightAgent):
 
@@ -72,7 +89,7 @@ class HeightEnv(env.Environment):
         self.avg_height = {}
         self.runt_height = 0
 
-    def census(self, disp=True):
+    def census(self, disp=True, exclude_var=None):
         """
         Take a census of our pops.
         """
@@ -107,3 +124,54 @@ class HeightEnv(env.Environment):
         for agent in reversed(self.agents):
             if not agent.alive:
                 self.remove_agent(agent)
+
+    def to_json(self):
+        safe_fields = super().to_json()
+        safe_fields["avg_height"] = self.avg_height
+        safe_fields["runt_height"] = self.runt_height
+
+        return safe_fields
+
+    def from_json(self, json_input):
+        super().from_json(json_input)
+        self.avg_height = json_input["avg_height"]
+        self.runt_height = json_input["runt_height"]
+
+    def restore_agent(self, agent_json):
+        new_agent = self.get_agent_from_json(agent_json)
+
+        if new_agent:
+            self.add_agent_from_json(new_agent, agent_json)
+
+    def restore_womb_agent(self, agent_json):
+        new_agent = self.get_agent_from_json(agent_json)
+
+        if new_agent:
+            self.add_child(new_agent)
+
+    @staticmethod
+    def get_agent_from_json(agent_json):
+        new_agent = None
+        if agent_json["ntype"] == HeightAgent.__name__:
+            new_agent = HeightAgent(name=agent_json["name"],
+                                    height=agent_json["height"],
+                                    parent_height=agent_json["parent_height"])
+
+        elif agent_json["ntype"] in HeightAgentEng.__name__:
+            new_agent = HeightAgentEng(name=agent_json["name"],
+                                       height=agent_json["height"],
+                                       parent_height=agent_json["parent_height"])
+
+        else:
+            logging.error("agent found whose NTYPE is neither "
+                          "{} nor {}, but rather {}".format(HeightAgent.__name__,
+                                                            HeightAgentEng.__name__,
+                                                            agent_json["ntype"]))
+        return new_agent
+
+    def add_agent_from_json(self, agent, agent_json):
+        """
+        Add a restored agent to the env
+        """
+        agent.from_json_preadd(agent_json)
+        self.add_agent(agent)

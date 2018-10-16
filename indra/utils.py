@@ -6,7 +6,6 @@ Various helpful bits that don't fit elsewhere!
 import sys
 import logging
 
-from IndrasNet.models import Model
 from indra.prop_args2 import type_dict, PERIODS
 import indra.prop_args2 as prop_args
 import indra.user as u
@@ -42,35 +41,6 @@ def check_val(val, default=None, limits=None):
         return in_range(low, val, high)
     else:
         return True
-
-def ask_for_params(props):
-    """
-    Asks user to set parameters associated with the model.
-    We fetch the questions to ask from the django db.
-    If an input isn't given, we use a default.
-
-    return: the props object passed in
-    """
-    if props is None:
-        return None   # should raise some exception!
-
-    which_model = Model.objects.get(name=props.model_nm)
-    for param in which_model.params.all():
-        val_type = type_dict[param.atype]
-        default = val_type(param.default_val)
-        limits = (param.lowval, param.hival)
-        val = u.ask(msg=param.question,
-                 default=default,
-                 limits=limits)
-        try:
-            typed_val = val_type(val)
-        except:
-            typed_val = default  # a temp kludge!
-
-        if not check_val(typed_val, default, limits):
-            typed_val = default
-        props[param.prop_name] = typed_val
-    return props
 
 def gen_file_names(model_nm):
     """

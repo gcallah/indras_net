@@ -41,15 +41,13 @@ def run(prop_dict=None):
     for i in range(pa["num_men"]):
         env.add_agent(pm.Man(name="Man" + str(i),
                       goal="A good party.",
-                      min_tol=0.2,
-                      max_tol=0.8,
+                      tol=0.5,
                       max_detect=pa['max_detect']))
         
     for i in range(pa["num_women"]):
         env.add_agent(pm.Woman(name="Woman" + str(i),
                       goal="A good party.",
-                      min_tol=0.1,
-                      max_tol=0.7,
+                      tol=0.5,
                       max_detect=pa['max_detect']))
         
     return utils.run_model(env, prog_file, results_file)
