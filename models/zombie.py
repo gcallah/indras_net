@@ -24,9 +24,16 @@ E = 2
 W = 3
 
 STATE_MAP = { N: NORTH, S: SOUTH, E: EAST, W: WEST }
+
+NEW_ZOMBS = 0
+NEW_HUMANS = 0
+
+#These need to be added to prop args
 NEW_HUMAN_LIFEFORCE = 10
 INFECTEDTIMER = 5
 HUM_REPRO_TIMER = 1
+
+
 
 class Beings(ma.MarkovAgent): 
     '''
@@ -192,7 +199,8 @@ class Human(Beings):
         
     def infected(self):
         
-        guy = Zombie("NEW_ZOMBIE","Becoming a zombie", self.repro_age, self.life_force)
+        guy = Zombie("NEW_ZOMBIE: "+str(NEW_ZOMBS),"Becoming a zombie", self.repro_age, self.life_force)
+        NEW_ZOMBS+=1
         guy.sleep = INFECTEDTIMER
         self.env.add_agent(guy)
         self.died()
@@ -208,7 +216,9 @@ class Human(Beings):
                 creature = self.__class__(self.name + "x", self.goal,
                                           self.repro_age, self.init_life_force)
                 #Make a new human and add him  :)
-                guy = Human("NAME", self.goal, self.repro_age, NEW_HUMAN_LIFEFORCE)
+                
+                guy = Human("NEW_HUMAN: "+str(NEW_HUMANS), self.goal, self.repro_age, NEW_HUMAN_LIFEFORCE)
+                NEW_HUMANS+=1
                 self.env.add_agent(guy)
         else:
             self.reproTime -= 1
