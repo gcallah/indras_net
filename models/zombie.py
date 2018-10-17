@@ -5,6 +5,7 @@ import indra.markov_env as menv
 import numpy as np
 import operator as op
 import math
+import copy
 
 X = 0
 Y = 1
@@ -23,6 +24,9 @@ E = 2
 W = 3
 
 STATE_MAP = { N: NORTH, S: SOUTH, E: EAST, W: WEST }
+NEW_HUMAN_LIFEFORCE = 10
+INFECTEDTIMER = 5
+HUM_REPRO_TIMER = 1
 
 class Beings(ma.MarkovAgent): 
     '''
@@ -116,17 +120,12 @@ class Beings(ma.MarkovAgent):
         self.life_force -= 1
         if self.life_force <= 0:
             self.died()
-        elif self.age % self.repro_age == 0:
+        
+        elif (self.ntype == "Human"):
             self.reproduce()
+        
 
-    def reproduce(self):
-        '''
-        Adds a Creature of self's type to a random place in the env.
-        '''
-        if self.alive:
-            creature = self.__class__(self.name + "x", self.goal,
-                                      self.repro_age, self.init_life_force)
-            self.env.add_agent(creature)
+    
 
 
 class Zombie(Beings):
@@ -147,23 +146,30 @@ class Zombie(Beings):
                             max_detect=max_detect, rand_age=rand_age, speed=speed)
         self.other = Human
         self.ntype = "Zombie"
+        self.sleep = 0
 
     def preact(self):
         '''
         After (or before depending on how you view it) everything moves, 
-        wolves eat nearby sheep.
+        zombies eat nearby people.
         '''
-        creatures = self.neighbor_iter()
-        for creature in creatures:
-            if type(creature) is Human:
-                self.eat(creature)
+        if self.sleep != 0:
+            if self.goal != "Eating Human":
+                self.goal = "Eating Human"
+            creatures = self.neighbor_iter()
+            for creature in creatures:
+                if type(creature) is Human:
+                    self.eat(creature)
+        else:
+            self.sleep -= 1
 
     def eat(self, human):
         '''
         Gains sheep's life force and removes sheep from env.
         '''
         self.life_force += human.life_force
-        human.died()
+        #human.died()
+        human.infected()
 
 
 class Human(Beings):
@@ -182,8 +188,31 @@ class Human(Beings):
                          max_detect=max_detect, rand_age=rand_age, speed=speed)
         self.other = Zombie
         self.ntype = "Human"
-
-
+        self.reproTime = random.randint(0,HUM_REPRO_TIMER+1)
+        
+    def infected(self):
+        
+        guy = Zombie("NEW_ZOMBIE","Becoming a zombie", self.repro_age, self.life_force)
+        guy.sleep = INFECTEDTIMER
+        self.env.add_agent(guy)
+        self.died()
+       
+    def reproduce(self):
+        '''
+        Adds a Creature of self's type to a random place in the env.
+        '''
+        
+        if self.reproTime == 0:
+            self.reproTime = random.randint(0,HUM_REPRO_TIMER+1)
+            if self.alive:
+                creature = self.__class__(self.name + "x", self.goal,
+                                          self.repro_age, self.init_life_force)
+                #Make a new human and add him  :)
+                guy = Human("NAME", self.goal, self.repro_age, NEW_HUMAN_LIFEFORCE)
+                self.env.add_agent(guy)
+        else:
+            self.reproTime -= 1
+            
 class Zone(menv.MarkovEnv):
     '''
     A meadow in which wolf eat sheep.
