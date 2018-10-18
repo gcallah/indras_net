@@ -208,9 +208,10 @@ class PropArgs():
                                                                         None),
                                                  atype)
                 question = prop_dict[prop_nm].get(QUESTION, None)
+                default_val = prop_dict[prop_nm].get(DEFAULT_VAL, None)
                 hival = prop_dict[prop_nm].get(HIVAL, None)
                 lowval = prop_dict[prop_nm].get(LOWVAL, None)
-                self.props[prop_nm] = Prop(val=val, question=question, atype=atype,
+                self.props[prop_nm] = Prop(val=val, question=question, atype=atype, default_val=default_val,
                                            hival=hival, lowval=lowval)
             else:
                 self[prop_nm] = prop_dict[prop_nm]
@@ -331,7 +332,10 @@ class PropArgs():
         Write properties to json file.
         Useful for storing interesting parameter sets.
         """
-        json.dump(self.props, open(file_nm, 'w'), indent=4)
+        dict_for_json = {}
+        for prop_name in self.props:
+            dict_for_json[prop_name] = self.props[prop_name].to_json()
+        json.dump(dict_for_json, open(file_nm, 'w'), indent=4)
 
     def to_json(self):
         return { prop_nm: self.props[prop_nm].to_json() for prop_nm in self.props }

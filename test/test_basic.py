@@ -90,10 +90,11 @@ class BasicTestCase(TestCase):
     #                 if type(props_written[key]) is dict:
     #                     atype = props_written[key].get(ATYPE, None)
     #                     val = props_written[key].get(VALUE, None)
+    #                     default_val = props_written[key].get(DEFAULT_VAL, None)
     #                     question = props_written[key].get(QUESTION, None)
     #                     hival = props_written[key].get(HIVAL, None)
     #                     lowval = props_written[key].get(LOWVAL, None)
-    #                     props_written[key] = props.Prop(val=val, question=question, atype=atype,hival=hival, lowval=lowval)
+    #                     props_written[key] = props.Prop(val=val, question=question, atype=atype, default_val=default_val, hival=hival, lowval=lowval)
     #
     #                 if props_written[key] != self.env.props.props[key]:
     #                     report = False
@@ -315,8 +316,8 @@ class BasicTestCase(TestCase):
             report = False
         if json_input_dic["postact"] != self.env.postact:
             report = False
-        # if json_input_dic["props"] != self.env.props.to_json():
-        #     report = False
+        if json_input_dic["props"] != self.env.props.to_json():
+            report = False
         # this part is broken, comment out temporarily
         if json_input_dic["user"] != self.env.user.to_json():
             report = False
