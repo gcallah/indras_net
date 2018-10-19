@@ -235,7 +235,7 @@ class Human(Beings):
         '''
         
         if self.reproTime == 0:
-            #self.reproTime = random.randint(0,HUM_REPRO_TIMER+1)
+            #self.reproTime = random.randint(0,HUM_REPRO_TIMER+1) #DONT KNOW WHY THIS IS HERE
             if self.alive:
                 creature = self.__class__(self.name + "x", self.goal,
                                           self.repro_age, self.init_life_force)
