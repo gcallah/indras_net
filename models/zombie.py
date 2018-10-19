@@ -212,11 +212,20 @@ class Human(Beings):
         
     def infected(self):
         
+        creatures = self.neighbor_iter()
+            for creature in creatures:
+                if type(creature) is Zombie:
+                    new_zom = creature.__class__(creature.name + "x", creature.goal,
+                                          creature.repro_age, creature.init_life_force)
+            self.env.add_agent(new_zom)
+            self.died()
+        '''
         guy = Zombie("NEW_ZOMBIE: "+str(NEW_ZOMBS),"Becoming a zombie", self.repro_age, self.life_force)
         NEW_ZOMBS+=1
         guy.sleep = INFECTEDTIMER
         self.env.add_agent(guy)
         self.died()
+        '''
        
     def reproduce(self):
         '''
