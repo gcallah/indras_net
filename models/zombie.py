@@ -214,7 +214,7 @@ class Human(Beings):
         creature = self.other.__class__(self.other.name + "x", self.other.goal,
                                           self.other.repro_age, self.other.init_life_force)
                 #Make a new human and add him  :)
-                self.env.add_agent(creature)
+        self.env.add_agent(creature)
         '''
         new_zom = ''
         creatures = self.neighbor_iter()
