@@ -31,7 +31,8 @@ NEW_HUMANS = 0
 #These need to be added to prop args
 NEW_HUMAN_LIFEFORCE = 10
 INFECTEDTIMER = 5
-HUM_REPRO_TIMER = 5
+HUM_REPRO_TIMER_MAX = 15
+HUM_REPRO_TIMER_MIN = 10
 
 ZOMBIE_NTYPE = "Zombie"
 HUMAN_NTYPE = "Human"
@@ -208,7 +209,7 @@ class Human(Beings):
                          max_detect=max_detect, rand_age=rand_age, speed=speed)
         self.other = Zombie
         self.ntype = "Human"
-        self.reproTime = HUM_REPRO_TIMER#random.randint(0,HUM_REPRO_TIMER+1)
+        self.reproTime = random.randint(HUM_REPRO_TIMER_MIN,HUM_REPRO_TIMER_MAX+1)
         
     def infected(self):
         new_zom = ''
