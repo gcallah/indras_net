@@ -213,10 +213,10 @@ class Human(Beings):
     def infected(self):
         
         creatures = self.neighbor_iter()
-            for creature in creatures:
-                if type(creature) is Zombie:
-                    new_zom = creature.__class__(creature.name + "x", creature.goal,
-                                          creature.repro_age, creature.init_life_force)
+        for creature in creatures:
+            if type(creature) is Zombie:
+                new_zom = creature.__class__(creature.name + "x", creature.goal,
+                                      creature.repro_age, creature.init_life_force)
             self.env.add_agent(new_zom)
             self.died()
         '''
