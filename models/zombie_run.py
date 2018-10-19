@@ -35,8 +35,8 @@ def run(prop_dict=None):
                                rand_age=True))
     for i in range(pa["num_humans"]):#HUMAN_REPRO,#pa["human_repro"],#HUMAN_LIFEFORCE, #pa["human_lforce"],
         env.add_agent(zom.Human("Human" + str(i), "Reproducing",
-                               pa["human_repro"],
-                               pa["human_lforce"],
+                               HUMAN_REPRO,#pa["human_repro"],
+                               HUMAN_LIFEFORCE,#pa["human_lforce"],
                                rand_age=True))
     
     return utils.run_model(env, prog_file, results_file)
