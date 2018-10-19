@@ -135,16 +135,16 @@ class Beings(ma.MarkovAgent):
         elif (self.ntype == "Human"):
             self.reproduce()
         
-        def to_json(self):
-            safe_fields = super().to_json()
-            safe_fields["ntype"] = self.ntype
-            safe_fields["repro_age"] = self.repro_age
-            safe_fields["life_force"] = self.life_force
-            safe_fields["max_detect"] = self.max_detect
-            safe_fields["age"] = self.age
-            safe_fields["speed"] = self.speed
+    def to_json(self):
+        safe_fields = super().to_json()
+        safe_fields["ntype"] = self.ntype
+        safe_fields["repro_age"] = self.repro_age
+        safe_fields["life_force"] = self.life_force
+        safe_fields["max_detect"] = self.max_detect
+        safe_fields["age"] = self.age
+        safe_fields["speed"] = self.speed
 
-            return safe_fields
+        return safe_fields
 
     
 
