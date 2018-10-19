@@ -31,7 +31,7 @@ NEW_HUMANS = 0
 #These need to be added to prop args
 NEW_HUMAN_LIFEFORCE = 10
 INFECTEDTIMER = 5
-HUM_REPRO_TIMER = 1
+HUM_REPRO_TIMER = 5
 
 ZOMBIE_NTYPE = "Zombie"
 HUMAN_NTYPE = "Human"
@@ -150,17 +150,17 @@ class Beings(ma.MarkovAgent):
 
 class Zombie(Beings):
     '''
-    A wolf: moves around randomly and eats any sheep
-    nearby.
+    A zombie: moves around randomly and bites humans
+    nearby, infecting them.
 
     Attributes: 
-        other: the class of the other kind of Creature, Sheep
-        ntype: "node type," variety of Creature,
+        other: the class of the other kind of Creature, Human
+        ntype: "node type," variety of Beings,
             used for bookkeeping purposes by agent_pop.
             
     '''
     def __init__(self, name, goal, repro_age, life_force, max_detect=10,
-                    rand_age=False, speed=3):
+                    rand_age=False, speed=2):
         init_state = random.randint(0,3)
         super().__init__(name, goal, repro_age, life_force, init_state,
                             max_detect=max_detect, rand_age=rand_age, speed=speed)
@@ -185,7 +185,7 @@ class Zombie(Beings):
 
     def eat(self, human):
         '''
-        Gains sheep's life force and removes sheep from env.
+        Gains Humans's life force and infects Human, removing from env, and spawning a new zombie.
         '''
         self.life_force += human.life_force
         #human.died()
@@ -211,14 +211,21 @@ class Human(Beings):
         self.reproTime = random.randint(0,HUM_REPRO_TIMER+1)
         
     def infected(self):
+        creature = self.other.__class__(self.other.name + "x", self.other.goal,
+                                          self.other.repro_age, self.other.init_life_force)
+                #Make a new human and add him  :)
+                self.env.add_agent(creature)
+        '''
         new_zom = ''
         creatures = self.neighbor_iter()
+        
         for creature in creatures:
             if type(creature) is Zombie:
                 new_zom = creature.__class__(creature.name + "x", creature.goal,
                                       creature.repro_age, creature.init_life_force)
             self.env.add_agent(new_zom)
             self.died()
+        '''
         '''
         guy = Zombie("NEW_ZOMBIE: "+str(NEW_ZOMBS),"Becoming a zombie", self.repro_age, self.life_force)
         NEW_ZOMBS+=1
