@@ -208,7 +208,7 @@ class Human(Beings):
                          max_detect=max_detect, rand_age=rand_age, speed=speed)
         self.other = Zombie
         self.ntype = "Human"
-        self.reproTime = random.randint(0,HUM_REPRO_TIMER+1)
+        self.reproTime = HUM_REPRO_TIMER#random.randint(0,HUM_REPRO_TIMER+1)
         
     def infected(self):
         new_zom = ''
@@ -234,7 +234,7 @@ class Human(Beings):
         '''
         
         if self.reproTime == 0:
-            self.reproTime = random.randint(0,HUM_REPRO_TIMER+1)
+            #self.reproTime = random.randint(0,HUM_REPRO_TIMER+1)
             if self.alive:
                 creature = self.__class__(self.name + "x", self.goal,
                                           self.repro_age, self.init_life_force)
