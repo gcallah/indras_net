@@ -36,9 +36,9 @@ def run(prop_dict=None):
     for i in range(pa["num_humans"]):
         env.add_agent(zom.Human("Human" + str(i), "Reproducing", 
 		## Delete the following comments when human attributes are fixed
-                                pa["human_repro"],#HUMAN_REPRO,    #pa["human_repro"],
-                                pa["human_lforce"],#HUMAN_LIFEFORCE,      #pa["human_lforce"],
-                                rand_age=True))
+                               pa["human_repro"],#HUMAN_REPRO,    #pa["human_repro"],
+                               pa["human_lforce"],#HUMAN_LIFEFORCE,      #pa["human_lforce"],
+                               rand_age=True))
     
     return utils.run_model(env, prog_file, results_file)
 
