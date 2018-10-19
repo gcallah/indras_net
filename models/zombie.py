@@ -160,7 +160,7 @@ class Zombie(Beings):
             
     '''
     def __init__(self, name, goal, repro_age, life_force, max_detect=10,
-                    rand_age=False, speed=2):
+                    rand_age=False, speed=3):
         init_state = random.randint(0,3)
         super().__init__(name, goal, repro_age, life_force, init_state,
                             max_detect=max_detect, rand_age=rand_age, speed=speed)
@@ -211,7 +211,7 @@ class Human(Beings):
         self.reproTime = random.randint(0,HUM_REPRO_TIMER+1)
         
     def infected(self):
-        
+        new_zom = ''
         creatures = self.neighbor_iter()
         for creature in creatures:
             if type(creature) is Zombie:
