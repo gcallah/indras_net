@@ -211,21 +211,15 @@ class Human(Beings):
         self.reproTime = random.randint(0,HUM_REPRO_TIMER+1)
         
     def infected(self):
-        creature = self.other.__class__(self.other.name + "x", self.other.goal,
-                                          self.other.repro_age, self.other.init_life_force)
-                #Make a new human and add him  :)
-        self.env.add_agent(creature)
-        '''
         new_zom = ''
         creatures = self.neighbor_iter()
         
-        for creature in creatures:
+        for creature in creatures:  #  this loop gets all the attributes needed to spawn in new zombie
             if type(creature) is Zombie:
                 new_zom = creature.__class__(creature.name + "x", creature.goal,
                                       creature.repro_age, creature.init_life_force)
             self.env.add_agent(new_zom)
             self.died()
-        '''
         '''
         guy = Zombie("NEW_ZOMBIE: "+str(NEW_ZOMBS),"Becoming a zombie", self.repro_age, self.life_force)
         NEW_ZOMBS+=1
