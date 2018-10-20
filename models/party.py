@@ -10,7 +10,6 @@ of a minority in a particular neighborhood.
 """
 
 
-import random
 import indra.vector_space as vs
 import indra.vs_agent as va
 import indra.grid_env as grid
@@ -37,6 +36,8 @@ class PartyAgent(va.VSAgent):
         self.stance = None
         self.orientation = None
         self.visible_pre = None
+        self.happy = True
+        self.timesWillingToMove = 100
 
     def eval_env(self, other_pre):
         """
@@ -44,6 +45,7 @@ class PartyAgent(va.VSAgent):
         """
         # no neighbors, we move:
         if other_pre.equals(vs.VectorSpace.NULL_PRE):
+            self.happy = False
             return MOVE
 
         # otherwise, see how we like the hood
@@ -56,16 +58,36 @@ class PartyAgent(va.VSAgent):
                 num_opp_sex += 1
         opp_sex_percentage = num_opp_sex / total_people
 
-        if opp_sex_percentage <= self.tolerance:
+        if opp_sex_percentage >= self.tolerance:
+            self.happy = True
             return STAY
         else:
+            self.happy = False
             return MOVE
 
     def respond_to_cond(self, eval_vars=None):
         """
         If we don't like the neighborhood, we jump to a random empty cell.
         """
-        self.move_to_empty()
+        # Keeps track of how many times this agent has moved
+        numMoves = 0
+        # If agent gets tired of finding a new group, stop exploring
+        while not self.happy and numMoves < self.timesWillingToMove:
+            self.move_to_empty()
+            numMoves += 1
+            # Checks percentage of opposite sex agents in self's neighborhood
+            num_opp_sex = 0
+            total_people = 1
+            for agent in self.neighbor_iter():
+                total_people += 1
+                if type(agent) != type(self):
+                    num_opp_sex += 1
+            opp_sex_percentage = num_opp_sex / total_people
+            if opp_sex_percentage >= self.tolerance:
+                self.happy = True
+            else:
+                continue
+
 
     def visible_stance(self):
         """
