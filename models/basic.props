@@ -1,6 +1,6 @@
 {
     "num_agents": {
-        "val": 100,
+        "val": 3,
         "question": "What is the number of agents?",
         "atype": "INT",
         "default_val": 100,
