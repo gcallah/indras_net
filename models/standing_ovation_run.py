@@ -17,18 +17,18 @@ def run(prop_dict=None):
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
     global pa
     num_agents = pa["grid_width"] * pa["grid_height"]
-    num_agents = 100
+    num_agents = 25 #Temporary test value
 
     #Create audience with width x height
     env = stov.Auditorium(
-                     #10,#pa["grid_width"],
-                     #10,#pa["grid_height"],
+                     pa["grid_width"],
+                     pa["grid_height"],
                      model_nm=MODEL_NM,
                      #act=True,
                      props=pa
                      )
     #Generate audience members
-    for i in range(num_agents): #change this to width x height somehow
+    for i in range(num_agents):
         noise = random.uniform(0.7,9.0)
         env.add_agent(stov.AudienceAgent("Member" + str(i), "Enjoying the show", pa["noise_level"]))
         # env.add_agent(stov.AudienceAgent("Member" + str(i), "Enjoying show"
