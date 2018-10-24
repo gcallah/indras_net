@@ -134,6 +134,7 @@ class Beings(ma.MarkovAgent):
         
         elif (self.ntype == "Human"):
             self.reproduce()
+            self.naturalDeath()
         
     def to_json(self):
         safe_fields = super().to_json()
@@ -167,22 +168,22 @@ class Zombie(Beings):
                             max_detect=max_detect, rand_age=rand_age, speed=speed)
         self.other = Human
         self.ntype = "Zombie"
-        self.sleep = 0
+        #self.sleep = 0
 
     def preact(self):
         '''
         After (or before depending on how you view it) everything moves, 
         zombies eat nearby people.
         '''
-        if self.sleep != 0:
-            if self.goal != "Eating Human":
-                self.goal = "Eating Human"
-            creatures = self.neighbor_iter()
-            for creature in creatures:
-                if type(creature) is Human:
-                    self.eat(creature)
-        else:
-            self.sleep -= 1
+        #if self.sleep != 0:
+            #if self.goal != "Eating Human":
+                #self.goal = "Eating Human"
+        creatures = self.neighbor_iter()
+        for creature in creatures:
+            if type(creature) is Human:
+                self.eat(creature)
+        #else:
+            #self.sleep -= 1
 
     def eat(self, human):
         '''
@@ -210,6 +211,7 @@ class Human(Beings):
         self.other = Zombie
         self.ntype = "Human"
         self.reproTime = repro_age
+        self.lifeTime = life_force
         #self.reproTime = random.randint(HUM_REPRO_TIMER_MIN,HUM_REPRO_TIMER_MAX+1)
                 
     def infected(self):
@@ -229,14 +231,27 @@ class Human(Beings):
         self.env.add_agent(guy)
         self.died()
         '''
-       
+    def naturalDeath(self):
+        new_zom = ''
+        creatures = self.neighbor_iter()
+        
+        if self.lifeTime == 0:
+            for creature in creatures:  #same loop as in infected class
+                if type(creature) is Zombie:
+                    new_zom = creature.__class__(creature.name + "x", creature.goal,
+                                          creature.repro_age, creature.init_life_force)
+                self.env.add_agent(new_zom)
+                self.died()
+        else:
+            self.lifeTime -= 1
+            
     def reproduce(self):
         '''
         Adds a Creature of self's type to a random place in the env.
         '''
         
         if self.reproTime == 0:
-            #self.reproTime = random.randint(0,HUM_REPRO_TIMER+1) #DONT KNOW WHY THIS IS HERE
+            #self.reproTime = random.randint(0,HUM_REPRO_TIMER+1)
             if self.alive:
                 creature = self.__class__(self.name + "x", self.goal,
                                           self.repro_age, self.init_life_force)
