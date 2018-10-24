@@ -44,9 +44,12 @@ class AudienceAgent(ma.MarkovAgent):
         self.goal = goal
         self.state = SITTING #Everyone starts off sitting
         self.next_state = STANDING
-        self.noise = 0.95
+        self.ntype = self.state
+        self.noise = 0.75
         self.standard = 0.2
         self.pressure = 0
+
+        self.changed = False #temp var to easily see whether agent changed state
 
         self.initial() #Agent must have a first impression
 
@@ -64,6 +67,8 @@ class AudienceAgent(ma.MarkovAgent):
         self.state = self.next_state
         self.next_state = temp
 
+        self.ntype = self.state
+
     # Initial reaction to the performance
         # If the performance falls within the member's standard, the member will stand
     def reaction(self, performance):
@@ -78,25 +83,37 @@ class AudienceAgent(ma.MarkovAgent):
     def confront(self):
         choice = random.uniform(0.0, 1.0)
         if(self.pressure > 0.5): #If the pressure is to great, you have a choice
-            if (choice <= noise): #If the agent is likely to follow the status quo
+            if (choice <= self.noise): #If the agent is likely to follow the status quo
                 self.cycleState()
+                self.changed = True ##Delete later
 
     def preact(self):
         different_tot = 0
         neighbors_tot = 0
+        print("neighborhood:",self.neighborhood) ##
         for neighbor in self.neighbor_iter():
+            print("I am iterating through my neighbors") ##
             if(neighbor.state != self.state):
                 different_tot += 1
             neighbors_tot += 1
-        self.pressure = different_tot / neighbors_tot
-
-        print("I am agent " + self.name + " and I am looking at my peers [preact]")
+        self.pressure = 0.75 ##Temp
+        if(neighbors_tot != 0):
+            self.pressure = different_tot / neighbors_tot
+        print("I am agent " + self.name + " and I am " + self.state + " [preact]")
 
     #With the audience member now having some type of pressure
     #Confront the audience member with the choice of sitting or standing
     def act(self):
+        self.preact() #This really shouldn't be here but I'm not able to get the preact to run
+
+        self.changed = False ##Delete later
+
         self.confront()
-        print("I am agent " + self.name + " and I am reacting to my peers [act]")
+        print("I am agent " + self.name + " and I am " + self.state + " [act]")
+        if(self.changed): ##Delete before submitting
+            print("I was pressured into changing my state")
+        else:
+            print("I resisted the pressure!")
 
     # def postact(self):
     #     print("I am agent" + st
@@ -162,3 +179,4 @@ class Auditorium(menv.MarkovEnv):
             self.add_agent(AudienceAgent(agent["name"],
                                       agent["goal"],
                                       agent["noise_level"]))
+
