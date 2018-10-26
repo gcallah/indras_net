@@ -30,7 +30,7 @@ def run(prop_dict=None):
         pa["base_dir"] = os.environ['base_dir']
         
     # Now we create an environment for our agents to act within:
-    env = pm.PartyEnv("A bar",
+    env = pm.PartyEnv("A cocktail party",
                             pa["grid_width"],
                             pa["grid_height"],
                             model_nm=pa.model_nm,
