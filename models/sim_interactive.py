@@ -100,4 +100,12 @@ class Graph:
         self.addRelation(inter2, inter1)
         return
 
+class SimInteractiveEnv(grid.GridEnv):
+
+    def __init__(self, name, width, height, torus=False, model_nm='sim_interactive', props=None):
+        super().__init__(name, width, height, torus=False,
+                         model_nm=model_nm, props=props)
+        self.plot_title = name
+
+        
 
