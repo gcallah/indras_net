@@ -1,3 +1,7 @@
+import indra.vector_space as vs
+import indra.vs_agent as va
+import indra.grid_env as grid
+
 import random
 
 class Route:
@@ -84,14 +88,16 @@ class Intersection:
         return
 
 class Graph:
-    intersactionArr = []
+    intersectionArr = []
     def __init__(self):
-        self.intersactionArr = []
+        self.intersectionArr = []
         return
-    def addRelation(self, intersaction1, intersection2):
-        intersaction1.add(intersection2)
+    def addRelation(self, intersection1, intersection2):
+        intersection1.add(intersection2)
         return
     def addTwoRelation(self, inter1, inter2):
         self.addRelation(inter1, inter2)
         self.addRelation(inter2, inter1)
         return
+
+
