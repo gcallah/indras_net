@@ -9,8 +9,7 @@ pa = props.PropArgs.create_props(MODEL_NM)
 import indra.utils as utils
 import models.zombie as zom
 
-HUMAN_REPRO = 10
-HUMAN_LIFEFORCE = 10
+
 
 def run(prop_dict=None):
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
