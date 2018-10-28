@@ -145,7 +145,14 @@ class People(menv.MarkovEnv):
         return trans_matrix
 
     def dir_info(self, agent):
-        
+        pass
+
+    def neg_trans(self, d, total):
+        pass
+
+    def poz_trans(self, d, total):
+        pass
+
     
     def set_agent_color(self):
         self.set_var_color(BURNED_OUT, disp.BLACK)
