@@ -10,7 +10,7 @@ import os
 
 POLARIZATION_UP = 1.2
 POLARIZATION_DN = 0.9
-POLAR_THRESHHOLD = 2.5
+POLAR_THRESHHOLD = 2.7
 
 NUM_NEG = 0
 NUM_POS = 0
@@ -42,10 +42,12 @@ class Citizen(ent.Agent):
 
     def postact(self):
         global POLAR
+        print(POLAR, self.political, end='\t')
         if POLAR:
             self.political *= POLARIZATION_UP
         else:
             self.political *= POLARIZATION_DN
+        print(self.political)
 
             
 class President():
@@ -97,8 +99,7 @@ class BasicEnv(env.Environment):
                          postact=True,
                          model_nm=model_nm,
                          props=props)
-        global PRESIDENT
-        PRESIDENT = President(self.agents)
+        
         
     def preact_loop(self):
         global PRESIDENT
@@ -107,7 +108,7 @@ class BasicEnv(env.Environment):
         global NUM_POS
         global NUM_CORRUPT
         print("Negative Presidents: "+str(NUM_NEG)+"\nPositive Presidents: "+str(NUM_POS))
-        if (NUM_NEG+NUM_POS)!=0:
+        if abs(NUM_NEG-NUM_POS) >= POLAR_THRESHHOLD:
             print("Number of presidents that betray popular opinion: "+str(NUM_CORRUPT)
                 +"  ("+str((NUM_CORRUPT/(NUM_POS+NUM_NEG))*100) + "%)")
               

@@ -67,8 +67,9 @@ def run(prop_dict=None):
     ##We make agents here...
     for i in range(0,CITIZEN_NUM):
         AGENT_NUM=0
+        print(CITIZEN_POL_BELL[i])
         env.add_agent(ps.Citizen(name="CITagent" 
-                        + str(AGENT_NUM),goal="Voting",
+                        + str(AGENT_NUM),goal="Voting"+str(CITIZEN_POL_BELL[i]),
                         political=CITIZEN_POL_BELL[i],
                         wealth=CITIZEN_WEALTH_BELL[i]
                                  )
@@ -77,7 +78,8 @@ def run(prop_dict=None):
                         
     for i in range(0,OLIGARCH_NUM):
         AGENT_NUM=0
-        env.add_agent(ps.Citizen(name="OLIagent" + str(AGENT_NUM),goal="Voting",
+        env.add_agent(ps.Citizen(name="OLIagent" 
+                        + str(AGENT_NUM),goal="Voting"+str(OLIGARCH_POL_BELL[i]),
                         political=OLIGARCH_POL_BELL[i],
                         wealth=OLIGARCH_WEALTH_BELL[i]
                                 )
