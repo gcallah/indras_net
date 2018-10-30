@@ -83,22 +83,22 @@ def parameters(request):
                 if q.hival:
                     hival = q.hival
                 if q.atype == STR:
-                    self.fields[q.quest] = forms.CharField(label=q.quest,
+                    self.fields[q.question] = forms.CharField(label=q.question,
                                                            initial=default,
                                                            max_length=20)
                 elif q.atype == INT:
-                    self.fields[q.quest] = forms.IntegerField(label=q.quest,
+                    self.fields[q.question] = forms.IntegerField(label=q.question,
                                                               initial=default,
                                                               min_value=lowval,
                                                               max_value=hival)
                 elif q.atype == DBL:
-                    self.fields[q.quest] = forms.FloatField(label=q.quest,
+                    self.fields[q.question] = forms.FloatField(label=q.question,
                                                             initial=default,
                                                             min_value=lowval,
                                                             max_value=hival)
                 elif q.atype == BOOL:
-                    self.fields[q.quest] = forms.BooleanField(label=q.quest,
-                                                              required=False)
+                    self.fields[q.question] = forms.BooleanField(label=q.question,
+                                                                 required=False)
     # Assign a new session id to a new user
     assign_key(request)
 
@@ -199,7 +199,7 @@ def model_first_run(request, action, entry_point, questions, session_id,
     answers = {}
     answers["plot_type"] = plot_type
     for q in questions:
-        answer = request.POST[q.quest]
+        answer = request.POST[q.question]
         if q.atype == "INT":
             answer = int(answer)
         elif q.atype == "DBL":

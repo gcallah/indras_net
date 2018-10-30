@@ -1,3 +1,4 @@
+setuptools==40.5.0
 Django==2.1.2
 django-extensions==2.1.2
 coverage==4.5.1
@@ -7,4 +8,4 @@ urllib3==1.23
 networkx==1.11
 matplotlib==2.2.2
 numpy==1.13.1
-flake8=3.6.0
+flake8==3.6.0
