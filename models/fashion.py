@@ -32,7 +32,7 @@ class Society(tp.TwoPopEnv):
     A society of hipsters and followers.
     """
     def __init__(self, name, length, height, model_nm=None, torus=False,
-                props=None):
+                 props=None):
         super().__init__(name, length, height, model_nm=model_nm,
                          torus=False, postact=True, props=props)
         self.stances = ["blue", "red"]
@@ -63,9 +63,9 @@ class Society(tp.TwoPopEnv):
 
         else:
             logging.error("agent found whose NTYPE is neither "
-                          "{} nor {}, but rather {}".format(Hipster.__name__,
-                                                            Follower.__name__,
-                                                            agent_json["ntype"]))
+                          "{} nor {}, but {}".format(Hipster.__name__,
+                                                     Follower.__name__,
+                                                     agent_json["ntype"]))
 
         if new_agent:
             self.add_agent_from_json(new_agent, agent_json)

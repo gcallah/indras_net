@@ -3,9 +3,11 @@ BOX_DATA = $(BOX_DIR)/data
 BOXPLOTS = $(shell ls $(BOX_DATA)/plot*.pdf)
 DOCKER_DIR = docker
 DJANGO_DIR = IndrasNet
-PYLINT = pylint
-PYLINTFLAGS = -rn
+MODELS_DIR = models
+PYLINT = flake8
+PYLINTFLAGS = 
 PYTHONFILES = $(shell ls $(DJANGO_DIR)/*.py)
+PYTHONFILES += $(shell ls $(MODELS_DIR)/*.py)
 
 dist: setup.py
 	-git commit -a -m "Building new distribution"
@@ -24,10 +26,10 @@ prod: $(SRCS) $(OBJ)
 	git push origin master
 	ssh indrasnet@ssh.pythonanywhere.com 'cd /home/indrasnet/indras_net; /home/indrasnet/indras_net/rebuild.sh'
 
-pylint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
+lint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
 
 %.pylint:
-	pylint $(PYLINTFLAGS) $*.py
+	$(PYLINT) $(PYLINTFLAGS) $*.py
 
 db: $(DJANGO_DIR)/models.py
 	python ./manage.py makemigrations IndrasNet

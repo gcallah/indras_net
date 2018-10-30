@@ -15,5 +15,6 @@ models = {
 def main(args=None):
     entry_point(args, models)
 
+
 if __name__ == "__main__":
     main()

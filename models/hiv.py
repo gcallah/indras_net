@@ -16,7 +16,7 @@ symptoms_show = 200
 NORMAL_TRANS =
 INFECT_TRANS =
 
-class neg(ma.MarkovAgent):
+class Neg(ma.MarkovAgent):
     """
         An HIV-negative individual
     """
@@ -70,7 +70,7 @@ class neg(ma.MarkovAgent):
             self.partner = None
 
 
-class poz(neg):
+class Poz(neg):
     """
         An HIV-positive individual
     """
@@ -100,7 +100,7 @@ class poz(neg):
         if (random.randint(0, 52) < self.test_frequency) && self.status_known == False:
             self.status_known = True
 
-class individual(ma.MarkovAgent):
+class Individual(ma.MarkovAgent):
     def __init__(self, name, init_state, max_detect=1, coupling_tendency, commitment, condom_use, test_frequency, coupled, couple_length, partner):
         super().__init__(name, 4, init_state, max_detect=max_detect)
         
@@ -132,8 +132,28 @@ class People(menv.MarkovEnv):
         self.infect = markov.MarkovPre(INFECT_TRANS)
 
     def get_pre(self, agent):
+        trans_str = ""
+        
+        d, total = self.dir_info(agent)
+        
+        if(type(agent) == Poz):
+            trans_str += self.poz_trans(d, total)
+        else:
+            trans_str += self.neg_trans(d, total)
+        
+        trans_matrix = markov.from_matrix(np.matrix(trans_str))
+        return trans_matrix
+
+    def dir_info(self, agent):
         pass
 
+    def neg_trans(self, d, total):
+        pass
+
+    def poz_trans(self, d, total):
+        pass
+
+    
     def set_agent_color(self):
         self.set_var_color(BURNED_OUT, disp.BLACK)
         self.set_var_color(ON_FIRE, disp.RED)

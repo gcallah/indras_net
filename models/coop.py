@@ -70,7 +70,7 @@ class CoopEnv(env.Environment):
 
     def postact_loop(self):
         """
-        If an agent wants to go out, it hopes to 
+        If an agent wants to go out, it hopes to
         find a babysitter, and pay them
         """
         exchange = 0
