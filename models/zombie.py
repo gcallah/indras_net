@@ -2,10 +2,10 @@ import random
 import indra.markov as markov
 import indra.markov_agent as ma
 import indra.markov_env as menv
+
+
 import numpy as np
-import operator as op
 import math
-import copy
 
 X = 0
 Y = 1
@@ -23,12 +23,12 @@ S = 1
 E = 2
 W = 3
 
-STATE_MAP = { N: NORTH, S: SOUTH, E: EAST, W: WEST }
+STATE_MAP = {N: NORTH, S: SOUTH, E: EAST, W: WEST}
 
 NEW_ZOMBS = 0
 NEW_HUMANS = 0
 
-#These need to be added to prop args
+# These need to be added to prop args
 NEW_HUMAN_LIFEFORCE = 10
 INFECTEDTIMER = 5
 HUM_REPRO_TIMER_MAX = 10
@@ -37,30 +37,12 @@ HUM_REPRO_TIMER_MIN = 5
 ZOMBIE_NTYPE = "Zombie"
 HUMAN_NTYPE = "Human"
 
-
-
+# The class that contains functions both agents use
 class Beings(ma.MarkovAgent): 
-    '''
-    A Creature moves around intelligently based on his
-    prehension of the env.
-
-    Attributes: 
-        alive: boolean indicating if Creature should exist in the env 
-        age: int keeps trak of how many steps Creature has been in existance; 
-            used for controling periodic reproduction
-        other: Wolf or Sheep object to be used by subclass to identify what
-            Creature is different than itself
-        repro_age: if age (mod repro_age) == 0, make a new Creature of same
-            class.
-        life_force: if this int goes to or below zero, Creature dies and is 
-            removed from env.
-        init_life_force: int 
-        speed: an int amount of times a Creature may move per turn
-        state: the direction the Creature is moving
-    '''
-    def __init__(self, name, goal, repro_age, life_force, init_state, max_detect=1,
-                 rand_age=False, speed=1):
+    def __init__(self, name, goal, repro_age,
+    life_force, init_state, max_detect=1, rand_age=False, speed=1):
         super().__init__(name, goal, NSTATES, init_state, max_detect=max_detect)
+	
         if not rand_age:
             self.age = 0
         else:
@@ -74,59 +56,34 @@ class Beings(ma.MarkovAgent):
         self.state = init_state
 
     def died(self):
-        '''
-        Removes dead agent from grid.
-        '''
         if self.alive:
             self.alive = False
             self.env.died(self)
 
     def act(self):
-        '''
-        The Creature moves either one unit north, south, east, 
-        or west. For however many units of "speed" he has, he 
-        can move that many times per action.
-        '''
-        for i in range(self.speed):
+
+	for i in range(self.speed):
             super().act()
             self.state = self.next_state
             self.move(self.state)
             
     def move(self, state):
-        '''
-        Moves self one unit in a cardinal direction if
-        that direction is empty and doesn't lead off the
-        board.
-
-        Args:
-            self: the agent to be moved
-            state: a cardinal direction
-                North: N = 0
-                South: S = 1
-                East: E = 2
-                West: W = 3
-        '''
         x = self.pos[X]
         y = self.pos[Y]
         if state == N:
             if self.env.is_cell_empty(x, y+1):
-                self.env.move(self, x,y+1)
+                self.env.move(self, x, y+1)
         elif state == S:
             if self.env.is_cell_empty(x, y-1):
-                self.env.move(self, x,y-1)
+                self.env.move(self, x, y-1)
         elif state == E:
             if self.env.is_cell_empty(x-1, y):
-                self.env.move(self, x-1,y)
+                self.env.move(self, x-1, y)
         else:
             if self.env.is_cell_empty(x+1, y):
-                self.env.move(self, x+1,y)
+                self.env.move(self, x+1, y)
             
     def postact(self):
-        '''
-        Every step ages the Creature by 1. If the Creature 
-        has not lifeforce, he dies. If the Creature happens to
-        be in the right stage of life, he may reproduce.
-        '''
         self.age += 1
         self.life_force -= 1
         if self.life_force <= 0:
@@ -147,73 +104,44 @@ class Beings(ma.MarkovAgent):
 
         return safe_fields
 
-    
-
-
 class Zombie(Beings):
-    '''
-    A zombie: moves around randomly and bites humans
-    nearby, infecting them.
-
-    Attributes: 
-        other: the class of the other kind of Creature, Human
-        ntype: "node type," variety of Beings,
-            used for bookkeeping purposes by agent_pop.
-            
-    '''
     def __init__(self, name, goal, repro_age, life_force, max_detect=10,
-                    rand_age=False, speed=2):
+    rand_age=False, speed=2):
+		
         init_state = random.randint(0,3)
         super().__init__(name, goal, repro_age, life_force, init_state,
-                            max_detect=max_detect, rand_age=rand_age, speed=speed)
+        max_detect=max_detect, rand_age=rand_age, speed=speed)
         self.other = Human
         self.ntype = "Zombie"
-        #self.sleep = 0
-
+    
+    # Chooses which human to eat
     def preact(self):
-        '''
-        After (or before depending on how you view it) everything moves, 
-        zombies eat nearby people.
-        '''
-        #if self.sleep != 0:
-            #if self.goal != "Eating Human":
-                #self.goal = "Eating Human"
         creatures = self.neighbor_iter()
         for creature in creatures:
             if type(creature) is Human:
                 self.eat(creature)
-        #else:
-            #self.sleep -= 1
-
+    
+    # Zombie eats some of human and extends life force
+    # It also infects a human
     def eat(self, human):
-        '''
-        Gains Humans's life force and infects Human, removing from env, and spawning a new zombie.
-        '''
         self.life_force += human.life_force
-        #human.died()
         human.infected()
 
 
 class Human(Beings):
-    '''
-    A sheep: moves when wolf is nearby and sometimes gets eaten.
-
-    Attributes: 
-        other: the class of the other kind of Creature, Wolf
-        ntype: variety of Creature, used for bookkeeping purposes by agent_pop, not 
-            an essential feature for the running of this program
-    '''
+    
     def __init__(self, name, goal, repro_age, life_force, max_detect=5,
-                 rand_age=False, speed=1):
+    rand_age=False, speed=1):
+		
         init_state = random.randint(0,3)
         super().__init__(name, goal, repro_age, life_force, init_state,
-                         max_detect=max_detect, rand_age=rand_age, speed=speed)
+        max_detect=max_detect, rand_age=rand_age, speed=speed)
         self.other = Zombie
         self.ntype = "Human"
         self.reproTime = repro_age
         self.lifeTime = life_force
-        #self.reproTime = random.randint(HUM_REPRO_TIMER_MIN,HUM_REPRO_TIMER_MAX+1)
-                
+    
+    # Human who has been bit becomes a zombie
     def infected(self):
         new_zom = ''
         creatures = self.neighbor_iter()
@@ -221,75 +149,50 @@ class Human(Beings):
         for creature in creatures:  #  this loop gets all the attributes needed to spawn in new zombie
             if type(creature) is Zombie:
                 new_zom = creature.__class__(creature.name + "x", creature.goal,
-                                      creature.repro_age, creature.init_life_force)
+                creature.repro_age, creature.init_life_force)
+		
             self.env.add_agent(new_zom)
             self.died()
-        '''
-        guy = Zombie("NEW_ZOMBIE: "+str(NEW_ZOMBS),"Becoming a zombie", self.repro_age, self.life_force)
-        NEW_ZOMBS+=1
-        guy.sleep = INFECTEDTIMER
-        self.env.add_agent(guy)
-        self.died()
-        '''
+    
+    # human dies of natural causes
     def naturalDeath(self):
         new_zom = ''
         creatures = self.neighbor_iter()
         
         if self.lifeTime == 0:
-            for creature in creatures:  #same loop as in infected class
+            for creature in creatures:  # same loop as in infected class
                 if type(creature) is Zombie:
                     new_zom = creature.__class__(creature.name + "x", creature.goal,
-                                          creature.repro_age, creature.init_life_force)
+                    creature.repro_age, creature.init_life_force)
+		
                 self.env.add_agent(new_zom)
                 self.died()
         else:
             self.lifeTime -= 1
-            
+    
+    # add a new human to the zone after certain num of turns
     def reproduce(self):
-        '''
-        Adds a Creature of self's type to a random place in the env.
-        '''
-        
+                
         if self.reproTime == 0:
-            #self.reproTime = random.randint(0,HUM_REPRO_TIMER+1)
             if self.alive:
                 creature = self.__class__(self.name + "x", self.goal,
-                                          self.repro_age, self.init_life_force)
-                #Make a new human and add him  :)
+                self.repro_age, self.init_life_force)
+		
                 self.env.add_agent(creature)
-                '''
-                guy = Human("NEW_HUMAN: "+str(NEW_HUMANS), self.goal, self.repro_age, NEW_HUMAN_LIFEFORCE)
-                NEW_HUMANS+=1
-                self.env.add_agent(guy)
-                '''
+                
         else:
             self.reproTime -= 1
-            
-class Zone(menv.MarkovEnv):
-    '''
-    A meadow in which wolf eat sheep.
-    '''
 
+# Area where humans and zombies interact
+class Zone(menv.MarkovEnv):
+    
+    # gets rid of dead agents from the Zone
     def died(self, prey):
-        '''
-        Removes prey from env.
-        '''
         self.remove_agent(prey)
 
+    # what will happen in the Zone first
     def get_pre(self, agent, n_census):
-        '''
-        Gathers and uses env info to make a prehension transition matrix
-
-        Args: 
-            self: the env
-            agent: the agent acting in the env 
-            n_census: unused
-        Returns:
-            prehesion based on what Creatures are North, South,
-            East, and West of self, determining what direction
-            the agent might come.
-        '''
-
+        
         trans_str = ""
 
         d, total = self.dir_info(agent)
@@ -301,43 +204,12 @@ class Zone(menv.MarkovEnv):
         
         trans_matrix = markov.from_matrix(np.matrix(trans_str))
         return trans_matrix
-
+    
+    # Finds out which direction (NORTH, SOUTH, EAST, WEST) as more of the 
+    # opposite agent type depending on what agent we are dealing with
     def dir_info(self, agent):
-        '''
-        We count wolves and sheep that are North, South, East, West 
-        of the agent in question. What quadrant they're in, and how
-        far they are from the agent factors into the information returned.
-        -----------------------------------
-        | \                             / | Positive Diagonal Line: y = x + (ya-xa)
-        |   \                         /   |                         x = y - (ya-xa)
-        |     \          N          /     |
-        |       \                 /       |
-        |         \             /         |
-        |           \         /           | 
-        |             \     /             |
-        |               \ /               |
-        |     E   agent @ (xa,ya)   W     |
-        |               / \               | 
-        |             /     \             |
-        |           /         \           |
-        |         /             \         |
-        |       /                 \       |
-        |     /                     \     |
-        |   /            S            \   |
-        | /  other @ (othr[X],othr[Y])  \ | Negative Diagonal Line: y = -x + (ya+xa)
-        -----------------------------------                         x = -y + (ya+xa)
-
-        Args:
-            self: the environment 
-            agent: the agent surveying its environment 
-
-        Returns:
-            A dict maping cardinal directions to numbers representing
-            both how far and how many agents of the opposite type are
-            in that cardinal direciton.
-        '''
+        
         directions = {N: 0, S: 0, E: 0, W: 0}
-        creatureCoords = (0,0)
         total = 0
         creatures = agent.neighbor_iter(sq_v=10)
         for creature in creatures:
@@ -368,35 +240,21 @@ class Zone(menv.MarkovEnv):
 
         return directions, total
 
+    # figures out where all the humans are and moves zombies towards them
     def zombie_trans(self, d, total):
-        '''
-        The wolf uses its survey of the environment to see which
-        directions have the closest and most sheep. He'll probably
-        go in the direction with the highest reward.
-
-        Args:
-            d: a dictionary containing information about where wolves are
-             relative to the sheep 
-            total: the sum of all the numerical elements of d; used in
-             computation
-
-        Returns:
-            trans_str: the string representing the sheep's possibilities
-            for movement
-        '''
         trans_str = ""
 
-        NS, NE, NW, NN = 0,0,0,0
-        SN, SE, SW, SS = 0,0,0,0
-        EN, ES, EW, EE = 0,0,0,0
-        WN, WS, WE, WW = 0,0,0,0
+        NS, NE, NW, NN = 0, 0, 0, 0
+        SN, SE, SW, SS = 0, 0, 0, 0
+        EN, ES, EW, EE = 0, 0, 0, 0
+        WN, WS, WE, WW = 0, 0, 0, 0
 
         # Random movement if nothing is in view.
         if total == 0:
-            NS, NE, NW, NN = 0.25,0.25,0.25,0.25
-            SN, SE, SW, SS = 0.25,0.25,0.25,0.25
-            EN, ES, EW, EE = 0.25,0.25,0.25,0.25
-            WN, WS, WE, WW = 0.25,0.25,0.25,0.25
+            NS, NE, NW, NN = 0.25, 0.25, 0.25, 0.25
+            SN, SE, SW, SS = 0.25, 0.25, 0.25, 0.25
+            EN, ES, EW, EE = 0.25, 0.25, 0.25, 0.25
+            WN, WS, WE, WW = 0.25, 0.25, 0.25, 0.25
         else:
             NS = d[S]/total
             NE = d[E]/total
@@ -425,21 +283,9 @@ class Zone(menv.MarkovEnv):
 
         return trans_str
 
+    # figures out where all the zombies are and moves humans away from them
     def human_trans(self, d, total):
-        '''
-        The sheep uses it's survey of the environment to determine which
-        directions are the least dangerious. He'll go one of these directions.
-
-        Args:
-            d: a dictionary containing information about where wolves are
-             relative to the sheep 
-            total: the sum of all the numerical elements of d; used in
-             computation
-
-        Returns:
-            trans_str: the string representing the probability a sheep will
-                move in any cardinal direction
-        '''
+        
         best_dir = min(d, key=d.get)
 
         num_close = 0
@@ -483,10 +329,14 @@ class Zone(menv.MarkovEnv):
 
         trans_str = ""
 
-        trans_str += str(NN) + " " + str(NS) + " " + str(NE) + " " + str(NW) + ";"
-        trans_str += str(SN) + " " + str(SS) + " " + str(SE) + " " + str(SW) + ";"
-        trans_str += str(EN) + " " + str(ES) + " " + str(EE) + " " + str(EW) + ";"
-        trans_str += str(WN) + " " + str(WS) + " " + str(WE) + " " + str(WW)
+        trans_str += (str(NN) + " " + str(NS) + " "
+	+ str(NE) + " " + str(NW) + ";")
+        trans_str += (str(SN) + " " + str(SS) + " "
+	+ str(SE) + " " + str(SW) + ";")
+        trans_str += (str(EN) + " " + str(ES) + " "
+	+ str(EE) + " " + str(EW) + ";")
+        trans_str += (str(WN) + " " + str(WS) + " "
+	+ str(WE) + " " + str(WW))
 
         return trans_str
     
@@ -499,27 +349,26 @@ class Zone(menv.MarkovEnv):
         new_agent = None
         if agent_json["ntype"] == ZOMBIE_NTYPE:
             new_agent = Zombie(name=agent_json["name"],
-                             goal=agent_json["goal"],
-                             repro_age=agent_json["repro_age"],
-                             life_force=agent_json["life_force"],
-                             max_detect=agent_json["max_detect"],
-                             rand_age=agent_json["age"],
-                             speed=agent_json["speed"])
+            goal=agent_json["goal"],
+            repro_age=agent_json["repro_age"],
+            life_force=agent_json["life_force"],
+            max_detect=agent_json["max_detect"],
+            rand_age=agent_json["age"],
+            speed=agent_json["speed"])
 
         elif agent_json["ntype"] == HUMAN_NTYPE:
             new_agent = Human(name=agent_json["name"],
-                              goal=agent_json["goal"],
-                              repro_age=agent_json["repro_age"],
-                              life_force=agent_json["life_force"],
-                              max_detect=agent_json["max_detect"],
-                              rand_age=agent_json["age"],
-                              speed=agent_json["speed"])
+            goal=agent_json["goal"],
+            repro_age=agent_json["repro_age"],
+            life_force=agent_json["life_force"],
+            max_detect=agent_json["max_detect"],
+            rand_age=agent_json["age"],
+            speed=agent_json["speed"])
 
         else:
             logging.error("agent found whose NTYPE is neither "
-                          "{} nor {}, but rather {}".format(ZOMBIE_NTYPE,
-                                                            HUMAN_NTYPE,
-                                                            agent_json["ntype"]))
+            "{} nor {}, but rather {}".format(ZOMBIE_NTYPE,
+            HUMAN_NTYPE, agent_json["ntype"]))
 
         if new_agent:
             self.add_agent_to_grid(new_agent, agent_json)
