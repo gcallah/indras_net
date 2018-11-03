@@ -6,9 +6,8 @@ pretending to be a representative republic.
 import indra.entity as ent
 import indra.env as env
 import math
-import os
 
-POLARIZATION_UP = 1.2
+POLARIZATION_UP = 1.1
 POLARIZATION_DN = 0.9
 POLAR_THRESHHOLD = 2.7
 
@@ -53,7 +52,6 @@ class Citizen(ent.Agent):
 class President():
     """A representative of a president"""
     def __init__(self,agents):
-        print("aaaaaaaaaaaa")
         self.political = 0
         for i in agents:
             self.political += i.political
