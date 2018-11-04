@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 politicalSine.py
-A mathematical model to show the general polarization, 
+A mathematical model to show the general polarization,
 or lack thereof, of an Oligarchy
 pretending to be a representative republic.
 """
