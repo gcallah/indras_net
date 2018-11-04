@@ -3,6 +3,8 @@ import indra.agent_pop as ap
 from unittest import TestCase, main
 from collections import OrderedDict
 import indra.node as node
+import indra.entity as ent
+import json
 
 AGENTS = "agents"
 POP_DATA = "pop_data"
@@ -364,6 +366,23 @@ class AgentPopTestCase(TestCase):
         dummy_ap.restore_hist_from(dict_to_pass_in)
         dict_to_check = dummy_ap.get_pop_hist()
         if dict_to_pass_in != dict_to_check:
+            report = False
+
+        self.assertEqual(report, True)
+
+    def test_jsondump(self):
+        report = True
+        returned_0 = self.agentpop.jsondump(self.agentpop.graph)
+        if returned_0 != "Graph":
+            report = False
+        dummy_entity = ent.Entity("dummy_ent")
+        dummy_to_json = dummy_entity.to_json()
+        returned_1 = self.agentpop.jsondump(dummy_entity)
+        if returned_1 != dummy_to_json:
+            report = False
+        vars_to_json = self.agentpop.vars.__dict__
+        returned_2 = self.agentpop.jsondump(self.agentpop.vars)
+        if returned_2 != vars_to_json:
             report = False
 
         self.assertEqual(report, True)
