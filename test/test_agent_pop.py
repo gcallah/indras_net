@@ -387,6 +387,45 @@ class AgentPopTestCase(TestCase):
 
         self.assertEqual(report, True)
 
+    def test_record_results(self):
+        report = True
+        for var in self.dic_for_reference:
+            for a in self.dic_for_reference[var][AGENTS]:
+                self.agentpop.append(a)
+        self.agentpop.record_results("dummy.json")
+        json_input = ''
+        with open("dummy.json", "r") as f:
+            for line in f:
+                json_input+=line.strip()
+        json_input_dic = json.loads(json_input)
+        f.close()
+        if json_input_dic['name'] != 'test':
+            report = False
+        if json_input_dic['graph'] != 'Graph':
+            report = False
+        if json_input_dic['ntype'] != 'AgentPop':
+            report = False
+        if len(json_input_dic['vars']) != len(self.agentpop.vars):
+            report = False
+        for var in json_input_dic['vars']:
+            if var in self.agentpop.vars:
+                if json_input_dic['vars'][var]["pop_data"] != self.agentpop.vars[var]["pop_data"]:
+                    report = False
+                if json_input_dic['vars'][var]["pop_hist"] != self.agentpop.vars[var]["pop_hist"]:
+                    report = False
+                if json_input_dic['vars'][var]["my_periods"] != self.agentpop.vars[var]["my_periods"]:
+                    report = False
+                if json_input_dic['vars'][var]["disp_color"] != self.agentpop.vars[var]["disp_color"]:
+                    report = False
+            #     need to figure out how to see if two set of agents are same
+            else:
+                report = False
+
+
+
+
+        self.assertEqual(report, True)
+
 
 
 if __name__ == '__main__':
