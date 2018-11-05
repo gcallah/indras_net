@@ -145,7 +145,37 @@ class People(menv.MarkovEnv):
         return trans_matrix
 
     def dir_info(self, agent):
-        pass
+        directions = {N: 0, S: 0, E: 0, W: 0}
+        creatureCoords = (0,0)
+        total = 0
+        creatures = agent.neighbor_iter(sq_v=10)
+        for creature in creatures:
+            if type(creature) == agent.other:
+                othr = creature.pos
+                xa = agent.pos[X]
+                ya = agent.pos[Y]
+                # North constitutes upper quadrant and positive diagonal line
+                if(-othr[X]+(ya+xa) < othr[Y] and othr[Y] >= othr[X] + (ya-xa)):
+                    dist = math.sqrt((ya-othr[Y])**2 + (xa-othr[X])**2)
+                    directions[N] += 1/dist
+                    total += 1/dist
+                # South constitutes lower quadrant and negative diagonal line
+                elif(othr[X]+(ya-xa) >= othr[Y] and othr[Y] < -othr[X]+(ya+xa)):
+                    dist = math.sqrt((ya-othr[Y])**2 + (xa-othr[X])**2)
+                    directions[S] += 1/dist
+                    total += 1/dist
+                # East constitutes left quadrant and negative diagonal line
+                elif(othr[Y]-(ya-xa) > othr[X] and othr[X] <= -othr[Y]+(ya+xa)):
+                    dist = math.sqrt((ya-othr[Y])**2 + (xa-othr[X])**2)
+                    directions[E] += 1/dist
+                    total += 1/dist
+                # West constitutes right quadrant and positive diagonal line
+                else:
+                    dist = math.sqrt((ya-othr[Y])**2 + (xa-othr[X])**2)
+                    directions[W] += 1/dist
+                    total += 1/dist
+        
+            return directions, total
 
     def neg_trans(self, d, total):
         pass
