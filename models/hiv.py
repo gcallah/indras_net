@@ -183,7 +183,29 @@ class People(menv.MarkovEnv):
     def poz_trans(self, d, total):
         pass
 
+
+    def from_json(self, json_input):
+        super().from_json(json_input)
+        self.add_variety("Ned")
+        self.add_variety("Poz")
     
+    def restore_agent(self, agent_json):
+        new_agent = None
+        if agent_json["ntype"] == Neg_NTYPE:
+            new_agent = Neg()
+        
+        elif agent_json["ntype"] == Poz_NTYPE:
+            new_agent = Poz()
+        
+        else:
+            logging.error("agent found whose NTYPE is neither "
+                          "{} nor {}, but rather {}".format(Poz_NTYPE,
+                                                            Neg_NTYPE,
+                                                            agent_json["ntype"]))
+        
+        if new_agent:
+            self.add_agent_to_grid(new_agent, agent_json)
+
     def set_agent_color(self):
         self.set_var_color(BURNED_OUT, disp.BLACK)
         self.set_var_color(ON_FIRE, disp.RED)
