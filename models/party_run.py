@@ -21,21 +21,22 @@ def run(prop_dict=None):
     import models.party as pm
 
     # set up some file names:
-    (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
+    (prog_file, log_file, prop_file,
+     results_file) = utils.gen_file_names(MODEL_NM)
     # We store basic parameters in a "property" file; this allows us to save
     #  multiple parameter sets, which is important in simulation work.
     #  We can read these in from file or set them here.
 
     if pa["user_type"] == props.WEB:
         pa["base_dir"] = os.environ['base_dir']
-        
+
     # Now we create an environment for our agents to act within:
     env = pm.PartyEnv("A cocktail party",
-                            pa["grid_width"],
-                            pa["grid_height"],
-                            model_nm=pa.model_nm,
-                            props=pa)
-    
+                      pa["grid_width"],
+                      pa["grid_height"],
+                      model_nm=pa.model_nm,
+                      props=pa)
+
     # Now we loop creating multiple agents with numbered names
     # based on the loop variable:
     for i in range(pa["num_men"]):
@@ -43,14 +44,15 @@ def run(prop_dict=None):
                       goal="A good party.",
                       tol=0.5,
                       max_detect=pa['max_detect']))
-        
+
     for i in range(pa["num_women"]):
         env.add_agent(pm.Woman(name="Woman" + str(i),
                       goal="A good party.",
                       tol=0.5,
                       max_detect=pa['max_detect']))
-        
+
     return utils.run_model(env, prog_file, results_file)
+
 
 if __name__ == "__main__":
     run()
