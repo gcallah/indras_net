@@ -87,6 +87,7 @@ class AudienceAgent(ma.MarkovAgent):
                 self.cycleState()
                 self.changed = True ##Delete later
 
+    #I can't get the neighborhood to work, I have to get it implemented aaaaah
     def preact(self):
         different_tot = 0
         neighbors_tot = 0
@@ -105,13 +106,13 @@ class AudienceAgent(ma.MarkovAgent):
     #With the audience member now having some type of pressure
     #Confront the audience member with the choice of sitting or standing
     def act(self):
-        self.preact() #This really shouldn't be here but I'm not able to get the preact to run
-
-        self.changed = False ##Delete later
-
+        self.preact()   #This really shouldn't be here but I'm not able to get the preact to run.
+                        #Ideally the preact would trigger by itself before the act, but I can only get the preact()
+                        #to run by calling it from act()
+        self.changed = False ##For testing
         self.confront()
         print("I am agent " + self.name + " and I am " + self.state + " [act]")
-        if(self.changed): ##Delete before submitting
+        if(self.changed): ##For testing
             print("I was pressured into changing my state")
         else:
             print("I resisted the pressure!")
@@ -149,7 +150,6 @@ class Auditorium(menv.MarkovEnv):
                          height,
                          model_nm=model_nm,
                          props=props)
-
         self.plot_title = "The Audience"
 
     # def preact_loop(self):
@@ -161,14 +161,26 @@ class Auditorium(menv.MarkovEnv):
         self.set_var_color(SITTING, disp.BLACK)
         self.set_var_color(STANDING, disp.RED)
 
+    def to_json(self):
+        safe_fields = super().to_json()
+        #safe_fields["state"] = self.state
+        #safe_fields["ntype"] = self.ntype
+        safe_fields["plot_title"] = self.plot_title
+        #safe_fields["next_state"] = self.next_state
+
+        return safe_fields
+
     def from_json(self, json_input):
         super().from_json(json_input)
-        self.state = json_input["state"]
-        self.ntype = json_input["ntype"]
-        self.next_state = json_input["next_state"]
+        #self.state = json_input["state"]
+        #self.ntype = json_input["ntype"]
+        self.plot_title = json_input["plot_title"]
+        #self.next_state = json_input["next_state"]
 
     def restore_agent(self, agent_json):
-        new_agent = AudienceAgent(name=agent_json["name"], goal=agent_json["goal"], noise=agent_json["noise"])
+        new_agent = AudienceAgent(name=agent_json["name"],
+                                  goal=agent_json["goal"],
+                                  noise=agent_json["noise"])
         self.add_agent_to_grid(new_agent, agent_json)
 
 
