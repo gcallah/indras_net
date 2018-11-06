@@ -42,7 +42,7 @@ class Beings(ma.MarkovAgent):
     def __init__(self, name, goal, repro_age,
     life_force, init_state, max_detect=1, rand_age=False, speed=1):
         super().__init__(name, goal, NSTATES, init_state, max_detect=max_detect)
-	
+    
         if not rand_age:
             self.age = 0
         else:
@@ -62,7 +62,7 @@ class Beings(ma.MarkovAgent):
 
     def act(self):
 
-	for i in range(self.speed):
+    for i in range(self.speed):
             super().act()
             self.state = self.next_state
             self.move(self.state)
@@ -107,7 +107,7 @@ class Beings(ma.MarkovAgent):
 class Zombie(Beings):
     def __init__(self, name, goal, repro_age, life_force, max_detect=10,
     rand_age=False, speed=2):
-		
+        
         init_state = random.randint(0,3)
         super().__init__(name, goal, repro_age, life_force, init_state,
         max_detect=max_detect, rand_age=rand_age, speed=speed)
@@ -132,7 +132,7 @@ class Human(Beings):
     
     def __init__(self, name, goal, repro_age, life_force, max_detect=5,
     rand_age=False, speed=1):
-		
+        
         init_state = random.randint(0,3)
         super().__init__(name, goal, repro_age, life_force, init_state,
         max_detect=max_detect, rand_age=rand_age, speed=speed)
@@ -150,7 +150,7 @@ class Human(Beings):
             if type(creature) is Zombie:
                 new_zom = creature.__class__(creature.name + "x", creature.goal,
                 creature.repro_age, creature.init_life_force)
-		
+        
             self.env.add_agent(new_zom)
             self.died()
     
@@ -164,7 +164,7 @@ class Human(Beings):
                 if type(creature) is Zombie:
                     new_zom = creature.__class__(creature.name + "x", creature.goal,
                     creature.repro_age, creature.init_life_force)
-		
+        
                 self.env.add_agent(new_zom)
                 self.died()
         else:
@@ -177,7 +177,7 @@ class Human(Beings):
             if self.alive:
                 creature = self.__class__(self.name + "x", self.goal,
                 self.repro_age, self.init_life_force)
-		
+        
                 self.env.add_agent(creature)
                 
         else:
@@ -285,7 +285,6 @@ class Zone(menv.MarkovEnv):
 
     # figures out where all the zombies are and moves humans away from them
     def human_trans(self, d, total):
-        
         best_dir = min(d, key=d.get)
 
         num_close = 0
@@ -330,16 +329,16 @@ class Zone(menv.MarkovEnv):
         trans_str = ""
 
         trans_str += (str(NN) + " " + str(NS) + " "
-	+ str(NE) + " " + str(NW) + ";")
+                      + str(NE) + " " + str(NW) + ";")
         trans_str += (str(SN) + " " + str(SS) + " "
-	+ str(SE) + " " + str(SW) + ";")
+                      + str(SE) + " " + str(SW) + ";")
         trans_str += (str(EN) + " " + str(ES) + " "
-	+ str(EE) + " " + str(EW) + ";")
+    + str(EE) + " " + str(EW) + ";")
         trans_str += (str(WN) + " " + str(WS) + " "
-	+ str(WE) + " " + str(WW))
+    + str(WE) + " " + str(WW))
 
         return trans_str
-    
+
     def from_json(self, json_input):
         super().from_json(json_input)
         self.add_variety("Zombie")

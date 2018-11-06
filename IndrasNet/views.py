@@ -83,19 +83,19 @@ def parameters(request):
                 if q.hival:
                     hival = q.hival
                 if q.atype == STR:
-                    self.fields[q.question] = forms.CharField(label=q.question,
-                                                           initial=default,
-                                                           max_length=20)
+                    self.fields[q.question] = forms.CharField(label=q.question,  # noqa E501
+                                                              initial=default,  # noqa E501
+                                                              max_length=20)
                 elif q.atype == INT:
-                    self.fields[q.question] = forms.IntegerField(label=q.question,
-                                                              initial=default,
-                                                              min_value=lowval,
-                                                              max_value=hival)
+                    self.fields[q.question] = forms.IntegerField(label=q.question,  # noqa E501
+                                                                 initial=default,  # noqa E501
+                                                                 min_value=lowval,  # noqa E501
+                                                                 max_value=hival)  # noqa E501
                 elif q.atype == DBL:
                     self.fields[q.question] = forms.FloatField(label=q.question,
-                                                            initial=default,
-                                                            min_value=lowval,
-                                                            max_value=hival)
+                                                               initial=default,
+                                                                min_value=lowval,
+                                                               max_value=hival)
                 elif q.atype == BOOL:
                     self.fields[q.question] = forms.BooleanField(label=q.question,
                                                                  required=False)
