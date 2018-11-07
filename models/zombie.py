@@ -200,14 +200,14 @@ class Zone(menv.MarkovEnv):
             trans_str += self.zombie_trans(d, total)
         else:
             trans_str += self.human_trans(d, total)
-        
+
         trans_matrix = markov.from_matrix(np.matrix(trans_str))
         return trans_matrix
-    
+
     # Finds out which direction (NORTH, SOUTH, EAST, WEST) as more of the 
     # opposite agent type depending on what agent we are dealing with
     def dir_info(self, agent):
-        
+
         directions = {N: 0, S: 0, E: 0, W: 0}
         total = 0
         creatures = agent.neighbor_iter(sq_v=10)
