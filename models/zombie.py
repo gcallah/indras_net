@@ -42,7 +42,7 @@ class Beings(ma.MarkovAgent):
     def __init__(self, name, goal, repro_age,
     life_force, init_state, max_detect=1, rand_age=False, speed=1):
         super().__init__(name, goal, NSTATES, init_state, max_detect=max_detect)
-    
+
         if not rand_age:
             self.age = 0
         else:
@@ -61,12 +61,11 @@ class Beings(ma.MarkovAgent):
             self.env.died(self)
 
     def act(self):
-
-    for i in range(self.speed):
+        for i in range(self.speed):
             super().act()
             self.state = self.next_state
             self.move(self.state)
-            
+
     def move(self, state):
         x = self.pos[X]
         y = self.pos[Y]
