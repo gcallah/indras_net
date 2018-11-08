@@ -1,10 +1,10 @@
+import indra.vector_space as vs
+import indra.vs_agent as va
+import indra.grid_env as grid
+
 import random
 
 class Route:
-    count = 0
-    fast_p = 100
-    slow_p = 100
-    intersections = []
     
     def __init__(self, name):
         self.intersections = []
@@ -16,31 +16,30 @@ class Route:
         
     def travelRoute(self):
         self.count = self.count + 1
-        for intersection in intersections:
+        for intersection in self.intersections:
             # move
             # intersection.travelIntersection()
+            pass
         return
     
     def getCount(self):
-        return count
+        return self.count
 
 class RouteWork:
-    roads = []
+
     def __init__(self):
         self.roads = []
         return 
 
     def add(self, name):
         newRoad = Road(name)  
-        roads.append(newRoad)
+        self.roads.append(newRoad)
 
 class Slow:
-    name = "DEFAULT"
-    avaiable = []
 
     def __init__(self):
         self.name = "slow"
-        self.avaiable = []
+        self.available = []
         return
     
     def travel(self):
@@ -50,33 +49,27 @@ class Slow:
                 route.travelRoute()
         return
     def addRoute(self, route):
-        avaiable.append(route)
+        self.available.append(route)
         return
 
 class Fast:
-    name = "DEFAULT"
-    avaiable = []
 
-def __init__(self):
-    self.name = "FAST"
-    self.avaiable = []
-    return
+    def __init__(self):
+        self.name = "FAST"
+        self.avaiable = []
+        return
 
-def travel(self):
-    for route in self.avaiable:
-        travel = random.random()
-        if travel <= road.fast_p:
-            route.travelRoute()
-    return
+    def travel(self):
+        for route in self.avaiable:
+            travel = random.random()
+            if travel <= road.fast_p:
+                route.travelRoute()
+        return
 
-def addRoute(self, route):
-    avaiable.append(route)
-    return
+    def addRoute(self, route):
+        self.avaiable.append(route)
 
 class Intersection:
-    neighbours = []
-    name = None
-    count = 0
 
     def __init__(self, name):
         self.neighbours = []
@@ -85,24 +78,34 @@ class Intersection:
         return
     
     def intersaction(self):
-        count = conut + 1
+        self.count += 1
     
     def getCount(self):
-        return count
+        return self.count
 
     def addNeighbour(self, node):
         self.neighbours.append(node)
         return
 
 class Graph:
-    intersactionArr = []
+    intersectionArr = []
     def __init__(self):
-        self.intersactionArr = []
+        self.intersectionArr = []
         return
-    def addRelation(self, intersaction1, Intersection2):
-        intersaction1.add(intersaction2)
+    def addRelation(self, intersection1, intersection2):
+        intersection1.add(intersection2)
         return
     def addTwoRelation(self, inter1, inter2):
         self.addRelation(inter1, inter2)
         self.addRelation(inter2, inter1)
         return
+
+class SimInteractiveEnv(grid.GridEnv):
+
+    def __init__(self, name, width, height, torus=False, model_nm='sim_interactive', props=None):
+        super().__init__(name, width, height, torus=False,
+                         model_nm=model_nm, props=props)
+        self.plot_title = name
+
+        
+

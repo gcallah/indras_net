@@ -350,7 +350,23 @@ class AgentPopTestCase(TestCase):
 
         self.assertEqual(report, True)
 
-    # def test_append_pop_hist(self):
+    def test_restore_hist_from(self):
+        report = True
+        for var in self.dic_for_reference:
+            for a in self.dic_for_reference[var][AGENTS]:
+                self.agentpop.append(a)
+            self.agentpop.set_var_color(var, self.dic_for_reference[var][DISP_COLOR])
+        dict_to_pass_in = self.agentpop.get_pop_hist()
+        dummy_ap = ap.AgentPop("dummy")
+        for var in self.dic_for_reference:
+            for a in self.dic_for_reference[var][AGENTS]:
+                dummy_ap.append(a)
+        dummy_ap.restore_hist_from(dict_to_pass_in)
+        dict_to_check = dummy_ap.get_pop_hist()
+        if dict_to_pass_in != dict_to_check:
+            report = False
+
+        self.assertEqual(report, True)
 
 
 

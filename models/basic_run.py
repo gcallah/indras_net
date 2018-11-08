@@ -19,7 +19,8 @@ def run(prop_dict=None):
 
     import models.basic as bm
     import indra.utils as utils
-    (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
+    (prog_file, log_file, prop_file,
+     results_file) = utils.gen_file_names(MODEL_NM)
 
     # test prop_args as an iterable:
     for prop, val in pa.items():

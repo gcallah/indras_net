@@ -24,6 +24,7 @@ E = 2
 W = 3
 
 STATE_MAP = { N: NORTH, S: SOUTH, E: EAST, W: WEST }
+#col_dirs = {'N':0, 'S':0, 'E':0, 'W':0}
 
 NEW_ZOMBS = 0
 NEW_HUMANS = 0
@@ -374,43 +375,64 @@ class Zone(menv.MarkovEnv):
             for movement
         '''
         trans_str = ""
+        
+        cols_dir = {"NN":0, "NS":0, "NE":0, "NW":0,
+                   "SN":0, "SS":0, "SE":0, "SW":0,
+                   "EN":0, "ES":0, "EE":0, "EW":0,
+                   "WN":0, "WS":0, "WE":0, "WW":0}
 
-        NS, NE, NW, NN = 0,0,0,0
-        SN, SE, SW, SS = 0,0,0,0
-        EN, ES, EW, EE = 0,0,0,0
-        WN, WS, WE, WW = 0,0,0,0
+        #NS, NE, NW, NN = 0,0,0,0
+        #SN, SE, SW, SS = 0,0,0,0
+        #EN, ES, EW, EE = 0,0,0,0
+        #WN, WS, WE, WW = 0,0,0,0
 
         # Random movement if nothing is in view.
         if total == 0:
-            NS, NE, NW, NN = 0.25,0.25,0.25,0.25
-            SN, SE, SW, SS = 0.25,0.25,0.25,0.25
-            EN, ES, EW, EE = 0.25,0.25,0.25,0.25
-            WN, WS, WE, WW = 0.25,0.25,0.25,0.25
+            for cd in cols_dir:
+                cols_dir[cd] = 0.25
+            #NS, NE, NW, NN = 0.25,0.25,0.25,0.25
+            #SN, SE, SW, SS = 0.25,0.25,0.25,0.25
+            #EN, ES, EW, EE = 0.25,0.25,0.25,0.25
+            #WN, WS, WE, WW = 0.25,0.25,0.25,0.25
         else:
-            NS = d[S]/total
-            NE = d[E]/total
-            NW = d[W]/total
-            NN = 1 - NS - NE - NW
+            cols_dir["NS"] = d[S]/total
+            cols_dir["NE"] = d[E]/total
+            cols_dir["NW"] = d[W]/total
+            cols_dir["NN"] = 1 - cols_dir["NS"] - cols_dir["NE"] - cols_dir["NW"]
 
-            SN = d[N]/total
-            SE = d[E]/total
-            SW = d[W]/total
-            SS = 1 - SN - SE - SW 
+            cols_dir["SN"] = d[N]/total
+            cols_dir["SE"] = d[E]/total
+            cols_dir["SW"] = d[W]/total
+            cols_dir["SS"] = 1 - cols_dir["SN"] - cols_dir["SE"] - cols_dir["SW"] 
 
-            EN = d[N]/total
-            ES = d[S]/total
-            EW = d[W]/total
-            EE = 1 - EN - ES - EW
+            cols_dir["EN"] = d[N]/total
+            cols_dir["ES"] = d[S]/total
+            cols_dir["EW"] = d[W]/total
+            cols_dir["EE"] = 1 - cols_dir["EN"] - cols_dir["ES"] - cols_dir["EW"]
 
-            WN = d[N]/total
-            WS = d[S]/total
-            WE = d[E]/total
-            WW = 1 - WN - WS - WE
+            cols_dir["WN"] = d[N]/total
+            cols_dir["WS"] = d[S]/total
+            cols_dir["WE"] = d[E]/total
+            cols_dir["WW"] = 1 - cols_dir["WN"] - cols_dir["WS"] - cols_dir["WE"]
+            
+        change_char = 3
+        num_till_sign = 1
 
-        trans_str += str(NN) + " " + str(NS) + " " + str(NE) + " " + str(NW) + ";"
-        trans_str += str(SN) + " " + str(SS) + " " + str(SE) + " " + str(SW) + ";"
-        trans_str += str(EN) + " " + str(ES) + " " + str(EE) + " " + str(EW) + ";"
-        trans_str += str(WN) + " " + str(WS) + " " + str(WE) + " " + str(WW)
+        trans_str = ""
+        for x in cold_dir:
+            trans_str += x
+
+            if num_till_sign != change_char:
+                trans_str += ", "
+                num_till_sign += 1
+            else:
+                trans_str += ";"
+                num_till_sign = 1
+
+        #trans_str += str(NN) + " " + str(NS) + " " + str(NE) + " " + str(NW) + ";"
+        #trans_str += str(SN) + " " + str(SS) + " " + str(SE) + " " + str(SW) + ";"
+        #trans_str += str(EN) + " " + str(ES) + " " + str(EE) + " " + str(EW) + ";"
+        #trans_str += str(WN) + " " + str(WS) + " " + str(WE) + " " + str(WW)
 
         return trans_str
 

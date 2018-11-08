@@ -2,15 +2,11 @@
 """
 A basic zombie model
 """
-MODEL_NM = "zombie"
-
 import indra.prop_args2 as props
-pa = props.PropArgs.create_props(MODEL_NM)
 import indra.utils as utils
 import models.zombie as zom
-
-HUMAN_REPRO = 10
-HUMAN_LIFEFORCE = 10
+pa = props.PropArgs.create_props(MODEL_NM)
+MODEL_NM = "zombie"
 
 def run(prop_dict=None):
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)

@@ -70,7 +70,8 @@ class AdminEmail(models.Model):
     """
         This model is for an admin email table. Maybe not needed?
     """
-    email_addr = models.CharField(max_length=80, default="", blank=True, null=True)
+    email_addr = models.CharField(max_length=80,
+                                  default="", blank=True, null=True)
 
     def __str__(self):
         return self.email_addr

@@ -6,10 +6,10 @@
 import logging
 import importlib
 import base64
-import models
-import schelling
-import wolfram
-import bigbox
+import models  # noqa F401
+import schelling  # noqa F401
+import wolfram  # noqa F401
+import bigbox  # noqa F401
 
 from django.shortcuts import render
 from django import forms
@@ -84,18 +84,18 @@ def parameters(request):
                     hival = q.hival
                 if q.atype == STR:
                     self.fields[q.question] = forms.CharField(label=q.question,
-                                                              initial=default,
-                                                              max_length=20)
+                                                           initial=default,
+                                                           max_length=20)
                 elif q.atype == INT:
                     self.fields[q.question] = forms.IntegerField(label=q.question,
-                                                                 initial=default,
-                                                                 min_value=lowval,
-                                                                 max_value=hival)
+                                                              initial=default,
+                                                              min_value=lowval,
+                                                              max_value=hival)
                 elif q.atype == DBL:
                     self.fields[q.question] = forms.FloatField(label=q.question,
-                                                               initial=default,
-                                                               min_value=lowval,
-                                                               max_value=hival)
+                                                            initial=default,
+                                                            min_value=lowval,
+                                                            max_value=hival)
                 elif q.atype == BOOL:
                     self.fields[q.question] = forms.BooleanField(label=q.question,
                                                                  required=False)
@@ -107,6 +107,7 @@ def parameters(request):
 
     template_data = {'form': form, HEADER: get_hdr(), 'model': model}
     return render(request, 'parameters.html', template_data)
+
 
 def run(request):
     """
@@ -131,7 +132,8 @@ def run(request):
 
     # Take actions on a running model
     if action:
-        env = running_model(request, action, entry_point, questions, session_id)
+        env = running_model(request, action, entry_point,
+                            questions, session_id)
     # Run a model for the first time
     else:
         env = model_first_run(request, action, entry_point, questions,
@@ -146,6 +148,7 @@ def run(request):
                      'text1': text_box[1], 'model': model}
 
     return render(request, 'run.html', template_data)
+
 
 def running_model(request, action, entry_point, questions, session_id):
     prop_dict = {}
@@ -190,6 +193,7 @@ def running_model(request, action, entry_point, questions, session_id):
     env.save_session(session_id)
     return env
 
+
 def model_first_run(request, action, entry_point, questions, session_id,
                     plot_type):
     answers = {}
@@ -207,12 +211,14 @@ def model_first_run(request, action, entry_point, questions, session_id,
     env.save_session(session_id)
     return env
 
+
 def help_page(request):
     """
         This function renders our help page.
     """
     site_hdr = get_hdr()
     return render(request, 'help.html', {HEADER: site_hdr})
+
 
 def feedback(request):
     """
@@ -227,12 +233,14 @@ def feedback(request):
     return render(request, 'feedback.html', {'emails': comma_del_emails,
                                              HEADER: site_hdr})
 
+
 def about(request):
     """
         This function renders our about page.
     """
     site_hdr = get_hdr()
     return render(request, 'about.html', {HEADER: site_hdr})
+
 
 def assign_key(request):
     """
@@ -252,4 +260,5 @@ def assign_key(request):
         request.session['session_id'] = new_id
         request.session.modified = True
     else:
-        logging.info("This user has a session id: ", request.session['session_id'])
+        logging.info("This user has a session id: ",
+                     request.session['session_id'])
