@@ -257,22 +257,26 @@ class Zone(menv.MarkovEnv):
             cols_dir["NS"] = d[S]/total
             cols_dir["NE"] = d[E]/total
             cols_dir["NW"] = d[W]/total
-            cols_dir["NN"] = 1 - cols_dir["NS"] - cols_dir["NE"] - cols_dir["NW"]
+            cols_dir["NN"] = (1 - cols_dir["NS"] - cols_dir["NE"]
+                              - cols_dir["NW"])
 
             cols_dir["SN"] = d[N]/total
             cols_dir["SE"] = d[E]/total
             cols_dir["SW"] = d[W]/total
-            cols_dir["SS"] = 1 - cols_dir["SN"] - cols_dir["SE"] - cols_dir["SW"] 
+            cols_dir["SS"] = (1 - cols_dir["SN"] - cols_dir["SE"]
+                              - cols_dir["SW"]) 
 
             cols_dir["EN"] = d[N]/total
             cols_dir["ES"] = d[S]/total
             cols_dir["EW"] = d[W]/total
-            cols_dir["EE"] = 1 - cols_dir["EN"] - cols_dir["ES"] - cols_dir["EW"]
+            cols_dir["EE"] = (1 - cols_dir["EN"] - cols_dir["ES"]
+                              - cols_dir["EW"])
 
             cols_dir["WN"] = d[N]/total
             cols_dir["WS"] = d[S]/total
             cols_dir["WE"] = d[E]/total
-            cols_dir["WW"] = 1 - cols_dir["WN"] - cols_dir["WS"] - cols_dir["WE"]
+            cols_dir["WW"] = (1 - cols_dir["WN"] - cols_dir["WS"]
+                              - cols_dir["WE"])
             
         trans_str += (str(cols_dir["NN"]) + " " + str(cols_dir["NS"]) + 
                      " " + str(cols_dir["NE"]) + " " + str(cols_dir["NW"]) + ";")
@@ -351,13 +355,12 @@ class Zone(menv.MarkovEnv):
         new_agent = None
         if agent_json["ntype"] == ZOMBIE_NTYPE:
             new_agent = Zombie(name=agent_json["name"],
-
-                             goal=agent_json["goal"],
-                             repro_age=agent_json["repro_age"],
-                             life_force=agent_json["life_force"],
-                             max_detect=agent_json["max_detect"],
-                             rand_age=agent_json["age"],
-                             speed=agent_json["speed"])
+                               goal=agent_json["goal"],
+                               repro_age=agent_json["repro_age"],
+                               life_force=agent_json["life_force"],
+                               max_detect=agent_json["max_detect"],
+                               rand_age=agent_json["age"],
+                               speed=agent_json["speed"])
 
         elif agent_json["ntype"] == HUMAN_NTYPE:
             new_agent = Human(name=agent_json["name"],
