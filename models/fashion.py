@@ -37,7 +37,7 @@ class Society(tp.TwoPopEnv):
                          torus=False, postact=True, props=props)
         self.stances = ["blue", "red"]
         self.line_graph_title = \
-            "A. Smith's fashion model: Populations in {} adopting fashion {}"
+            "A. Smith's fashion model: Populations adopting fashion {} in ".format(self.stances[tp.STANCE_TINDEX])
         self.set_var_color('Hipster', disp.GREEN)
         self.set_var_color('Follower', disp.MAGENTA)
         self.menu.view.add_menu_item("v",

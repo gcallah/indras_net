@@ -23,7 +23,8 @@ MALE_PRE = vs.VectorSpace.Y_PRE
 FEM_AGENT = "Woman"
 MALE_AGENT = "Man"
 AGENT_TYPES = {FEMALE: FEM_AGENT, MALE: MALE_AGENT}
-TOL=0.5
+TOL = 0.5
+
 
 class PartyAgent(va.VSAgent):
     """
@@ -88,26 +89,22 @@ class PartyAgent(va.VSAgent):
             else:
                 continue
 
-
     def visible_stance(self):
         """
         Our visible stance differs from our internal one.
         It is just our "color."
         """
         return self.visible_pre
-    
+
     def to_json(self):
         safe_fields = super().to_json()
-        
         safe_fields["orientation"] = self.orientation
         safe_fields["visible_pre"] = self.visible_pre.to_json()
         safe_fields["tolerance"] = self.tolerance
-        
         return safe_fields
-        
+
     def from_json_preadd(self, agent_json):
         super().from_json_preadd(agent_json)
-        
         self.orientation = agent_json["orientation"]
         self.visible_pre.from_json(agent_json["visible_pre"])
         self.tolerance = agent_json["tolerance"]
@@ -124,12 +121,10 @@ class Man(PartyAgent):
         self.orientation = MALE
         self.visible_pre = MALE_PRE
         self.stance = vs.stance_pct_to_pre(self.tolerance, MALE)
-        
+
     def to_json(self):
         safe_fields = super().to_json()
-        
         safe_fields["color"] = "Blue"
-        
         return safe_fields
 
 
@@ -144,12 +139,10 @@ class Woman(PartyAgent):
         self.orientation = FEMALE
         self.visible_pre = FEM_PRE
         self.stance = vs.stance_pct_to_pre(self.tolerance, FEMALE)
-        
+
     def to_json(self):
         safe_fields = super().to_json()
-        
         safe_fields["color"] = "Red"
-        
         return safe_fields
 
 
@@ -157,16 +150,13 @@ class PartyEnv(grid.GridEnv):
     """
     The segregation model environment, mostly concerned with bookkeeping.
     """
-
     def __init__(self, name, width, height, torus=False,
                  model_nm="party", props=None):
-
         super().__init__(name, width, height, torus=False,
                          model_nm=model_nm, props=props)
         self.plot_title = name
         # setting our colors adds varieties as well!
         self.set_agent_color()
-        
         self.num_moves = 0
         self.move_hist = []
         self.menu.view.del_menu_item("v")  # no line graph in this model
@@ -194,30 +184,29 @@ class PartyEnv(grid.GridEnv):
     def set_agent_color(self):
         self.set_var_color(AGENT_TYPES[MALE], 'b')
         self.set_var_color(AGENT_TYPES[FEMALE], 'r')
-        
+
     def to_json(self):
         safe_fields = super().to_json()
         safe_fields["plot_title"] = self.plot_title
         safe_fields["move_hist"] = self.move_hist
-        
         return safe_fields
-        
+
     def from_json(self, json_input):
         super().from_json(json_input)
         self.plot_title = json_input["plot_title"]
         self.move_hist = json_input["move_hist"]
-        
-    def restore_agent(self, agent_json):     
+
+    def restore_agent(self, agent_json):
         color = agent_json["color"]
-        if color == "Blue":            
+        if color == "Blue":
             new_agent = Man(agent_json["name"],
-                                 agent_json["goal"],
-                                 max_move=agent_json["max_move"], 
-                                 max_detect=agent_json["max_detect"])
-        if color == "Red":            
+                            agent_json["goal"],
+                            max_move=agent_json["max_move"],
+                            max_detect=agent_json["max_detect"])
+        if color == "Red":
             new_agent = Woman(agent_json["name"],
-                                 agent_json["goal"],
-                                 max_move=agent_json["max_move"], 
-                                 max_detect=agent_json["max_detect"])
-            
+                              agent_json["goal"],
+                              max_move=agent_json["max_move"],
+                              max_detect=agent_json["max_detect"])
+
         self.add_agent_to_grid(new_agent, agent_json)

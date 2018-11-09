@@ -6,6 +6,10 @@ pretending to be a representative republic.
 import indra.entity as ent
 import indra.env as env
 import math
+<<<<<<< HEAD
+=======
+import numpy as np
+>>>>>>> 71cbb6374957a716fc9a0c5661862edf2e6c609b
 
 POLARIZATION_UP = 1.1
 POLARIZATION_DN = 0.9
@@ -41,12 +45,20 @@ class Citizen(ent.Agent):
 
     def postact(self):
         global POLAR
+<<<<<<< HEAD
         print(POLAR, self.political, end='\t')
+=======
+        #print(POLAR, self.political, end='\t')
+>>>>>>> 71cbb6374957a716fc9a0c5661862edf2e6c609b
         if POLAR:
             self.political *= POLARIZATION_UP
         else:
             self.political *= POLARIZATION_DN
+<<<<<<< HEAD
         print(self.political)
+=======
+        #print(self.political)
+>>>>>>> 71cbb6374957a716fc9a0c5661862edf2e6c609b
 
             
 class President():
@@ -79,8 +91,13 @@ class President():
         else:
             POLAR = False
             
+<<<<<<< HEAD
     def sigmoid(self,a):
         return ((1/(1+(math.e ** a)))-0.5)
+=======
+    def sigmoid(self,a): #numerically stable sigmoid function
+        return math.exp(-np.logaddexp(0, -a))
+>>>>>>> 71cbb6374957a716fc9a0c5661862edf2e6c609b
     
     def polar(self):
         return self.tooPolar
@@ -110,9 +127,19 @@ class BasicEnv(env.Environment):
             print("Number of presidents that betray popular opinion: "+str(NUM_CORRUPT)
                 +"  ("+str((NUM_CORRUPT/(NUM_POS+NUM_NEG))*100) + "%)")
               
+<<<<<<< HEAD
     '''        
     def restore_agents(self, json_input):
         for agent in json_input["agents"]:
             self.add_agent(BasicAgent(agent["name"], 
                                       agent["goal"]))
     '''
+=======
+       
+    def restore_agents(self, json_input):
+        temp=0
+        for agent in json_input["agents"]:
+            self.add_agent(Citizen(agent["name"+temp], 
+                                      agent["Voting"]))
+            temp+=1
+>>>>>>> 71cbb6374957a716fc9a0c5661862edf2e6c609b

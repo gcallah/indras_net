@@ -145,6 +145,7 @@ class People(menv.MarkovEnv):
         return trans_matrix
 
     def dir_info(self, agent):
+<<<<<<< HEAD
         pass
 
     def neg_trans(self, d, total):
@@ -154,6 +155,69 @@ class People(menv.MarkovEnv):
         pass
 
     
+=======
+        directions = {N: 0, S: 0, E: 0, W: 0}
+        creatureCoords = (0,0)
+        total = 0
+        creatures = agent.neighbor_iter(sq_v=10)
+        for creature in creatures:
+            if type(creature) == agent.other:
+                othr = creature.pos
+                xa = agent.pos[X]
+                ya = agent.pos[Y]
+                # North constitutes upper quadrant and positive diagonal line
+                if(-othr[X]+(ya+xa) < othr[Y] and othr[Y] >= othr[X] + (ya-xa)):
+                    dist = math.sqrt((ya-othr[Y])**2 + (xa-othr[X])**2)
+                    directions[N] += 1/dist
+                    total += 1/dist
+                # South constitutes lower quadrant and negative diagonal line
+                elif(othr[X]+(ya-xa) >= othr[Y] and othr[Y] < -othr[X]+(ya+xa)):
+                    dist = math.sqrt((ya-othr[Y])**2 + (xa-othr[X])**2)
+                    directions[S] += 1/dist
+                    total += 1/dist
+                # East constitutes left quadrant and negative diagonal line
+                elif(othr[Y]-(ya-xa) > othr[X] and othr[X] <= -othr[Y]+(ya+xa)):
+                    dist = math.sqrt((ya-othr[Y])**2 + (xa-othr[X])**2)
+                    directions[E] += 1/dist
+                    total += 1/dist
+                # West constitutes right quadrant and positive diagonal line
+                else:
+                    dist = math.sqrt((ya-othr[Y])**2 + (xa-othr[X])**2)
+                    directions[W] += 1/dist
+                    total += 1/dist
+        
+            return directions, total
+
+    def neg_trans(self, d, total):
+        pass
+
+    def poz_trans(self, d, total):
+        pass
+
+
+    def from_json(self, json_input):
+        super().from_json(json_input)
+        self.add_variety("Ned")
+        self.add_variety("Poz")
+    
+    def restore_agent(self, agent_json):
+        new_agent = None
+        if agent_json["ntype"] == Neg_NTYPE:
+            new_agent = Neg()
+        
+        elif agent_json["ntype"] == Poz_NTYPE:
+            new_agent = Poz()
+        
+        else:
+            logging.error("agent found whose NTYPE is neither "
+                          "{} nor {}, but rather {}".format(Poz_NTYPE,
+                                                            Neg_NTYPE,
+                                                            agent_json["ntype"]))
+        
+        if new_agent:
+            self.add_agent_to_grid(new_agent, agent_json)
+
+>>>>>>> 71cbb6374957a716fc9a0c5661862edf2e6c609b
     def set_agent_color(self):
         self.set_var_color(BURNED_OUT, disp.BLACK)
         self.set_var_color(ON_FIRE, disp.RED)

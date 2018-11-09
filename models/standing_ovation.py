@@ -12,9 +12,6 @@ import indra.markov as markov
 import indra.markov_agent as ma
 import indra.markov_env as menv
 
-import indra.entity as ent
-import indra.env as env
-
 SITTING = "Sitting"
 STANDING = "Standing"
 NSTATES = 2
@@ -44,7 +41,7 @@ class AudienceAgent(ma.MarkovAgent):
         self.goal = goal
         self.state = SITTING #Everyone starts off sitting
         self.next_state = STANDING
-        self.ntype = self.state
+        self.ntype = self.state #Might have to keep this one and delete self.state, they're redundant
         self.noise = 0.75
         self.standard = 0.2
         self.pressure = 0
@@ -63,11 +60,14 @@ class AudienceAgent(ma.MarkovAgent):
         return self.state == SITTING
 
     def cycleState(self):
-        temp = self.state
+        prev_state = self.state
         self.state = self.next_state
-        self.next_state = temp
-
         self.ntype = self.state
+        self.next_state = prev_state
+
+        #print("self.env",self.env)
+        #self.env.change_agent_type(self, prev_state, self.ntype)
+
 
     # Initial reaction to the performance
         # If the performance falls within the member's standard, the member will stand
@@ -87,15 +87,17 @@ class AudienceAgent(ma.MarkovAgent):
                 self.cycleState()
                 self.changed = True ##Delete later
 
+    #I can't get the neighborhood to work, I have to get it implemented aaaaah
     def preact(self):
         different_tot = 0
         neighbors_tot = 0
-        print("neighborhood:",self.neighborhood) ##
+        print("neighborhood:",self.neighborhood) ##for testing
         for neighbor in self.neighbor_iter():
-            print("I am iterating through my neighbors") ##
+            print("I am iterating through my neighbors") ##for testing
             if(neighbor.state != self.state):
                 different_tot += 1
             neighbors_tot += 1
+        print("neighbors_tot:", neighbors_tot)
         self.pressure = 0.75 ##Temp
         if(neighbors_tot != 0):
             self.pressure = different_tot / neighbors_tot
@@ -104,13 +106,13 @@ class AudienceAgent(ma.MarkovAgent):
     #With the audience member now having some type of pressure
     #Confront the audience member with the choice of sitting or standing
     def act(self):
-        self.preact() #This really shouldn't be here but I'm not able to get the preact to run
-
-        self.changed = False ##Delete later
-
+        self.preact()   #This really shouldn't be here but I'm not able to get the preact to run.
+                        #Ideally the preact would trigger by itself before the act, but I can only get the preact()
+                        #to run by calling it from act()
+        self.changed = False ##For testing
         self.confront()
         print("I am agent " + self.name + " and I am " + self.state + " [act]")
-        if(self.changed): ##Delete before submitting
+        if(self.changed): ##For testing
             print("I was pressured into changing my state")
         else:
             print("I resisted the pressure!")
@@ -119,33 +121,19 @@ class AudienceAgent(ma.MarkovAgent):
     #     print("I am agent" + st
         #self.name + "and sitting = ", self.sitting)
 
-# Maybe I'll use something like this later? Maybe a paid audience member
-# class Gozer(BasicAgent):
-#     """
-#     A silly agent that destroys others, for demo purposes
-#     """
-#
-#     def __init__(self):
-#         """
-#         Init Gozer with slightly different params.
-#         """
-#         super().__init__(name="Gozer the Destructor", goal="Destroy!")
-#
-#     def postact(self):
-#         """
-#         Check to see if we have wiped everyone out.
-#         """
-#         e = self.env
-#         if len(e.agents) == 1:
-#             print("Gozer the Destructor has destroyed all!!")
-#         else:
-#             for agent in e.agents:
-#                 if agent is not self:
-#                     e.agents.remove(agent)
-#                     print("Gozer has destroyed "
-#                           + agent.name + "!")
-#                     return
+    def to_json(self):
+        safe_fields = super().to_json()
+        safe_fields["state"] = self.state
+        safe_fields["ntype"] = self.ntype
+        safe_fields["next_state"] = self.next_state
 
+        return safe_fields
+
+    def from_json_preadd(self, json_input):
+        super().from_json_preadd(json_input)
+        self.state = json_input["state"]
+        self.ntype = json_input["ntype"]
+        self.next_state = json_input["next_state"]
 
 class Auditorium(menv.MarkovEnv):
     """
@@ -162,7 +150,6 @@ class Auditorium(menv.MarkovEnv):
                          height,
                          model_nm=model_nm,
                          props=props)
-
         self.plot_title = "The Audience"
 
     # def preact_loop(self):
@@ -174,9 +161,26 @@ class Auditorium(menv.MarkovEnv):
         self.set_var_color(SITTING, disp.BLACK)
         self.set_var_color(STANDING, disp.RED)
 
-    def restore_agents(self, json_input):
-        for agent in json_input["agents"]:
-            self.add_agent(AudienceAgent(agent["name"],
-                                      agent["goal"],
-                                      agent["noise_level"]))
+    def to_json(self):
+        safe_fields = super().to_json()
+        #safe_fields["state"] = self.state
+        #safe_fields["ntype"] = self.ntype
+        safe_fields["plot_title"] = self.plot_title
+        #safe_fields["next_state"] = self.next_state
+
+        return safe_fields
+
+    def from_json(self, json_input):
+        super().from_json(json_input)
+        #self.state = json_input["state"]
+        #self.ntype = json_input["ntype"]
+        self.plot_title = json_input["plot_title"]
+        #self.next_state = json_input["next_state"]
+
+    def restore_agent(self, agent_json):
+        new_agent = AudienceAgent(name=agent_json["name"],
+                                  goal=agent_json["goal"],
+                                  noise=agent_json["noise"])
+        self.add_agent_to_grid(new_agent, agent_json)
+
 

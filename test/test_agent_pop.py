@@ -3,6 +3,8 @@ import indra.agent_pop as ap
 from unittest import TestCase, main
 from collections import OrderedDict
 import indra.node as node
+import indra.entity as ent
+import json
 
 AGENTS = "agents"
 POP_DATA = "pop_data"
@@ -367,6 +369,65 @@ class AgentPopTestCase(TestCase):
             report = False
 
         self.assertEqual(report, True)
+<<<<<<< HEAD
+=======
+
+    def test_jsondump(self):
+        report = True
+        returned_0 = self.agentpop.jsondump(self.agentpop.graph)
+        if returned_0 != "Graph":
+            report = False
+        dummy_entity = ent.Entity("dummy_ent")
+        dummy_to_json = dummy_entity.to_json()
+        returned_1 = self.agentpop.jsondump(dummy_entity)
+        if returned_1 != dummy_to_json:
+            report = False
+        vars_to_json = self.agentpop.vars.__dict__
+        returned_2 = self.agentpop.jsondump(self.agentpop.vars)
+        if returned_2 != vars_to_json:
+            report = False
+
+        self.assertEqual(report, True)
+
+    def test_record_results(self):
+        report = True
+        for var in self.dic_for_reference:
+            for a in self.dic_for_reference[var][AGENTS]:
+                self.agentpop.append(a)
+        self.agentpop.record_results("dummy.json")
+        json_input = ''
+        with open("dummy.json", "r") as f:
+            for line in f:
+                json_input+=line.strip()
+        json_input_dic = json.loads(json_input)
+        f.close()
+        if json_input_dic['name'] != 'test':
+            report = False
+        if json_input_dic['graph'] != 'Graph':
+            report = False
+        if json_input_dic['ntype'] != 'AgentPop':
+            report = False
+        if len(json_input_dic['vars']) != len(self.agentpop.vars):
+            report = False
+        for var in json_input_dic['vars']:
+            if var in self.agentpop.vars:
+                if json_input_dic['vars'][var]["pop_data"] != self.agentpop.vars[var]["pop_data"]:
+                    report = False
+                if json_input_dic['vars'][var]["pop_hist"] != self.agentpop.vars[var]["pop_hist"]:
+                    report = False
+                if json_input_dic['vars'][var]["my_periods"] != self.agentpop.vars[var]["my_periods"]:
+                    report = False
+                if json_input_dic['vars'][var]["disp_color"] != self.agentpop.vars[var]["disp_color"]:
+                    report = False
+            #     need to figure out how to see if two set of agents are same
+            else:
+                report = False
+
+
+
+
+        self.assertEqual(report, True)
+>>>>>>> 71cbb6374957a716fc9a0c5661862edf2e6c609b
 
 
 
