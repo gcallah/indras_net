@@ -1,20 +1,13 @@
-<<<<<<< HEAD
 import indra.vector_space as vs
 import indra.vs_agent as va
-=======
 # import indra.vector_space as vs
 # import indra.vs_agent as va
->>>>>>> 71cbb6374957a716fc9a0c5661862edf2e6c609b
 import indra.grid_env as grid
 
 import random
 
 
 class Route:
-<<<<<<< HEAD
-    
-=======
->>>>>>> 71cbb6374957a716fc9a0c5661862edf2e6c609b
     def __init__(self, name):
         self.intersections = []
         self.count = 0
@@ -33,10 +26,7 @@ class Route:
 
     def getCount(self):
         return self.count
-<<<<<<< HEAD
-=======
 
->>>>>>> 71cbb6374957a716fc9a0c5661862edf2e6c609b
 
 class RouteWork:
 
@@ -45,16 +35,14 @@ class RouteWork:
         return
 
     def add(self, name):
-<<<<<<< HEAD
         newRoad = Road(name)  
         self.roads.append(newRoad)
 
 class Slow:
-=======
+
         newRoad = Road(name)
         self.roads.append(newRoad)
 
->>>>>>> 71cbb6374957a716fc9a0c5661862edf2e6c609b
 
 class Slow:
     def __init__(self):
@@ -75,7 +63,6 @@ class Slow:
 
 
 class Fast:
-<<<<<<< HEAD
 
     def __init__(self):
         self.name = "FAST"
@@ -94,7 +81,6 @@ class Fast:
 
 class Intersection:
 
-=======
     def __init__(self):
         self.name = "FAST"
         self.avaiable = []
@@ -112,7 +98,6 @@ class Intersection:
 
 
 class Intersection:
->>>>>>> 71cbb6374957a716fc9a0c5661862edf2e6c609b
     def __init__(self, name):
         self.neighbours = []
         self.name = name
@@ -121,11 +106,7 @@ class Intersection:
 
     def intersaction(self):
         self.count += 1
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> 71cbb6374957a716fc9a0c5661862edf2e6c609b
     def getCount(self):
         return self.count
 
@@ -136,17 +117,14 @@ class Intersection:
 
 class Graph:
     intersectionArr = []
-<<<<<<< HEAD
     def __init__(self):
         self.intersectionArr = []
         return
-=======
 
     def __init__(self):
         self.intersectionArr = []
         return
 
->>>>>>> 71cbb6374957a716fc9a0c5661862edf2e6c609b
     def addRelation(self, intersection1, intersection2):
         intersection1.add(intersection2)
         return
@@ -156,7 +134,6 @@ class Graph:
         self.addRelation(inter2, inter1)
         return
 
-<<<<<<< HEAD
 class SimInteractiveEnv(grid.GridEnv):
 
     def __init__(self, name, width, height, torus=False, model_nm='sim_interactive', props=None):
@@ -166,7 +143,6 @@ class SimInteractiveEnv(grid.GridEnv):
 
         
 
-=======
 
 class Road:
     fast_p = 100
@@ -179,4 +155,3 @@ class SimInteractiveEnv(grid.GridEnv):
         super().__init__(name, width, height, torus=False,
                          model_nm=model_nm, props=props)
         self.plot_title = name
->>>>>>> 71cbb6374957a716fc9a0c5661862edf2e6c609b
