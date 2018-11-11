@@ -12,7 +12,7 @@ import numpy as np
 
 POLARIZATION_UP = 1.1
 POLARIZATION_DN = 0.9
-POLAR_THRESHHOLD = 2.7
+POLAR_THRESHHOLD = 2.5
 
 NUM_NEG = 0
 NUM_POS = 0
@@ -73,11 +73,11 @@ class President():
         
         self.oligarchy = 0
         for i in agents:
-            self.oligarchy += (i.political*i.wealth)
+            self.oligarchy += (i.political + i.wealth)
         self.oligarchy = 5* self.sigmoid(self.oligarchy)
-        
+
         self.tooPolar = ( abs(self.political - self.oligarchy) >= POLAR_THRESHHOLD)
-        print(self.oligarchy,self.political,abs(self.political - self.oligarchy))
+        #print(self.oligarchy,self.political,abs(self.political - self.oligarchy))
         global POLAR
         if self.tooPolar:
             global NUM_CORRUPT
@@ -88,7 +88,7 @@ class President():
             
 
     def sigmoid(self,a): #numerically stable sigmoid function
-        return math.exp(-np.logaddexp(0, -a))
+        return math.exp(-np.logaddexp(0, -a)) -0.5
     
     def polar(self):
         return self.tooPolar
@@ -114,9 +114,9 @@ class BasicEnv(env.Environment):
         global NUM_POS
         global NUM_CORRUPT
         print("Negative Presidents: "+str(NUM_NEG)+"\nPositive Presidents: "+str(NUM_POS))
-        if abs(NUM_NEG-NUM_POS) >= POLAR_THRESHHOLD:
-            print("Number of presidents that betray popular opinion: "+str(NUM_CORRUPT)
-                +"  ("+str((NUM_CORRUPT/(NUM_POS+NUM_NEG))*100) + "%)")
+
+        print("Number of presidents that betray popular opinion: "+str(NUM_CORRUPT)
+            +"  ("+str((NUM_CORRUPT/(NUM_POS+NUM_NEG))*100) + "%)")
               
 
        
