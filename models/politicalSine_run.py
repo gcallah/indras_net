@@ -15,13 +15,10 @@ MODEL_NM = "politicalSine"
 
 AGENT_NUM=0
 
-<<<<<<< HEAD
+
 NUM_OF_AGENTS=100
-PERCENTAGE_OF_OLIGARCHS=10 / 100
-=======
-NUM_OF_AGENTS=1000000
 PERCENTAGE_OF_OLIGARCHS=1 / 100
->>>>>>> 71cbb6374957a716fc9a0c5661862edf2e6c609b
+
 
 OLIGARCH_NUM = int(PERCENTAGE_OF_OLIGARCHS*NUM_OF_AGENTS)
 CITIZEN_NUM = NUM_OF_AGENTS - OLIGARCH_NUM + 1
@@ -72,11 +69,9 @@ def run(prop_dict=None):
     ##We make agents here...
     for i in range(0,CITIZEN_NUM):
         AGENT_NUM=0
-<<<<<<< HEAD
+
         print(CITIZEN_POL_BELL[i])
-=======
-        #print(CITIZEN_POL_BELL[i])
->>>>>>> 71cbb6374957a716fc9a0c5661862edf2e6c609b
+
         env.add_agent(ps.Citizen(name="CITagent" 
                         + str(AGENT_NUM),goal="Voting"+str(CITIZEN_POL_BELL[i]),
                         political=CITIZEN_POL_BELL[i],
