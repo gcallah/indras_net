@@ -1,11 +1,13 @@
 import indra.vector_space as vs
 import indra.vs_agent as va
-# import indra.vector_space as vs
-# import indra.vs_agent as va
 import indra.grid_env as grid
 
 import random
-
+"""
+Created on Mon Sep 10 17:30:05 2018
+@authors: wenxuan ruan
+    yadong Li
+"""
 
 class Route:
     def __init__(self, name):
@@ -38,10 +40,9 @@ class RouteWork:
         newRoad = Road(name)  
         self.roads.append(newRoad)
 
-class Slow:
-
-        newRoad = Road(name)
-        self.roads.append(newRoad)
+# class Slow:
+#         newRoad = Road(name)
+#         self.roads.append(newRoad)
 
 
 class Slow:
@@ -51,7 +52,7 @@ class Slow:
         return
 
     def travel(self):
-        for route in self.availableRoutes:
+        for route in self.available:
             move = random.random()
             if move <= Road.slow_p:
                 route.travelRoute()
@@ -72,7 +73,7 @@ class Fast:
     def travel(self):
         for route in self.avaiable:
             travel = random.random()
-            if travel <= road.fast_p:
+            if travel <= Road.fast_p:
                 route.travelRoute()
         return
 
@@ -97,30 +98,10 @@ class Intersection:
         self.avaiable.append(route)
 
 
-class Intersection:
-    def __init__(self, name):
-        self.neighbours = []
-        self.name = name
-        self.count = 0
-        return
-
-    def intersaction(self):
-        self.count += 1
-
-    def getCount(self):
-        return self.count
-
-    def addNeighbour(self, node):
-        self.neighbours.append(node)
-        return
 
 
 class Graph:
     intersectionArr = []
-    def __init__(self):
-        self.intersectionArr = []
-        return
-
     def __init__(self):
         self.intersectionArr = []
         return
@@ -133,15 +114,6 @@ class Graph:
         self.addRelation(inter1, inter2)
         self.addRelation(inter2, inter1)
         return
-
-class SimInteractiveEnv(grid.GridEnv):
-
-    def __init__(self, name, width, height, torus=False, model_nm='sim_interactive', props=None):
-        super().__init__(name, width, height, torus=False,
-                         model_nm=model_nm, props=props)
-        self.plot_title = name
-
-        
 
 
 class Road:
