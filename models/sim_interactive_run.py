@@ -28,11 +28,6 @@ def run(prop_dict=None):
                       model_nm=pa.model_nm,
                       props=pa)
 
-                               pa["grid_width"],
-                               pa["grid_height"],
-                               model_nm=pa.model_nm,
-                               props=pa)
-
     # create given number of agents
     env.add_agent()
 
