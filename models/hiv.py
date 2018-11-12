@@ -18,6 +18,8 @@ W = 3
 
 STATE_MAP = { N: NORTH, S: SOUTH, E: EAST, W: WEST }
 
+TRANS = ".25 .25 .25 .25; .25 .25 .25 .25; .25 .25 .25 .25; .25 .25 .25 .25"
+
 INFECTION_CHANCE = 50
 SYMPTOMS_SHOW = 200
 SYMPTOMS_SHOW_PROB = .05
@@ -124,5 +126,6 @@ class People(menv.MarkovEnv):
     """
         Individuals wander around randomly when they are not in couples. Upon coming into contact with a suitable partner, there is a chance the two individuals will couple together. When this happens, the two individuals no longer move around, they stand next to each other holding hands as a representation of two people in a sexual relationship.
         """
-
+    def get_pre(self, agent, n_census):
+        return markov.MarkovPre(TRANS)
 
