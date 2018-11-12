@@ -335,7 +335,9 @@ class PropArgs():
         dict_for_json = {}
         for prop_name in self.props:
             dict_for_json[prop_name] = self.props[prop_name].to_json()
-        json.dump(dict_for_json, open(file_nm, 'w'), indent=4)
+        f = open(file_nm, 'w')
+        json.dump(dict_for_json, f, indent=4)
+        f.close()
 
     def to_json(self):
         return { prop_nm: self.props[prop_nm].to_json() for prop_nm in self.props }

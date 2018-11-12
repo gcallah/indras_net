@@ -90,6 +90,7 @@ class BasicTestCase(TestCase):
                     if props_written[key]["val"] != self.env.props.props[key].val:
                         report = False
                         break
+        f.close()
         os.remove(self.env.model_nm + ".props")
         self.assertEqual(report, True)
 
@@ -276,6 +277,7 @@ class BasicTestCase(TestCase):
         if json_input_dic["agents"] != agents:
             report = False
 
+        f.close()
         os.remove(path)
 
         self.assertEqual(report, True)
@@ -321,6 +323,7 @@ class BasicTestCase(TestCase):
         # print("check2!!!!", json_input_dic["props"])
 
         os.remove(path)
+        f.close()
         os.remove("basic.log")
 
         self.assertEqual(report, True)
