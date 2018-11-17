@@ -348,7 +348,18 @@ class GridEnv(se.SpatialEnv):
             logging.error("Agent could not move because no cells are empty")
         else:
             self._move_item(agent, empty_cell)
-
+    
+    #Functions by JacEkko (John Knox)====================================================
+    def get_angle(self, agent1, agent2, grid_view=None):
+        """
+        Use two agents to find the angle they make, using their coordinates
+        """
+        dy = abs(agent1.pos[y] - agent2.pos[y])
+        dx = abs(agent1.pos[x] - agent2.pos[x])
+        angle = math.atan(dy, dx)
+        return angle
+    #=====================================================================================
+        
     def find_empty(self, grid_view=None):
         """
         Return a random, empty cell.
