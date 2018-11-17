@@ -5,6 +5,7 @@ from collections import OrderedDict
 import indra.node as node
 import indra.entity as ent
 import json
+import os
 
 AGENTS = "agents"
 POP_DATA = "pop_data"
@@ -369,8 +370,6 @@ class AgentPopTestCase(TestCase):
             report = False
 
         self.assertEqual(report, True)
-<<<<<<< HEAD
-=======
 
     def test_jsondump(self):
         report = True
@@ -410,7 +409,7 @@ class AgentPopTestCase(TestCase):
         if len(json_input_dic['vars']) != len(self.agentpop.vars):
             report = False
         for var in json_input_dic['vars']:
-            if var in self.agentpop.vars:
+            if (var in self.agentpop.vars) and (report == True):
                 if json_input_dic['vars'][var]["pop_data"] != self.agentpop.vars[var]["pop_data"]:
                     report = False
                 if json_input_dic['vars'][var]["pop_hist"] != self.agentpop.vars[var]["pop_hist"]:
@@ -419,16 +418,20 @@ class AgentPopTestCase(TestCase):
                     report = False
                 if json_input_dic['vars'][var]["disp_color"] != self.agentpop.vars[var]["disp_color"]:
                     report = False
-            #     need to figure out how to see if two set of agents are same
+                # need to figure out how to see if two set of agents are same
+                for agent in self.agentpop.vars[var][AGENTS]:
+                    report = False
+                    for agent2 in json_input_dic['vars'][var]["agents"]:
+                        if agent2['name'] == agent.name and agent2['graph']==agent.graph and agent2['ntype']==agent.ntype:
+                            report = True
+                    if report == False:
+                        break
+
             else:
                 report = False
 
-
-
-
+        os.remove("dummy.json")
         self.assertEqual(report, True)
->>>>>>> 71cbb6374957a716fc9a0c5661862edf2e6c609b
-
 
 
 if __name__ == '__main__':

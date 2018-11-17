@@ -32,19 +32,11 @@ def run(prop_dict=None):
 
     # Now we create an environment for our agents to act within:
     env = pm.PartyEnv("A cocktail party",
-<<<<<<< HEAD
                             pa["grid_width"],
                             pa["grid_height"],
                             model_nm=pa.model_nm,
                             props=pa)
-    
-=======
-                      pa["grid_width"],
-                      pa["grid_height"],
-                      model_nm=pa.model_nm,
-                      props=pa)
 
->>>>>>> 71cbb6374957a716fc9a0c5661862edf2e6c609b
     # Now we loop creating multiple agents with numbered names
     # based on the loop variable:
     for i in range(pa["num_men"]):
