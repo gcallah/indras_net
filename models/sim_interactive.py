@@ -35,7 +35,7 @@ class Route:
         return self.count
 
 
-class RouteWork:
+class RouteNetwork:
 
     routes = []
 
@@ -89,22 +89,19 @@ class Fast:
 
 class Intersection:
 
-    def __init__(self):
-        self.name = "FAST"
-        self.avaiable = []
-        return
+    def __init__(self, name):
+        self.neighbours = []
+        self.name = name
+        self.trafficCount = 0
 
     def travel(self):
-        for route in self.avaiable:
-            travel = random.random()
-            if travel <= Road.fast_p:
-                route.travelRoute()
-        return
+        self.trafficCount += 1
 
-    def addRoute(self, route):
-        self.avaiable.append(route)
+    def getTrafficCount(self):
+        return self.trafficCount
 
-
+    def addNeighbour(self, newNeighbour):
+        self.neighbours.append(newNeighbour)
 
 
 class Graph:
@@ -122,10 +119,6 @@ class Graph:
         self.addRelation(inter2, inter1)
         return
 
-
-class Road:
-    fast_p = 100
-    slow_p = 0
 
 
 class SimInteractiveEnv(grid.GridEnv):
