@@ -29,12 +29,12 @@ def run(prop_dict=None):
     avg_condom_use = pa["avg_condom_use"]
     '''
 
-    grid_x = 5
-    grid_y = 5
-    ini_ppl = 10
-    avg_coup_tend = 5
+    grid_x = 8
+    grid_y = 8
+    ini_ppl = 30
+    avg_coup_tend = 10
     avg_test_freq = 0
-    avg_commitment = 50
+    avg_commitment = 2
     avg_condom_use = 0
 
     print(grid_x, grid_y, ini_ppl, avg_coup_tend, avg_test_freq, avg_commitment, avg_condom_use)
