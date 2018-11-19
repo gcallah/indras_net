@@ -19,6 +19,7 @@ def run(prop_dict=None):
     if pa["user_type"] == props.WEB:
         pa["base_dir"] = os.environ["base_dir"]
 
+    '''
     grid_x = pa["grid_width"]
     grid_y = pa["grid_height"]
     ini_ppl = pa["ini_ppl"]
@@ -26,6 +27,15 @@ def run(prop_dict=None):
     avg_test_freq = pa["avg_test_freq"]
     avg_commitment = pa["avg_commitment"]
     avg_condom_use = pa["avg_condom_use"]
+    '''
+
+    grid_x = 8
+    grid_y = 8
+    ini_ppl = 30
+    avg_coup_tend = 10
+    avg_test_freq = 0
+    avg_commitment = 2
+    avg_condom_use = 0
 
     print(grid_x, grid_y, ini_ppl, avg_coup_tend, avg_test_freq, avg_commitment, avg_condom_use)
 
@@ -41,9 +51,9 @@ def run(prop_dict=None):
     condom_use = numpy.random.normal(avg_condom_use, 1, ini_ppl)
 
     for i in range(ini_infected_ppl):
-        env.add_agent(hiv.Person("person" + str(i), True, random.randint(0, hiv.SYMPTOMS_SHOW-1), coup_tend[i], test_freq[i], commitment[i], condom_use[i]))
+        env.add_agent(hiv.Person(name="person" + str(i), infected=True, infection_length=random.randint(0, hiv.SYMPTOMS_SHOW-1), coupling_tendency=coup_tend[i], test_frequency=test_freq[i], commitment=commitment[i], condom_use=condom_use[i]))
     for i in range(ini_healthy_ppl):
-        env.add_agent(hiv.Person("person" + str(ini_infected_ppl+i), False, 0, coup_tend[ini_infected_ppl+i], test_freq[ini_infected_ppl+i], commitment[ini_infected_ppl+i], condom_use[ini_infected_ppl+i]))
+        env.add_agent(hiv.Person(name="person" + str(ini_infected_ppl+i), infected=False, infection_length=0, coupling_tendency=coup_tend[ini_infected_ppl+i], test_frequency=test_freq[ini_infected_ppl+i], commitment=commitment[ini_infected_ppl+i], condom_use=condom_use[ini_infected_ppl+i]))
 
     return utils.run_model(env, prog_file, results_file)
 
