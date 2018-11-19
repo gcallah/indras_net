@@ -25,11 +25,15 @@ def run(prop_dict=None):
     env = sm.SimInteractiveEnv("",
                       pa["grid_width"],
                       pa["grid_height"],
-                      model_nm=pa.model_nm,
+                      model_nm=MODEL_NM,
                       props=pa)
 
-    # create given number of agents
-    env.add_agent()
+    # create given number of slow vehicles
+    for i in range(pa["slow_vehicles"]):
+        env.add_agent(sm.Slow('Slow Vehicle #' + str(i)))
+
+    for i in range(pa["fast_vehicles"]):
+        env.add_agent(sm.Fast('Fast Vehicle #' + str(i)))
 
     return utils.run_model(env, prog_file, results_file)
 
