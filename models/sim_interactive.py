@@ -104,26 +104,43 @@ class Intersection:
         self.neighbours.append(newNeighbour)
 
 
-class Graph:
-    intersectionArr = []
-    def __init__(self):
-        self.intersectionArr = []
-        return
-
-    def addRelation(self, intersection1, intersection2):
-        intersection1.add(intersection2)
-        return
-
-    def addTwoRelation(self, inter1, inter2):
-        self.addRelation(inter1, inter2)
-        self.addRelation(inter2, inter1)
-        return
-
-
-
 class SimInteractiveEnv(grid.GridEnv):
     def __init__(self, name, width, height, torus=False,
                  model_nm='sim_interactive', props=None):
         super().__init__(name, width, height, torus=False,
                          model_nm=model_nm, props=props)
         self.plot_title = name
+        self.num_moves = 0
+        self.move_hist = []
+        self.menu.view.del_menu_item("v")  # no line graph in this model
+        self.intersectionArr = []
+
+    def addRelation(self, intersection1, intersection2):
+        intersection1.addNeighbour(intersection2)
+
+    def addTwoWayRelation(self, inter1, inter2):
+        intersection1 = self.get(inter1)
+        intersection2 = self.get(inter2)
+        self.addRelation(intersection1, intersection2)
+        self.addRelation(intersection2, intersection1)
+
+    def addOneWayRelation(self, inter1, inter2):
+        intersection1 = self.get(inter1)
+        intersection2 = self.get(inter2)
+        self.addRelation(intersection1, intersection2)
+
+    def getIntersection(self, interName):
+        if len(self.intersectionArr) == 0:
+            self.intersectionArr.append(Intersection(interName))
+            return self.intersectionArr[0]
+
+        for intersection in self.intersectionArr:
+            if intersection.name == interName:
+                return intersection
+
+        self.intersectionArr.append(Intersection(interName))
+        return self.intersectionArr[0]
+
+
+
+
