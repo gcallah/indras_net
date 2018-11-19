@@ -35,6 +35,3 @@ def run(prop_dict=None):
 
 if __name__ == "__main__":
     run()
-
-if __name__ == "__main__":
-    run()

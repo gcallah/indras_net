@@ -10,6 +10,13 @@ Created on Mon Sep 10 17:30:05 2018
 """
 
 class Route:
+
+    count = 0
+    name = ""
+    intersections = []
+    heavy_p = 100
+    light_p = 100
+
     def __init__(self, name):
         self.intersections = []
         self.count = 0
@@ -21,24 +28,24 @@ class Route:
     def travelRoute(self):
         self.count = self.count + 1
         for intersection in self.intersections:
-            # move
-            # intersection.travelIntersection()
-            pass
+            intersection.travelIntersection()
         return
 
     def getCount(self):
         return self.count
 
 
-class RouteWork:
+class RouteNetwork:
+
+    routes = []
 
     def __init__(self):
-        self.roads = []
+        self.routes = []
         return
 
     def add(self, name):
-        newRoad = Road(name)  
-        self.roads.append(newRoad)
+        newRoute = Route(name)
+        self.routes.append(newRoute)
 
 # class Slow:
 #         newRoad = Road(name)
@@ -54,7 +61,7 @@ class Slow:
     def travel(self):
         for route in self.available:
             move = random.random()
-            if move <= Road.slow_p:
+            if move <= Route.heavy_p:
                 route.travelRoute()
         return
 
@@ -73,7 +80,7 @@ class Fast:
     def travel(self):
         for route in self.avaiable:
             travel = random.random()
-            if travel <= Road.fast_p:
+            if travel <= Route.light_p:
                 route.travelRoute()
         return
 
@@ -82,22 +89,19 @@ class Fast:
 
 class Intersection:
 
-    def __init__(self):
-        self.name = "FAST"
-        self.avaiable = []
-        return
+    def __init__(self, name):
+        self.neighbours = []
+        self.name = name
+        self.trafficCount = 0
 
     def travel(self):
-        for route in self.avaiable:
-            travel = random.random()
-            if travel <= Road.fast_p:
-                route.travelRoute()
-        return
+        self.trafficCount += 1
 
-    def addRoute(self, route):
-        self.avaiable.append(route)
+    def getTrafficCount(self):
+        return self.trafficCount
 
-
+    def addNeighbour(self, newNeighbour):
+        self.neighbours.append(newNeighbour)
 
 
 class Graph:
@@ -115,10 +119,6 @@ class Graph:
         self.addRelation(inter2, inter1)
         return
 
-
-class Road:
-    fast_p = 100
-    slow_p = 0
 
 
 class SimInteractiveEnv(grid.GridEnv):
