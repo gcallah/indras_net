@@ -14,8 +14,6 @@ from collections import deque
 MODEL_NM = "forestfire"
 
 import indra.prop_args2 as props
-# we will create props here to set user_type:
-# pa = props.PropArgs.create_props(MODEL_NM)
 
 import json
 import models.forestfire as fm
@@ -59,13 +57,13 @@ class BasicTestCase(TestCase):
         agent = self.env.agent_inspect("agent for tracking")
         self.assertEqual(agent.name, "agent for tracking")
 
-    def test_add_agent(self):
-        announce('test_add_agent')
-        self.env.add_agent(fm.Gozer())
-        # test if the add worked!
-        # test by running
-        new_agent = self.env.agent_inspect("Gozer the Destructor")
-        self.assertIsNotNone(new_agent)
+    # def test_add_agent(self):
+    #     announce('test_add_agent')
+    #     self.env.add_agent(fm.Gozer())
+    #     # test if the add worked!
+    #     # test by running
+    #     new_agent = self.env.agent_inspect("Gozer the Destructor")
+    #     self.assertIsNotNone(new_agent)
 
     def test_props_write(self):
         announce('test_props_write')
