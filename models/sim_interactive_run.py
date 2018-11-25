@@ -23,22 +23,27 @@ def run(prop_dict=None):
     # We store basic parameters in a "property" file; this allows us to save
     #  multiple parameter sets, which is important in simulation work.
     #  We can read these in from file or set them here.
-
+    
     if pa["user_type"] == props.WEB:
         pa["base_dir"] = os.environ['base_dir']
 
+    pa["grid_width"] = 20
+    pa["grid_height"] = 20
+    # print(pa)
     # Now we create an environment for our agents to act within:
-    env = sm.SimInteractiveEnv("",
+    env = sm.SimInteractiveEnv("Car_sim",
                       pa["grid_width"],
                       pa["grid_height"],
                       model_nm=MODEL_NM,
                       props=pa)
 
     # create given number of slow vehicles
-    for i in range(pa["slow_vehicles"]):
+    # print(sm)
+    print(env)
+    for i in range(pa["slow_car_num"]):
         env.add_agent(sm.Slow('Slow Vehicle #' + str(i)))
 
-    for i in range(pa["fast_vehicles"]):
+    for i in range(pa["fast_car_num"]):
         env.add_agent(sm.Fast('Fast Vehicle #' + str(i)))
 
     return utils.run_model(env, prog_file, results_file)
