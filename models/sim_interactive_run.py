@@ -39,7 +39,6 @@ def run(prop_dict=None):
 
     # create given number of slow vehicles
     # print(sm)
-    print(env)
     for i in range(pa["slow_car_num"]):
         env.add_agent(sm.Slow('Slow Vehicle #' + str(i)))
 

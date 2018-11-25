@@ -69,9 +69,10 @@ class Vehicle(va.VSAgent):
                 self.env.move(self, x + FASTSPEED, Y)
 
 class Slow(Vehicle):
-    def __init__(self):
+    def __init__(self, num):
         self.name = "slow"
         self.available = []
+        self.num = num
 
     def travel(self):
         for route in self.available:
@@ -85,9 +86,10 @@ class Slow(Vehicle):
 
 
 class Fast(Vehicle):
-    def __init__(self):
+    def __init__(self, num):
         self.name = "FAST"
         self.avaiable = []
+        self.num = num
 
     def travel(self):
         for route in self.avaiable:
