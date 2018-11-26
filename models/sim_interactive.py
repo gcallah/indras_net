@@ -10,10 +10,6 @@ Created on Mon Sep 10 17:30:05 2018
 """
 
 X = 0
-Y = 1
-
-SLOWSPEED = 1
-FASTSPEED = 3
 
 class Route:
 
@@ -53,26 +49,41 @@ class RouteNetwork:
 
 class Vehicle(va.VSAgent):
 
-    def __init__(self, name):
+    def __init__(self, name, acceleration, deceleration):
         super.__init__(name)
         self.name = name
+        self.speed = 0.1 + random.uniform(0, 0.9)
+        self.acceleration = acceleration
+        self.deceleration = deceleration
 
-    def travel(self, speed):
+    def accelerate(self):
+        self.speed += self.acceleration
+
+    def decelerate(self, targetSpeed):
+        self.speed = targetSpeed - self.deceleration
+
+
+    def travel(self, grid_env):
         x = self.pos[X]
-        y = self.pos[Y]
+        # If there is a car ahead
+        if grid_env[x+1]:
+            self.decelerate(grid_env[x+1].speed)
+        else:
+            self.accelerate()
 
-        if speed == "slow":
-            if self.env.is_cell_empty(x + SLOWSPEED, y):
-                self.env.move(self, x + SLOWSPEED, Y)
-        elif speed == "fast":
-            if self.env.is_cell_empty(x + FASTSPEED, y + 1):
-                self.env.move(self, x + FASTSPEED, Y)
+        if self.speed < grid_env.minSpeed:
+            self.speed = grid_env.minSpeed
+        if self.speed > grid_env.maxSpeed:
+            self.speed = grid_env.maxSpeed
+
+
+
 
 class Slow(Vehicle):
-    def __init__(self, num):
-        self.name = "slow"
+    def __init__(self, name, ):
+        self.name = name
         self.available = []
-        self.num = num
+        self.speed = INITIALSPEED
 
     def travel(self):
         for route in self.available:
