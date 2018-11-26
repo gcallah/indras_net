@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import indra.prop_args2 as props
 import os
 
@@ -34,16 +36,22 @@ def run(prop_dict=None):
     env = sm.SimInteractiveEnv("Car_sim",
                       pa["grid_width"],
                       pa["grid_height"],
+                      pa["max_speed"],
+                      pa["min_speed"],
                       model_nm=MODEL_NM,
                       props=pa)
 
     # create given number of slow vehicles
     # print(sm)
     for i in range(pa["slow_car_num"]):
-        env.add_agent(sm.Slow('Slow Vehicle #' + str(i)))
+        env.add_agent(sm.Slow('Slow Vehicle #' + str(i),
+                      pa['acceleration'],
+                      pa['deceleration']))
 
     for i in range(pa["fast_car_num"]):
-        env.add_agent(sm.Fast('Fast Vehicle #' + str(i)))
+        env.add_agent(sm.Fast('Fast Vehicle #' + str(i),
+                      pa['acceleration'],
+                      pa['deceleration']))
 
     return utils.run_model(env, prog_file, results_file)
 
