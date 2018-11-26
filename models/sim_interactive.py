@@ -11,6 +11,10 @@ Created on Mon Sep 10 17:30:05 2018
 
 X = 0
 
+SLOW_AGENT = "Slow"
+FAST_AGENT = "FAST"
+
+
 class Route:
 
     def __init__(self, name):
@@ -43,14 +47,11 @@ class RouteNetwork:
         newRoute = Route(name)
         self.routes.append(newRoute)
 
-# class Slow:
-#         newRoad = Road(name)
-#         self.roads.append(newRoad)
 
 class Vehicle(va.VSAgent):
 
     def __init__(self, name, acceleration, deceleration):
-        super.__init__(name)
+        super().__init__(name, acceleration, deceleration)
         self.name = name
         self.speed = 0.1 + random.uniform(0, 0.9)
         self.acceleration = acceleration
@@ -61,7 +62,6 @@ class Vehicle(va.VSAgent):
 
     def decelerate(self, targetSpeed):
         self.speed = targetSpeed - self.deceleration
-
 
     def travel(self, grid_env):
         x = self.pos[X]
@@ -76,41 +76,33 @@ class Vehicle(va.VSAgent):
         if self.speed > grid_env.maxSpeed:
             self.speed = grid_env.maxSpeed
 
+    def to_json(self):
+        safe_fields = super().to_json()
+        return safe_fields
+
 
 
 
 class Slow(Vehicle):
-    def __init__(self, name, ):
-        self.name = name
-        self.available = []
-        self.speed = INITIALSPEED
+    def __init__(self, name, acceleration, deceleration):
+        super().__init__(name, acceleration, deceleration)
+        self.speed = 0.1 + random.uniform(0, 0.5)
 
-    def travel(self):
-        for route in self.available:
-            move = random.random()
-            if move <= Route.heavy_p:
-                route.travelRoute()
-                super.travel('slow')
-
-    def addRoute(self, route):
-        self.available.append(route)
+    def to_json(self):
+        safe_fields = super().to_json()
+        safe_fields["color"] = "Red"
+        return safe_fields
 
 
 class Fast(Vehicle):
-    def __init__(self, num):
-        self.name = "FAST"
-        self.avaiable = []
-        self.num = num
+    def __init__(self, name, acceleration, deceleration):
+        super().__init__(name, acceleration, deceleration)
+        self.speed = 0.1 + random.uniform(0.5, 1)
 
-    def travel(self):
-        for route in self.avaiable:
-            travel = random.random()
-            if travel <= Route.light_p:
-                route.travelRoute()
-                super.travel('fast')
-
-    def addRoute(self, route):
-        self.avaiable.append(route)
+    def to_json(self):
+        safe_fields = super().to_json()
+        safe_fields["color"] = "Blue"
+        return safe_fields
 
 class Intersection:
 
@@ -139,6 +131,10 @@ class SimInteractiveEnv(grid.GridEnv):
         self.move_hist = []
         self.menu.view.del_menu_item("v")  # no line graph in this model
         self.intersectionArr = []
+
+    def set_agent_color(self):
+        self.set_var_color(SLOW_AGENT, 'r')
+        self.set_var_color(FAST_AGENT, 'b')
 
     def addRelation(self, intersection1, intersection2):
         intersection1.addNeighbour(intersection2)
