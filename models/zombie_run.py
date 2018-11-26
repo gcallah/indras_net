@@ -26,7 +26,6 @@ def run(prop_dict=None):
                      preact=True,
                      postact=True,
                      props=pa)
-
     # Now we loop creating multiple agents with numbered names
     # based on the number of agents of that type to create:
     for i in range(pa["num_zombies"]):
