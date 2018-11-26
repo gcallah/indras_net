@@ -23,35 +23,36 @@ class AudienceAgent(ma.MarkovAgent):
     A member of an audience that will decide whether to remain sitting or stand
 
     Attributes:
-        sitting: a boolean indicating whether the member is sitting (T) or standing (F)
-        noise: a double that determines the odds of the member following the crowd once
-            confronted to make a choice
-        standard: a double that determines the odds of the member enjoying the
-            performance
+        name: name of the agent (agent1, agent2, etc.)
+        goal: the current goal of each member, useful for testing their states but useless otherwise
+        state: a string indicating whether the member is sitting ("SITTING") or standing ("STANDING")
+        standard: a double that determines whether an audience member is impressed by the performance or not
+        changed: a boolean that is True whenever an agent caves in to peer pressure and changes their state
+        pressure: a double representing the amount of pressure felt by the agent, pressure being how many neighbors have a different state
     Functions:
-        initial: initial reaction to performance. Makes the agent react to the performance
+        reaction: Checks whether the performance was up to the agent's standards and changes state accordingly
         isSitting: returns a boolean. Checks whether agent is sitting
-        setState: takes a boolean state as an argument. Sets agent state to the new state
-        reaction: Checks whether the performance was up to the agent's standards
-        confront: Forces the agent to react to perceived pressure, will change state if pressure is too much
+        cycleState: changes agent state from sitting->standing or vice versa
+        confront: checks agent's pressure and changes state if the pressure is too great
+        wasPressured: prints out whether the agent changed states during that step. Useful for debugging.
     """
     def __init__(self, name, goal):
         super().__init__(name, goal, NSTATES, SITTING)
         self.name = name
         self.goal = goal
         self.state = SITTING
-        # how hard to please the agent is aka how high their standards are
         self.standard = random.uniform(0.0, 1.0)
-        #self.ntype = self.state
+        self.ntype = self.state
         self.next_state = STANDING
-
         self.changed = False
-        #Agent's first impression of the show
+        self.pressure = 0
         self.reaction()
 
+    #Initial impression of the show
     def reaction(self):
         if (performance >= self.standard):
             self.cycleState()
+            #print(self.name, "I liked the performance")
 
     def isSitting(self):
         return self.state == SITTING
@@ -62,45 +63,40 @@ class AudienceAgent(ma.MarkovAgent):
         self.ntype = self.state
         self.next_state = prev_state
 
-    # Confront the audience member with a decision.
-        # If pressure to stand exceeds 50%:
-        # the audience member chooses to copy what its neighbors are doing.
     def confront(self):
-        if (self.pressure > 0.5):  # If the pressure is to great, you have a choice
+        if (self.pressure > 0.5):
             self.cycleState()
-            self.changed = True  ##Delete later
+            self.changed = True
+
+    def wasPressured(self):
+        if (self.changed):
+            print("I was pressured into changing my state")
+        else:
+            print("I resisted the pressure!")
+        self.goal = self.state
 
     def preact(self):
         diff_num = 0
         neighbors_num = 0
-
         for neighbor in self.neighbor_iter():
-            #print("I am iterating through my neighbors") ##for testing
             if(neighbor.state != self.state):
                 diff_num += 1
             neighbors_num += 1
-        print("neighbors_tot:", neighbors_num)
-        self.pressure = 0.75 ##Temp
         if(neighbors_num != 0):
             self.pressure = diff_num / neighbors_num
-        print("I am agent " + self.name + " and I am " + self.state + " [preact]")
 
     def act(self):
         self.preact()   #This really shouldn't be here but I'm not able to get the preact to run.
                         #Ideally the preact would trigger by itself before the act, but I can only get the preact()
                         #to run by calling it from act()
-        self.changed = False ##For testing
+        self.changed = False
         self.confront()
-        print("I am agent " + self.name + " and I am " + self.state + " [act]")
-        if(self.changed): ##For testing
-            print("I was pressured into changing my state")
-        else:
-            print("I resisted the pressure!")
+        self.wasPressured()
 
     def to_json(self):
         safe_fields = super().to_json()
         safe_fields["state"] = self.state
-        #safe_fields["ntype"] = self.ntype
+        safe_fields["ntype"] = self.ntype
         safe_fields["next_state"] = self.next_state
 
         return safe_fields
@@ -108,16 +104,20 @@ class AudienceAgent(ma.MarkovAgent):
     def from_json_preadd(self, json_input):
         super().from_json_preadd(json_input)
         self.state = json_input["state"]
-        #self.ntype = json_input["ntype"]
+        self.ntype = json_input["ntype"]
         self.next_state = json_input["next_state"]
 
 class Auditorium(menv.MarkovEnv):
     def __init__(self, width, height, #noise,
                  torus=False, model_nm="standing_ovation", act=True,
                  props=None):
-        # Initialize model parameters
+        """
+                Create a new Auditorium where the audience will exist.
+                Args:
+                    width, height: The grid dimensions (keep in mind number of audience members = width * height)
+         """
         super().__init__("Auditorium", width, height,
-                         torus=False, model_nm=model_nm, #act=act,
+                         torus=False, model_nm=model_nm,
                          props=props)
         #self.noise = noise
         self.plot_title = "An Auditorium"

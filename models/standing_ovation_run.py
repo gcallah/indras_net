@@ -1,50 +1,37 @@
-#!/usr/bin/env python3
 """
-This is a simple test script. It can be cloned to
-create new run scripts, and should be run to test
-the system after library changes.
+This file runs the standing_ovation model.
 """
+import indra.prop_args2 as props
+#import os
+
 MODEL_NM = "standing_ovation"
 
-import random
-import indra.prop_args2 as props
-pa = props.PropArgs.create_props(MODEL_NM)
-
-import indra.utils as utils
-import models.standing_ovation as stov
-
 def run(prop_dict=None):
+    pa = props.PropArgs.create_props(MODEL_NM, prop_dict)
+
+    import indra.utils as utils
+    import models.standing_ovation as stov
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
-    global pa
-    num_agents = pa["grid_width"] * pa["grid_height"]
-    num_agents = 25 #Temporary test value, replace with width * height
 
-    env = stov.Auditorium(
-                    pa["grid_width"],
-                    pa["grid_height"],
-                    model_nm=MODEL_NM,
-                    props=pa
-                    )
-    #Generate audience members
+    width = pa["grid_width"]
+    height = pa["grid_height"]
+    #noise = pa["noise"]
+
+    # #for testing, delete the following 2 assignments once done
+    # width = 5
+    # height = 5
+
+    num_agents = int(width * height)
+
+    env = stov.Auditorium(width,
+                       height,
+                       #noise,
+                       model_nm=MODEL_NM,
+                       torus=False,
+                       props=pa)
+
     for i in range(num_agents):
-        noise = random.uniform(0.7,9.0)
-        env.add_agent(stov.AudienceAgent("Member" + str(i), "Enjoying the show", pa["noise_level"]))
-    ##Saving these in case I have to test this
-    # # test prop_args as an iterable:
-    # for prop, val in pa.items():
-    #     print(prop + ": " + str(val))
-    #
-    # # test that props work as a dictionary:
-    # if "num_agents" in pa:
-    #     print("In is working!")
-    #
-    # # test what pa["num_agents"] is:
-    # num_agents = pa["num_agents"]
-    # print("num_agents = " + str(num_agents))
-    #
-    # # make sure we can get props length:
-    # print("Props length = " + str(len(pa)))
-
+        env.add_agent(stov.AudienceAgent("Member" + str(i), "Enjoying the show"))
     return utils.run_model(env, prog_file, results_file)
 
 
