@@ -27,9 +27,6 @@ def run(prop_dict=None):
     if pa["user_type"] == props.WEB:
         pa["base_dir"] = os.environ['base_dir']
 
-    pa["grid_width"] = 20
-    pa["grid_height"] = 20
-    # print(pa)
     # Now we create an environment for our agents to act within:
     env = sm.SimInteractiveEnv("Car_sim",
                       pa["grid_width"],
