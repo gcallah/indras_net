@@ -19,7 +19,7 @@ def run(prop_dict=None):
 
     if pa["user_type"] == props.WEB:
         pa["base_dir"] = os.environ["base_dir"]
-    
+
     # Now we create a minimal environment for our agents to act within:
     env = ge.GridEnv("Test grid env",
                      pa["grid_width"],
@@ -29,20 +29,20 @@ def run(prop_dict=None):
                      preact=True,
                      postact=True,
                      props=pa)
-    
+
     # Now we loop creating multiple agents with numbered names
     # based on the loop variable:
     for i in range(pa["num_agents"]):
         env.add_agent(gm.TestGridAgent(name="agent" + str(i),
                       goal="taking up a grid space!"))
-    
+
     # let's test our iterator
     for cell in env:
         (x, y) = cell.coords
         logging.info("Contents of cell x = " + str(x)
               + " and y = " + str(y)
               + " is " + str(cell.contents))
-        
+
     return utils.run_model(env, prog_file, results_file)
 
 

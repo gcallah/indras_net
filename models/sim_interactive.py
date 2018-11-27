@@ -122,8 +122,9 @@ class Intersection:
 
 
 class SimInteractiveEnv(grid.GridEnv):
-    def __init__(self, name, width, height, torus=False,
-                 model_nm='sim_interactive', props=None):
+    def __init__(self, name, width, height, 
+                 model_nm=None, props=None):
+        print("About to call GridEnv init.")
         super().__init__(name, width, height, torus=False,
                          model_nm=model_nm, props=props)
         self.plot_title = name

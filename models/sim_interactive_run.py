@@ -18,8 +18,6 @@ def run(prop_dict=None):
     import models.sim_interactive as sm
 
     # set up some file names:
-    (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
-
     (prog_file, log_file, prop_file,
      results_file) = utils.gen_file_names(MODEL_NM)
     # We store basic parameters in a "property" file; this allows us to save
@@ -36,8 +34,6 @@ def run(prop_dict=None):
     env = sm.SimInteractiveEnv("Car_sim",
                       pa["grid_width"],
                       pa["grid_height"],
-                      pa["max_speed"],
-                      pa["min_speed"],
                       model_nm=MODEL_NM,
                       props=pa)
 
