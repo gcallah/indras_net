@@ -2,6 +2,7 @@
 
 import indra.prop_args2 as props
 import os
+import random
 
 MODEL_NM = "sim_interactive"
 
@@ -27,9 +28,6 @@ def run(prop_dict=None):
     if pa["user_type"] == props.WEB:
         pa["base_dir"] = os.environ['base_dir']
 
-    pa["grid_width"] = 20
-    pa["grid_height"] = 20
-    # print(pa)
     # Now we create an environment for our agents to act within:
     env = sm.SimInteractiveEnv("Car_sim",
                       pa["grid_width"],
@@ -39,15 +37,12 @@ def run(prop_dict=None):
 
     # create given number of slow vehicles
     # print(sm)
+    max_speed = pa["max_speed"]
+    min_speed = pa["min_speed"]
     for i in range(pa["slow_car_num"]):
-        env.add_agent(sm.Slow('Slow Vehicle #' + str(i),
-                      pa['acceleration'],
-                      pa['deceleration']))
-
-    for i in range(pa["fast_car_num"]):
-        env.add_agent(sm.Fast('Fast Vehicle #' + str(i),
-                      pa['acceleration'],
-                      pa['deceleration']))
+        newAgent = sm.Car('Vehicle #' + str(i), random.randint(min_speed, max_speed))
+        env.add_agent(newAgent)
+        env.move(newAgent, i + 2, 50)
 
     return utils.run_model(env, prog_file, results_file)
 

@@ -1,6 +1,6 @@
-import indra.vector_space as vs
-import indra.vs_agent as va
+import indra.grid_agent as ga
 import indra.grid_env as grid
+import indra.vs_agent as va
 
 import random
 """
@@ -10,9 +10,7 @@ Created on Mon Sep 10 17:30:05 2018
 """
 
 X = 0
-
-SLOW_AGENT = "Slow"
-FAST_AGENT = "FAST"
+Y = 1
 
 
 class Route:
@@ -48,33 +46,37 @@ class RouteNetwork:
         self.routes.append(newRoute)
 
 
-class Vehicle(va.VSAgent):
+class Car(va.VSAgent):
 
-    def __init__(self, name, acceleration, deceleration):
-        super().__init__(name, acceleration, deceleration)
+    def __init__(self, name, speed):
+        super().__init__(name, '')
         self.name = name
-        self.speed = 0.1 + random.uniform(0, 0.9)
-        self.acceleration = acceleration
-        self.deceleration = deceleration
+        self.speed = speed
 
-    def accelerate(self):
-        self.speed += self.acceleration
-
-    def decelerate(self, targetSpeed):
-        self.speed = targetSpeed - self.deceleration
-
-    def travel(self, grid_env):
+    def eval_env(self, other_pre):
         x = self.pos[X]
+        y = self.pos[Y]
         # If there is a car ahead
-        if grid_env[x+1]:
-            self.decelerate(grid_env[x+1].speed)
+        newXPos = x + self.speed
+        if newXPos >= self.env.width:
+            newXPos = newXPos - self.env.width
+        if self.env.is_cell_empty(newXPos, y):
+            self.env.move(self, newXPos, y)
+        # else:
+        #     while self.env.is_cell_empty(newXPos, y):
+        #         newXPos = newXPos - 1
+        #     if newXPos > 0:
+        #         self.env.move(self, newXPos, y)
+
+    def travel(self):
+        print(self.speed)
+        x = self.pos[X]
+        y = self.pos[Y]
+        # If there is a car ahead
+        if self.env.is_cell_empty(x + self.speed, y):
+            self.env.move(self, x + self.speed, y)
         else:
-            self.accelerate()
-
-        if self.speed < grid_env.minSpeed:
-            self.speed = grid_env.minSpeed
-        if self.speed > grid_env.maxSpeed:
-            self.speed = grid_env.maxSpeed
+            self.env.move(self, x + self.speed - 1, y)
 
     def to_json(self):
         safe_fields = super().to_json()
@@ -83,26 +85,26 @@ class Vehicle(va.VSAgent):
 
 
 
-class Slow(Vehicle):
-    def __init__(self, name, acceleration, deceleration):
-        super().__init__(name, acceleration, deceleration)
-        self.speed = 0.1 + random.uniform(0, 0.5)
-
-    def to_json(self):
-        safe_fields = super().to_json()
-        safe_fields["color"] = "Red"
-        return safe_fields
-
-
-class Fast(Vehicle):
-    def __init__(self, name, acceleration, deceleration):
-        super().__init__(name, acceleration, deceleration)
-        self.speed = 0.1 + random.uniform(0.5, 1)
-
-    def to_json(self):
-        safe_fields = super().to_json()
-        safe_fields["color"] = "Blue"
-        return safe_fields
+# class Slow(Vehicle):
+#     def __init__(self, name, acceleration, deceleration):
+#         super().__init__(name, acceleration, deceleration)
+#         self.speed = 0.1 + random.uniform(0, 0.5)
+#
+#     def to_json(self):
+#         safe_fields = super().to_json()
+#         safe_fields["color"] = "Red"
+#         return safe_fields
+#
+#
+# class Fast(Vehicle):
+#     def __init__(self, name, acceleration, deceleration):
+#         super().__init__(name, acceleration, deceleration)
+#         self.speed = 0.1 + random.uniform(0.5, 1)
+#
+#     def to_json(self):
+#         safe_fields = super().to_json()
+#         safe_fields["color"] = "Blue"
+#         return safe_fields
 
 class Intersection:
 
@@ -124,7 +126,7 @@ class Intersection:
 class SimInteractiveEnv(grid.GridEnv):
     def __init__(self, name, width, height, 
                  model_nm=None, props=None):
-        print("About to call GridEnv init.")
+        # print("About to call GridEnv init.")
         super().__init__(name, width, height, torus=False,
                          model_nm=model_nm, props=props)
         self.plot_title = name
@@ -133,9 +135,8 @@ class SimInteractiveEnv(grid.GridEnv):
         self.menu.view.del_menu_item("v")  # no line graph in this model
         self.intersectionArr = []
 
-    def set_agent_color(self):
-        self.set_var_color(SLOW_AGENT, 'r')
-        self.set_var_color(FAST_AGENT, 'b')
+    def car_move(self, agent):
+        agent.travel()
 
     def addRelation(self, intersection1, intersection2):
         intersection1.addNeighbour(intersection2)
