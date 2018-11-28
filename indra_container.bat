@@ -1,1 +1,0 @@
-docker run -it -p 8000:8000 -v e:\Documents\GitHub\indras_net:/home/IndrasNet --name indra gcallah/indra:v7 bash
