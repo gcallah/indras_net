@@ -10,6 +10,8 @@ import logging
 import indra.markov as markov
 import indra.markov_agent as ma
 import indra.markov_env as menv
+import indra.grid_env as env
+from indra.grid_env import GridEnv
 import numpy as np
 import math
 
@@ -229,7 +231,7 @@ class Meadow(menv.MarkovEnv):
         trans_str = ""
 
         d, total = self.dir_info(agent)
-
+        
         if(type(agent) == Wolf):
             trans_str += self.wolf_trans(d, total)
         else:
