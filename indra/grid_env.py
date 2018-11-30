@@ -354,10 +354,16 @@ class GridEnv(se.SpatialEnv):
         """
         Use two agents to find the angle they make, using their coordinates
         """
-        dy = abs(agent1.pos[y] - agent2.pos[y])
-        dx = abs(agent1.pos[x] - agent2.pos[x])
-        angle = math.atan(dy, dx)
-        return angle
+        dy = abs(agent1.pos[Y] - agent2.pos[Y])
+        dx = abs(agent1.pos[X] - agent2.pos[X])
+        if(dy == 0):
+            return 180
+        if(dx == 0):
+            return 90
+        else:
+            rad = math.atan(dy / dx)
+            angle = rad * (180 / math.pi)
+            return angle
     #=====================================================================================
         
     def find_empty(self, grid_view=None):
