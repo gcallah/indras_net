@@ -204,9 +204,9 @@ class BasicTestCase(TestCase):
                     line_list[0] = line_list[0].strip()
                     line_list[1] = line_list[1].strip()
                     dic_for_check[line_list[0]] = line_list[1]
-        for key in self.env.props.props:
-            if str(self.env.props.props[key]) != dic_for_check[key]:
-                report = False
+            for key in self.env.props.props:
+                if str(self.env.props.props[key]) != dic_for_check[key]:
+                    report = False
         f.close()
         os.remove("checkprops.txt")
         self.assertEqual(report, True)
