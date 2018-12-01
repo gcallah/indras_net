@@ -1,0 +1,74 @@
+{
+    "density": {
+        "val": 0.43,
+        "question": "What is forest's density?",
+        "atype": "DBL",
+        "default_val": 0.43,
+        "lowval": 0.01,
+        "hival": 0.99
+    },
+    "strike_freq": {
+        "val": 4,
+        "question": "How many turns between lightning strikes?",
+        "atype": "INT",
+        "default_val": 4,
+        "lowval": 1.0,
+        "hival": 100.0
+    },
+    "regen_period": {
+        "val": 20,
+        "question": "How many turns before a new tree grows where one has burned?",
+        "atype": "INT",
+        "default_val": 20,
+        "lowval": 1.0,
+        "hival": 1000.0
+    },
+    "grid_width": {
+        "val": 20,
+        "question": "What is the grid width?",
+        "atype": "INT",
+        "default_val": 20,
+        "lowval": 1.0,
+        "hival": 1000.0
+    },
+    "grid_height": {
+        "val": 20,
+        "question": "What is the grid height?",
+        "atype": "INT",
+        "default_val": 20,
+        "lowval": 1.0,
+        "hival": 1000.0
+    },
+    "user_type": {
+        "val": "dummy",
+        "question": null,
+        "atype": null,
+        "default_val": null,
+        "lowval": null,
+        "hival": null
+    },
+    "OS": {
+        "val": "Darwin",
+        "question": null,
+        "atype": null,
+        "default_val": null,
+        "lowval": null,
+        "hival": null
+    },
+    "log_fname": {
+        "val": "forestfire.log",
+        "question": null,
+        "atype": null,
+        "default_val": null,
+        "lowval": null,
+        "hival": null
+    },
+    "user_name": {
+        "val": "thomas",
+        "question": null,
+        "atype": null,
+        "default_val": null,
+        "lowval": null,
+        "hival": null
+    }
+}
