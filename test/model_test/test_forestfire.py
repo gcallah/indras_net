@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 VALUE = "val"
 QUESTION = "question"
 DEFAULT_VAL = "default_val"
