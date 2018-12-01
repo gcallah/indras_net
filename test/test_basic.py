@@ -193,7 +193,7 @@ class BasicTestCase(TestCase):
         sys.stdout = orig_out
         f = open("checkprops.txt", "r")
         title = f.readline()
-        title_list = title.split("for")
+        title_list = title.split(" for ")
         if self.env.model_nm != title_list[1].strip():
             report = False
         dic_for_check = {}

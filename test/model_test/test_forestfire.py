@@ -52,18 +52,21 @@ class BasicTestCase(TestCase):
         for i in range(num_agents):
             self.env.add_agent(fm.Tree(name="tree" + str(i)))
 
+        self.env.add_agent(fm.Tree(name="tree for tracking"))
+
+
     def test_agent_inspect(self):
         announce('test_agent_inspect')
-        agent = self.env.agent_inspect("agent for tracking")
-        self.assertEqual(agent.name, "agent for tracking")
+        agent = self.env.agent_inspect("tree for tracking")
+        self.assertEqual(agent.name, "tree for tracking")
 
-    # def test_add_agent(self):
-    #     announce('test_add_agent')
-    #     self.env.add_agent(fm.Gozer())
-    #     # test if the add worked!
-    #     # test by running
-    #     new_agent = self.env.agent_inspect("Gozer the Destructor")
-    #     self.assertIsNotNone(new_agent)
+    def test_add_agent(self):
+        announce('test_add_agent')
+        self.env.add_agent(fm.Tree(name="new added tree"))
+        # test if the add worked!
+        # test by running
+        new_agent = self.env.agent_inspect("new added tree")
+        self.assertIsNotNone(new_agent)
 
     def test_props_write(self):
         announce('test_props_write')
@@ -185,7 +188,7 @@ class BasicTestCase(TestCase):
         sys.stdout = orig_out
         f = open("checkprops.txt", "r")
         title = f.readline()
-        title_list = title.split("for")
+        title_list = title.split(" for ")
         if self.env.model_nm != title_list[1].strip():
             report = False
         dic_for_check = {}
@@ -196,9 +199,10 @@ class BasicTestCase(TestCase):
                     line_list[0] = line_list[0].strip()
                     line_list[1] = line_list[1].strip()
                     dic_for_check[line_list[0]] = line_list[1]
-        for key in self.env.props.props:
-            if str(self.env.props.props[key]) != dic_for_check[key]:
-                report = False
+
+            for key in self.env.props.props:
+                if str(self.env.props.props[key]) != dic_for_check[key]:
+                    report = False
         f.close()
         os.remove("checkprops.txt")
         self.assertEqual(report, True)
