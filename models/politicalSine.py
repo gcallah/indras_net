@@ -18,7 +18,7 @@ NUM_NEG = 0
 NUM_POS = 0
 NUM_CORRUPT = 0
 
-POLAR=False
+POLAR = False
 
 PRESIDENT = False
 
@@ -27,14 +27,14 @@ class Citizen(ent.Agent):
     An agent for citizens
     """
 
-    def __init__(self, name,goal, political, wealth):
+    def __init__(self, name, goal, political, wealth):
         """
         -A very basic init. (self, name, political, wealth)
         -political is a number between -5 and 5 representative of
         the political views of the citizen (negative vs positive)
         -wealth is the wealth of the citizen (because oligarchy)
         """
-        self.goal=goal
+        self.goal = goal
         self.political = political
         self.wealth = wealth
         super().__init__(name, "voting")
@@ -55,28 +55,27 @@ class Citizen(ent.Agent):
 
         #print(self.political)
 
-            
 class President():
     """A representative of a president"""
-    def __init__(self,agents):
+    def __init__(self, agents):
         self.political = 0
         for i in agents:
             self.political += i.political
         self.political = 5* self.sigmoid(self.political)
-        
+
         if self.political < 0:
             global NUM_NEG
-            NUM_NEG +=1
+            NUM_NEG += 1
         else:
             global NUM_POS
-            NUM_POS +=1
-        
+            NUM_POS += 1
+
         self.oligarchy = 0
         for i in agents:
             self.oligarchy += (i.political + i.wealth)
         self.oligarchy = 5* self.sigmoid(self.oligarchy)
 
-        self.tooPolar = ( abs(self.political - self.oligarchy) >= POLAR_THRESHHOLD)
+        self.tooPolar = (abs(self.political - self.oligarchy) >= POLAR_THRESHHOLD)
         #print(self.oligarchy,self.political,abs(self.political - self.oligarchy))
         global POLAR
         if self.tooPolar:
@@ -85,15 +84,13 @@ class President():
             POLAR = True
         else:
             POLAR = False
-            
 
-    def sigmoid(self,a): #numerically stable sigmoid function
+    def sigmoid(self, a): #numerically stable sigmoid function
         return math.exp(-np.logaddexp(0, -a)) -0.5
-    
+
     def polar(self):
         return self.tooPolar
-        
-        
+
 class BasicEnv(env.Environment):
     """
     This environment exists
@@ -105,8 +102,7 @@ class BasicEnv(env.Environment):
                          postact=True,
                          model_nm=model_nm,
                          props=props)
-        
-        
+
     def preact_loop(self):
         global PRESIDENT
         PRESIDENT = President(self.agents)
@@ -116,14 +112,12 @@ class BasicEnv(env.Environment):
         print("Negative Presidents: "+str(NUM_NEG)+"\nPositive Presidents: "+str(NUM_POS))
 
         print("Number of presidents that betray popular opinion: "+str(NUM_CORRUPT)
-            +"  ("+str((NUM_CORRUPT/(NUM_POS+NUM_NEG))*100) + "%)")
-              
+              +"  ("+str((NUM_CORRUPT/(NUM_POS+NUM_NEG))*100) + "%)")
 
-       
     def restore_agents(self, json_input):
-        temp=0
+        temp = 0
         for agent in json_input["agents"]:
-            self.add_agent(Citizen(agent["name"+temp], 
-                                      agent["Voting"]))
-            temp+=1
+            self.add_agent(Citizen(agent["name"+temp],
+                                   agent["Voting"]))
+            temp += 1
 
