@@ -7,34 +7,41 @@ few individual first, and then model how the pressure to
 stand or sit affects the rest of the audience.
 """
 import indra.display_methods as disp
-import indra.markov as markov
 import indra.markov_agent as ma
 import indra.markov_env as menv
 import random
 
-#Audience states
 SITTING = "Sitting"
 STANDING = "Standing"
 NSTATES = 2
 
 performance = random.uniform(0.0, 1.0)
+
+
 class AudienceAgent(ma.MarkovAgent):
     """
     A member of an audience that will decide whether to remain sitting or stand
-
     Attributes:
         name: name of the agent (agent1, agent2, etc.)
-        goal: the current goal of each member, useful for testing their states but useless otherwise
-        state: a string indicating whether the member is sitting ("SITTING") or standing ("STANDING")
-        standard: a double that determines whether an audience member is impressed by the performance or not
-        changed: a boolean that is True whenever an agent caves in to peer pressure and changes their state
-        pressure: a double representing the amount of pressure felt by the agent, pressure being how many neighbors have a different state
+        goal: the current goal of each member,
+            useful for testing their states but useless otherwise
+        state: a string indicating whether the member is
+            sitting ("SITTING") or standing ("STANDING")
+        standard: a double that determines whether an audience member is
+            impressed by the performance or not
+        changed: a boolean that is True whenever an agent caves in to
+            peer pressure and changes their state
+        pressure: a double representing the amount of pressure felt by
+            the agent, pressure being how many neighbors have a different state
     Functions:
-        reaction: Checks whether the performance was up to the agent's standards and changes state accordingly
+        reaction: Checks whether the performance was up to
+            the agent's standards and changes state accordingly
         isSitting: returns a boolean. Checks whether agent is sitting
         cycleState: changes agent state from sitting->standing or vice versa
-        confront: checks agent's pressure and changes state if the pressure is too great
-        wasPressured: prints out whether the agent changed states during that step. Useful for debugging.
+        confront: checks agent's pressure and changes state
+            if the pressure is too great
+        wasPressured: prints out whether the agent changed states
+            during that step. Useful for debugging.
     """
     def __init__(self, name, goal):
         super().__init__(name, goal, NSTATES, SITTING)
@@ -48,11 +55,11 @@ class AudienceAgent(ma.MarkovAgent):
         self.pressure = 0
         self.reaction()
 
-    #Initial impression of the show
+    # Initial impression of the show
     def reaction(self):
         if (performance >= self.standard):
             self.cycleState()
-            #print(self.name, "I liked the performance")
+            # print(self.name, "I liked the performance")
 
     def isSitting(self):
         return self.state == SITTING
@@ -86,9 +93,12 @@ class AudienceAgent(ma.MarkovAgent):
             self.pressure = diff_num / neighbors_num
 
     def act(self):
-        self.preact()   #This really shouldn't be here but I'm not able to get the preact to run.
-                        #Ideally the preact would trigger by itself before the act, but I can only get the preact()
-                        #to run by calling it from act()
+        """
+        I'm not able to get the preact to run.
+        Ideally preact would trigger before act,
+            but I can only get preact() to run by calling it from act()
+        """
+        self.preact()
         self.changed = False
         self.confront()
         self.wasPressured()
@@ -107,19 +117,22 @@ class AudienceAgent(ma.MarkovAgent):
         self.ntype = json_input["ntype"]
         self.next_state = json_input["next_state"]
 
+
 class Auditorium(menv.MarkovEnv):
-    def __init__(self, width, height, #noise,
+    def __init__(self, width, height,
+                 # noise,
                  torus=False, model_nm="standing_ovation", act=True,
                  props=None):
         """
                 Create a new Auditorium where the audience will exist.
                 Args:
-                    width, height: The grid dimensions (keep in mind number of audience members = width * height)
+                    width, height: The grid dimensions
+                        (# of audience members = width * height)
          """
         super().__init__("Auditorium", width, height,
                          torus=False, model_nm=model_nm,
                          props=props)
-        #self.noise = noise
+        # self.noise = noise
         self.plot_title = "An Auditorium"
 
     def set_agent_color(self):
