@@ -1,7 +1,6 @@
-# Windows Powershell Script for Indra Docker Container
-#Tell docker that we're using powershell
-docker-machine env --shell=powershell | Invoke-Expression
-#remove any still open indra containers
+Write-Host "Windows Powershell Script for Indra Docker Container"
+Write-Host "**Remove any still open indra containers"
 docker rm indra -f
-#open container
-docker run -it -p 8000:8000 -v ${PWD}:/home/IndrasNet indra bash
+Write-Host "**Now running docker to spin up the container."
+$absolutePath = ('/'+(($pwd.Path[0] -join '').toLower() )+($pwd.Path.Substring($pwd.path.IndexOf(':')+1) -replace'\\','/'))
+docker run -it -p 8000:8000 --mount type=bind,src="$absolutePath",dst="/home/IndrasNet" -w /home/IndrasNet --name indra gcallah/indra:v7 bash
