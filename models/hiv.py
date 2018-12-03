@@ -19,7 +19,7 @@ S = 1
 E = 2
 W = 3
 
-STATE_MAP = { N: NORTH, S: SOUTH, E: EAST, W: WEST }
+STATE_MAP = {N: NORTH, S: SOUTH, E: EAST, W: WEST}
 
 NEG_NTYPE = "HIV- uncoupled"
 POZ_NTYPE = "HIV+ uncoupled"
@@ -35,6 +35,7 @@ INFECTION_CHANCE = 100
 SYMPTOMS_SHOW = 200
 SYMPTOMS_SHOW_PROB = .05
 
+
 class Person(ma.MarkovAgent):
     """
         Attributes:
@@ -43,13 +44,18 @@ class Person(ma.MarkovAgent):
         partner: pointing to the partner if coupled
         infected: boolean indicating if a person is infected with HIV
         known: boolean indicating if a person is aware of the HIV infection
-        infection_length: int indicating how long this person has been infected with HIV
+        infection_length: int indicating how long this person has been
+            infected with HIV
         coupling_tendency: likelihood that this person has sex (0-10)
         condom_use: chance that this person uses a condom (0-10)
-        test_frequency: frequency that this person checks HIV status in times per year (0-4)
-        commitment: how long sexual relationships lasts for this person in weeks (1-200)
+        test_frequency: frequency that this person checks HIV status in
+            times per year (0-4)
+        commitment: how long sexual relationships lasts for this person
+            in weeks (1-200)
         """
-    def __init__(self, name, infected, infection_length, coupling_tendency, condom_use, test_frequency, commitment, coupled=False, coupled_length=0, known=False):
+    def __init__(self, name, infected, infection_length, coupling_tendency,
+                 condom_use, test_frequency, commitment, coupled=False,
+                 coupled_length=0, known=False):
         init_state = random.randint(0, 3)
         super().__init__(name, "wandering around", NSTATES, init_state)
         self.coupled = coupled
@@ -97,10 +103,12 @@ class Person(ma.MarkovAgent):
                     person.partner = self
                     # print(self.name, "has been coupled with", person.name)
                     break
-    
+
     def infect(self):
-        if self.coupled is True and self.infected is True and self.known is False:
-            if random.randint(0, 10) > self.condom_use or random.randint(0, 10) > self.partner.condom_use:
+        if (self.coupled is True and self.infected is True and
+                self.known is False):
+            if (random.randint(0, 10) > self.condom_use or
+                    random.randint(0, 10) > self.partner.condom_use):
                 if random.randint(0, 99) < INFECTION_CHANCE:
                     self.partner.infected = True
                     print(self.name, "has infected", self.partner.name)
@@ -119,16 +127,16 @@ class Person(ma.MarkovAgent):
         y = self.pos[Y]
         if state == N:
             if self.env.is_cell_empty(x, y+1):
-                self.env.move(self, x,y+1)
+                self.env.move(self, x, y+1)
         elif state == S:
             if self.env.is_cell_empty(x, y-1):
-                self.env.move(self, x,y-1)
+                self.env.move(self, x, y-1)
         elif state == E:
             if self.env.is_cell_empty(x-1, y):
-                self.env.move(self, x-1,y)
+                self.env.move(self, x-1, y)
         else:
             if self.env.is_cell_empty(x+1, y):
-                self.env.move(self, x+1,y)
+                self.env.move(self, x+1, y)
 
     def act(self):
         if self.coupled is False:
@@ -137,7 +145,8 @@ class Person(ma.MarkovAgent):
             self.move(self.state)
 
     def test(self):
-        if random.randint(0, 4) < self.test_frequency and self.infected is True:
+        if (random.randint(0, 4) < self.test_frequency and
+                self.infected is True):
             self.known = True
             if self.infection_length > SYMPTOMS_SHOW:
                 if random.random() <= SYMPTOMS_SHOW_PROB:
@@ -145,7 +154,8 @@ class Person(ma.MarkovAgent):
 
     def uncouple(self):
         if self.coupled is True:
-            if self.couple_length > self.commitment or self.couple_length > self.partner.commitment:
+            if (self.couple_length > self.commitment or
+                    self.couple_length > self.partner.commitment):
                 self.coupled = False
                 self.couple_length = 0
                 self.partner.coupled = False
@@ -161,7 +171,7 @@ class Person(ma.MarkovAgent):
         self.test()
         self.uncouple()
         self.update_ntype()
-        #print(self.name, "has ntype", self.ntype)
+        # print(self.name, "has ntype", self.ntype)
 
     def to_json(self):
         safe_fields = super().to_json()
@@ -185,12 +195,25 @@ class Person(ma.MarkovAgent):
 
 class People(menv.MarkovEnv):
     """
-        Individuals wander around randomly when they are not in couples. Upon coming into contact with a suitable partner, there is a chance the two individuals will couple together. When this happens, the two individuals no longer move around, they stand next to each other holding hands as a representation of two people in a sexual relationship.
+        Individuals wander around randomly when they are not in couples.
+        Upon coming into contact with a suitable partner, there is a chance
+        the two individuals will couple together. When this happens, the
+        two individuals no longer move around, they stand next to each other
+        holding hands as a representation of two people in a sexual
+        relationship.
         """
     def get_pre(self, agent, n_census):
         return markov.MarkovPre(TRANS)
 
     def restore_agent(self, agent_json):
-        new_agent = Person(name=agent_json["name"], infected=agent_json["infected"], infection_length=agent_json["infection_length"], coupling_tendency=agent_json["coupling_tendency"], test_frequency=agent_json["test_frequency"], commitment=agent_json["commitment"], condom_use=agent_json["condom_use"], coupled=agent_json["coupled"], coupled_length=agent_json["coupled_length"], known=agent_json["known"])
+        new_agent = Person(name=agent_json["name"],
+                           infected=agent_json["infected"],
+                           infection_length=agent_json["infection_length"],
+                           coupling_tendency=agent_json["coupling_tendency"],
+                           test_frequency=agent_json["test_frequency"],
+                           commitment=agent_json["commitment"],
+                           condom_use=agent_json["condom_use"],
+                           coupled=agent_json["coupled"],
+                           coupled_length=agent_json["coupled_length"],
+                           known=agent_json["known"])
         self.add_agent_to_grid(new_agent, agent_json)
-
