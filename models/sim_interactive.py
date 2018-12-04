@@ -69,14 +69,33 @@ class Car(va.VSAgent):
                 # Switch lane if there is a car ahead to pass the car ahead
                 self.env.move(self, newXPos, y + 5)
                 self.lane = "FAST"
+                print(self.name + " Passing")
         elif self.lane == "FAST":
             # Try to merge back if there is enough space
             if self.env.is_cell_empty(newXPos, y - 5):
                 self.env.move(self, newXPos, y - 5)
                 self.lane = "SLOW"
+                print(self.name + " Merged back")
             else:
             # Keep moving in the fast lane
-                self.env.move(self, newXPos, y)
+                if self.env.is_cell_empty(newXPos, y):
+                    self.env.move(self, newXPos, y)
+                else:
+                    while self.env.is_cell_empty(newXPos, y):
+                        newXPos -= 1
+                        if newXPos == 0:
+                            break
+
+                    try:
+                        self.env.move(self, newXPos, y)
+                    except Exception:
+                        print(self.name + ' stopped')
+                        pass
+
+
+
+
+
 
             # else:
             #     if self.env.is_cell_empty(newXPos, y):
