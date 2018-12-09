@@ -24,8 +24,7 @@ S = 1
 E = 2
 W = 3
 
-STATE_MAP = { N: NORTH, S: SOUTH, E: EAST, W: WEST }
-#col_dirs = {'N':0, 'S':0, 'E':0, 'W':0}
+STATE_MAP = {N: NORTH, S: SOUTH, E: EAST, W: WEST}
 
 NEW_ZOMBS = 0
 NEW_HUMANS = 0
@@ -40,9 +39,9 @@ ZOMBIE_NTYPE = "Zombie"
 HUMAN_NTYPE = "Human"
 
 # The class that contains functions both agents use
-class Beings(ma.MarkovAgent): 
+class Beings(ma.MarkovAgent):
     def __init__(self, name, goal, repro_age,
-    life_force, init_state, max_detect=1, rand_age=False, speed=1):
+                 life_force, init_state, max_detect=1, rand_age=False, speed=1):
         super().__init__(name, goal, NSTATES, init_state, max_detect=max_detect)
 
         if not rand_age:
@@ -90,12 +89,17 @@ class Beings(ma.MarkovAgent):
         else:
             if self.env.is_cell_empty(x+1, y):
                 self.env.move(self, x+1, y)
+<<<<<<< HEAD
         '''
             
+=======
+
+>>>>>>> 719f1f45a4f81a391a3dbcdff344c483bee58a7d
     def postact(self):
         self.age += 1
         self.life_force -= 1
         if self.life_force <= 0:
+<<<<<<< HEAD
             if (type(self) == Human):
                 print("natural")
                 self.naturalDeath()
@@ -108,6 +112,14 @@ class Beings(ma.MarkovAgent):
             self.naturalDeath()
         '''
         
+=======
+            self.died()
+
+        else:
+            self.reproduce()
+            self.naturalDeath()
+
+>>>>>>> 719f1f45a4f81a391a3dbcdff344c483bee58a7d
     def to_json(self):
         safe_fields = super().to_json()
         safe_fields["ntype"] = self.ntype
@@ -121,20 +133,27 @@ class Beings(ma.MarkovAgent):
 
 class Zombie(Beings):
     def __init__(self, name, goal, repro_age, life_force, max_detect=10,
+<<<<<<< HEAD
     rand_age=False, speed=3):
         
         init_state = random.randint(0,3)
+=======
+                 rand_age=False, speed=2):
+
+        init_state = random.randint(0, 3)
+>>>>>>> 719f1f45a4f81a391a3dbcdff344c483bee58a7d
         super().__init__(name, goal, repro_age, life_force, init_state,
-        max_detect=max_detect, rand_age=rand_age, speed=speed)
+                         max_detect=max_detect, rand_age=rand_age, speed=speed)
         self.other = Human
         self.ntype = "Zombie"
-    
+
     # Chooses which human to eat
     def preact(self):
         creatures = self.neighbor_iter()
         for creature in creatures:
             if type(creature) is Human:
                 self.eat(creature)
+<<<<<<< HEAD
                 
     def zomMove(self):
         creatures = self.neighbor_iter()
@@ -155,6 +174,9 @@ class Zombie(Beings):
         #self.state = self.next_state
         self.zomMove()
     
+=======
+
+>>>>>>> 719f1f45a4f81a391a3dbcdff344c483bee58a7d
     # Zombie eats some of human and extends life force
     # It also infects a human
     def eat(self, human):
@@ -165,27 +187,34 @@ class Zombie(Beings):
 class Human(Beings):
 
     def __init__(self, name, goal, repro_age, life_force, max_detect=5,
-    rand_age=False, speed=1):
-        
-        init_state = random.randint(0,3)
+                 rand_age=False, speed=1):
+
+        init_state = random.randint(0, 3)
         super().__init__(name, goal, repro_age, life_force, init_state,
-        max_detect=max_detect, rand_age=rand_age, speed=speed)
+                         max_detect=max_detect, rand_age=rand_age, speed=speed)
         self.other = Zombie
         self.ntype = "Human"
         self.reproTime = repro_age
         self.lifeTime = life_force
-    
+
     # Human who has been bit becomes a zombie
     def infected(self):
+<<<<<<< HEAD
         self.ntype = "Zombie"
         #new_zom = ''
         #creatures = self.neighbor_iter()
         '''
         for creature in creatures:  #  this loop gets all the attributes needed to spawn in new zombie
+=======
+        new_zom = ''
+        creatures = self.neighbor_iter()
+
+        for creature in creatures: #this loop gets all the attributes needed to spawn in new zombie
+>>>>>>> 719f1f45a4f81a391a3dbcdff344c483bee58a7d
             if type(creature) is Zombie:
                 new_zom = creature.__class__(creature.name + "x", creature.goal,
-                creature.repro_age, creature.init_life_force)
-        
+                                             creature.repro_age, creature.init_life_force)
+
             self.env.add_agent(new_zom)
             self.died()
         '''
@@ -210,6 +239,7 @@ class Human(Beings):
     '''
     # human dies of natural causes
     def naturalDeath(self):
+<<<<<<< HEAD
         new_zom = self
         creatures = self.neighbor_iter(sq_v=10)
         
@@ -221,22 +251,38 @@ class Human(Beings):
         self.env.add_agent(new_zom)
         self.died()
         
+=======
+        new_zom = ''
+        creatures = self.neighbor_iter()
+
+        if self.lifeTime == 0:
+            for creature in creatures:  # same loop as in infected class
+                if type(creature) is Zombie:
+                    new_zom = creature.__class__(creature.name + "x", creature.goal,
+                                                 creature.repro_age, creature.init_life_force)
+
+                self.env.add_agent(new_zom)
+                self.died()
+        else:
+            self.lifeTime -= 1
+
+>>>>>>> 719f1f45a4f81a391a3dbcdff344c483bee58a7d
     # add a new human to the zone after certain num of turns
     def reproduce(self):
-                
+
         if self.reproTime == 0:
             if self.alive:
                 creature = self.__class__(self.name + "x", self.goal,
-                self.repro_age, self.init_life_force)
-        
+                                          self.repro_age, self.init_life_force)
+
                 self.env.add_agent(creature)
-                
+
         else:
             self.reproTime -= 1
 
 # Area where humans and zombies interact
 class Zone(menv.MarkovEnv):
-    
+
     # gets rid of dead agents from the Zone
     def died(self, prey):
         self.remove_agent(prey)
@@ -253,19 +299,28 @@ class Zone(menv.MarkovEnv):
                 
     # what will happen in the Zone first
     def get_pre(self, agent, n_census):
+<<<<<<< HEAD
+=======
+
+>>>>>>> 719f1f45a4f81a391a3dbcdff344c483bee58a7d
         trans_str = ""
 
         d, total = self.dir_info(agent)
 
-        if(type(agent) == Zombie):
+        if type(agent) == Zombie:
             trans_str += self.zombie_trans(d, total)
         else:
             trans_str += self.human_trans(d, total)
 
         trans_matrix = markov.from_matrix(np.matrix(trans_str))
         return trans_matrix
+<<<<<<< HEAD
        
     # Finds out which direction (NORTH, SOUTH, EAST, WEST) as more of the 
+=======
+
+    # Finds out which direction (NORTH, SOUTH, EAST, WEST) as more of the
+>>>>>>> 719f1f45a4f81a391a3dbcdff344c483bee58a7d
     # opposite agent type depending on what agent we are dealing with
     
     def dir_info(self, agent):
@@ -303,11 +358,11 @@ class Zone(menv.MarkovEnv):
     # figures out where all the humans are and moves zombies towards them
     def zombie_trans(self, d, total):
         trans_str = ""
-        
+
         cols_dir = {"NN":0, "NS":0, "NE":0, "NW":0,
-                   "SN":0, "SS":0, "SE":0, "SW":0,
-                   "EN":0, "ES":0, "EE":0, "EW":0,
-                   "WN":0, "WS":0, "WE":0, "WW":0}
+                    "SN":0, "SS":0, "SE":0, "SW":0,
+                    "EN":0, "ES":0, "EE":0, "EW":0,
+                    "WN":0, "WS":0, "WE":0, "WW":0}
 
         # Random movement if nothing is in view.
         if total == 0:
@@ -324,7 +379,7 @@ class Zone(menv.MarkovEnv):
             cols_dir["SE"] = d[E]/total
             cols_dir["SW"] = d[W]/total
             cols_dir["SS"] = (1 - cols_dir["SN"] - cols_dir["SE"]
-                              - cols_dir["SW"]) 
+                              - cols_dir["SW"])
 
             cols_dir["EN"] = d[N]/total
             cols_dir["ES"] = d[S]/total
@@ -337,37 +392,37 @@ class Zone(menv.MarkovEnv):
             cols_dir["WE"] = d[E]/total
             cols_dir["WW"] = (1 - cols_dir["WN"] - cols_dir["WS"]
                               - cols_dir["WE"])
-            
-        trans_str += (str(cols_dir["NN"]) + " " + str(cols_dir["NS"]) + 
-                     " " + str(cols_dir["NE"]) + " " + str(cols_dir["NW"]) + ";")
-        trans_str += (str(cols_dir["SN"]) + " " + str(cols_dir["SS"]) + 
-                     " " + str(cols_dir["SE"]) + " " + str(cols_dir["SW"]) + ";")
-        trans_str += (str(cols_dir["EN"]) + " " + str(cols_dir["ES"]) + 
-                     " " + str(cols_dir["EE"]) + " " + str(cols_dir["EW"]) + ";")
-        trans_str += (str(cols_dir["WN"]) + " " + str(cols_dir["WS"]) + 
-                     " " + str(cols_dir["WE"]) + " " + str(cols_dir["WW"]))
-        
+
+        trans_str += (str(cols_dir["NN"]) + " " + str(cols_dir["NS"]) +
+                      " " + str(cols_dir["NE"]) + " " + str(cols_dir["NW"]) + ";")
+        trans_str += (str(cols_dir["SN"]) + " " + str(cols_dir["SS"]) +
+                      " " + str(cols_dir["SE"]) + " " + str(cols_dir["SW"]) + ";")
+        trans_str += (str(cols_dir["EN"]) + " " + str(cols_dir["ES"]) +
+                      " " + str(cols_dir["EE"]) + " " + str(cols_dir["EW"]) + ";")
+        trans_str += (str(cols_dir["WN"]) + " " + str(cols_dir["WS"]) +
+                      " " + str(cols_dir["WE"]) + " " + str(cols_dir["WW"]))
+
         return trans_str
 
-    
+
     # figures out where all the zombies are and moves humans away from them
     def human_trans(self, d, total):
         best_dir = min(d, key=d.get)
 
         num_close = 0
-        
+
         hum_col_dir = {"col_N":0, "col_S":0, "col_E":0, "col_W":0}
-        
-        if(d[N]==d[best_dir]):
+
+        if d[N] == d[best_dir]:
             num_close += 1
             hum_col_dir["col_N"] = 1
-        if(d[S]==d[best_dir]):
+        if d[S] == d[best_dir]:
             num_close += 1
             hum_col_dir["col_S"] = 1
-        if(d[E]==d[best_dir]):
+        if d[E] == d[best_dir]:
             num_close += 1
             hum_col_dir["col_E"] = 1
-        if(d[W]==d[best_dir]):
+        if d[W] == d[best_dir] :
             num_close += 1
             hum_col_dir["col_W"] = 1
 
@@ -393,7 +448,7 @@ class Zone(menv.MarkovEnv):
 
         trans_str = ""
 
-        
+
         trans_str += (str(NN) + " " + str(NS) + " "
                       + str(NE) + " " + str(NW) + ";")
         trans_str += (str(SN) + " " + str(SS) + " "
@@ -402,15 +457,15 @@ class Zone(menv.MarkovEnv):
                       + str(EE) + " " + str(EW) + ";")
         trans_str += (str(WN) + " " + str(WS) + " "
                       + str(WE) + " " + str(WW))
-        
-                
+
+
         return trans_str
 
     def from_json(self, json_input):
         super().from_json(json_input)
         self.add_variety("Zombie")
         self.add_variety("Human")
-    
+
     def restore_agent(self, agent_json):
         new_agent = None
         if agent_json["ntype"] == ZOMBIE_NTYPE:
@@ -439,5 +494,3 @@ class Zone(menv.MarkovEnv):
 
         if new_agent:
             self.add_agent_to_grid(new_agent, agent_json)
-
-

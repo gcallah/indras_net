@@ -12,10 +12,12 @@ import models.hiv as hiv
 MODEL_NM = "HIV"
 INI_INFECTED_PCT = .025
 
+
 def run(prop_dict=None):
     pa = props.PropArgs.create_props(MODEL_NM, prop_dict)
-    (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
-    
+    (prog_file, log_file, prop_file,
+     results_file) = utils.gen_file_names(MODEL_NM)
+
     if pa["user_type"] == props.WEB:
         pa["base_dir"] = os.environ["base_dir"]
 
@@ -37,10 +39,12 @@ def run(prop_dict=None):
     avg_commitment = 2
     avg_condom_use = 0
 
-    print(grid_x, grid_y, ini_ppl, avg_coup_tend, avg_test_freq, avg_commitment, avg_condom_use)
+    print(grid_x, grid_y, ini_ppl, avg_coup_tend, avg_test_freq,
+          avg_commitment, avg_condom_use)
 
     # Now we create an environment for our agents to act within:
-    env = hiv.People("People", grid_x, grid_y, model_nm=MODEL_NM, preact=True, postact=True, props=pa)
+    env = hiv.People("People", grid_x, grid_y, model_nm=MODEL_NM,
+                     preact=True, postact=True, props=pa)
 
     ini_infected_ppl = round(INI_INFECTED_PCT * ini_ppl)
     ini_healthy_ppl = ini_ppl - ini_infected_ppl
@@ -51,11 +55,26 @@ def run(prop_dict=None):
     condom_use = numpy.random.normal(avg_condom_use, 1, ini_ppl)
 
     for i in range(ini_infected_ppl):
-        env.add_agent(hiv.Person(name="person" + str(i), infected=True, infection_length=random.randint(0, hiv.SYMPTOMS_SHOW-1), coupling_tendency=coup_tend[i], test_frequency=test_freq[i], commitment=commitment[i], condom_use=condom_use[i]))
+        rand_inf_len = random.randint(0, hiv.SYMPTOMS_SHOW-1)
+        new_agent = hiv.Person(name="person" + str(i),
+                               infected=True,
+                               infection_length=rand_inf_len,
+                               coupling_tendency=coup_tend[i],
+                               test_frequency=test_freq[i],
+                               commitment=commitment[i],
+                               condom_use=condom_use[i])
+        env.add_agent(new_agent)
     for i in range(ini_healthy_ppl):
-        env.add_agent(hiv.Person(name="person" + str(ini_infected_ppl+i), infected=False, infection_length=0, coupling_tendency=coup_tend[ini_infected_ppl+i], test_frequency=test_freq[ini_infected_ppl+i], commitment=commitment[ini_infected_ppl+i], condom_use=condom_use[ini_infected_ppl+i]))
+        new_agent = hiv.Person(name="person" + str(ini_infected_ppl+i),
+                               infected=False, infection_length=0,
+                               coupling_tendency=coup_tend[ini_infected_ppl+i],
+                               test_frequency=test_freq[ini_infected_ppl+i],
+                               commitment=commitment[ini_infected_ppl+i],
+                               condom_use=condom_use[ini_infected_ppl+i])
+        env.add_agent(new_agent)
 
     return utils.run_model(env, prog_file, results_file)
+
 
 if __name__ == "__main__":
     run()
