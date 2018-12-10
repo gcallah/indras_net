@@ -32,44 +32,47 @@ class BasicTestCase(TestCase):
     def __init__(self, methodName, prop_file="models/wolfsheep_for_test.props"):
         super().__init__(methodName=methodName)
 
-        pa = props.read_props(MODEL_NM, prop_file)
-
-        grid_x = pa["grid_width"]
-        grid_y = pa["grid_height"]
+        self.pa = props.read_props(MODEL_NM, prop_file)
 
         # Now we create a forest environment for our agents to act within:
-        env = wsm.Meadow("Meadow",
-                         pa["grid_width"],
-                         pa["grid_height"],
-                         model_nm=MODEL_NM,
-                         preact=True,
-                         postact=True,
-                         props=pa)
+        self.env = wsm.Meadow("Meadow",
+                              self.pa["grid_width"],
+                              self.pa["grid_height"],
+                              model_nm=MODEL_NM,
+                              preact=True,
+                              postact=True,
+                              props=self.pa)
 
-        for i in range(pa["num_wolves"]):
-            env.add_agent(wsm.Wolf("wolf" + str(i), "Eating sheep",
-                                   pa["wolf_repro"],
-                                   pa["wolf_lforce"],
-                                   rand_age=True))
+        for i in range(self.pa["num_wolves"]):
+            self.env.add_agent(wsm.Wolf("wolf" + str(i), "Eating sheep",
+                                        self.pa["wolf_repro"],
+                                        self.pa["wolf_lforce"],
+                                        rand_age=True))
 
-        for i in range(pa["num_sheep"]):
-            env.add_agent(wsm.Sheep("sheep" + str(i), "Reproducing",
-                                    pa["sheep_repro"],
-                                    pa["sheep_lforce"],
-                                    rand_age=True))
-
+        for i in range(self.pa["num_sheep"]):
+            self.env.add_agent(wsm.Sheep("sheep" + str(i), "Reproducing",
+                                         self.pa["sheep_repro"],
+                                         self.pa["sheep_lforce"],
+                                         rand_age=True))
+        self.env.add_agent(wsm.Sheep("sheep for tracking", "Reproducing",
+                                     self.pa["sheep_repro"],
+                                     self.pa["sheep_lforce"],
+                                     rand_age=True))
 
     def test_agent_inspect(self):
         announce('test_agent_inspect')
-        agent = self.env.agent_inspect("tree for tracking")
-        self.assertEqual(agent.name, "tree for tracking")
+        agent = self.env.agent_inspect("sheep for tracking")
+        self.assertEqual(agent.name, "sheep for tracking")
 
     def test_add_agent(self):
         announce('test_add_agent')
-        self.env.add_agent(fm.Tree(name="new added tree"))
+        self.env.add_agent(wsm.Sheep("new added sheep", "Reproducing",
+                                     self.pa["sheep_repro"],
+                                     self.pa["sheep_lforce"],
+                                     rand_age=True))
         # test if the add worked!
         # test by running
-        new_agent = self.env.agent_inspect("new added tree")
+        new_agent = self.env.agent_inspect("new added sheep")
         self.assertIsNotNone(new_agent)
 
     def test_props_write(self):
