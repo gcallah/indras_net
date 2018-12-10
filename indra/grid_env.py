@@ -367,37 +367,50 @@ class GridEnv(se.SpatialEnv):
         
     def move_to_agent(self, tar_agent, dest_agent, steps, grid_view=None):
         print("MTA Tar: ", tar_agent.pos[X], ",", tar_agent.pos[Y])
-        print("MTA dest: ", dest_agent.pos[X], ",", dest_agent.pos[Y])
+        print("MTA Dest: ", dest_agent.pos[X], ",", dest_agent.pos[Y])
         if(tar_agent.pos[X] > dest_agent.pos[X]):
-            #if is_cell_empty(tar_agent.pos[X] - steps,
-            #                 tar_agent.pos[Y]):
-            tar_agent.pos[X] -= steps
+            if self.is_cell_empty(tar_agent.pos[X] - steps,
+                             tar_agent.pos[Y]):
+                self.move(tar_agent, tar_agent.pos[X] - steps,
+                         tar_agent.pos[Y])#tar_agent.pos[X] -= steps
         else:
-            #if is_cell_empty(tar_agent.pos[X] + steps,
-            #                 tar_agent.pos[Y]):
-            tar_agent.pos[X] += steps
+            if self.is_cell_empty(tar_agent.pos[X] + steps,
+                             tar_agent.pos[Y]):
+                self.move(tar_agent, tar_agent.pos[X] + steps,
+                         tar_agent.pos[Y])#tar_agent.pos[X] += steps
         if(tar_agent.pos[Y] < dest_agent.pos[Y]):
-            #if is_cell_empty(tar_agent.pos[X],
-            #                 tar_agent.pos[Y] - steps):
-            tar_agent.pos[Y] -= steps
+            if self.is_cell_empty(tar_agent.pos[X],
+                             tar_agent.pos[Y] - steps):
+                self.move(tar_agent, tar_agent.pos[X],
+                         tar_agent.pos[Y] - steps)#tar_agent.pos[Y] -= steps
         else:
-            #if is_cell_empty(tar_agent.pos[X],
-            #                 tar_agent.pos[Y] + steps):
-            tar_agent.pos[Y] += steps
+            if self.is_cell_empty(tar_agent.pos[X],
+                             tar_agent.pos[Y] + steps):
+                self.move(tar_agent, tar_agent.pos[X],
+                         tar_agent.pos[Y] + steps)#tar_agent.pos[Y] += steps
         if(tar_agent.pos[Y] == dest_agent.pos[Y]):
             if(tar_agent.pos[X] == dest_agent.pos[X]):
                 print("target at the destination")
             
     def move_from_agent(self, tar_agent, dest_agent, steps, grid_view=None):
         print("MFA Tar: ",tar_agent.pos[X], ",", tar_agent.pos[Y])
+        print("MFA Dest: ",tar_agent.pos[X], ",", tar_agent.pos[Y])
         if(tar_agent.pos[X] > dest_agent.pos[X]):
-            tar_agent.pos[X] += steps
+            if self.is_cell_empty(tar_agent.pos[X] + steps,
+                             tar_agent.pos[Y]):
+                tar_agent.pos[X] += steps
         else:
-            tar_agent.pos[X] -= steps
+            if self.is_cell_empty(tar_agent.pos[X] - steps,
+                             tar_agent.pos[Y]):
+                tar_agent.pos[X] -= steps
         if(tar_agent.pos[Y] < dest_agent.pos[Y]):
-            tar_agent.pos[Y] += steps
+            if self.is_cell_empty(tar_agent.pos[X],
+                             tar_agent.pos[Y] - steps):
+                tar_agent.pos[Y] += steps
         else:
-            tar_agent.pos[Y] -= steps
+            if self.is_cell_empty(tar_agent.pos[X],
+                             tar_agent.pos[Y] - steps):
+                tar_agent.pos[Y] -= steps
     #=====================================================================================
         
     def find_empty(self, grid_view=None):
