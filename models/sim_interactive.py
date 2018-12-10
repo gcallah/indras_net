@@ -115,6 +115,8 @@ class Car(va.VSAgent):
 
     def to_json(self):
         safe_fields = super().to_json()
+        safe_fields["lane"] = self.lane
+        safe_fields["speed"] = self.speed
         return safe_fields
 
 # class Slow(Vehicle):
@@ -158,7 +160,6 @@ class Intersection:
 
 class SimInteractiveEnv(grid.GridEnv):
     def __init__(self, name, width, height, model_nm=None, props=None):
-        # print("About to call GridEnv init.")
         super().__init__(name, width, height, torus=False,
                          model_nm=model_nm, props=props)
         self.plot_title = name
