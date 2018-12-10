@@ -24,20 +24,20 @@ def run(prop_dict=None):
     '''
     grid_x = pa["grid_width"]
     grid_y = pa["grid_height"]
+    '''
+
     ini_ppl = pa["ini_ppl"]
     avg_coup_tend = pa["avg_coup_tend"]
     avg_test_freq = pa["avg_test_freq"]
     avg_commitment = pa["avg_commitment"]
     avg_condom_use = pa["avg_condom_use"]
-    '''
 
-    grid_x = 8
-    grid_y = 8
-    ini_ppl = 30
-    avg_coup_tend = 10
-    avg_test_freq = 0
-    avg_commitment = 2
-    avg_condom_use = 0
+    grid_x = 20
+    grid_y = 20
+    max_ppl = grid_x * grid_y
+
+    if ini_ppl > max_ppl:
+        ini_ppl = max_ppl
 
     print(grid_x, grid_y, ini_ppl, avg_coup_tend, avg_test_freq,
           avg_commitment, avg_condom_use)
@@ -48,11 +48,30 @@ def run(prop_dict=None):
 
     ini_infected_ppl = round(INI_INFECTED_PCT * ini_ppl)
     ini_healthy_ppl = ini_ppl - ini_infected_ppl
+    print("initial infected people:", ini_infected_ppl)
+    print("initial healthy people:", ini_healthy_ppl)
 
     coup_tend = numpy.random.normal(avg_coup_tend, 1, ini_ppl)
-    test_freq = numpy.random.normal(avg_test_freq, 1, ini_ppl)
-    commitment = numpy.random.normal(avg_commitment, 1, ini_ppl)
+    test_freq = numpy.random.normal(avg_test_freq, 0.2, ini_ppl)
+    commitment = numpy.random.normal(avg_commitment, 20, ini_ppl)
     condom_use = numpy.random.normal(avg_condom_use, 1, ini_ppl)
+    for i in range(ini_ppl):
+        if coup_tend[i] < 0:
+            coup_tend[i] = 0
+        elif coup_tend[i] > 10:
+            coup_tend[i] = 10
+        if test_freq[i] < 0:
+            test_freq[i] = 0
+        elif test_freq[i] > 2:
+            test_freq[i] = 2
+        if commitment[i] < 1:
+            commitment[i] = 1
+        elif commitment[i] > 200:
+            commitment[i] = 200
+        if condom_use[i] < 0:
+            condom_use[i] = 0
+        elif condom_use[i] > 10:
+            condom_use[i] = 10
 
     for i in range(ini_infected_ppl):
         rand_inf_len = random.randint(0, hiv.SYMPTOMS_SHOW-1)

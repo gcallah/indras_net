@@ -27,7 +27,8 @@ class Member(ma.MarkovAgent):
     #         state: a string indicating whether the member is
     #             sitting ("SITTING") or standing ("STANDING")
     #         standard: a double that determines whether an audience member is
-    #             impressed by the performance or not
+    #             impressed by the performance or not. Subject to change as
+    #             there currently might be too much variance.
     #         next_state: always equal to the state the agent doesn't have
     #         changed: a boolean that is True whenever an agent caves in to
     #             peer pressure and changes their state
@@ -50,11 +51,12 @@ class Member(ma.MarkovAgent):
         self.goal = goal
         self.noise = noise
         self.state = SITTING
-        self.standard = random.uniform(0.0, 1.0)
+        self.standard = random.uniform(0.5, 1.0)
         self.ntype = self.state
         self.next_state = STANDING
         self.changed = False
         self.pressure = 0
+
         self.reaction()
 
     def reaction(self):

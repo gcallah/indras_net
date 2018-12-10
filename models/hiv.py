@@ -48,10 +48,9 @@ class Person(ma.MarkovAgent):
             infected with HIV
         coupling_tendency: likelihood that this person has sex (0-10)
         condom_use: chance that this person uses a condom (0-10)
-        test_frequency: frequency that this person checks HIV status in
-            times per year (0-4)
+        test_frequency: frequency that this person checks HIV status (0-2)
         commitment: how long sexual relationships lasts for this person
-            in weeks (1-200)
+            (1-200)
         """
     def __init__(self, name, infected, infection_length, coupling_tendency,
                  condom_use, test_frequency, commitment, coupled=False,
@@ -91,7 +90,7 @@ class Person(ma.MarkovAgent):
                 self.ntype = NEG_NTYPE_C
         if old_type is not 'Person':
             self.env.change_agent_type(self, old_type, self.ntype)
-        # print(self.name, "has ntype", self.ntype)
+        print(self.name, "has ntype", self.ntype)
 
     def couple(self):
         for person in self.neighbor_iter():
@@ -101,26 +100,34 @@ class Person(ma.MarkovAgent):
                     self.partner = person
                     person.coupled = True
                     person.partner = self
-                    # print(self.name, "has been coupled with", person.name)
+                    print(self.name, "has been coupled with", person.name)
                     break
 
     def infect(self):
         if (self.coupled is True and self.infected is True and
-                self.known is False):
+                self.known is False and self.partner.infected is False):
             if (random.randint(0, 10) > self.condom_use or
                     random.randint(0, 10) > self.partner.condom_use):
                 if random.randint(0, 99) < INFECTION_CHANCE:
                     self.partner.infected = True
                     print(self.name, "has infected", self.partner.name)
+                else:
+                    print(self.name, "has not infected", self.partner.name,
+                          "because they are lucky")
+            else:
+                print(self.name, "has not infected", self.partner.name,
+                      "because they use condom")
 
     def preact(self):
         if self.coupled is False:
             if random.randint(0, 10) < self.coupling_tendency:
                 self.couple()
+        if self.coupled is True:
+            # update partner after restored
+            if self.partner is not None:
+                self.partner.partner = self
             self.infect()
-        # update partner after restored
-        elif self.partner is not None:
-            self.partner.partner = self
+            self.partner.infect()
 
     def move(self, state):
         x = self.pos[X]
@@ -146,16 +153,19 @@ class Person(ma.MarkovAgent):
 
     def test(self):
         if (random.randint(0, 4) < self.test_frequency and
-                self.infected is True):
+                self.infected is True and self.known is False):
             self.known = True
+            print(self.name, "has been tested positive")
             if self.infection_length > SYMPTOMS_SHOW:
                 if random.random() <= SYMPTOMS_SHOW_PROB:
                     self.known = True
+                    print(self.name, "has developed symptoms")
 
     def uncouple(self):
         if self.coupled is True:
             if (self.couple_length > self.commitment or
                     self.couple_length > self.partner.commitment):
+                print(self.name, "has been uncoupled with", self.partner.name)
                 self.coupled = False
                 self.couple_length = 0
                 self.partner.coupled = False
