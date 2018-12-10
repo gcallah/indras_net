@@ -48,10 +48,9 @@ class Person(ma.MarkovAgent):
             infected with HIV
         coupling_tendency: likelihood that this person has sex (0-10)
         condom_use: chance that this person uses a condom (0-10)
-        test_frequency: frequency that this person checks HIV status in
-            times per year (0-4)
+        test_frequency: frequency that this person checks HIV status (0-2)
         commitment: how long sexual relationships lasts for this person
-            in weeks (1-200)
+            (1-200)
         """
     def __init__(self, name, infected, infection_length, coupling_tendency,
                  condom_use, test_frequency, commitment, coupled=False,
