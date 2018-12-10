@@ -1,8 +1,6 @@
-import indra.grid_agent as ga
 import indra.grid_env as grid
 import indra.vs_agent as va
 
-import random
 """
 Created on Mon Sep 10 17:30:05 2018
 @authors: wenxuan ruan
@@ -77,7 +75,7 @@ class Car(va.VSAgent):
                 self.lane = "SLOW"
                 print(self.name + " Merged back")
             else:
-            # Keep moving in the fast lane
+                # Keep moving in the fast lane
                 if self.env.is_cell_empty(newXPos, y):
                     self.env.move(self, newXPos, y)
                 else:
@@ -91,12 +89,6 @@ class Car(va.VSAgent):
                     except Exception:
                         print(self.name + ' stopped')
                         pass
-
-
-
-
-
-
             # else:
             #     if self.env.is_cell_empty(newXPos, y):
             #         self.env.move(self, newXPos, y)
@@ -105,8 +97,6 @@ class Car(va.VSAgent):
             #             newXPos = newXPos - 1
             #         if newXPos > 0:
             #             self.env.move(self, newXPos, y)
-
-
         # else:
         #     while self.env.is_cell_empty(newXPos, y):
         #         newXPos = newXPos - 1
@@ -126,9 +116,6 @@ class Car(va.VSAgent):
     def to_json(self):
         safe_fields = super().to_json()
         return safe_fields
-
-
-
 
 # class Slow(Vehicle):
 #     def __init__(self, name, acceleration, deceleration):
@@ -151,6 +138,7 @@ class Car(va.VSAgent):
 #         safe_fields["color"] = "Blue"
 #         return safe_fields
 
+
 class Intersection:
 
     def __init__(self, name):
@@ -169,8 +157,7 @@ class Intersection:
 
 
 class SimInteractiveEnv(grid.GridEnv):
-    def __init__(self, name, width, height, 
-                 model_nm=None, props=None):
+    def __init__(self, name, width, height, model_nm=None, props=None):
         # print("About to call GridEnv init.")
         super().__init__(name, width, height, torus=False,
                          model_nm=model_nm, props=props)
@@ -208,7 +195,3 @@ class SimInteractiveEnv(grid.GridEnv):
 
         self.intersectionArr.append(Intersection(interName))
         return self.intersectionArr[0]
-
-
-
-
