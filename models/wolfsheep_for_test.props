@@ -1,0 +1,98 @@
+{
+    "grid_width": {
+        "val": 20,
+        "question": "What is the grid width?",
+        "atype": "INT",
+        "default_val": 20,
+        "lowval": 1.0,
+        "hival": 1000.0
+    },
+    "grid_height": {
+        "val": 20,
+        "question": "What is the grid height?",
+        "atype": "INT",
+        "default_val": 20,
+        "lowval": 1.0,
+        "hival": 1000.0
+    },
+    "num_wolves": {
+        "val": 5,
+        "question": "What is the number of wolves?",
+        "atype": "INT",
+        "default_val": 5,
+        "lowval": 1.0,
+        "hival": 1000.0
+    },
+    "num_sheep": {
+        "val": 16,
+        "question": "What is the number of sheep?",
+        "atype": "INT",
+        "default_val": 16,
+        "lowval": 1.0,
+        "hival": 1000.0
+    },
+    "wolf_repro": {
+        "val": 16,
+        "question": "What is the wolf reproduction age?",
+        "atype": "INT",
+        "default_val": 16,
+        "lowval": null,
+        "hival": null
+    },
+    "wolf_lforce": {
+        "val": 7,
+        "question": "What is the wolf life force?",
+        "atype": "INT",
+        "default_val": 7,
+        "lowval": null,
+        "hival": null
+    },
+    "sheep_repro": {
+        "val": 3,
+        "question": "What is the sheep reproduction age?",
+        "atype": "INT",
+        "default_val": 3,
+        "lowval": null,
+        "hival": null
+    },
+    "sheep_lforce": {
+        "val": 6,
+        "question": "What is the sheep life force?",
+        "atype": "INT",
+        "default_val": 6,
+        "lowval": null,
+        "hival": null
+    },
+    "user_type": {
+        "val": "dummy",
+        "question": null,
+        "atype": null,
+        "default_val": null,
+        "lowval": null,
+        "hival": null
+    },
+    "OS": {
+        "val": "Darwin",
+        "question": null,
+        "atype": null,
+        "default_val": null,
+        "lowval": null,
+        "hival": null
+    },
+    "log_fname": {
+        "val": "wolfsheep.log",
+        "question": null,
+        "atype": null,
+        "default_val": null,
+        "lowval": null,
+        "hival": null
+    },
+    "user_name": {
+        "val": "thomas",
+        "question": null,
+        "atype": null,
+        "default_val": null,
+        "lowval": null,
+        "hival": null
+    }
+}
