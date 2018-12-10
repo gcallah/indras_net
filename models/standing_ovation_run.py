@@ -23,7 +23,7 @@ def run(prop_dict=None):
 
     num_agents = int(pa["grid_width"] * pa["grid_height"])
     for i in range(num_agents):
-        env.add_agent(wsm.Member("member" + str(i), "Having fun", pa["noise_level"]))
+        env.add_agent(wsm.Member("member" + str(i), "Enjoying the show", pa["noise_level"]))
 
     return utils.run_model(env, prog_file, results_file)
 
