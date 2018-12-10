@@ -24,25 +24,20 @@ def run(prop_dict=None):
     '''
     grid_x = pa["grid_width"]
     grid_y = pa["grid_height"]
+    '''
+
     ini_ppl = pa["ini_ppl"]
     avg_coup_tend = pa["avg_coup_tend"]
     avg_test_freq = pa["avg_test_freq"]
     avg_commitment = pa["avg_commitment"]
     avg_condom_use = pa["avg_condom_use"]
-    '''
 
-    grid_x = 8
-    grid_y = 8
-    ini_ppl = 60
-    avg_coup_tend = 10
-    avg_test_freq = 0
-    avg_commitment = 2
-    avg_condom_use = 0
+    grid_x = 20
+    grid_y = 20
+    max_ppl = grid_x * grid_y
 
-    if ini_ppl < 0:
-        ini_ppl = 0
-    elif ini_ppl > 500:
-        ini_ppl = 500
+    if ini_ppl > max_ppl:
+        ini_ppl = max_ppl
 
     print(grid_x, grid_y, ini_ppl, avg_coup_tend, avg_test_freq,
           avg_commitment, avg_condom_use)
@@ -57,8 +52,8 @@ def run(prop_dict=None):
     print("initial healthy people:", ini_healthy_ppl)
 
     coup_tend = numpy.random.normal(avg_coup_tend, 1, ini_ppl)
-    test_freq = numpy.random.normal(avg_test_freq, 1, ini_ppl)
-    commitment = numpy.random.normal(avg_commitment, 1, ini_ppl)
+    test_freq = numpy.random.normal(avg_test_freq, 0.2, ini_ppl)
+    commitment = numpy.random.normal(avg_commitment, 20, ini_ppl)
     condom_use = numpy.random.normal(avg_condom_use, 1, ini_ppl)
     for i in range(ini_ppl):
         if coup_tend[i] < 0:
@@ -77,7 +72,6 @@ def run(prop_dict=None):
             condom_use[i] = 0
         elif condom_use[i] > 10:
             condom_use[i] = 10
-    
 
     for i in range(ini_infected_ppl):
         rand_inf_len = random.randint(0, hiv.SYMPTOMS_SHOW-1)
@@ -88,7 +82,6 @@ def run(prop_dict=None):
                                test_frequency=test_freq[i],
                                commitment=commitment[i],
                                condom_use=condom_use[i])
-        print("for", new_agent.name, ":", new_agent.infected, new_agent.infection_length, new_agent.coupling_tendency, new_agent.test_frequency, new_agent.commitment, new_agent.condom_use)
         env.add_agent(new_agent)
     for i in range(ini_healthy_ppl):
         new_agent = hiv.Person(name="person" + str(ini_infected_ppl+i),
@@ -97,7 +90,6 @@ def run(prop_dict=None):
                                test_frequency=test_freq[ini_infected_ppl+i],
                                commitment=commitment[ini_infected_ppl+i],
                                condom_use=condom_use[ini_infected_ppl+i])
-        print("for", new_agent.name, ":", new_agent.infected, new_agent.infection_length, new_agent.coupling_tendency, new_agent.test_frequency, new_agent.commitment, new_agent.condom_use)
         env.add_agent(new_agent)
 
     return utils.run_model(env, prog_file, results_file)
