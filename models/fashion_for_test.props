@@ -1,0 +1,90 @@
+{
+    "num_followers": {
+        "val": 48,
+        "question": "What is the number of followers?",
+        "atype": "INT",
+        "default_val": 48,
+        "lowval": 1.0,
+        "hival": 1000.0
+    },
+    "num_hipsters": {
+        "val": 16,
+        "question": "What is the number of hipsters?",
+        "atype": "INT",
+        "default_val": 16,
+        "lowval": 1.0,
+        "hival": 1000.0
+    },
+    "fmax_move": {
+        "val": 4,
+        "question": "What is follower's maximum move?",
+        "atype": "INT",
+        "default_val": 4,
+        "lowval": 1.0,
+        "hival": 100.0
+    },
+    "hmax_move": {
+        "val": 4,
+        "question": "What is hipster's maximum move?",
+        "atype": "INT",
+        "default_val": 4,
+        "lowval": 1.0,
+        "hival": 100.0
+    },
+    "variability": {
+        "val": 0.15,
+        "question": "What is agent's variability?",
+        "atype": "DBL",
+        "default_val": 0.15,
+        "lowval": 0.01,
+        "hival": 0.99
+    },
+    "grid_width": {
+        "val": 20,
+        "question": "What is the grid width?",
+        "atype": "INT",
+        "default_val": 20,
+        "lowval": 1.0,
+        "hival": 1000.0
+    },
+    "grid_height": {
+        "val": 20,
+        "question": "What is the grid height?",
+        "atype": "INT",
+        "default_val": 20,
+        "lowval": 1.0,
+        "hival": 1000.0
+    },
+    "user_type": {
+        "val": "dummy",
+        "question": null,
+        "atype": null,
+        "default_val": null,
+        "lowval": null,
+        "hival": null
+    },
+    "OS": {
+        "val": "Darwin",
+        "question": null,
+        "atype": null,
+        "default_val": null,
+        "lowval": null,
+        "hival": null
+    },
+    "log_fname": {
+        "val": "fashion.log",
+        "question": null,
+        "atype": null,
+        "default_val": null,
+        "lowval": null,
+        "hival": null
+    },
+    "user_name": {
+        "val": "thomas",
+        "question": null,
+        "atype": null,
+        "default_val": null,
+        "lowval": null,
+        "hival": null
+    }
+}
