@@ -51,7 +51,7 @@ class Member(ma.MarkovAgent):
         self.goal = goal
         self.noise = noise
         self.state = SITTING
-        self.standard = random.uniform(0.5, 1.0)
+        self.standard = random.uniform(0.4, 1.0)
         self.ntype = self.state
         self.next_state = STANDING
         self.changed = False
