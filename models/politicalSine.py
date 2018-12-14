@@ -5,10 +5,9 @@ pretending to be a representative republic.
 """
 import indra.entity as ent
 import indra.env as env
+
 import math
-
 import numpy as np
-
 
 POLARIZATION_UP = 1.1
 POLARIZATION_DN = 0.9
@@ -26,7 +25,6 @@ class Citizen(ent.Agent):
     """
     An agent for citizens
     """
-
     def __init__(self, name, goal, political, wealth):
         """
         -A very basic init. (self, name, political, wealth)
@@ -45,18 +43,15 @@ class Citizen(ent.Agent):
     def postact(self):
         global POLAR
 
-
-        #print(POLAR, self.political, end='\t')
-
         if POLAR:
             self.political *= POLARIZATION_UP
         else:
             self.political *= POLARIZATION_DN
 
-        #print(self.political)
-
 class President():
-    """A representative of a president"""
+    """
+    A representative of a president
+    """
     def __init__(self, agents):
         self.political = 0
         for i in agents:
@@ -76,7 +71,6 @@ class President():
         self.oligarchy = 5* self.sigmoid(self.oligarchy)
 
         self.tooPolar = (abs(self.political - self.oligarchy) >= POLAR_THRESHHOLD)
-        #print(self.oligarchy,self.political,abs(self.political - self.oligarchy))
         global POLAR
         if self.tooPolar:
             global NUM_CORRUPT
@@ -86,7 +80,7 @@ class President():
             POLAR = False
 
     def sigmoid(self, a): #numerically stable sigmoid function
-        return math.exp(-np.logaddexp(0, -a)) -0.5
+        return math.exp(-np.logaddexp(0, -a)) -0.5 #compresses values from 0 to 1 and is reduced by 0.5 to get between -1/2 and 1/2
 
     def polar(self):
         return self.tooPolar
@@ -95,7 +89,6 @@ class BasicEnv(env.Environment):
     """
     This environment exists
     """
-
     def __init__(self, model_nm=None, props=None):
         super().__init__("Citizens environment",
                          preact=True,
@@ -120,4 +113,3 @@ class BasicEnv(env.Environment):
             self.add_agent(Citizen(agent["name"+temp],
                                    agent["Voting"]))
             temp += 1
-

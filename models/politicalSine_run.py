@@ -2,8 +2,7 @@
 """
 politicalSine.py
 A mathematical model to show the general polarization,
-or lack thereof, of an Oligarchy
-pretending to be a representative republic.
+or lack thereof, of a representative republic.
 """
 import numpy as np
 import indra.prop_args2 as props
@@ -38,28 +37,13 @@ def run(prop_dict=None):
     import indra.utils as utils
 
     (prog_file, log_file, prop_file, results_file) = utils.gen_file_names(MODEL_NM)
-    '''
-    # test prop_args as an iterable:
-    for prop, val in pa.items():
-        print(prop + ": " + str(val))
 
-    # test that props work as a dictionary:
-    if "num_agents" in pa:
-        print("In is working!")
-
-    # test what pa["num_agents"] is:
-    num_agents = pa["num_agents"]
-    print("num_agents = " + str(num_agents))
-
-    # make sure we can get props length:
-    print("Props length = " + str(len(pa)))
-    '''
     # Now we create a minimal environment for our agents to act within:
     env = ps.BasicEnv(model_nm=MODEL_NM, props=pa)
 
     # Now we loop creating multiple agents
-    #  with numbered names based on the loop variable:
-    ##We make agents here...
+    # with numbered names based on the loop variable:
+
     for i in range(0, CITIZEN_NUM):
         AGENT_NUM = 0
 
