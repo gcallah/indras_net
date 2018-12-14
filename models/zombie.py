@@ -60,64 +60,29 @@ class Beings(ma.MarkovAgent):
         if self.alive:
             self.alive = False
             self.env.died(self)
-    '''
+    
     def act(self):
-        super().act()
-        self.move()
-        
-        for i in range(self.speed):
-            super().act()
-            self.state = self.next_state
-            self.move(self.state)
-        
-
-    def move(self, direction):
-        if(driection == "away"):
-            GridEnv.move_from_agent(GridEnv, self)
-        
-        x = self.pos[X]
-        y = self.pos[Y]
-        if state == N:
-            if self.env.is_cell_empty(x, y+1):
-                self.env.move(self, x, y+1)
-        elif state == S:
-            if self.env.is_cell_empty(x, y-1):
-                self.env.move(self, x, y-1)
-        elif state == E:
-            if self.env.is_cell_empty(x-1, y):
-                self.env.move(self, x-1, y)
-        else:
-            if self.env.is_cell_empty(x+1, y):
-                self.env.move(self, x+1, y)
-<<<<<<< HEAD
         '''
-            
+        Handles the movement of both agents
+        '''
+        super().act()
+        if (self.ntype == "Zombie"):
+            self.zomMove()
+        if (self.ntype == "Human"):
+            self.humMove()
+        
     def postact(self):
+        '''
+        Handles dying and reproducing
+        '''
         self.age += 1
         self.life_force -= 1
         if self.life_force <= 0:
-            if (type(self) == Human):
-                print("natural")
-                #self.naturalDeath()
-                self.died()
-            else:
-                print("normal")
-                self.died()
+            self.died()
         else:
             if(self.ntype == "Human"):
                 self.reproduce()
-        '''
-        else:
-            #self.reproduce()
-            self.naturalDeath()
         
-        elif (self.ntype == "Human"):
-            self.reproduce()
-            self.naturalDeath()
-        '''
-        
-        #self.died()
-
         
     def to_json(self):
         safe_fields = super().to_json()
@@ -149,29 +114,34 @@ class Zombie(Beings):
                 self.eat(creature)
                 
     def zomMove(self):
+        '''
+        Moves zombie towards nearest
+        Human 
+        '''
         creatures = self.neighbor_iter()
-        followAgent = self 
         smalldist = 100000
         for creature in creatures:
-            currDist = self.env.dist(self, creature)
-            #print(currDist)
+            followAgent = creature 
             if type(creature) is Human:
-                #if currDist < smalldist:
-                smalldist = currDist
-                print(currDist)
-                followAgent = creature
-                self.env.move_to_agent(self, followAgent, 3)
-                
-    def act(self):
-        super().act()
-        #self.state = self.next_state
-        self.zomMove()
+                currDist = self.env.dist(self, creature)
+                #makes sure the nearest agent isn't itself
+                if (currDist < smalldist and self.pos[X] != self.pos[X]
+                and self.pos[Y] != self.pos[Y]):
+                    smalldist = currDist
+                    self.env.move_to_agent(self, followAgent, 3)
+                    
+    def infected(self):
+        creature = self.__class__(self.name + "x", self.goal,
+                                          self.repro_age, self.init_life_force)
+
+        self.env.add_agent(creature)
     
     # Zombie eats some of human and extends life force
     # It also infects a human
     def eat(self, human):
         self.life_force += human.life_force
-        human.infected()
+        self.infected()
+        human.died()
 
 
 class Human(Beings):
@@ -199,67 +169,26 @@ class Human(Beings):
                 new_zom = creature.__class__(creature.name + "x", creature.goal,
                                              creature.repro_age, creature.init_life_force)
 
-        self.env.add_agent(new_zom)
         self.died()
-        #new_zom = ''
-        #creatures = self.neighbor_iter()
-        '''
-        for creature in creatures:  #  this loop gets all the attributes needed to spawn in new zombie
-=======
-        new_zom = ''
-        creatures = self.neighbor_iter()
-
-        for creature in creatures: #this loop gets all the attributes needed to spawn in new zombie
->>>>>>> 719f1f45a4f81a391a3dbcdff344c483bee58a7d
-            if type(creature) is Zombie:
-                new_zom = creature.__class__(creature.name + "x", creature.goal,
-                                             creature.repro_age, creature.init_life_force)
-
-            self.env.add_agent(new_zom)
-            self.died()
-        '''
-    '''       
+        
     def humMove(self):
+        '''
+        Moves human away from nearest
+        Zombie
+        '''
         creatures = self.neighbor_iter()
         fearAgent = None 
         smalldist = 100000
         for creature in creatures:
-            currDist = self.env.dist(self, creature)
-            #print(currDist)
+            fearAgent = creature 
             if type(creature) is Human:
-                if currDist < smalldist:
+                currDist = self.env.dist(self, creature)
+                #makes sure the nearest agent isn't itself
+                if (currDist < smalldist and self.pos[X] != self.pos[X]
+                and self.pos[Y] != self.pos[Y]):
                     smalldist = currDist
-                    fearAgent = creature
                     self.env.move_from_agent(self, fearAgent, self.speed)
-                
-    def act(self):
-        super().act()
-        #self.state = self.next_state
-        self.humMove()
-    '''
-    '''
-    # human dies of natural causes
-    def naturalDeath(self):
-        self.ntype = "Zombie"
-        creature = self.__class__(self.name + "x", self.goal,
-                                          self.repro_age, self.init_life_force)
-        #creature.ntype = "Zombie"
-        self.env.add_agent(creature)
-        #self.env.died(self)
-        
-        new_zom = self
-        creatures = self.neighbor_iter(sq_v=10)
-        
-        for creature in creatures:  # same loop as in infected class
-            if type(creature) is Zombie:
-                new_zom = creature.__class__(creature.name + "x", creature.goal,
-                creature.repro_age, creature.init_life_force)
-        
-        self.env.add_agent(new_zom)
-        self.died()
-        '''
-
-        
+    
     # add a new human to the zone after certain num of turns
     def reproduce(self):
 
@@ -279,17 +208,7 @@ class Zone(menv.MarkovEnv):
     # gets rid of dead agents from the Zone
     def died(self, prey):
         self.remove_agent(prey)
-    '''    
-    def spawnOp(self, agent):
-        spawnedOne = 0
-        neighs = agent.neighbor_iter()
-        for neigh in neighs:
-            if(type(neigh) == agent.other && spawnedOne == 0):
-                other = neigh.__class__(neigh.name + "x", neigh.goal,
-                neigh.repro_age, neigh.init_life_force)
-                spawnedOne = 1
-    '''
-               
+           
     # what will happen in the Zone first
     def get_pre(self, agent, n_census):
 
@@ -307,7 +226,8 @@ class Zone(menv.MarkovEnv):
        
     # Finds out which direction (NORTH, SOUTH, EAST, WEST) as more of the 
     # opposite agent type depending on what agent we are dealing with
-    
+    # CAN'T GET RID OF OLD METHOD OF MOVEMENT DUE TO ERRORS
+    # IN OTHER SCRIPTS
     def dir_info(self, agent):
         directions = {N: 0, S: 0, E: 0, W: 0}
         total = 0
@@ -445,7 +365,7 @@ class Zone(menv.MarkovEnv):
 
 
         return trans_str
-    
+   
     def from_json(self, json_input):
         super().from_json(json_input)
         self.add_variety("Zombie")
