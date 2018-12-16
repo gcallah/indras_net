@@ -15,7 +15,7 @@ POLAR_THRESHHOLD = 2.5
 
 NUM_NEG = 0
 NUM_POS = 0
-NUM_CORRUPT = 0
+NUM_OPPOSED = 0
 
 POLAR = False
 
@@ -28,7 +28,7 @@ class Citizen(ent.Agent):
     def __init__(self, name, goal, political, wealth):
         """
         -A very basic init. (self, name, political, wealth)
-        -political is a number between -5 and 5 representative of
+        -political is a number between -2.5 and 2.5 representative of
         the political views of the citizen (negative vs positive)
         -wealth is the wealth of the citizen (because oligarchy)
         """
@@ -36,9 +36,6 @@ class Citizen(ent.Agent):
         self.political = political
         self.wealth = wealth
         super().__init__(name, "voting")
-
-    def act(self):
-        pass
 
     def postact(self):
         global POLAR
@@ -73,8 +70,8 @@ class President():
         self.tooPolar = (abs(self.political - self.oligarchy) >= POLAR_THRESHHOLD)
         global POLAR
         if self.tooPolar:
-            global NUM_CORRUPT
-            NUM_CORRUPT += 1
+            global NUM_OPPOSED
+            NUM_OPPOSED += 1
             POLAR = True
         else:
             POLAR = False
@@ -96,20 +93,21 @@ class BasicEnv(env.Environment):
                          model_nm=model_nm,
                          props=props)
 
-    def preact_loop(self):
-        global PRESIDENT
-        PRESIDENT = President(self.agents)
-        global NUM_NEG
-        global NUM_POS
-        global NUM_CORRUPT
-        print("Negative Presidents: "+str(NUM_NEG)+"\nPositive Presidents: "+str(NUM_POS))
-
-        print("Number of presidents that betray popular opinion: "+str(NUM_CORRUPT)
-              +"  ("+str((NUM_CORRUPT/(NUM_POS+NUM_NEG))*100) + "%)")
-
     def restore_agents(self, json_input):
         temp = 0
         for agent in json_input["agents"]:
             self.add_agent(Citizen(agent["name"+temp],
                                    agent["Voting"]))
             temp += 1
+            
+    def preact_loop(self):
+        global PRESIDENT
+        PRESIDENT = President(self.agents)
+        global NUM_NEG
+        global NUM_POS
+        global NUM_OPPOSED
+        print("Negative Presidents: "+str(NUM_NEG)+"\nPositive Presidents: "+str(NUM_POS))
+
+        print("Number of presidents that betray popular opinion: "+str(NUM_OPPOSED)
+              +"  ("+str((NUM_OPPOSED/(NUM_POS+NUM_NEG))*100) + "%)")
+              
