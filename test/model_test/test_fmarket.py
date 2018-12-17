@@ -12,12 +12,12 @@ import indra.user as user
 import random
 from collections import deque
 
-MODEL_NM = "wolfsheep"
+MODEL_NM = "fmarket"
 
 import indra.prop_args2 as props
 
 import json
-import models.wolfsheep as wsm
+import models.fmarket as fm
 import os
 from datetime import date
 
@@ -29,50 +29,45 @@ def announce(name):
 
 # make sure to run test file from root directory!
 class BasicTestCase(TestCase):
-    def __init__(self, methodName, prop_file="models/wolfsheep_for_test.props"):
+    def __init__(self, methodName, prop_file="models/fmarket_for_test.props"):
         super().__init__(methodName=methodName)
 
         self.pa = props.read_props(MODEL_NM, prop_file)
 
         # Now we create a forest environment for our agents to act within:
-        self.env = wsm.Meadow("Meadow",
-                              self.pa["grid_width"],
-                              self.pa["grid_height"],
-                              model_nm=MODEL_NM,
-                              preact=True,
-                              postact=True,
-                              props=self.pa)
+        self.env = fm.FinMarket("Financial Market",
+                       self.pa["grid_height"],
+                       self.pa["grid_width"],
+                       torus=False,
+                       model_nm=MODEL_NM,
+                       props=self.pa)
 
-        for i in range(self.pa["num_wolves"]):
-            self.env.add_agent(wsm.Wolf("wolf" + str(i), "Eating sheep",
-                                        self.pa["wolf_repro"],
-                                        self.pa["wolf_lforce"],
-                                        rand_age=True))
-
-        for i in range(self.pa["num_sheep"]):
-            self.env.add_agent(wsm.Sheep("sheep" + str(i), "Reproducing",
-                                         self.pa["sheep_repro"],
-                                         self.pa["sheep_lforce"],
-                                         rand_age=True))
-        self.env.add_agent(wsm.Sheep("sheep for tracking", "Reproducing",
-                                     self.pa["sheep_repro"],
-                                     self.pa["sheep_lforce"],
-                                     rand_age=True))
+        for i in range(self.pa["num_followers"]):
+            self.env.add_agent(fm.ChartFollower("follower" + str(i),
+                                           "Following trend",
+                                            self.pa["fmax_move"],
+                                            self.pa["variability"]))
+        for i in range(self.pa["num_vinvestors"]):
+            self.env.add_agent(fm.ValueInvestor("value_inv" + str(i), "Buying value",
+                                            self.pa["vmax_move"],
+                                            self.pa["variability"]))
+        self.env.add_agent(fm.ValueInvestor("value_inv for tracking", "Buying value",
+                                            self.pa["vmax_move"],
+                                            self.pa["variability"]))
 
     def test_agent_inspect(self):
         announce('test_agent_inspect')
-        agent = self.env.agent_inspect("sheep for tracking")
-        self.assertEqual(agent.name, "sheep for tracking")
+        agent = self.env.agent_inspect("value_inv for tracking")
+        self.assertEqual(agent.name, "value_inv for tracking")
 
     def test_add_agent(self):
         announce('test_add_agent')
-        self.env.add_agent(wsm.Sheep("new added sheep", "Reproducing",
-                                     self.pa["sheep_repro"],
-                                     self.pa["sheep_lforce"],
-                                     rand_age=True))
+        self.env.add_agent(fm.ValueInvestor("new added value_inv", "Buying value",
+                                            self.pa["vmax_move"],
+                                            self.pa["variability"]))
         # test if the add worked!
         # test by running
-        new_agent = self.env.agent_inspect("new added sheep")
+        new_agent = self.env.agent_inspect("new added value_inv")
         self.assertIsNotNone(new_agent)
 
     def test_props_write(self):
@@ -332,7 +327,7 @@ class BasicTestCase(TestCase):
 
         os.remove(path)
         f.close()
-        os.remove("wolfsheep.log")
+        os.remove("fmarket.log")
 
         self.assertEqual(report, True)
 
