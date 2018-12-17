@@ -52,7 +52,7 @@ def run(prop_dict=None):
     num_north_cars = pa["slow_car_num"]
     for i in range(pa["fast_car_num"]):
         newAgent = sm.Car('Vehicle #' + str(i + num_north_cars), random.randint(min_speed,
-                                                               max_speed), "N")
+                                                               max_speed), "S")
         env.add_agent(newAgent)
         env.move(newAgent, env.width // 2, env.height - (i + 2))
 
