@@ -40,11 +40,22 @@ def run(prop_dict=None):
     # print(sm)
     max_speed = pa["max_speed"]
     min_speed = pa["min_speed"]
+
+    # East bound cars
     for i in range(pa["slow_car_num"]):
         newAgent = sm.Car('Vehicle #' + str(i), random.randint(min_speed,
-                                                               max_speed))
+                                                               max_speed), "E")
         env.add_agent(newAgent)
-        env.move(newAgent, i + 2, 50)
+        env.move(newAgent, i + 2, env.height // 2)
+
+    # South bound cars
+    num_north_cars = pa["slow_car_num"]
+    for i in range(pa["fast_car_num"]):
+        newAgent = sm.Car('Vehicle #' + str(i + num_north_cars), random.randint(min_speed,
+                                                               max_speed), "N")
+        env.add_agent(newAgent)
+        env.move(newAgent, env.width // 2, env.height - (i + 2))
+
 
     return utils.run_model(env, prog_file, results_file)
 

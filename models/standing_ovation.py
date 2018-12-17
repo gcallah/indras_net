@@ -110,6 +110,12 @@ class Member(ma.MarkovAgent):
 
         return safe_fields
 
+    def from_json_preadd(self, json_input):
+        super().from_json_preadd(json_input)
+        self.state = json_input["state"]
+        self.ntype = json_input["ntype"]
+        # self.next_state = json_input["next_state"]
+
 
 class Auditorium(menv.MarkovEnv):
     def __init__(self, name, width, height, torus=False,
@@ -132,3 +138,4 @@ class Auditorium(menv.MarkovEnv):
         super().from_json(json_input)
         self.add_variety(STANDING)
         self.add_variety(SITTING)
+

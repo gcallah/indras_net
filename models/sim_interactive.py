@@ -46,11 +46,13 @@ class RouteNetwork:
 
 class Car(va.VSAgent):
 
-    def __init__(self, name, speed):
+    def __init__(self, name, speed, direction):
         super().__init__(name, '')
         self.name = name
         self.speed = speed
         self.lane = "SLOW"
+        self.direction = direction
+
 
     def eval_env(self, other_pre):
         x = self.pos[X]
