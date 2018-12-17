@@ -53,96 +53,6 @@ class Car(va.VSAgent):
         self.lane = "SLOW"
         self.direction = direction
 
-    def eval_env(self, other_pre):
-        x = self.pos[X]
-        y = self.pos[Y]
-
-        # East bound cars
-        if self.direction == "E":
-            # If there is a car ahead
-            newXPos = x + self.speed
-            # Make cars loop around when reach the border
-            while self.env.out_of_bounds(newXPos, y):
-                newXPos -= self.env.width
-            if self.lane == "SLOW":
-                if self.env.is_cell_empty(newXPos, y):
-                    self.env.move(self, newXPos, y)
-                else:
-                    # Switch lane if there is a car ahead to pass the car ahead
-                    self.env.move(self, newXPos, y + 5)
-                    self.lane = "FAST"
-                    print(self.name + " Passing")
-            elif self.lane == "FAST":
-                # Try to merge back if there is enough space
-                if self.env.is_cell_empty(newXPos, y - 5):
-                    self.env.move(self, newXPos, y - 5)
-                    self.lane = "SLOW"
-                    print(self.name + " Merged back")
-                else:
-                    # Keep moving in the fast lane
-                    if self.env.is_cell_empty(newXPos, y):
-                        self.env.move(self, newXPos, y)
-                    else:
-                        while self.env.is_cell_empty(newXPos, y):
-                            newXPos -= 1
-                            if newXPos == 0:
-                                break
-
-                        try:
-                            self.env.move(self, newXPos, y)
-                        except Exception:
-                            print(self.name + ' stopped')
-                            pass
-        elif self.direction == "S":
-            newYPos = y - self.speed
-            while self.env.out_of_bounds(x, newYPos):
-                newYPos += self.env.height
-
-            if self.lane == "SLOW":
-                if self.env.is_cell_empty(x, newYPos):
-                    self.env.move(self, x, newYPos)
-                else:
-                    # Switch lane if there is a car ahead to pass the car ahead
-                    self.env.move(self, x + 5, newYPos)
-                    self.lane = "FAST"
-                    print(self.name + " Passing")
-            elif self.lane == "FAST":
-                # Try to merge back if there is enough space
-                if self.env.is_cell_empty(x - 5, newYPos):
-                    self.env.move(self, x - 5, newYPos)
-                    self.lane = "SLOW"
-                    print(self.name + " Merged back")
-                else:
-                    # Keep moving in the fast lane
-                    if self.env.is_cell_empty(x, newYPos):
-                        self.env.move(self, x, newYPos)
-                    else:
-                        while self.env.is_cell_empty(x, newYPos):
-                            newYPos += 1
-                            if newYPos == self.env.height:
-                                break
-
-                        try:
-                            self.env.move(self, x, newYPos)
-                        except Exception:
-                            print(self.name + ' stopped')
-                            pass
-
-
-            # else:
-            #     if self.env.is_cell_empty(newXPos, y):
-            #         self.env.move(self, newXPos, y)
-            #     else:
-            #         while self.env.is_cell_empty(newXPos, y):
-            #             newXPos = newXPos - 1
-            #         if newXPos > 0:
-            #             self.env.move(self, newXPos, y)
-        # else:
-        #     while self.env.is_cell_empty(newXPos, y):
-        #         newXPos = newXPos - 1
-        #     if newXPos > 0:
-        #         self.env.move(self, newXPos, y)
-
     def travel(self):
         print(self.speed)
         x = self.pos[X]
@@ -158,6 +68,96 @@ class Car(va.VSAgent):
         safe_fields["lane"] = self.lane
         safe_fields["speed"] = self.speed
         return safe_fields
+
+
+class EastCar(Car):
+
+    def __init__(self, name, speed):
+        super().__init__(name, speed, 'E')
+
+    def eval_env(self, other_pre):
+        x = self.pos[X]
+        y = self.pos[Y]
+
+        # If there is a car ahead
+        newXPos = x + self.speed
+        # Make cars loop around when reach the border
+        while self.env.out_of_bounds(newXPos, y):
+            newXPos -= self.env.width
+        if self.lane == "SLOW":
+            if self.env.is_cell_empty(newXPos, y):
+                self.env.move(self, newXPos, y)
+            else:
+                # Switch lane if there is a car ahead to pass the car ahead
+                self.env.move(self, newXPos, y + 5)
+                self.lane = "FAST"
+                print(self.name + " Passing")
+        elif self.lane == "FAST":
+            # Try to merge back if there is enough space
+            if self.env.is_cell_empty(newXPos, y - 5):
+                self.env.move(self, newXPos, y - 5)
+                self.lane = "SLOW"
+                print(self.name + " Merged back")
+            else:
+                # Keep moving in the fast lane
+                if self.env.is_cell_empty(newXPos, y):
+                    self.env.move(self, newXPos, y)
+                else:
+                    while self.env.is_cell_empty(newXPos, y):
+                        newXPos -= 1
+                        if newXPos == 0:
+                            break
+
+                    try:
+                        self.env.move(self, newXPos, y)
+                    except Exception:
+                        print(self.name + ' stopped')
+                        pass
+
+
+class SouthCar(Car):
+
+    def __init__(self, name, speed):
+        super().__init__(name, speed, 'S')
+
+    def eval_env(self, other_pre):
+        x = self.pos[X]
+        y = self.pos[Y]
+
+        newYPos = y - self.speed
+        while self.env.out_of_bounds(x, newYPos):
+            newYPos += self.env.height
+
+        if self.lane == "SLOW":
+            if self.env.is_cell_empty(x, newYPos):
+                self.env.move(self, x, newYPos)
+            else:
+                # Switch lane if there is a car ahead to pass the car ahead
+                self.env.move(self, x + 5, newYPos)
+                self.lane = "FAST"
+                print(self.name + " Passing")
+        elif self.lane == "FAST":
+            # Try to merge back if there is enough space
+            if self.env.is_cell_empty(x - 5, newYPos):
+                self.env.move(self, x - 5, newYPos)
+                self.lane = "SLOW"
+                print(self.name + " Merged back")
+            else:
+                # Keep moving in the fast lane
+                if self.env.is_cell_empty(x, newYPos):
+                    self.env.move(self, x, newYPos)
+                else:
+                    while self.env.is_cell_empty(x, newYPos):
+                        newYPos += 1
+                        if newYPos == self.env.height:
+                            break
+
+                    try:
+                        self.env.move(self, x, newYPos)
+                    except Exception:
+                        print(self.name + ' stopped')
+                        pass
+
 
 class Intersection:
 
@@ -185,6 +185,10 @@ class SimInteractiveEnv(grid.GridEnv):
         self.move_hist = []
         self.menu.view.del_menu_item("v")  # no line graph in this model
         self.intersectionArr = []
+
+    def set_agent_color(self):
+        self.set_var_color('EastCar', 'b')
+        self.set_var_color('SouthCar', 'r')
 
     def car_move(self, agent):
         agent.travel()
