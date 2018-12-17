@@ -7,12 +7,6 @@ import random
 MODEL_NM = "sim_interactive"
 
 
-# number of cars
-# slow car speed
-# acceleration
-# deceleration
-
-
 def run(prop_dict=None):
     pa = props.PropArgs.create_props(MODEL_NM, prop_dict)
 

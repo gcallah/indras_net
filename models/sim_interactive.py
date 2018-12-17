@@ -87,17 +87,18 @@ class EastCar(Car):
         if self.lane == "SLOW":
             if self.env.is_cell_empty(newXPos, y):
                 self.env.move(self, newXPos, y)
+                self.env.move_hist.append(self.name + "moving \n")
             else:
                 # Switch lane if there is a car ahead to pass the car ahead
                 self.env.move(self, newXPos, y + 5)
                 self.lane = "FAST"
-                print(self.name + " Passing")
+                self.env.move_hist.append(self.name + " Passing \n")
         elif self.lane == "FAST":
             # Try to merge back if there is enough space
             if self.env.is_cell_empty(newXPos, y - 5):
                 self.env.move(self, newXPos, y - 5)
                 self.lane = "SLOW"
-                print(self.name + " Merged back")
+                self.env.move_hist.append(self.name + " Merged back \n")
             else:
                 # Keep moving in the fast lane
                 if self.env.is_cell_empty(newXPos, y):
@@ -107,13 +108,17 @@ class EastCar(Car):
                         newXPos -= 1
                         if newXPos == 0:
                             break
-
                     try:
                         self.env.move(self, newXPos, y)
                     except Exception:
-                        print(self.name + ' stopped')
+                        self.env.move_hist.append(self.name + ' stopped \n')
                         pass
 
+    def to_json(self):
+        safe_fields = super().to_json()
+        safe_fields["lane"] = self.lane
+        safe_fields["speed"] = self.speed
+        return safe_fields
 
 class SouthCar(Car):
 
@@ -131,17 +136,18 @@ class SouthCar(Car):
         if self.lane == "SLOW":
             if self.env.is_cell_empty(x, newYPos):
                 self.env.move(self, x, newYPos)
+                self.env.move_hist.append(self.name + "moving \n")
             else:
                 # Switch lane if there is a car ahead to pass the car ahead
                 self.env.move(self, x + 5, newYPos)
                 self.lane = "FAST"
-                print(self.name + " Passing")
+                self.env.move_hist.append(self.name + " Passing \n")
         elif self.lane == "FAST":
             # Try to merge back if there is enough space
             if self.env.is_cell_empty(x - 5, newYPos):
                 self.env.move(self, x - 5, newYPos)
                 self.lane = "SLOW"
-                print(self.name + " Merged back")
+                self.env.move_hist.append(self.name + " Merged back \n")
             else:
                 # Keep moving in the fast lane
                 if self.env.is_cell_empty(x, newYPos):
@@ -151,12 +157,17 @@ class SouthCar(Car):
                         newYPos += 1
                         if newYPos == self.env.height:
                             break
-
                     try:
                         self.env.move(self, x, newYPos)
                     except Exception:
-                        print(self.name + ' stopped')
+                        self.env.move_hist.append(self.name + ' stopped \n')
                         pass
+
+    def to_json(self):
+        safe_fields = super().to_json()
+        safe_fields["lane"] = self.lane
+        safe_fields["speed"] = self.speed
+        return safe_fields
 
 
 class Intersection:
@@ -190,8 +201,12 @@ class SimInteractiveEnv(grid.GridEnv):
         self.set_var_color('EastCar', 'b')
         self.set_var_color('SouthCar', 'r')
 
-    def car_move(self, agent):
-        agent.travel()
+    def to_json(self):
+        safe_fields = super().to_json()
+        safe_fields["plot_title"] = self.plot_title
+        safe_fields["move_hist"] = self.move_hist
+
+        return safe_fields
 
     def addRelation(self, intersection1, intersection2):
         intersection1.addNeighbour(intersection2)
