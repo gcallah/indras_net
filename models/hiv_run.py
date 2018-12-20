@@ -34,8 +34,7 @@ def run(prop_dict=None):
     if ini_ppl > max_ppl:
         ini_ppl = max_ppl
 
-    print(grid_x, grid_y, ini_ppl, avg_coup_tend, avg_test_freq,
-          avg_commitment, avg_condom_use)
+    # print(grid_x, grid_y, ini_ppl, avg_coup_tend, avg_test_freq, avg_commitment, avg_condom_use)
 
     # Now we create an environment for our agents to act within:
     env = hiv.People("People", grid_x, grid_y, model_nm=MODEL_NM,
@@ -43,8 +42,8 @@ def run(prop_dict=None):
 
     ini_infected_ppl = round(INI_INFECTED_PCT * ini_ppl)
     ini_healthy_ppl = ini_ppl - ini_infected_ppl
-    print("initial infected people:", ini_infected_ppl)
-    print("initial healthy people:", ini_healthy_ppl)
+    # print("initial infected people:", ini_infected_ppl)
+    # print("initial healthy people:", ini_healthy_ppl)
 
     coup_tend = numpy.random.normal(avg_coup_tend, 1, ini_ppl)
     test_freq = numpy.random.normal(avg_test_freq, 0.2, ini_ppl)
