@@ -1,0 +1,50 @@
+{
+    "num_agents": {
+        "val": 100,
+        "question": "What is the number of agents?",
+        "atype": "INT",
+        "default_val": 100,
+        "lowval": 1.0,
+        "hival": 10000.0
+    },
+    "min_holdings": {
+        "val": 7.5,
+        "question": "What is a co-op member's minimum desired holding of coupons?",
+        "atype": "DBL",
+        "default_val": 7.5,
+        "lowval": 1.0,
+        "hival": 20.0
+    },
+    "user_type": {
+        "val": "dummy",
+        "question": null,
+        "atype": null,
+        "default_val": null,
+        "lowval": null,
+        "hival": null
+    },
+    "OS": {
+        "val": "Darwin",
+        "question": null,
+        "atype": null,
+        "default_val": null,
+        "lowval": null,
+        "hival": null
+    },
+    "log_fname": {
+        "val": "coop.log",
+        "question": null,
+        "atype": null,
+        "default_val": null,
+        "lowval": null,
+        "hival": null
+    },
+    "user_name": {
+        "val": "thomas",
+        "question": null,
+        "atype": null,
+        "default_val": null,
+        "lowval": null,
+        "hival": null
+    }
+}

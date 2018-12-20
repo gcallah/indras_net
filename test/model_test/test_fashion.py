@@ -328,7 +328,7 @@ class BasicTestCase(TestCase):
 
         os.remove(path)
         f.close()
-        os.remove("basic.log")
+        os.remove("fashion.log")
 
         self.assertEqual(report, True)
 

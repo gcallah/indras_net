@@ -11,6 +11,10 @@ import models.hiv as hiv
 
 MODEL_NM = "HIV"
 INI_INFECTED_PCT = .025
+STD_COUP_TEND = 1
+STD_TEST_FREQ = 0.2
+STD_COMMITMENT = 20
+STD_CONDOM_USE = 1
 
 
 def run(prop_dict=None):
@@ -21,26 +25,18 @@ def run(prop_dict=None):
     if pa["user_type"] == props.WEB:
         pa["base_dir"] = os.environ["base_dir"]
 
-    '''
     grid_x = pa["grid_width"]
     grid_y = pa["grid_height"]
-    '''
-
     ini_ppl = pa["ini_ppl"]
     avg_coup_tend = pa["avg_coup_tend"]
     avg_test_freq = pa["avg_test_freq"]
     avg_commitment = pa["avg_commitment"]
     avg_condom_use = pa["avg_condom_use"]
 
-    grid_x = 20
-    grid_y = 20
     max_ppl = grid_x * grid_y
 
     if ini_ppl > max_ppl:
         ini_ppl = max_ppl
-
-    print(grid_x, grid_y, ini_ppl, avg_coup_tend, avg_test_freq,
-          avg_commitment, avg_condom_use)
 
     # Now we create an environment for our agents to act within:
     env = hiv.People("People", grid_x, grid_y, model_nm=MODEL_NM,
@@ -48,13 +44,13 @@ def run(prop_dict=None):
 
     ini_infected_ppl = round(INI_INFECTED_PCT * ini_ppl)
     ini_healthy_ppl = ini_ppl - ini_infected_ppl
-    print("initial infected people:", ini_infected_ppl)
-    print("initial healthy people:", ini_healthy_ppl)
+    # print("initial infected people:", ini_infected_ppl)
+    # print("initial healthy people:", ini_healthy_ppl)
 
-    coup_tend = numpy.random.normal(avg_coup_tend, 1, ini_ppl)
-    test_freq = numpy.random.normal(avg_test_freq, 0.2, ini_ppl)
-    commitment = numpy.random.normal(avg_commitment, 20, ini_ppl)
-    condom_use = numpy.random.normal(avg_condom_use, 1, ini_ppl)
+    coup_tend = numpy.random.normal(avg_coup_tend, STD_COUP_TEND, ini_ppl)
+    test_freq = numpy.random.normal(avg_test_freq, STD_TEST_FREQ, ini_ppl)
+    commitment = numpy.random.normal(avg_commitment, STD_COMMITMENT, ini_ppl)
+    condom_use = numpy.random.normal(avg_condom_use, STD_CONDOM_USE, ini_ppl)
     for i in range(ini_ppl):
         if coup_tend[i] < 0:
             coup_tend[i] = 0
@@ -78,6 +74,7 @@ def run(prop_dict=None):
         new_agent = hiv.Person(name="person" + str(i),
                                infected=True,
                                infection_length=rand_inf_len,
+                               initiative=i,
                                coupling_tendency=coup_tend[i],
                                test_frequency=test_freq[i],
                                commitment=commitment[i],
@@ -86,6 +83,7 @@ def run(prop_dict=None):
     for i in range(ini_healthy_ppl):
         new_agent = hiv.Person(name="person" + str(ini_infected_ppl+i),
                                infected=False, infection_length=0,
+                               initiative=ini_infected_ppl+i,
                                coupling_tendency=coup_tend[ini_infected_ppl+i],
                                test_frequency=test_freq[ini_infected_ppl+i],
                                commitment=commitment[ini_infected_ppl+i],

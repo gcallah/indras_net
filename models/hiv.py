@@ -1,7 +1,7 @@
 import indra.markov as markov
 import indra.markov_agent as ma
 import indra.markov_env as menv
-
+import indra.display_methods as disp
 import random
 
 X = 0
@@ -42,6 +42,8 @@ class Person(ma.MarkovAgent):
         coupled: boolean indicating if a person is coupled
         couple_length: int indicating how long this person has been coupled
         partner: pointing to the partner if coupled
+        initiative: int, only the person with smaller value takes initiative
+            to couple
         infected: boolean indicating if a person is infected with HIV
         known: boolean indicating if a person is aware of the HIV infection
         infection_length: int indicating how long this person has been
@@ -52,14 +54,15 @@ class Person(ma.MarkovAgent):
         commitment: how long sexual relationships lasts for this person
             (1-200)
         """
-    def __init__(self, name, infected, infection_length, coupling_tendency,
-                 condom_use, test_frequency, commitment, coupled=False,
-                 coupled_length=0, known=False):
+    def __init__(self, name, infected, infection_length, initiative,
+                 coupling_tendency, condom_use, test_frequency, commitment,
+                 coupled=False, coupled_length=0, known=False, partner=None):
         init_state = random.randint(0, 3)
         super().__init__(name, "wandering around", NSTATES, init_state)
         self.coupled = coupled
         self.couple_length = coupled_length
-        self.partner = None
+        self.partner = partner
+        self.initiative = initiative
         self.infected = infected
         self.known = known
         self.infection_length = infection_length
@@ -73,59 +76,56 @@ class Person(ma.MarkovAgent):
     def update_ntype(self):
         old_type = self.ntype
         if self.coupled is False:
-            if self.infected:
-                if self.known:
+            if self.infected is True:
+                if self.known is True:
                     self.ntype = POZ_NTYPE
                 else:
                     self.ntype = UKP_NTYPE
             else:
                 self.ntype = NEG_NTYPE
         else:
-            if self.infected:
-                if self.known:
+            if self.infected is True:
+                if self.known is True:
                     self.ntype = POZ_NTYPE_C
                 else:
                     self.ntype = UKP_NTYPE_C
             else:
                 self.ntype = NEG_NTYPE_C
-        if old_type is not 'Person':
+        if old_type is not 'Person' and self.ntype != old_type:
             self.env.change_agent_type(self, old_type, self.ntype)
-        print(self.name, "has ntype", self.ntype)
+        # print(self.name, "has ntype", self.ntype)
 
     def couple(self):
         for person in self.neighbor_iter():
-            if person.coupled is False:
-                if random.randint(0, 10) < person.coupling_tendency:
+            if person.coupled is False and person.initiative > self.initiative:
+                if 10 * random.random() < person.coupling_tendency:
                     self.coupled = True
                     self.partner = person
                     person.coupled = True
                     person.partner = self
-                    print(self.name, "has been coupled with", person.name)
+                    # print(self.name, "has been coupled with", person.name)
                     break
 
     def infect(self):
         if (self.coupled is True and self.infected is True and
                 self.known is False and self.partner.infected is False):
-            if (random.randint(0, 10) > self.condom_use or
-                    random.randint(0, 10) > self.partner.condom_use):
-                if random.randint(0, 99) < INFECTION_CHANCE:
+            if (10 * random.random() > self.condom_use or
+                    10 * random.random() > self.partner.condom_use):
+                if 100 * random.random() < INFECTION_CHANCE:
                     self.partner.infected = True
-                    print(self.name, "has infected", self.partner.name)
-                else:
-                    print(self.name, "has not infected", self.partner.name,
-                          "because they are lucky")
-            else:
-                print(self.name, "has not infected", self.partner.name,
-                      "because they use condom")
+                    # print(self.name, "has infected", self.partner.name)
 
     def preact(self):
+        # print(self.name, "is preacting")
+        self.update_ntype()
         if self.coupled is False:
-            if random.randint(0, 10) < self.coupling_tendency:
+            if 10 * random.random() < self.coupling_tendency:
                 self.couple()
+        if isinstance(self.partner, str):
+            self.partner = self.env.get_obj(self.partner)
         if self.coupled is True:
-            # update partner after restored
-            if self.partner is not None:
-                self.partner.partner = self
+            if isinstance(self.partner.partner, str):
+                self.partner.partner = self.env.get_obj(self.partner.partner)
             self.infect()
             self.partner.infect()
 
@@ -146,26 +146,26 @@ class Person(ma.MarkovAgent):
                 self.env.move(self, x+1, y)
 
     def act(self):
+        # print(self.name, "is acting")
         if self.coupled is False:
             super().act()
             self.state = self.next_state
             self.move(self.state)
 
     def test(self):
-        if (random.randint(0, 4) < self.test_frequency and
+        if (2 * random.random() < self.test_frequency and
                 self.infected is True and self.known is False):
             self.known = True
-            print(self.name, "has been tested positive")
+            # print(self.name, "has been tested positive")
             if self.infection_length > SYMPTOMS_SHOW:
                 if random.random() <= SYMPTOMS_SHOW_PROB:
                     self.known = True
-                    print(self.name, "has developed symptoms")
+                    # print(self.name, "has developed symptoms")
 
     def uncouple(self):
         if self.coupled is True:
             if (self.couple_length > self.commitment or
                     self.couple_length > self.partner.commitment):
-                print(self.name, "has been uncoupled with", self.partner.name)
                 self.coupled = False
                 self.couple_length = 0
                 self.partner.coupled = False
@@ -174,10 +174,11 @@ class Person(ma.MarkovAgent):
                 self.partner = None
 
     def postact(self):
+        # print(self.name, "is postacting")
         if self.infected is True:
             self.infection_length += 1
-            if self.coupled is True:
-                self.couple_length += 1
+        if self.coupled is True:
+            self.couple_length += 1
         self.test()
         self.uncouple()
         self.update_ntype()
@@ -188,7 +189,10 @@ class Person(ma.MarkovAgent):
         safe_fields["ntype"] = self.ntype
         safe_fields["coupled"] = self.coupled
         safe_fields["coupled_length"] = self.couple_length
-        if self.partner:
+        safe_fields["initiative"] = self.initiative
+        if isinstance(self.partner, str):
+            safe_fields["partner"] = self.partner
+        elif self.partner:
             safe_fields["partner"] = self.partner.name
         else:
             safe_fields["partner"] = "None"
@@ -215,15 +219,41 @@ class People(menv.MarkovEnv):
     def get_pre(self, agent, n_census):
         return markov.MarkovPre(TRANS)
 
+    def get_obj(self, name):
+        result = None
+        for agent in self.agents:
+            if agent.name == name:
+                result = agent
+        return result
+
+    def set_agent_color(self):
+        self.set_var_color(NEG_NTYPE, disp.MAGENTA)
+        self.set_var_color(POZ_NTYPE, disp.BLACK)
+        self.set_var_color(UKP_NTYPE, disp.YELLOW)
+        self.set_var_color(NEG_NTYPE_C, disp.GREEN)
+        self.set_var_color(POZ_NTYPE_C, disp.BLUE)
+        self.set_var_color(UKP_NTYPE_C, disp.RED)
+
     def restore_agent(self, agent_json):
         new_agent = Person(name=agent_json["name"],
                            infected=agent_json["infected"],
                            infection_length=agent_json["infection_length"],
+                           initiative=agent_json["initiative"],
                            coupling_tendency=agent_json["coupling_tendency"],
                            test_frequency=agent_json["test_frequency"],
                            commitment=agent_json["commitment"],
                            condom_use=agent_json["condom_use"],
                            coupled=agent_json["coupled"],
                            coupled_length=agent_json["coupled_length"],
-                           known=agent_json["known"])
+                           known=agent_json["known"],
+                           partner=agent_json["partner"])
         self.add_agent_to_grid(new_agent, agent_json)
+
+    def from_json(self, json_input):
+        super().from_json(json_input)
+        self.add_variety(NEG_NTYPE)
+        self.add_variety(POZ_NTYPE)
+        self.add_variety(UKP_NTYPE)
+        self.add_variety(NEG_NTYPE_C)
+        self.add_variety(POZ_NTYPE_C)
+        self.add_variety(UKP_NTYPE_C)

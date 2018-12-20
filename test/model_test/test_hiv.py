@@ -1,25 +1,25 @@
 #!/usr/bin/env python3
-VALUE = "val"
-QUESTION = "question"
-DEFAULT_VAL = "default_val"
-ATYPE = "atype"
-HIVAL = "hival"
-LOWVAL = "lowval"
 
 from unittest import TestCase, main
 import sys
 import indra.user as user
 import random
 from collections import deque
-
-MODEL_NM = "wolfsheep"
-
 import indra.prop_args2 as props
-
 import json
-import models.wolfsheep as wsm
+import models.hiv as hiv
+from models.hiv_run import *
 import os
 from datetime import date
+import numpy
+
+VALUE = "val"
+QUESTION = "question"
+DEFAULT_VAL = "default_val"
+ATYPE = "atype"
+HIVAL = "hival"
+LOWVAL = "lowval"
+MODEL_NM = "hiv"
 
 
 def announce(name):
@@ -29,57 +29,92 @@ def announce(name):
 
 # make sure to run test file from root directory!
 class BasicTestCase(TestCase):
-    def __init__(self, methodName, prop_file="models/wolfsheep_for_test.props"):
+    def __init__(self, methodName, prop_file="models/hiv_for_test.props"):
         super().__init__(methodName=methodName)
 
         self.pa = props.read_props(MODEL_NM, prop_file)
 
         # Now we create a forest environment for our agents to act within:
-        self.env = wsm.Meadow("Meadow",
-                              self.pa["grid_width"],
-                              self.pa["grid_height"],
-                              model_nm=MODEL_NM,
-                              preact=True,
-                              postact=True,
-                              props=self.pa)
+        self.env = hiv.People("People", self.pa["grid_width"],
+                              self.pa["grid_height"], model_nm=MODEL_NM,
+                              preact=True, postact=True, props=self.pa)
 
-        for i in range(self.pa["num_wolves"]):
-            self.env.add_agent(wsm.Wolf("wolf" + str(i), "Eating sheep",
-                                        self.pa["wolf_repro"],
-                                        self.pa["wolf_lforce"],
-                                        rand_age=True))
+        self.max_ppl = self.pa["grid_width"] * self.pa["grid_height"]
+        if self.pa["ini_ppl"] > self.max_ppl:
+            self.ini_ppl = self.max_ppl
+        else:
+            self.ini_ppl = self.pa["ini_ppl"]
+        self.ini_infected_ppl = round(INI_INFECTED_PCT * self.ini_ppl)
+        self.ini_healthy_ppl = self.ini_ppl - self.ini_infected_ppl
 
-        for i in range(self.pa["num_sheep"]):
-            self.env.add_agent(wsm.Sheep("sheep" + str(i), "Reproducing",
-                                         self.pa["sheep_repro"],
-                                         self.pa["sheep_lforce"],
-                                         rand_age=True))
-        self.env.add_agent(wsm.Sheep("sheep for tracking", "Reproducing",
-                                     self.pa["sheep_repro"],
-                                     self.pa["sheep_lforce"],
-                                     rand_age=True))
+        self.coup_tend = numpy.random.normal(self.pa["avg_coup_tend"],
+                                             STD_COUP_TEND, self.ini_ppl)
+        self.test_freq = numpy.random.normal(self.pa["avg_test_freq"],
+                                             STD_TEST_FREQ, self.ini_ppl)
+        self.commitment = numpy.random.normal(self.pa["avg_commitment"],
+                                              STD_COMMITMENT, self.ini_ppl)
+        self.condom_use = numpy.random.normal(self.pa["avg_condom_use"],
+                                              STD_CONDOM_USE, self.ini_ppl)
+        for i in range(self.ini_ppl):
+            if self.coup_tend[i] < 0:
+                self.coup_tend[i] = 0
+            elif self.coup_tend[i] > 10:
+                self.coup_tend[i] = 10
+            if self.test_freq[i] < 0:
+                self.test_freq[i] = 0
+            elif self.test_freq[i] > 2:
+                self.test_freq[i] = 2
+            if self.commitment[i] < 1:
+                self.commitment[i] = 1
+            elif self.commitment[i] > 200:
+                self.commitment[i] = 200
+            if self.condom_use[i] < 0:
+                self.condom_use[i] = 0
+            elif self.condom_use[i] > 10:
+                self.condom_use[i] = 10
+
+        for i in range(self.ini_infected_ppl):
+            rand_inf_len = random.randint(0, hiv.SYMPTOMS_SHOW-1)
+            new_agent = hiv.Person(name="person" + str(i),
+                                   infected=True,
+                                   infection_length=rand_inf_len,
+                                   initiative=i,
+                                   coupling_tendency=self.coup_tend[i],
+                                   test_frequency=self.test_freq[i],
+                                   commitment=self.commitment[i],
+                                   condom_use=self.condom_use[i])
+            self.env.add_agent(new_agent)
+        for i in range(self.ini_healthy_ppl):
+            new_agent = hiv.Person(name="person" + str(self.ini_infected_ppl+i),
+                                   infected=False, infection_length=0,
+                                   initiative=self.ini_infected_ppl+i,
+                                   coupling_tendency=self.coup_tend[self.ini_infected_ppl+i],
+                                   test_frequency=self.test_freq[self.ini_infected_ppl+i],
+                                   commitment=self.commitment[self.ini_infected_ppl+i],
+                                   condom_use=self.condom_use[self.ini_infected_ppl+i])
+            self.env.add_agent(new_agent)
 
     def test_agent_inspect(self):
         announce('test_agent_inspect')
-        agent = self.env.agent_inspect("sheep for tracking")
-        self.assertEqual(agent.name, "sheep for tracking")
+        agent = self.env.agent_inspect("person0")
+        self.assertEqual(agent.name, "person0")
 
     def test_add_agent(self):
         announce('test_add_agent')
-        self.env.add_agent(wsm.Sheep("new added sheep", "Reproducing",
-                                     self.pa["sheep_repro"],
-                                     self.pa["sheep_lforce"],
-                                     rand_age=True))
-        # test if the add worked!
-        # test by running
-        new_agent = self.env.agent_inspect("new added sheep")
+        self.env.add_agent(hiv.Person(name="new added person", infected=False,
+                                      infection_length=0, initiative=0,
+                                      coupling_tendency=5,
+                                      test_frequency=0,
+                                      commitment=50,
+                                      condom_use=0))
+        new_agent = self.env.agent_inspect("new added person")
         self.assertIsNotNone(new_agent)
 
     def test_props_write(self):
         announce('test_props_write')
         report = True
-        self.env.pwrite(self.env.model_nm + ".props")
-        with open(self.env.model_nm + ".props", "r") as f:
+        self.env.pwrite(self.env.model_nm + '.props')
+        with open(self.env.model_nm + '.props', 'r') as f:
             props_written = json.load(f)
         if len(props_written) != len(self.env.props.props):
             report = False
@@ -110,7 +145,7 @@ class BasicTestCase(TestCase):
         announce('test_n_step')
         report = True
         period_before_run = self.env.period
-        random_steps = random.randint(3,30)
+        random_steps = random.randint(3, 30)
         self.env.n_steps(random_steps)
         period_after_run = self.env.period
         if (period_before_run + random_steps) != period_after_run:
@@ -119,17 +154,14 @@ class BasicTestCase(TestCase):
 
     def test_population_report(self):
         announce('test_population_report')
-        # need to test step method first!!!!!!!!!!!!
-        self.env.n_steps(random.randint(10,20))
+        self.env.n_steps(random.randint(10, 20))
         report = True
-        self.env.pop_report(self.env.model_nm+".csv")
-        f = open(self.env.model_nm+".csv", "r")
+        self.env.pop_report(self.env.model_nm + ".csv")
+        f = open(self.env.model_nm + ".csv", "r")
         head = f.readline()
         head = head.strip("\n")
         head_list = head.split(",")
-        # print("check1!!!!!!!", head_list)
         dic_for_reference = self.env.agents.get_pop_hist()
-        # print("check2!!!!!!!", dic_for_reference)
         for i in head_list:
             if i not in dic_for_reference:
                 report = False
@@ -138,7 +170,6 @@ class BasicTestCase(TestCase):
             dic_for_check = {}
             for i in head_list:
                 dic_for_check[i] = []
-            # print("check3!!!!!!!", dic_for_check)
             for line in f:
                 line = line.strip("\n")
                 line_list = line.split(",")
@@ -148,7 +179,6 @@ class BasicTestCase(TestCase):
                 else:
                     report = False
                     break
-            # print("check4!!!!!!!", dic_for_check)
 
         if report == True:
             if len(dic_for_check) != len(dic_for_reference):
@@ -172,11 +202,11 @@ class BasicTestCase(TestCase):
         sys.stdout = orig_out
         f = open("checkfile.txt", "r")
         line1 = f.readline()
-
+        
         for agent in self.env.agents:
             line = f.readline()
             line_list = line.split(" with a goal of ")
-
+            
             line_list[1] = line_list[1].strip()
             if agent.name != line_list[0] or agent.goal != line_list[1]:
                 report = False
@@ -206,7 +236,7 @@ class BasicTestCase(TestCase):
                     line_list[0] = line_list[0].strip()
                     line_list[1] = line_list[1].strip()
                     dic_for_check[line_list[0]] = line_list[1]
-
+        
             for key in self.env.props.props:
                 if str(self.env.props.props[key]) != dic_for_check[key]:
                     report = False
@@ -219,7 +249,7 @@ class BasicTestCase(TestCase):
         report = True
         logfile_name = self.env.props.props["log_fname"].val
         list_for_reference = deque(maxlen=16)
-
+        
         with open(logfile_name, 'rt') as log:
             for line in log:
                 list_for_reference.append(line)
@@ -239,9 +269,7 @@ class BasicTestCase(TestCase):
                     report = False
                     break
         f.close()
-
         os.remove("checklog.txt")
-
         self.assertEqual(report, True)
 
     def test_save_session(self):
@@ -253,7 +281,7 @@ class BasicTestCase(TestCase):
         except:
             base_dir = ""
         self.env.save_session(rand_sess_id)
-
+        
         path = base_dir + "json/" + self.env.model_nm + str(rand_sess_id) + ".json"
         with open(path, "r") as f:
             json_input = f.readline()
@@ -268,42 +296,29 @@ class BasicTestCase(TestCase):
             report = False
         if json_input_dic["props"] != self.env.props.to_json():
             report = False
-        #Here is why test_save_session fail before.
-        #The env will generate a new prop_arg 2 type proparg when restoring
-        #session(check env.from_json function), but
-        # we were using old prop_arg in this test file.
         if json_input_dic["user"] != self.env.user.to_json():
             report = False
         agents = []
         for agent in self.env.agents:
             agents.append(agent.to_json())
-        # print(json_input_dic["agents"][0])
-        # print(type(agents[0]))
-        # if json_input_dic["agents"] != agents:
-        #     report = False
-        # Problem: the 'state_pre' attribute returned from json has a list in it.
-        # The origin al one should be a tuple
 
         f.close()
         os.remove(path)
-
+        
         self.assertEqual(report, True)
 
     def test_restore_session(self):
         announce('test_restore_session')
         report = True
-        # print("check0!!!", self.env.props.props)
         rand_sess_id = random.randint(1, 10)
         try:
             base_dir = self.env.props["base_dir"]
         except:
             base_dir = ""
         self.env.save_session(rand_sess_id)
-        # make sure the session we want to restore is different
-        #  from our current env status
         self.env.n_steps(random.randint(1,10))
         self.env.restore_session(rand_sess_id)
-
+        
         path = base_dir + "json/" + self.env.model_nm + str(rand_sess_id) + ".json"
         with open(path, "r") as f:
             json_input = f.readline()
@@ -323,18 +338,13 @@ class BasicTestCase(TestCase):
         agents = []
         for agent in self.env.agents:
             agents.append(agent.to_json())
-        # if json_input_dic["agents"] != agents:
-        #     report = False
-        #Problem: same as last test function
-
-        # print("check1!!!", self.env.props.props)
-        # print("check2!!!!", json_input_dic["props"])
 
         os.remove(path)
         f.close()
-        os.remove("wolfsheep.log")
-
+        # os.remove("HIV.log")
+        
         self.assertEqual(report, True)
+
 
 if __name__ == '__main__':
     announce("main")

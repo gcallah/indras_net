@@ -326,7 +326,7 @@ class BasicTestCase(TestCase):
 
         os.remove(path)
         f.close()
-        os.remove("basic.log")
+        os.remove("forestfire.log")
 
         self.assertEqual(report, True)
 
