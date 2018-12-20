@@ -34,8 +34,6 @@ def run(prop_dict=None):
     if ini_ppl > max_ppl:
         ini_ppl = max_ppl
 
-    # print(grid_x, grid_y, ini_ppl, avg_coup_tend, avg_test_freq, avg_commitment, avg_condom_use)
-
     # Now we create an environment for our agents to act within:
     env = hiv.People("People", grid_x, grid_y, model_nm=MODEL_NM,
                      preact=True, postact=True, props=pa)

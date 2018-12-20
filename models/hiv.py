@@ -56,12 +56,12 @@ class Person(ma.MarkovAgent):
         """
     def __init__(self, name, infected, infection_length, initiative,
                  coupling_tendency, condom_use, test_frequency, commitment,
-                 coupled=False, coupled_length=0, known=False):
+                 coupled=False, coupled_length=0, known=False, partner=None):
         init_state = random.randint(0, 3)
         super().__init__(name, "wandering around", NSTATES, init_state)
         self.coupled = coupled
         self.couple_length = coupled_length
-        self.partner = None
+        self.partner = partner
         self.initiative = initiative
         self.infected = infected
         self.known = known
@@ -117,13 +117,15 @@ class Person(ma.MarkovAgent):
 
     def preact(self):
         # print(self.name, "is preacting")
+        self.update_ntype()
         if self.coupled is False:
             if 10 * random.random() < self.coupling_tendency:
                 self.couple()
+        if isinstance(self.partner, str):
+            self.partner = self.env.get_obj(self.partner)
         if self.coupled is True:
-            # update partner after restored
-            if self.partner is not None:
-                self.partner.partner = self
+            if isinstance(self.partner.partner, str):
+                self.partner.partner = self.env.get_obj(self.partner.partner)
             self.infect()
             self.partner.infect()
 
@@ -164,7 +166,6 @@ class Person(ma.MarkovAgent):
         if self.coupled is True:
             if (self.couple_length > self.commitment or
                     self.couple_length > self.partner.commitment):
-                # print(self.name, "has been uncoupled with", self.partner.name)
                 self.coupled = False
                 self.couple_length = 0
                 self.partner.coupled = False
@@ -182,14 +183,16 @@ class Person(ma.MarkovAgent):
         self.uncouple()
         self.update_ntype()
         # print(self.name, "has ntype", self.ntype)
-        
+
     def to_json(self):
         safe_fields = super().to_json()
         safe_fields["ntype"] = self.ntype
         safe_fields["coupled"] = self.coupled
         safe_fields["coupled_length"] = self.couple_length
         safe_fields["initiative"] = self.initiative
-        if self.partner:
+        if isinstance(self.partner, str):
+            safe_fields["partner"] = self.partner
+        elif self.partner:
             safe_fields["partner"] = self.partner.name
         else:
             safe_fields["partner"] = "None"
@@ -216,6 +219,13 @@ class People(menv.MarkovEnv):
     def get_pre(self, agent, n_census):
         return markov.MarkovPre(TRANS)
 
+    def get_obj(self, name):
+        result = None
+        for agent in self.agents:
+            if agent.name == name:
+                result = agent
+        return result
+
     def set_agent_color(self):
         self.set_var_color(NEG_NTYPE, disp.MAGENTA)
         self.set_var_color(POZ_NTYPE, disp.BLACK)
@@ -223,7 +233,7 @@ class People(menv.MarkovEnv):
         self.set_var_color(NEG_NTYPE_C, disp.GREEN)
         self.set_var_color(POZ_NTYPE_C, disp.BLUE)
         self.set_var_color(UKP_NTYPE_C, disp.RED)
-    
+
     def restore_agent(self, agent_json):
         new_agent = Person(name=agent_json["name"],
                            infected=agent_json["infected"],
@@ -235,5 +245,15 @@ class People(menv.MarkovEnv):
                            condom_use=agent_json["condom_use"],
                            coupled=agent_json["coupled"],
                            coupled_length=agent_json["coupled_length"],
-                           known=agent_json["known"])
+                           known=agent_json["known"],
+                           partner=agent_json["partner"])
         self.add_agent_to_grid(new_agent, agent_json)
+
+    def from_json(self, json_input):
+        super().from_json(json_input)
+        self.add_variety(NEG_NTYPE)
+        self.add_variety(POZ_NTYPE)
+        self.add_variety(UKP_NTYPE)
+        self.add_variety(NEG_NTYPE_C)
+        self.add_variety(POZ_NTYPE_C)
+        self.add_variety(UKP_NTYPE_C)
