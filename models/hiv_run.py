@@ -21,19 +21,14 @@ def run(prop_dict=None):
     if pa["user_type"] == props.WEB:
         pa["base_dir"] = os.environ["base_dir"]
 
-    '''
     grid_x = pa["grid_width"]
     grid_y = pa["grid_height"]
-    '''
-
     ini_ppl = pa["ini_ppl"]
     avg_coup_tend = pa["avg_coup_tend"]
     avg_test_freq = pa["avg_test_freq"]
     avg_commitment = pa["avg_commitment"]
     avg_condom_use = pa["avg_condom_use"]
 
-    grid_x = 20
-    grid_y = 20
     max_ppl = grid_x * grid_y
 
     if ini_ppl > max_ppl:
@@ -78,6 +73,7 @@ def run(prop_dict=None):
         new_agent = hiv.Person(name="person" + str(i),
                                infected=True,
                                infection_length=rand_inf_len,
+                               initiative=i,
                                coupling_tendency=coup_tend[i],
                                test_frequency=test_freq[i],
                                commitment=commitment[i],
@@ -86,6 +82,7 @@ def run(prop_dict=None):
     for i in range(ini_healthy_ppl):
         new_agent = hiv.Person(name="person" + str(ini_infected_ppl+i),
                                infected=False, infection_length=0,
+                               initiative=ini_infected_ppl+i,
                                coupling_tendency=coup_tend[ini_infected_ppl+i],
                                test_frequency=test_freq[ini_infected_ppl+i],
                                commitment=commitment[ini_infected_ppl+i],

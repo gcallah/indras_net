@@ -42,6 +42,8 @@ class Person(ma.MarkovAgent):
         coupled: boolean indicating if a person is coupled
         couple_length: int indicating how long this person has been coupled
         partner: pointing to the partner if coupled
+        initiative: int, only the person with smaller value takes initiative
+            to couple
         infected: boolean indicating if a person is infected with HIV
         known: boolean indicating if a person is aware of the HIV infection
         infection_length: int indicating how long this person has been
@@ -52,14 +54,15 @@ class Person(ma.MarkovAgent):
         commitment: how long sexual relationships lasts for this person
             (1-200)
         """
-    def __init__(self, name, infected, infection_length, coupling_tendency,
-                 condom_use, test_frequency, commitment, coupled=False,
-                 coupled_length=0, known=False):
+    def __init__(self, name, infected, infection_length, initiative,
+                 coupling_tendency, condom_use, test_frequency, commitment,
+                 coupled=False, coupled_length=0, known=False):
         init_state = random.randint(0, 3)
         super().__init__(name, "wandering around", NSTATES, init_state)
         self.coupled = coupled
         self.couple_length = coupled_length
         self.partner = None
+        self.initiative = initiative
         self.infected = infected
         self.known = known
         self.infection_length = infection_length
@@ -73,29 +76,29 @@ class Person(ma.MarkovAgent):
     def update_ntype(self):
         old_type = self.ntype
         if self.coupled is False:
-            if self.infected:
-                if self.known:
+            if self.infected is True:
+                if self.known is True:
                     self.ntype = POZ_NTYPE
                 else:
                     self.ntype = UKP_NTYPE
             else:
                 self.ntype = NEG_NTYPE
         else:
-            if self.infected:
-                if self.known:
+            if self.infected is True:
+                if self.known is True:
                     self.ntype = POZ_NTYPE_C
                 else:
                     self.ntype = UKP_NTYPE_C
             else:
                 self.ntype = NEG_NTYPE_C
-        if old_type is not 'Person':
+        if old_type is not 'Person' and self.ntype != old_type:
             self.env.change_agent_type(self, old_type, self.ntype)
         print(self.name, "has ntype", self.ntype)
 
     def couple(self):
         for person in self.neighbor_iter():
-            if person.coupled is False:
-                if random.randint(0, 10) < person.coupling_tendency:
+            if person.coupled is False and person.initiative > self.initiative:
+                if 10 * random.random() < person.coupling_tendency:
                     self.coupled = True
                     self.partner = person
                     person.coupled = True
@@ -106,9 +109,9 @@ class Person(ma.MarkovAgent):
     def infect(self):
         if (self.coupled is True and self.infected is True and
                 self.known is False and self.partner.infected is False):
-            if (random.randint(0, 10) > self.condom_use or
-                    random.randint(0, 10) > self.partner.condom_use):
-                if random.randint(0, 99) < INFECTION_CHANCE:
+            if (10 * random.random() > self.condom_use or
+                    10 * random.random() > self.partner.condom_use):
+                if 100 * random.random() < INFECTION_CHANCE:
                     self.partner.infected = True
                     print(self.name, "has infected", self.partner.name)
                 else:
@@ -119,8 +122,9 @@ class Person(ma.MarkovAgent):
                       "because they use condom")
 
     def preact(self):
+        # print(self.name, "is preacting")
         if self.coupled is False:
-            if random.randint(0, 10) < self.coupling_tendency:
+            if 10 * random.random() < self.coupling_tendency:
                 self.couple()
         if self.coupled is True:
             # update partner after restored
@@ -146,13 +150,14 @@ class Person(ma.MarkovAgent):
                 self.env.move(self, x+1, y)
 
     def act(self):
+        # print(self.name, "is acting")
         if self.coupled is False:
             super().act()
             self.state = self.next_state
             self.move(self.state)
 
     def test(self):
-        if (random.randint(0, 4) < self.test_frequency and
+        if (2 * random.random() < self.test_frequency and
                 self.infected is True and self.known is False):
             self.known = True
             print(self.name, "has been tested positive")
@@ -174,20 +179,22 @@ class Person(ma.MarkovAgent):
                 self.partner = None
 
     def postact(self):
+        print(self.name, "is postacting")
         if self.infected is True:
             self.infection_length += 1
-            if self.coupled is True:
-                self.couple_length += 1
+        if self.coupled is True:
+            self.couple_length += 1
         self.test()
         self.uncouple()
         self.update_ntype()
         # print(self.name, "has ntype", self.ntype)
-
+        
     def to_json(self):
         safe_fields = super().to_json()
         safe_fields["ntype"] = self.ntype
         safe_fields["coupled"] = self.coupled
         safe_fields["coupled_length"] = self.couple_length
+        safe_fields["initiative"] = self.initiative
         if self.partner:
             safe_fields["partner"] = self.partner.name
         else:
@@ -219,6 +226,7 @@ class People(menv.MarkovEnv):
         new_agent = Person(name=agent_json["name"],
                            infected=agent_json["infected"],
                            infection_length=agent_json["infection_length"],
+                           initiative=agent_json["initiative"],
                            coupling_tendency=agent_json["coupling_tendency"],
                            test_frequency=agent_json["test_frequency"],
                            commitment=agent_json["commitment"],
