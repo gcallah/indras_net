@@ -9,7 +9,7 @@ import numpy
 import indra.utils as utils
 import models.hiv as hiv
 
-MODEL_NM = "HIV"
+MODEL_NM = "hiv"
 INI_INFECTED_PCT = .025
 STD_COUP_TEND = 1
 STD_TEST_FREQ = 0.2
