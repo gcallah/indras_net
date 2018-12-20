@@ -341,7 +341,6 @@ class BasicTestCase(TestCase):
 
         os.remove(path)
         f.close()
-        # os.remove("HIV.log")
         
         self.assertEqual(report, True)
 

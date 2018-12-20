@@ -1,5 +1,4 @@
 {
   "test/model_test/test_forestfire.py::BasicTestCase": true,
-  "test/model_test/test_forestfire.py::TestCase": true,
-  "test/model_test/test_hiv.py::BasicTestCase::test_examine_log": true
+  "test/model_test/test_forestfire.py::TestCase": true
 }
