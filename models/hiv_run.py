@@ -11,6 +11,10 @@ import models.hiv as hiv
 
 MODEL_NM = "HIV"
 INI_INFECTED_PCT = .025
+STD_COUP_TEND = 1
+STD_TEST_FREQ = 0.2
+STD_COMMITMENT = 20
+STD_CONDOM_USE = 1
 
 
 def run(prop_dict=None):
@@ -43,10 +47,10 @@ def run(prop_dict=None):
     # print("initial infected people:", ini_infected_ppl)
     # print("initial healthy people:", ini_healthy_ppl)
 
-    coup_tend = numpy.random.normal(avg_coup_tend, 1, ini_ppl)
-    test_freq = numpy.random.normal(avg_test_freq, 0.2, ini_ppl)
-    commitment = numpy.random.normal(avg_commitment, 20, ini_ppl)
-    condom_use = numpy.random.normal(avg_condom_use, 1, ini_ppl)
+    coup_tend = numpy.random.normal(avg_coup_tend, STD_COUP_TEND, ini_ppl)
+    test_freq = numpy.random.normal(avg_test_freq, STD_TEST_FREQ, ini_ppl)
+    commitment = numpy.random.normal(avg_commitment, STD_COMMITMENT, ini_ppl)
+    condom_use = numpy.random.normal(avg_condom_use, STD_CONDOM_USE, ini_ppl)
     for i in range(ini_ppl):
         if coup_tend[i] < 0:
             coup_tend[i] = 0
