@@ -137,7 +137,7 @@ class LineGraph():
             break
         self.draw_graph(data_points, varieties)
         self.headless = is_headless
-        
+
         if anim and not self.headless:
             anim_func = animation.FuncAnimation(self.fig,
                                     self.update_plot,
@@ -173,7 +173,7 @@ class LineGraph():
         if not self.headless:
             plt.show()
         else:
-            file = io.BytesIO()  
+            file = io.BytesIO()
             plt.savefig(file, format="png")
             return file
 
@@ -220,7 +220,7 @@ class ScatterPlot():
         self.data_func = data_func
         self.s = ceil(4096 / width)
         self.headless = is_headless
-        
+
         fig, ax = plt.subplots()
         ax.set_xlim(0, width)
         ax.set_ylim(0, height)
@@ -243,7 +243,7 @@ class ScatterPlot():
         if not self.headless:
             plt.show()
         else:
-            file = io.BytesIO()  
+            file = io.BytesIO()
             plt.savefig(file, format="png")
             return file
 
