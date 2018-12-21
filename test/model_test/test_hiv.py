@@ -2,13 +2,16 @@
 
 from unittest import TestCase, main
 import sys
-import indra.user as user
 import random
 from collections import deque
 import indra.prop_args2 as props
 import json
 import models.hiv as hiv
-from models.hiv_run import *
+from models.hiv_run import INI_INFECTED_PCT
+from models.hiv_run import STD_COUP_TEND
+from models.hiv_run import STD_TEST_FREQ
+from models.hiv_run import STD_COMMITMENT
+from models.hiv_run import STD_CONDOM_USE
 import os
 from datetime import date
 import numpy
@@ -85,13 +88,14 @@ class BasicTestCase(TestCase):
                                    condom_use=self.condom_use[i])
             self.env.add_agent(new_agent)
         for i in range(self.ini_healthy_ppl):
-            new_agent = hiv.Person(name="person" + str(self.ini_infected_ppl+i),
+            j = self.ini_infected_ppl+i
+            new_agent = hiv.Person(name="person"+str(j),
                                    infected=False, infection_length=0,
-                                   initiative=self.ini_infected_ppl+i,
-                                   coupling_tendency=self.coup_tend[self.ini_infected_ppl+i],
-                                   test_frequency=self.test_freq[self.ini_infected_ppl+i],
-                                   commitment=self.commitment[self.ini_infected_ppl+i],
-                                   condom_use=self.condom_use[self.ini_infected_ppl+i])
+                                   initiative=j,
+                                   coupling_tendency=self.coup_tend[j],
+                                   test_frequency=self.test_freq[j],
+                                   commitment=self.commitment[j],
+                                   condom_use=self.condom_use[j])
             self.env.add_agent(new_agent)
 
     def test_agent_inspect(self):
@@ -118,15 +122,15 @@ class BasicTestCase(TestCase):
             props_written = json.load(f)
         if len(props_written) != len(self.env.props.props):
             report = False
-        if report == True:
+        if report:
             for key in props_written:
                 if key not in self.env.props.props:
                     report = False
                     break
-                else:
-                    if props_written[key]["val"] != self.env.props.props[key].val:
-                        report = False
-                        break
+                elif (props_written[key]["val"] !=
+                      self.env.props.props[key].val):
+                    report = False
+                    break
         f.close()
         os.remove(self.env.model_nm + ".props")
         self.assertEqual(report, True)
@@ -166,21 +170,21 @@ class BasicTestCase(TestCase):
             if i not in dic_for_reference:
                 report = False
                 break
-        if report == True:
+        if report:
             dic_for_check = {}
             for i in head_list:
                 dic_for_check[i] = []
             for line in f:
                 line = line.strip("\n")
                 line_list = line.split(",")
-                if len(line_list)==len(head_list):
+                if len(line_list) == len(head_list):
                     for i in range(len(line_list)):
                         dic_for_check[head_list[i]].append(int(line_list[i]))
                 else:
                     report = False
                     break
 
-        if report == True:
+        if report:
             if len(dic_for_check) != len(dic_for_reference):
                 report = False
             if report is True:
@@ -201,12 +205,12 @@ class BasicTestCase(TestCase):
         sys.stdout.close()
         sys.stdout = orig_out
         f = open("checkfile.txt", "r")
-        line1 = f.readline()
-        
+        f.readline()
+
         for agent in self.env.agents:
             line = f.readline()
             line_list = line.split(" with a goal of ")
-            
+
             line_list[1] = line_list[1].strip()
             if agent.name != line_list[0] or agent.goal != line_list[1]:
                 report = False
@@ -236,7 +240,7 @@ class BasicTestCase(TestCase):
                     line_list[0] = line_list[0].strip()
                     line_list[1] = line_list[1].strip()
                     dic_for_check[line_list[0]] = line_list[1]
-        
+
             for key in self.env.props.props:
                 if str(self.env.props.props[key]) != dic_for_check[key]:
                     report = False
@@ -249,7 +253,7 @@ class BasicTestCase(TestCase):
         report = True
         logfile_name = self.env.props.props["log_fname"].val
         list_for_reference = deque(maxlen=16)
-        
+
         with open(logfile_name, 'rt') as log:
             for line in log:
                 list_for_reference.append(line)
@@ -263,7 +267,7 @@ class BasicTestCase(TestCase):
         first_line = first_line.split(" ")
         if logfile_name != first_line[-1]:
             report = False
-        if report == True:
+        if report:
             for i, line in enumerate(f):
                 if list_for_reference[i] != line:
                     report = False
@@ -281,8 +285,9 @@ class BasicTestCase(TestCase):
         except:
             base_dir = ""
         self.env.save_session(rand_sess_id)
-        
-        path = base_dir + "json/" + self.env.model_nm + str(rand_sess_id) + ".json"
+
+        path = (base_dir + "json/" + self.env.model_nm +
+                str(rand_sess_id) + ".json")
         with open(path, "r") as f:
             json_input = f.readline()
             json_input_dic = json.loads(json_input)
@@ -304,7 +309,7 @@ class BasicTestCase(TestCase):
 
         f.close()
         os.remove(path)
-        
+
         self.assertEqual(report, True)
 
     def test_restore_session(self):
@@ -316,10 +321,11 @@ class BasicTestCase(TestCase):
         except:
             base_dir = ""
         self.env.save_session(rand_sess_id)
-        self.env.n_steps(random.randint(1,10))
+        self.env.n_steps(random.randint(1, 10))
         self.env.restore_session(rand_sess_id)
-        
-        path = base_dir + "json/" + self.env.model_nm + str(rand_sess_id) + ".json"
+
+        path = (base_dir + "json/" + self.env.model_nm +
+                str(rand_sess_id) + ".json")
         with open(path, "r") as f:
             json_input = f.readline()
         json_input_dic = json.loads(json_input)
@@ -341,7 +347,7 @@ class BasicTestCase(TestCase):
 
         os.remove(path)
         f.close()
-        
+
         self.assertEqual(report, True)
 
 

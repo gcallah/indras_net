@@ -3,11 +3,8 @@
     This file runs the hiv model
     """
 import indra.prop_args2 as props
-import os
 import random
 import numpy
-import indra.utils as utils
-import models.hiv as hiv
 
 MODEL_NM = "hiv"
 INI_INFECTED_PCT = .025
@@ -19,11 +16,10 @@ STD_CONDOM_USE = 1
 
 def run(prop_dict=None):
     pa = props.PropArgs.create_props(MODEL_NM, prop_dict)
+    import indra.utils as utils
+    import models.hiv as hiv
     (prog_file, log_file, prop_file,
      results_file) = utils.gen_file_names(MODEL_NM)
-
-    if pa["user_type"] == props.WEB:
-        pa["base_dir"] = os.environ["base_dir"]
 
     grid_x = pa["grid_width"]
     grid_y = pa["grid_height"]
