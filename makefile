@@ -42,7 +42,9 @@ db: $(DJANGO_DIR)/models.py
 container: $(DOCKER_DIR)/Dockerfile  $(DOCKER_DIR)/requirements.txt
 	docker build -t indra docker
 
-repo:
-	-git commit -a
-	git pull origin master
-	git push origin master
+nocrud:
+	-rm *~
+	-rm *.log
+	-rm *.out
+	-rm .*swp
+	-rm *.csv
