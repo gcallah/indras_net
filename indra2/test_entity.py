@@ -2,6 +2,8 @@
 This is the test suite for entity.py.
 """
 
+import json
+
 from unittest import TestCase, main
 
 from entity import Entity, NAME_ID, SEP
@@ -22,12 +24,11 @@ class EntityTestCase(TestCase):
 
     def test_repr(self):
         name = "Hardy"
-        rep = NAME_ID + SEP + name + '\n'
         age_nm = "age"
         age = 141.0
         attrs = {age_nm: age}
-        rep += age_nm + SEP + str(age) + '\n'
         ent = Entity(name, attrs)
+        rep = '{"name": "Hardy", "attrs": {"age": 141.0}}'
         self.assertEqual(rep, repr(ent))
 
     def test_len(self):
@@ -44,6 +45,11 @@ class EntityTestCase(TestCase):
         ent = create_leibniz()
         ent["time"] = leibdyear
         self.assertEqual(ent["time"], leibdyear)
+
+    def test_contains(self):
+        ent = create_leibniz()
+        s = "place"
+        return ent[s]
 
 if __name__ == '__main__':
     main()

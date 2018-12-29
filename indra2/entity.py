@@ -3,6 +3,7 @@ Entity will be the base class for all "things"
 in the Indra world.
 It's most basic appearance is as a vector.
 """
+import json
 
 NAME_ID = 'Name'
 SEP = ': '
@@ -21,10 +22,7 @@ class Entity:
         return self.name
 
     def __repr__(self):
-        rep = NAME_ID + SEP + self.name + '\n'
-        for attr in self.attrs:
-            rep += attr + SEP + str(self.attrs[attr]) + '\n'
-        return rep
+        return json.dumps(self.to_json())
 
     def __len__(self):
         return len(self.attrs)
@@ -34,3 +32,6 @@ class Entity:
 
     def __setitem__(self, key, value):
         self.attrs[key] = value
+
+    def to_json(self):
+        return {"name": self.name, "attrs": self.attrs}
