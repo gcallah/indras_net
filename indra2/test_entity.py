@@ -16,7 +16,26 @@ def create_leibniz():
     attrs = {"place": 0.0, "time": leibbyear}
     return Entity(name, attrs)
 
+def create_other_leibniz():
+    name = "Leibniz"
+    attrs = {"place": 1.0, "time": leibbyear}
+    return Entity(name, attrs)
+
+def create_newton():
+    name = "Newton"
+    attrs = {"place": 0.0, "time": 1658.0, "achieve": 43.9}
+    return Entity(name, attrs)
+
 class EntityTestCase(TestCase):
+    def test_eq(self):
+        l1 = create_leibniz()
+        l2 = create_leibniz()
+        l3 = create_other_leibniz()
+        n = create_newton()
+        self.assertEqual(l1, l2)
+        self.assertNotEqual(l1, n)
+        self.assertNotEqual(l1, l3)
+
     def test_str(self):
         name = "Ramanujan"
         ent = Entity(name)
@@ -32,10 +51,8 @@ class EntityTestCase(TestCase):
         self.assertEqual(rep, repr(ent))
 
     def test_len(self):
-        name = "Newton"
-        attrs = {"place": 0.0, "time": 1658.0}
-        ent = Entity(name, attrs)
-        self.assertEqual(len(ent), 2)
+        ent = create_newton()
+        self.assertEqual(len(ent), 3)
 
     def test_get(self):
         ent = create_leibniz()
@@ -49,7 +66,14 @@ class EntityTestCase(TestCase):
     def test_contains(self):
         ent = create_leibniz()
         s = "place"
-        return ent[s]
+        self.assertTrue(s in ent)
+
+    def test_enttype(self):
+        l1 = create_leibniz()
+        l2 = create_other_leibniz()
+        n = create_newton()
+        self.assertTrue(l1.same_type(l2))
+        self.assertFalse(l1.same_type(n))
 
 if __name__ == '__main__':
     main()
