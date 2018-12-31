@@ -55,7 +55,10 @@ class Entity:
         return self.attrs[key]
 
     def __setitem__(self, key, value):
+        rehash = False if key in self.attrs else True
         self.attrs[key] = value
+        if rehash:
+            self.type_sig = type_hash(self.attrs)
 
     def __contains__(self, item):
         return item in self.attrs

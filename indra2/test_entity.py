@@ -35,6 +35,9 @@ class EntityTestCase(TestCase):
         self.assertEqual(l1, l2)
         self.assertNotEqual(l1, n)
         self.assertNotEqual(l1, l3)
+        # add a field and see that they aren't equal:
+        l2["derivatives"] = 1.0
+        self.assertNotEqual(l1, l2)
 
     def test_str(self):
         name = "Ramanujan"
