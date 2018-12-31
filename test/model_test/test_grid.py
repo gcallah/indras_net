@@ -30,7 +30,7 @@ def announce(name):
 
 # make sure to run test file from root directory!
 class BasicTestCase(TestCase):
-    def __init__(self, methodName, prop_file="models/coop_for_test.props"):
+    def __init__(self, methodName, prop_file="models/grid_for_test.props"):
         super().__init__(methodName=methodName)
 
         self.pa = props.read_props(MODEL_NM, prop_file)

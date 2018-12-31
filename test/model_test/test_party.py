@@ -12,13 +12,12 @@ import indra.user as user
 import random
 from collections import deque
 
-MODEL_NM = "gridang"
+MODEL_NM = "party"
 
 import indra.prop_args2 as props
 
 import json
-import indra.grid_env as ge
-import models.grid as gm
+import models.party as pm
 import os
 from datetime import date
 
@@ -30,44 +29,53 @@ def announce(name):
 
 # make sure to run test file from root directory!
 class BasicTestCase(TestCase):
-    def __init__(self, methodName, prop_file="models/gridang_for_test.props"):
+    def __init__(self, methodName, prop_file="models/party_for_test.props"):
         super().__init__(methodName=methodName)
 
         self.pa = props.read_props(MODEL_NM, prop_file)
 
         # Now we create a forest environment for our agents to act within:
         if self.pa["user_type"] == props.WEB:
-            self.pa["base_dir"] = os.environ["base_dir"]
+            self.pa["base_dir"] = os.environ['base_dir']
 
-        # Now we create a minimal environment for our agents to act within:
-        self.env = ge.GridEnv("Test grid env",
-                         self.pa["grid_width"],
-                         self.pa["grid_height"],
-                         torus=False,
-                         model_nm=MODEL_NM,
-                         preact=True,
-                         postact=True,
-                         props=self.pa)
+        # Now we create an environment for our agents to act within:
+        self.env = pm.PartyEnv("A cocktail party",
+                          self.pa["grid_width"],
+                          self.pa["grid_height"],
+                          model_nm=self.pa.model_nm,
+                          props=self.pa)
 
-        for i in range(self.pa["num_agents"]):
-            self.env.add_agent(gm.TestGridAgent(name="agent" + str(i),
-                                           goal="taking up a grid space!"))
+        for i in range(self.pa["num_men"]):
+            self.env.add_agent(pm.Man(name="Man" + str(i),
+                                 goal="A good party.",
+                                 tol=0.5,
+                                 max_detect=self.pa['max_detect']))
 
-        self.env.add_agent(gm.TestGridAgent(name="agent for tracking",
-                                       goal="taking up a grid space!"))
+        for i in range(self.pa["num_women"]):
+            self.env.add_agent(pm.Woman(name="Woman" + str(i),
+                                   goal="A good party.",
+                                   tol=0.5,
+                                   max_detect=self.pa['max_detect']))
+
+        self.env.add_agent(pm.Woman(name="Woman for tracking",
+                                         goal="A good party.",
+                                         tol=0.5,
+                                         max_detect=self.pa['max_detect']))
 
     def test_agent_inspect(self):
         announce('test_agent_inspect')
-        agent = self.env.agent_inspect("agent for tracking")
-        self.assertEqual(agent.name, "agent for tracking")
+        agent = self.env.agent_inspect("Woman for tracking")
+        self.assertEqual(agent.name, "Woman for tracking")
 
     def test_add_agent(self):
         announce('test_add_agent')
-        self.env.add_agent(gm.TestGridAgent(name="new added agent",
-                                            goal="taking up a grid space!"))
+        self.env.add_agent(pm.Woman(name="new added Woman",
+                                         goal="A good party.",
+                                         tol=0.5,
+                                         max_detect=self.pa['max_detect']))
         # test if the add worked!
         # test by running
-        new_agent = self.env.agent_inspect("new added agent")
+        new_agent = self.env.agent_inspect("new added Woman")
         self.assertIsNotNone(new_agent)
 
     def test_props_write(self):
@@ -327,7 +335,7 @@ class BasicTestCase(TestCase):
 
         os.remove(path)
         f.close()
-        os.remove("gridang.log")
+        os.remove("party.log")
 
         self.assertEqual(report, True)
 
