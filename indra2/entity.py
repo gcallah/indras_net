@@ -75,8 +75,11 @@ class Entity(object):
         We are just going to randomly alter the vector
         in the base class, to make sure something happens!
         """
-        scalar = uniform(LOW_RAND, HI_RAND)
+        self *= uniform(LOW_RAND, HI_RAND)
+
+    def __imul__(self, scalar):
         self.val_vect *= scalar
+        return self
 
     def attrs_to_dict(self):
         d = OrderedDict()

@@ -7,10 +7,12 @@ import json
 
 from unittest import TestCase, main
 
-from entity import Entity, NAME_ID, SEP
+from entity import Entity
 
 leibbyear = 1646
 leibdyear = 1716
+ANM = "age"
+AGE = 141.0
 
 def create_leibniz():
     name = "Leibniz"
@@ -25,6 +27,11 @@ def create_other_leibniz():
 def create_newton():
     name = "Newton"
     attrs = {"place": 0.0, "time": 1658.0, "achieve": 43.9}
+    return Entity(name, attrs)
+
+def create_hardy():
+    name = "Hardy"
+    attrs = {ANM: AGE}
     return Entity(name, attrs)
 
 class EntityTestCase(TestCase):
@@ -46,12 +53,8 @@ class EntityTestCase(TestCase):
         self.assertEqual(name, str(ent))
 
     def test_repr(self):
-        name = "Hardy"
-        anm = "age"
-        age = 141.0
-        attrs = {anm: age}
-        ent = Entity(name, attrs)
-        rep = '{"name": "Hardy", "attrs": {"' + anm + '": ' + str(age) + '}}'
+        ent = create_hardy()
+        rep = '{"name": "Hardy", "attrs": {"' + ANM + '": ' + str(AGE) + '}}'
         self.assertEqual(rep, repr(ent))
 
     def test_len(self):
@@ -92,6 +95,11 @@ class EntityTestCase(TestCase):
         for attr in reversed(l1):
             s += attr
         self.assertEqual(s, "timeplace")
+
+    def test_imul(self):
+        h = create_hardy()
+        h *= 2.0
+        self.assertEqual(h[ANM], AGE * 2.0)
 
 if __name__ == '__main__':
     main()
