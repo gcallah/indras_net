@@ -101,5 +101,24 @@ class EntityTestCase(TestCase):
         h *= 2.0
         self.assertEqual(h[ANM], AGE * 2.0)
 
+    def test_iadd(self):
+        h = create_hardy()
+        h += 2.0
+        self.assertEqual(h[ANM], AGE + 2.0)
+
+    def test_isub(self):
+        h = create_hardy()
+        h -= 2.0
+        self.assertEqual(h[ANM], AGE - 2.0)
+
+    def test_magnitude(self):
+        h = create_hardy()
+        self.assertEqual(h.magnitude(), AGE)
+
+    def test_sum(self):
+        n = create_newton()
+        tsum = sum(n[k] for k in n)
+        self.assertAlmostEqual(n.sum(), 1701.9)
+
 if __name__ == '__main__':
     main()

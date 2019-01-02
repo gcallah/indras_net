@@ -77,9 +77,28 @@ class Entity(object):
         """
         self *= uniform(LOW_RAND, HI_RAND)
 
+    def __iadd__(self, scalar):
+        self.val_vect += scalar
+        return self
+
+    def __isub__(self, scalar):
+        self.val_vect -= scalar
+        return self
+
     def __imul__(self, scalar):
         self.val_vect *= scalar
         return self
+
+# numpy doesn't implement this! must investigage.
+#    def __idiv__(self, scalar):
+#        self.val_vect /= scalar
+#        return self
+
+    def magnitude(self):
+        return np.linalg.norm(self.val_vect)
+
+    def sum(self):
+        return self.val_vect.sum()
 
     def attrs_to_dict(self):
         d = OrderedDict()
