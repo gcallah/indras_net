@@ -3,10 +3,11 @@ This file defines an Entity.
 """
 import numpy as np
 import json
+from random import uniform
 from collections import OrderedDict
 
-NAME_ID = 'Name'
-SEP = ': '
+LOW_RAND = .666
+HI_RAND = 1.5
 
 empty_dict = OrderedDict()
 
@@ -19,7 +20,7 @@ def type_hash(attrs):
     return len(attrs)  # temp solution!
 
 
-class Entity:
+class Entity(object):
     """
     This is the base class of all agents, environments,
     and objects contained in an environment.
@@ -30,17 +31,14 @@ class Entity:
 
     def __init__(self, name, attrs=empty_dict):
         self.name = name
-        self.attrs = empty_dict
+        self.attrs = OrderedDict()
         for i, (k, v) in enumerate(attrs.items()):
             self.attrs[k] = i  # store index into np.array!
         self.val_vect = np.array(list(attrs.values()))
-        print("Val vect:")
-        print(self.val_vect)
         self.type_sig = type_hash(attrs)
 
     def __eq__(self, other):
         if self.type_sig != other.type_sig:
-            print("Failing because type sigs are diff.")
             return False
         else:
             return np.array_equal(self.val_vect, other.val_vect)
@@ -64,6 +62,21 @@ class Entity:
 
     def __contains__(self, item):
         return item in self.attrs
+
+    def __iter__(self):
+        return iter(self.attrs)
+
+    def __reversed__(self):
+        return reversed(self.attrs)
+
+    def __call__(self):
+        """
+        Entities will 'act' by being called as a function.
+        We are just going to randomly alter the vector
+        in the base class, to make sure something happens!
+        """
+        scalar = uniform(LOW_RAND, HI_RAND)
+        self.val_vect *= scalar
 
     def attrs_to_dict(self):
         d = OrderedDict()

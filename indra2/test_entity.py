@@ -34,11 +34,11 @@ class EntityTestCase(TestCase):
         l3 = create_other_leibniz()
         n = create_newton()
         self.assertTrue(l1 == l2)
-        # self.assertNotEqual(l1, n)
-        # self.assertNotEqual(l1, l3)
+        self.assertNotEqual(l1, n)
+        self.assertNotEqual(l1, l3)
         # change a field and see that they aren't equal:
         l2["place"] = 1.0
-        # self.assertNotEqual(l1, l2)
+        self.assertNotEqual(l1, l2)
 
     def test_str(self):
         name = "Ramanujan"
@@ -78,6 +78,20 @@ class EntityTestCase(TestCase):
         n = create_newton()
         self.assertTrue(l1.same_type(l2))
         self.assertFalse(l1.same_type(n))
+
+    def test_iter(self):
+        l1 = create_leibniz()
+        s = ''
+        for attr in l1:
+            s += attr
+        self.assertEqual(s, "placetime")
+
+    def test_reversed(self):
+        l1 = create_leibniz()
+        s = ''
+        for attr in reversed(l1):
+            s += attr
+        self.assertEqual(s, "timeplace")
 
 if __name__ == '__main__':
     main()
