@@ -10,7 +10,7 @@ from unittest import TestCase, main
 
 from composite import Composite
 from test_entity import create_hardy, create_newton, create_leibniz
-from test_entity import create_ramanujan
+from test_entity import create_ramanujan, create_littlewood
 
 def create_calcguys():
     n = create_newton()
@@ -32,7 +32,9 @@ def create_mathguys():
 
 class CompositeTestCase(TestCase):
     def test_eq(self):
-        pass
+        calc1 = create_calcguys()
+        camb = create_cambguys()
+        # self.assertEqual(calc1, calc1)
 
     def test_str(self):
         name = "Ramanujan"
@@ -44,16 +46,17 @@ class CompositeTestCase(TestCase):
         pass
 
     def test_len(self):
-        # self.assertEqual(len(ent), 3)
-        pass
+        camb = create_cambguys()
+        self.assertEqual(len(camb), 2)
 
     def test_get(self):
-        # self.assertEqual(ent["time"], leibbyear)
-        pass
+        camb = create_cambguys()
+        self.assertEqual(camb["Hardy"], create_hardy())
 
     def test_set(self):
-        # self.assertEqual(ent["time"], leibdyear)
-        pass
+        camb = create_cambguys()
+        camb["jel"] = create_littlewood()
+        self.assertEqual(camb["jel"], create_littlewood())
 
     def test_contains(self):
         # self.assertTrue(s in ent)

@@ -7,7 +7,7 @@ import json
 from random import uniform
 from collections import OrderedDict
 
-from entity import Entity, empty_dict
+from entity import Entity, empty_dict, EntEncoder
 
 
 class Composite(Entity):
@@ -25,14 +25,29 @@ class Composite(Entity):
             self.members = members
         super().__init__(name, attrs=attrs)
 
+    def __repr__(self):
+        return json.dumps(self.to_json(), cls=EntEncoder)
+
     def __eq__(self, other):
         if self.type_sig != other.type_sig:
             return False
         else:
+            for m in self.members:
+                if m not in other:
+                    return False
+                else:
+                    if self.members[m] != other[m]:
+                        return False
             return True
 
     def __len__(self):
         return len(self.members)
+
+    def __getitem__(self, key):
+        return self.members[key]
+
+    def __setitem__(self, key, member):
+        self.members[key] = member
 
     def __iter__(self):
         return iter(self.members)
@@ -73,5 +88,4 @@ class Composite(Entity):
 
     def to_json(self):
         return {"name": self.name, "attrs": self.attrs_to_dict(),
-                "members": [member.to_json()
-                            for member in self.members.values()]}
+                "members": self.members}

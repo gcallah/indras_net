@@ -20,6 +20,14 @@ def type_hash(ent):
     return len(ent)  # temp solution!
 
 
+class EntEncoder(json.JSONEncoder):
+    def default(self, o):
+        if hasattr(o,'to_json'):
+            return o.to_json()
+        else:
+            return json.JSONEncoder.default(self, o)
+
+
 class Entity(object):
     """
     This is the base class of all agents, environments,
