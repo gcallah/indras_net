@@ -12,12 +12,12 @@ HI_RAND = 1.5
 empty_dict = OrderedDict()
 
 
-def type_hash(attrs):
+def type_hash(ent):
     """
     type_hash() will return an ID that identifies
     the ABM type of an entity.
     """
-    return len(attrs)  # temp solution!
+    return len(ent)  # temp solution!
 
 
 class Entity(object):
@@ -35,7 +35,7 @@ class Entity(object):
         for i, (k, v) in enumerate(attrs.items()):
             self.attrs[k] = i  # store index into np.array!
         self.val_vect = np.array(list(attrs.values()))
-        self.type_sig = type_hash(attrs)
+        self.type_sig = type_hash(self)
 
     def __eq__(self, other):
         if self.type_sig != other.type_sig:
@@ -75,6 +75,7 @@ class Entity(object):
         We are just going to randomly alter the vector
         in the base class, to make sure something happens!
         """
+        print(self.name + " is acting!")
         self *= uniform(LOW_RAND, HI_RAND)
 
     def __iadd__(self, scalar):

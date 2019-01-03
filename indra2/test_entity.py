@@ -34,6 +34,10 @@ def create_hardy():
     attrs = {ANM: AGE}
     return Entity(name, attrs)
 
+def create_ramanujan():
+    name = "Ramanujan"
+    return Entity(name)
+
 class EntityTestCase(TestCase):
     def test_eq(self):
         l1 = create_leibniz()
@@ -48,8 +52,7 @@ class EntityTestCase(TestCase):
         self.assertNotEqual(l1, l2)
 
     def test_str(self):
-        name = "Ramanujan"
-        ent = Entity(name)
+        ent = create_ramanujan()
         self.assertEqual(name, str(ent))
 
     def test_repr(self):

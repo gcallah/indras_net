@@ -20,8 +20,10 @@ class Composite(Entity):
     """
 
     def __init__(self, name, attrs=empty_dict, members=None):
+        self.members = OrderedDict()
+        if members is not None:
+            self.members = members
         super().__init__(name, attrs=attrs)
-        self.members = [] if members is None else members
 
     def __eq__(self, other):
         if self.type_sig != other.type_sig:
@@ -40,18 +42,26 @@ class Composite(Entity):
 
     def __call__(self):
         """
+        Call the members' functions.
+        Later, this will just call agents' funcs.
         """
-        for member in self.members:
+        for member in self.members.values():
             member()
 
     def __iadd__(self, scalar):
-        pass
+        for member in self.members.values():
+            member += scalar
+        return self
 
     def __isub__(self, scalar):
-        pass
+        for member in self.members.values():
+            member -= scalar
+        return self
 
     def __imul__(self, scalar):
-        pass
+        for member in self.members.values():
+            member *= scalar
+        return self
 
 # numpy doesn't implement this! must investigage.
 #    def __idiv__(self, scalar):
@@ -63,4 +73,5 @@ class Composite(Entity):
 
     def to_json(self):
         return {"name": self.name, "attrs": self.attrs_to_dict(),
-                "members": self.members}
+                "members": [member.to_json()
+                            for member in self.members.values()]}
