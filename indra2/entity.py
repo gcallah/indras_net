@@ -46,7 +46,8 @@ class Entity(object):
         self.type_sig = type_hash(self)
 
     def __eq__(self, other):
-        if self.type_sig != other.type_sig:
+        if (type(self) != type(other)
+            or self.type_sig != other.type_sig):
             return False
         else:
             return np.array_equal(self.val_vect, other.val_vect)

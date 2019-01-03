@@ -34,7 +34,8 @@ class CompositeTestCase(TestCase):
     def test_eq(self):
         calc1 = create_calcguys()
         camb = create_cambguys()
-        # self.assertEqual(calc1, calc1)
+        print("calc1 = " + calc1.__repr__())
+        self.assertEqual(calc1, calc1)
 
     def test_str(self):
         name = "Ramanujan"
@@ -59,8 +60,8 @@ class CompositeTestCase(TestCase):
         self.assertEqual(camb["jel"], create_littlewood())
 
     def test_contains(self):
-        # self.assertTrue(s in ent)
-        pass
+        camb = create_cambguys()
+        self.assertTrue("Hardy" in camb)
 
     def test_enttype(self):
         # self.assertTrue(l1.same_type(l2))

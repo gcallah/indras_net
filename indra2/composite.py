@@ -29,16 +29,16 @@ class Composite(Entity):
         return json.dumps(self.to_json(), cls=EntEncoder)
 
     def __eq__(self, other):
-        if self.type_sig != other.type_sig:
+        if not super().__eq__(other):
             return False
-        else:
-            for m in self.members:
-                if m not in other:
+        # now check the unique fields here:
+        for m in self:
+            if m not in other:
+                return False
+            else:
+                if self[m] != other[m]:
                     return False
-                else:
-                    if self.members[m] != other[m]:
-                        return False
-            return True
+        return True
 
     def __len__(self):
         return len(self.members)
@@ -48,6 +48,9 @@ class Composite(Entity):
 
     def __setitem__(self, key, member):
         self.members[key] = member
+
+    def __contains__(self, item):
+        return item in self.members
 
     def __iter__(self):
         return iter(self.members)
