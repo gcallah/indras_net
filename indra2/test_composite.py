@@ -80,6 +80,15 @@ class CompositeTestCase(TestCase):
         # self.assertEqual(h[ANM], AGE * 2.0)
         pass
 
+    def test_add(self):
+        calc = create_calcguys()
+        camb = create_cambguys()
+        mathguys = calc + camb
+        for mathwiz in mathguys:
+            if mathwiz not in calc and mathwiz not in camb:
+                return self.assertTrue(False)
+        self.assertTrue(True)
+
     def test_iadd(self):
         # self.assertEqual(h[ANM], AGE + 2.0)
         pass
