@@ -70,9 +70,15 @@ class Composite(Entity):
         new_dict.update(other.members)
         return Composite("new group", members=new_dict)
 
-    def __iadd__(self, scalar):
-        for member in self.members.values():
-            member += scalar
+    def __sub__(self, other):
+        new_dict = OrderedDict()
+        new_dict.update(self.members)
+        for mem in other.members:
+            new_dict.__delitem__(mem)
+        return Composite("new group", members=new_dict)
+
+    def __iadd__(self, other):
+        self.members.update(other.members)
         return self
 
     def __isub__(self, scalar):

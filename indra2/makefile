@@ -1,16 +1,18 @@
 PYLINT = flake8
-PYLINTFLAGS = 
+PYLINTFLAGS = --ignore=E741,W503
 PYTHONFILES = $(shell ls *.py)
 
 prod: test
 	git commit -a
 	git push origin master
 
-test: lint
+lint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
+
+pytest: $(PYTHONFILES)
 	python3 ./test_entity.py
 	python3 ./test_composite.py
 
-lint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
+test: lint pytest
 
 %.pylint:
 	$(PYLINT) $(PYLINTFLAGS) $*.py

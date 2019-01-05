@@ -2,6 +2,7 @@
 This is the test suite for entity.py.
 """
 
+from unittest import TestCase, main
 
 from entity import Entity
 
@@ -10,27 +11,37 @@ leibdyear = 1716
 ANM = "age"
 AGE = 141.0
 
+
 def create_leibniz():
     attrs = {"place": 0.0, "time": leibbyear}
     return Entity("Leibniz", attrs)
+
 
 def create_other_leibniz():
     attrs = {"place": 1.0, "time": leibbyear}
     return Entity("Leibniz", attrs)
 
+
 def create_newton():
     attrs = {"place": 0.0, "time": 1658.0, "achieve": 43.9}
     return Entity("Newton", attrs)
+
 
 def create_hardy():
     attrs = {ANM: AGE}
     return Entity("Hardy", attrs)
 
+
 def create_ramanujan():
     return Entity("Ramanujan")
 
+
 def create_littlewood():
     return Entity("Littlewood", {"friend": 141.0, "number": 1729.0})
+
+
+def create_ramsey():
+    return Entity("Ramsey", {"friend": 282.9, "number": 3.14})
 
 
 class EntityTestCase(TestCase):
@@ -116,7 +127,8 @@ class EntityTestCase(TestCase):
     def test_sum(self):
         n = create_newton()
         tsum = sum(n[k] for k in n)
-        self.assertAlmostEqual(n.sum(), 1701.9)
+        self.assertAlmostEqual(n.sum(), tsum)
+
 
 if __name__ == '__main__':
     main()

@@ -8,35 +8,46 @@ from unittest import TestCase, main
 
 from composite import Composite
 from test_entity import create_hardy, create_newton, create_leibniz
-from test_entity import create_ramanujan, create_littlewood
+from test_entity import create_ramanujan, create_littlewood, create_ramsey
 
+NL = "NewtonLeibniz"
+LN = "LeibnizNewton"
+HR = "HardyRamanujan"
+LR = "LittlewoodRamsey"
 
 def create_calcguys():
     n = create_newton()
     l = create_leibniz()
-    mems = OrderedDict([(n.name, n), (l.name, l)])
-    return Composite("Calculus guys", members=mems)
+    return Composite("Calculus guys",
+                     members=OrderedDict([(n.name, n), (l.name, l)]))
 
 
 def create_cambguys():
     h = create_hardy()
     r = create_ramanujan()
-    mems = OrderedDict([(h.name, h), (r.name, r)])
-    return Composite("Cambridge guys", members=mems)
+    return Composite("Cambridge guys",
+                     members=OrderedDict([(h.name, h), (r.name, r)]))
+
+
+def create_cambguys2():
+    l = create_littlewood()
+    r = create_ramsey()
+    return Composite("Other Cambridge guys",
+                     members=OrderedDict([(l.name, l), (r.name, r)]))
 
 
 def create_mathguys():
     calc = create_calcguys()
     camb = create_cambguys()
-    mems = OrderedDict([(calc.name, calc), (camb.name, camb)])
-    return Composite("Math guys", members=mems)
+    return Composite("Math guys",
+                     members=OrderedDict([(calc.name, calc),
+                                          (camb.name, camb)]))
 
 
 class CompositeTestCase(TestCase):
     def test_eq(self):
         calc1 = create_calcguys()
         camb = create_cambguys()
-        print("calc1 = " + calc1.__repr__())
         self.assertEqual(calc1, calc1)
         self.assertNotEqual(camb, calc1)
 
@@ -66,18 +77,19 @@ class CompositeTestCase(TestCase):
         camb = create_cambguys()
         self.assertTrue("Hardy" in camb)
 
-    def test_enttype(self):
-        # self.assertTrue(l1.same_type(l2))
-        # self.assertFalse(l1.same_type(n))
-        pass
-
     def test_iter(self):
-        # self.assertEqual(s, "placetime")
-        pass
+        calc = create_calcguys()
+        s = ""
+        for guy in calc:
+            s += guy
+        self.assertEqual(s, NL)
 
     def test_reversed(self):
-        # self.assertEqual(s, "timeplace")
-        pass
+        calc = create_calcguys()
+        s = ""
+        for guy in reversed(calc):
+            s += guy
+        self.assertEqual(s, LN)
 
     def test_imul(self):
         # self.assertEqual(h[ANM], AGE * 2.0)
@@ -87,21 +99,42 @@ class CompositeTestCase(TestCase):
         calc = create_calcguys()
         camb = create_cambguys()
         mathguys = calc + camb
+        s = ""
         for mathwiz in mathguys:
-            if mathwiz not in calc and mathwiz not in camb:
-                return self.assertTrue(False)
-        self.assertTrue(True)
+            s += mathwiz
+        self.assertEqual(s, NL + HR)
+        camb2 = create_cambguys2()
+        mathguys = calc + camb + camb2
+        s = ""
+        for mathwiz in mathguys:
+            s += mathwiz
+        self.assertEqual(s, NL + HR + LR)
 
     def test_iadd(self):
-        # self.assertEqual(h[ANM], AGE + 2.0)
-        pass
+        camb = create_cambguys()
+        camb2 = create_cambguys2()
+        camb += camb2
+        s = ""
+        for cambwiz in camb:
+            s += cambwiz
+        self.assertEqual(s, HR + LR)
+
+    def test_sub(self):
+        calc = create_calcguys()
+        camb = create_cambguys()
+        camb2 = create_cambguys2()
+        mathguys = calc + camb + camb2
+        s = ""
+        cambguys = mathguys - calc
+        for cambwiz in cambguys:
+            s += cambwiz
+        self.assertEqual(s, HR + LR)
+
 
     def test_isub(self):
-        # self.assertEqual(h[ANM], AGE - 2.0)
         pass
 
     def test_magnitude(self):
-        # self.assertEqual(h.magnitude(), AGE)
         pass
 
 
