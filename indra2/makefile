@@ -2,11 +2,11 @@ PYLINT = flake8
 PYLINTFLAGS = 
 PYTHONFILES = $(shell ls *.py)
 
-prod:
+prod: test
 	git commit -a
 	git push origin master
 
-test:
+test: lint
 	python3 ./test_entity.py
 	python3 ./test_composite.py
 

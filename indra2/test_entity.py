@@ -2,10 +2,6 @@
 This is the test suite for entity.py.
 """
 
-import numpy
-import json
-
-from unittest import TestCase, main
 
 from entity import Entity
 
@@ -77,7 +73,7 @@ class EntityTestCase(TestCase):
         s = "place"
         self.assertTrue(s in ent)
 
-    def test_enttype(self):
+    def test_type(self):
         l1 = create_leibniz()
         l2 = create_other_leibniz()
         n = create_newton()

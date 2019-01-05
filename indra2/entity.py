@@ -22,7 +22,7 @@ def type_hash(ent):
 
 class EntEncoder(json.JSONEncoder):
     def default(self, o):
-        if hasattr(o,'to_json'):
+        if hasattr(o, 'to_json'):
             return o.to_json()
         else:
             return json.JSONEncoder.default(self, o)
@@ -47,7 +47,7 @@ class Entity(object):
 
     def __eq__(self, other):
         if (type(self) != type(other)
-            or self.type_sig != other.type_sig):
+                or self.type_sig != other.type_sig):
             return False
         else:
             return np.array_equal(self.val_vect, other.val_vect)

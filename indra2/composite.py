@@ -2,9 +2,7 @@
 This file defines a Composite, which is composed
 of two (?) or more Entities (see entity.py).
 """
-import numpy as np
 import json
-from random import uniform
 from collections import OrderedDict
 
 from entity import Entity, empty_dict, EntEncoder
