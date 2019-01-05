@@ -64,6 +64,12 @@ class Composite(Entity):
         for member in self.members.values():
             member()
 
+    def __add__(self, other):
+        new_dict = OrderedDict()
+        new_dict.update(self.members)
+        new_dict.update(other.members)
+        return Composite("new group", members=new_dict)
+
     def __iadd__(self, scalar):
         for member in self.members.values():
             member += scalar
