@@ -10,11 +10,8 @@ from entity import Entity, empty_dict, EntEncoder
 
 class Composite(Entity):
     """
-    This is the base class of all agents, environments,
-    and objects contained in an environment.
-    Its basic character is that it is a vector, and basic
-    vector and matrix operations will be implemented
-    here.
+    This is the base class of all collections
+    of entities. It itself is an entity.
     """
 
     def __init__(self, name, attrs=empty_dict, members=None):
