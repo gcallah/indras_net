@@ -15,6 +15,7 @@ LN = "LeibnizNewton"
 HR = "HardyRamanujan"
 LR = "LittlewoodRamsey"
 
+
 def create_calcguys():
     n = create_newton()
     l = create_leibniz()
@@ -129,7 +130,6 @@ class CompositeTestCase(TestCase):
         for cambwiz in cambguys:
             s += cambwiz
         self.assertEqual(s, HR + LR)
-
 
     def test_isub(self):
         pass

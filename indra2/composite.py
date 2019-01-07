@@ -24,7 +24,7 @@ class Composite(Entity):
         super().__init__(name, attrs=attrs)
 
     def __repr__(self):
-        return json.dumps(self.to_json(), cls=EntEncoder)
+        return json.dumps(self.to_json(), cls=EntEncoder, indent=4)
 
     def __eq__(self, other):
         if not super().__eq__(other):
@@ -66,8 +66,9 @@ class Composite(Entity):
 
     def __add__(self, other):
         new_dict = OrderedDict()
-        new_dict.update(self.members)
-        new_dict.update(other.members)
+        if isinstance(other, Composite):
+            new_dict.update(self.members)
+            new_dict.update(other.members)
         return Composite("new group", members=new_dict)
 
     def __sub__(self, other):
@@ -78,12 +79,22 @@ class Composite(Entity):
         return Composite("new group", members=new_dict)
 
     def __iadd__(self, other):
-        self.members.update(other.members)
+        if isinstance(other, Composite):
+            self.members.update(other.members)
+        elif isinstance(other, Entity):
+            self.members[other.name] = other
         return self
 
-    def __isub__(self, scalar):
-        for member in self.members.values():
-            member -= scalar
+    def __isub__(self, other):
+        """
+        Remove item(s) if there, otherwise do nothing.
+        """
+        if isinstance(other, Composite):
+            for member in other.members:
+                print("Trying to pop " + member + " from self.name")
+                self.members.pop(member, None)
+        elif isinstance(other, Entity):
+            self.members.pop(other.name, None)
         return self
 
     def __imul__(self, scalar):
@@ -100,5 +111,6 @@ class Composite(Entity):
         pass
 
     def to_json(self):
-        return {"name": self.name, "attrs": self.attrs_to_dict(),
+        return {"name": self.name,
+                "attrs": self.attrs_to_dict(),
                 "members": self.members}
