@@ -5,7 +5,7 @@ of two (?) or more Entities (see entity.py).
 import json
 from collections import OrderedDict
 
-from entity import Entity, empty_dict, EntEncoder
+from entity import Entity, empty_dict, EntEncoder, INF
 
 
 class Composite(Entity):
@@ -14,11 +14,12 @@ class Composite(Entity):
     of entities. It itself is an entity.
     """
 
-    def __init__(self, name, attrs=empty_dict, members=None):
+    def __init__(self, name, attrs=empty_dict, members=None,
+                 duration=INF):
         self.members = OrderedDict()
         if members is not None:
             self.members = members
-        super().__init__(name, attrs=attrs)
+        super().__init__(name, attrs=attrs, duration=duration)
 
     def __repr__(self):
         return json.dumps(self.to_json(), cls=EntEncoder, indent=4)
@@ -58,8 +59,14 @@ class Composite(Entity):
         Call the members' functions.
         Later, this will just call agents' funcs.
         """
-        for member in self.members.values():
-            member()
+        self.duration -= 1
+        if self.duration > 0:
+            for member in self.members.values():
+                if member.isactive():
+                    member()
+        self.members = {k: self.members[k]
+                        for k in self.members
+                        if self.members[k].isactive()}
 
     def __add__(self, other):
         new_dict = OrderedDict()
@@ -95,14 +102,14 @@ class Composite(Entity):
         return self
 
     def __imul__(self, scalar):
-        for member in self.members.values():
-            member *= scalar
+        # must think through what this should do!
         return self
 
-# numpy doesn't implement this! must investigage.
-#    def __idiv__(self, scalar):
-#        self.val_vect /= scalar
-#        return self
+    def isactive(self):
+        for member in self.members.values():
+            if member.isactive():
+                return True
+        return False
 
     def magnitude(self):
         pass

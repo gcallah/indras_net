@@ -15,4 +15,5 @@ ramsey = create_ramsey()
 calc = create_calcguys()
 camb = create_cambguys()
 maths = create_mathguys()
-math_hist = Time("Hist", periods=8)
+math_hist = Time("Hist", periods=58)
+math_hist += maths

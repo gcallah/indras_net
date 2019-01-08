@@ -6,34 +6,38 @@ from unittest import TestCase, main
 
 from entity import Entity
 
-leibbyear = 1646
-leibdyear = 1716
+LEIBBYEAR = 1646
+LEIBDYEAR = 1716
 ANM = "age"
 AGE = 141.0
 
 
 def create_leibniz():
-    attrs = {"place": 0.0, "time": leibbyear}
-    return Entity("Leibniz", attrs)
+    return Entity("Leibniz",
+                  {"place": 0.0, "time": LEIBBYEAR},
+                  duration=70)
 
 
 def create_other_leibniz():
-    attrs = {"place": 1.0, "time": leibbyear}
-    return Entity("Leibniz", attrs)
+    return Entity("Leibniz",
+                  {"place": 1.0, "time": LEIBBYEAR},
+                  duration=70)
 
 
 def create_newton():
-    attrs = {"place": 0.0, "time": 1658.0, "achieve": 43.9}
-    return Entity("Newton", attrs)
+    return Entity("Newton",
+                  {"place": 0.0, "time": 1658.0, "achieve": 43.9},
+                  duration=80)
 
 
 def create_hardy():
-    attrs = {ANM: AGE}
-    return Entity("Hardy", attrs)
+    return Entity("Hardy",
+                  {ANM: AGE},
+                  duration=60)
 
 
 def create_ramanujan():
-    return Entity("Ramanujan")
+    return Entity("Ramanujan", duration=30)
 
 
 def create_littlewood():
@@ -72,12 +76,12 @@ class EntityTestCase(TestCase):
 
     def test_get(self):
         ent = create_leibniz()
-        self.assertEqual(ent["time"], leibbyear)
+        self.assertEqual(ent["time"], LEIBBYEAR)
 
     def test_set(self):
         ent = create_leibniz()
-        ent["time"] = leibdyear
-        self.assertEqual(ent["time"], leibdyear)
+        ent["time"] = LEIBDYEAR
+        self.assertEqual(ent["time"], LEIBDYEAR)
 
     def test_contains(self):
         ent = create_leibniz()

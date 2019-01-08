@@ -1,6 +1,7 @@
 """
 This file defines an Entity.
 """
+import sys
 import numpy as np
 import json
 from random import uniform
@@ -8,6 +9,8 @@ from collections import OrderedDict
 
 LOW_RAND = .666
 HI_RAND = 1.5
+
+INF = sys.maxsize  # really any very big number would do here!
 
 empty_dict = OrderedDict()
 
@@ -37,13 +40,15 @@ class Entity(object):
     here.
     """
 
-    def __init__(self, name, attrs=empty_dict):
+    def __init__(self, name, attrs=empty_dict, duration=INF):
         self.name = name
+        self.duration = duration
         self.attrs = OrderedDict()
         for i, (k, v) in enumerate(attrs.items()):
             self.attrs[k] = i  # store index into np.array!
         self.val_vect = np.array(list(attrs.values()))
         self.type_sig = type_hash(self)
+        self.active = True
 
     def __eq__(self, other):
         if (type(self) != type(other) or self.type_sig != other.type_sig):
@@ -83,8 +88,12 @@ class Entity(object):
         We are just going to randomly alter the vector
         in the base class, to make sure something happens!
         """
-        print(self.name + " is acting!")
-        self *= uniform(LOW_RAND, HI_RAND)
+        self.duration -= 1
+        if self.duration > 0:
+            print(self.name + " is acting!")
+            self *= uniform(LOW_RAND, HI_RAND)
+        else:
+            self.active = False
 
     def __iadd__(self, scalar):
         self.val_vect += scalar
@@ -102,6 +111,9 @@ class Entity(object):
 #    def __idiv__(self, scalar):
 #        self.val_vect /= scalar
 #        return self
+
+    def isactive(self):
+        return self.active
 
     def magnitude(self):
         return np.linalg.norm(self.val_vect)
