@@ -27,16 +27,16 @@ class SpatialAgent(ent.Agent):
     @pos.setter
     def pos(self, pos):
         self.__pos = pos
-        
+
     def to_json(self):
         safe_fields = super().to_json()
         safe_fields["max_move"] = self.max_move
         safe_fields["max_detect"] = self.max_detect
-        safe_fields["__pos"] = self.__pos
+        safe_fields["pos"] = self.pos
         return safe_fields
-    
+
     def from_json_preadd(self, json_input):
         super().from_json_preadd(json_input)
-        
-        self.__pos = json_input["__pos"]
-        
+
+        self.pos = json_input["pos"]
+
