@@ -26,5 +26,4 @@ class Time(Composite):
         """
         for i in range(self.periods):
             print("\nIn period " + str(i) + ":\n")
-            for member in self.members.values():
-                member()
+            super().__call__()

@@ -59,21 +59,27 @@ class Composite(Entity):
         Call the members' functions.
         Later, this will just call agents' funcs.
         """
+        print("Calling %s" % self.name)
+        del_list = []
         self.duration -= 1
         if self.duration > 0:
-            for member in self.members.values():
+            for (key, member) in self.members.items():
                 if member.isactive():
                     member()
-        self.members = {k: self.members[k]
-                        for k in self.members
-                        if self.members[k].isactive()}
+                else:
+                    del_list.append(key)
+        for key in del_list:
+            print("Deleting key %s" % (key))
+            del self.members[key]
 
     def __add__(self, other):
         new_dict = OrderedDict()
         if isinstance(other, Composite):
             new_dict.update(self.members)
             new_dict.update(other.members)
-        return Composite("new group", members=new_dict)
+        # else must be written!
+        return Composite(self.name + "+" + other.name,
+                         members=new_dict)
 
     def __sub__(self, other):
         new_dict = OrderedDict()
@@ -106,6 +112,7 @@ class Composite(Entity):
         return self
 
     def isactive(self):
+        print("Calling composite isactive on %s" % (self.name))
         for member in self.members.values():
             if member.isactive():
                 return True

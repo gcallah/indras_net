@@ -15,5 +15,11 @@ ramsey = create_ramsey()
 calc = create_calcguys()
 camb = create_cambguys()
 maths = create_mathguys()
-math_hist = Time("Hist", periods=58)
-math_hist += maths
+gauss = Entity("Gauss")
+euler = Entity("Euler")
+germans = Composite("Germans",
+                    members={gauss.name: gauss,
+                             euler.name: euler})
+maths += germans
+math_hist = Time("History", periods=75,
+                 members={maths.name: maths})

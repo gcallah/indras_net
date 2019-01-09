@@ -113,6 +113,7 @@ class Entity(object):
 #        return self
 
     def isactive(self):
+        print("Calling entity isactive on %s" % (self.name))
         return self.active
 
     def magnitude(self):
@@ -131,4 +132,6 @@ class Entity(object):
         return self.type_sig == other.type_sig
 
     def to_json(self):
-        return {"name": self.name, "attrs": self.attrs_to_dict()}
+        return {"name": self.name,
+                "duration": self.duration,
+                "attrs": self.attrs_to_dict()}
