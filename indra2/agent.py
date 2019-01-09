@@ -1,5 +1,5 @@
 """
-This file defines an Entity.
+This file defines an Agent.
 """
 import sys
 import numpy as np
@@ -11,6 +11,8 @@ LOW_RAND = .666
 HI_RAND = 1.5
 
 INF = sys.maxsize  # really any very big number would do here!
+
+empty_dict = OrderedDict()
 
 
 def type_hash(ent):
@@ -38,16 +40,13 @@ class Entity(object):
     here.
     """
 
-    def __init__(self, name, attrs=None, duration=INF):
+    def __init__(self, name, attrs=empty_dict, duration=INF):
         self.name = name
         self.duration = duration
         self.attrs = OrderedDict()
-        if attrs is not None:
-            for i, (k, v) in enumerate(attrs.items()):
-                self.attrs[k] = i  # store index into np.array!
-            self.val_vect = np.array(list(attrs.values()))
-        else:
-            self.val_vect = np.array([])
+        for i, (k, v) in enumerate(attrs.items()):
+            self.attrs[k] = i  # store index into np.array!
+        self.val_vect = np.array(list(attrs.values()))
         self.type_sig = type_hash(self)
         self.active = True
 
@@ -114,6 +113,7 @@ class Entity(object):
 #        return self
 
     def isactive(self):
+        print("Calling entity isactive on %s" % (self.name))
         return self.active
 
     def magnitude(self):

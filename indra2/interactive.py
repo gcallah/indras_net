@@ -1,5 +1,5 @@
 """
-Setup an interesting interactive env in which to do play.
+Setup an interesting interactive env in which to play.
 """
 
 from test_entity import *
@@ -21,5 +21,5 @@ germans = Composite("Germans",
                     members={gauss.name: gauss,
                              euler.name: euler})
 maths += germans
-math_hist = Time("History", periods=75,
+math_hist = Time("History", periods=35,
                  members={maths.name: maths})

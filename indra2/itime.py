@@ -4,7 +4,6 @@ of entities that share a timeline.
 """
 # import json
 
-from entity import empty_dict
 from composite import Composite
 
 MAX_TIME = 1000  # arbitrary: change as we explore!
@@ -15,7 +14,7 @@ class Time(Composite):
     A collection of entities that share a timeline.
     """
 
-    def __init__(self, name, attrs=empty_dict, members=None,
+    def __init__(self, name, attrs=None, members=None,
                  periods=MAX_TIME):
         super().__init__(name, attrs=attrs, members=members)
         self.periods = periods

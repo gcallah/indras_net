@@ -15,29 +15,29 @@ AGE = 141.0
 def create_leibniz():
     return Entity("Leibniz",
                   {"place": 0.0, "time": LEIBBYEAR},
-                  duration=70)
+                  duration=20)
 
 
 def create_other_leibniz():
     return Entity("Leibniz",
                   {"place": 1.0, "time": LEIBBYEAR},
-                  duration=70)
+                  duration=20)
 
 
 def create_newton():
     return Entity("Newton",
                   {"place": 0.0, "time": 1658.0, "achieve": 43.9},
-                  duration=80)
+                  duration=30)
 
 
 def create_hardy():
     return Entity("Hardy",
                   {ANM: AGE},
-                  duration=60)
+                  duration=10)
 
 
 def create_ramanujan():
-    return Entity("Ramanujan", duration=30)
+    return Entity("Ramanujan", duration=5)
 
 
 def create_littlewood():
@@ -67,7 +67,7 @@ class EntityTestCase(TestCase):
 
     def test_repr(self):
         ent = create_hardy()
-        rep = ('{"name": "Hardy", "duration": 60,'
+        rep = ('{"name": "Hardy", "duration": 10,'
                + ' "attrs": {"' + ANM + '": ' + str(AGE) + '}}')
         self.assertEqual(rep, repr(ent))
 

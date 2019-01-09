@@ -5,7 +5,7 @@ of two (?) or more Entities (see entity.py).
 import json
 from collections import OrderedDict
 
-from entity import Entity, empty_dict, EntEncoder, INF
+from entity import Entity, EntEncoder, INF
 
 
 class Composite(Entity):
@@ -14,7 +14,7 @@ class Composite(Entity):
     of entities. It itself is an entity.
     """
 
-    def __init__(self, name, attrs=empty_dict, members=None,
+    def __init__(self, name, attrs=None, members=None,
                  duration=INF):
         self.members = OrderedDict()
         if members is not None:
@@ -59,7 +59,6 @@ class Composite(Entity):
         Call the members' functions.
         Later, this will just call agents' funcs.
         """
-        print("Calling %s" % self.name)
         del_list = []
         self.duration -= 1
         if self.duration > 0:
@@ -101,7 +100,6 @@ class Composite(Entity):
         """
         if isinstance(other, Composite):
             for member in other.members:
-                print("Trying to pop " + member + " from self.name")
                 self.members.pop(member, None)
         elif isinstance(other, Entity):
             self.members.pop(other.name, None)
@@ -112,7 +110,6 @@ class Composite(Entity):
         return self
 
     def isactive(self):
-        print("Calling composite isactive on %s" % (self.name))
         for member in self.members.values():
             if member.isactive():
                 return True
