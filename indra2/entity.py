@@ -108,6 +108,15 @@ class Entity(object):
         self.val_vect *= scalar
         return self
 
+    def __add__(self, other):
+        import composite
+        if isinstance(other, Entity):
+            return composite.Composite(
+                self.name + other.name,
+                members={self.name: self, other.name: other})
+        else:
+            return None
+
 # numpy doesn't implement this! must investigage.
 #    def __idiv__(self, scalar):
 #        self.val_vect /= scalar
