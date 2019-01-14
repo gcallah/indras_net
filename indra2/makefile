@@ -1,3 +1,4 @@
+TESTDIR = tests
 PYLINT = flake8
 PYLINTFLAGS = --ignore=E741,W503 --exclude=interactive.py
 PYTHONFILES = $(shell ls *.py)
@@ -9,8 +10,8 @@ prod: test
 lint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
 
 pytest: $(PYTHONFILES)
-	python3 ./test_entity.py
-	python3 ./test_composite.py
+	python3 $(TESTDIR)/test_entity.py
+	python3 $(TESTDIR)/test_composite.py
 
 test: lint pytest
 

@@ -5,7 +5,7 @@ of two (?) or more Entities (see entity.py).
 import json
 from collections import OrderedDict
 
-import entity as ent
+import indra2.entity as ent
 
 
 class Composite(ent.Entity):
@@ -88,18 +88,48 @@ class Composite(ent.Entity):
         return Composite(self.name + "+" + other.name,
                          members=new_dict)
 
+    def __iadd__(self, other):
+        """
+        Add other to set self.
+        """
+        if isinstance(other, Composite):
+            self.members.update(other.members)
+        elif isinstance(other, ent.Entity):
+            self.members[other.name] = other
+        else:
+            print("Don't know what to iadd; type(other) = ")
+            print(type(other))
+        return self
+
     def __sub__(self, other):
         """
         This implements set difference and returns
         a new Composite that is self - other.
         """
-        new_dict = OrderedDict()
+        new_dict = self.members
         if isinstance(other, Composite):
-            new_dict.update(self.members)
             for mem in other.members:
                 new_dict.__delitem__(mem)
-        # else must be written!
+        elif isinstance(other, ent.Entity):
+            new_dict.pop(other.name, None)
+        else:
+            print("Don't know what to sub; type(other) = ")
+            print(type(other))
         return Composite("new group", members=new_dict)
+
+    def __isub__(self, other):
+        """
+        Remove item(s) in other if there, otherwise do nothing.
+        """
+        if isinstance(other, Composite):
+            for member in other.members:
+                self.members.pop(member, None)
+        elif isinstance(other, ent.Entity):
+            self.members.pop(other.name, None)
+        else:
+            print("Don't know what to isub; type(other) = ")
+            print(type(other))
+        return self
 
     def __mul__(self, other):
         """
@@ -112,29 +142,13 @@ class Composite(ent.Entity):
             for mem in self.members:
                 if mem not in other.members:
                     new_dict.__delitem__(mem)
-        # else must be written!
+        elif isinstance(other, ent.Entity):
+            if other in self.members:
+                new_dict[other.name] = other
+        else:
+            print("Don't know what to mul; type(other) = ")
+            print(type(other))
         return Composite("new group", members=new_dict)
-
-    def __iadd__(self, other):
-        """
-        Add other to set self.
-        """
-        if isinstance(other, Composite):
-            self.members.update(other.members)
-        elif isinstance(other, ent.Entity):
-            self.members[other.name] = other
-        return self
-
-    def __isub__(self, other):
-        """
-        Remove item(s) in other if there, otherwise do nothing.
-        """
-        if isinstance(other, Composite):
-            for member in other.members:
-                self.members.pop(member, None)
-        elif isinstance(other, ent.Entity):
-            self.members.pop(other.name, None)
-        return self
 
     def __imul__(self, other):
         """
