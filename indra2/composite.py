@@ -41,9 +41,19 @@ class Composite(ent.Entity):
         return len(self.members)
 
     def __getitem__(self, key):
+        """
+        In contrast to entity, which returns a double val
+        for getitem, for composites, we are going to return
+        the 'key'th member.
+        """
         return self.members[key]
 
     def __setitem__(self, key, member):
+        """
+        In contrast to entity, which sets a double val
+        for getitem, for composites, we are going to return
+        the 'key'th member.
+        """
         self.members[key] = member
 
     def __contains__(self, item):
