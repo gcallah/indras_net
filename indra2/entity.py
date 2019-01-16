@@ -13,6 +13,20 @@ HI_RAND = 1.5
 INF = sys.maxsize  # really any very big number would do here!
 
 
+class Coords:
+    """
+    Captures the notion of a location in up to 3-D,
+    with defaults of 0 for any D not relevant.
+    """
+    def __init__(self, x=0, y=0, z=0):
+        self.x = x
+        self.y = y
+        self.z = z
+
+
+def_coords = Coords()
+
+
 def type_hash(ent):
     """
     type_hash() will return an ID that identifies
@@ -22,6 +36,10 @@ def type_hash(ent):
 
 
 class EntEncoder(json.JSONEncoder):
+    """
+    The JSON encoder base class for all descendants
+    of Entity.
+    """
     def default(self, o):
         if hasattr(o, 'to_json'):
             return o.to_json()
@@ -36,12 +54,15 @@ class Entity(object):
     Its basic character is that it is a vector, and basic
     vector and matrix operations will be implemented
     here.
+    It also may have its origin located somwhere, which
+    will be its coords.
     """
-
-    def __init__(self, name, attrs=None, duration=INF):
+    def __init__(self, name, attrs=None, duration=INF,
+                 coords=def_coords):
         self.name = name
         self.duration = duration
         self.attrs = OrderedDict()
+        self.coords = coords
         if attrs is not None:
             for i, (k, v) in enumerate(attrs.items()):
                 self.attrs[k] = i  # store index into np.array!
