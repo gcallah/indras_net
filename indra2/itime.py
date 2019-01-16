@@ -6,7 +6,7 @@ of entities that share a timeline.
 
 from composite import Composite
 
-MAX_TIME = 1000  # arbitrary: change as we explore!
+DEF_TIME = 100  # arbitrary: change as we explore!
 
 
 class Time(Composite):
@@ -14,15 +14,15 @@ class Time(Composite):
     A collection of entities that share a timeline.
     """
 
-    def __init__(self, name, attrs=None, members=None,
-                 periods=MAX_TIME):
+    def __init__(self, name, attrs=None, members=None):
         super().__init__(name, attrs=attrs, members=members)
-        self.periods = periods
 
-    def __call__(self):
+    def __call__(self, periods=DEF_TIME):
         """
-        Call the members' functions `period` times.
+        __call__ calls the members' functions `periods` times.
         """
-        for i in range(self.periods):
+        acts = 0
+        for i in range(periods):
             print("\nIn period " + str(i) + ":\n")
-            super().__call__()
+            acts += super().__call__()
+        return acts

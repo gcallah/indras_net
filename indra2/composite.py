@@ -72,18 +72,23 @@ class Composite(ent.Entity):
         """
         Call the members' functions.
         Later, this will just call agents' funcs.
+        This should return the total of all
+        agents who did, in fact, act in a
+        particular call.
         """
+        total_acts = 0
         del_list = []
         self.duration -= 1
         if self.duration > 0:
             for (key, member) in self.members.items():
                 if member.isactive():
-                    member()
+                    total_acts += member()
                 else:
                     del_list.append(key)
         for key in del_list:
             print("Deleting key %s" % (key))
             del self.members[key]
+        return total_acts
 
     def __add__(self, other):
         """

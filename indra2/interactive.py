@@ -1,9 +1,11 @@
 """
-Setup an interesting interactive env in which to play.
+interactive.py:
+Setup an interesting interactive env in which to play
+and try out new features.
 """
 
-from test_entity import *
-from test_composite import *
+from tests.test_entity import *
+from tests.test_composite import *
 from itime import *
 
 newton = create_newton()
@@ -21,5 +23,4 @@ germans = Composite("Germans",
                     members={gauss.name: gauss,
                              euler.name: euler})
 maths += germans
-math_hist = Time("History", periods=35,
-                 members={maths.name: maths})
+math_hist = Time("History", members={maths.name: maths})

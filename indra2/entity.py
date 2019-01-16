@@ -88,6 +88,8 @@ class Entity(object):
         Entities will 'act' by being called as a function.
         We are just going to randomly alter the vector
         in the base class, to make sure something happens!
+        Entities should return True if they did, in fact,
+        'do something,' or False if they did not.
         """
         self.duration -= 1
         if self.duration > 0:
@@ -95,6 +97,7 @@ class Entity(object):
             self *= uniform(LOW_RAND, HI_RAND)
         else:
             self.active = False
+        return True
 
     def __iadd__(self, scalar):
         self.val_vect += scalar

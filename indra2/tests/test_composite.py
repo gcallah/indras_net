@@ -7,8 +7,9 @@ from collections import OrderedDict
 from unittest import TestCase, main
 
 from indra2.composite import Composite
-from test_entity import create_hardy, create_newton, create_leibniz
-from test_entity import create_ramanujan, create_littlewood, create_ramsey
+from indra2.tests.test_entity import create_hardy, create_newton
+from indra2.tests.test_entity import create_ramanujan, create_littlewood
+from indra2.tests.test_entity import create_ramsey, create_leibniz
 
 N = "Newton"
 R = "Ramanujan"
@@ -138,6 +139,11 @@ class CompositeTestCase(TestCase):
         self.assertEqual(create_mem_str(mathguys), HR + LR)
         mathguys -= create_hardy()  # test removing a single entity
         self.assertEqual(create_mem_str(mathguys), R + LR)
+
+    def test_call(self):
+        mathguys = create_cambguys() + create_calcguys()
+        acts = mathguys()
+        self.assertEqual(acts, 4)
 
     def test_magnitude(self):
         pass
