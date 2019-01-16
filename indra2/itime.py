@@ -26,3 +26,5 @@ class Time(Composite):
             print("\nIn period " + str(i) + ":\n")
             acts += super().__call__()
         return acts
+
+    # add periods to json rep!
