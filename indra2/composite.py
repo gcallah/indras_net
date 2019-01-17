@@ -52,10 +52,16 @@ class Composite(ent.Entity):
     def __setitem__(self, key, member):
         """
         In contrast to entity, which sets a double val
-        for getitem, for composites, we are going to return
+        for setitem, for composites, we are going to set
         the 'key'th member.
         """
         self.members[key] = member
+
+    def __delitem__(self, key):
+        """
+        This will delete a member from this composite.
+        """
+        del self.members[key]
 
     def __contains__(self, item):
         """
@@ -116,7 +122,7 @@ class Composite(ent.Entity):
         """
         new_dict = self.members
         for mem in other.members:
-            del(new_dict[mem])
+            del new_dict[mem]
         return Composite("new group", members=new_dict)
 
     def __isub__(self, other):
@@ -136,7 +142,7 @@ class Composite(ent.Entity):
         new_dict.update(self.members)
         for mem in self.members:
             if mem not in other.members:
-                del(new_dict[mem])
+                del new_dict[mem]
         return Composite("new group", members=new_dict)
 
     def __imul__(self, other):
@@ -150,7 +156,7 @@ class Composite(ent.Entity):
             if mem not in other.members:
                 del_list.append(mem)
         for mem in del_list:
-            del(self.members[mem])
+            del self.members[mem]
         return self
 
     def isactive(self):
