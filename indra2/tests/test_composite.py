@@ -99,7 +99,8 @@ class CompositeTestCase(TestCase):
 
     def test_mul(self):
         camb = create_cambguys()
-        camb += create_newton()
+        newt = create_newton()
+        camb[newt.name] = newt
         calc = create_calcguys()
         mathguys = calc * camb
         self.assertEqual(create_mem_str(mathguys), N)
@@ -123,8 +124,6 @@ class CompositeTestCase(TestCase):
         camb = create_cambguys()
         camb += create_cambguys2()
         self.assertEqual(create_mem_str(camb), HR + LR)
-        camb += create_newton()  # test adding a single entity
-        self.assertEqual(create_mem_str(camb), HR + LR + N)
 
     def test_sub(self):
         calc = create_calcguys()
@@ -137,8 +136,6 @@ class CompositeTestCase(TestCase):
         mathguys = calc + create_cambguys() + create_cambguys2()
         mathguys -= calc
         self.assertEqual(create_mem_str(mathguys), HR + LR)
-        mathguys -= create_hardy()  # test removing a single entity
-        self.assertEqual(create_mem_str(mathguys), R + LR)
 
     def test_call(self):
         mathguys = create_cambguys() + create_calcguys()

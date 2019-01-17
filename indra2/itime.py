@@ -23,8 +23,7 @@ class Time(Composite):
         """
         acts = 0
         for i in range(periods):
-            print("\nIn period " + str(i) + ":\n")
-            acts += super().__call__()
+            curr_acts = super().__call__()
+            print(f"\nIn period {i} there were {curr_acts} actions taken.\n")
+            acts += curr_acts
         return acts
-
-    # add periods to json rep!

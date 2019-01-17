@@ -1,6 +1,7 @@
 """
 This file defines a Composite, which is composed
-of two (?) or more Entities (see entity.py).
+of one or more Entities (see entity.py).
+(A group might have its membership reduced to one!)
 """
 import json
 from collections import OrderedDict
@@ -96,10 +97,8 @@ class Composite(ent.Entity):
         a new Composite that is self union other.
         """
         new_dict = OrderedDict()
-        if isinstance(other, Composite):
-            new_dict.update(self.members)
-            new_dict.update(other.members)
-        # else must be written!
+        new_dict.update(self.members)
+        new_dict.update(other.members)
         return Composite(self.name + "+" + other.name,
                          members=new_dict)
 
@@ -107,13 +106,7 @@ class Composite(ent.Entity):
         """
         Add other to set self.
         """
-        if isinstance(other, Composite):
-            self.members.update(other.members)
-        elif isinstance(other, ent.Entity):
-            self.members[other.name] = other
-        else:
-            print("Don't know what to iadd; type(other) = ")
-            print(type(other))
+        self.members.update(other.members)
         return self
 
     def __sub__(self, other):
@@ -122,28 +115,16 @@ class Composite(ent.Entity):
         a new Composite that is self - other.
         """
         new_dict = self.members
-        if isinstance(other, Composite):
-            for mem in other.members:
-                new_dict.__delitem__(mem)
-        elif isinstance(other, ent.Entity):
-            new_dict.pop(other.name, None)
-        else:
-            print("Don't know what to sub; type(other) = ")
-            print(type(other))
+        for mem in other.members:
+            del(new_dict[mem])
         return Composite("new group", members=new_dict)
 
     def __isub__(self, other):
         """
         Remove item(s) in other if there, otherwise do nothing.
         """
-        if isinstance(other, Composite):
-            for member in other.members:
-                self.members.pop(member, None)
-        elif isinstance(other, ent.Entity):
-            self.members.pop(other.name, None)
-        else:
-            print("Don't know what to isub; type(other) = ")
-            print(type(other))
+        for member in other.members:
+            self.members.pop(member, None)
         return self
 
     def __mul__(self, other):
@@ -152,31 +133,24 @@ class Composite(ent.Entity):
         a new Composite that is self intersect other.
         """
         new_dict = OrderedDict()
-        if isinstance(other, Composite):
-            new_dict.update(self.members)
-            for mem in self.members:
-                if mem not in other.members:
-                    new_dict.__delitem__(mem)
-        elif isinstance(other, ent.Entity):
-            if other in self.members:
-                new_dict[other.name] = other
-        else:
-            print("Don't know what to mul; type(other) = ")
-            print(type(other))
+        new_dict.update(self.members)
+        for mem in self.members:
+            if mem not in other.members:
+                del(new_dict[mem])
         return Composite("new group", members=new_dict)
 
     def __imul__(self, other):
         """
-        This implements set intersection and makes the current
+        When `other` is a Composite,
+        this implements set intersection and makes the current
         Composite equal to self intersect other.
         """
         del_list = []
-        if isinstance(other, Composite):
-            for mem in self.members:
-                if mem not in other.members:
-                    del_list.append(mem)
+        for mem in self.members:
+            if mem not in other.members:
+                del_list.append(mem)
         for mem in del_list:
-            self.members.__delitem__(mem)
+            del(self.members[mem])
         return self
 
     def isactive(self):
