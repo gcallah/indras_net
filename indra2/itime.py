@@ -13,10 +13,6 @@ class Time(Composite):
     """
     A collection of entities that share a timeline.
     """
-
-    def __init__(self, name, attrs=None, members=None):
-        super().__init__(name, attrs=attrs, members=members)
-
     def __call__(self, periods=DEF_TIME):
         """
         __call__ calls the members' functions `periods` times.
