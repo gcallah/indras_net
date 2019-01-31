@@ -30,11 +30,11 @@ class Composite(ent.Entity):
         if not super().__eq__(other):
             return False
         # now check the unique fields here:
-        for m in self:
-            if m not in other:
+        for mem in self:
+            if mem not in other:
                 return False
             else:
-                if self[m] != other[m]:
+                if self[mem] != other[mem]:
                     return False
         return True
 

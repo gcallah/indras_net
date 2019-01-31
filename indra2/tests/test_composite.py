@@ -119,9 +119,16 @@ class CompositeTestCase(TestCase):
         self.assertEqual(create_mem_str(mathguys), NL + HR)
         mathguys = calc + camb + create_cambguys2()
         self.assertEqual(create_mem_str(mathguys), NL + HR + LR)
+        # let's make sure set union does not dupe members:
+        camb_self_union = camb + camb
+        self.assertEqual(create_mem_str(camb_self_union), HR)
 
     def test_iadd(self):
         camb = create_cambguys()
+        # let's make sure set union does not dupe members:
+        camb += camb
+        self.assertEqual(create_mem_str(camb), HR)
+        # now test adding new members:
         camb += create_cambguys2()
         self.assertEqual(create_mem_str(camb), HR + LR)
 
