@@ -13,9 +13,11 @@ from indra2.tests.test_entity import create_ramsey, create_leibniz
 
 N = "Newton"
 R = "Ramanujan"
-NL = N + "Leibniz"
-LN = "Leibniz" + N
-HR = "Hardy" + R
+L = "Leibniz"
+H = "Hardy"
+NL = N + L
+LN = L + N
+HR = H + R
 LR = "LittlewoodRamsey"
 
 
@@ -122,6 +124,9 @@ class CompositeTestCase(TestCase):
         # let's make sure set union does not dupe members:
         camb_self_union = camb + camb
         self.assertEqual(create_mem_str(camb_self_union), HR)
+        # now let's add an atom rather than a composite:
+        calch = calc + create_hardy()
+        self.assertEqual(create_mem_str(calch), NL + H)
 
     def test_iadd(self):
         camb = create_cambguys()
@@ -131,6 +136,9 @@ class CompositeTestCase(TestCase):
         # now test adding new members:
         camb += create_cambguys2()
         self.assertEqual(create_mem_str(camb), HR + LR)
+        # now test adding an atomic entity:
+        camb += create_newton()
+        self.assertEqual(create_mem_str(camb), HR + LR + N)
 
     def test_sub(self):
         calc = create_calcguys()
@@ -143,6 +151,9 @@ class CompositeTestCase(TestCase):
         mathguys = calc + create_cambguys() + create_cambguys2()
         mathguys -= calc
         self.assertEqual(create_mem_str(mathguys), HR + LR)
+        # now test deleting an atom:
+        mathguys -= create_hardy()
+        self.assertEqual(create_mem_str(mathguys), R + LR)
 
     def test_call(self):
         mathguys = create_cambguys() + create_calcguys()

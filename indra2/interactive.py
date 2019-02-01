@@ -19,6 +19,7 @@ camb = create_cambguys()
 maths = create_mathguys()
 gauss = Entity("Gauss")
 euler = Entity("Euler")
+laplace = Entity("Laplace")
 germans = Composite("Germans",
                     members={gauss.name: gauss,
                              euler.name: euler})

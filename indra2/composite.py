@@ -9,6 +9,10 @@ from collections import OrderedDict
 import indra2.entity as ent
 
 
+def is_composite(thing):
+    return hasattr(thing, 'members')
+
+
 class Composite(ent.Entity):
     """
     This is the base class of all collections
@@ -104,15 +108,23 @@ class Composite(ent.Entity):
         """
         new_dict = OrderedDict()
         new_dict.update(self.members)
-        new_dict.update(other.members)
+        if is_composite(other):
+            new_dict.update(other.members)
+        else:
+            new_dict[other.name] = other
         return Composite(self.name + "+" + other.name,
                          members=new_dict)
 
     def __iadd__(self, other):
         """
         Add other to set self.
+        If other is a composite, add all its members.
+        If other is an atom, add it.
         """
-        self.members.update(other.members)
+        if is_composite(other):
+            self.members.update(other.members)
+        else:
+            self[other.name] = other
         return self
 
     def __sub__(self, other):
@@ -129,8 +141,12 @@ class Composite(ent.Entity):
         """
         Remove item(s) in other if there, otherwise do nothing.
         """
-        for member in other.members:
-            self.members.pop(member, None)
+        if is_composite(other):
+            for member in other.members:
+                self.members.pop(member, None)
+        else:
+            if other.name in self.members:
+                del self[other.name]
         return self
 
     def __mul__(self, other):
