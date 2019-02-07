@@ -4,7 +4,7 @@ Author: Gene Callahan
 A collection of convenience functions
 for using matplotlib.
 """
-
+from functools import wraps
 from math import ceil
 import numpy as np
 import networkx as nx
@@ -41,6 +41,18 @@ colors = [BLUE, RED, GREEN, YELLOW, MAGENTA, CYAN, BLACK, WHITE]
 NUM_COLORS = len(colors)
 X = 0
 Y = 1
+
+def expects_plt(fn):
+    """
+    Should be used to decorate any function that uses matplotlib's pyplot.
+    """
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        if not plt_present:
+            print(f"cannot plot with {fn.__qualname__}: matplotlib's pyplot is not installed")
+            return
+        return fn(*args, **kwargs)
+    return wrapper
 
 
 def hierarchy_pos(graph, root, width=1., vert_gap=0.2, vert_loc=0,
@@ -80,19 +92,19 @@ def hierarchy_pos(graph, root, width=1., vert_gap=0.2, vert_loc=0,
         return pos
 
 
+@expects_plt
 def draw_graph(graph, title, hierarchy=False, root=None):
     """
     Drawing networkx graphs.
     graph is the graph to draw.
     hierarchy is whether we should draw it as a tree.
     """
-    if plt_present:
-        pos = None
-        plt.title(title)
-        if hierarchy:
-            pos = hierarchy_pos(graph, root)
-        nx.draw(graph, pos=pos, with_labels=True)
-        plt.show()
+    pos = None
+    plt.title(title)
+    if hierarchy:
+        pos = hierarchy_pos(graph, root)
+    nx.draw(graph, pos=pos, with_labels=True)
+    plt.show()
 
 
 def get_color(var, i):
@@ -145,6 +157,7 @@ class LineGraph():
                                     interval=500,
                                     blit=False)
 
+    @expects_plt
     def draw_graph(self, data_points, varieties):
         """
         Draw all elements of the graph.
@@ -166,6 +179,7 @@ class LineGraph():
             y = np.array(data)
             ax.plot(x, y, linewidth=2, label=var, alpha=1.0, c=color)
 
+    @expects_plt
     def show(self):
         """
         Display the plot.
@@ -177,6 +191,7 @@ class LineGraph():
             plt.savefig(file, format="png")
             return file
 
+    @expects_plt
     def update_plot(self, i):
         """
         This is our animation function.
@@ -205,6 +220,7 @@ class ScatterPlot():
         self.create_scats(varieties)
         return self.scats
 
+    @expects_plt
     def __init__(self, title, varieties, width, height,
                  anim=True, data_func=None, is_headless=False, legend_pos=4):
         """
@@ -236,6 +252,7 @@ class ScatterPlot():
                                     interval=500,
                                     blit=False)
 
+    @expects_plt
     def show(self):
         """
         Display the plot.
@@ -252,6 +269,7 @@ class ScatterPlot():
         y_array = np.array(varieties[var][Y])
         return (x_array, y_array)
 
+    @expects_plt
     def create_scats(self, varieties):
         self.scats = []
         for i, var in enumerate(varieties):
