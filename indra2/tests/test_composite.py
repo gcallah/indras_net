@@ -21,6 +21,14 @@ HR = H + R
 LR = "LittlewoodRamsey"
 
 
+def match_name(ent, name):
+    return ent.name == name
+
+
+def max_duration(ent, duration):
+    return ent.duration <= duration
+
+
 def create_calcguys():
     n = create_newton()
     l = create_leibniz()
@@ -121,6 +129,8 @@ class CompositeTestCase(TestCase):
         self.assertEqual(create_mem_str(mathguys), NL + HR)
         mathguys = calc + camb + create_cambguys2()
         self.assertEqual(create_mem_str(mathguys), NL + HR + LR)
+        # ensure we did not change original group:
+        self.assertEqual(create_mem_str(calc), NL)
         # let's make sure set union does not dupe members:
         camb_self_union = camb + camb
         self.assertEqual(create_mem_str(camb_self_union), HR)
@@ -145,6 +155,14 @@ class CompositeTestCase(TestCase):
         mathguys = calc + create_cambguys() + create_cambguys2()
         cambguys = mathguys - calc
         self.assertEqual(create_mem_str(cambguys), HR + LR)
+        # now test deleting an atom:
+        hardygone = cambguys - create_hardy()
+        self.assertEqual(create_mem_str(hardygone), R + LR)
+        # make sure we didn't change original group:
+        self.assertEqual(create_mem_str(cambguys), HR + LR)
+        # delete something that ain't there:
+        cambguys = cambguys - calc
+        self.assertEqual(create_mem_str(cambguys), HR + LR)
 
     def test_isub(self):
         calc = create_calcguys()
@@ -159,6 +177,13 @@ class CompositeTestCase(TestCase):
         mathguys = create_cambguys() + create_calcguys()
         acts = mathguys()
         self.assertEqual(acts, 4)
+
+    def test_subset(self):
+        calc = create_calcguys()
+        just_n = calc.subset(match_name, "Newton", name="Just Newton!")
+        self.assertEqual(create_mem_str(just_n), N)
+        just_l = calc.subset(max_duration, 25, name="Just Leibniz!")
+        self.assertEqual(create_mem_str(just_n), N)
 
     def test_magnitude(self):
         pass

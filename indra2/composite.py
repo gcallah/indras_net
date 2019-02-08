@@ -5,6 +5,7 @@ of one or more Entities (see entity.py).
 """
 import json
 from collections import OrderedDict
+from copy import copy
 
 import indra2.entity as ent
 
@@ -106,8 +107,7 @@ class Composite(ent.Entity):
         This implements set union and returns
         a new Composite that is self union other.
         """
-        new_dict = OrderedDict()
-        new_dict.update(self.members)
+        new_dict = copy(self.members)
         if is_composite(other):
             new_dict.update(other.members)
         else:
@@ -132,10 +132,15 @@ class Composite(ent.Entity):
         This implements set difference and returns
         a new Composite that is self - other.
         """
-        new_dict = self.members
-        for mem in other.members:
-            del new_dict[mem]
-        return Composite("new group", members=new_dict)
+        new_dict = copy(self.members)
+        if is_composite(other):
+            for mem in other.members:
+                if mem in self.members:
+                    del new_dict[mem]
+        else:
+            if other.name in self:
+                del new_dict[other.name]
+        return Composite(self.name + "-" + other.name, members=new_dict)
 
     def __isub__(self, other):
         """
@@ -153,9 +158,10 @@ class Composite(ent.Entity):
         """
         This implements set intersection and returns
         a new Composite that is self intersect other.
+        This has no useful meaning if `other` is an
+        atom.
         """
-        new_dict = OrderedDict()
-        new_dict.update(self.members)
+        new_dict = copy(self.members)
         for mem in self.members:
             if mem not in other.members:
                 del new_dict[mem]
@@ -174,6 +180,13 @@ class Composite(ent.Entity):
         for mem in del_list:
             del self.members[mem]
         return self
+
+    def subset(self, predicate, *args, name=None):
+        new_dict = OrderedDict()
+        for mem in self:
+            if predicate(self[mem], *args):
+                new_dict[mem] = self[mem]
+        return Composite(name, members=new_dict)
 
     def isactive(self):
         """
