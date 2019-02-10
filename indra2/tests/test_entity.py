@@ -68,7 +68,8 @@ class EntityTestCase(TestCase):
     def test_repr(self):
         ent = create_hardy()
         rep = ('{"name": "Hardy", "duration": 10,'
-               + ' "attrs": {"' + ANM + '": ' + str(AGE) + '}}')
+               + ' "attrs": {"' + ANM + '": ' + str(AGE) + '}, '
+               + '"groups": ""}')
         self.assertEqual(rep, repr(ent))
 
     def test_len(self):

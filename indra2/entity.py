@@ -21,6 +21,10 @@ def type_hash(ent):
     return len(ent)  # temp solution!
 
 
+def is_space(thing):
+    return hasattr(thing, "height")
+
+
 class EntEncoder(json.JSONEncoder):
     """
     The JSON encoder base class for all descendants
@@ -41,7 +45,7 @@ class Entity(object):
     vector and matrix operations will be implemented
     here.
     """
-    def __init__(self, name, attrs=None, duration=INF):
+    def __init__(self, name, attrs=None, duration=INF, groups=[]):
         self.name = name
         self.duration = duration
         self.attrs = OrderedDict()
@@ -53,6 +57,11 @@ class Entity(object):
             self.val_vect = np.array([])
         self.type_sig = type_hash(self)
         self.active = True
+        self.groups = groups
+        self.locator = None
+        for grp in groups:
+            if is_space(grp):
+                self.locator = grp
 
     def __eq__(self, other):
         if (type(self) != type(other) or self.type_sig != other.type_sig):
@@ -146,7 +155,20 @@ class Entity(object):
     def same_type(self, other):
         return self.type_sig == other.type_sig
 
+    def join_group(self, group):
+        if group.name not in self.groups:
+            print("Join group being called on " + self.name
+                  + " to join group: " + group.name)
+            self.groups.append(group.name)
+            if is_space(group):
+                self.locator = group
+
     def to_json(self):
+        grp_nms = ""
+        for grp in self.groups:
+            grp_nms += grp + " "
         return {"name": self.name,
                 "duration": self.duration,
-                "attrs": self.attrs_to_dict()}
+                "attrs": self.attrs_to_dict(),
+                "groups": grp_nms
+                }

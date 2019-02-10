@@ -24,9 +24,11 @@ class Composite(ent.Entity):
     def __init__(self, name, attrs=None, members=None,
                  duration=ent.INF):
         self.members = OrderedDict()
+        super().__init__(name, attrs=attrs, duration=duration)
         if members is not None:
             self.members = members
-        super().__init__(name, attrs=attrs, duration=duration)
+            for mbr in members:
+                members[mbr].join_group(self)
 
     def __repr__(self):
         return json.dumps(self.to_json(), cls=ent.EntEncoder, indent=4)
@@ -35,11 +37,11 @@ class Composite(ent.Entity):
         if not super().__eq__(other):
             return False
         # now check the unique fields here:
-        for mem in self:
-            if mem not in other:
+        for mbr in self:
+            if mbr not in other:
                 return False
             else:
-                if self[mem] != other[mem]:
+                if self[mbr] != other[mbr]:
                     return False
         return True
 
@@ -112,6 +114,7 @@ class Composite(ent.Entity):
             new_dict.update(other.members)
         else:
             new_dict[other.name] = other
+            # self.join_group(other)
         return Composite(self.name + "+" + other.name,
                          members=new_dict)
 
@@ -125,6 +128,7 @@ class Composite(ent.Entity):
             self.members.update(other.members)
         else:
             self[other.name] = other
+            # other.join_group(self)
         return self
 
     def __sub__(self, other):
@@ -162,9 +166,9 @@ class Composite(ent.Entity):
         atom.
         """
         new_dict = copy(self.members)
-        for mem in self.members:
-            if mem not in other.members:
-                del new_dict[mem]
+        for mbr in self.members:
+            if mbr not in other.members:
+                del new_dict[mbr]
         return Composite("new group", members=new_dict)
 
     def __imul__(self, other):
@@ -174,18 +178,18 @@ class Composite(ent.Entity):
         Composite equal to self intersect other.
         """
         del_list = []
-        for mem in self.members:
-            if mem not in other.members:
-                del_list.append(mem)
-        for mem in del_list:
-            del self.members[mem]
+        for mbr in self.members:
+            if mbr not in other.members:
+                del_list.append(mbr)
+        for mbr in del_list:
+            del self.members[mbr]
         return self
 
     def subset(self, predicate, *args, name=None):
         new_dict = OrderedDict()
-        for mem in self:
-            if predicate(self[mem], *args):
-                new_dict[mem] = self[mem]
+        for mbr in self:
+            if predicate(self[mbr], *args):
+                new_dict[mbr] = self[mbr]
         return Composite(name, members=new_dict)
 
     def isactive(self):
