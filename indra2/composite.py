@@ -108,15 +108,19 @@ class Composite(ent.Entity):
         """
         This implements set union and returns
         a new Composite that is self union other.
+        If other is an atomic entity, just add it to
+        this group.
         """
         new_dict = copy(self.members)
         if is_composite(other):
             new_dict.update(other.members)
         else:
             new_dict[other.name] = other
-            # self.join_group(other)
-        return Composite(self.name + "+" + other.name,
-                         members=new_dict)
+        new_grp = Composite(self.name + "+" + other.name,
+                            members=new_dict)
+        self.join_group(new_grp)
+        other.join_group(new_grp)
+        return new_grp
 
     def __iadd__(self, other):
         """
