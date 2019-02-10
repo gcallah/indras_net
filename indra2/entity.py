@@ -45,23 +45,27 @@ class Entity(object):
     vector and matrix operations will be implemented
     here.
     """
-    def __init__(self, name, attrs=None, duration=INF, groups=[]):
+    def __init__(self, name, attrs=None, duration=INF, groups=None):
         self.name = name
         self.duration = duration
         self.attrs = OrderedDict()
         if attrs is not None:
             for i, (k, v) in enumerate(attrs.items()):
                 self.attrs[k] = i  # store index into np.array!
-            self.val_vect = np.array(list(attrs.values()))
+                self.val_vect = np.array(list(attrs.values()))
         else:
             self.val_vect = np.array([])
         self.type_sig = type_hash(self)
         self.active = True
-        self.groups = groups
+        if groups is not None:
+            self.groups = groups
+        else:
+            self.groups = {}
         self.locator = None
-        for grp in groups:
-            if is_space(grp):
-                self.locator = grp
+        if groups is not None:
+            for grp in iter(groups.values()):
+                if is_space(grp):
+                    self.locator = grp
 
     def __eq__(self, other):
         if (type(self) != type(other) or self.type_sig != other.type_sig):
@@ -159,7 +163,7 @@ class Entity(object):
         if group.name not in self.groups:
             print("Join group being called on " + self.name
                   + " to join group: " + group.name)
-            self.groups.append(group.name)
+            self.groups[group.name] = group
             if is_space(group):
                 self.locator = group
 
