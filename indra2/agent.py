@@ -25,6 +25,9 @@ def type_hash(agent):
 
 
 def is_space(thing):
+    """
+    How do we determine if a group we are a member of is a space?
+    """
     return hasattr(thing, "height")
 
 
@@ -155,6 +158,10 @@ class Agent(object):
 
     def isactive(self):
         return self.active
+
+    def die(self):
+        self.duration = 0
+        self.active = False
 
     def magnitude(self):
         return np.linalg.norm(self.val_vect)
