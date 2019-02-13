@@ -6,7 +6,7 @@ We're going to do "bad" import *s here because this isn't "real"
 code, just a playground for experimenting.
 """
 
-from tests.test_entity import *
+from tests.test_agent import *
 from tests.test_composite import *
 from itime import *
 from space import *
@@ -24,16 +24,15 @@ calc = newton + leibniz
 camb = create_cambguys()
 alt_camb = newton + hardy
 maths = create_mathguys()
-gauss = Entity("Gauss")
-euler = Entity("Euler")
-laplace = Entity("Laplace")
+gauss = Agent("Gauss")
+euler = Agent("Euler")
+laplace = Agent("Laplace")
 germans = Composite("Germans",
                     members={gauss.name: gauss,
                              euler.name: euler})
 maths += germans
 math_hist = Time("History", members={maths.name: maths})
 
-math_places = Space("Math Geography", DEF_WIDTH, DEF_HEIGHT,
-                    members={maths.name: maths})
+math_places = Space("Math Geography", DEF_WIDTH, DEF_HEIGHT)
 
 

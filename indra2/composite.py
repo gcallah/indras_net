@@ -1,28 +1,28 @@
 """
 This file defines a Composite, which is composed
-of one or more Entities (see entity.py).
+of one or more Agents (see agent.py).
 (A group might have its membership reduced to one!)
 """
 import json
 from collections import OrderedDict
 from copy import copy
 
-import indra2.entity as ent
+import indra2.agent as agt
 
 
 def is_composite(thing):
     return hasattr(thing, 'members')
 
 
-class Composite(ent.Entity):
+class Composite(agt.Agent):
     """
     This is the base class of all collections
-    of entities. It itself is an entity.
+    of entities. It itself is an agent.
     Its fundamental nature is that it is a set of vectors.
     """
 
     def __init__(self, name, attrs=None, members=None,
-                 duration=ent.INF):
+                 duration=agt.INF):
         self.members = OrderedDict()
         super().__init__(name, attrs=attrs, duration=duration)
         if members is not None:
@@ -31,7 +31,7 @@ class Composite(ent.Entity):
                 members[mbr].join_group(self)
 
     def __repr__(self):
-        return json.dumps(self.to_json(), cls=ent.EntEncoder, indent=4)
+        return json.dumps(self.to_json(), cls=agt.AgentEncoder, indent=4)
 
     def __eq__(self, other):
         if not super().__eq__(other):
@@ -50,7 +50,7 @@ class Composite(ent.Entity):
 
     def __getitem__(self, key):
         """
-        In contrast to entity, which returns a double val
+        In contrast to agent, which returns a double val
         for getitem, for composites, we are going to return
         the 'key'th member.
         """
@@ -58,7 +58,7 @@ class Composite(ent.Entity):
 
     def __setitem__(self, key, member):
         """
-        In contrast to entity, which sets a double val
+        In contrast to agent, which sets a double val
         for setitem, for composites, we are going to set
         the 'key'th member.
         """
@@ -108,7 +108,7 @@ class Composite(ent.Entity):
         """
         This implements set union and returns
         a new Composite that is self union other.
-        If other is an atomic entity, just add it to
+        If other is an atomic agent, just add it to
         this group.
         """
         new_dict = copy(self.members)
@@ -132,7 +132,7 @@ class Composite(ent.Entity):
             self.members.update(other.members)
         else:
             self[other.name] = other
-            # other.join_group(self)
+            other.join_group(self)
         return self
 
     def __sub__(self, other):

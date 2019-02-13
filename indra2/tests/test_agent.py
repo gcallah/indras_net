@@ -1,54 +1,71 @@
 """
-This is the test suite for entity.py.
+This is the test suite for agent.py.
 """
 
 from unittest import TestCase, main
 
-from indra2.entity import Entity
+from indra2.agent import Agent
 
 LEIBBYEAR = 1646
 LEIBDYEAR = 1716
 ANM = "age"
 AGE = 141.0
 
+def newt_action(agent):
+    print("I'm " + agent.name + " and I'm inventing modern mechanics!")
+
+
+def leib_action(agent):
+    print("I'm " + agent.name + " and I'm inventing calculus!")
+
+
+def ram_action(agent):
+    print("I'm " + agent.name + " and my duration is only: " +
+          str(agent.duration))
+
 
 def create_leibniz():
-    return Entity("Leibniz",
-                  {"place": 0.0, "time": LEIBBYEAR},
+    return Agent("Leibniz",
+                  attrs={"place": 0.0, "time": LEIBBYEAR},
+                  action=leib_action,
                   duration=20)
 
 
 def create_other_leibniz():
-    return Entity("Leibniz",
-                  {"place": 1.0, "time": LEIBBYEAR},
+    return Agent("Leibniz",
+                  attrs={"place": 1.0, "time": LEIBBYEAR},
+                  action=leib_action,
                   duration=20)
 
 
 def create_newton():
-    return Entity("Newton",
-                  {"place": 0.0, "time": 1658.0, "achieve": 43.9},
+    return Agent("Newton",
+                  attrs={"place": 0.0, "time": 1658.0, "achieve": 43.9},
+                  action=newt_action,
                   duration=30)
 
 
 def create_hardy():
-    return Entity("Hardy",
-                  {ANM: AGE},
+    return Agent("Hardy",
+                  attrs={ANM: AGE},
                   duration=10)
 
 
 def create_ramanujan():
-    return Entity("Ramanujan", duration=5)
+    return Agent("Ramanujan", duration=5, action=ram_action)
 
 
 def create_littlewood():
-    return Entity("Littlewood", {"friend": 141.0, "number": 1729.0})
+    return Agent("Littlewood",
+                 attrs={"friend": 141.0, "number": 1729.0})
 
 
 def create_ramsey():
-    return Entity("Ramsey", {"friend": 282.9, "number": 3.14})
+    return Agent("Ramsey",
+                 attrs={"friend": 282.9, "number": 3.14})
 
 
-class EntityTestCase(TestCase):
+class AgentTestCase(TestCase):
     def test_eq(self):
         l1 = create_leibniz()
         l2 = create_leibniz()

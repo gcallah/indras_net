@@ -1,6 +1,6 @@
 """
 This file defines Time, which is a collection
-of entities that share a timeline.
+of agents that share a timeline.
 """
 # import json
 

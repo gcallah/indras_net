@@ -13,7 +13,7 @@ class ITimeTestCase(TestCase):
         mg = create_mathguys()
         mh = Time("History", members={mg.name: mg})
         acts = mh(5)
-        self.assertEqual(acts, 20)
+        self.assertEqual(acts, 14)
 
 
 if __name__ == '__main__':

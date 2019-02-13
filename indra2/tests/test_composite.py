@@ -1,5 +1,5 @@
 """
-This is the test suite for entity.py.
+This is the test suite for composite.py.
 """
 
 from collections import OrderedDict
@@ -7,9 +7,9 @@ from collections import OrderedDict
 from unittest import TestCase, main
 
 from indra2.composite import Composite
-from indra2.tests.test_entity import create_hardy, create_newton
-from indra2.tests.test_entity import create_ramanujan, create_littlewood
-from indra2.tests.test_entity import create_ramsey, create_leibniz
+from indra2.tests.test_agent import create_hardy, create_newton
+from indra2.tests.test_agent import create_ramanujan, create_littlewood
+from indra2.tests.test_agent import create_ramsey, create_leibniz
 
 N = "Newton"
 R = "Ramanujan"
@@ -21,12 +21,12 @@ HR = H + R
 LR = "LittlewoodRamsey"
 
 
-def match_name(ent, name):
-    return ent.name == name
+def match_name(agent, name):
+    return agent.name == name
 
 
-def max_duration(ent, duration):
-    return ent.duration <= duration
+def max_duration(agent, duration):
+    return agent.duration <= duration
 
 
 def create_calcguys():
@@ -59,8 +59,8 @@ def create_mathguys():
 
 def create_mem_str(comp):
     s = ""
-    for ent in comp:
-        s += ent  # this will collect the names of the members
+    for agent in comp:
+        s += agent  # this will collect the names of the members
     return s
 
 
@@ -77,7 +77,8 @@ class CompositeTestCase(TestCase):
         self.assertEqual(name, str(c))
 
     def test_repr(self):
-        # self.assertEqual(rep, repr(ent))
+        # this test has to be written!
+        # self.assertEqual(rep, repr(agent))
         pass
 
     def test_len(self):
@@ -176,7 +177,7 @@ class CompositeTestCase(TestCase):
     def test_call(self):
         mathguys = create_cambguys() + create_calcguys()
         acts = mathguys()
-        self.assertEqual(acts, 4)
+        self.assertEqual(acts, 3)  # hardy is passive!
 
     def test_subset(self):
         calc = create_calcguys()
