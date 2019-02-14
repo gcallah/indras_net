@@ -39,6 +39,8 @@ class AgentEncoder(json.JSONEncoder):
     def default(self, o):
         if hasattr(o, 'to_json'):
             return o.to_json()
+        elif isinstance(o, np.int64):
+            return int(o)
         else:
             return json.JSONEncoder.default(self, o)
 

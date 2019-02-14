@@ -3,18 +3,21 @@
     This is wolf-sheep re-written in indra2.
 """
 
-import indra2.agent as agt
-import indra2.composite as cmp
+from indra2.agent import Agent
+from indra2.composite import Composite
 from itime import Time
 
 DEBUG = True  # turns debugging code on or off
-DEBUG2 = False  # turns deeper debugging code on or off
+DEBUG2 = True  # turns deeper debugging code on or off
 
-NUM_WOLVES = 10
-NUM_SHEEP = 40
+NUM_WOLVES = 3
+NUM_SHEEP = 10
 
 WOLF_LIFESPAN = 5
 WOLF_REPRO_PERIOD = 6
+
+SHEEP_LIFESPAN = 8
+SHEEP_REPRO_PERIOD = 6
 
 
 def sheep_action(agent):
@@ -31,23 +34,25 @@ def wolf_action(agent):
 
 
 def create_wolf(i):
-    return agt.Agent("wolf" + str(i), duration=WOLF_LIFESPAN,
-                     action=wolf_action,
-                     attrs={"time_to_repr": WOLF_REPRO_PERIOD})
+    return Agent("wolf" + str(i), duration=WOLF_LIFESPAN,
+                 action=wolf_action,
+                 attrs={"time_to_repr": WOLF_REPRO_PERIOD})
 
 
 def create_sheep(i):
-    return agt.Agent("sheep" + str(i), action=sheep_action)
+    return Agent("sheep" + str(i), duration=SHEEP_LIFESPAN,
+                 action=sheep_action,
+                 attrs={"time_to_repr": SHEEP_REPRO_PERIOD})
 
 
-wolves = cmp.Composite("wolves")
+wolves = Composite("wolves")
 for i in range(NUM_WOLVES):
     wolves += create_wolf(i)
 
 if DEBUG2:
     print(wolves.__repr__())
 
-sheep = cmp.Composite("sheep")
+sheep = Composite("sheep")
 for i in range(NUM_SHEEP):
     sheep += create_sheep(i)
 
