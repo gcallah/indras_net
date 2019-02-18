@@ -20,6 +20,6 @@ def spatial_agent_act(agent):
         print("I'm " + agent.name + " and I'm at: " + str(agent.pos))
 
 
-space_test = Space("Space test", DEF_WIDTH, DEF_HEIGHT)
+st = Space("Space test", DEF_WIDTH, DEF_HEIGHT)
 for i in range(DEF_AGENTS):
-    space_test += Agent("space_agent" + str(i), action=spatial_agent_act)
+    st += Agent("space_agent" + str(i), action=spatial_agent_act)

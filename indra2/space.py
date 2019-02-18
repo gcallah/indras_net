@@ -16,10 +16,18 @@ def out_of_bounds(x, y, x1, y1, x2, y2):
 
 
 def distance(a1, a2):
+    if a1 is None or a2 is None:
+        return 0.0
+    else:
         return sqrt(
             ((a2.get_x() - a1.get_x()) ** 2)
             + ((a2.get_y() - a1.get_y()) ** 2)
         )
+
+
+def in_hood(agent, other, hood_sz):
+    d = distance(agent, other)
+    return d < hood_sz
 
 
 class Space(Composite):
@@ -64,3 +72,11 @@ class Space(Composite):
         By default, locate a member at a random x,y spot in our grid.
         """
         mbr.set_pos(self.rand_x(), self.rand_y())
+
+    def neighborhood(self, agent, distance=1.0):
+        """
+        This will return a subset of this space that is within
+        `distance` of `agent`.
+        """
+        hood = Composite()
+        return hood
