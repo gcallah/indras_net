@@ -3,6 +3,7 @@ This file defines Space, which is a collection
 of agents related spatially.
 """
 from random import randint
+from math import sqrt
 from composite import Composite, is_composite
 
 
@@ -12,6 +13,13 @@ def out_of_bounds(x, y, x1, y1, x2, y2):
     """
     return(x < x1 or x >= x2
            or y < y1 or y >= y2)
+
+
+def distance(a1, a2):
+        return sqrt(
+            ((a2.get_x() - a1.get_x()) ** 2)
+            + ((a2.get_y() - a1.get_y()) ** 2)
+        )
 
 
 class Space(Composite):
@@ -25,12 +33,9 @@ class Space(Composite):
         super().__init__(name, attrs=attrs, members=members)
         self.width = width
         self.height = height
-        # by making tow class methods for place_members and
+        # by making two class methods for place_members and
         # place_member, we allow two places to override
         self.place_members()
-
-    def distance(self, agent1, agent2):
-        return 0
 
     def place_members(self):
         """

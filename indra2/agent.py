@@ -13,6 +13,9 @@ DEBUG2 = False  # turns deeper debugging code on or off
 LOW_RAND = .666
 HI_RAND = 1.5
 
+X = 0
+Y = 1
+
 INF = sys.maxsize  # really any very big number would do here!
 
 
@@ -80,6 +83,15 @@ class Agent(object):
 
     def set_pos(self, x, y):
         self.pos = (x, y)
+
+    def get_pos(self):
+        return self.pos
+
+    def get_x(self):
+        return self.pos[X]
+
+    def get_y(self):
+        return self.pos[Y]
 
     def __eq__(self, other):
         if (type(self) != type(other) or self.type_sig != other.type_sig):
