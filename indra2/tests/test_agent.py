@@ -11,6 +11,7 @@ LEIBDYEAR = 1716
 ANM = "age"
 AGE = 141.0
 
+
 def newt_action(agent):
     print("I'm " + agent.name + " and I'm inventing modern mechanics!")
 
