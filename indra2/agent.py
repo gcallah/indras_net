@@ -103,7 +103,7 @@ class Agent(object):
         return self.name
 
     def __repr__(self):
-        return json.dumps(self.to_json())
+        return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
 
     def __len__(self):
         return len(self.attrs)
