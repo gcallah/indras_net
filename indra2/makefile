@@ -19,6 +19,7 @@ pytests: $(PYTHONFILES)
 	python3 $(TESTDIR)/test_agent.py
 	python3 $(TESTDIR)/test_composite.py
 	python3 $(TESTDIR)/test_itime.py
+	python3 $(TESTDIR)/test_space.py
 
 tests: lint pytests
 
