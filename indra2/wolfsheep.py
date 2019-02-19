@@ -12,6 +12,7 @@ DEBUG2 = True  # turns deeper debugging code on or off
 
 NUM_WOLVES = 3
 NUM_SHEEP = 10
+SHEEP_WOLVES_RATIO = NUM_SHEEP // NUM_WOLVES
 
 WOLF_LIFESPAN = 5
 WOLF_REPRO_PERIOD = 6
@@ -19,12 +20,20 @@ WOLF_REPRO_PERIOD = 6
 SHEEP_LIFESPAN = 8
 SHEEP_REPRO_PERIOD = 6
 
+wolves, sheep = None
+
 
 def sheep_action(agent):
     print("I'm " + agent.name + " and I eat grass.")
 
 
 def wolf_action(agent):
+    for i in range(NUM_SHEEP):
+        if SHEEP_WOLVES_RATIO >= 1:
+            eat()
+            agent.duration += 1
+        else:
+            agent.duration -= 1
     agent["time_to_repr"] -= 1
     if agent["time_to_repr"] == 0:
         # reproduce!
@@ -43,6 +52,10 @@ def create_sheep(i):
     return Agent("sheep" + str(i), duration=SHEEP_LIFESPAN,
                  action=sheep_action,
                  attrs={"time_to_repr": SHEEP_REPRO_PERIOD})
+
+
+def eat(agent):
+    agent.die()
 
 
 wolves = Composite("wolves")
