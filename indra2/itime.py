@@ -4,7 +4,7 @@ of agents that share a timeline.
 """
 # import json
 
-from composite import Composite
+from indra2.composite import Composite
 
 DEF_TIME = 100  # arbitrary: change as we explore!
 
