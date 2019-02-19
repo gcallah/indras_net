@@ -186,6 +186,14 @@ class CompositeTestCase(TestCase):
         just_l = calc.subset(max_duration, 25, name="Just Leibniz!")
         self.assertEqual(create_mem_str(just_n), N)
 
+    def test_rand_member(self):
+        calc = create_calcguys()
+        rand_guy = calc.rand_member()
+        self.assertIsNotNone(rand_guy)
+        empty_set = Composite("Empty")
+        rand_guy = empty_set.rand_member()
+        self.assertIsNone(rand_guy)
+
     def test_magnitude(self):
         pass
 

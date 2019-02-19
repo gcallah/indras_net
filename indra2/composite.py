@@ -5,6 +5,7 @@ of one or more Agents (see agent.py).
 """
 import json
 from collections import OrderedDict
+from random import choice
 from copy import copy
 
 import indra2.agent as agt
@@ -188,6 +189,15 @@ class Composite(agt.Agent):
         for mbr in del_list:
             del self.members[mbr]
         return self
+
+    def rand_member(self):
+        if len(self) > 0:
+            # this is expensive: maybe we can speed it up
+            # by not going to list somehow
+            key = choice(list(self.members.keys()))
+            return self[key]
+        else:
+            return None
 
     def subset(self, predicate, *args, name=None):
         new_dict = OrderedDict()

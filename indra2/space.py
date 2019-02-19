@@ -63,13 +63,13 @@ class Space(Composite):
         """
         Return a random x-value between 0 and this space's width.
         """
-        return randint(0, self.width)
+        return randint(0, self.width - 1)
 
     def rand_y(self):
         """
         Return a random y-value between 0 and this space's height.
         """
-        return randint(0, self.height)
+        return randint(0, self.height - 1)
 
     def place_member(self, mbr):
         """
