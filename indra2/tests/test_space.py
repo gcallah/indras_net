@@ -21,7 +21,7 @@ class SpaceTestCase(TestCase):
         space = Space("test space")
         x = space.rand_x()
         self.assertTrue(x >= 0)
-        self.assertTrue(x < self.width)
+        self.assertTrue(x < space.width)
 
     def test_neighborhood(self):
         pass
