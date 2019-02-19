@@ -92,8 +92,7 @@ class AgentTestCase(TestCase):
         # self.assertEqual(rep, repr(ent))
 
     def test_len(self):
-        ent = create_newton()
-        self.assertEqual(len(ent), 3)
+        self.assertEqual(len(create_newton()), 3)
 
     def test_get(self):
         ent = create_leibniz()

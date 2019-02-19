@@ -11,9 +11,6 @@ from tests.test_agent import *
 from tests.test_composite import *
 from itime import *
 
-DEF_WIDTH = 10
-DEF_HEIGHT = 10
-
 newton = create_newton()
 leibniz = create_leibniz()
 hardy = create_hardy()

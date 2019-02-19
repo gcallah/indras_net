@@ -6,6 +6,9 @@ from random import randint
 from math import sqrt
 from composite import Composite, is_composite
 
+DEF_WIDTH = 10
+DEF_HEIGHT = 10
+
 
 def out_of_bounds(x, y, x1, y1, x2, y2):
     """
@@ -37,7 +40,8 @@ class Space(Composite):
     and assign locations after we get our members.
     """
 
-    def __init__(self, name, width, height, attrs=None, members=None):
+    def __init__(self, name, width=DEF_WIDTH, height=DEF_HEIGHT,
+                 attrs=None, members=None):
         super().__init__(name, attrs=attrs, members=members)
         self.width = width
         self.height = height

@@ -7,10 +7,8 @@ code, just a playground for experimenting.
 """
 
 from agent import Agent
-from space import Space  # , distance
+from space import Space, DEF_WIDTH, DEF_HEIGHT  # , distance
 
-DEF_WIDTH = 10
-DEF_HEIGHT = 10
 DEF_AGENTS = 4
 
 
