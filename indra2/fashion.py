@@ -5,8 +5,8 @@
 
 from indra2.agent import Agent
 from indra2.composite import Composite
-from indra2.space import in_hood
-from indra2.env import Env
+# from indra2.space import in_hood
+from indra2.itime import Time
 
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
@@ -35,9 +35,11 @@ def is_blue(agent):
 
 
 def follower_action(agent):
-    hood = tsetters.subset(in_hood, agent, 3, name="hood")
-    num_tsetters = len(hood)
-    red_tsetters = hood.subset(is_red, name="TREDS")
+    # hood = tsetters.subset(in_hood, agent, 3, name="hood")
+    # num_tsetters = len(hood)
+    # red_tsetters = hood.subset(is_red, name="TREDS")
+    num_tsetters = len(tsetters)
+    red_tsetters = tsetters.subset(is_red, name="TREDS")
     print("I'm " + agent.name + " and I saw " + str(len(red_tsetters))
           + " red out of " + str(num_tsetters) + ".")
 
@@ -75,7 +77,7 @@ for i in range(NUM_FOLLOWERS):
 if DEBUG2:
     print(followers.__repr__())
 
-society = Env("society")
+society = Time("society")
 society += tsetters
 society += followers
 if DEBUG2:
