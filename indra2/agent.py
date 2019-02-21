@@ -81,6 +81,9 @@ class Agent(object):
                 if is_space(grp):
                     self.locator = grp
 
+    def is_located(self):
+        return self.pos is not None
+
     def set_pos(self, x, y):
         self.pos = (x, y)
 

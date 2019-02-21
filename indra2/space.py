@@ -19,7 +19,12 @@ def out_of_bounds(x, y, x1, y1, x2, y2):
 
 
 def distance(a1, a2):
-    if a1 is None or a2 is None:
+    """
+    We're going to return the distance between two objects. That calculation
+    is easy if they are both located in space, but what if one of them is
+    not? For now, we will return 0, but is that right?
+    """
+    if (not a1.is_located()) or (not a2.is_located()):
         return 0.0
     else:
         return sqrt(
