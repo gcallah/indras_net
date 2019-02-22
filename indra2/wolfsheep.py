@@ -12,7 +12,7 @@ DEBUG2 = True  # turns deeper debugging code on or off
 
 NUM_WOLVES = 3
 NUM_SHEEP = 10
-SHEEP_WOLVES_RATIO = NUM_SHEEP // NUM_WOLVES
+SHEEP_WOLVES_RATIO = 2
 
 WOLF_LIFESPAN = 5
 WOLF_REPRO_PERIOD = 6
@@ -28,12 +28,15 @@ def sheep_action(agent):
 
 
 def wolf_action(agent):
-    for i in range(NUM_SHEEP):
-        if SHEEP_WOLVES_RATIO >= 1:
-            eat()
-            agent.duration += 1
-        else:
-            agent.duration -= 1
+    num_sheep = len(sheep)
+    num_wolves = len(wolves)
+    if num_sheep // num_wolves >= SHEEP_WOLVES_RATIO:
+        prey = sheep.rand_member()
+        # make a check if its active?
+        prey.die()
+        agent.duration += 1
+    else:
+        agent.duration -= 1
     agent["time_to_repr"] -= 1
     if agent["time_to_repr"] == 0:
         # reproduce!
