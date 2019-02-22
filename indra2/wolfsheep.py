@@ -3,6 +3,7 @@
     This is wolf-sheep re-written in indra2.
 """
 
+from collections import OrderedDict
 from indra2.agent import Agent
 from indra2.composite import Composite
 from itime import Time
@@ -20,7 +21,8 @@ WOLF_REPRO_PERIOD = 6
 SHEEP_LIFESPAN = 8
 SHEEP_REPRO_PERIOD = 6
 
-wolves, sheep = None
+wolves = None
+sheep = None
 
 
 def sheep_action(agent):
@@ -29,10 +31,13 @@ def sheep_action(agent):
 
 def wolf_action(agent):
     num_sheep = len(sheep)
+    print("Num sheep = " + str(num_sheep))
     num_wolves = len(wolves)
     if num_sheep // num_wolves >= SHEEP_WOLVES_RATIO:
         prey = sheep.rand_member()
         # make a check if its active?
+        if DEBUG:
+            print(str(agent) + " is eating " + str(prey))
         prey.die()
         agent.duration += 1
     else:
@@ -75,9 +80,8 @@ for i in range(NUM_SHEEP):
 if DEBUG2:
     print(sheep.__repr__())
 
-meadow = Time("meadow")
-meadow += wolves
-meadow += sheep
+meadow = Time("meadow", members=OrderedDict([(wolves.name, wolves),
+                                             (sheep.name, sheep)]))
 if DEBUG2:
     print(meadow.__repr__())
 

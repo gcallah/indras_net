@@ -99,10 +99,12 @@ class Composite(agt.Agent):
                 if member.isactive():
                     total_acts += member()
                 else:
+                    print("Marking " + key + " for deletion.")
                     del_list.append(key)
         for key in del_list:
-            print("Deleting key %s" % (key))
+            print("Deleting key %s from %s" % (key, str(self)))
             del self.members[key]
+            print("Sheep = " + self.__repr__())
         return total_acts
 
     def __add__(self, other):

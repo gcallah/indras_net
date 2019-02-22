@@ -35,7 +35,7 @@ def is_blue(agent):
 
 
 def follower_action(agent):
-    hood = tsetters.subset(in_hood, agent, 3, name="hood")
+    hood = tsetters.subset(in_hood, agent, 1, name="hood")
     num_tsetters = len(hood)
     red_tsetters = hood.subset(is_red, name="TREDS")
     # num_tsetters = len(tsetters)
