@@ -3,13 +3,12 @@
     This is wolf-sheep re-written in indra2.
 """
 
-from collections import OrderedDict
 from indra2.agent import Agent
 from indra2.composite import Composite
 from itime import Time
 
 DEBUG = True  # turns debugging code on or off
-DEBUG2 = True  # turns deeper debugging code on or off
+DEBUG2 = False  # turns deeper debugging code on or off
 
 NUM_WOLVES = 3
 NUM_SHEEP = 10
@@ -31,9 +30,10 @@ def sheep_action(agent):
 
 def wolf_action(agent):
     num_sheep = len(sheep)
-    print("Num sheep = " + str(num_sheep))
+    if DEBUG2:
+        print("Num sheep = " + str(num_sheep))
     num_wolves = len(wolves)
-    if num_sheep // num_wolves >= SHEEP_WOLVES_RATIO:
+    if (num_sheep // num_wolves) >= SHEEP_WOLVES_RATIO:
         prey = sheep.rand_member()
         # make a check if its active?
         if DEBUG:
@@ -80,8 +80,7 @@ for i in range(NUM_SHEEP):
 if DEBUG2:
     print(sheep.__repr__())
 
-meadow = Time("meadow", members=OrderedDict([(wolves.name, wolves),
-                                             (sheep.name, sheep)]))
+meadow = Time("meadow", members=[wolves, sheep])
 if DEBUG2:
     print(meadow.__repr__())
 

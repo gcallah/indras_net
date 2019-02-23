@@ -10,6 +10,8 @@ from copy import copy
 
 import indra2.agent as agt
 
+DEBUG = False
+
 
 def is_composite(thing):
     return hasattr(thing, 'members')
@@ -20,6 +22,11 @@ class Composite(agt.Agent):
     This is the base class of all collections
     of entities. It itself is an agent.
     Its fundamental nature is that it is a set of vectors.
+
+    Args:
+        attrs: a dictionary of group properties
+        members: a list of members, that will be turned
+            into a dictionary
     """
 
     def __init__(self, name, attrs=None, members=None,
@@ -27,9 +34,11 @@ class Composite(agt.Agent):
         self.members = OrderedDict()
         super().__init__(name, attrs=attrs, duration=duration)
         if members is not None:
-            self.members = members
-            for mbr in members:
-                members[mbr].join_group(self)
+            for member in members:
+                member.join_group(self)
+                # use member's str() val (usually name)
+                # as the key to place it in our dict:
+                self.members[str(member)] = member
 
     def __repr__(self):
         return json.dumps(self.to_json(), cls=agt.AgentEncoder, indent=4)
@@ -99,12 +108,11 @@ class Composite(agt.Agent):
                 if member.isactive():
                     total_acts += member()
                 else:
-                    print("Marking " + key + " for deletion.")
+                    if DEBUG:
+                        print("Marking " + key + " for deletion.")
                     del_list.append(key)
         for key in del_list:
-            print("Deleting key %s from %s" % (key, str(self)))
             del self.members[key]
-            print("Sheep = " + self.__repr__())
         return total_acts
 
     def __add__(self, other):
@@ -119,8 +127,8 @@ class Composite(agt.Agent):
             new_dict.update(other.members)
         else:
             new_dict[other.name] = other
-        new_grp = Composite(self.name + "+" + other.name,
-                            members=new_dict)
+        new_grp = Composite(self.name + "+" + other.name)
+        new_grp.members = new_dict
         self.join_group(new_grp)
         other.join_group(new_grp)
         return new_grp
@@ -151,7 +159,9 @@ class Composite(agt.Agent):
         else:
             if other.name in self:
                 del new_dict[other.name]
-        return Composite(self.name + "-" + other.name, members=new_dict)
+        new_grp = Composite(self.name + "-" + other.name)
+        new_grp.members = new_dict
+        return new_grp
 
     def __isub__(self, other):
         """
@@ -176,7 +186,9 @@ class Composite(agt.Agent):
         for mbr in self.members:
             if mbr not in other.members:
                 del new_dict[mbr]
-        return Composite("new group", members=new_dict)
+        new_grp = Composite("new group")
+        new_grp.members = new_dict
+        return new_grp
 
     def __imul__(self, other):
         """
@@ -206,7 +218,9 @@ class Composite(agt.Agent):
         for mbr in self:
             if predicate(self[mbr], *args):
                 new_dict[mbr] = self[mbr]
-        return Composite(name, members=new_dict)
+        new_grp = Composite(name)
+        new_grp.members = new_dict
+        return new_grp
 
     def isactive(self):
         """

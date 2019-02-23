@@ -2,8 +2,6 @@
 This is the test suite for composite.py.
 """
 
-from collections import OrderedDict
-
 from unittest import TestCase, main
 
 from indra2.composite import Composite
@@ -30,32 +28,23 @@ def max_duration(agent, duration):
 
 
 def create_calcguys():
-    n = create_newton()
-    l = create_leibniz()
-    return Composite("Calculus guys",
-                     members=OrderedDict([(n.name, n), (l.name, l)]))
+    return Composite("Calculus guys", members=[create_newton(),
+                                               create_leibniz()])
 
 
 def create_cambguys():
-    h = create_hardy()
-    r = create_ramanujan()
-    return Composite("Cambridge guys",
-                     members=OrderedDict([(h.name, h), (r.name, r)]))
+    return Composite("Cambridge guys", members=[create_hardy(),
+                                                create_ramanujan()])
 
 
 def create_cambguys2():
-    l = create_littlewood()
-    r = create_ramsey()
     return Composite("Other Cambridge guys",
-                     members=OrderedDict([(l.name, l), (r.name, r)]))
+                     members=[create_littlewood(), create_ramsey()])
 
 
 def create_mathguys():
-    calc = create_calcguys()
-    camb = create_cambguys()
     return Composite("Math guys",
-                     members=OrderedDict([(calc.name, calc),
-                                          (camb.name, camb)]))
+                     members=[create_calcguys(), create_cambguys()])
 
 def create_mem_str(comp):
     s = ""
@@ -126,6 +115,8 @@ class CompositeTestCase(TestCase):
     def test_add(self):
         calc = create_calcguys()
         camb = create_cambguys()
+        print("calc = " + calc.__repr__())
+        print("camb = " + camb.__repr__())
         mathguys = calc + camb
         self.assertEqual(create_mem_str(mathguys), NL + HR)
         mathguys = calc + camb + create_cambguys2()

@@ -24,8 +24,6 @@ maths = create_mathguys()
 gauss = Agent("Gauss")
 euler = Agent("Euler")
 laplace = Agent("Laplace")
-germans = Composite("Germans",
-                    members={gauss.name: gauss,
-                             euler.name: euler})
+germans = Composite("Germans", members=[gauss, euler])
 maths += germans
-math_hist = Time("History", members={maths.name: maths})
+math_hist = Time("History", members=[maths])
