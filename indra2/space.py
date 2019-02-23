@@ -35,6 +35,7 @@ def distance(a1, a2):
 
 def in_hood(agent, other, hood_sz):
     d = distance(agent, other)
+    print(d)
     return d < hood_sz
 
 
