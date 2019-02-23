@@ -17,7 +17,7 @@ def is_composite(thing):
     return hasattr(thing, 'members')
 
 
-def grp_from_nmdict(nm, dict):
+def grp_from_nm_dict(nm, dict):
     grp = Composite(nm)
     grp.members = dict
     return grp
@@ -133,7 +133,7 @@ class Composite(agt.Agent):
             new_dict.update(other.members)
         else:
             new_dict[other.name] = other
-        new_grp = grp_from_nmdict(self.name + "+" + other.name, new_dict)
+        new_grp = grp_from_nm_dict(self.name + "+" + other.name, new_dict)
         self.join_group(new_grp)
         other.join_group(new_grp)
         return new_grp
@@ -164,7 +164,7 @@ class Composite(agt.Agent):
         else:
             if other.name in self:
                 del new_dict[other.name]
-        return grp_from_nmdict(self.name + "-" + other.name, new_dict)
+        return grp_from_nm_dict(self.name + "-" + other.name, new_dict)
 
     def __isub__(self, other):
         """
@@ -189,7 +189,7 @@ class Composite(agt.Agent):
         for mbr in self.members:
             if mbr not in other.members:
                 del new_dict[mbr]
-        return grp_from_nmdict(str(self) + "X" + str(other), new_dict)
+        return grp_from_nm_dict(str(self) + "X" + str(other), new_dict)
 
     def __imul__(self, other):
         """
@@ -219,9 +219,7 @@ class Composite(agt.Agent):
         for mbr in self:
             if predicate(self[mbr], *args):
                 new_dict[mbr] = self[mbr]
-        new_grp = Composite(name)
-        new_grp.members = new_dict
-        return new_grp
+        return grp_from_nm_dict(name, new_dict)
 
     def isactive(self):
         """
