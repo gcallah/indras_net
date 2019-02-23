@@ -17,6 +17,12 @@ def is_composite(thing):
     return hasattr(thing, 'members')
 
 
+def grp_from_nmdict(nm, dict):
+    grp = Composite(nm)
+    grp.members = dict
+    return grp
+
+
 class Composite(agt.Agent):
     """
     This is the base class of all collections
@@ -127,8 +133,7 @@ class Composite(agt.Agent):
             new_dict.update(other.members)
         else:
             new_dict[other.name] = other
-        new_grp = Composite(self.name + "+" + other.name)
-        new_grp.members = new_dict
+        new_grp = grp_from_nmdict(self.name + "+" + other.name, new_dict)
         self.join_group(new_grp)
         other.join_group(new_grp)
         return new_grp
@@ -159,9 +164,7 @@ class Composite(agt.Agent):
         else:
             if other.name in self:
                 del new_dict[other.name]
-        new_grp = Composite(self.name + "-" + other.name)
-        new_grp.members = new_dict
-        return new_grp
+        return grp_from_nmdict(self.name + "-" + other.name, new_dict)
 
     def __isub__(self, other):
         """
@@ -186,9 +189,7 @@ class Composite(agt.Agent):
         for mbr in self.members:
             if mbr not in other.members:
                 del new_dict[mbr]
-        new_grp = Composite("new group")
-        new_grp.members = new_dict
-        return new_grp
+        return grp_from_nmdict(str(self) + "X" + str(other), new_dict)
 
     def __imul__(self, other):
         """
