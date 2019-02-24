@@ -210,6 +210,7 @@ class Agent(object):
             grp_nms += grp + " "
         return {"name": self.name,
                 "duration": self.duration,
+                "pos": self.pos,
                 "attrs": self.attrs_to_dict(),
                 "groups": grp_nms
                 }

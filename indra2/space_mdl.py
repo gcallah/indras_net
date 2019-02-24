@@ -7,7 +7,7 @@ code, just a playground for experimenting.
 """
 
 from agent import Agent
-from space import Space, DEF_WIDTH, DEF_HEIGHT  # , distance
+from space import Space, distance
 
 DEF_AGENTS = 4
 
@@ -18,6 +18,9 @@ def spatial_agent_act(agent):
         print("I'm " + agent.name + " and I'm at: " + str(agent.pos))
 
 
-st = Space("Space test", DEF_WIDTH, DEF_HEIGHT)
+st = Space("Space test")
 for i in range(DEF_AGENTS):
-    st += Agent("space_agent" + str(i), action=spatial_agent_act)
+    st += Agent("sa" + str(i), action=spatial_agent_act)
+
+print("Distance between sa0 and sa1 is "
+      + str(distance(st["sa0"], st["sa1"])))

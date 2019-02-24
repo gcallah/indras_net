@@ -58,17 +58,19 @@ class Space(Composite):
         self.height = height
         # by making two class methods for place_members and
         # place_member, we allow two places to override
-        self.place_members()
+        self.place_members(self.members)
 
-    def place_members(self):
+    def place_members(self, members):
         """
         Locate all members of this space in x,y grid.
         Default is to randomly place members.
         """
-        if self.members is not None:
-            for mbr in self.members:
+        if members is not None:
+            for nm, mbr in members.items():
                 if not is_composite(mbr):  # by default don't locate groups
                     self.place_member(mbr)
+                else:  # place composite's members
+                    self.place_members(mbr.members)
 
     def rand_x(self):
         """
@@ -86,7 +88,15 @@ class Space(Composite):
         """
         By default, locate a member at a random x,y spot in our grid.
         """
-        mbr.set_pos(self.rand_x(), self.rand_y())
+        if not is_composite(mbr):
+            mbr.set_pos(self.rand_x(), self.rand_y())
+        else:
+            self.place_members(mbr.members)
+
+    def __iadd__(self, other):
+        super().__iadd__(other)
+        self.place_member(other)
+        return self
 
     def neighborhood(self, agent, distance=1.0):
         """
