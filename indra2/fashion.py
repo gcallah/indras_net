@@ -37,26 +37,16 @@ def is_blue(agent):
 def follower_action(agent):
     hood = tsetters.subset(in_hood, agent, 3, name="hood")
     num_tsetters = len(hood)
-    print(num_tsetters)
     red_tsetters = hood.subset(is_red, name="TREDS")
-    # blue_tsetters = hood.subset(is_blue, name="TBLUES")
-    # num_tsetters = len(tsetters)
-    # red_tsetters = tsetters.subset(is_red, name="TREDS")
     if len(red_tsetters) == num_tsetters:
         agent["color"] = RED
         print("I'm " + agent.name + " and I saw " + str(len(red_tsetters))
               + " red out of " + str(num_tsetters) + ".")
-    # if len(blue_tsetters) == num_tsetters:
-    #     print("I'm " + agent.name + " and I saw " + str(len(blue_tsetters))
-    #       + " blue out of " + str(num_tsetters) + ".")
 
 
 def tsetter_action(agent):
     num_followers = len(followers)
     red_followers = followers.subset(is_red, name="FREDS")
-    # blue_followers = followers.subset(is_blue, name="FBLUES")
-    # if len(blue_followers) == num_followers:
-    # agent["color"] = RED
     print("I'm " + agent.name + " and I saw " + str(len(red_followers))
           + " blue out of " + str(num_followers) + ".")
 
@@ -66,21 +56,11 @@ def create_tsetter(i):
                  action=tsetter_action,
                  attrs={"color": RED})
 
-# def create_tsetter_1(i):
-#     return Agent("tsetter" + str(i),
-#                  action=tsetter_action,
-#                  attrs={"color": BLUE})
-
 
 def create_follower(i):
     return Agent("follower" + str(i),
                  action=follower_action,
                  attrs={"color": BLUE})
-
-# def create_follower_1(i):
-#     return Agent("follower" + str(i),
-#                  action=follower_action,
-#                  attrs={"color": RED})
 
 
 tsetters = Composite("tsetters")

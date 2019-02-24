@@ -9,6 +9,8 @@ from indra2.composite import Composite, is_composite
 DEF_WIDTH = 10
 DEF_HEIGHT = 10
 
+DEBUG = True
+
 
 def out_of_bounds(x, y, x1, y1, x2, y2):
     """
@@ -35,7 +37,10 @@ def distance(a1, a2):
 
 def in_hood(agent, other, hood_sz):
     d = distance(agent, other)
-    print(d)
+    if DEBUG:
+        print("Distance between " + str(agent)
+              + " and " + str(other) + " is "
+              + str(d))
     return d < hood_sz
 
 
