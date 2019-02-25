@@ -5,7 +5,7 @@
 
 from indra2.agent import Agent
 from indra2.composite import Composite
-from itime import Time
+from env import Env
 
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
@@ -80,8 +80,8 @@ for i in range(NUM_SHEEP):
 if DEBUG2:
     print(sheep.__repr__())
 
-meadow = Time("meadow", members=[wolves, sheep])
+meadow = Env("meadow", members=[wolves, sheep])
 if DEBUG2:
     print(meadow.__repr__())
 
-meadow(10)
+meadow()
