@@ -48,9 +48,9 @@ def ask(msg, default=None, limits=None):
     msg += rng_msg + " "
     if clint_present:
         puts(text_colors[PROMPT](msg), newline=False)
-    else:           
+    else:
         print(msg, end='')
-    
+
     return input()
 
 

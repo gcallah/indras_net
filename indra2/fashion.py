@@ -83,7 +83,7 @@ society += followers
 if DEBUG2:
     print(society.__repr__())
 
-society(10)
+society()
 
 if DEBUG2:
     print(society.__repr__())
