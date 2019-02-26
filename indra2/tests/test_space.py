@@ -5,7 +5,7 @@ This is the test suite for agent.py.
 from unittest import TestCase, main
 
 from indra2.space import Space
-
+from indra2.agent import Agent
 
 class SpaceTestCase(TestCase):
     def test_place_members(self):
@@ -25,7 +25,19 @@ class SpaceTestCase(TestCase):
 
     def test_neighborhood(self):
         pass
-
+    
+    def test_record(self):
+        """
+        Test all methods regarding the record of positions
+        TODO: some of them are not used yet
+        """
+        space = Space("test space")
+        n = Agent("Newton",
+                  attrs={"place": 0.0, "time": 1658.0, "achieve": 43.9},
+                  duration=30)
+        space += n
+        # check if the agent is placed at the right location
+        self.assertTrue(space.record[n.pos] == n)
 
 if __name__ == '__main__':
     main()
