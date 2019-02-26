@@ -1,10 +1,10 @@
-
 """
     This is wolf-sheep re-written in indra2.
 """
 
 from indra2.agent import Agent
 from indra2.composite import Composite
+from indra2.space import in_hood
 from env import Env
 
 DEBUG = True  # turns debugging code on or off
@@ -32,16 +32,20 @@ def wolf_action(agent):
     num_sheep = len(sheep)
     if DEBUG2:
         print("Num sheep = " + str(num_sheep))
-    num_wolves = len(wolves)
-    if (num_sheep // num_wolves) >= SHEEP_WOLVES_RATIO:
-        prey = sheep.rand_member()
+    # num_wolves = len(wolves)
+    prey = sheep.rand_member()
+
+    # Wolves eat close sheep instead of ratio
+    if (in_hood(agent, prey, 3)):
+        # if (num_sheep // num_wolves) >= SHEEP_WOLVES_RATIO:
         # make a check if its active?
         if DEBUG:
             print(str(agent) + " is eating " + str(prey))
+        # print(prey.duration)
+        agent.duration += prey.duration
         prey.die()
-        agent.duration += 1
-    else:
-        agent.duration -= 1
+    # else:
+    # agent.duration -= 1
     agent["time_to_repr"] -= 1
     if agent["time_to_repr"] == 0:
         # reproduce!
@@ -62,8 +66,8 @@ def create_sheep(i):
                  attrs={"time_to_repr": SHEEP_REPRO_PERIOD})
 
 
-def eat(agent):
-    agent.die()
+# def eat(agent):
+# agent.die()
 
 
 wolves = Composite("wolves")
