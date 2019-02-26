@@ -60,7 +60,7 @@ class Space(Composite):
         # by making two class methods for place_members and
         # place_member, we allow two places to override
         self.place_members(self.members)
-        
+
         # the record of positions of members in the space
         self.record = {}
 
@@ -94,11 +94,12 @@ class Space(Composite):
         """
         if not is_composite(mbr):
             x, y = self.rand_x(), self.rand_y()
-            if (x, y) not in self.record:         
+            if (x, y) not in self.record:
                 mbr.set_pos(x, y)
-                self.add_record(x, y, mbr)               
+                self.add_record(x, y, mbr)
             else:
-                # if the random position is already taken, find the member a new position
+                # if the random position is already taken,
+                # find the member a new position
                 self.place_member(mbr)
         else:
             self.place_members(mbr.members)
@@ -115,23 +116,22 @@ class Space(Composite):
         """
         hood = Composite()
         return hood
-    
+
     def add_record(self, x, y, member):
         """
         Add a new member to the record of positions of members.
         """
         self.record[(x, y)] = member
-        
+
     def move_record(self, ox, oy, nx, ny):
         """
         Move a member to a new position.
         """
         self.record[(nx, ny)] = self.record[(ox, oy)]
         del self.record[(ox, oy)]
-        
+
     def remove_record(self, x, y):
         """
         Remove a member from the record.
         """
         del self.record[(x, y)]
-        

@@ -9,6 +9,8 @@ from itime import Time, DEF_TIME
 from space import Space, DEBUG
 from user import TermUser, TERMINAL
 
+DEF_USER = "User"
+
 
 class Env(Space):
     """
@@ -21,7 +23,7 @@ class Env(Space):
         self.time = Time(name, **kwargs)
         user_type = os.getenv("user_type", TERMINAL)
         if user_type == TERMINAL:
-            self.user = TermUser(os.getenv("USER"), self)
+            self.user = TermUser(os.getenv("USER", DEF_USER), self)
             self.user.tell("Welcome to Indra, " + str(self.user) + "!")
 
     def __call__(self):
