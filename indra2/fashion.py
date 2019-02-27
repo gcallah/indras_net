@@ -47,7 +47,7 @@ def follower_action(agent):
 def tsetter_action(agent):
     hood = followers.subset(in_hood, agent, 3, name="hood")
     num_followers = len(hood)
-    red_followers = hood.subset(is_blue, name="TREDS")
+    red_followers = hood.subset(is_blue, name="FREDS")
     # num_followers = len(followers)
     # red_followers = followers.subset(is_blue, name="FREDS")
     print("I'm " + agent.name + " and I saw " + str(len(red_followers))
