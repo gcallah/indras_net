@@ -231,6 +231,15 @@ class Composite(agt.Agent):
                 return True
         return False
 
+    def is_mbr_comp(self, mbr):
+        return is_composite(self.members[mbr])
+
+    def pop_count(self, mbr):
+        if self.is_mbr_comp(mbr):
+            return len(self.members[mbr])
+        else:
+            return 1
+
     def magnitude(self):
         pass
 

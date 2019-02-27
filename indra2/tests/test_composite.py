@@ -18,6 +18,8 @@ LN = L + N
 HR = H + R
 LR = "LittlewoodRamsey"
 
+CALC_GUYS = "Calculus guys"
+
 
 def match_name(agent, name):
     return agent.name == name
@@ -28,7 +30,7 @@ def max_duration(agent, duration):
 
 
 def create_calcguys():
-    return Composite("Calculus guys", members=[create_newton(),
+    return Composite(CALC_GUYS, members=[create_newton(),
                                                create_leibniz()])
 
 
@@ -115,8 +117,6 @@ class CompositeTestCase(TestCase):
     def test_add(self):
         calc = create_calcguys()
         camb = create_cambguys()
-        print("calc = " + calc.__repr__())
-        print("camb = " + camb.__repr__())
         mathguys = calc + camb
         self.assertEqual(create_mem_str(mathguys), NL + HR)
         mathguys = calc + camb + create_cambguys2()
@@ -188,6 +188,17 @@ class CompositeTestCase(TestCase):
     def test_magnitude(self):
         pass
 
+    def test_is_mbr_comp(self):
+        math_guys = create_mathguys()
+        self.assertTrue(math_guys.is_mbr_comp(CALC_GUYS))
+        calc = create_calcguys()
+        self.assertFalse(calc.is_mbr_comp("Newton"))
+
+    def test_pop_count(self):
+        math_guys = create_mathguys()
+        self.assertEqual(math_guys.pop_count(CALC_GUYS), 2)
+        calc = create_calcguys()
+        self.assertEqual(calc.pop_count("Newton"), 1)
 
 if __name__ == '__main__':
     main()

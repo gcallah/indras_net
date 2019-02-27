@@ -12,6 +12,20 @@ from user import TermUser, TERMINAL
 DEF_USER = "User"
 
 
+class PopHist():
+    """
+        Data structure to record the fluctuating numbers of various agent
+        types.
+    """
+    def __init__(self):
+        self.pops = {}
+
+    def record_pop(self, mbr, count):
+        if mbr not in self.pops:
+            self.pops[mbr] = []
+        self.pops[mbr].append(count)
+
+
 class Env(Space):
     """
     A collection of entities that share a space and time.
@@ -21,6 +35,7 @@ class Env(Space):
     def __init__(self, name, **kwargs):
         super().__init__(name, **kwargs)
         self.time = Time(name, **kwargs)
+        self.pop_hist = PopHist()   # this will record pops across time
         user_type = os.getenv("user_type", TERMINAL)
         if user_type == TERMINAL:
             self.user = TermUser(os.getenv("USER", DEF_USER), self)
@@ -33,6 +48,10 @@ class Env(Space):
                 self.user()
 
     def runN(self, periods=DEF_TIME):
+        for mbr in self.members:
+            if self.is_mbr_comp(mbr):
+                self.pop_hist.record_pop(mbr, self.pop_count(mbr))
+
         self.time.members = self.members  # so members are always in sync
         if DEBUG:
             # ensure we aren't getting a copy!

@@ -25,10 +25,10 @@ class SpaceTestCase(TestCase):
 
     def test_neighborhood(self):
         pass
-    
-    def test_record(self):
+
+    def test_location(self):
         """
-        Test all methods regarding the record of positions
+        Test all methods regarding the location of positions
         TODO: some of them are not used yet
         """
         space = Space("test space")
@@ -37,7 +37,7 @@ class SpaceTestCase(TestCase):
                   duration=30)
         space += n
         # check if the agent is placed at the right location
-        self.assertTrue(space.record[n.pos] == n)
+        self.assertTrue(space.locations[n.pos] == n)
 
 if __name__ == '__main__':
     main()
