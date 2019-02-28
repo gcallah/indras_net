@@ -17,6 +17,8 @@ NUM_FOLLOWERS = 10
 BLUE = 0
 RED = 1
 
+HOOD_SIZE = 4
+
 tsetters = None
 followers = None
 
@@ -35,7 +37,7 @@ def is_blue(agent):
 
 
 def follower_action(agent):
-    hood = tsetters.subset(in_hood, agent, 3, name="hood")
+    hood = tsetters.subset(in_hood, agent, HOOD_SIZE, name="hood")
     num_tsetters = len(hood)
     red_tsetters = hood.subset(is_red, name="TREDS")
     if len(red_tsetters) == num_tsetters:
@@ -45,11 +47,9 @@ def follower_action(agent):
 
 
 def tsetter_action(agent):
-    hood = followers.subset(in_hood, agent, 3, name="hood")
+    hood = followers.subset(in_hood, agent, HOOD_SIZE, name="hood")
     num_followers = len(hood)
     red_followers = hood.subset(is_blue, name="FREDS")
-    # num_followers = len(followers)
-    # red_followers = followers.subset(is_blue, name="FREDS")
     print("I'm " + agent.name + " and I saw " + str(len(red_followers))
           + " blue out of " + str(num_followers) + ".")
 
