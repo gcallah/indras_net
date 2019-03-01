@@ -4,7 +4,7 @@ of agents that share a timeline.
 """
 # import json
 import os
-
+import getpass
 from itime import Time, DEF_TIME
 from space import Space, DEBUG
 from user import TermUser, TERMINAL
@@ -39,7 +39,8 @@ class Env(Space):
         self.pop_hist = PopHist()   # this will record pops across time
         user_type = os.getenv("user_type", TERMINAL)
         if user_type == TERMINAL:
-            self.user = TermUser(os.getenv("USERNAME", DEF_USER), self)
+            # self.user = TermUser(os.getenv("USERNAME", DEF_USER), self)
+            self.user = TermUser(getpass.getuser(), self)
             self.user.tell("Welcome to Indra, " + str(self.user) + "!")
 
     def __call__(self):
