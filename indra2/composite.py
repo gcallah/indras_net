@@ -103,7 +103,7 @@ class Composite(agt.Agent):
         Call the members' functions.
         Later, this will just call agents' funcs.
         This should return the total of all
-        agents who did, in fact, act in a
+        agents who did, in fasubsetct, act in a
         particular call.
         """
         total_acts = 0

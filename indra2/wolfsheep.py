@@ -13,6 +13,7 @@ DEBUG2 = False  # turns deeper debugging code on or off
 NUM_WOLVES = 3
 NUM_SHEEP = 10
 SHEEP_WOLVES_RATIO = 2
+HOOD_SIZE = 4
 
 WOLF_LIFESPAN = 5
 WOLF_REPRO_PERIOD = 6
@@ -33,19 +34,17 @@ def wolf_action(agent):
     if DEBUG2:
         print("Num sheep = " + str(num_sheep))
     # num_wolves = len(wolves)
-    prey = sheep.rand_member()
-
     # Wolves eat close sheep instead of ratio
-    if (in_hood(agent, prey, 3)):
-        # if (num_sheep // num_wolves) >= SHEEP_WOLVES_RATIO:
-        # make a check if its active?
+    hood = sheep.subset(in_hood, agent, HOOD_SIZE, name="hood")
+    if DEBUG2:
+        print("Length of hood is", len(hood))
+    if len(hood) > 0:
+        prey = hood.rand_member()
         if DEBUG:
             print(str(agent) + " is eating " + str(prey))
         # print(prey.duration)
         agent.duration += prey.duration
         prey.die()
-    # else:
-    # agent.duration -= 1
     agent["time_to_repr"] -= 1
     if agent["time_to_repr"] == 0:
         # reproduce!
