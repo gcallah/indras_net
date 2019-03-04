@@ -23,7 +23,10 @@ def run(user):
 def leave(user):
     user.tell("Goodbye, faithless user!")
     exit(0)
-
+    
+def scatter_plot(user, env):
+    user.tell("Drawing the scatter plot!")
+    env.plot()
 
 MSG = 0
 FUNC = 1
@@ -31,7 +34,7 @@ FUNC = 1
 
 term_menu = {1: ("1) Run for N periods.", run),
              2: ("2) Display the population graph.", not_impl),
-             3: ("3) Display the scatter plot.", not_impl),
+             3: ("3) Display the scatter plot.", scatter_plot),
              4: ("4) Leave menu for interactive python session.", not_impl),
              0: ("0) Quit.", leave)}
 
@@ -60,6 +63,11 @@ class TermUser(Agent):
         if DEBUG2:
             print(choice)
         if choice in term_menu:
-            term_menu[choice][FUNC](self)
+            # If the choice is to draw a scatter plot
+            if choice == 3: 
+                term_menu[choice][FUNC](self, self.env)
+            # Other cases
+            else: 
+                term_menu[choice][FUNC](self)
         else:
             self.tell("Invalid option.")

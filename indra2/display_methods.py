@@ -10,12 +10,14 @@ import numpy as np
 import networkx as nx
 import logging
 import io
-from indra.prop_args2 import user_type
+import os
+from user import TERMINAL, WEB
 plt_present = True
 
 try:
     import matplotlib as mpl
-    if user_type == "Web browser":  # you can change this to right value!
+    user_type = os.getenv("user_type", TERMINAL)
+    if user_type == WEB:  # you can change this to right value!
         mpl.use('Agg')
     import matplotlib.pyplot as plt
     import matplotlib.animation as animation
