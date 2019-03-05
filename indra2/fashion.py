@@ -80,9 +80,7 @@ for i in range(NUM_FOLLOWERS):
 if DEBUG2:
     print(followers.__repr__())
 
-society = Env("society")
-society += tsetters
-society += followers
+society = Env("society", members=[tsetters, followers])
 if DEBUG2:
     print(society.__repr__())
 
