@@ -4,7 +4,7 @@ of agents that share a timeline.
 """
 # import json
 
-from indra2.agent import Agent, DEBUG2  # DEBUG,
+from indra2.agent import Agent  # , DEBUG2  # DEBUG,
 
 TERMINAL = "terminal"
 WEB = "web"
@@ -16,27 +16,35 @@ def not_impl(user):
 
 
 def run(user):
-    steps = int(user.ask("How many periods?"))
-    user.env.runN(periods=steps)
+    try:
+        steps = int(user.ask("How many periods?"))
+        user.env.runN(periods=steps)
+    except (ValueError, TypeError) as e:
+        user.tell("You must enter an integer value for # of steps: " + str(e))
 
 
 def leave(user):
-    user.tell("Goodbye, faithless user!")
+    user.tell("Goodbye, " + user.name + ", I will miss you!")
     exit(0)
-    
-def scatter_plot(user, env):
-    user.tell("Drawing the scatter plot!")
-    env.plot()
+
+
+def scatter_plot(user):
+    user.tell("Drawing a scatter plot.")
+    user.env.plot()
+
 
 MSG = 0
 FUNC = 1
 
+QUIT = 0
+RUN = 1
 
-term_menu = {1: ("1) Run for N periods.", run),
+
+term_menu = {RUN: (str(RUN) + ") Run for N periods (DEFAULT).", run),
              2: ("2) Display the population graph.", not_impl),
              3: ("3) Display the scatter plot.", scatter_plot),
              4: ("4) Leave menu for interactive python session.", not_impl),
-             0: ("0) Quit.", leave)}
+             QUIT: (str(QUIT) + ") Quit.", leave)}
 
 
 class TermUser(Agent):
@@ -51,23 +59,24 @@ class TermUser(Agent):
     def tell(self, msg, end='\n'):
         print(msg, end=end)
 
-    def ask(self, msg):
+    def ask(self, msg, default=None):
         self.tell(msg, end=' ')
-        return input()
+        choice = input()
+        if not choice:
+            return default
+        else:
+            return choice
 
     def __call__(self):
         self.tell("What would you like to do?")
         for key, item in term_menu.items():
             self.tell(item[MSG])
-        choice = int(self.ask("Type the # of your choice then Enter:"))
-        if DEBUG2:
-            print(choice)
-        if choice in term_menu:
-            # If the choice is to draw a scatter plot
-            if choice == 3: 
-                term_menu[choice][FUNC](self, self.env)
-            # Other cases
-            else: 
+        try:
+            choice = int(self.ask("Type the # of your choice then Enter:",
+                         default=RUN))
+            if choice in term_menu:
                 term_menu[choice][FUNC](self)
-        else:
+            else:
+                raise ValueError
+        except ValueError:
             self.tell("Invalid option.")

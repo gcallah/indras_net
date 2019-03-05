@@ -18,6 +18,7 @@ pytests: $(PYTHONFILES)
 	#done
 	python3 $(TESTDIR)/test_agent.py
 	python3 $(TESTDIR)/test_composite.py
+	python3 $(TESTDIR)/test_env.py
 	python3 $(TESTDIR)/test_itime.py
 	python3 $(TESTDIR)/test_space.py
 
