@@ -7,7 +7,7 @@ for using matplotlib.
 from functools import wraps
 from math import ceil
 import numpy as np
-import networkx as nx
+# import networkx as nx
 import logging
 import io
 import os
@@ -105,7 +105,8 @@ def draw_graph(graph, title, hierarchy=False, root=None):
     plt.title(title)
     if hierarchy:
         pos = hierarchy_pos(graph, root)
-    nx.draw(graph, pos=pos, with_labels=True)
+    # out for now:
+    # nx.draw(graph, pos=pos, with_labels=True)
     plt.show()
 
 
