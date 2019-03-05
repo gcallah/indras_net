@@ -6,12 +6,12 @@ of agents that share a timeline.
 import os
 import getpass
 import display_methods as disp
-from itime import Time, DEF_TIME
-from space import Space, DEBUG
+from space import Space
 from user import TermUser, TERMINAL, WEB
 
 
 DEF_USER = "User"
+DEF_TIME = 10
 
 # Constant for plotting
 SC = "SC"  # Scatter plot
@@ -42,7 +42,6 @@ class Env(Space):
     """
     def __init__(self, name, **kwargs):
         super().__init__(name, **kwargs)
-        self.time = Time(name, **kwargs)
         self.pop_hist = PopHist()   # this will record pops across time
 
         # Attributes for plotting
@@ -62,15 +61,15 @@ class Env(Space):
                 self.user()
 
     def runN(self, periods=DEF_TIME):
-        for mbr in self.members:
-            if self.is_mbr_comp(mbr):
-                self.pop_hist.record_pop(mbr, self.pop_count(mbr))
-
-        self.time.members = self.members  # so members are always in sync
-        if DEBUG:
-            # ensure we aren't getting a copy!
-            assert self.time.members is self.members
-        self.time(periods)
+        acts = 0
+        for i in range(periods):
+            for mbr in self.members:
+                if self.is_mbr_comp(mbr):
+                    self.pop_hist.record_pop(mbr, self.pop_count(mbr))
+            curr_acts = super().__call__()
+            print(f"\nIn period {i} there were {curr_acts} actions taken.\n")
+            acts += curr_acts
+        return acts
 
     def plot(self):
         """
