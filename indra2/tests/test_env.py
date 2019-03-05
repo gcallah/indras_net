@@ -1,5 +1,5 @@
 """
-This is the test suite for agent.py.
+This is the test suite for env.py.
 """
 
 from unittest import TestCase, main

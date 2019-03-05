@@ -27,7 +27,7 @@ def distance(a1, a2):
     is easy if they are both located in space, but what if one of them is
     not? For now, we will return 0, but is that right?
     """
-    if (not a1.is_located()) or (not a2.is_located()):
+    if (not a1.islocated()) or (not a2.islocated()):
         return 0.0
     else:
         return sqrt(
@@ -111,14 +111,6 @@ class Space(Composite):
         super().__iadd__(other)
         self.place_member(other)
         return self
-
-    def neighborhood(self, agent, distance=1.0):
-        """
-        This will return a subset of this space that is within
-        `distance` of `agent`.
-        """
-        hood = Composite()
-        return hood
 
     def add_location(self, x, y, member):
         """
