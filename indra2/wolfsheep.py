@@ -24,36 +24,40 @@ SHEEP_REPRO_PERIOD = 6
 wolves = None
 sheep = None
 
+create_wolf = None
+create_sheep = None
+wolves_created = 0
+
 
 def sheep_action(agent):
     print("I'm " + agent.name + " and I eat grass.")
 
 
 def wolf_action(agent):
+    global wolves
+
     num_sheep = len(sheep)
     if DEBUG2:
         print("Num sheep = " + str(num_sheep))
-    # num_wolves = len(wolves)
     # Wolves eat close sheep instead of ratio
     hood = sheep.subset(in_hood, agent, HOOD_SIZE, name="hood")
-    if DEBUG2:
-        print("Length of hood is", len(hood))
     if len(hood) > 0:
         prey = hood.rand_member()
         if DEBUG:
             print(str(agent) + " is eating " + str(prey))
-        # print(prey.duration)
         agent.duration += prey.duration
         prey.die()
     agent["time_to_repr"] -= 1
     if agent["time_to_repr"] == 0:
-        # reproduce!
+        # wolves += create_wolf(wolves_created)
         agent["time_to_repr"] = WOLF_REPRO_PERIOD
     print("I'm " + agent.name + " and my remaining life is: "
           + str(agent.duration))
 
 
 def create_wolf(i):
+    global wolves_created
+    wolves_created += 1
     return Agent("wolf" + str(i), duration=WOLF_LIFESPAN,
                  action=wolf_action,
                  attrs={"time_to_repr": WOLF_REPRO_PERIOD})
