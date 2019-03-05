@@ -164,7 +164,7 @@ class Agent(object):
         if isinstance(other, Agent):
             return composite.Composite(
                 self.name + other.name,
-                members={self.name: self, other.name: other})
+                members=[self, other])
         else:
             return None
 
