@@ -1,6 +1,6 @@
 """
-This file defines Time, which is a collection
-of agents that share a timeline.
+This file defines an Env, which is a collection
+of agents that share a timeline and a Space.
 """
 # import json
 import os

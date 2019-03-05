@@ -9,7 +9,7 @@ code, just a playground for experimenting.
 
 from tests.test_agent import *
 from tests.test_composite import *
-from itime import *
+from env import *
 
 newton = create_newton()
 leibniz = create_leibniz()
@@ -26,4 +26,4 @@ euler = Agent("Euler")
 laplace = Agent("Laplace")
 germans = Composite("Germans", members=[gauss, euler])
 maths += germans
-math_hist = Time("History", members=[maths])
+math_hist = Env("History", members=[maths])

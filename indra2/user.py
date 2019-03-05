@@ -1,6 +1,5 @@
 """
-This file defines Time, which is a collection
-of agents that share a timeline.
+This file defines User, which represents a user in our system.
 """
 # import json
 
