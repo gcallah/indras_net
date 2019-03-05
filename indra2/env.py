@@ -43,6 +43,7 @@ class Env(Space):
     def __init__(self, name, **kwargs):
         super().__init__(name, **kwargs)
         self.pop_hist = PopHist()   # this will record pops across time
+        self.womb = []  # for agents waiting to be born
 
         # Attributes for plotting
         # TODO: feed values in constructor?
@@ -60,9 +61,19 @@ class Env(Space):
                 # run until user exit!
                 self.user()
 
+    def add_child(self, agent):
+        """
+        Put a child agent in the womb.
+        """
+        self.womb.append(agent)
+        # do we need to connect agent to env (self)?
+
     def runN(self, periods=DEF_TIME):
         acts = 0
         for i in range(periods):
+            # before members act, give birth to new agents
+            # we will have tuple of agent and group
+            # do group += agent
             for mbr in self.members:
                 if self.is_mbr_comp(mbr):
                     self.pop_hist.record_pop(mbr, self.pop_count(mbr))
