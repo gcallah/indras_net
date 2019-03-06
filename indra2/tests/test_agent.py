@@ -85,11 +85,14 @@ class AgentTestCase(TestCase):
 
     def test_repr(self):
         ent = create_hardy()
-        rep = ('{"name": "Hardy", "duration": 10,'
-               + ' "attrs": {"' + ANM + '": ' + str(AGE) + '}, '
-               + '"groups": ""}')
-        # new repr: need to fix test!
-        # self.assertEqual(rep, repr(ent))
+        rep = ('{\n    "name": "Hardy",'
+               + '\n    "duration": 10,'
+               + '\n    "pos": null,'
+               + '\n    "attrs": '
+               + '{\n        "' + ANM + '": ' + str(AGE)
+               + '\n    },'
+               + '\n    "groups": ""\n}')
+        self.assertEqual(rep, repr(ent))
 
     def test_len(self):
         self.assertEqual(len(create_newton()), 3)

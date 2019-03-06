@@ -11,7 +11,7 @@ from indra2.env import Env
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
-NUM_TSETTERS = 3
+NUM_TSETTERS = 5
 NUM_FOLLOWERS = 10
 
 BLUE = 0
@@ -24,26 +24,34 @@ followers = None
 
 
 def is_red(agent):
-    color = agent["color"]
-    if DEBUG2:
-        print("in is_red(); agent " + agent.name
-              + "'s color is " + str(color))
-    return color == RED
+    return agent["color"] == RED
 
 
 def is_blue(agent):
-    color = agent["color"]
-    return color == BLUE
+    return agent["color"] == BLUE
+
+
+def change_color(agent):
+    if is_red(agent):
+        agent["color"] = BLUE
+    else:
+        agent["color"] = RED
 
 
 def follower_action(agent):
     hood = tsetters.subset(in_hood, agent, HOOD_SIZE, name="hood")
     num_tsetters = len(hood)
-    red_tsetters = hood.subset(is_red, name="TREDS")
-    if len(red_tsetters) == num_tsetters:
-        agent["color"] = RED
-        print("I'm " + agent.name + " and I saw " + str(len(red_tsetters))
-              + " red out of " + str(num_tsetters) + ".")
+    filter = is_blue
+    if is_blue(agent):
+        filter = is_red
+    opp_tsetters = len(hood.subset(filter, name="TREDS"))
+    if (opp_tsetters > 0) and (opp_tsetters > (num_tsetters // 2)):
+        change_color(agent)
+        if DEBUG:
+            print(agent.name + " changed color!")
+    print("I'm " + agent.name + " and I saw "
+          + str(opp_tsetters)
+          + " opposites out of " + str(num_tsetters) + ".")
 
 
 def tsetter_action(agent):

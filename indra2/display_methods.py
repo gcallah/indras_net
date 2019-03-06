@@ -7,7 +7,7 @@ for using matplotlib.
 from functools import wraps
 from math import ceil
 import numpy as np
-import networkx as nx
+# import networkx as nx
 import logging
 import io
 import os
@@ -21,8 +21,6 @@ try:
         mpl.use('Agg')
     import matplotlib.pyplot as plt
     import matplotlib.animation as animation
-    from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-    from matplotlib.figure import Figure
     plt.ion()
 except ImportError:
     plt_present = False
@@ -44,6 +42,7 @@ NUM_COLORS = len(colors)
 X = 0
 Y = 1
 
+
 def expects_plt(fn):
     """
     Should be used to decorate any function that uses matplotlib's pyplot.
@@ -51,7 +50,8 @@ def expects_plt(fn):
     @wraps(fn)
     def wrapper(*args, **kwargs):
         if not plt_present:
-            print(f"cannot plot with {fn.__qualname__}: matplotlib's pyplot is not installed")
+            print(f"cannot plot with {fn.__qualname__}: \
+            matplotlib's pyplot is not installed")
             return
         return fn(*args, **kwargs)
     return wrapper
@@ -59,39 +59,39 @@ def expects_plt(fn):
 
 def hierarchy_pos(graph, root, width=1., vert_gap=0.2, vert_loc=0,
                   xcenter=0.5, pos=None, parent=None):
-        """
-        This is an attempt to get a tree graph from networkx.
-        If there is a cycle that is reachable from root, then this will
-        infinitely recurse.
-        graph: the graph
-        root: the root node of current branch
-        width: horizontal space allocated for this branch
-                - avoids overlap with other branches
-        vert_gap: gap between levels of hierarchy
-        vert_loc: vertical location of root
-        xcenter: horizontal location of root
-        pos: a dict saying where all nodes go if they have been assigned
-        parent: parent of this branch.
-        """
-        if pos is None:
-            pos = {root: (xcenter, vert_loc)}
-        else:
-            pos[root] = (xcenter, vert_loc)
-        neighbors = graph.neighbors(root)
-        if parent is not None:
-            neighbors.remove(parent)
-        n_len = len(neighbors)
-        dx = 0
-        if n_len != 0:
-            dx = width / n_len
-            nextx = xcenter - width / 2 + dx / 2
-            for neighbor in neighbors:
-                pos = hierarchy_pos(graph, neighbor, width=dx,
-                                    vert_gap=vert_gap,
-                                    vert_loc=vert_loc-vert_gap,
-                                    xcenter=nextx, pos=pos, parent=root)
-                nextx += dx
-        return pos
+    """
+    This is an attempt to get a tree graph from networkx.
+    If there is a cycle that is reachable from root, then this will
+    infinitely recurse.
+    graph: the graph
+    root: the root node of current branch
+    width: horizontal space allocated for this branch
+            - avoids overlap with other branches
+    vert_gap: gap between levels of hierarchy
+    vert_loc: vertical location of root
+    xcenter: horizontal location of root
+    pos: a dict saying where all nodes go if they have been assigned
+    parent: parent of this branch.
+    """
+    if pos is None:
+        pos = {root: (xcenter, vert_loc)}
+    else:
+        pos[root] = (xcenter, vert_loc)
+    neighbors = graph.neighbors(root)
+    if parent is not None:
+        neighbors.remove(parent)
+    n_len = len(neighbors)
+    dx = 0
+    if n_len != 0:
+        dx = width / n_len
+        nextx = xcenter - width / 2 + dx / 2
+        for neighbor in neighbors:
+            pos = hierarchy_pos(graph, neighbor, width=dx,
+                                vert_gap=vert_gap,
+                                vert_loc=vert_loc-vert_gap,
+                                xcenter=nextx, pos=pos, parent=root)
+            nextx += dx
+    return pos
 
 
 @expects_plt
@@ -105,7 +105,8 @@ def draw_graph(graph, title, hierarchy=False, root=None):
     plt.title(title)
     if hierarchy:
         pos = hierarchy_pos(graph, root)
-    nx.draw(graph, pos=pos, with_labels=True)
+    # out for now:
+    # nx.draw(graph, pos=pos, with_labels=True)
     plt.show()
 
 
@@ -154,10 +155,10 @@ class LineGraph():
 
         if anim and not self.headless:
             anim_func = animation.FuncAnimation(self.fig,
-                                    self.update_plot,
-                                    frames=1000,
-                                    interval=500,
-                                    blit=False)
+                                                self.update_plot,
+                                                frames=1000,
+                                                interval=500,
+                                                blit=False)
 
     @expects_plt
     def draw_graph(self, data_points, varieties):
@@ -243,16 +244,16 @@ class ScatterPlot():
         ax.set_xlim(0, width)
         ax.set_ylim(0, height)
         self.create_scats(varieties)
-        ax.legend(loc = legend_pos)
+        ax.legend(loc=legend_pos)
         ax.set_title(title)
         plt.grid(True)
 
         if anim and not self.headless:
             anim_func = animation.FuncAnimation(fig,
-                                    self.update_plot,
-                                    frames=1000,
-                                    interval=500,
-                                    blit=False)
+                                                self.update_plot,
+                                                frames=1000,
+                                                interval=500,
+                                                blit=False)
 
     @expects_plt
     def show(self):
