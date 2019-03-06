@@ -69,6 +69,10 @@ class Env(Space):
         # do we need to connect agent to env (self)?
 
     def runN(self, periods=DEF_TIME):
+        """
+            Run our model for N periods.
+            Return the total number of actions taken.
+        """
         acts = 0
         for i in range(periods):
             # before members act, give birth to new agents

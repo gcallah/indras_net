@@ -13,7 +13,7 @@ lint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
 pytests: $(PYTHONFILES)
 	nosetests --exe --verbose --with-coverage --cover-package=indra2
 
-tests: lint pytests
+tests: pytests lint
 
 %.pylint:
 	$(PYLINT) $(PYLINTFLAGS) $*.py
