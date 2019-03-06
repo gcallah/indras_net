@@ -11,15 +11,7 @@ prod: tests
 lint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
 
 pytests: $(PYTHONFILES)
-	# this loop works but won't stop the build!
-	#for f in $(TEST_FILES); \
-	#do \
-	#	python3 $$f; \
-	#done
-	python3 $(TESTDIR)/test_agent.py
-	python3 $(TESTDIR)/test_composite.py
-	python3 $(TESTDIR)/test_env.py
-	python3 $(TESTDIR)/test_space.py
+	nosetests --exe --verbose --with-coverage --cover-package=indra2
 
 tests: lint pytests
 
