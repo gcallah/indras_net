@@ -88,7 +88,7 @@ def hierarchy_pos(graph, root, width=1., vert_gap=0.2, vert_loc=0,
         for neighbor in neighbors:
             pos = hierarchy_pos(graph, neighbor, width=dx,
                                 vert_gap=vert_gap,
-                                vert_loc=vert_loc-vert_gap,
+                                vert_loc=vert_loc - vert_gap,
                                 xcenter=nextx, pos=pos, parent=root)
             nextx += dx
     return pos
@@ -101,10 +101,10 @@ def draw_graph(graph, title, hierarchy=False, root=None):
     graph is the graph to draw.
     hierarchy is whether we should draw it as a tree.
     """
-    pos = None
+#    pos = None
     plt.title(title)
-    if hierarchy:
-        pos = hierarchy_pos(graph, root)
+#    if hierarchy:
+#        pos = hierarchy_pos(graph, root)
     # out for now:
     # nx.draw(graph, pos=pos, with_labels=True)
     plt.show()
