@@ -56,11 +56,19 @@ def create_mem_str(comp):
 
 
 class CompositeTestCase(TestCase):
+    def setUp(self):
+        self.calc = create_calcguys()
+        self.camb = create_cambguys()
+        self.hardy = create_hardy()
+
+    def tearDown(self):
+        self.calc = None
+        self.camb = None
+        self.hardy = None
+
     def test_eq(self):
-        calc1 = create_calcguys()
-        camb = create_cambguys()
-        self.assertEqual(calc1, calc1)
-        self.assertNotEqual(camb, calc1)
+        self.assertEqual(self.calc, self.calc)
+        self.assertNotEqual(self.camb, self.calc)
 
     def test_str(self):
         name = "Ramanujan"
@@ -73,113 +81,98 @@ class CompositeTestCase(TestCase):
         pass
 
     def test_len(self):
-        camb = create_cambguys()
-        self.assertEqual(len(camb), 2)
+        self.assertEqual(len(self.camb), 2)
 
     def test_get(self):
-        camb = create_cambguys()
-        self.assertEqual(camb["Hardy"], create_hardy())
+        self.assertEqual(self.camb["Hardy"], self.hardy)
 
     def test_set(self):
-        camb = create_cambguys()
-        camb["jel"] = create_littlewood()
-        self.assertEqual(camb["jel"], create_littlewood())
+        self.camb["jel"] = create_littlewood()
+        self.assertEqual(self.camb["jel"], create_littlewood())
 
     def test_contains(self):
-        camb = create_cambguys()
-        self.assertTrue("Hardy" in camb)
+        self.assertTrue("Hardy" in self.camb)
 
     def test_iter(self):
-        self.assertEqual(create_mem_str(create_calcguys()), NL)
+        self.assertEqual(create_mem_str(self.calc), NL)
 
     def test_reversed(self):
-        calc = create_calcguys()
         s = ""
-        for guy in reversed(calc):
+        for guy in reversed(self.calc):
             s += guy
         self.assertEqual(s, LN)
 
     def test_mul(self):
-        camb = create_cambguys()
         newt = create_newton()
-        camb[newt.name] = newt
-        calc = create_calcguys()
-        mathguys = calc * camb
+        self.camb[newt.name] = newt
+        mathguys = self.calc * self.camb
         self.assertEqual(create_mem_str(mathguys), N)
 
     def test_imul(self):
-        camb = create_cambguys()
-        mathguys = create_calcguys() + camb
+        mathguys = self.calc + self.camb
         self.assertEqual(create_mem_str(mathguys), NL + HR)
-        mathguys *= camb  # should drop out calc!
+        mathguys *= self.camb  # should drop out calc!
         self.assertEqual(create_mem_str(mathguys), HR)
 
     def test_add(self):
-        calc = create_calcguys()
-        camb = create_cambguys()
-        mathguys = calc + camb
+        mathguys = self.calc + self.camb
         self.assertEqual(create_mem_str(mathguys), NL + HR)
-        mathguys = calc + camb + create_cambguys2()
+        mathguys = self.calc + self.camb + create_cambguys2()
         self.assertEqual(create_mem_str(mathguys), NL + HR + LR)
         # ensure we did not change original group:
-        self.assertEqual(create_mem_str(calc), NL)
+        self.assertEqual(create_mem_str(self.calc), NL)
         # let's make sure set union does not dupe members:
-        camb_self_union = camb + camb
+        camb_self_union = self.camb + self.camb
         self.assertEqual(create_mem_str(camb_self_union), HR)
         # now let's add an atom rather than a composite:
-        calch = calc + create_hardy()
-        self.assertEqual(create_mem_str(calch), NL + H)
+        self.calch = self.calc + self.hardy
+        self.assertEqual(create_mem_str(self.calch), NL + H)
 
     def test_iadd(self):
-        camb = create_cambguys()
         # let's make sure set union does not dupe members:
-        camb += camb
-        self.assertEqual(create_mem_str(camb), HR)
+        self.camb += self.camb
+        self.assertEqual(create_mem_str(self.camb), HR)
         # now test adding new members:
-        camb += create_cambguys2()
-        self.assertEqual(create_mem_str(camb), HR + LR)
+        self.camb += create_cambguys2()
+        self.assertEqual(create_mem_str(self.camb), HR + LR)
         # now test adding an atomic entity:
-        camb += create_newton()
-        self.assertEqual(create_mem_str(camb), HR + LR + N)
+        self.camb += create_newton()
+        self.assertEqual(create_mem_str(self.camb), HR + LR + N)
 
     def test_sub(self):
-        calc = create_calcguys()
-        mathguys = calc + create_cambguys() + create_cambguys2()
-        cambguys = mathguys - calc
+        mathguys = self.calc + self.camb + create_cambguys2()
+        cambguys = mathguys - self.calc
         self.assertEqual(create_mem_str(cambguys), HR + LR)
         # now test deleting an atom:
-        hardygone = cambguys - create_hardy()
+        hardygone = cambguys - self.hardy
         self.assertEqual(create_mem_str(hardygone), R + LR)
         # make sure we didn't change original group:
         self.assertEqual(create_mem_str(cambguys), HR + LR)
         # delete something that ain't there:
-        cambguys = cambguys - calc
+        cambguys = cambguys - self.calc
         self.assertEqual(create_mem_str(cambguys), HR + LR)
 
     def test_isub(self):
-        calc = create_calcguys()
-        mathguys = calc + create_cambguys() + create_cambguys2()
-        mathguys -= calc
+        mathguys = self.calc + self.camb + create_cambguys2()
+        mathguys -= self.calc
         self.assertEqual(create_mem_str(mathguys), HR + LR)
         # now test deleting an atom:
-        mathguys -= create_hardy()
+        mathguys -= self.hardy
         self.assertEqual(create_mem_str(mathguys), R + LR)
 
     def test_call(self):
-        mathguys = create_cambguys() + create_calcguys()
+        mathguys = self.camb + create_calcguys()
         acts = mathguys()
         self.assertEqual(acts, 3)  # hardy is passive!
 
     def test_subset(self):
-        calc = create_calcguys()
-        just_n = calc.subset(match_name, "Newton", name="Just Newton!")
+        just_n = self.calc.subset(match_name, "Newton", name="Just Newton!")
         self.assertEqual(create_mem_str(just_n), N)
-        just_l = calc.subset(max_duration, 25, name="Just Leibniz!")
+        just_l = self.calc.subset(max_duration, 25, name="Just Leibniz!")
         self.assertEqual(create_mem_str(just_n), N)
 
     def test_rand_member(self):
-        calc = create_calcguys()
-        rand_guy = calc.rand_member()
+        rand_guy = self.calc.rand_member()
         self.assertIsNotNone(rand_guy)
         empty_set = Composite("Empty")
         rand_guy = empty_set.rand_member()
@@ -191,14 +184,12 @@ class CompositeTestCase(TestCase):
     def test_is_mbr_comp(self):
         math_guys = create_mathguys()
         self.assertTrue(math_guys.is_mbr_comp(CALC_GUYS))
-        calc = create_calcguys()
-        self.assertFalse(calc.is_mbr_comp("Newton"))
+        self.assertFalse(self.calc.is_mbr_comp("Newton"))
 
     def test_pop_count(self):
         math_guys = create_mathguys()
         self.assertEqual(math_guys.pop_count(CALC_GUYS), 2)
-        calc = create_calcguys()
-        self.assertEqual(calc.pop_count("Newton"), 1)
+        self.assertEqual(self.calc.pop_count("Newton"), 1)
 
 if __name__ == '__main__':
     main()
