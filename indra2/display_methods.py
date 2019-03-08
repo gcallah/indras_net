@@ -11,7 +11,7 @@ import numpy as np
 import logging
 import io
 import os
-from user import TERMINAL, WEB
+from indra2.user import TERMINAL, WEB
 plt_present = True
 
 try:

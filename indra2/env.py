@@ -5,9 +5,9 @@ of agents that share a timeline and a Space.
 # import json
 import os
 import getpass
-import display_methods as disp
-from space import Space
-from user import TermUser, TERMINAL, WEB
+import indra2.display_methods as disp
+from indra2.space import Space
+from indra2.user import TermUser, TERMINAL, WEB
 
 
 DEF_USER = "User"
