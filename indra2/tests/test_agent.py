@@ -67,24 +67,31 @@ def create_ramsey():
 
 
 class AgentTestCase(TestCase):
+    def setUp(self):
+        self.leib = create_leibniz()
+        self.newt = create_newton()
+        self.hardy = create_hardy()
+
+    def tearDown(self):
+        self.leib = None
+        self.newt = None
+
     def test_eq(self):
-        l1 = create_leibniz()
         l2 = create_leibniz()
         l3 = create_other_leibniz()
         n = create_newton()
-        self.assertTrue(l1 == l2)
-        self.assertNotEqual(l1, n)
-        self.assertNotEqual(l1, l3)
+        self.assertTrue(self.leib == l2)
+        self.assertNotEqual(self.leib, n)
+        self.assertNotEqual(self.leib, l3)
         # change a field and see that they aren't equal:
         l2["place"] = 1.0
-        self.assertNotEqual(l1, l2)
+        self.assertNotEqual(self.leib, l2)
 
     def test_str(self):
         ent = create_ramanujan()
         self.assertEqual("Ramanujan", str(ent))
 
     def test_repr(self):
-        ent = create_hardy()
         rep = ('{\n    "name": "Hardy",'
                + '\n    "duration": 10,'
                + '\n    "pos": null,'
@@ -92,14 +99,13 @@ class AgentTestCase(TestCase):
                + '{\n        "' + ANM + '": ' + str(AGE)
                + '\n    },'
                + '\n    "groups": ""\n}')
-        self.assertEqual(rep, repr(ent))
+        self.assertEqual(rep, repr(self.hardy))
 
     def test_len(self):
         self.assertEqual(len(create_newton()), 3)
 
     def test_get(self):
-        ent = create_leibniz()
-        self.assertEqual(ent["time"], LEIBBYEAR)
+        self.assertEqual(self.leib["time"], LEIBBYEAR)
 
     def test_set(self):
         ent = create_leibniz()
