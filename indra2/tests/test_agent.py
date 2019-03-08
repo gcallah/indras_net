@@ -81,7 +81,7 @@ class AgentTestCase(TestCase):
         l2 = create_leibniz()
         l3 = create_other_leibniz()
         self.assertTrue(self.leib == l2)
-        self.assertNotEqual(self.leib, sel.newt)
+        self.assertNotEqual(self.leib, self.newt)
         self.assertNotEqual(self.leib, l3)
         # change a field and see that they aren't equal:
         l2["place"] = 1.0
