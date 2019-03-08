@@ -75,13 +75,13 @@ class AgentTestCase(TestCase):
     def tearDown(self):
         self.leib = None
         self.newt = None
+        self.hardy = None
 
     def test_eq(self):
         l2 = create_leibniz()
         l3 = create_other_leibniz()
-        n = create_newton()
         self.assertTrue(self.leib == l2)
-        self.assertNotEqual(self.leib, n)
+        self.assertNotEqual(self.leib, sel.newt)
         self.assertNotEqual(self.leib, l3)
         # change a field and see that they aren't equal:
         l2["place"] = 1.0
