@@ -7,5 +7,6 @@ install:
 # command to run build (perhaps just tests):
 env:
     - PYTHONPATH=/home/travis/build/gcallah/indras_net
+# we probably want to build the prod container here as well:
 script:
     - nosetests indra2/tests/test_*.py
