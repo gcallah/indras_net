@@ -105,8 +105,8 @@ class AgentTestCase(TestCase):
         self.assertEqual(len(create_newton()), 3)
 
     def test_get(self):
-        # self.assertEqual(self.leib["time"], LEIBBYEAR)
-        self.assertEqual(self.leib["time"], 0)  # just testing travis ci
+        self.assertEqual(self.leib["time"], LEIBBYEAR)
+        # self.assertEqual(self.leib["time"], 0)  # just testing travis ci
         # testing
 
     def test_set(self):
