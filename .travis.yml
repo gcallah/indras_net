@@ -6,4 +6,4 @@ install:
     - pip install -r requirements-dev.txt
 # command to run build (perhaps just tests):
 script:
-    - nosetests gcallah/indras_net/indra2
+    - nosetests indra2
