@@ -7,4 +7,4 @@ install:
     - pip install -r requirements-dev.txt
 # command to run build (perhaps just tests):
 script:
-    - nosetests indra2
+    - nosetests indra2/tests/test_*.py
