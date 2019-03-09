@@ -51,12 +51,13 @@ def wolf_action(agent):
         prey.die()
     agent["time_to_repr"] -= 1
     if agent["time_to_repr"] == 0:
-        #reproduce
-        meadow.add_child(Agent("wolf" + str(wolves_created), duration=WOLF_LIFESPAN,
-                 action=wolf_action,
-                 attrs={"time_to_repr": WOLF_REPRO_PERIOD}))
+        # reproduce
+        meadow.add_child(Agent("wolf" + str(wolves_created),
+                               duration=WOLF_LIFESPAN,
+                               action=wolf_action,
+                               attrs={"time_to_repr": WOLF_REPRO_PERIOD}))
         wolves_created += 1
-        #wolves += create_wolf(1)
+        # wolves += create_wolf(1)
         agent["time_to_repr"] = WOLF_REPRO_PERIOD
     print("I'm " + agent.name + " and my remaining life is: "
           + str(agent.duration))
@@ -74,10 +75,6 @@ def create_sheep(i):
     return Agent("sheep" + str(i), duration=SHEEP_LIFESPAN,
                  action=sheep_action,
                  attrs={"time_to_repr": SHEEP_REPRO_PERIOD})
-
-
-# def eat(agent):
-# agent.die()
 
 
 wolves = Composite("wolves")
