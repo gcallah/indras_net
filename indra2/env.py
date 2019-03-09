@@ -66,6 +66,7 @@ class Env(Space):
         Put a child agent in the womb.
         """
         self.womb.append(agent)
+        print("{} added to the womb".format(agent.name))
         # do we need to connect agent to env (self)?
 
     def runN(self, periods=DEF_TIME):
@@ -78,6 +79,11 @@ class Env(Space):
             # before members act, give birth to new agents
             # we will have tuple of agent and group
             # do group += agent
+
+            if self.womb is not None:
+                for agent in self.womb:
+                    self.members['wolves'] += agent
+                del self.womb[:]
             for mbr in self.members:
                 if self.is_mbr_comp(mbr):
                     self.pop_hist.record_pop(mbr, self.pop_count(mbr))
