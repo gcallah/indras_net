@@ -17,5 +17,5 @@ Work done:
 
 Work done:
 •	Implemented change in color functionality in trendsetter and follower actions. The trendsetters change their colors when they see followers wearing the same color while the followers change their colors  when they see the trendsetters wearing opposite colors.
-•	Errors solved related to nose. 
+•	Errors solved related to nose as it was not running properly so make prod was not working but that got fixed by installing nose on my mac.
 
