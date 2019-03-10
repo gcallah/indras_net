@@ -49,15 +49,12 @@ def wolf_action(agent):
             print(str(agent) + " is eating " + str(prey))
         agent.duration += prey.duration
         prey.die()
+
     agent["time_to_repr"] -= 1
     if agent["time_to_repr"] == 0:
         # reproduce
-        meadow.add_child(Agent("wolf" + str(wolves_created),
-                               duration=WOLF_LIFESPAN,
-                               action=wolf_action,
-                               attrs={"time_to_repr": WOLF_REPRO_PERIOD}))
-        wolves_created += 1
-        # wolves += create_wolf(1)
+        meadow.add_child(create_wolf(wolves_created))
+        # wolves += create_wolf(wolves_created)
         agent["time_to_repr"] = WOLF_REPRO_PERIOD
     print("I'm " + agent.name + " and my remaining life is: "
           + str(agent.duration))
