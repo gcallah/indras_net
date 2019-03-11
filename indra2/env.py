@@ -86,6 +86,7 @@ class Env(Space):
 
             if self.womb is not None:
                 for agent in self.womb:
+                    # we can't do this just for wolves!
                     self.members['wolves'] += agent
                 del self.womb[:]
             for mbr in self.members:
