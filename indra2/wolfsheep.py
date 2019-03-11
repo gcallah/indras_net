@@ -35,10 +35,12 @@ def sheep_action(agent):
 
 def wolf_action(agent):
     global wolves
+    global wolves_created
 
     num_sheep = len(sheep)
     if DEBUG2:
         print("Num sheep = " + str(num_sheep))
+
     # Wolves eat close sheep instead of ratio
     hood = sheep.subset(in_hood, agent, HOOD_SIZE, name="hood")
     if len(hood) > 0:
@@ -47,8 +49,11 @@ def wolf_action(agent):
             print(str(agent) + " is eating " + str(prey))
         agent.duration += prey.duration
         prey.die()
+
     agent["time_to_repr"] -= 1
     if agent["time_to_repr"] == 0:
+        # reproduce
+        meadow.add_child(create_wolf(wolves_created))
         # wolves += create_wolf(wolves_created)
         agent["time_to_repr"] = WOLF_REPRO_PERIOD
     print("I'm " + agent.name + " and my remaining life is: "
@@ -67,10 +72,6 @@ def create_sheep(i):
     return Agent("sheep" + str(i), duration=SHEEP_LIFESPAN,
                  action=sheep_action,
                  attrs={"time_to_repr": SHEEP_REPRO_PERIOD})
-
-
-# def eat(agent):
-# agent.die()
 
 
 wolves = Composite("wolves")

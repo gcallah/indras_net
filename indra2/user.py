@@ -8,10 +8,11 @@ from indra2.agent import Agent  # , DEBUG2  # DEBUG,
 TERMINAL = "terminal"
 WEB = "web"
 GUI = "gui"
+NOT_IMPL = "Choice not yet implemented."
 
 
 def not_impl(user):
-    user.tell("Choice not yet implemented.")
+    return user.tell(NOT_IMPL)
 
 
 def run(user):
@@ -57,6 +58,7 @@ class TermUser(Agent):
 
     def tell(self, msg, end='\n'):
         print(msg, end=end)
+        return msg
 
     def ask(self, msg, default=None):
         self.tell(msg, end=' ')
