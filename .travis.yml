@@ -14,7 +14,7 @@ env:
 
 script:
     - nosetests indra2/tests/test_*.py
-    echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
     - make container
 
 notifications:
