@@ -9,6 +9,9 @@ import indra2.display_methods as disp
 from indra2.space import Space
 from indra2.user import TermUser, TERMINAL, WEB
 
+DEBUG = True
+DEBUG2 = False
+
 
 DEF_USER = "User"
 DEF_TIME = 10
@@ -66,7 +69,8 @@ class Env(Space):
         Put a child agent in the womb.
         """
         self.womb.append(agent)
-        print("{} added to the womb".format(agent.name))
+        if DEBUG:
+            print("{} added to the womb".format(agent.name))
         # do we need to connect agent to env (self)?
 
     def runN(self, periods=DEF_TIME):
