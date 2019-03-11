@@ -1,14 +1,26 @@
 language: python
 python:
     - "3.6"
+
+services:
+    - docker
+
 # command to install dependencies:
 install:
-    - pip install -r requirements-dev.txt
+    - pip install -r docker/requirements-dev.txt
+
 # command to run build (perhaps just tests):
 env:
     - PYTHONPATH=/home/travis/build/gcallah/indras_net
-# we probably want to build the prod container here as well:
-script:
-    - nosetests indra2/tests/test_*.py
+
+jobs:
+    include:
+        -stage: test
+         name: "Run unit tests"
+         script: nosetests indra2/tests/test_*.py
+        -stage: deploy
+         name: "Deploy to DockerHub"
+         script: make container
+
 notifications:
     slack: indras-net:QlnWeHMOpmEHCGJfG3SndDTr
