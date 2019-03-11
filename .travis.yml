@@ -14,16 +14,8 @@ env:
 
 script:
     - nosetests indra2/tests/test_*.py
+    echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
     - make container
-
-#jobs:
-#    include:
-#        -stage: test
-#         name: "Run unit tests"
-#         script: nosetests indra2/tests/test_*.py
-#        -stage: deploy
-#         name: "Deploy to DockerHub"
-#         script: make container
 
 notifications:
     slack: indras-net:QlnWeHMOpmEHCGJfG3SndDTr
