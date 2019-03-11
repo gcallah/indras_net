@@ -12,14 +12,18 @@ install:
 env:
     - PYTHONPATH=/home/travis/build/gcallah/indras_net
 
-jobs:
-    include:
-        -stage: test
-         name: "Run unit tests"
-         script: nosetests indra2/tests/test_*.py
-        -stage: deploy
-         name: "Deploy to DockerHub"
-         script: make container
+script:
+    - nosetests indra2/tests/test_*.py
+    - make container
+
+#jobs:
+#    include:
+#        -stage: test
+#         name: "Run unit tests"
+#         script: nosetests indra2/tests/test_*.py
+#        -stage: deploy
+#         name: "Deploy to DockerHub"
+#         script: make container
 
 notifications:
     slack: indras-net:QlnWeHMOpmEHCGJfG3SndDTr
