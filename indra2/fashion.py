@@ -58,7 +58,7 @@ def tsetter_action(agent):
     hood = followers.subset(in_hood, agent, HOOD_SIZE, name="hood")
     num_followers = len(hood)
     filter_t = is_blue
-    if is_blue(agent):
+    if is_red(agent):
         filter_t = is_red
     same_followers = len(hood.subset(filter_t, name="FREDS"))
     if (same_followers > 0) and (same_followers > (num_followers // 2)):

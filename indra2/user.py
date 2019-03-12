@@ -28,8 +28,8 @@ def leave(user):
     exit(0)
 
 
-def scatter_plot(user):
-    user.tell("Drawing a scatter plot.")
+def plot(user):
+    user.tell("Drawing a plot.")
     user.env.plot()
 
 
@@ -42,7 +42,7 @@ RUN = 1
 
 term_menu = {RUN: (str(RUN) + ") Run for N periods (DEFAULT).", run),
              2: ("2) Display the population graph.", not_impl),
-             3: ("3) Display the scatter plot.", scatter_plot),
+             3: ("3) Display the plot.", plot),
              4: ("4) Leave menu for interactive python session.", not_impl),
              QUIT: (str(QUIT) + ") Quit.", leave)}
 
