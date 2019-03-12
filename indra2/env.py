@@ -110,9 +110,7 @@ class Env(Space):
             self.user.tell("ERROR: No graphing package installed")
             return
 
-        plot_type = self.plot_type
-
-        if plot_type == LN:
+        if self.plot_type == LN:
             # TODO: imporve implementation of the iterator of composite?
             period, data = self.line_data()
             self.line_graph = disp.LineGraph(self.plot_title + self.name,
@@ -120,7 +118,7 @@ class Env(Space):
                                              is_headless=self.headless())
             self.image_bytes = self.line_graph.show()
 
-        elif plot_type == SC:
+        elif self.plot_type == SC:
             data = self.plot_data()
             self.scatter_plot = disp.ScatterPlot(
                 self.plot_title, data,
