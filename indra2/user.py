@@ -28,8 +28,8 @@ def leave(user):
     exit(0)
 
 
-def scatter_plot(user):
-    user.tell("Drawing a scatter plot.")
+def plot(user):
+    user.tell("Drawing a plot.")
     user.env.plot()
 
 
@@ -72,12 +72,10 @@ class TermUser(Agent):
         self.tell("What would you like to do?")
         for key, item in term_menu.items():
             self.tell(item[MSG])
-        try:
-            choice = int(self.ask("Type the # of your choice then Enter:",
-                         default=RUN))
-            if choice in term_menu:
-                term_menu[choice][FUNC](self)
-            else:
-                raise ValueError
-        except ValueError:
+        choice = int(self.ask("Type the # of your choice then Enter:",
+                     default=RUN))
+        if choice in term_menu:
+            print("has choice")
+            term_menu[choice][FUNC](self)
+        else:
             self.tell("Invalid option.")
