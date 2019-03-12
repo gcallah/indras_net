@@ -45,7 +45,8 @@ class Env(Space):
         super().__init__(name, **kwargs)
         self.pop_hist = PopHist()  # this will record pops across time
         # Make sure variesties are present in the history
-        self.record_pop()
+        for mbr in self.members:
+            self.pop_hist.record_pop(mbr, self.pop_count(mbr))
 
         self.womb = []  # for agents waiting to be born
 
@@ -91,16 +92,18 @@ class Env(Space):
                     # we can't do this just for wolves!
                     self.members['wolves'] += agent
                 del self.womb[:]
-            self.record_pop()
+
+            # TODO: A workaround for the current issue
+            for mbr in self.pop_hist.pops:
+                if mbr in self.members and self.is_mbr_comp(mbr):
+                    self.pop_hist.record_pop(mbr, self.pop_count(mbr))
+                else:
+                    self.pop_hist.record_pop(mbr, 0)
+
             curr_acts = super().__call__()
             print(f"\nIn period {i} there were {curr_acts} actions taken.\n")
             acts += curr_acts
         return acts
-
-    def record_pop(self):
-        for mbr in self.members:
-            if self.is_mbr_comp(mbr):
-                self.pop_hist.record_pop(mbr, self.pop_count(mbr))
 
     def plot(self):
         """
