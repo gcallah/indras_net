@@ -68,6 +68,8 @@ class Env(Space):
     def add_child(self, agent, group):
         """
         Put a child agent in the womb.
+        agent: child to add
+        group: which group child will join
         """
         self.womb.append((agent, group))
         if DEBUG:
