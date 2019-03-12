@@ -75,7 +75,6 @@ class TermUser(Agent):
         choice = int(self.ask("Type the # of your choice then Enter:",
                      default=RUN))
         if choice in term_menu:
-            print("has choice")
             term_menu[choice][FUNC](self)
         else:
             self.tell("Invalid option.")
