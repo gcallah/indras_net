@@ -114,14 +114,11 @@ class Env(Space):
 
         if plot_type == LN:
             # TODO: imporve implementation of the iterator of composite?
-            try:
-                period, data = self.line_data()
-                self.line_graph = disp.LineGraph(self.plot_title + self.name,
-                                                 data, period,
-                                                 is_headless=self.headless())
-                self.image_bytes = self.line_graph.show()
-            except ValueError:
-                pass
+            period, data = self.line_data()
+            self.line_graph = disp.LineGraph(self.plot_title + self.name,
+                                             data, period,
+                                             is_headless=self.headless())
+            self.image_bytes = self.line_graph.show()
 
         elif plot_type == SC:
             data = self.plot_data()
