@@ -65,11 +65,11 @@ class Env(Space):
                 # run until user exit!
                 self.user()
 
-    def add_child(self, agent):
+    def add_child(self, agent, group):
         """
         Put a child agent in the womb.
         """
-        self.womb.append(agent)
+        self.womb.append((agent, group))
         if DEBUG:
             print("{} added to the womb".format(agent.name))
         # do we need to connect agent to env (self)?
@@ -86,11 +86,8 @@ class Env(Space):
             # do group += agent
 
             if self.womb is not None:
-                for agent in self.womb:
-                    if 'wolf' in agent.name:
-                        self.members['wolves'] += agent
-                    elif 'sheep' in agent.name:
-                        self.members['sheep'] += agent
+                for (agent, group) in self.womb:
+                    group += agent
                 del self.womb[:]
 
             # TODO: A workaround for the current issue

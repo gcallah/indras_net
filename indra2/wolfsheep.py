@@ -53,7 +53,7 @@ def wolf_action(agent):
     agent["time_to_repr"] -= 1
     if agent["time_to_repr"] == 0:
         # reproduce
-        meadow.add_child(create_wolf(wolves_created))
+        meadow.add_child(create_wolf(wolves_created), wolves)
         # wolves += create_wolf(wolves_created)
         agent["time_to_repr"] = WOLF_REPRO_PERIOD
     print("I'm " + agent.name + " and my remaining life is: "
