@@ -57,17 +57,17 @@ def follower_action(agent):
 def tsetter_action(agent):
     hood = followers.subset(in_hood, agent, HOOD_SIZE, name="hood")
     num_followers = len(hood)
-    filter_t = is_blue
-    if is_blue(agent):
-        filter_t = is_red
-    same_followers = len(hood.subset(filter_t, name="FREDS"))
-    if (same_followers > 0) and (same_followers > (num_followers // 2)):
+    # filter_t = is_blue
+    # if is_blue(agent):
+    #     filter_t = is_red
+    # same_followers = len(hood.subset(filter_t, name="FREDS"))
+    if (num_followers > 0) and (num_followers > (num_followers // 2)):
         change_color(agent)
         if DEBUG:
             print(agent.name + " changed color!")
     print("I'm " + agent.name + " and I saw "
-          + str(same_followers)
-          + " similar out of " + str(same_followers) + ".")
+          + str(num_followers)
+          + " similar out of " + str(num_followers) + ".")
     # red_followers = hood.subset(is_blue, name="FREDS")
     # print("I'm " + agent.name + " and I saw " + str(len(red_followers))
     #       + " blue out of " + str(num_followers) + ".")
