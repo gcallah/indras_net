@@ -51,8 +51,6 @@ class Env(Space):
         self.womb = []  # for agents waiting to be born
 
         # Attributes for plotting
-        # TODO: feed values in constructor?
-        self.plot_type = plot_type
         self.plot_title = "Environment Plot"
         self.image_bytes = None
 
@@ -107,7 +105,7 @@ class Env(Space):
             acts += curr_acts
         return acts
 
-    def plot(self):
+    def plot(self, plot_type):
         """
         Show where agents are in graphical form.
         """
@@ -115,22 +113,25 @@ class Env(Space):
             self.user.tell("ERROR: No graphing package installed")
             return
 
-        if self.plot_type == LN:
-            # TODO: imporve implementation of the iterator of composite?
-            period, data = self.line_data()
-            self.line_graph = disp.LineGraph(self.plot_title + self.name,
-                                             data, period,
-                                             is_headless=self.headless())
-            self.image_bytes = self.line_graph.show()
+        try:
+            if plot_type == LN:
+                # TODO: imporve implementation of the iterator of composite?
+                period, data = self.line_data()
+                self.line_graph = disp.LineGraph(self.plot_title + self.name,
+                                                 data, period,
+                                                 is_headless=self.headless())
+                self.image_bytes = self.line_graph.show()
 
-        elif self.plot_type == SC:
-            data = self.plot_data()
-            self.scatter_plot = disp.ScatterPlot(
-                self.plot_title, data,
-                int(self.width), int(self.height),
-                anim=True, data_func=self.plot_data,
-                is_headless=self.headless())
-            self.image_bytes = self.scatter_plot.show()
+            elif plot_type == SC:
+                data = self.plot_data()
+                self.scatter_plot = disp.ScatterPlot(
+                    self.plot_title, data,
+                    int(self.width), int(self.height),
+                    anim=True, data_func=self.plot_data,
+                    is_headless=self.headless())
+                self.image_bytes = self.scatter_plot.show()
+        except Exception as e:
+            self.user.tell("Error when drawing a plot: " + str(e))
         return self.image_bytes
 
     def line_data(self):
