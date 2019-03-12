@@ -11,8 +11,6 @@ from indra2.user import TermUser, TERMINAL, WEB
 
 DEBUG = True
 DEBUG2 = False
-
-
 DEF_USER = "User"
 DEF_TIME = 10
 
@@ -43,15 +41,19 @@ class Env(Space):
     An env *is* a space and *has* a timeline.
     That makes the inheritance work out as we want it to.
     """
-    def __init__(self, name, **kwargs):
+    def __init__(self, name, plot_type=SC, **kwargs):
         super().__init__(name, **kwargs)
-        self.pop_hist = PopHist()   # this will record pops across time
+        self.pop_hist = PopHist()  # this will record pops across time
+        # Make sure variesties are present in the history
+        self.record_pop()
+
         self.womb = []  # for agents waiting to be born
 
         # Attributes for plotting
         # TODO: feed values in constructor?
-        self.plot_type = SC
+        self.plot_type = plot_type
         self.plot_title = "Environment Plot"
+        self.image_bytes = None
 
         self.user_type = os.getenv("user_type", TERMINAL)
         if self.user_type == TERMINAL:
@@ -89,13 +91,16 @@ class Env(Space):
                     # we can't do this just for wolves!
                     self.members['wolves'] += agent
                 del self.womb[:]
-            for mbr in self.members:
-                if self.is_mbr_comp(mbr):
-                    self.pop_hist.record_pop(mbr, self.pop_count(mbr))
+            self.record_pop()
             curr_acts = super().__call__()
             print(f"\nIn period {i} there were {curr_acts} actions taken.\n")
             acts += curr_acts
         return acts
+
+    def record_pop(self):
+        for mbr in self.members:
+            if self.is_mbr_comp(mbr):
+                self.pop_hist.record_pop(mbr, self.pop_count(mbr))
 
     def plot(self):
         """
@@ -107,10 +112,18 @@ class Env(Space):
 
         plot_type = self.plot_type
 
-        # TODO: implement line graph
-        if plot_type == "LN":
-            pass  # return super().plot()
-        elif plot_type == "SC":
+        if plot_type == LN:
+            # TODO: imporve implementation of the iterator of composite?
+            try:
+                period, data = self.line_data()
+                self.line_graph = disp.LineGraph(self.plot_title + self.name,
+                                                 data, period,
+                                                 is_headless=self.headless())
+                self.image_bytes = self.line_graph.show()
+            except ValueError:
+                pass
+
+        elif plot_type == SC:
             data = self.plot_data()
             self.scatter_plot = disp.ScatterPlot(
                 self.plot_title, data,
@@ -118,7 +131,21 @@ class Env(Space):
                 anim=True, data_func=self.plot_data,
                 is_headless=self.headless())
             self.image_bytes = self.scatter_plot.show()
-            return self.image_bytes
+        return self.image_bytes
+
+    def line_data(self):
+        data = {}
+        # TODO: implement period?
+        period = None
+        for var in self.pop_hist.pops:
+            data[var] = {}
+            data[var]["data"] = self.pop_hist.pops[var]
+            # TODO: define colors in env?
+            # data[var]["color"] = self.agents.get_var_color(var)
+            # A temporary implementation of period
+            if not period:
+                period = len(data[var]["data"])
+        return (period, data)
 
     def plot_data(self):
         if not disp.plt_present:
