@@ -5,7 +5,7 @@
 from indra2.agent import Agent
 from indra2.composite import Composite
 from indra2.space import in_hood
-from env import Env
+from env import Env, LN
 
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
@@ -88,7 +88,7 @@ for i in range(NUM_SHEEP):
 if DEBUG2:
     print(sheep.__repr__())
 
-meadow = Env("meadow", members=[wolves, sheep])
+meadow = Env("meadow", members=[wolves, sheep], plot_type=LN)
 if DEBUG2:
     print(meadow.__repr__())
 
