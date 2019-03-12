@@ -79,5 +79,5 @@ class TermUser(Agent):
                 term_menu[choice][FUNC](self)
             else:
                 raise ValueError
-        except ValueError:
-            self.tell("Invalid option.")
+        except ValueError as e:
+            self.tell("Invalid option: " + str(e))
