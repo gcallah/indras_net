@@ -3,6 +3,7 @@ BOX_DATA = $(BOX_DIR)/data
 BOXPLOTS = $(shell ls $(BOX_DATA)/plot*.pdf)
 DOCKER_DIR = docker
 DJANGO_DIR = IndrasNet
+REPO = indras_net
 MODELS_DIR = models
 PYLINT = flake8
 PYLINTFLAGS = 
@@ -44,7 +45,8 @@ dev_container: $(DOCKER_DIR)/Dockerfile $(DOCKER_DIR)/requirements.txt $(DOCKER_
 	docker push gcallah/indra-dev:latest
 
 prod_container: $(DOCKER_DIR)/Dockerfile $(DOCKER_DIR)/requirements.txt
-	docker build -t gcallah/indra docker --no-cache -f $(DOCKER_DIR)/Deployable
+	docker system prune -f
+	docker build -t gcallah/indra docker --no-cache --build-arg repo=$(REPO) -f $(DOCKER_DIR)/Deployable
 
 deploy_container:
 	docker push gcallah/indra:latest

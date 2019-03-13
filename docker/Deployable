@@ -1,17 +1,19 @@
 FROM python:3.6.0
 
+ARG repo
+
 COPY requirements.txt /requirements.txt
 
 RUN pip install --upgrade pip
 
 RUN pip install -r requirements.txt
 
-ENV PYTHONPATH "/home/indras_net:${PYTHONPATH}"
+ENV PYTHONPATH "/home/$repo:${PYTHONPATH}"
 
 WORKDIR /home/
-RUN git clone https://github.com/gcallah/indras_net.git
+RUN git clone https://github.com/gcallah/$repo.git
 
-WORKDIR /home/indras_net/
+WORKDIR /home/$repo/
 
 EXPOSE 8000
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
