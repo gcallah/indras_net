@@ -1,0 +1,17 @@
+FROM python:3.6.0
+
+COPY requirements.txt /requirements.txt
+
+RUN pip install --upgrade pip
+
+RUN pip install -r requirements.txt
+
+ENV PYTHONPATH "/home/indras_net:${PYTHONPATH}"
+
+WORKDIR /home/
+RUN git clone https://github.com/gcallah/indras_net.git
+
+WORKDIR /home/indras_net/
+
+EXPOSE 8000
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

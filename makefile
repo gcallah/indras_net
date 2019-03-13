@@ -39,8 +39,14 @@ db: $(DJANGO_DIR)/models.py
 	-git commit $(DJANGO_DIR)/migrations/*.py
 	git push origin master
 
-container: $(DOCKER_DIR)/Dockerfile $(DOCKER_DIR)/requirements.txt $(DOCKER_DIR)/requirements.txt
-	docker build -t gcallah/indra docker
+dev_container: $(DOCKER_DIR)/Dockerfile $(DOCKER_DIR)/requirements.txt $(DOCKER_DIR)/requirements-dev.txt
+	docker build -t gcallah/indra-dev docker
+	docker push gcallah/indra-dev:latest
+
+prod_container: $(DOCKER_DIR)/Dockerfile $(DOCKER_DIR)/requirements.txt
+	docker build -t gcallah/indra docker --no-cache -f $(DOCKER_DIR)/Deployable
+
+deploy_container:
 	docker push gcallah/indra:latest
 
 nocrud:
