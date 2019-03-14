@@ -25,7 +25,7 @@ prod: $(SRCS) $(OBJ)
 	-git commit -a -m "Building production."
 	git pull origin master
 	git push origin master
-	ssh indrasnet@ssh.pythonanywhere.com 'cd /home/indrasnet/indras_net; /home/indrasnet/indras_net/rebuild.sh'
+	ssh indrasnet@ssh.pythonanywhere.com 'cd /home/indrasnet/$(REPO); /home/indrasnet/$(REPO)/rebuild.sh'
 
 lint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
 
@@ -41,15 +41,15 @@ db: $(DJANGO_DIR)/models.py
 	git push origin master
 
 dev_container: $(DOCKER_DIR)/Dockerfile $(DOCKER_DIR)/requirements.txt $(DOCKER_DIR)/requirements-dev.txt
-	docker build -t gcallah/indra-dev docker
-	docker push gcallah/indra-dev:latest
+	docker build -t gcallah/$(REPO)-dev docker
+	docker push gcallah/$(REPO)-dev:latest
 
-prod_container: $(DOCKER_DIR)/Dockerfile $(DOCKER_DIR)/requirements.txt
+prod_container: $(DOCKER_DIR)/Deployable $(DOCKER_DIR)/requirements.txt
 	docker system prune -f
-	docker build -t gcallah/indra docker --no-cache --build-arg repo=$(REPO) -f $(DOCKER_DIR)/Deployable
+	docker build -t gcallah/$(REPO) docker --no-cache --build-arg repo=$(REPO) -f $(DOCKER_DIR)/Deployable
 
 deploy_container:
-	docker push gcallah/indra:latest
+	docker push gcallah/$(REPO):latest
 
 nocrud:
 	-rm *~
