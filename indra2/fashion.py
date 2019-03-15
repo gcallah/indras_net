@@ -56,7 +56,23 @@ def follower_action(agent):
 
 
 def tsetter_action(agent):
-    pass
+    # pass
+    num_red_fs = max(len(red_followers.subset(in_hood, agent, HOOD_SIZE)),
+                     NOT_ZERO)   # prevent div by zero!
+    num_blue_fs = max(len(blue_followers.subset(in_hood, agent, HOOD_SIZE)),
+                      NOT_ZERO)   # prevent div by zero!
+    ratio = 1
+    if DEBUG:
+        print("In trendsetter action, we get num_red_fs = " + str(num_red_fs)
+              + " and num_blue_fs = " + str(num_blue_fs))
+    if agent.primary_group() == blue_tsetters:
+        ratio = num_blue_fs / num_red_fs
+    else:
+        ratio = num_red_fs / num_blue_fs
+
+    if ratio < 1:
+        change_color(agent)
+
 
 
 def create_tsetter(i, color=RED):
