@@ -27,11 +27,47 @@ def type_hash(agent):
     return len(agent)  # temp solution!
 
 
+def is_composite(thing):
+    return hasattr(thing, 'members')
+
+
 def is_space(thing):
     """
     How do we determine if a group we are a member of is a space?
     """
     return hasattr(thing, "height")
+
+
+def join(agent1, agent2):
+    """
+        Create connection between agent1 and agent2.
+    """
+    if not is_composite(agent1):
+        print("Attempt to place " + str(agent2)
+              + " in non-group " + str(agent1))
+    else:
+        agent1.add_member(agent2)
+        agent2.add_group(agent1)
+
+
+def split(agent1, agent2):
+    """
+        Break connection between agent1 and agent2.
+    """
+    if not is_composite(agent1):
+        print("Attempt to remove " + str(agent2)
+              + " from non-group " + str(agent1))
+    else:
+        agent1.del_member(agent2)
+        agent2.del_group(agent1)
+
+
+def switch(agent, grp1, grp2):
+    """
+        Move agent from grp1 to grp2.
+    """
+    split(grp1, agent)
+    join(grp2, agent)
 
 
 class AgentEncoder(json.JSONEncoder):
@@ -57,7 +93,7 @@ class Agent(object):
     here.
     """
     def __init__(self, name, attrs=None, action=None, duration=INF,
-                 groups=None):
+                 prim_group=None):
         self.name = name
         self.action = action
         self.duration = duration
@@ -70,16 +106,17 @@ class Agent(object):
             self.val_vect = np.array([])
         self.type_sig = type_hash(self)
         self.active = True
-        if groups is not None:
-            self.groups = groups
-        else:
-            self.groups = {}
+        self.groups = {}
         self.pos = None
         self.locator = None
-        if groups is not None:
-            for grp in iter(groups.values()):
-                if is_space(grp):
-                    self.locator = grp
+        self.prim_group = prim_group
+        if self.prim_group is not None:
+            self.groups[str(self.prim_group)] = self.prim_group
+            if is_space(self.prim_group):
+                self.locator = self.prim_group
+
+    def primary_group(self):
+        return self.prim_group
 
     def islocated(self):
         return self.pos is not None
@@ -195,14 +232,28 @@ class Agent(object):
     def same_type(self, other):
         return self.type_sig == other.type_sig
 
-    def join_group(self, group):
-        if group.name not in self.groups:
+    def del_group(self, group):
+        if str(group) in self.groups:
+            del self.groups[str(group)]
+
+        if group == self.prim_group:
+            self.prim_group = None
+
+    def add_group(self, group):
+        if str(group) not in self.groups:
             if DEBUG2:
                 print("Join group being called on " + self.name
                       + " to join group: " + group.name)
             self.groups[group.name] = group
             if is_space(group):
                 self.locator = group
+
+            if self.prim_group is None:
+                self.prim_group = group
+
+    def switch_groups(self, g1, g2):
+        self.leave_group(g1)
+        self.add_group(g2)
 
     def to_json(self):
         grp_nms = ""

@@ -4,6 +4,7 @@ This is the test suite for composite.py.
 
 from unittest import TestCase, main
 
+from indra2.agent import join, split, switch
 from indra2.composite import Composite
 from indra2.tests.test_agent import create_hardy, create_newton
 from indra2.tests.test_agent import create_ramanujan, create_littlewood
@@ -44,9 +45,15 @@ def create_cambguys2():
                      members=[create_littlewood(), create_ramsey()])
 
 
-def create_mathguys():
-    return Composite("Math guys",
+def create_mathgrp():
+    return Composite("Math groups",
                      members=[create_calcguys(), create_cambguys()])
+
+
+def create_mathguys():
+    mathguys = create_calcguys() + create_cambguys()
+    return mathguys
+
 
 def create_mem_str(comp):
     s = ""
@@ -55,16 +62,26 @@ def create_mem_str(comp):
     return s
 
 
+def print_mem_str(comp):
+    print(create_mem_str(comp))
+
+
 class CompositeTestCase(TestCase):
     def setUp(self):
+        self.hardy = create_hardy()
+        self.newton = create_newton()
         self.calc = create_calcguys()
         self.camb = create_cambguys()
-        self.hardy = create_hardy()
+        self.mathgrp = create_mathgrp()
+        self.mathguys = create_mathguys()
 
     def tearDown(self):
+        self.hardy = None
+        self.newton = None
         self.calc = None
         self.camb = None
-        self.hardy = None
+        self.mathgrp = None
+        self.mathguys = None
 
     def test_eq(self):
         self.assertEqual(self.calc, self.calc)
@@ -84,14 +101,14 @@ class CompositeTestCase(TestCase):
         self.assertEqual(len(self.camb), 2)
 
     def test_get(self):
-        self.assertEqual(self.camb["Hardy"], self.hardy)
+        self.assertEqual(self.camb[H], self.hardy)
 
     def test_set(self):
-        self.camb["jel"] = create_littlewood()
-        self.assertEqual(self.camb["jel"], create_littlewood())
+        self.camb[str(self.newton)] = self.newton
+        self.assertEqual(self.camb[str(self.newton)], self.newton)
 
     def test_contains(self):
-        self.assertTrue("Hardy" in self.camb)
+        self.assertTrue(H in self.camb)
 
     def test_iter(self):
         self.assertEqual(create_mem_str(self.calc), NL)
@@ -103,22 +120,20 @@ class CompositeTestCase(TestCase):
         self.assertEqual(s, LN)
 
     def test_mul(self):
-        newt = create_newton()
-        self.camb[newt.name] = newt
-        mathguys = self.calc * self.camb
-        self.assertEqual(create_mem_str(mathguys), N)
+        self.camb += self.newton
+        math_inter = self.calc * self.camb
+        print_mem_str(math_inter)
+        self.assertEqual(create_mem_str(math_inter), N)
 
     def test_imul(self):
-        mathguys = self.calc + self.camb
-        self.assertEqual(create_mem_str(mathguys), NL + HR)
-        mathguys *= self.camb  # should drop out calc!
-        self.assertEqual(create_mem_str(mathguys), HR)
+        self.assertEqual(create_mem_str(self.mathguys), NL + HR)
+        self.mathguys *= self.camb  # should drop out calc!
+        self.assertEqual(create_mem_str(self.mathguys), HR)
 
     def test_add(self):
-        mathguys = self.calc + self.camb
-        self.assertEqual(create_mem_str(mathguys), NL + HR)
-        mathguys = self.calc + self.camb + create_cambguys2()
-        self.assertEqual(create_mem_str(mathguys), NL + HR + LR)
+        self.assertEqual(create_mem_str(self.mathguys), NL + HR)
+        self.mathguys = self.calc + self.camb + create_cambguys2()
+        self.assertEqual(create_mem_str(self.mathguys), NL + HR + LR)
         # ensure we did not change original group:
         self.assertEqual(create_mem_str(self.calc), NL)
         # let's make sure set union does not dupe members:
@@ -153,20 +168,19 @@ class CompositeTestCase(TestCase):
         self.assertEqual(create_mem_str(cambguys), HR + LR)
 
     def test_isub(self):
-        mathguys = self.calc + self.camb + create_cambguys2()
-        mathguys -= self.calc
-        self.assertEqual(create_mem_str(mathguys), HR + LR)
+        maths = self.calc + self.camb + create_cambguys2()
+        maths -= self.calc
+        self.assertEqual(create_mem_str(maths), HR + LR)
         # now test deleting an atom:
-        mathguys -= self.hardy
-        self.assertEqual(create_mem_str(mathguys), R + LR)
+        maths -= self.hardy
+        self.assertEqual(create_mem_str(maths), R + LR)
 
     def test_call(self):
-        mathguys = self.camb + create_calcguys()
-        acts = mathguys()
+        acts = self.mathgrp()
         self.assertEqual(acts, 3)  # hardy is passive!
 
     def test_subset(self):
-        just_n = self.calc.subset(match_name, "Newton", name="Just Newton!")
+        just_n = self.calc.subset(match_name, str(self.newton), name="Just Newton!")
         self.assertEqual(create_mem_str(just_n), N)
         just_l = self.calc.subset(max_duration, 25, name="Just Leibniz!")
         self.assertEqual(create_mem_str(just_n), N)
@@ -182,14 +196,35 @@ class CompositeTestCase(TestCase):
         pass
 
     def test_is_mbr_comp(self):
-        math_guys = create_mathguys()
-        self.assertTrue(math_guys.is_mbr_comp(CALC_GUYS))
-        self.assertFalse(self.calc.is_mbr_comp("Newton"))
+        self.assertTrue(self.mathgrp.is_mbr_comp(CALC_GUYS))
+        self.assertFalse(self.calc.is_mbr_comp(str(self.newton)))
 
     def test_pop_count(self):
-        math_guys = create_mathguys()
-        self.assertEqual(math_guys.pop_count(CALC_GUYS), 2)
-        self.assertEqual(self.calc.pop_count("Newton"), 1)
+        self.assertEqual(self.mathgrp.pop_count(CALC_GUYS), 2)
+        self.assertEqual(self.calc.pop_count(str(self.newton)), 1)
+
+    def test_leave_group(self):
+        """
+        This test is here rather than in agent because it requires Composite!
+        """
+        split(self.calc, self.newton)
+        self.assertEqual(create_mem_str(self.calc), L)
+
+    def test_join_group(self):
+        """
+        This test is here rather than in agent because it requires Composite!
+        """
+        join(self.calc, self.hardy)
+        self.assertEqual(create_mem_str(self.calc), NL + H)
+
+    def test_switch_groups(self):
+        """
+        This test is here rather than in agent because it requires Composite!
+        """
+        switch(self.hardy, self.camb, self.calc)
+        self.assertTrue(str(self.hardy) not in self.camb)
+        self.assertTrue(str(self.hardy) in self.calc)
+
 
 if __name__ == '__main__':
     main()

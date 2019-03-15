@@ -17,93 +17,90 @@ NUM_FOLLOWERS = 10
 BLUE = 0
 RED = 1
 
+NOT_ZERO = .001
+
 HOOD_SIZE = 4
 
-tsetters = None
-followers = None
+red_tsetters = None
+blue_tsetters = None
+red_followers = None
+blue_followers = None
+society = None
 
-
-def is_red(agent):
-    return agent["color"] == RED
-
-
-def is_blue(agent):
-    return agent["color"] == BLUE
+opp_group = None
 
 
 def change_color(agent):
-    if is_red(agent):
-        agent["color"] = BLUE
-    else:
-        agent["color"] = RED
+    if DEBUG:
+        print("Agent " + str(agent) + " is changing colors.")
+    society.add_switch(agent, agent.primary_group(),
+                       opp_group[str(agent.primary_group())])
 
 
 def follower_action(agent):
-    hood = tsetters.subset(in_hood, agent, HOOD_SIZE, name="hood")
-    num_tsetters = len(hood)
-    filter = is_blue
-    if is_blue(agent):
-        filter = is_red
-    opp_tsetters = len(hood.subset(filter, name="TREDS"))
-    if (opp_tsetters > 0) and (opp_tsetters > (num_tsetters // 2)):
+    num_red_ts = max(len(red_tsetters.subset(in_hood, agent, HOOD_SIZE)),
+                     NOT_ZERO)   # prevent div by zero!
+    num_blue_ts = max(len(blue_tsetters.subset(in_hood, agent, HOOD_SIZE)),
+                      NOT_ZERO)   # prevent div by zero!
+    ratio = 1
+    if DEBUG:
+        print("In follower action, we get num_red_ts = " + str(num_red_ts)
+              + " and num_blue_ts = " + str(num_blue_ts))
+    if agent.primary_group() == red_followers:
+        ratio = num_blue_ts / num_red_ts
+    else:
+        ratio = num_red_ts / num_blue_ts
+
+    if ratio > 1:
         change_color(agent)
-        if DEBUG:
-            print(agent.name + " changed color!")
-    print("I'm " + agent.name + " and I saw "
-          + str(opp_tsetters)
-          + " opposites out of " + str(num_tsetters) + ".")
 
 
 def tsetter_action(agent):
-    hood = followers.subset(in_hood, agent, HOOD_SIZE, name="hood")
-    num_followers = len(hood)
-    filter_t = is_blue
-    if is_red(agent):
-        filter_t = is_red
-    same_followers = len(hood.subset(filter_t, name="FREDS"))
-    if (same_followers > 0) and (same_followers > (num_followers // 2)):
-        change_color(agent)
-        if DEBUG:
-            print(agent.name + " changed color!")
-    print("I'm " + agent.name + " and I saw "
-          + str(same_followers)
-          + " similar out of " + str(same_followers) + ".")
-    # red_followers = hood.subset(is_blue, name="FREDS")
-    # print("I'm " + agent.name + " and I saw " + str(len(red_followers))
-    #       + " blue out of " + str(num_followers) + ".")
+    pass
 
 
-def create_tsetter(i):
+def create_tsetter(i, color=RED):
+    """
+    Create a trendsetter: all RED to start.
+    """
     return Agent("tsetter" + str(i),
                  action=tsetter_action,
-                 attrs={"color": RED})
+                 attrs={"color": color})
 
 
-def create_follower(i):
+def create_follower(i, color=BLUE):
+    """
+    Create a follower: all BLUE to start.
+    """
     return Agent("follower" + str(i),
                  action=follower_action,
-                 attrs={"color": BLUE})
+                 attrs={"color": color})
 
 
-tsetters = Composite("tsetters")
+blue_tsetters = Composite("blue_tsetters")
+red_tsetters = Composite("red_tsetters")
 for i in range(NUM_TSETTERS):
-    tsetters += create_tsetter(i)
+    red_tsetters += create_tsetter(i)
 
 if DEBUG2:
-    print(tsetters.__repr__())
+    print(red_tsetters.__repr__())
 
-followers = Composite("follower")
+red_followers = Composite("red_followers")
+blue_followers = Composite("blue_followers")
 for i in range(NUM_FOLLOWERS):
-    followers += create_follower(i)
+    blue_followers += create_follower(i)
+
+opp_group = {str(red_tsetters): blue_tsetters,
+             str(blue_tsetters): red_tsetters,
+             str(red_followers): blue_followers,
+             str(blue_followers): red_followers}
 
 if DEBUG2:
-    print(followers.__repr__())
+    print(blue_followers.__repr__())
 
-society = Env("society", members=[tsetters, followers])
+society = Env("society", members=[blue_tsetters, red_tsetters, blue_followers,
+                                  red_followers])
 if DEBUG2:
     print(society.__repr__())
 
 society()
-
-if DEBUG2:
-    print(society.__repr__())

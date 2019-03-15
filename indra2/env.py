@@ -6,6 +6,7 @@ of agents that share a timeline and a Space.
 import os
 import getpass
 import indra2.display_methods as disp
+from indra2.agent import join, switch
 from indra2.space import Space
 from indra2.user import TermUser, TERMINAL, WEB
 
@@ -49,9 +50,10 @@ class Env(Space):
             self.pop_hist.record_pop(mbr, self.pop_count(mbr))
 
         self.womb = []  # for agents waiting to be born
+        self.switches = []  # for agents waiting to switch groups
 
         # Attributes for plotting
-        self.plot_title = "Environment Plot"
+        self.plot_title = self.name
         self.image_bytes = None
 
         self.user_type = os.getenv("user_type", TERMINAL)
@@ -76,6 +78,17 @@ class Env(Space):
             print("{} added to the womb".format(agent.name))
         # do we need to connect agent to env (self)?
 
+    def add_switch(self, agent, grp1, grp2):
+        """
+        Put a child agent in the womb.
+        agent: child to add
+        group: which group child will join
+        """
+        self.switches.append((agent, grp1, grp2))
+        if DEBUG:
+            print("{} added to switches".format(str(agent)))
+        # do we need to connect agent to env (self)?
+
     def runN(self, periods=DEF_TIME):
         """
             Run our model for N periods.
@@ -89,8 +102,12 @@ class Env(Space):
 
             if self.womb is not None:
                 for (agent, group) in self.womb:
-                    group += agent
+                    join(group, agent)
                 del self.womb[:]
+            if self.switches is not None:
+                for (agent, grp1, grp2) in self.switches:
+                    switch(agent, grp1, grp2)
+                del self.switches[:]
 
             # TODO: A workaround for the current issue
             for mbr in self.pop_hist.pops:
@@ -116,7 +133,7 @@ class Env(Space):
             if plot_type == LN:
                 # TODO: imporve implementation of the iterator of composite?
                 period, data = self.line_data()
-                self.line_graph = disp.LineGraph(self.plot_title + self.name,
+                self.line_graph = disp.LineGraph(self.plot_title,
                                                  data, period,
                                                  is_headless=self.headless())
                 self.image_bytes = self.line_graph.show()

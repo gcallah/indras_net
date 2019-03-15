@@ -16,8 +16,10 @@ def not_impl(user):
 
 
 def run(user):
+    steps = 0
     try:
         steps = int(user.ask("How many periods?"))
+        print("Steps = " + str(steps))
         user.env.runN(periods=steps)
     except (ValueError, TypeError) as e:
         user.tell("You must enter an integer value for # of steps: " + str(e))
