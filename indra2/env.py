@@ -83,7 +83,7 @@ class Env(Space):
         """
         self.womb.append((agent, group))
         if DEBUG:
-            print("{} added to the womb".format(agent.name))
+            self.user.tell("{} added to the womb".format(agent.name))
         # do we need to connect agent to env (self)?
 
     def add_switch(self, agent, grp1, grp2):
@@ -94,7 +94,7 @@ class Env(Space):
         """
         self.switches.append((agent, grp1, grp2))
         if DEBUG:
-            print("{} added to switches".format(str(agent)))
+            self.user.tell("{} added to switches".format(str(agent)))
         # do we need to connect agent to env (self)?
 
     def runN(self, periods=DEF_TIME):
@@ -125,7 +125,6 @@ class Env(Space):
                     self.pop_hist.record_pop(mbr, 0)
 
             curr_acts = super().__call__()
-            print(f"\nIn period {i} there were {curr_acts} actions taken.\n")
             acts += curr_acts
         return acts
 
@@ -140,18 +139,23 @@ class Env(Space):
         """
         Show agent populations.
         """
-        if DEBUG:
-            self.user.tell("Trying to display line graph.")
         if self.has_disp():
             try:
                 # TODO: improve implementation of the iterator of composite?
                 period, data = self.line_data()
+                if period is None:
+                    self.user.tell("No data to display.")
+                    return None
+
                 line_plot = disp.LineGraph(self.plot_title,
                                            data, period,
                                            is_headless=self.headless())
-                return line_plot.show()
+                line_plot.show()
+                return line_plot
             except Exception as e:
                 self.user.tell("Error when drawing graph: " + str(e))
+        else:
+            return None
 
     def scatter_graph(self):
         """
@@ -165,9 +169,12 @@ class Env(Space):
                     int(self.width), int(self.height),
                     anim=True, data_func=self.plot_data,
                     is_headless=self.headless())
-                return scatter_plot.show()
+                scatter_plot.show()
+                return scatter_plot
             except Exception as e:
                 self.user.tell("Error when drawing graph: " + str(e))
+        else:
+            return None
 
     def line_data(self):
         data = {}

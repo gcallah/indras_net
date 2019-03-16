@@ -19,7 +19,7 @@ def run(user):
     steps = 0
     try:
         steps = int(user.ask("How many periods?"))
-        print("Steps = " + str(steps))
+        user.tell("Steps = " + str(steps))
         user.env.runN(periods=steps)
     except (ValueError, TypeError) as e:
         user.tell("You must enter an integer value for # of steps: " + str(e))
@@ -32,12 +32,13 @@ def leave(user):
 
 def scatter_plot(user):
     user.tell("Drawing a scatter plot.")
-    user.env.scatter_graph()
+    return user.env.scatter_graph()
 
 
 def line_graph(user):
     user.tell("Drawing a line graph.")
-    user.env.line_graph()
+    ret = user.env.line_graph()
+    return ret
 
 
 MSG = 0

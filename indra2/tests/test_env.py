@@ -28,6 +28,12 @@ class EnvTestCase(TestCase):
         self.pop_hist = None
         self.env = None
 
+    def fill_pop_hist(self):
+        self.pop_hist.record_pop(GRP1, 10)
+        self.pop_hist.record_pop(GRP2, 10)
+        self.pop_hist.record_pop(GRP1, 20)
+        self.pop_hist.record_pop(GRP2, 20)
+
     def test_runN(self):
         NUM_PERIODS = 10
         self.env += self.newton
@@ -35,8 +41,7 @@ class EnvTestCase(TestCase):
         self.assertEqual(acts, NUM_PERIODS)
 
     def test_str_pop(self):
-        self.pop_hist.record_pop(GRP1, 10)
-        self.pop_hist.record_pop(GRP2, 10)
+        self.fill_pop_hist()
         s = str(self.pop_hist)
         self.assertEqual(s, POP_HIST_HDR + GRP1 + POP_SEP + GRP2 + POP_SEP)
 
