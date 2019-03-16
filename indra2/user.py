@@ -10,19 +10,26 @@ WEB = "web"
 GUI = "gui"
 NOT_IMPL = "Choice not yet implemented."
 
+DEF_STEPS = 10
+
 
 def not_impl(user):
     return user.tell(NOT_IMPL)
 
 
-def run(user):
+def run(user, test_run=False):
     steps = 0
+    acts = 0
     try:
-        steps = int(user.ask("How many periods?"))
-        user.tell("Steps = " + str(steps))
-        user.env.runN(periods=steps)
+        if not test_run:
+            steps = int(user.ask("How many periods?"))
+            user.tell("Steps = " + str(steps))
+        else:
+            steps = DEF_STEPS
+        acts = user.env.runN(periods=steps)
     except (ValueError, TypeError) as e:
         user.tell("You must enter an integer value for # of steps: " + str(e))
+    return acts
 
 
 def leave(user):

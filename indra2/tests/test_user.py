@@ -5,8 +5,9 @@ This is the test suite for env.py.
 from unittest import TestCase, main
 
 from indra2.env import Env
-from indra2.user import not_impl, NOT_IMPL, TermUser
-from indra2.user import line_graph, scatter_plot
+from indra2.user import not_impl, NOT_IMPL, TermUser, run
+from indra2.user import line_graph, scatter_plot, DEF_STEPS
+from indra2.tests.test_agent import create_newton
 from indra2.tests.test_env import GRP1, GRP2
 
 
@@ -19,6 +20,13 @@ class UserTestCase(TestCase):
     def tearDown(self):
         self.user = None
         self.env = None
+
+    def test_run(self):
+        # need special env for this one
+        env = Env("Test env", members=[create_newton()])
+        user = TermUser("TestUser", env)
+        acts = run(user, test_run=True)
+        self.assertEqual(acts, DEF_STEPS)
 
     def test_not_impl(self):
         self.assertEqual(not_impl(self.user), NOT_IMPL)
