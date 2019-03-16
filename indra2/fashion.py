@@ -74,7 +74,6 @@ def tsetter_action(agent):
         change_color(agent)
 
 
-
 def create_tsetter(i, color=RED):
     """
     Create a trendsetter: all RED to start.

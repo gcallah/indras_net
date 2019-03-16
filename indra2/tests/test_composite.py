@@ -32,7 +32,7 @@ def max_duration(agent, duration):
 
 def create_calcguys():
     return Composite(CALC_GUYS, members=[create_newton(),
-                                               create_leibniz()])
+                                         create_leibniz()])
 
 
 def create_cambguys():

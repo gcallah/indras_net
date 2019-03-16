@@ -31,13 +31,13 @@ def leave(user):
 
 
 def scatter_plot(user):
-    user.tell("Drawing a plot.")
-    user.env.plot("SC")
+    user.tell("Drawing a scatter plot.")
+    user.env.scatter_graph()
 
 
 def line_graph(user):
     user.tell("Drawing a line graph.")
-    user.env.plot("LN")
+    user.env.line_graph()
 
 
 MSG = 0
@@ -48,8 +48,8 @@ RUN = 1
 
 
 term_menu = {RUN: (str(RUN) + ") Run for N periods (DEFAULT).", run),
-             2: ("2) Display the population graph.", line_graph),
-             3: ("3) Display the plot.", scatter_plot),
+             2: ("2) Display a population graph.", line_graph),
+             3: ("3) Display a scatter plot.", scatter_plot),
              4: ("4) Leave menu for interactive python session.", not_impl),
              QUIT: (str(QUIT) + ") Quit.", leave)}
 

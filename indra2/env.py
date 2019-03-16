@@ -15,11 +15,11 @@ DEBUG2 = False
 DEF_USER = "User"
 DEF_TIME = 10
 
-# Constant for plotting
-SC = "SC"  # Scatter plot
-LN = "LN"  # Line plot
 X = 0
 Y = 1
+
+POP_HIST_HDR = "PopHist for "
+POP_SEP = ", "
 
 
 class PopHist():
@@ -29,6 +29,15 @@ class PopHist():
     """
     def __init__(self):
         self.pops = {}
+
+    def __str__(self):
+        s = POP_HIST_HDR
+        for mbr in self.pops:
+            s += mbr + POP_SEP
+        return s
+
+    def __repr__(self):
+        return(str(self))  # for now!
 
     def record_pop(self, mbr, count):
         if mbr not in self.pops:
@@ -42,7 +51,7 @@ class Env(Space):
     An env *is* a space and *has* a timeline.
     That makes the inheritance work out as we want it to.
     """
-    def __init__(self, name, plot_type=SC, **kwargs):
+    def __init__(self, name, **kwargs):
         super().__init__(name, **kwargs)
         self.pop_hist = PopHist()  # this will record pops across time
         # Make sure variesties are present in the history
@@ -54,7 +63,6 @@ class Env(Space):
 
         # Attributes for plotting
         self.plot_title = self.name
-        self.image_bytes = None
 
         self.user_type = os.getenv("user_type", TERMINAL)
         if self.user_type == TERMINAL:
@@ -121,34 +129,45 @@ class Env(Space):
             acts += curr_acts
         return acts
 
-    def plot(self, plot_type):
-        """
-        Show where agents are in graphical form.
-        """
+    def has_disp(self):
         if not disp.plt_present:
             self.user.tell("ERROR: No graphing package installed")
-            return
+            return False
+        else:
+            return True
 
-        try:
-            if plot_type == LN:
-                # TODO: imporve implementation of the iterator of composite?
+    def line_graph(self):
+        """
+        Show agent populations.
+        """
+        if DEBUG:
+            self.user.tell("Trying to display line graph.")
+        if self.has_disp():
+            try:
+                # TODO: improve implementation of the iterator of composite?
                 period, data = self.line_data()
-                self.line_graph = disp.LineGraph(self.plot_title,
-                                                 data, period,
-                                                 is_headless=self.headless())
-                self.image_bytes = self.line_graph.show()
+                line_plot = disp.LineGraph(self.plot_title,
+                                           data, period,
+                                           is_headless=self.headless())
+                return line_plot.show()
+            except Exception as e:
+                self.user.tell("Error when drawing graph: " + str(e))
 
-            elif plot_type == SC:
+    def scatter_graph(self):
+        """
+        Show agent locations.
+        """
+        if self.has_disp():
+            try:
                 data = self.plot_data()
-                self.scatter_plot = disp.ScatterPlot(
+                scatter_plot = disp.ScatterPlot(
                     self.plot_title, data,
                     int(self.width), int(self.height),
                     anim=True, data_func=self.plot_data,
                     is_headless=self.headless())
-                self.image_bytes = self.scatter_plot.show()
-        except Exception as e:
-            self.user.tell("Error when drawing a plot: " + str(e))
-        return self.image_bytes
+                return scatter_plot.show()
+            except Exception as e:
+                self.user.tell("Error when drawing graph: " + str(e))
 
     def line_data(self):
         data = {}
@@ -158,8 +177,6 @@ class Env(Space):
             data[var] = {}
             data[var]["data"] = self.pop_hist.pops[var]
             # TODO: define colors in env?
-            # data[var]["color"] = self.agents.get_var_color(var)
-            # A temporary implementation of period
             if not period:
                 period = len(data[var]["data"])
         return (period, data)
