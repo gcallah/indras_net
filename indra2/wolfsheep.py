@@ -27,10 +27,19 @@ sheep = None
 create_wolf = None
 create_sheep = None
 wolves_created = 0
+sheep_created = 0
 
 
 def sheep_action(agent):
+    global sheep_created
     print("I'm " + agent.name + " and I eat grass.")
+    agent["time_to_repr"] -= 1
+    if agent["time_to_repr"] == 0:
+        # reproduce
+        meadow.add_child(create_sheep(sheep_created), sheep)
+        agent["time_to_repr"] = SHEEP_REPRO_PERIOD
+    print("I'm " + agent.name + " and my remaining life is: "
+          + str(agent.duration))
 
 
 def wolf_action(agent):
@@ -69,6 +78,8 @@ def create_wolf(i):
 
 
 def create_sheep(i):
+    global sheep_created
+    sheep_created += 1
     return Agent("sheep" + str(i), duration=SHEEP_LIFESPAN,
                  action=sheep_action,
                  attrs={"time_to_repr": SHEEP_REPRO_PERIOD})
