@@ -28,6 +28,9 @@ def type_hash(agent):
 
 
 def is_composite(thing):
+    """
+    Is this thing a composite?
+    """
     return hasattr(thing, 'members')
 
 
