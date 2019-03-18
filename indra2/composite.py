@@ -96,8 +96,7 @@ class Composite(Agent):
         Call the members' functions.
         Later, this will just call agents' funcs.
         This should return the total of all
-        agents who did, in fasubsetct, act in a
-        particular call.
+        agents who acted in a particular call.
         """
         total_acts = 0
         del_list = []
@@ -107,9 +106,11 @@ class Composite(Agent):
                 if member.isactive():
                     total_acts += member()
                 else:
-                    if DEBUG:
-                        print("Marking " + key + " for deletion.")
-                    del_list.append(key)
+                    # delete agents but not composites:
+                    if not is_composite(member):
+                        if DEBUG:
+                            print("Marking " + key + " for deletion.")
+                        del_list.append(key)
         for key in del_list:
             del self.members[key]
         return total_acts
