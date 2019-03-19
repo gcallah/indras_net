@@ -10,11 +10,13 @@ PYLINTFLAGS =
 PYTHONFILES = $(shell ls $(DJANGO_DIR)/*.py)
 PYTHONFILES += $(shell ls $(MODELS_DIR)/*.py)
 
+# setup a python dist of indra
 dist: setup.py
 	-git commit -a -m "Building new distribution"
 	git push origin master
 	python3 setup.py sdist upload	
 
+# make a bigbox dataset
 boxdata:
 	./all_box_plots.sh
 	-git commit -a -m "Building new Big Box data sets."
@@ -40,10 +42,12 @@ db: $(DJANGO_DIR)/models.py
 	-git commit $(DJANGO_DIR)/migrations/*.py
 	git push origin master
 
+# dev container has dev tools
 dev_container: $(DOCKER_DIR)/Dockerfile $(DOCKER_DIR)/requirements.txt $(DOCKER_DIR)/requirements-dev.txt
 	docker build -t gcallah/$(REPO)-dev docker
 	docker push gcallah/$(REPO)-dev:latest
 
+# prod container has only what's needed to run
 prod_container: $(DOCKER_DIR)/Deployable $(DOCKER_DIR)/requirements.txt
 	docker system prune -f
 	docker build -t gcallah/$(REPO) docker --no-cache --build-arg repo=$(REPO) -f $(DOCKER_DIR)/Deployable
