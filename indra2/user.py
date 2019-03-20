@@ -6,6 +6,7 @@ This file defines User, which represents a user in our system.
 from indra2.agent import Agent  # , DEBUG2  # DEBUG,
 
 TERMINAL = "terminal"
+TEST = "test"
 WEB = "web"
 GUI = "gui"
 NOT_IMPL = "Choice not yet implemented."

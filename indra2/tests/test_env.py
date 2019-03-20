@@ -5,6 +5,7 @@ This is the test suite for env.py.
 from unittest import TestCase, main
 
 from indra2.env import Env, PopHist, POP_HIST_HDR, POP_SEP
+from indra2.user import TEST
 from indra2.agent import Agent
 from indra2.tests.test_agent import create_newton
 from indra2.tests.test_composite import create_calcguys, create_cambguys
@@ -33,6 +34,9 @@ class EnvTestCase(TestCase):
         self.pop_hist.record_pop(GRP2, 10)
         self.pop_hist.record_pop(GRP1, 20)
         self.pop_hist.record_pop(GRP2, 20)
+
+    def test_user_type(self):
+        self.assertEqual(self.env.user_type, TEST)
 
     def test_runN(self):
         NUM_PERIODS = 10

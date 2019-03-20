@@ -8,7 +8,7 @@ import getpass
 import indra2.display_methods as disp
 from indra2.agent import join, switch
 from indra2.space import Space
-from indra2.user import TermUser, TERMINAL, WEB
+from indra2.user import TermUser, TERMINAL, WEB, TEST
 
 DEBUG = True
 DEBUG2 = False
@@ -64,8 +64,9 @@ class Env(Space):
         # Attributes for plotting
         self.plot_title = self.name
 
+        self.user = None
         self.user_type = os.getenv("user_type", TERMINAL)
-        if self.user_type == TERMINAL:
+        if (self.user_type == TERMINAL) or (self.user_type == TEST):
             self.user = TermUser(getpass.getuser(), self)
             self.user.tell("Welcome to Indra, " + str(self.user) + "!")
 
@@ -211,4 +212,4 @@ class Env(Space):
         return data
 
     def headless(self):
-        return self.user_type == WEB
+        return (self.user_type == WEB) or (self.user_type == TEST)

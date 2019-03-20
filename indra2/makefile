@@ -11,7 +11,8 @@ prod: tests
 lint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
 
 pytests: $(PYTHONFILES)
-	nosetests --exe --verbose --with-coverage --cover-package=indra2
+	./pytests.sh
+#	nosetests --exe --verbose --with-coverage --cover-package=indra2
 
 tests: pytests lint
 
