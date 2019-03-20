@@ -22,6 +22,7 @@ NOT_ZERO = .001
 HOOD_SIZE = 4
 
 FOLLOWER_PRENM = "follower"
+TSETTER_PRENM="tsetter"
 RED_FOLLOWERS = "Red Followers"
 BLUE_FOLLOWERS = "Blue Followers"
 RED_TSETTERS = "Red Trendsetters"
@@ -87,7 +88,7 @@ def create_tsetter(i, color=RED):
     """
     Create a trendsetter: all RED to start.
     """
-    return Agent("tsetter" + str(i),
+    return Agent(TSETTER_PRENM + str(i),
                  action=tsetter_action,
                  attrs={"color": color})
 

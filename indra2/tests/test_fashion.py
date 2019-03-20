@@ -4,8 +4,8 @@ This is the test suite for space.py.
 
 from unittest import TestCase, main
 from indra2.agent import switch
-from indra2.fashion import set_up, DEBUG, DEBUG2, create_follower, change_color
-from indra2.fashion import FOLLOWER_PRENM, RED_FOLLOWERS, BLUE_FOLLOWERS
+from indra2.fashion import set_up, DEBUG, DEBUG2, create_follower, change_color,create_tsetter, follower_action, tsetter_action
+from indra2.fashion import FOLLOWER_PRENM, RED_FOLLOWERS, BLUE_FOLLOWERS, RED, BLUE, TSETTER_PRENM, BLUE_TSETTERS, RED_TSETTERS
 
 TEST_FNUM = 999
 TEST_FNAME = FOLLOWER_PRENM + str(TEST_FNUM)
@@ -63,5 +63,34 @@ class FashionTestCase(TestCase):
         switch(agent, from_grp, to_grp)
         self.assertEqual(agent.primary_group(), to_grp)
 
-if __name__ == '__main__':
-    main()
+    
+    def test_create_tsetter(self):
+        new_agent = create_tsetter(2, RED)
+
+        self.assertEqual(new_agent.name, TSETTER_PRENM +str(2))
+        # if(Agent['color']=='RED'):
+        #     print(True)
+        # else:
+        #     print(False)
+
+    def test_create_follower(self):
+        new_agent_follower = create_follower(2 , BLUE)
+        self.assertEqual(new_agent_follower.name, FOLLOWER_PRENM + str(2))
+
+    def test_follower_action(self):
+                old_grp = self.test_follower.primary_group()
+                ratio = follower_action(self.test_follower)
+                if ratio <= 1:
+                    self.assertEqual(self.test_follower.primary_group(), old_grp)
+                # self.assertEqual(.primary_group(),RED_FOLLOWERS)
+                # self.assertEqual(ratio)
+
+
+    # def test_tsetter_action(self):
+    #             tsetter_action(BLUE_TSETTERS)
+    #             self.assertEqual(.primary_group(), BLUE_TSETTERS)
+    #             self.assertle
+
+
+    if __name__ == '__main__':
+        main()
