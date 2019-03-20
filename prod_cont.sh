@@ -1,8 +1,8 @@
 #!/bin/sh
 export HOST_PORT="8000"
 export REPO="indras_net"
-export CONTAINER="gcallah/$REPO"
-echo $CONTAINER
+export DH_ACCOUNT="gcallah"
+export CONTAINER="$DH_ACCOUNT/$REPO"
 if [ $1 ]
 then
     HOST_PORT=$1

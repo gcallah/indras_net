@@ -29,6 +29,10 @@ prod: $(SRCS) $(OBJ)
 	git push origin master
 	ssh indrasnet@ssh.pythonanywhere.com 'cd /home/indrasnet/$(REPO); /home/indrasnet/$(REPO)/rebuild.sh'
 
+# starting to cut over to indra 2:
+pytests:
+	cd indra2; make pytests
+
 lint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
 
 %.pylint:

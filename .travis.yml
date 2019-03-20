@@ -13,7 +13,7 @@ env:
     - PYTHONPATH=/home/travis/build/gcallah/indras_net
 
 script:
-    - nosetests indra2/tests/test_*.py
+    - make pytests
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
     - make prod_container
     - make deploy_container
