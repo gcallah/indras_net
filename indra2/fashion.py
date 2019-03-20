@@ -21,6 +21,13 @@ NOT_ZERO = .001
 
 HOOD_SIZE = 4
 
+FOLLOWER_PRENM = "follower"
+RED_FOLLOWERS = "Red Followers"
+BLUE_FOLLOWERS = "Blue Followers"
+RED_TSETTERS = "Red Trendsetters"
+BLUE_TSETTERS = "Blue Trendsetters"
+
+
 red_tsetters = None
 blue_tsetters = None
 red_followers = None
@@ -30,9 +37,11 @@ society = None
 opp_group = None
 
 
-def change_color(agent):
+def change_color(agent, society, opp_group):
     if DEBUG:
-        print("Agent " + str(agent) + " is changing colors.")
+        print("Agent " + str(agent) + " is changing colors from "
+              + str(agent.primary_group()) + " to "
+              + str(opp_group[str(agent.primary_group())]))
     society.add_switch(agent, agent.primary_group(),
                        opp_group[str(agent.primary_group())])
 
@@ -44,15 +53,15 @@ def follower_action(agent):
                       NOT_ZERO)   # prevent div by zero!
     ratio = 1
     if DEBUG:
-        print("In follower action, we get num_red_ts = " + str(num_red_ts)
-              + " and num_blue_ts = " + str(num_blue_ts))
+        print("In follower action, we get num_red_ts = " + str(int(num_red_ts))
+              + " and num_blue_ts = " + str(int(num_blue_ts)))
     if agent.primary_group() == red_followers:
         ratio = num_blue_ts / num_red_ts
     else:
         ratio = num_red_ts / num_blue_ts
 
     if ratio > 1:
-        change_color(agent)
+        change_color(agent, society, opp_group)
 
 
 def tsetter_action(agent):
@@ -63,15 +72,16 @@ def tsetter_action(agent):
                       NOT_ZERO)   # prevent div by zero!
     ratio = 1
     if DEBUG:
-        print("In trendsetter action, we get num_red_fs = " + str(num_red_fs)
-              + " and num_blue_fs = " + str(num_blue_fs))
+        print("In trendsetter action, we get num_red_fs = "
+              + str(int(num_red_fs))
+              + " and num_blue_fs = " + str(int(num_blue_fs)))
     if agent.primary_group() == blue_tsetters:
         ratio = num_blue_fs / num_red_fs
     else:
         ratio = num_red_fs / num_blue_fs
 
     if ratio < 1:
-        change_color(agent)
+        change_color(agent, society, opp_group)
 
 
 def create_tsetter(i, color=RED):
@@ -87,35 +97,58 @@ def create_follower(i, color=BLUE):
     """
     Create a follower: all BLUE to start.
     """
-    return Agent("follower" + str(i),
+    return Agent(FOLLOWER_PRENM + str(i),
                  action=follower_action,
                  attrs={"color": color})
 
 
-blue_tsetters = Composite("blue_tsetters")
-red_tsetters = Composite("red_tsetters")
-for i in range(NUM_TSETTERS):
-    red_tsetters += create_tsetter(i)
+def set_up():
+    """
+    A func to set up run that can also be used by test code.
+    """
+    blue_tsetters = Composite(BLUE_TSETTERS)
+    red_tsetters = Composite(RED_TSETTERS)
+    for i in range(NUM_TSETTERS):
+        red_tsetters += create_tsetter(i)
 
-if DEBUG2:
-    print(red_tsetters.__repr__())
+    if DEBUG2:
+        print(red_tsetters.__repr__())
 
-red_followers = Composite("red_followers")
-blue_followers = Composite("blue_followers")
-for i in range(NUM_FOLLOWERS):
-    blue_followers += create_follower(i)
+    red_followers = Composite(RED_FOLLOWERS)
+    blue_followers = Composite(BLUE_FOLLOWERS)
+    for i in range(NUM_FOLLOWERS):
+        blue_followers += create_follower(i)
 
-opp_group = {str(red_tsetters): blue_tsetters,
-             str(blue_tsetters): red_tsetters,
-             str(red_followers): blue_followers,
-             str(blue_followers): red_followers}
+    opp_group = {str(red_tsetters): blue_tsetters,
+                 str(blue_tsetters): red_tsetters,
+                 str(red_followers): blue_followers,
+                 str(blue_followers): red_followers}
 
-if DEBUG2:
-    print(blue_followers.__repr__())
+    if DEBUG2:
+        print(blue_followers.__repr__())
 
-society = Env("society", members=[blue_tsetters, red_tsetters, blue_followers,
-                                  red_followers])
-if DEBUG2:
-    print(society.__repr__())
+    society = Env("society", members=[blue_tsetters, red_tsetters,
+                                      blue_followers, red_followers])
+    return (blue_tsetters, red_tsetters, blue_followers, red_followers,
+            opp_group, society)
 
-society()
+
+def main():
+    global red_tsetters
+    global blue_tsetters
+    global red_followers
+    global blue_followers
+    global society
+    global opp_group
+
+    (blue_tsetters, red_tsetters, blue_followers, red_followers, opp_group,
+     society) = set_up()
+
+    if DEBUG2:
+        print(society.__repr__())
+
+    society()
+
+
+if __name__ == "__main__":
+    main()

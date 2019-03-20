@@ -117,7 +117,6 @@ class Env(Space):
                     switch(agent, grp1, grp2)
                 del self.switches[:]
 
-            # TODO: A workaround for the current issue
             for mbr in self.pop_hist.pops:
                 if mbr in self.members and self.is_mbr_comp(mbr):
                     self.pop_hist.record_pop(mbr, self.pop_count(mbr))
