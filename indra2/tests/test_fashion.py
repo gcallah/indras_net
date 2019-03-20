@@ -11,6 +11,7 @@ from indra2.fashion import BLUE, TSETTER_PRENM, BLUE_TSETTERS, RED_TSETTERS
 import indra2.fashion as fshn
 
 TEST_FNUM = 999
+TEST_TNUM = 998
 TEST_FNAME = FOLLOWER_PRENM + str(TEST_FNUM)
 
 
@@ -19,6 +20,8 @@ class FashionTestCase(TestCase):
         (fshn.blue_tsetters, fshn.red_tsetters, fshn.blue_followers,
          fshn.red_followers, fshn.opp_group, fshn.society) = set_up()
         self.test_follower = create_follower(TEST_FNUM)
+        self.test_tsetter = create_tsetter(TEST_TNUM)
+        fshn.red_tsetters += self.test_tsetter
         fshn.blue_followers += self.test_follower
 
     def tearDown(self):
@@ -29,6 +32,7 @@ class FashionTestCase(TestCase):
         fshn.opp_group = None
         fshn.society = None
         self.test_follower = None
+        self.test_tsetter = None
 
     def test_change_color(self):
         """
@@ -63,15 +67,17 @@ class FashionTestCase(TestCase):
         ratio = follower_action(follower)
         if ratio <= 1:
             self.assertEqual(follower.primary_group(), old_grp)
-                # self.assertEqual(.primary_group(),RED_FOLLOWERS)
-                # self.assertEqual(ratio)
-
-
-    # def test_tsetter_action(self):
-    #             tsetter_action(BLUE_TSETTERS)
-    #             self.assertEqual(.primary_group(), BLUE_TSETTERS)
-    #             self.assertle
-
+        else:
+            self.assertEqual(len(fshn.society.switches), 1)
+               
+    def test_tsetter_action(self):
+        tsetter = self.test_tsetter
+        oldt_grp = tsetter.primary_group()
+        ratio = tsetter_action(tsetter)
+        if ratio <= 1:
+             self.assertEqual(len(fshn.society.switches), 1)
+        else:
+             self.assertEqual(tsetter.primary_group(), oldt_grp)
 
     if __name__ == '__main__':
         main()

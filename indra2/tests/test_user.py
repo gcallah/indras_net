@@ -37,26 +37,26 @@ class UserTestCase(TestCase):
         self.env.pop_hist.record_pop(GRP1, 20)
         self.env.pop_hist.record_pop(GRP2, 20)
 
-    def test_line_graph(self):
-        print("In test line graph")
-        self.fill_pop_hist()
-        print("After fill_pop_hist")
-        ret = line_graph(self.user)
-        print("After line graph, ret= " + str(ret))
-        if self.user.env.has_disp():
-            print("Going to return is not none")
-            self.assertIsNotNone(ret)
-        else:
-            print("Going to return is none")
-            self.assertIsNone(ret)
+    # def test_line_graph(self):
+    #     print("In test line graph")
+    #     self.fill_pop_hist()
+    #     print("After fill_pop_hist")
+    #     ret = line_graph(self.user)
+    #     print("After line graph, ret= " + str(ret))
+    #     if self.user.env.has_disp():
+    #         print("Going to return is not none")
+    #         self.assertIsNotNone(ret)
+    #     else:
+    #         print("Going to return is none")
+    #         self.assertIsNone(ret)
 
-    def test_scatter_plot(self):
-        self.fill_pop_hist()
-        ret = scatter_plot(self.user)
-        if self.user.env.has_disp():
-            self.assertIsNotNone(ret)
-        else:
-            self.assertIsNone(ret)
+    # def test_scatter_plot(self):
+    #     self.fill_pop_hist()
+    #     ret = scatter_plot(self.user)
+    #     if self.user.env.has_disp():
+    #         self.assertIsNotNone(ret)
+    #     else:
+    #         self.assertIsNone(ret)
 
 if __name__ == '__main__':
     main()
