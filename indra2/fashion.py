@@ -27,7 +27,6 @@ BLUE_FOLLOWERS = "Blue Followers"
 RED_TSETTERS = "Red Trendsetters"
 BLUE_TSETTERS = "Blue Trendsetters"
 
-
 red_tsetters = None
 blue_tsetters = None
 red_followers = None
