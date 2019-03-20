@@ -22,7 +22,7 @@ NOT_ZERO = .001
 HOOD_SIZE = 4
 
 FOLLOWER_PRENM = "follower"
-TSETTER_PRENM="tsetter"
+TSETTER_PRENM = "tsetter"
 RED_FOLLOWERS = "Red Followers"
 BLUE_FOLLOWERS = "Blue Followers"
 RED_TSETTERS = "Red Trendsetters"
@@ -62,6 +62,7 @@ def follower_action(agent):
 
     if ratio > 1:
         change_color(agent, society, opp_group)
+    return ratio
 
 
 def tsetter_action(agent):
@@ -82,6 +83,7 @@ def tsetter_action(agent):
 
     if ratio < 1:
         change_color(agent, society, opp_group)
+    return ratio
 
 
 def create_tsetter(i, color=RED):
