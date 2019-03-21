@@ -8,7 +8,7 @@ import getpass
 import indra2.display_methods as disp
 from indra2.agent import join, switch
 from indra2.space import Space
-from indra2.user import TermUser, TERMINAL, WEB, TEST
+from indra2.user import TermUser, TERMINAL, WEB, TEST, TestUser
 
 DEBUG = True
 DEBUG2 = False
@@ -66,9 +66,11 @@ class Env(Space):
 
         self.user = None
         self.user_type = os.getenv("user_type", TERMINAL)
-        if (self.user_type == TERMINAL) or (self.user_type == TEST):
+        if (self.user_type == TERMINAL):
             self.user = TermUser(getpass.getuser(), self)
             self.user.tell("Welcome to Indra, " + str(self.user) + "!")
+        elif (self.user_type == TEST):
+                self.user = TestUser(getpass.getuser(), self)
 
     def __call__(self):
         if (self.user is None) or (self.user_type == TEST):

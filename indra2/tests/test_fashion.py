@@ -79,5 +79,9 @@ class FashionTestCase(TestCase):
         else:
              self.assertEqual(tsetter.primary_group(), oldt_grp)
 
+    def test_main(self):
+        ret = fshn.main()
+        self.assertEqual(ret, 0)
+        
     if __name__ == '__main__':
         main()
