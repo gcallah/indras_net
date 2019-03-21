@@ -29,7 +29,8 @@ def run(user, test_run=False):
             steps = DEF_STEPS
         acts = user.env.runN(periods=steps)
     except (ValueError, TypeError) as e:
-        user.tell("You must enter an integer value for # of steps: " + str(e))
+        user.tell("You must enter an integer value for # of steps: "
+                  + str(e))
     return acts
 
 
@@ -97,3 +98,21 @@ class TermUser(Agent):
                 raise ValueError
         except ValueError as e:
             self.tell("Invalid option: " + str(e))
+
+
+class TestUser(TermUser):
+    """
+        Should just override ask() and __call__()
+        from TermUser.
+    """
+    def ask(self, msg, default=None):
+        """
+            Can't ask anything of a scripted test!
+        """
+        pass
+
+    def __call__(self):
+        """
+            Can't present menu to a scripted test!
+        """
+        pass

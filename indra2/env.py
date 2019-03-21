@@ -71,7 +71,9 @@ class Env(Space):
             self.user.tell("Welcome to Indra, " + str(self.user) + "!")
 
     def __call__(self):
-        if self.user is not None:
+        if (self.user is None) or (self.user_type == TEST):
+            self.runN()
+        else:
             while True:
                 # run until user exit!
                 self.user()
