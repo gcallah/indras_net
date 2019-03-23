@@ -5,7 +5,7 @@
 from indra2.agent import Agent
 from indra2.composite import Composite
 from indra2.space import in_hood
-from env import Env
+from indra2.env import Env
 
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
@@ -23,6 +23,7 @@ SHEEP_REPRO_PERIOD = 6
 
 wolves = None
 sheep = None
+meadow = None
 
 create_wolf = None
 create_sheep = None
@@ -84,23 +85,63 @@ def create_sheep(i):
                  action=sheep_action,
                  attrs={"time_to_repr": SHEEP_REPRO_PERIOD})
 
+#
+# wolves = Composite("wolves")
+# for i in range(NUM_WOLVES):
+#     wolves += create_wolf(i)
+#
+# if DEBUG2:
+#     print(wolves.__repr__())
+#
+# sheep = Composite("sheep")
+# for i in range(NUM_SHEEP):
+#     sheep += create_sheep(i)
+#
+# if DEBUG2:
+#     print(sheep.__repr__())
+#
+# meadow = Env("meadow", members=[wolves, sheep])
+# if DEBUG2:
+#     print(meadow.__repr__())
+#
+# meadow()
 
-wolves = Composite("wolves")
-for i in range(NUM_WOLVES):
-    wolves += create_wolf(i)
 
-if DEBUG2:
-    print(wolves.__repr__())
+def set_up():
+    """
+    A func to set up run that can also be used by test code.
+    """
+    wolves = Composite("wolves")
+    for i in range(NUM_WOLVES):
+        wolves += create_wolf(i)
 
-sheep = Composite("sheep")
-for i in range(NUM_SHEEP):
-    sheep += create_sheep(i)
+    if DEBUG2:
+        print(wolves.__repr__())
 
-if DEBUG2:
-    print(sheep.__repr__())
+    sheep = Composite("sheep")
+    for i in range(NUM_SHEEP):
+        sheep += create_sheep(i)
 
-meadow = Env("meadow", members=[wolves, sheep])
-if DEBUG2:
-    print(meadow.__repr__())
+    if DEBUG2:
+        print(sheep.__repr__())
 
-meadow()
+    meadow = Env("meadow", members=[wolves, sheep])
+    return (wolves, sheep, meadow)
+
+
+def main():
+    global wolves
+    global sheep
+    global meadow
+
+    (wolves, sheep, meadow) = set_up()
+
+    if DEBUG2:
+        print(meadow.__repr__())
+
+    meadow()
+    return 0
+
+
+if __name__ == "__main__":
+    main()

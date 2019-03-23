@@ -70,7 +70,7 @@ class Env(Space):
             self.user = TermUser(getpass.getuser(), self)
             self.user.tell("Welcome to Indra, " + str(self.user) + "!")
         elif (self.user_type == TEST):
-                self.user = TestUser(getpass.getuser(), self)
+            self.user = TestUser(getpass.getuser(), self)
 
     def __call__(self):
         if (self.user is None) or (self.user_type == TEST):
