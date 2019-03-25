@@ -4,21 +4,11 @@ This is the test suite for space.py.
 
 from unittest import TestCase, main
 from indra2.agent import Agent
-from indra2.wolfsheep import create_sheep, create_wolf, set_up
+from indra2.wolfsheep import create_sheep, create_wolf, set_up, wolf_action, sheep_action
 import indra2.wolfsheep as wolfsheep
 
-TEST_SNUM = 999
-TEST_WNUM = 998
-
-#
-# def create_wolf(i):
-#     return Agent("wolf" +str(i), duration=10,
-#                  attrs={"time_to_repr": 3})
-#
-#
-# def create_sheep(i):
-#     return Agent("sheep" + str(i), duration=10,
-#                  attrs={"time_to_repr": 3})
+TEST_SNUM = 3
+TEST_WNUM = 3
 
 
 class WolfsheepTestCase(TestCase):
@@ -38,6 +28,25 @@ class WolfsheepTestCase(TestCase):
     def test_create_sheep(self):
         new_sheep = create_sheep(1)
         self.assertEqual(new_sheep.name,"sheep" + str(1))
+
+    def test_wolf_action(self):
+        wolf_action(self.wolf)
+        self.assertEqual(self.wolf.name, "wolf3")
+        self.assertEqual(self.wolf.duration, 13)
+
+    def test_wolf_action_neg_case(self):
+        test_neg_case = wolf_action(self.sheep)
+        self.assertEqual(test_neg_case, "Invalid agent name")
+
+    def test_sheep_action(self):
+        sheep_action(self.sheep)
+        self.assertEqual(self.sheep.name, "sheep3")
+        self.assertEqual(self.sheep.duration, 8)
+
+    def test_sheep_action_neg_case(self):
+        test_negCase = sheep_action(self.wolf)
+        self.assertEqual(test_negCase, "Invalid agent name")
+
 
 
 

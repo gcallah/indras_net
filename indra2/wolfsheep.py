@@ -32,42 +32,51 @@ sheep_created = 0
 
 
 def sheep_action(agent):
-    global sheep_created
-    print("I'm " + agent.name + " and I eat grass.")
-    agent["time_to_repr"] -= 1
-    if agent["time_to_repr"] == 0:
-        # reproduce
-        meadow.add_child(create_sheep(sheep_created), sheep)
-        agent["time_to_repr"] = SHEEP_REPRO_PERIOD
-    print("I'm " + agent.name + " and my remaining life is: "
-          + str(agent.duration))
+
+    if "sheep" in agent.name:
+        global sheep_created
+        print("I'm " + agent.name + " and I eat grass.")
+        agent["time_to_repr"] -= 1
+        if agent["time_to_repr"] == 0:
+            # reproduce
+            print("hi")
+            meadow.add_child(create_sheep(sheep_created), sheep)
+            agent["time_to_repr"] = SHEEP_REPRO_PERIOD
+        print("I'm " + agent.name + " and my remaining life is: "
+              + str(agent.duration))
+    else:
+        return "Invalid agent name"
 
 
 def wolf_action(agent):
-    global wolves
-    global wolves_created
+    if "wolf" in agent.name:
+        global wolves
+        global wolves_created
 
-    num_sheep = len(sheep)
-    if DEBUG2:
-        print("Num sheep = " + str(num_sheep))
+        num_sheep = len(sheep)
+        if DEBUG2:
+            print("Num sheep = " + str(num_sheep))
 
-    # Wolves eat close sheep instead of ratio
-    hood = sheep.subset(in_hood, agent, HOOD_SIZE, name="hood")
-    if len(hood) > 0:
-        prey = hood.rand_member()
-        if DEBUG:
-            print(str(agent) + " is eating " + str(prey))
-        agent.duration += prey.duration
-        prey.die()
+        # Wolves eat close sheep instead of ratio
+        hood = sheep.subset(in_hood, agent, HOOD_SIZE, name="hood")
+        if len(hood) > 0:
+            prey = hood.rand_member()
+            if DEBUG:
+                print(str(agent) + " is eating " + str(prey))
+            agent.duration += prey.duration
+            prey.die()
 
-    agent["time_to_repr"] -= 1
-    if agent["time_to_repr"] == 0:
-        # reproduce
-        meadow.add_child(create_wolf(wolves_created), wolves)
-        # wolves += create_wolf(wolves_created)
-        agent["time_to_repr"] = WOLF_REPRO_PERIOD
-    print("I'm " + agent.name + " and my remaining life is: "
-          + str(agent.duration))
+        agent["time_to_repr"] -= 1
+        if agent["time_to_repr"] == 0:
+            # reproduce
+            meadow.add_child(create_wolf(wolves_created), wolves)
+            # wolves += create_wolf(wolves_created)
+            agent["time_to_repr"] = WOLF_REPRO_PERIOD
+        print("I'm " + agent.name + " and my remaining life is: "
+              + str(agent.duration))
+
+    else:
+        return "Invalid agent name"
 
 
 def create_wolf(i):
