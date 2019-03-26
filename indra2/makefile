@@ -5,7 +5,7 @@ PYTHONFILES = $(shell ls *.py)
 TEST_FILES = $(shell ls $(TESTDIR)/test_*.py)
 
 prod: tests
-	git commit -a
+	-git commit -a
 	git push origin master
 
 lint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
