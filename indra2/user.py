@@ -10,7 +10,7 @@ TEST = "test"
 WEB = "web"
 GUI = "gui"
 NOT_IMPL = "Choice not yet implemented."
-
+CANT_ASK_TEST = "Can't ask anything of a scripted test"
 DEF_STEPS = 10
 
 
@@ -109,10 +109,10 @@ class TestUser(TermUser):
         """
             Can't ask anything of a scripted test!
         """
-        pass
+        return self.tell(CANT_ASK_TEST, end=' ')
 
     def __call__(self):
         """
             Can't present menu to a scripted test!
         """
-        pass
+        run(self)  # noqa: W391

@@ -5,7 +5,7 @@ This is the test suite for env.py.
 from unittest import TestCase, main
 
 from indra2.env import Env
-from indra2.user import not_impl, NOT_IMPL, TermUser, run
+from indra2.user import not_impl, NOT_IMPL, TermUser, TestUser, run, CANT_ASK_TEST
 from indra2.user import line_graph, scatter_plot, DEF_STEPS
 from indra2.tests.test_agent import create_newton
 from indra2.tests.test_env import GRP1, GRP2
@@ -15,16 +15,18 @@ class UserTestCase(TestCase):
     def setUp(self):
         # we will need to change env above from None ASAP!
         self.env = Env("Test env")
-        self.user = TermUser("TestUser", self.env)
+        self.user = TermUser("User", self.env)
+        self.test_user = TestUser("TestUser", self.env)
 
     def tearDown(self):
         self.user = None
         self.env = None
+        self.test_user = None
 
     def test_run(self):
         # need special env for this one
         env = Env("Test env", members=[create_newton()])
-        user = TermUser("TestUser", env)
+        user = TermUser("User", env)
         acts = run(user, test_run=True)
         self.assertEqual(acts, DEF_STEPS)
 
@@ -57,6 +59,19 @@ class UserTestCase(TestCase):
     #         self.assertIsNotNone(ret)
     #     else:
     #         self.assertIsNone(ret)
+
+    def test_tcall(self):
+        # need special env for this one
+        env = Env("Test env", members=[create_newton()])
+        user = TestUser("TestUser", env)
+        acts = run(user, test_run=True)
+        self.assertEqual(acts, DEF_STEPS)
+
+    def test_task(self):
+        # env = Env("Test env", members=[create_newton()])
+        # user = TestUser("TestUser", env)
+        self.assertEqual(self.test_user.ask("Silly question?"), CANT_ASK_TEST)
+    #     self.assertEqual(not_impl(self.user), NOT_IMPL)
 
 if __name__ == '__main__':
     main()

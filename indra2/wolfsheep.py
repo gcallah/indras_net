@@ -5,7 +5,7 @@
 from indra2.agent import Agent
 from indra2.composite import Composite
 from indra2.space import in_hood
-from env import Env
+from indra2.env import Env
 
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
@@ -23,6 +23,7 @@ SHEEP_REPRO_PERIOD = 6
 
 wolves = None
 sheep = None
+meadow = None
 
 create_wolf = None
 create_sheep = None
@@ -31,42 +32,51 @@ sheep_created = 0
 
 
 def sheep_action(agent):
-    global sheep_created
-    print("I'm " + agent.name + " and I eat grass.")
-    agent["time_to_repr"] -= 1
-    if agent["time_to_repr"] == 0:
-        # reproduce
-        meadow.add_child(create_sheep(sheep_created), sheep)
-        agent["time_to_repr"] = SHEEP_REPRO_PERIOD
-    print("I'm " + agent.name + " and my remaining life is: "
-          + str(agent.duration))
+
+    if "sheep" in agent.name:
+        global sheep_created
+        print("I'm " + agent.name + " and I eat grass.")
+        agent["time_to_repr"] -= 1
+        if agent["time_to_repr"] == 0:
+            # reproduce
+            print("hi")
+            meadow.add_child(create_sheep(sheep_created), sheep)
+            agent["time_to_repr"] = SHEEP_REPRO_PERIOD
+        print("I'm " + agent.name + " and my remaining life is: "
+              + str(agent.duration))
+    else:
+        return "Invalid agent name"
 
 
 def wolf_action(agent):
-    global wolves
-    global wolves_created
+    if "wolf" in agent.name:
+        global wolves
+        global wolves_created
 
-    num_sheep = len(sheep)
-    if DEBUG2:
-        print("Num sheep = " + str(num_sheep))
+        num_sheep = len(sheep)
+        if DEBUG2:
+            print("Num sheep = " + str(num_sheep))
 
-    # Wolves eat close sheep instead of ratio
-    hood = sheep.subset(in_hood, agent, HOOD_SIZE, name="hood")
-    if len(hood) > 0:
-        prey = hood.rand_member()
-        if DEBUG:
-            print(str(agent) + " is eating " + str(prey))
-        agent.duration += prey.duration
-        prey.die()
+        # Wolves eat close sheep instead of ratio
+        hood = sheep.subset(in_hood, agent, HOOD_SIZE, name="hood")
+        if len(hood) > 0:
+            prey = hood.rand_member()
+            if DEBUG:
+                print(str(agent) + " is eating " + str(prey))
+            agent.duration += prey.duration
+            prey.die()
 
-    agent["time_to_repr"] -= 1
-    if agent["time_to_repr"] == 0:
-        # reproduce
-        meadow.add_child(create_wolf(wolves_created), wolves)
-        # wolves += create_wolf(wolves_created)
-        agent["time_to_repr"] = WOLF_REPRO_PERIOD
-    print("I'm " + agent.name + " and my remaining life is: "
-          + str(agent.duration))
+        agent["time_to_repr"] -= 1
+        if agent["time_to_repr"] == 0:
+            # reproduce
+            meadow.add_child(create_wolf(wolves_created), wolves)
+            # wolves += create_wolf(wolves_created)
+            agent["time_to_repr"] = WOLF_REPRO_PERIOD
+        print("I'm " + agent.name + " and my remaining life is: "
+              + str(agent.duration))
+
+    else:
+        return "Invalid agent name"
 
 
 def create_wolf(i):
@@ -84,23 +94,63 @@ def create_sheep(i):
                  action=sheep_action,
                  attrs={"time_to_repr": SHEEP_REPRO_PERIOD})
 
+#
+# wolves = Composite("wolves")
+# for i in range(NUM_WOLVES):
+#     wolves += create_wolf(i)
+#
+# if DEBUG2:
+#     print(wolves.__repr__())
+#
+# sheep = Composite("sheep")
+# for i in range(NUM_SHEEP):
+#     sheep += create_sheep(i)
+#
+# if DEBUG2:
+#     print(sheep.__repr__())
+#
+# meadow = Env("meadow", members=[wolves, sheep])
+# if DEBUG2:
+#     print(meadow.__repr__())
+#
+# meadow()
 
-wolves = Composite("wolves")
-for i in range(NUM_WOLVES):
-    wolves += create_wolf(i)
 
-if DEBUG2:
-    print(wolves.__repr__())
+def set_up():
+    """
+    A func to set up run that can also be used by test code.
+    """
+    wolves = Composite("wolves")
+    for i in range(NUM_WOLVES):
+        wolves += create_wolf(i)
 
-sheep = Composite("sheep")
-for i in range(NUM_SHEEP):
-    sheep += create_sheep(i)
+    if DEBUG2:
+        print(wolves.__repr__())
 
-if DEBUG2:
-    print(sheep.__repr__())
+    sheep = Composite("sheep")
+    for i in range(NUM_SHEEP):
+        sheep += create_sheep(i)
 
-meadow = Env("meadow", members=[wolves, sheep])
-if DEBUG2:
-    print(meadow.__repr__())
+    if DEBUG2:
+        print(sheep.__repr__())
 
-meadow()
+    meadow = Env("meadow", members=[wolves, sheep])
+    return (wolves, sheep, meadow)
+
+
+def main():
+    global wolves
+    global sheep
+    global meadow
+
+    (wolves, sheep, meadow) = set_up()
+
+    if DEBUG2:
+        print(meadow.__repr__())
+
+    meadow()
+    return 0
+
+
+if __name__ == "__main__":
+    main()
