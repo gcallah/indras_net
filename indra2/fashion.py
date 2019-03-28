@@ -3,7 +3,7 @@
     This is the fashion model re-written in indra2.
 """
 
-from indra2.agent import Agent
+from indra2.agent import Agent, X, Y, X_VEC, Y_VEC
 from indra2.composite import Composite
 from indra2.space import in_hood
 from indra2.env import Env
@@ -14,8 +14,15 @@ DEBUG2 = False  # turns deeper debugging code on or off
 NUM_TSETTERS = 5
 NUM_FOLLOWERS = 10
 
-BLUE = 0
-RED = 1
+COLOR_PREF = "color_pref"
+DISPLAY_COLOR = "display_color"
+
+BLUE = X
+RED = Y
+
+# for future use as we move to vector representation:
+BLUE_VEC = X_VEC
+RED_VEC = Y_VEC
 
 NOT_ZERO = .001
 
@@ -92,7 +99,8 @@ def create_tsetter(i, color=RED):
     """
     return Agent(TSETTER_PRENM + str(i),
                  action=tsetter_action,
-                 attrs={"color": color})
+                 attrs={COLOR_PREF: color,
+                        DISPLAY_COLOR: color})
 
 
 def create_follower(i, color=BLUE):
@@ -101,7 +109,8 @@ def create_follower(i, color=BLUE):
     """
     return Agent(FOLLOWER_PRENM + str(i),
                  action=follower_action,
-                 attrs={"color": color})
+                 attrs={COLOR_PREF: color,
+                        DISPLAY_COLOR: color})
 
 
 def set_up():

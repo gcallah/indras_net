@@ -10,11 +10,16 @@ from collections import OrderedDict
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
-LOW_RAND = .666
-HI_RAND = 1.5
-
+# x and y indices
 X = 0
 Y = 1
+NEUTRAL = .7071068
+
+# Set up constants for some common vectors: this will save time and memory.
+X_VEC = np.array([1, 0])
+Y_VEC = np.array([0, 1])
+NULL_VEC = np.array([0, 0])
+NEUT_VEC = np.array([NEUTRAL, NEUTRAL])
 
 INF = sys.maxsize  # really any very big number would do here!
 
