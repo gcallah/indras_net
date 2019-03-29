@@ -101,19 +101,33 @@ def tsetter_action(agent):
                      NOT_ZERO)   # prevent div by zero!
     num_blue_fs = max(len(blue_followers.subset(in_hood, agent, HOOD_SIZE)),
                       NOT_ZERO)   # prevent div by zero!
-    ratio = 1
-    if DEBUG:
-        print("In trendsetter action, we get num_red_fs = "
-              + str(int(num_red_fs))
-              + " and num_blue_fs = " + str(int(num_blue_fs)))
-    if agent.primary_group() == blue_tsetters:
-        ratio = num_blue_fs / num_red_fs
-    else:
-        ratio = num_red_fs / num_blue_fs
+    env_color = num_red_fs / (num_red_fs + num_blue_fs)
 
-    if ratio < 1:
+    agent[COLOR_PREF] = new_color_pref(agent[COLOR_PREF], env_color)
+    if DEBUG:
+        print("In trendsetter action, we get new pref = "
+              + str(agent[COLOR_PREF])
+              + " display color = " + str(agent[DISPLAY_COLOR])
+              + " env color = " + str(env_color))
+    if env_unfavorable(agent[DISPLAY_COLOR], agent[COLOR_PREF]):
+        changed = True
+        agent[DISPLAY_COLOR] = agent[DISPLAY_COLOR]
         change_color(agent, society, opp_group)
-    return ratio
+    return changed
+
+    # ratio = 1
+    # if DEBUG:
+    #     print("In trendsetter action, we get num_red_fs = "
+    #           + str(int(num_red_fs))
+    #           + " and num_blue_fs = " + str(int(num_blue_fs)))
+    # if agent.primary_group() == blue_tsetters:
+    #     ratio = num_blue_fs / num_red_fs
+    # else:
+    #     ratio = num_red_fs / num_blue_fs
+
+    # if ratio < 1:
+    #     change_color(agent, society, opp_group)
+    # return ratio
 
 
 def create_tsetter(i, color=RED):
