@@ -3,6 +3,7 @@ This is the test suite for space.py.
 """
 
 from unittest import TestCase, main
+from operator import gt, lt
 from indra2.agent import switch
 from indra2.fashion import set_up, DEBUG, DEBUG2, create_follower
 from indra2.fashion import change_color, create_tsetter
@@ -50,11 +51,11 @@ class FashionTestCase(TestCase):
         self.assertEqual(agent.primary_group(), to_grp)
 
     def test_env_unfavorable(self):
-        self.assertTrue(env_unfavorable(RED, BLUE))
-        self.assertFalse(env_unfavorable(RED, RED))
-        self.assertFalse(env_unfavorable(RED, NEUTRAL))
-        self.assertTrue(env_unfavorable(RED, NEUTRAL - BIG_ENOUGH))
-        self.assertTrue(env_unfavorable(BLUE, NEUTRAL + BIG_ENOUGH))
+        self.assertTrue(env_unfavorable(RED, BLUE, lt, gt))
+        self.assertFalse(env_unfavorable(RED, RED, lt, gt))
+        self.assertFalse(env_unfavorable(RED, NEUTRAL, lt, gt))
+        self.assertTrue(env_unfavorable(RED, NEUTRAL - BIG_ENOUGH, lt, gt))
+        self.assertTrue(env_unfavorable(BLUE, NEUTRAL + BIG_ENOUGH, lt, gt))
 
     def test_new_color_pref(self):
         new_pref = new_color_pref(RED, RED)

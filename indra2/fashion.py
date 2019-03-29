@@ -4,6 +4,7 @@
 
 import math
 import statistics as sts
+from operator import gt, lt
 
 from indra2.agent import Agent, X_VEC, Y_VEC, NEUTRAL
 from indra2.agent import ratio_to_sin
@@ -71,12 +72,13 @@ def new_color_pref(old_pref, env_color):
     return new_color
 
 
-def env_unfavorable(my_color, my_pref):
+def env_unfavorable(my_color, my_pref, op1, op2):
     # we're going to add a small value to NEUTRAL so we sit on fence
+    # op1 and op2 should be greater than or less than comparisons
     if my_color == RED:
-        return my_pref < (NEUTRAL - TOO_SMALL)
+        return op1(my_pref, (NEUTRAL - TOO_SMALL))
     else:
-        return my_pref > (NEUTRAL + TOO_SMALL)
+        return op2(my_pref, (NEUTRAL + TOO_SMALL))
 
 
 def follower_action(agent):
@@ -98,7 +100,7 @@ def follower_action(agent):
         print("In follower action, we get new pref = " + str(agent[COLOR_PREF])
               + " display color = " + str(agent[DISPLAY_COLOR])
               + " env color = " + str(env_color))
-    if env_unfavorable(agent[DISPLAY_COLOR], agent[COLOR_PREF]):
+    if env_unfavorable(agent[DISPLAY_COLOR], agent[COLOR_PREF], lt, gt):
         changed = True
         agent[DISPLAY_COLOR] = not agent[DISPLAY_COLOR]
         change_color(agent, society, opp_group)
