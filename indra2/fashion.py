@@ -1,9 +1,11 @@
-
 """
     This is the fashion model re-written in indra2.
 """
 
-from indra2.agent import Agent, X, Y, X_VEC, Y_VEC
+import math
+import statistics as sts
+
+from indra2.agent import Agent, X, Y, X_VEC, Y_VEC, NEUTRAL
 from indra2.composite import Composite
 from indra2.space import in_hood
 from indra2.env import Env
@@ -25,6 +27,9 @@ BLUE_VEC = X_VEC
 RED_VEC = Y_VEC
 
 NOT_ZERO = .001
+
+TOO_SMALL = .01
+BIG_ENOUGH = .03
 
 HOOD_SIZE = 4
 
@@ -53,27 +58,45 @@ def change_color(agent, society, opp_group):
                        opp_group[str(agent.primary_group())])
 
 
+def new_color_pref(old_pref, env_color):
+    me = math.asin(old_pref)
+    env = math.asin(env_color)
+    print("me = " + str(me) + " env = " + str(env)
+          + " sine of mean = "
+          + str(math.sin(sts.mean((me, env)))))
+    new_color = math.sin(sts.mean((me, env)))
+    return new_color
+
+
+def env_unfavorable(my_color, my_pref):
+    # we're going to add a small value to NEUTRAL so we sit on fence
+    if my_color == RED:
+        return my_pref < (NEUTRAL - TOO_SMALL)
+    else:
+        return my_pref > (NEUTRAL + TOO_SMALL)
+
+
 def follower_action(agent):
+    changed = False
     num_red_ts = max(len(red_tsetters.subset(in_hood, agent, HOOD_SIZE)),
                      NOT_ZERO)   # prevent div by zero!
     num_blue_ts = max(len(blue_tsetters.subset(in_hood, agent, HOOD_SIZE)),
                       NOT_ZERO)   # prevent div by zero!
-    ratio = 1
-    if DEBUG:
-        print("In follower action, we get num_red_ts = " + str(int(num_red_ts))
-              + " and num_blue_ts = " + str(int(num_blue_ts)))
-    if agent.primary_group() == red_followers:
-        ratio = num_blue_ts / num_red_ts
-    else:
-        ratio = num_red_ts / num_blue_ts
+    env_color = num_red_ts / (num_red_ts + num_blue_ts)
 
-    if ratio > 1:
+    agent[COLOR_PREF] = new_color_pref(agent[COLOR_PREF], env_color)
+    if DEBUG:
+        print("In follower action, we get new pref = " + str(agent[COLOR_PREF])
+              + " display color = " + str(agent[DISPLAY_COLOR])
+              + " env color = " + str(env_color))
+    if env_unfavorable(agent[DISPLAY_COLOR], agent[COLOR_PREF]):
+        changed = True
+        agent[DISPLAY_COLOR] = not agent[DISPLAY_COLOR]
         change_color(agent, society, opp_group)
-    return ratio
+    return changed
 
 
 def tsetter_action(agent):
-    # pass
     num_red_fs = max(len(red_followers.subset(in_hood, agent, HOOD_SIZE)),
                      NOT_ZERO)   # prevent div by zero!
     num_blue_fs = max(len(blue_followers.subset(in_hood, agent, HOOD_SIZE)),
