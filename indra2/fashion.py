@@ -5,7 +5,8 @@
 import math
 import statistics as sts
 
-from indra2.agent import Agent, X, Y, X_VEC, Y_VEC, NEUTRAL
+from indra2.agent import Agent, X_VEC, Y_VEC, NEUTRAL
+from indra2.agent import ratio_to_sin
 from indra2.composite import Composite
 from indra2.space import in_hood
 from indra2.env import Env
@@ -19,8 +20,8 @@ NUM_FOLLOWERS = 10
 COLOR_PREF = "color_pref"
 DISPLAY_COLOR = "display_color"
 
-BLUE = X
-RED = Y
+BLUE = 0.0
+RED = 1.0
 
 # for future use as we move to vector representation:
 BLUE_VEC = X_VEC
@@ -61,10 +62,12 @@ def change_color(agent, society, opp_group):
 def new_color_pref(old_pref, env_color):
     me = math.asin(old_pref)
     env = math.asin(env_color)
-    print("me = " + str(me) + " env = " + str(env)
-          + " sine of mean = "
-          + str(math.sin(sts.mean((me, env)))))
+    if DEBUG2:
+        print("me = " + str(me) + " env = " + str(env)
+              + " sine of mean = "
+              + str(math.sin(sts.mean((me, env)))))
     new_color = math.sin(sts.mean((me, env)))
+    print("new color = " + str(new_color))
     return new_color
 
 
@@ -82,9 +85,15 @@ def follower_action(agent):
                      NOT_ZERO)   # prevent div by zero!
     num_blue_ts = max(len(blue_tsetters.subset(in_hood, agent, HOOD_SIZE)),
                       NOT_ZERO)   # prevent div by zero!
-    env_color = num_red_ts / (num_red_ts + num_blue_ts)
+    total_ts = num_red_ts + num_blue_ts
+    if total_ts <= 0:
+        return False
 
-    agent[COLOR_PREF] = new_color_pref(agent[COLOR_PREF], env_color)
+    env_color = ratio_to_sin(num_red_ts / total_ts)
+
+    ncp = new_color_pref(agent[COLOR_PREF], env_color)
+    print("in action new color = " + str(ncp))
+    agent[COLOR_PREF] = ncp
     if DEBUG:
         print("In follower action, we get new pref = " + str(agent[COLOR_PREF])
               + " display color = " + str(agent[DISPLAY_COLOR])
@@ -97,37 +106,24 @@ def follower_action(agent):
 
 
 def tsetter_action(agent):
-    num_red_fs = max(len(red_followers.subset(in_hood, agent, HOOD_SIZE)),
-                     NOT_ZERO)   # prevent div by zero!
-    num_blue_fs = max(len(blue_followers.subset(in_hood, agent, HOOD_SIZE)),
-                      NOT_ZERO)   # prevent div by zero!
-    env_color = num_red_fs / (num_red_fs + num_blue_fs)
-
-    agent[COLOR_PREF] = new_color_pref(agent[COLOR_PREF], env_color)
-    if DEBUG:
-        print("In trendsetter action, we get new pref = "
-              + str(agent[COLOR_PREF])
-              + " display color = " + str(agent[DISPLAY_COLOR])
-              + " env color = " + str(env_color))
-    if env_unfavorable(agent[DISPLAY_COLOR], agent[COLOR_PREF]):
-        changed = True
-        agent[DISPLAY_COLOR] = agent[DISPLAY_COLOR]
-        change_color(agent, society, opp_group)
+    changed = False
+#    num_red_fs = max(len(red_followers.subset(in_hood, agent, HOOD_SIZE)),
+#                     NOT_ZERO)   # prevent div by zero!
+#    num_blue_fs = max(len(blue_followers.subset(in_hood, agent, HOOD_SIZE)),
+#                      NOT_ZERO)   # prevent div by zero!
+#    env_color = num_red_fs / (num_red_fs + num_blue_fs)
+#
+#    agent[COLOR_PREF] = new_color_pref(agent[COLOR_PREF], env_color)
+#    if DEBUG:
+#        print("In trendsetter action, we get new pref = "
+#              + str(agent[COLOR_PREF])
+#              + " display color = " + str(agent[DISPLAY_COLOR])
+#              + " env color = " + str(env_color))
+#    if env_unfavorable(agent[DISPLAY_COLOR], agent[COLOR_PREF]):
+#        changed = True
+#        agent[DISPLAY_COLOR] = not agent[DISPLAY_COLOR]
+#        change_color(agent, society, opp_group)
     return changed
-
-    # ratio = 1
-    # if DEBUG:
-    #     print("In trendsetter action, we get num_red_fs = "
-    #           + str(int(num_red_fs))
-    #           + " and num_blue_fs = " + str(int(num_blue_fs)))
-    # if agent.primary_group() == blue_tsetters:
-    #     ratio = num_blue_fs / num_red_fs
-    # else:
-    #     ratio = num_red_fs / num_blue_fs
-
-    # if ratio < 1:
-    #     change_color(agent, society, opp_group)
-    # return ratio
 
 
 def create_tsetter(i, color=RED):

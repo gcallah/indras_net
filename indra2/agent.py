@@ -3,6 +3,7 @@ This file defines an Agent.
 """
 import sys
 import numpy as np
+from math import pi, sin
 import json
 # from random import uniform
 from collections import OrderedDict
@@ -22,6 +23,10 @@ NULL_VEC = np.array([0, 0])
 NEUT_VEC = np.array([NEUTRAL, NEUTRAL])
 
 INF = sys.maxsize  # really any very big number would do here!
+
+
+def ratio_to_sin(ratio):
+    return sin(ratio * pi / 2)
 
 
 def type_hash(agent):
@@ -162,7 +167,8 @@ class Agent(object):
     def __setitem__(self, key, value):
         if key not in self.attrs:
             raise KeyError(key)
-        self.val_vect[self.attrs[key]] = value
+        index = self.attrs[key]
+        self.val_vect[index] = value
 
     def __contains__(self, item):
         return item in self.attrs
