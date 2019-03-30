@@ -109,22 +109,6 @@ def follower_action(agent):
 
 def tsetter_action(agent):
     changed = False
-#    num_red_fs = max(len(red_followers.subset(in_hood, agent, HOOD_SIZE)),
-#                     NOT_ZERO)   # prevent div by zero!
-#    num_blue_fs = max(len(blue_followers.subset(in_hood, agent, HOOD_SIZE)),
-#                      NOT_ZERO)   # prevent div by zero!
-#    env_color = num_red_fs / (num_red_fs + num_blue_fs)
-#
-#    agent[COLOR_PREF] = new_color_pref(agent[COLOR_PREF], env_color)
-#    if DEBUG:
-#        print("In trendsetter action, we get new pref = "
-#              + str(agent[COLOR_PREF])
-#              + " display color = " + str(agent[DISPLAY_COLOR])
-#              + " env color = " + str(env_color))
-#    if env_unfavorable(agent[DISPLAY_COLOR], agent[COLOR_PREF]):
-#        changed = True
-#        agent[DISPLAY_COLOR] = not agent[DISPLAY_COLOR]
-#        change_color(agent, society, opp_group)
     num_red_fs = max(len(red_followers.subset(in_hood, agent, HOOD_SIZE)),
                      NOT_ZERO)   # prevent div by zero!
     num_blue_fs = max(len(blue_followers.subset(in_hood, agent, HOOD_SIZE)),
