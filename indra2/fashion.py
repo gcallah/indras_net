@@ -125,6 +125,28 @@ def tsetter_action(agent):
 #        changed = True
 #        agent[DISPLAY_COLOR] = not agent[DISPLAY_COLOR]
 #        change_color(agent, society, opp_group)
+    num_red_fs = max(len(red_followers.subset(in_hood, agent, HOOD_SIZE)),
+                     NOT_ZERO)   # prevent div by zero!
+    num_blue_fs = max(len(blue_followers.subset(in_hood, agent, HOOD_SIZE)),
+                      NOT_ZERO)   # prevent div by zero!
+    total_fs = num_red_fs + num_blue_fs
+    if total_fs <= 0:
+        return False
+
+    env_color = ratio_to_sin(num_red_fs / total_fs)
+
+    ncp = new_color_pref(agent[COLOR_PREF], env_color)
+    print("in action new color = " + str(ncp))
+    agent[COLOR_PREF] = ncp
+    if DEBUG:
+        print("In trendsetter action, we get new pref = "
+              + str(agent[COLOR_PREF])
+              + " display color = " + str(agent[DISPLAY_COLOR])
+              + " env color = " + str(env_color))
+    if env_unfavorable(agent[DISPLAY_COLOR], agent[COLOR_PREF], gt, lt):
+        changed = True
+        agent[DISPLAY_COLOR] = not agent[DISPLAY_COLOR]
+        change_color(agent, society, opp_group)
     return changed
 
 
