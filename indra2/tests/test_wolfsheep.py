@@ -5,7 +5,7 @@ This is the test suite for space.py.
 from unittest import TestCase, main
 from indra2.agent import Agent
 from indra2.wolfsheep import create_sheep, create_wolf, set_up, wolf_action, sheep_action
-from indra2.wolfsheep import AGT_WOLF_NAME, AGT_SHEEP_NAME, ERR_MSG, WOLF_LIFESPAN, SHEEP_LIFESPAN
+from indra2.wolfsheep import AGT_WOLF_NAME, AGT_SHEEP_NAME, ERR_MSG, WOLF_LIFESPAN, SHEEP_LIFESPAN, SHEEP_REPRO_PERIOD, WOLF_REPRO_PERIOD
 import indra2.wolfsheep as wolfsheep
 
 TEST_SNUM = 3
@@ -52,7 +52,15 @@ class WolfsheepTestCase(TestCase):
         test_negCase = sheep_action(self.wolf)
         self.assertEqual(test_negCase, ERR_MSG)
 
+    def test_wolf_action_repr_period(self):
+        new_wolf = create_wolf(1)
+        wolf_action(new_wolf)
+        self.assertEqual(new_wolf['time_to_repr'], WOLF_REPRO_PERIOD-1)
 
+    def test_sheep_action_repr_period(self):
+        new_sheep = create_sheep(1)
+        sheep_action(new_sheep)
+        self.assertEqual(new_sheep['time_to_repr'], SHEEP_REPRO_PERIOD-1)
 
 
 
