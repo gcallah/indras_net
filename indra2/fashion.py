@@ -68,7 +68,6 @@ def new_color_pref(old_pref, env_color):
               + " sine of mean = "
               + str(math.sin(sts.mean((me, env)))))
     new_color = math.sin(sts.mean((me, env)))
-    print("new color = " + str(new_color))
     return new_color
 
 
@@ -93,13 +92,7 @@ def follower_action(agent):
 
     env_color = ratio_to_sin(num_red_ts / total_ts)
 
-    ncp = new_color_pref(agent[COLOR_PREF], env_color)
-    print("in action new color = " + str(ncp))
-    agent[COLOR_PREF] = ncp
-    if DEBUG:
-        print("In follower action, we get new pref = " + str(agent[COLOR_PREF])
-              + " display color = " + str(agent[DISPLAY_COLOR])
-              + " env color = " + str(env_color))
+    agent[COLOR_PREF] = new_color_pref(agent[COLOR_PREF], env_color)
     if env_unfavorable(agent[DISPLAY_COLOR], agent[COLOR_PREF], lt, gt):
         changed = True
         agent[DISPLAY_COLOR] = not agent[DISPLAY_COLOR]
@@ -119,14 +112,7 @@ def tsetter_action(agent):
 
     env_color = ratio_to_sin(num_red_fs / total_fs)
 
-    ncp = new_color_pref(agent[COLOR_PREF], env_color)
-    print("in action new color = " + str(ncp))
-    agent[COLOR_PREF] = ncp
-    if DEBUG:
-        print("In trendsetter action, we get new pref = "
-              + str(agent[COLOR_PREF])
-              + " display color = " + str(agent[DISPLAY_COLOR])
-              + " env color = " + str(env_color))
+    agent[COLOR_PREF] = new_color_pref(agent[COLOR_PREF], env_color)
     if env_unfavorable(agent[DISPLAY_COLOR], agent[COLOR_PREF], gt, lt):
         changed = True
         agent[DISPLAY_COLOR] = not agent[DISPLAY_COLOR]

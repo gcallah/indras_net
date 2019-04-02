@@ -71,10 +71,6 @@ class FashionTestCase(TestCase):
         new_agent = create_tsetter(2, RED)
 
         self.assertEqual(new_agent.name, TSETTER_PRENM +str(2))
-        # if(Agent['color']=='RED'):
-        #     print(True)
-        # else:
-        #     print(False)
 
     def test_create_follower(self):
         new_follower = create_follower(2 , BLUE)

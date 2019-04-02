@@ -10,6 +10,9 @@ from indra2.composite import Composite
 DEF_WIDTH = 10
 DEF_HEIGHT = 10
 
+MAX_WIDTH = 200
+MAX_HEIGHT = 200
+
 DEBUG = True
 DEBUG2 = False
 
@@ -90,9 +93,10 @@ class Space(Composite):
         """
         return randint(0, self.height - 1)
 
-    def place_member(self, mbr):
+    def place_member(self, mbr, max_move=MAX_WIDTH):
         """
-        By default, locate a member at a random x,y spot in our grid.
+        By default, locate a member at a random x, y spot in our grid.
+        max_move is not used yet!
         """
         if not is_composite(mbr):
             x, y = self.rand_x(), self.rand_y()
@@ -107,6 +111,9 @@ class Space(Composite):
                 # we need an is_full() method!
         else:
             self.place_members(mbr.members)
+
+    def move(self, mbr, max_move=1):
+        self.place_member(mbr, max_move)
 
     def __iadd__(self, other):
         super().__iadd__(other)
