@@ -8,13 +8,9 @@ from collections import OrderedDict
 from random import choice
 from copy import copy
 
-import indra2.agent as agt
+from indra2.agent import Agent, join, INF, AgentEncoder, is_composite
 
 DEBUG = False
-
-
-def is_composite(thing):
-    return hasattr(thing, 'members')
 
 
 def grp_from_nm_dict(nm, dict):
@@ -23,7 +19,7 @@ def grp_from_nm_dict(nm, dict):
     return grp
 
 
-class Composite(agt.Agent):
+class Composite(Agent):
     """
     This is the base class of all collections
     of entities. It itself is an agent.
@@ -36,18 +32,15 @@ class Composite(agt.Agent):
     """
 
     def __init__(self, name, attrs=None, members=None,
-                 duration=agt.INF):
+                 duration=INF):
         self.members = OrderedDict()
         super().__init__(name, attrs=attrs, duration=duration)
         if members is not None:
             for member in members:
-                member.join_group(self)
-                # use member's str() val (usually name)
-                # as the key to place it in our dict:
-                self.members[str(member)] = member
+                join(self, member)
 
     def __repr__(self):
-        return json.dumps(self.to_json(), cls=agt.AgentEncoder, indent=4)
+        return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
 
     def __eq__(self, other):
         if not super().__eq__(other):
@@ -78,7 +71,7 @@ class Composite(agt.Agent):
         for setitem, for composites, we are going to set
         the 'key'th member.
         """
-        self.members[key] = member
+        join(self, member)
 
     def __delitem__(self, key):
         """
@@ -103,8 +96,7 @@ class Composite(agt.Agent):
         Call the members' functions.
         Later, this will just call agents' funcs.
         This should return the total of all
-        agents who did, in fasubsetct, act in a
-        particular call.
+        agents who acted in a particular call.
         """
         total_acts = 0
         del_list = []
@@ -114,9 +106,11 @@ class Composite(agt.Agent):
                 if member.isactive():
                     total_acts += member()
                 else:
-                    if DEBUG:
-                        print("Marking " + key + " for deletion.")
-                    del_list.append(key)
+                    # delete agents but not composites:
+                    if not is_composite(member):
+                        if DEBUG:
+                            print("Marking " + key + " for deletion.")
+                        del_list.append(key)
         for key in del_list:
             del self.members[key]
         return total_acts
@@ -134,8 +128,8 @@ class Composite(agt.Agent):
         else:
             new_dict[other.name] = other
         new_grp = grp_from_nm_dict(self.name + "+" + other.name, new_dict)
-        self.join_group(new_grp)
-        other.join_group(new_grp)
+        self.add_group(new_grp)
+        other.add_group(new_grp)
         return new_grp
 
     def __iadd__(self, other):
@@ -145,10 +139,10 @@ class Composite(agt.Agent):
         If other is an atom, add it.
         """
         if is_composite(other):
-            self.members.update(other.members)
+            for key in other:
+                join(self, other[key])
         else:
-            self[other.name] = other
-            other.join_group(self)
+            join(self, other)
         return self
 
     def __sub__(self, other):
@@ -204,6 +198,19 @@ class Composite(agt.Agent):
         for mbr in del_list:
             del self.members[mbr]
         return self
+
+    def add_member(self, member):
+        """
+        Should be called by join()
+        """
+        self.members[str(member)] = member
+
+    def del_member(self, member):
+        """
+        Should be called by split()
+        """
+        if str(member) in self.members:
+            del self.members[str(member)]
 
     def rand_member(self):
         if len(self) > 0:

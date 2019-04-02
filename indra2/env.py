@@ -6,19 +6,20 @@ of agents that share a timeline and a Space.
 import os
 import getpass
 import indra2.display_methods as disp
+from indra2.agent import join, switch
 from indra2.space import Space
-from indra2.user import TermUser, TERMINAL, WEB
+from indra2.user import TermUser, TERMINAL, WEB, TEST, TestUser
 
 DEBUG = True
 DEBUG2 = False
 DEF_USER = "User"
 DEF_TIME = 10
 
-# Constant for plotting
-SC = "SC"  # Scatter plot
-LN = "LN"  # Line plot
 X = 0
 Y = 1
+
+POP_HIST_HDR = "PopHist for "
+POP_SEP = ", "
 
 
 class PopHist():
@@ -28,6 +29,15 @@ class PopHist():
     """
     def __init__(self):
         self.pops = {}
+
+    def __str__(self):
+        s = POP_HIST_HDR
+        for mbr in self.pops:
+            s += mbr + POP_SEP
+        return s
+
+    def __repr__(self):
+        return(str(self))  # for now!
 
     def record_pop(self, mbr, count):
         if mbr not in self.pops:
@@ -41,7 +51,7 @@ class Env(Space):
     An env *is* a space and *has* a timeline.
     That makes the inheritance work out as we want it to.
     """
-    def __init__(self, name, plot_type=SC, **kwargs):
+    def __init__(self, name, **kwargs):
         super().__init__(name, **kwargs)
         self.pop_hist = PopHist()  # this will record pops across time
         # Make sure variesties are present in the history
@@ -49,18 +59,23 @@ class Env(Space):
             self.pop_hist.record_pop(mbr, self.pop_count(mbr))
 
         self.womb = []  # for agents waiting to be born
+        self.switches = []  # for agents waiting to switch groups
 
         # Attributes for plotting
-        self.plot_title = "Environment Plot"
-        self.image_bytes = None
+        self.plot_title = self.name
 
+        self.user = None
         self.user_type = os.getenv("user_type", TERMINAL)
-        if self.user_type == TERMINAL:
+        if (self.user_type == TERMINAL):
             self.user = TermUser(getpass.getuser(), self)
             self.user.tell("Welcome to Indra, " + str(self.user) + "!")
+        elif (self.user_type == TEST):
+            self.user = TestUser(getpass.getuser(), self)
 
     def __call__(self):
-        if self.user is not None:
+        if (self.user is None) or (self.user_type == TEST):
+            self.runN()
+        else:
             while True:
                 # run until user exit!
                 self.user()
@@ -73,7 +88,18 @@ class Env(Space):
         """
         self.womb.append((agent, group))
         if DEBUG:
-            print("{} added to the womb".format(agent.name))
+            self.user.tell("{} added to the womb".format(agent.name))
+        # do we need to connect agent to env (self)?
+
+    def add_switch(self, agent, grp1, grp2):
+        """
+        Put a child agent in the womb.
+        agent: child to add
+        group: which group child will join
+        """
+        self.switches.append((agent, grp1, grp2))
+        if DEBUG:
+            self.user.tell("{} added to switches".format(str(agent)))
         # do we need to connect agent to env (self)?
 
     def runN(self, periods=DEF_TIME):
@@ -89,10 +115,13 @@ class Env(Space):
 
             if self.womb is not None:
                 for (agent, group) in self.womb:
-                    group += agent
+                    join(group, agent)
                 del self.womb[:]
+            if self.switches is not None:
+                for (agent, grp1, grp2) in self.switches:
+                    switch(agent, grp1, grp2)
+                del self.switches[:]
 
-            # TODO: A workaround for the current issue
             for mbr in self.pop_hist.pops:
                 if mbr in self.members and self.is_mbr_comp(mbr):
                     self.pop_hist.record_pop(mbr, self.pop_count(mbr))
@@ -100,38 +129,56 @@ class Env(Space):
                     self.pop_hist.record_pop(mbr, 0)
 
             curr_acts = super().__call__()
-            print(f"\nIn period {i} there were {curr_acts} actions taken.\n")
             acts += curr_acts
         return acts
 
-    def plot(self, plot_type):
-        """
-        Show where agents are in graphical form.
-        """
+    def has_disp(self):
         if not disp.plt_present:
             self.user.tell("ERROR: No graphing package installed")
-            return
+            return False
+        else:
+            return True
 
-        try:
-            if plot_type == LN:
-                # TODO: imporve implementation of the iterator of composite?
+    def line_graph(self):
+        """
+        Show agent populations.
+        """
+        if self.has_disp():
+            try:
+                # TODO: improve implementation of the iterator of composite?
                 period, data = self.line_data()
-                self.line_graph = disp.LineGraph(self.plot_title + self.name,
-                                                 data, period,
-                                                 is_headless=self.headless())
-                self.image_bytes = self.line_graph.show()
+                if period is None:
+                    self.user.tell("No data to display.")
+                    return None
 
-            elif plot_type == SC:
+                line_plot = disp.LineGraph(self.plot_title,
+                                           data, period,
+                                           is_headless=self.headless())
+                line_plot.show()
+                return line_plot
+            except Exception as e:
+                self.user.tell("Error when drawing graph: " + str(e))
+        else:
+            return None
+
+    def scatter_graph(self):
+        """
+        Show agent locations.
+        """
+        if self.has_disp():
+            try:
                 data = self.plot_data()
-                self.scatter_plot = disp.ScatterPlot(
+                scatter_plot = disp.ScatterPlot(
                     self.plot_title, data,
                     int(self.width), int(self.height),
                     anim=True, data_func=self.plot_data,
                     is_headless=self.headless())
-                self.image_bytes = self.scatter_plot.show()
-        except Exception as e:
-            self.user.tell("Error when drawing a plot: " + str(e))
-        return self.image_bytes
+                scatter_plot.show()
+                return scatter_plot
+            except Exception as e:
+                self.user.tell("Error when drawing graph: " + str(e))
+        else:
+            return None
 
     def line_data(self):
         data = {}
@@ -141,8 +188,6 @@ class Env(Space):
             data[var] = {}
             data[var]["data"] = self.pop_hist.pops[var]
             # TODO: define colors in env?
-            # data[var]["color"] = self.agents.get_var_color(var)
-            # A temporary implementation of period
             if not period:
                 period = len(data[var]["data"])
         return (period, data)
@@ -171,4 +216,4 @@ class Env(Space):
         return data
 
     def headless(self):
-        return self.user_type == WEB
+        return (self.user_type == WEB) or (self.user_type == TEST)

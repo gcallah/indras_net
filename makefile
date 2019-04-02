@@ -3,17 +3,20 @@ BOX_DATA = $(BOX_DIR)/data
 BOXPLOTS = $(shell ls $(BOX_DATA)/plot*.pdf)
 DOCKER_DIR = docker
 DJANGO_DIR = IndrasNet
+REPO = indras_net
 MODELS_DIR = models
 PYLINT = flake8
 PYLINTFLAGS = 
 PYTHONFILES = $(shell ls $(DJANGO_DIR)/*.py)
 PYTHONFILES += $(shell ls $(MODELS_DIR)/*.py)
 
+# setup a python dist of indra
 dist: setup.py
 	-git commit -a -m "Building new distribution"
 	git push origin master
 	python3 setup.py sdist upload	
 
+# make a bigbox dataset
 boxdata:
 	./all_box_plots.sh
 	-git commit -a -m "Building new Big Box data sets."
@@ -24,7 +27,11 @@ prod: $(SRCS) $(OBJ)
 	-git commit -a -m "Building production."
 	git pull origin master
 	git push origin master
-	ssh indrasnet@ssh.pythonanywhere.com 'cd /home/indrasnet/indras_net; /home/indrasnet/indras_net/rebuild.sh'
+	ssh indrasnet@ssh.pythonanywhere.com 'cd /home/indrasnet/$(REPO); /home/indrasnet/$(REPO)/rebuild.sh'
+
+# starting to cut over to indra 2:
+pytests:
+	cd indra2; make pytests
 
 lint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
 
@@ -39,9 +46,18 @@ db: $(DJANGO_DIR)/models.py
 	-git commit $(DJANGO_DIR)/migrations/*.py
 	git push origin master
 
-container: $(DOCKER_DIR)/Dockerfile $(DOCKER_DIR)/requirements.txt $(DOCKER_DIR)/requirements.txt
-	docker build -t gcallah/indra docker
-	docker push gcallah/indra:latest
+# dev container has dev tools
+dev_container: $(DOCKER_DIR)/Dockerfile $(DOCKER_DIR)/requirements.txt $(DOCKER_DIR)/requirements-dev.txt
+	docker build -t gcallah/$(REPO)-dev docker
+	docker push gcallah/$(REPO)-dev:latest
+
+# prod container has only what's needed to run
+prod_container: $(DOCKER_DIR)/Deployable $(DOCKER_DIR)/requirements.txt
+	docker system prune -f
+	docker build -t gcallah/$(REPO) docker --no-cache --build-arg repo=$(REPO) -f $(DOCKER_DIR)/Deployable
+
+deploy_container:
+	docker push gcallah/$(REPO):latest
 
 nocrud:
 	-rm *~

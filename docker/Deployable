@@ -1,0 +1,20 @@
+FROM python:3.6.0
+
+ARG repo
+CMD echo $repo
+
+COPY requirements.txt /requirements.txt
+
+RUN pip install --upgrade pip
+
+RUN pip install -r requirements.txt
+
+WORKDIR /home/
+RUN git clone https://github.com/gcallah/$repo.git
+
+ENV PYTHONPATH "/home/$repo:${PYTHONPATH}"
+
+WORKDIR /home/$repo/
+
+EXPOSE 8000
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

@@ -5,7 +5,7 @@ then
     HOST_PORT=$1
 fi
 
-echo "Going to remove any lingering indra container."
-docker rm indra 2> /dev/null || true
+echo "Going to remove any lingering indra-dev container."
+docker rm indra-dev 2> /dev/null || true
 echo "Now running docker to spin up the container."
-docker run -it -p $HOST_PORT:8000 -v $PWD:/home/IndrasNet indra bash
+docker run -it -p $HOST_PORT:8000 -v $PWD:/home/IndrasNet indra-dev bash

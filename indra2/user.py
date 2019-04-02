@@ -4,23 +4,35 @@ This file defines User, which represents a user in our system.
 # import json
 
 from indra2.agent import Agent  # , DEBUG2  # DEBUG,
+from IPython import start_ipython
 
 TERMINAL = "terminal"
+TEST = "test"
 WEB = "web"
 GUI = "gui"
 NOT_IMPL = "Choice not yet implemented."
+CANT_ASK_TEST = "Can't ask anything of a scripted test"
+DEF_STEPS = 10
 
 
 def not_impl(user):
     return user.tell(NOT_IMPL)
 
 
-def run(user):
+def run(user, test_run=False):
+    steps = 0
+    acts = 0
     try:
-        steps = int(user.ask("How many periods?"))
-        user.env.runN(periods=steps)
+        if not test_run:
+            steps = int(user.ask("How many periods?"))
+            user.tell("Steps = " + str(steps))
+        else:
+            steps = DEF_STEPS
+        acts = user.env.runN(periods=steps)
     except (ValueError, TypeError) as e:
-        user.tell("You must enter an integer value for # of steps: " + str(e))
+        user.tell("You must enter an integer value for # of steps: "
+                  + str(e))
+    return acts
 
 
 def leave(user):
@@ -29,13 +41,18 @@ def leave(user):
 
 
 def scatter_plot(user):
-    user.tell("Drawing a plot.")
-    user.env.plot("SC")
+    user.tell("Drawing a scatter plot.")
+    return user.env.scatter_graph()
 
 
 def line_graph(user):
     user.tell("Drawing a line graph.")
-    user.env.plot("LN")
+    ret = user.env.line_graph()
+    return ret
+
+
+def ipython(user):
+    start_ipython()
 
 
 MSG = 0
@@ -46,9 +63,9 @@ RUN = 1
 
 
 term_menu = {RUN: (str(RUN) + ") Run for N periods (DEFAULT).", run),
-             2: ("2) Display the population graph.", line_graph),
-             3: ("3) Display the plot.", scatter_plot),
-             4: ("4) Leave menu for interactive python session.", not_impl),
+             2: ("2) Display a population graph.", line_graph),
+             3: ("3) Display a scatter plot.", scatter_plot),
+             4: ("4) Leave menu for interactive python session.", ipython),
              QUIT: (str(QUIT) + ") Quit.", leave)}
 
 
@@ -86,3 +103,21 @@ class TermUser(Agent):
                 raise ValueError
         except ValueError as e:
             self.tell("Invalid option: " + str(e))
+
+
+class TestUser(TermUser):
+    """
+        Should just override ask() and __call__()
+        from TermUser.
+    """
+    def ask(self, msg, default=None):
+        """
+            Can't ask anything of a scripted test!
+        """
+        return self.tell(CANT_ASK_TEST, end=' ')
+
+    def __call__(self):
+        """
+            Can't present menu to a scripted test!
+        """
+        run(self)  # noqa: W391
