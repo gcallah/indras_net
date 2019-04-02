@@ -47,15 +47,37 @@ class SpaceTestCase(TestCase):
         self.assertTrue(y < space.height)
 
     def test_location(self):
-        """
-        Test all methods regarding the location of positions
-        TODO: some of them are not used yet
-        """
+
         space = Space("test space")
         n = create_newton()
         space += n
-        # check if the agent is placed at the right location
-        self.assertTrue(space.locations[n.pos] == n)
+        self.assertTrue(Space.locations[n.pos] == n)
+
+    def test_add_location(self):
+
+        n_add = create_newton()
+        x, y = self.rand_x(), self.rand_y()
+        if (x, y) not in self.locations:
+            n_add.set_pos(x, y)
+            self.add_location(x, y, n_add)
+        self.assertTrue(Space.locations[n_add.pos] == n_add)
+
+    def test_move_location(self):
+        n = create_newton()
+        x0, y0 = self.rand_x(), self.rand_y()
+        n.set_pos(x0, y0)
+        x, y = self.rand_x(), self.rand_y()
+        self.move_location(n, x0, y0, x, y)
+        self.assertTrue(Space.locations[(x, y)] == n)
+
+    def test_remove_location(self):
+
+        n = create_newton()
+        x, y = self.rand_x(), self.rand_y()
+        n.set_pos(x, y)
+        self.remove_location(x, y)
+        self.assertTrue(Space.locations[(x, y)] != n)
+
 
 if __name__ == '__main__':
     main()
