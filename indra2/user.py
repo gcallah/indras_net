@@ -79,16 +79,29 @@ class TermUser(Agent):
         self.env = env  # this class needs this all the time, we think
 
     def tell(self, msg, end='\n'):
+        """
+        How to tell the user something.
+        """
         print(msg, end=end)
         return msg
 
     def ask(self, msg, default=None):
+        """
+        How to ask the user something.
+        """
         self.tell(msg, end=' ')
         choice = input()
         if not choice:
             return default
         else:
             return choice
+
+    def log(self, msg, end='\n'):
+        """
+        How to log something for this type of user.
+        Our default is going to be the same as tell, for now!
+        """
+        return self.user.tell(msg, end)
 
     def __call__(self):
         self.tell("What would you like to do?")

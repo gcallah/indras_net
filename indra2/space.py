@@ -69,9 +69,21 @@ class Space(Composite):
         # place_member, we allow two places to override
         self.place_members(self.members)
 
+    def grid_size(self):
+        """
+        How big is da grid?
+        """
+        return self.width * self.height
+
+    def is_full(self):
+        """
+        Is da grid full?
+        """
+        return len(self.locations) >= self.grid_size()
+
     def place_members(self, members):
         """
-        Locate all members of this space in x,y grid.
+        Locate all members of this space in x, y grid.
         Default is to randomly place members.
         """
         if members is not None:
@@ -81,38 +93,50 @@ class Space(Composite):
                 else:  # place composite's members
                     self.place_members(mbr.members)
 
-    def rand_x(self):
+    def rand_x(self, low=0, high=None):
         """
-        Return a random x-value between 0 and this space's width.
+        Return a random x-value between 0 and this space's width,
+        if no constraints are passed.
+        With constraints, narrow to that range.
         """
-        return randint(0, self.width - 1)
+        high = self.width - 1 if high is None else high
+        return randint(low, high)
 
-    def rand_y(self):
+    def rand_y(self, low=0, high=None):
         """
-        Return a random y-value between 0 and this space's height.
+        Return a random y-value between 0 and this space's height
+        if no constraints are passed.
+        With constraints, narrow to that range.
         """
-        return randint(0, self.height - 1)
+        high = self.height - 1 if high is None else high
+        return randint(low, high)
 
     def place_member(self, mbr, max_move=MAX_WIDTH):
         """
         By default, locate a member at a random x, y spot in our grid.
         max_move is not used yet!
         """
+        if self.is_full():
+            self.user.log("Can't fit no more folks in this space!")
+            return None
+
         if not is_composite(mbr):
             x, y = self.rand_x(), self.rand_y()
             if (x, y) not in self.locations:
+                if mbr.islocated():
+                    self.move_location(x, y, mbr.get_x(), mbr.get_y())
+                else:
+                    self.add_location(x, y, mbr)
                 mbr.set_pos(x, y)
-                self.add_location(x, y, mbr)
+                return (x, y)
             else:
                 # if the random position is already taken,
                 # find the member a new position
-                self.place_member(mbr)
-                # we should make sure this is not an infinite recursion!
-                # we need an is_full() method!
+                return self.place_member(mbr)
         else:
-            self.place_members(mbr.members)
+            return self.place_members(mbr.members)
 
-    def move(self, mbr, max_move=1):
+    def move(self, mbr, max_move=2):
         self.place_member(mbr, max_move)
 
     def __iadd__(self, other):
@@ -126,7 +150,7 @@ class Space(Composite):
         """
         self.locations[(x, y)] = member
 
-    def move_location(self, ox, oy, nx, ny):
+    def move_location(self, nx, ny, ox, oy):
         """
         Move a member to a new position.
         """
