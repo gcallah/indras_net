@@ -25,6 +25,10 @@ def out_of_bounds(x, y, x1, y1, x2, y2):
            or y < y1 or y >= y2)
 
 
+def bound(point, lower, upper):
+    return min(max(point, lower), upper - 1)
+
+
 def distance(a1, a2):
     """
     We're going to return the distance between two objects. That calculation
@@ -99,8 +103,8 @@ class Space(Composite):
         if no constraints are passed.
         With constraints, narrow to that range.
         """
-        high = self.width - 1 if high is None else high
-        return randint(low, high)
+        high = self.width if high is None else high
+        return randint(low, high - 1)
 
     def rand_y(self, low=0, high=None):
         """
@@ -108,10 +112,22 @@ class Space(Composite):
         if no constraints are passed.
         With constraints, narrow to that range.
         """
-        high = self.height - 1 if high is None else high
-        return randint(low, high)
+        high = self.height if high is None else high
+        return randint(low, high - 1)
 
-    def place_member(self, mbr, max_move=MAX_WIDTH):
+    def constrain_x(self, x):
+        """
+        Pull x in bounds if it ain't.
+        """
+        return bound(x, 0, self.width)
+
+    def constrain_y(self, y):
+        """
+        Pull y in bounds if it ain't.
+        """
+        return bound(y, 0, self.height)
+
+    def place_member(self, mbr, max_move=None):
         """
         By default, locate a member at a random x, y spot in our grid.
         max_move is not used yet!
@@ -121,7 +137,17 @@ class Space(Composite):
             return None
 
         if not is_composite(mbr):
-            x, y = self.rand_x(), self.rand_y()
+            low_x = 0
+            high_x = self.width
+            low_y = 0
+            high_y = self.height
+            if max_move is not None and mbr.islocated():
+                low_x = self.constrain_x(mbr.get_x() - max_move)
+                high_x = self.constrain_x(mbr.get_x() + max_move)
+                low_y = self.constrain_y(mbr.get_y() - max_move)
+                high_y = self.constrain_y(mbr.get_y() + max_move)
+            x = self.rand_x(low_x, high_x)
+            y = self.rand_y(low_y, high_y)
             if (x, y) not in self.locations:
                 if mbr.islocated():
                     self.move_location(x, y, mbr.get_x(), mbr.get_y())

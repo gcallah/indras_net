@@ -36,6 +36,22 @@ class SpaceTestCase(TestCase):
 
     def tearDown(self):
         self.space = None
+        self.teeny_space = None
+
+    def test_constrain_x(self):
+        """
+        Test keeping x in bounds.
+        """
+        self.assertEqual(self.space.constrain_x(-10), 0)
+        self.assertEqual(self.space.constrain_x(DEF_WIDTH * 2), DEF_WIDTH - 1)
+
+    def test_constrain_y(self):
+        """
+        Test keeping y in bounds.
+        """
+        self.assertEqual(self.space.constrain_y(-10), 0)
+        self.assertEqual(self.space.constrain_x(DEF_HEIGHT * 2),
+                         DEF_HEIGHT - 1)
 
     def test_grid_size(self):
         """
