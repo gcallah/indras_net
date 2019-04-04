@@ -4,6 +4,7 @@ This file defines User, which represents a user in our system.
 # import json
 
 from indra2.agent import Agent  # , DEBUG2  # DEBUG,
+from IPython import start_ipython
 
 TERMINAL = "terminal"
 TEST = "test"
@@ -50,6 +51,10 @@ def line_graph(user):
     return ret
 
 
+def ipython(user):
+    start_ipython()
+
+
 MSG = 0
 FUNC = 1
 
@@ -60,7 +65,7 @@ RUN = 1
 term_menu = {RUN: (str(RUN) + ") Run for N periods (DEFAULT).", run),
              2: ("2) Display a population graph.", line_graph),
              3: ("3) Display a scatter plot.", scatter_plot),
-             4: ("4) Leave menu for interactive python session.", not_impl),
+             4: ("4) Leave menu for interactive python session.", ipython),
              QUIT: (str(QUIT) + ") Quit.", leave)}
 
 
@@ -74,16 +79,29 @@ class TermUser(Agent):
         self.env = env  # this class needs this all the time, we think
 
     def tell(self, msg, end='\n'):
+        """
+        How to tell the user something.
+        """
         print(msg, end=end)
         return msg
 
     def ask(self, msg, default=None):
+        """
+        How to ask the user something.
+        """
         self.tell(msg, end=' ')
         choice = input()
         if not choice:
             return default
         else:
             return choice
+
+    def log(self, msg, end='\n'):
+        """
+        How to log something for this type of user.
+        Our default is going to be the same as tell, for now!
+        """
+        return self.user.tell(msg, end)
 
     def __call__(self):
         self.tell("What would you like to do?")

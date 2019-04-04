@@ -1,6 +1,6 @@
 TESTDIR = tests
 PYLINT = flake8
-PYLINTFLAGS = --ignore=E741,W503 --exclude=interactive.py
+PYLINTFLAGS = --ignore=E741,W503 --exclude=interactive.py,segregation.py
 PYTHONFILES = $(shell ls *.py)
 TEST_FILES = $(shell ls $(TESTDIR)/test_*.py)
 
@@ -12,7 +12,6 @@ lint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
 
 pytests: $(PYTHONFILES)
 	./pytests.sh
-#	nosetests --exe --verbose --with-coverage --cover-package=indra2
 
 tests: pytests lint
 
