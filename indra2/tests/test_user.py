@@ -10,6 +10,8 @@ from indra2.user import line_graph, scatter_plot, DEF_STEPS
 from indra2.tests.test_agent import create_newton
 from indra2.tests.test_env import GRP1, GRP2
 
+MSG = "Hello world"
+
 
 class UserTestCase(TestCase):
     def setUp(self):
@@ -22,6 +24,13 @@ class UserTestCase(TestCase):
         self.user = None
         self.env = None
         self.test_user = None
+
+    def test_tell(self):
+        """
+        Try to tell the user something.
+        """
+        ret = self.user.tell(MSG)
+        self.assertEqual(ret, MSG)
 
     def test_run(self):
         # need special env for this one
@@ -39,26 +48,21 @@ class UserTestCase(TestCase):
         self.env.pop_hist.record_pop(GRP1, 20)
         self.env.pop_hist.record_pop(GRP2, 20)
 
-    # def test_line_graph(self):
-    #     print("In test line graph")
-    #     self.fill_pop_hist()
-    #     print("After fill_pop_hist")
-    #     ret = line_graph(self.user)
-    #     print("After line graph, ret= " + str(ret))
-    #     if self.user.env.has_disp():
-    #         print("Going to return is not none")
-    #         self.assertIsNotNone(ret)
-    #     else:
-    #         print("Going to return is none")
-    #         self.assertIsNone(ret)
+    def test_line_graph(self):
+        self.fill_pop_hist()
+        ret = line_graph(self.user)
+        if self.user.env.has_disp():
+            self.assertIsNotNone(ret)
+        else:
+            self.assertIsNone(ret)
 
-    # def test_scatter_plot(self):
-    #     self.fill_pop_hist()
-    #     ret = scatter_plot(self.user)
-    #     if self.user.env.has_disp():
-    #         self.assertIsNotNone(ret)
-    #     else:
-    #         self.assertIsNone(ret)
+    def test_scatter_plot(self):
+        self.fill_pop_hist()
+        ret = scatter_plot(self.user)
+        if self.user.env.has_disp():
+            self.assertIsNotNone(ret)
+        else:
+            self.assertIsNone(ret)
 
     def test_tcall(self):
         # need special env for this one
@@ -68,10 +72,7 @@ class UserTestCase(TestCase):
         self.assertEqual(acts, DEF_STEPS)
 
     def test_task(self):
-        # env = Env("Test env", members=[create_newton()])
-        # user = TestUser("TestUser", env)
         self.assertEqual(self.test_user.ask("Silly question?"), CANT_ASK_TEST)
-    #     self.assertEqual(not_impl(self.user), NOT_IMPL)
 
 if __name__ == '__main__':
     main()

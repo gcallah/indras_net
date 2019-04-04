@@ -47,8 +47,7 @@ def scatter_plot(user):
 
 def line_graph(user):
     user.tell("Drawing a line graph.")
-    ret = user.env.line_graph()
-    return ret
+    return user.env.line_graph()
 
 
 def ipython(user):
@@ -120,8 +119,8 @@ class TermUser(Agent):
 
 class TestUser(TermUser):
     """
-        Should just override ask() and __call__()
-        from TermUser.
+        This is our test user, who has some characteristics different from the
+        terminal user, such as overriding ask() and __call__().
     """
     def ask(self, msg, default=None):
         """
