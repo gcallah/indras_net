@@ -13,10 +13,11 @@ from indra2.tests.test_agent import create_ramanujan
 
 def create_space():
     space = Space("test space")
-    space += create_newton()
+    newton = create_newton()
+    space += newton
     space += create_hardy()
     space += create_leibniz()
-    return space
+    return (space, newton)
 
 def create_teeny_space():
     """
@@ -31,7 +32,7 @@ def create_teeny_space():
 
 class SpaceTestCase(TestCase):
     def setUp(self):
-        self.space = create_space()
+        (self.space, self.newton) = create_space()
         self.teeny_space = create_teeny_space()
 
     def tearDown(self):
@@ -71,9 +72,8 @@ class SpaceTestCase(TestCase):
         Test place_members() by making sure all agents have a pos
         when done.
         """
-        space = create_space()
-        for agent in space:
-            self.assertTrue(space[agent].islocated())
+        for agent in self.space:
+            self.assertTrue(self.space[agent].islocated())
 
     def test_rand_x(self):
         """
@@ -99,36 +99,39 @@ class SpaceTestCase(TestCase):
         self.assertTrue(y2 <= 8)
 
     def test_location(self):
-
-        space = Space("test space")
+        """
+        Test that an added agent has a location.
+        """
         n = create_newton()
-        space += n
-        self.assertTrue(Space.locations[n.pos] == n)
+        self.space += n
+        self.assertTrue(self.space.locations[n.pos] == n)
 
     def test_add_location(self):
-
+        """
+        Can we add an agent to a location?
+        """
         n_add = create_newton()
-        x, y = self.rand_x(), self.rand_y()
-        if (x, y) not in self.locations:
+        x, y = self.space.rand_x(), self.space.rand_y()
+        if (x, y) not in self.space.locations:
             n_add.set_pos(x, y)
-            self.add_location(x, y, n_add)
-        self.assertTrue(Space.locations[n_add.pos] == n_add)
+            self.space.add_location(x, y, n_add)
+        self.assertTrue(self.space.locations[n_add.pos] == n_add)
 
     def test_move_location(self):
-        n = create_newton()
-        x0, y0 = self.rand_x(), self.rand_y()
-        n.set_pos(x0, y0)
-        x, y = self.rand_x(), self.rand_y()
-        self.move_location(n, x0, y0, x, y)
-        self.assertTrue(Space.locations[(x, y)] == n)
+        """
+        Can we move agent from one location to another?
+        """
+        x, y = self.space.rand_x(), self.space.rand_y()
+        self.space.move_location(x, y, self.newton.get_x(), self.newton.get_y())
+        self.assertTrue(self.space.locations[(x, y)] == self.newton)
 
     def test_remove_location(self):
-
-        n = create_newton()
-        x, y = self.rand_x(), self.rand_y()
-        n.set_pos(x, y)
-        self.remove_location(x, y)
-        self.assertTrue(Space.locations[(x, y)] != n)
+        """
+        Test removing location from locations.
+        """
+        (x, y) = (self.newton.get_x(), self.newton.get_y())
+        self.space.remove_location(x, y)
+        self.assertTrue((x, y) not in self.space.locations)
 
 
 if __name__ == '__main__':
