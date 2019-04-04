@@ -1,9 +1,13 @@
-
 """
     This is the fashion model re-written in indra2.
 """
 
-from indra2.agent import Agent
+import math
+import statistics as sts
+from operator import gt, lt
+
+from indra2.agent import Agent, X_VEC, Y_VEC, NEUTRAL
+from indra2.agent import ratio_to_sin
 from indra2.composite import Composite
 from indra2.space import in_hood
 from indra2.env import Env
@@ -14,10 +18,20 @@ DEBUG2 = False  # turns deeper debugging code on or off
 NUM_TSETTERS = 5
 NUM_FOLLOWERS = 10
 
-BLUE = 0
-RED = 1
+COLOR_PREF = "color_pref"
+DISPLAY_COLOR = "display_color"
+
+BLUE = 0.0
+RED = 1.0
+
+# for future use as we move to vector representation:
+BLUE_VEC = X_VEC
+RED_VEC = Y_VEC
 
 NOT_ZERO = .001
+
+TOO_SMALL = .01
+BIG_ENOUGH = .03
 
 HOOD_SIZE = 4
 
@@ -46,44 +60,64 @@ def change_color(agent, society, opp_group):
                        opp_group[str(agent.primary_group())])
 
 
+def new_color_pref(old_pref, env_color):
+    me = math.asin(old_pref)
+    env = math.asin(env_color)
+    if DEBUG2:
+        print("me = " + str(me) + " env = " + str(env)
+              + " sine of mean = "
+              + str(math.sin(sts.mean((me, env)))))
+    new_color = math.sin(sts.mean((me, env)))
+    return new_color
+
+
+def env_unfavorable(my_color, my_pref, op1, op2):
+    # we're going to add a small value to NEUTRAL so we sit on fence
+    # op1 and op2 should be greater than or less than comparisons
+    if my_color == RED:
+        return op1(my_pref, (NEUTRAL - TOO_SMALL))
+    else:
+        return op2(my_pref, (NEUTRAL + TOO_SMALL))
+
+
 def follower_action(agent):
+    changed = False
     num_red_ts = max(len(red_tsetters.subset(in_hood, agent, HOOD_SIZE)),
                      NOT_ZERO)   # prevent div by zero!
     num_blue_ts = max(len(blue_tsetters.subset(in_hood, agent, HOOD_SIZE)),
                       NOT_ZERO)   # prevent div by zero!
-    ratio = 1
-    if DEBUG:
-        print("In follower action, we get num_red_ts = " + str(int(num_red_ts))
-              + " and num_blue_ts = " + str(int(num_blue_ts)))
-    if agent.primary_group() == red_followers:
-        ratio = num_blue_ts / num_red_ts
-    else:
-        ratio = num_red_ts / num_blue_ts
+    total_ts = num_red_ts + num_blue_ts
+    if total_ts <= 0:
+        return False
 
-    if ratio > 1:
+    env_color = ratio_to_sin(num_red_ts / total_ts)
+
+    agent[COLOR_PREF] = new_color_pref(agent[COLOR_PREF], env_color)
+    if env_unfavorable(agent[DISPLAY_COLOR], agent[COLOR_PREF], lt, gt):
+        changed = True
+        agent[DISPLAY_COLOR] = not agent[DISPLAY_COLOR]
         change_color(agent, society, opp_group)
-    return ratio
+    return changed
 
 
 def tsetter_action(agent):
-    # pass
+    changed = False
     num_red_fs = max(len(red_followers.subset(in_hood, agent, HOOD_SIZE)),
                      NOT_ZERO)   # prevent div by zero!
     num_blue_fs = max(len(blue_followers.subset(in_hood, agent, HOOD_SIZE)),
                       NOT_ZERO)   # prevent div by zero!
-    ratio = 1
-    if DEBUG:
-        print("In trendsetter action, we get num_red_fs = "
-              + str(int(num_red_fs))
-              + " and num_blue_fs = " + str(int(num_blue_fs)))
-    if agent.primary_group() == blue_tsetters:
-        ratio = num_blue_fs / num_red_fs
-    else:
-        ratio = num_red_fs / num_blue_fs
+    total_fs = num_red_fs + num_blue_fs
+    if total_fs <= 0:
+        return False
 
-    if ratio < 1:
+    env_color = ratio_to_sin(num_red_fs / total_fs)
+
+    agent[COLOR_PREF] = new_color_pref(agent[COLOR_PREF], env_color)
+    if env_unfavorable(agent[DISPLAY_COLOR], agent[COLOR_PREF], gt, lt):
+        changed = True
+        agent[DISPLAY_COLOR] = not agent[DISPLAY_COLOR]
         change_color(agent, society, opp_group)
-    return ratio
+    return changed
 
 
 def create_tsetter(i, color=RED):
@@ -92,7 +126,8 @@ def create_tsetter(i, color=RED):
     """
     return Agent(TSETTER_PRENM + str(i),
                  action=tsetter_action,
-                 attrs={"color": color})
+                 attrs={COLOR_PREF: color,
+                        DISPLAY_COLOR: color})
 
 
 def create_follower(i, color=BLUE):
@@ -101,7 +136,8 @@ def create_follower(i, color=BLUE):
     """
     return Agent(FOLLOWER_PRENM + str(i),
                  action=follower_action,
-                 attrs={"color": color})
+                 attrs={COLOR_PREF: color,
+                        DISPLAY_COLOR: color})
 
 
 def set_up():

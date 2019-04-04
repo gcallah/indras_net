@@ -4,7 +4,7 @@ This is the test suite for agent.py.
 
 from unittest import TestCase, main
 
-from indra2.agent import Agent
+from indra2.agent import Agent, ratio_to_sin, NEUTRAL
 
 LEIBBYEAR = 1646
 LEIBDYEAR = 1716
@@ -110,9 +110,13 @@ class AgentTestCase(TestCase):
         # testing
 
     def test_set(self):
-        ent = create_leibniz()
-        ent["time"] = LEIBDYEAR
-        self.assertEqual(ent["time"], LEIBDYEAR)
+        """
+        We're testing agent set.
+        """
+        self.leib["time"] = LEIBDYEAR
+        self.assertEqual(self.leib["time"], LEIBDYEAR)
+        self.newt["place"] = 57.345
+        self.assertEqual(self.newt["place"], 57.345)
 
     def test_contains(self):
         ent = create_leibniz()
@@ -164,6 +168,10 @@ class AgentTestCase(TestCase):
         tsum = sum(n[k] for k in n)
         self.assertAlmostEqual(n.sum(), tsum)
 
+    def test_ratio_to_sin(self):
+        self.assertEqual(ratio_to_sin(0), 0)
+        self.assertEqual(ratio_to_sin(1), 1)
+        self.assertAlmostEqual(ratio_to_sin(.5), NEUTRAL)
 
 if __name__ == '__main__':
     main()

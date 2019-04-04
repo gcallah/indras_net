@@ -21,6 +21,15 @@ WOLF_REPRO_PERIOD = 6
 SHEEP_LIFESPAN = 8
 SHEEP_REPRO_PERIOD = 6
 
+AGT_WOLF_NAME = "wolf"
+AGT_SHEEP_NAME = "sheep"
+
+COMP_WOLF_NAME = "wolves"
+COMP_SHEEP_NAME = "sheep"
+
+ERR_MSG = "Invalid agent name"
+
+
 wolves = None
 sheep = None
 meadow = None
@@ -33,7 +42,7 @@ sheep_created = 0
 
 def sheep_action(agent):
 
-    if "sheep" in agent.name:
+    if AGT_SHEEP_NAME in agent.name:
         global sheep_created
         print("I'm " + agent.name + " and I eat grass.")
         agent["time_to_repr"] -= 1
@@ -45,11 +54,11 @@ def sheep_action(agent):
         print("I'm " + agent.name + " and my remaining life is: "
               + str(agent.duration))
     else:
-        return "Invalid agent name"
+        return ERR_MSG
 
 
 def wolf_action(agent):
-    if "wolf" in agent.name:
+    if AGT_WOLF_NAME in agent.name:
         global wolves
         global wolves_created
 
@@ -76,13 +85,13 @@ def wolf_action(agent):
               + str(agent.duration))
 
     else:
-        return "Invalid agent name"
+        return ERR_MSG
 
 
 def create_wolf(i):
     global wolves_created
     wolves_created += 1
-    return Agent("wolf" + str(i), duration=WOLF_LIFESPAN,
+    return Agent(AGT_WOLF_NAME + str(i), duration=WOLF_LIFESPAN,
                  action=wolf_action,
                  attrs={"time_to_repr": WOLF_REPRO_PERIOD})
 
@@ -90,7 +99,7 @@ def create_wolf(i):
 def create_sheep(i):
     global sheep_created
     sheep_created += 1
-    return Agent("sheep" + str(i), duration=SHEEP_LIFESPAN,
+    return Agent(AGT_SHEEP_NAME + str(i), duration=SHEEP_LIFESPAN,
                  action=sheep_action,
                  attrs={"time_to_repr": SHEEP_REPRO_PERIOD})
 
@@ -120,14 +129,14 @@ def set_up():
     """
     A func to set up run that can also be used by test code.
     """
-    wolves = Composite("wolves")
+    wolves = Composite(COMP_WOLF_NAME)
     for i in range(NUM_WOLVES):
         wolves += create_wolf(i)
 
     if DEBUG2:
         print(wolves.__repr__())
 
-    sheep = Composite("sheep")
+    sheep = Composite(COMP_SHEEP_NAME)
     for i in range(NUM_SHEEP):
         sheep += create_sheep(i)
 

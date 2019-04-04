@@ -14,6 +14,9 @@ env:
 
 script:
     - make pytests
+
+after_success:
+    - codecov
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
     - make prod_container
     - make deploy_container

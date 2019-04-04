@@ -5,3 +5,4 @@ nose
 django-autofixture
 selenium
 urllib3
+ipython
