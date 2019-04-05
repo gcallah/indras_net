@@ -78,6 +78,9 @@ class AgentTestCase(TestCase):
         self.hardy = None
 
     def test_eq(self):
+        """
+        Test if two agents are equal.
+        """
         l2 = create_leibniz()
         l3 = create_other_leibniz()
         self.assertTrue(self.leib == l2)
