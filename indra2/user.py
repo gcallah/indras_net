@@ -4,7 +4,7 @@ This file defines User, which represents a user in our system.
 # import json
 
 from indra2.agent import Agent  # , DEBUG2  # DEBUG,
-from IPython import start_ipython
+from IPython import embed
 
 TERMINAL = "terminal"
 TEST = "test"
@@ -51,7 +51,7 @@ def line_graph(user):
 
 
 def ipython(user):
-    start_ipython()
+    embed()
 
 
 MSG = 0
