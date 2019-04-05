@@ -91,6 +91,9 @@ class AgentTestCase(TestCase):
         self.assertNotEqual(self.leib, l2)
 
     def test_str(self):
+        """
+        Test string rep of an agent.
+        """
         ent = create_ramanujan()
         self.assertEqual("Ramanujan", str(ent))
 
