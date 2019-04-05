@@ -3,7 +3,6 @@
 """
 
 import math
-import statistics as sts
 from operator import gt, lt
 
 from indra2.agent import Agent, X_VEC, Y_VEC, NEUTRAL
@@ -11,12 +10,16 @@ from indra2.agent import ratio_to_sin
 from indra2.composite import Composite
 from indra2.space import in_hood
 from indra2.env import Env
+import numpy as np
 
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
 NUM_TSETTERS = 5
 NUM_FOLLOWERS = 10
+
+ENV_WEIGHT = 0.9
+weightings = [1.0, ENV_WEIGHT]
 
 COLOR_PREF = "color_pref"
 DISPLAY_COLOR = "display_color"
@@ -63,11 +66,8 @@ def change_color(agent, society, opp_group):
 def new_color_pref(old_pref, env_color):
     me = math.asin(old_pref)
     env = math.asin(env_color)
-    if DEBUG2:
-        print("me = " + str(me) + " env = " + str(env)
-              + " sine of mean = "
-              + str(math.sin(sts.mean((me, env)))))
-    new_color = math.sin(sts.mean((me, env)))
+    avg = np.average([me,env], weights=weightings)   # noqa: E231
+    new_color = math.sin(avg)
     return new_color
 
 
