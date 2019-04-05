@@ -45,10 +45,13 @@ def sheep_action(agent):
     if AGT_SHEEP_NAME in agent.name:
         global sheep_created
         print("I'm " + agent.name + " and I eat grass.")
+
+        # make sheep wander in the meadow
+        meadow.move(agent, HOOD_SIZE)
         agent["time_to_repr"] -= 1
         if agent["time_to_repr"] == 0:
             # reproduce
-            print("hi")
+            # print("hi")
             meadow.add_child(create_sheep(sheep_created), sheep)
             agent["time_to_repr"] = SHEEP_REPRO_PERIOD
         print("I'm " + agent.name + " and my remaining life is: "
@@ -74,7 +77,6 @@ def wolf_action(agent):
                 print(str(agent) + " is eating " + str(prey))
             agent.duration += prey.duration
             prey.die()
-
         agent["time_to_repr"] -= 1
         if agent["time_to_repr"] == 0:
             # reproduce
