@@ -17,7 +17,10 @@ DEBUG2 = False  # turns deeper debugging code on or off
 
 NUM_TSETTERS = 5
 NUM_FOLLOWERS = 10
+"""
+Adding weighted average for having a sine curve 
 
+"""
 ENV_WEIGHT = 0.9
 weightings = [1.0, ENV_WEIGHT]
 
