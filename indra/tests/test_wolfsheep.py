@@ -4,11 +4,11 @@ This is the test suite for space.py.
 
 from unittest import TestCase, main
 from indra.agent import Agent
-from indra.wolfsheep import create_sheep, create_wolf, set_up, wolf_action, sheep_action
-from indra.wolfsheep import AGT_WOLF_NAME, AGT_SHEEP_NAME, ERR_MSG
-from indra.wolfsheep import WOLF_LIFESPAN, SHEEP_LIFESPAN, SHEEP_REPRO_PERIOD
-from indra.wolfsheep import WOLF_REPRO_PERIOD
-import indra.wolfsheep as wolfsheep
+from models.wolfsheep import create_sheep, create_wolf, set_up, wolf_action, sheep_action
+from models.wolfsheep import AGT_WOLF_NAME, AGT_SHEEP_NAME, ERR_MSG
+from models.wolfsheep import WOLF_LIFESPAN, SHEEP_LIFESPAN, SHEEP_REPRO_PERIOD
+from models.wolfsheep import WOLF_REPRO_PERIOD
+import models.wolfsheep as wolfsheep
 
 TEST_SNUM = 3
 TEST_WNUM = 3
