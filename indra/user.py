@@ -25,7 +25,7 @@ def run(user, test_run=False):
     try:
         if not test_run:
             steps = user.ask("How many periods?")
-            if steps is None or steps is "" or steps.isspace():
+            if steps is None or steps == "" or steps.isspace():
                 steps = DEF_STEPS
             else:
                 steps = int(steps)
