@@ -13,6 +13,8 @@ DEF_HEIGHT = 10
 MAX_WIDTH = 200
 MAX_HEIGHT = 200
 
+DEF_MAX_MOVE = 2
+
 DEBUG = True
 DEBUG2 = False
 
@@ -162,7 +164,7 @@ class Space(Composite):
         else:
             return self.place_members(mbr.members)
 
-    def move(self, mbr, max_move=2):
+    def move(self, mbr, max_move=DEF_MAX_MOVE):
         self.place_member(mbr, max_move)
 
     def __iadd__(self, other):

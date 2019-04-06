@@ -5,7 +5,7 @@ This is the test suite for space.py.
 from unittest import TestCase, main
 
 from indra.space import Space, distance, out_of_bounds
-from indra.space import DEF_HEIGHT, DEF_WIDTH
+from indra.space import DEF_HEIGHT, DEF_WIDTH, DEF_MAX_MOVE
 from indra.agent import Agent
 from indra.tests.test_agent import create_newton, create_hardy, create_leibniz
 from indra.tests.test_agent import create_ramanujan
@@ -133,6 +133,12 @@ class SpaceTestCase(TestCase):
         self.space.remove_location(x, y)
         self.assertTrue((x, y) not in self.space.locations)
 
+    def test_move(self):
+        (old_x, old_y) = (self.newton.get_x(), self.newton.get_y())
+        self.space.move(self.newton)
+        (new_x, new_y) = (self.newton.get_x(), self.newton.get_y())
+        self.assertTrue(abs(new_x - old_x) <= DEF_MAX_MOVE)
+        self.assertTrue(abs(new_y - old_y) <= DEF_MAX_MOVE)
 
 if __name__ == '__main__':
     main()

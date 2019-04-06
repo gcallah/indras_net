@@ -10,6 +10,9 @@ PYLINTFLAGS =
 PYTHONFILES = $(shell ls $(DJANGO_DIR)/*.py)
 PYTHONFILES += $(shell ls $(MODELS_DIR)/*.py)
 
+tags:
+	ctags -r .
+
 prod: $(SRCS) $(OBJ)
 	cd indra; make prod
 
