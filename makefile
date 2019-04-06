@@ -10,28 +10,12 @@ PYLINTFLAGS =
 PYTHONFILES = $(shell ls $(DJANGO_DIR)/*.py)
 PYTHONFILES += $(shell ls $(MODELS_DIR)/*.py)
 
-# setup a python dist of indra
-dist: setup.py
-	-git commit -a -m "Building new distribution"
-	git push origin master
-	python3 setup.py sdist upload	
-
-# make a bigbox dataset
-boxdata:
-	./all_box_plots.sh
-	-git commit -a -m "Building new Big Box data sets."
-	git push origin master
-
 prod: $(SRCS) $(OBJ)
-	./test/all_tests.sh
-	-git commit -a -m "Building production."
-	git pull origin master
-	git push origin master
-	ssh indrasnet@ssh.pythonanywhere.com 'cd /home/indrasnet/$(REPO); /home/indrasnet/$(REPO)/rebuild.sh'
+	cd indra; make prod
 
-# starting to cut over to indra 2:
+# this now cutover to new indra:
 pytests:
-	cd indra2; make pytests
+	cd indra; make pytests
 
 lint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
 

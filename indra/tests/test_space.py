@@ -115,7 +115,7 @@ class SpaceTestCase(TestCase):
         if (x, y) not in self.space.locations:
             n_add.set_pos(x, y)
             self.space.add_location(x, y, n_add)
-        self.assertTrue(self.space.locations[n_add.pos] == n_add)
+            self.assertTrue(self.space.locations[n_add.pos] == n_add)
 
     def test_move_location(self):
         """
