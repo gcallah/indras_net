@@ -40,6 +40,14 @@ wolves_created = 0
 sheep_created = 0
 
 
+# yet to discuss with Professor for refactoring
+def rand_sheep(hood):
+    prey = hood.rand_member()
+    if prey.isactive():
+        return prey
+    else:
+        rand_sheep(hood)
+
 def sheep_action(agent):
 
     if AGT_SHEEP_NAME in agent.name:
@@ -47,7 +55,7 @@ def sheep_action(agent):
         print("I'm " + agent.name + " and I eat grass.")
 
         # make sheep wander in the meadow
-        meadow.move(agent, HOOD_SIZE)
+        #meadow.move(agent, HOOD_SIZE)
         agent["time_to_repr"] -= 1
         if agent["time_to_repr"] == 0:
             # reproduce
@@ -72,7 +80,7 @@ def wolf_action(agent):
         # Wolves eat close sheep instead of ratio
         hood = sheep.subset(in_hood, agent, HOOD_SIZE, name="hood")
         if len(hood) > 0:
-            prey = hood.rand_member()
+            prey = rand_sheep(hood)
             if DEBUG:
                 print(str(agent) + " is eating " + str(prey))
             agent.duration += prey.duration
