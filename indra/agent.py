@@ -190,7 +190,6 @@ class Agent(object):
         """
         self.duration -= 1
         if self.duration > 0:
-            self.move()  # the default is to wander around
             if self.action is not None:
                 # the action was defined outside this class, so pass self:
                 self.action(self)

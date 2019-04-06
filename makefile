@@ -11,7 +11,7 @@ PYTHONFILES = $(shell ls $(DJANGO_DIR)/*.py)
 PYTHONFILES += $(shell ls $(MODELS_DIR)/*.py)
 
 tags:
-	ctags -r .
+	ctags --recurse .
 
 prod: $(SRCS) $(OBJ)
 	cd indra; make prod
