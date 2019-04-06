@@ -1,11 +1,11 @@
 """
-    This is wolf-sheep re-written in indra2.
+    This is wolf-sheep re-written in indra.
 """
 
-from indra2.agent import Agent
-from indra2.composite import Composite
-from indra2.space import in_hood
-from indra2.env import Env
+from indra.agent import Agent
+from indra.composite import Composite
+from indra.space import in_hood
+from indra.env import Env
 
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off

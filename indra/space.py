@@ -4,8 +4,8 @@ of agents related spatially.
 """
 from random import randint
 from math import sqrt
-from indra2.agent import is_composite
-from indra2.composite import Composite
+from indra.agent import is_composite
+from indra.composite import Composite
 
 DEF_WIDTH = 10
 DEF_HEIGHT = 10

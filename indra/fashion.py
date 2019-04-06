@@ -1,15 +1,15 @@
 """
-    This is the fashion model re-written in indra2.
+    This is the fashion model re-written in indra.
 """
 
 import math
 from operator import gt, lt
 
-from indra2.agent import Agent, X_VEC, Y_VEC, NEUTRAL
-from indra2.agent import ratio_to_sin
-from indra2.composite import Composite
-from indra2.space import in_hood
-from indra2.env import Env
+from indra.agent import Agent, X_VEC, Y_VEC, NEUTRAL
+from indra.agent import ratio_to_sin
+from indra.composite import Composite
+from indra.space import in_hood
+from indra.env import Env
 import numpy as np
 
 DEBUG = True  # turns debugging code on or off

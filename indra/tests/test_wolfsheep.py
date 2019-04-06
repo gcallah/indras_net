@@ -3,10 +3,12 @@ This is the test suite for space.py.
 """
 
 from unittest import TestCase, main
-from indra2.agent import Agent
-from indra2.wolfsheep import create_sheep, create_wolf, set_up, wolf_action, sheep_action
-from indra2.wolfsheep import AGT_WOLF_NAME, AGT_SHEEP_NAME, ERR_MSG, WOLF_LIFESPAN, SHEEP_LIFESPAN, SHEEP_REPRO_PERIOD, WOLF_REPRO_PERIOD
-import indra2.wolfsheep as wolfsheep
+from indra.agent import Agent
+from indra.wolfsheep import create_sheep, create_wolf, set_up, wolf_action, sheep_action
+from indra.wolfsheep import AGT_WOLF_NAME, AGT_SHEEP_NAME, ERR_MSG
+from indra.wolfsheep import WOLF_LIFESPAN, SHEEP_LIFESPAN, SHEEP_REPRO_PERIOD
+from indra.wolfsheep import WOLF_REPRO_PERIOD
+import indra.wolfsheep as wolfsheep
 
 TEST_SNUM = 3
 TEST_WNUM = 3

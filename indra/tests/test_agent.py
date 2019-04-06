@@ -4,7 +4,7 @@ This is the test suite for agent.py.
 
 from unittest import TestCase, main
 
-from indra2.agent import Agent, ratio_to_sin, NEUTRAL
+from indra.agent import Agent, ratio_to_sin, NEUTRAL
 
 LEIBBYEAR = 1646
 LEIBDYEAR = 1716

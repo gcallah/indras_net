@@ -4,11 +4,11 @@ This is the test suite for env.py.
 
 from unittest import TestCase, main
 
-from indra2.env import Env
-from indra2.user import not_impl, NOT_IMPL, TermUser, TestUser, run, CANT_ASK_TEST
-from indra2.user import line_graph, scatter_plot, DEF_STEPS
-from indra2.tests.test_agent import create_newton
-from indra2.tests.test_env import GRP1, GRP2
+from indra.env import Env
+from indra.user import not_impl, NOT_IMPL, TermUser, TestUser, run, CANT_ASK_TEST
+from indra.user import line_graph, scatter_plot, DEF_STEPS
+from indra.tests.test_agent import create_newton
+from indra.tests.test_env import GRP1, GRP2
 
 MSG = "Hello world"
 

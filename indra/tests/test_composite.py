@@ -4,11 +4,11 @@ This is the test suite for composite.py.
 
 from unittest import TestCase, main
 
-from indra2.agent import join, split, switch
-from indra2.composite import Composite
-from indra2.tests.test_agent import create_hardy, create_newton
-from indra2.tests.test_agent import create_ramanujan, create_littlewood
-from indra2.tests.test_agent import create_ramsey, create_leibniz
+from indra.agent import join, split, switch
+from indra.composite import Composite
+from indra.tests.test_agent import create_hardy, create_newton
+from indra.tests.test_agent import create_ramanujan, create_littlewood
+from indra.tests.test_agent import create_ramsey, create_leibniz
 
 N = "Newton"
 R = "Ramanujan"

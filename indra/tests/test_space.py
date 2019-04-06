@@ -4,11 +4,11 @@ This is the test suite for space.py.
 
 from unittest import TestCase, main
 
-from indra2.space import Space, distance, out_of_bounds
-from indra2.space import DEF_HEIGHT, DEF_WIDTH
-from indra2.agent import Agent
-from indra2.tests.test_agent import create_newton, create_hardy, create_leibniz
-from indra2.tests.test_agent import create_ramanujan
+from indra.space import Space, distance, out_of_bounds
+from indra.space import DEF_HEIGHT, DEF_WIDTH
+from indra.agent import Agent
+from indra.tests.test_agent import create_newton, create_hardy, create_leibniz
+from indra.tests.test_agent import create_ramanujan
 
 
 def create_space():
