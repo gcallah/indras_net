@@ -51,6 +51,9 @@ class FashionTestCase(TestCase):
         self.assertEqual(agent.primary_group(), to_grp)
 
     def test_env_unfavorable(self):
+        """
+        Test if the env is unfavorable to the agent.
+        """
         self.assertTrue(env_unfavorable(RED, BLUE, lt, gt))
         self.assertFalse(env_unfavorable(RED, RED, lt, gt))
         self.assertFalse(env_unfavorable(RED, NEUTRAL, lt, gt))
@@ -58,6 +61,10 @@ class FashionTestCase(TestCase):
         self.assertTrue(env_unfavorable(BLUE, NEUTRAL + BIG_ENOUGH, lt, gt))
 
     def test_new_color_pref(self):
+        """
+        Make sure determining a new color pref works.
+        The tests against neutral need to be re-written.
+        """
         new_pref = new_color_pref(RED, RED)
         self.assertEqual(new_pref, RED)
         new_pref = new_color_pref(BLUE, BLUE)

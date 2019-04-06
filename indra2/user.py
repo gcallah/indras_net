@@ -12,7 +12,7 @@ WEB = "web"
 GUI = "gui"
 NOT_IMPL = "Choice not yet implemented."
 CANT_ASK_TEST = "Can't ask anything of a scripted test"
-DEF_STEPS = 10
+DEF_STEPS = 4
 
 
 def not_impl(user):
@@ -24,7 +24,11 @@ def run(user, test_run=False):
     acts = 0
     try:
         if not test_run:
-            steps = int(user.ask("How many periods?"))
+            steps = user.ask("How many periods?")
+            if steps is None or steps is "" or steps.isspace():
+                steps = DEF_STEPS
+            else:
+                steps = int(steps)
             user.tell("Steps = " + str(steps))
         else:
             steps = DEF_STEPS
