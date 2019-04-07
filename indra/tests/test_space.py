@@ -129,12 +129,12 @@ class SpaceTestCase(TestCase):
         """
         Can we add an agent to a location?
         """
-        n_add = create_newton()
         x, y = self.space.rand_x(), self.space.rand_y()
         if (x, y) not in self.space.locations:
-            n_add.set_pos(x, y)
-            self.space.add_location(x, y, n_add)
-            self.assertTrue(self.space.locations[n_add.pos] == n_add)
+            self.newton.set_pos(self.space, x, y)
+            self.space.add_location(x, y, self.newton)
+            self.assertTrue(self.space.locations[self.newton.pos] ==
+                            self.newton)
 
     def test_move_location(self):
         """

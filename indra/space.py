@@ -162,11 +162,13 @@ class Space(Composite):
                     self.move_location(x, y, mbr.get_x(), mbr.get_y())
                 else:
                     self.add_location(x, y, mbr)
-                mbr.set_pos(x, y)
+                # if I am setting pos, I am agent's locator!
+                mbr.set_pos(self, x, y)
                 return (x, y)
-            else:
+            elif max_move is None:
                 # if the random position is already taken,
                 # find the member a new position
+                # but if max_move is not None, the hood might be filled!
                 return self.place_member(mbr, max_move)
         else:
             return self.place_members(mbr.members, max_move)

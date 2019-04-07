@@ -136,7 +136,8 @@ class Agent(object):
     def islocated(self):
         return self.pos is not None
 
-    def set_pos(self, x, y):
+    def set_pos(self, locator, x, y):
+        self.locator = locator  # whoever sets my pos is my locator!
         self.pos = (x, y)
 
     def get_pos(self):
@@ -232,9 +233,12 @@ class Agent(object):
 #        return self
 
     def move(self, max_move=DEF_MAX_MOVE):
-        print("Agent move has been called")
-        if self.islocated() and self.locator is not None:
-            print("Agent move is placing member")
+        """
+        Move this agent to a random pos within max_move
+        of its current pos.
+        """
+        if (self.islocated() and self.locator is not None
+                and not self.locator.is_full()):
             self.locator.place_member(self, max_move)
 
     def isactive(self):

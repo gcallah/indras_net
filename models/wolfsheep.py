@@ -43,11 +43,7 @@ sheep_created = 0
 # yet to discuss with Professor for refactoring
 # don't do this recursively: instead add a filter in the action
 def rand_sheep(hood):
-    prey = hood.rand_member()
-    if prey.isactive():
-        return prey
-    else:
-        rand_sheep(hood)
+    return hood.rand_member()
 
 
 def sheep_action(agent):
