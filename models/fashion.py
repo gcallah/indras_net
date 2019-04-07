@@ -83,7 +83,6 @@ def env_unfavorable(my_color, my_pref, op1, op2):
 
 
 def follower_action(agent):
-    agent.move()  # wander around to see new hoods!
     changed = False
     num_red_ts = max(len(red_tsetters.subset(in_hood, agent, HOOD_SIZE)),
                      NOT_ZERO)   # prevent div by zero!

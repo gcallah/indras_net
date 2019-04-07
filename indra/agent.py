@@ -24,6 +24,8 @@ NEUT_VEC = np.array([NEUTRAL, NEUTRAL])
 
 INF = sys.maxsize  # really any very big number would do here!
 
+DEF_MAX_MOVE = 2
+
 
 def ratio_to_sin(ratio):
     return sin(ratio * pi / 2)
@@ -192,7 +194,10 @@ class Agent(object):
         if self.duration > 0:
             if self.action is not None:
                 # the action was defined outside this class, so pass self:
-                self.action(self)
+                if not self.action(self):
+                    # False return means agent is "unhappy" and
+                    # so agent will move (if located).
+                    self.move()
                 return True
             elif DEBUG:
                 print("I'm " + self.name + " and I ain't got no action to do!")
@@ -226,11 +231,11 @@ class Agent(object):
 #        self.val_vect /= scalar
 #        return self
 
-    def move(self):
+    def move(self, max_move=DEF_MAX_MOVE):
         print("Agent move has been called")
         if self.islocated() and self.locator is not None:
-            print("Agent move called; placing member")
-            self.locator.place_member(self)
+            print("Agent move is placing member")
+            self.locator.place_member(self, max_move)
 
     def isactive(self):
         return self.active

@@ -41,6 +41,7 @@ sheep_created = 0
 
 
 # yet to discuss with Professor for refactoring
+# don't do this recursively: instead add a filter in the action
 def rand_sheep(hood):
     prey = hood.rand_member()
     if prey.isactive():
@@ -48,54 +49,42 @@ def rand_sheep(hood):
     else:
         rand_sheep(hood)
 
+
 def sheep_action(agent):
+    global sheep
+    global sheep_created
 
-    if AGT_SHEEP_NAME in agent.name:
-        global sheep_created
-        print("I'm " + agent.name + " and I eat grass.")
-
-        # make sheep wander in the meadow
-        #meadow.move(agent, HOOD_SIZE)
-        agent["time_to_repr"] -= 1
-        if agent["time_to_repr"] == 0:
-            # reproduce
-            # print("hi")
-            meadow.add_child(create_sheep(sheep_created), sheep)
-            agent["time_to_repr"] = SHEEP_REPRO_PERIOD
-        print("I'm " + agent.name + " and my remaining life is: "
-              + str(agent.duration))
-    else:
-        return ERR_MSG
+    agent["time_to_repr"] -= 1
+    if agent["time_to_repr"] == 0:
+        # reproduce
+        meadow.add_child(create_sheep(sheep_created), sheep)
+        agent["time_to_repr"] = SHEEP_REPRO_PERIOD
+    return False
 
 
 def wolf_action(agent):
-    if AGT_WOLF_NAME in agent.name:
-        global wolves
-        global wolves_created
+    global wolves
+    global wolves_created
 
-        num_sheep = len(sheep)
-        if DEBUG2:
-            print("Num sheep = " + str(num_sheep))
+    num_sheep = len(sheep)
+    if DEBUG2:
+        print("Num sheep = " + str(num_sheep))
 
-        # Wolves eat close sheep instead of ratio
-        hood = sheep.subset(in_hood, agent, HOOD_SIZE, name="hood")
-        if len(hood) > 0:
-            prey = rand_sheep(hood)
-            if DEBUG:
-                print(str(agent) + " is eating " + str(prey))
-            agent.duration += prey.duration
-            prey.die()
-        agent["time_to_repr"] -= 1
-        if agent["time_to_repr"] == 0:
-            # reproduce
-            meadow.add_child(create_wolf(wolves_created), wolves)
-            # wolves += create_wolf(wolves_created)
-            agent["time_to_repr"] = WOLF_REPRO_PERIOD
-        print("I'm " + agent.name + " and my remaining life is: "
-              + str(agent.duration))
-
-    else:
-        return ERR_MSG
+    # Wolves eat close sheep 
+    hood = sheep.subset(in_hood, agent, HOOD_SIZE, name="hood")
+    # here you should filter hood based on isactive()!
+    if len(hood) > 0:
+        prey = rand_sheep(hood)
+        if DEBUG:
+            print(str(agent) + " is eating " + str(prey))
+        agent.duration += prey.duration
+        prey.die()
+    agent["time_to_repr"] -= 1
+    if agent["time_to_repr"] == 0:
+        # reproduce
+        meadow.add_child(create_wolf(wolves_created), wolves)
+        agent["time_to_repr"] = WOLF_REPRO_PERIOD
+    return False
 
 
 def create_wolf(i):
