@@ -117,10 +117,10 @@ class SpaceTestCase(TestCase):
     def test_move_location(self):
         n = create_newton()
         x0, y0 = self.rand_x(), self.rand_y()
-        n.set_pos(x0,y0)
+        n.set_pos(x0, y0)
         x, y = self.rand_x(), self.rand_y()
-        self.move_location(n,x0,y0, x, y)
-        self.assertTrue(Space.locations[(x,y)] == n)
+        self.move_location(n, x0, y0, x, y)
+        self.assertTrue(Space.locations[(x, y)] == n)
 
     def test_remove_location(self):
 
@@ -128,7 +128,7 @@ class SpaceTestCase(TestCase):
         x, y = self.rand_x(), self.rand_y()
         n.set_pos(x, y)
         self.remove_location(x, y)
-        self.assertTrue(Space.locations[(x,y)] != n)
+        self.assertTrue(Space.locations[(x, y)] != n)
 
 
 if __name__ == '__main__':
