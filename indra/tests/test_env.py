@@ -4,11 +4,11 @@ This is the test suite for env.py.
 
 from unittest import TestCase, main
 
-from indra2.env import Env, PopHist, POP_HIST_HDR, POP_SEP
-from indra2.user import TEST
-from indra2.agent import Agent
-from indra2.tests.test_agent import create_newton
-from indra2.tests.test_composite import create_calcguys, create_cambguys
+from indra.env import Env, PopHist, POP_HIST_HDR, POP_SEP
+from indra.user import TEST
+from indra.agent import Agent
+from indra.tests.test_agent import create_newton
+from indra.tests.test_composite import create_calcguys, create_cambguys
 
 GRP1 = "Group1"
 GRP2 = "Group2"

@@ -4,7 +4,7 @@ This is the test suite for agent.py.
 
 from unittest import TestCase, main
 
-from indra2.agent import Agent, ratio_to_sin, NEUTRAL
+from indra.agent import Agent, ratio_to_sin, NEUTRAL
 
 LEIBBYEAR = 1646
 LEIBDYEAR = 1716
@@ -78,6 +78,9 @@ class AgentTestCase(TestCase):
         self.hardy = None
 
     def test_eq(self):
+        """
+        Test if two agents are equal.
+        """
         l2 = create_leibniz()
         l3 = create_other_leibniz()
         self.assertTrue(self.leib == l2)
@@ -88,10 +91,16 @@ class AgentTestCase(TestCase):
         self.assertNotEqual(self.leib, l2)
 
     def test_str(self):
+        """
+        Test string rep of an agent.
+        """
         ent = create_ramanujan()
         self.assertEqual("Ramanujan", str(ent))
 
     def test_repr(self):
+        """
+        Test the repr of an agent.
+        """
         rep = ('{\n    "name": "Hardy",'
                + '\n    "duration": 10,'
                + '\n    "pos": null,'
@@ -102,9 +111,15 @@ class AgentTestCase(TestCase):
         self.assertEqual(rep, repr(self.hardy))
 
     def test_len(self):
+        """
+        See if we get the agent's len correct.
+        """
         self.assertEqual(len(create_newton()), 3)
 
     def test_get(self):
+        """
+        Get a named attribute from an agent.
+        """
         self.assertEqual(self.leib["time"], LEIBBYEAR)
         # self.assertEqual(self.leib["time"], 0)  # just testing travis ci
         # testing

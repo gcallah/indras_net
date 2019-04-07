@@ -1,123 +1,139 @@
 """
-user.py
-Manages the user for the Indra system.
+This file defines User, which represents a user in our system.
 """
+# import json
 
-# import logging
-# we are going to do some shenanigans so we can use clint if present
-#  and work around if not
-MENU = "menu"
-PROMPT = "prompt"
-ERROR = "error"
-INFO = "info"
-text_colors = None
-clint_present = True
-try:
-    from clint.textui import colored, puts, indent
-    text_colors = {MENU: colored.blue,
-                   PROMPT: colored.magenta,
-                   ERROR: colored.red,
-                   INFO: colored.black}
-except ImportError:
-    clint_present = False
-    text_colors = {MENU: None,
-                   PROMPT: None,
-                   ERROR: None,
-                   INFO: None}
+from indra.agent import Agent  # , DEBUG2  # DEBUG,
+from IPython import embed
 
-import indra.entity as ent
-import indra.prop_args2 as pa
-
-# user types
-TERMINAL = pa.TERMINAL
-IPYTHON = pa.IPYTHON
-IPYTHON_NB = pa.IPYTHON_NB
-WEB = pa.WEB
-DUMMY = pa.DUMMY
-
-run_output = ""
-
-def ask(msg, default=None, limits=None):
-    answer = None
-    rng_msg = ""
-    if limits is not None:
-        (low, high) = limits
-        rng_msg = " [" + str(low) + "-" + str(high) + "]"
-    if default is not None:
-        msg += " (" + str(default) + ")"
-    msg += rng_msg + " "
-    if clint_present:
-        puts(text_colors[PROMPT](msg), newline=False)
-    else:
-        print(msg, end='')
-
-    return input()
+TERMINAL = "terminal"
+TEST = "test"
+WEB = "web"
+GUI = "gui"
+NOT_IMPL = "Choice not yet implemented."
+CANT_ASK_TEST = "Can't ask anything of a scripted test"
+DEF_STEPS = 4
 
 
-def tell(msg, type=INFO, indnt=0, utype=TERMINAL, text_output=None, reverse=True):
-    if utype == WEB:
-        if reverse:
-            return msg + "\n" + text_output
-        else:
-            return text_output + "\n" + msg
-    else:
-        if indnt <= 0:
-            if clint_present:
-                puts(text_colors[type](msg))
+def not_impl(user):
+    return user.tell(NOT_IMPL)
+
+
+def run(user, test_run=False):
+    steps = 0
+    acts = 0
+    try:
+        if not test_run:
+            steps = user.ask("How many periods?")
+            if steps is None or steps == "" or steps.isspace():
+                steps = DEF_STEPS
             else:
-                print(msg)
+                steps = int(steps)
+            user.tell("Steps = " + str(steps))
         else:
-            if clint_present:
-                with indent(indnt):
-                    puts(text_colors[type](msg))
+            steps = DEF_STEPS
+        acts = user.env.runN(periods=steps)
+    except (ValueError, TypeError) as e:
+        user.tell("You must enter an integer value for # of steps: "
+                  + str(e))
+    return acts
+
+
+def leave(user):
+    user.tell("Goodbye, " + user.name + ", I will miss you!")
+    exit(0)
+
+
+def scatter_plot(user):
+    user.tell("Drawing a scatter plot.")
+    return user.env.scatter_graph()
+
+
+def line_graph(user):
+    user.tell("Drawing a line graph.")
+    return user.env.line_graph()
+
+
+def ipython(user):
+    embed()
+
+
+MSG = 0
+FUNC = 1
+
+QUIT = 0
+RUN = 1
+
+
+term_menu = {RUN: (str(RUN) + ") Run for N periods (DEFAULT).", run),
+             2: ("2) Display a population graph.", line_graph),
+             3: ("3) Display a scatter plot.", scatter_plot),
+             4: ("4) Leave menu for interactive python session.", ipython),
+             QUIT: (str(QUIT) + ") Quit.", leave)}
+
+
+class TermUser(Agent):
+    """
+    A representation of the user in the system.
+    """
+
+    def __init__(self, name, env, **kwargs):
+        super().__init__(name, **kwargs)
+        self.env = env  # this class needs this all the time, we think
+
+    def tell(self, msg, end='\n'):
+        """
+        How to tell the user something.
+        """
+        print(msg, end=end)
+        return msg
+
+    def ask(self, msg, default=None):
+        """
+        How to ask the user something.
+        """
+        self.tell(msg, end=' ')
+        choice = input()
+        if not choice:
+            return default
+        else:
+            return choice
+
+    def log(self, msg, end='\n'):
+        """
+        How to log something for this type of user.
+        Our default is going to be the same as tell, for now!
+        """
+        return self.user.tell(msg, end)
+
+    def __call__(self):
+        self.tell("What would you like to do?")
+        for key, item in term_menu.items():
+            self.tell(item[MSG])
+        try:
+            choice = int(self.ask("Type the # of your choice then Enter:",
+                         default=RUN))
+            if choice in term_menu:
+                term_menu[choice][FUNC](self)
             else:
-                for i in range(0, indnt):
-                    msg = '  ' + msg
-                print(msg)
+                raise ValueError
+        except ValueError as e:
+            self.tell("Invalid option: " + str(e))
 
-class User(ent.Entity):
+
+class TestUser(TermUser):
     """
-    We will represent the user to the system as another entity.
+        This is our test user, who has some characteristics different from the
+        terminal user, such as overriding ask() and __call__().
     """
-    def __init__(self, nm, utype=TERMINAL):
-        super().__init__(nm)
-        self.utype = utype
-        self.text_output = ['', '']
+    def ask(self, msg, default=None):
+        """
+            Can't ask anything of a scripted test!
+        """
+        return self.tell(CANT_ASK_TEST, end=' ')
 
-    def tell(self, msg, type=INFO, indnt=0, text_id=0, reverse=True):
+    def __call__(self):
         """
-        Screen the details of output from models.
+            Can't present menu to a scripted test!
         """
-        if msg and self.utype in [TERMINAL, IPYTHON, IPYTHON_NB, DUMMY]:
-            return tell(msg, type=type, indnt=indnt, utype=self.utype)
-        elif msg and self.utype == WEB:                
-            self.text_output[text_id] = tell(msg, type=type, indnt=indnt, 
-                                    utype=self.utype, 
-                                    text_output=self.text_output[text_id], 
-                                    reverse=reverse)
-            
-                
-            return self.text_output
-
-    def ask_for_ltr(self, msg):
-        """
-        Screen the details of input from models.
-        """
-        choice = self.ask(msg)
-        return choice.strip()
-
-    def ask(self, msg):
-        """
-        Screen the details of input from models.
-        """
-        assert self.utype in [TERMINAL, IPYTHON, IPYTHON_NB, WEB]
-        if(self.utype in [TERMINAL, IPYTHON, IPYTHON_NB, WEB]):
-            return ask(msg)
-        
-    def to_json(self):
-        safe_fields = super().to_json()
-        safe_fields["text_output"] = self.text_output
-        return safe_fields
-    
-    def from_json(self, json_input):
-        self.text_output = json_input["text_output"]
+        run(self)  # noqa: W391

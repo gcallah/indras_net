@@ -1,71 +1,196 @@
 """
-fashion_model.py
-A fashion model that includes followers and hipsters
-changing fashions based on each other's choices.
+    This is the fashion model re-written in indra.
 """
-import logging
-import indra.display_methods as disp
-import indra.menu as menu
-import indra.two_pop_model as tp
+
+import math
+from operator import gt, lt
+
+from indra.agent import Agent, X_VEC, Y_VEC, NEUTRAL
+from indra.agent import ratio_to_sin
+from indra.composite import Composite
+from indra.space import in_hood
+from indra.env import Env
+import numpy as np
+
+DEBUG = True  # turns debugging code on or off
+DEBUG2 = False  # turns deeper debugging code on or off
+
+NUM_TSETTERS = 5
+NUM_FOLLOWERS = 10
+"""
+Adding weighted average for having a sine curve 
+"""
+ENV_WEIGHT = 0.9
+weightings = [1.0, ENV_WEIGHT]
+
+COLOR_PREF = "color_pref"
+DISPLAY_COLOR = "display_color"
+
+BLUE = 0.0
+RED = 1.0
+
+# for future use as we move to vector representation:
+BLUE_VEC = X_VEC
+RED_VEC = Y_VEC
+
+NOT_ZERO = .001
+
+TOO_SMALL = .01
+BIG_ENOUGH = .03
+
+HOOD_SIZE = 4
+
+FOLLOWER_PRENM = "follower"
+TSETTER_PRENM = "tsetter"
+RED_FOLLOWERS = "Red Followers"
+BLUE_FOLLOWERS = "Blue Followers"
+RED_TSETTERS = "Red Trendsetters"
+BLUE_TSETTERS = "Blue Trendsetters"
+
+red_tsetters = None
+blue_tsetters = None
+red_followers = None
+blue_followers = None
+society = None
+
+opp_group = None
 
 
-class Follower(tp.Follower):
+def change_color(agent, society, opp_group):
+    if DEBUG:
+        print("Agent " + str(agent) + " is changing colors from "
+              + str(agent.primary_group()) + " to "
+              + str(opp_group[str(agent.primary_group())]))
+    society.add_switch(agent, agent.primary_group(),
+                       opp_group[str(agent.primary_group())])
+
+
+def new_color_pref(old_pref, env_color):
+    me = math.asin(old_pref)
+    env = math.asin(env_color)
+    avg = np.average([me,env], weights=weightings)   # noqa: E231
+    new_color = math.sin(avg)
+    return new_color
+
+
+def env_unfavorable(my_color, my_pref, op1, op2):
+    # we're going to add a small value to NEUTRAL so we sit on fence
+    # op1 and op2 should be greater than or less than comparisons
+    if my_color == RED:
+        return op1(my_pref, (NEUTRAL - TOO_SMALL))
+    else:
+        return op2(my_pref, (NEUTRAL + TOO_SMALL))
+
+
+def follower_action(agent):
+    agent.move()  # wander around to see new hoods!
+    changed = False
+    num_red_ts = max(len(red_tsetters.subset(in_hood, agent, HOOD_SIZE)),
+                     NOT_ZERO)   # prevent div by zero!
+    num_blue_ts = max(len(blue_tsetters.subset(in_hood, agent, HOOD_SIZE)),
+                      NOT_ZERO)   # prevent div by zero!
+    total_ts = num_red_ts + num_blue_ts
+    if total_ts <= 0:
+        return False
+
+    env_color = ratio_to_sin(num_red_ts / total_ts)
+
+    agent[COLOR_PREF] = new_color_pref(agent[COLOR_PREF], env_color)
+    if env_unfavorable(agent[DISPLAY_COLOR], agent[COLOR_PREF], lt, gt):
+        changed = True
+        agent[DISPLAY_COLOR] = not agent[DISPLAY_COLOR]
+        change_color(agent, society, opp_group)
+    return changed
+
+
+def tsetter_action(agent):
+    changed = False
+    num_red_fs = max(len(red_followers.subset(in_hood, agent, HOOD_SIZE)),
+                     NOT_ZERO)   # prevent div by zero!
+    num_blue_fs = max(len(blue_followers.subset(in_hood, agent, HOOD_SIZE)),
+                      NOT_ZERO)   # prevent div by zero!
+    total_fs = num_red_fs + num_blue_fs
+    if total_fs <= 0:
+        return False
+
+    env_color = ratio_to_sin(num_red_fs / total_fs)
+
+    agent[COLOR_PREF] = new_color_pref(agent[COLOR_PREF], env_color)
+    if env_unfavorable(agent[DISPLAY_COLOR], agent[COLOR_PREF], gt, lt):
+        changed = True
+        agent[DISPLAY_COLOR] = not agent[DISPLAY_COLOR]
+        change_color(agent, society, opp_group)
+    return changed
+
+
+def create_tsetter(i, color=RED):
     """
-    A fashion follower: tries to switch to hipsters' fashions.
+    Create a trendsetter: all RED to start.
     """
-    def __init__(self, name, goal, max_move, variability=.5):
-        super().__init__(name, goal, max_move, variability)
-        self.other = Hipster
+    return Agent(TSETTER_PRENM + str(i),
+                 action=tsetter_action,
+                 attrs={COLOR_PREF: color,
+                        DISPLAY_COLOR: color})
 
 
-class Hipster(tp.Leader):
+def create_follower(i, color=BLUE):
     """
-    A fashion hipster: tries to not look like followers.
+    Create a follower: all BLUE to start.
     """
-    def __init__(self, name, goal, max_move, variability=.5):
-        super().__init__(name, goal, max_move, variability)
-        self.other = Follower
+    return Agent(FOLLOWER_PRENM + str(i),
+                 action=follower_action,
+                 attrs={COLOR_PREF: color,
+                        DISPLAY_COLOR: color})
 
 
-class Society(tp.TwoPopEnv):
+def set_up():
     """
-    A society of hipsters and followers.
+    A func to set up run that can also be used by test code.
     """
-    def __init__(self, name, length, height, model_nm=None, torus=False,
-                 props=None):
-        super().__init__(name, length, height, model_nm=model_nm,
-                         torus=False, postact=True, props=props)
-        self.stances = ["blue", "red"]
-        self.line_graph_title = \
-            "A. Smith's fashion model: Populations adopting fashion {} in ".format(self.stances[tp.STANCE_TINDEX])
-        self.set_var_color('Hipster', disp.GREEN)
-        self.set_var_color('Follower', disp.MAGENTA)
-        self.menu.view.add_menu_item("v",
-                                     menu.MenuLeaf("(v)iew fashions",
-                                                   self.view_pop))
+    blue_tsetters = Composite(BLUE_TSETTERS)
+    red_tsetters = Composite(RED_TSETTERS)
+    for i in range(NUM_TSETTERS):
+        red_tsetters += create_tsetter(i)
 
-    def restore_agent(self, agent_json):
-        """
-        Restore agent.
-        """
-        new_agent = None
-        if agent_json["ntype"] == Hipster.__name__:
-            new_agent = Hipster(name=agent_json["name"],
-                                goal=agent_json["goal"],
-                                max_move=agent_json["max_move"],
-                                variability=agent_json["variability"])
+    if DEBUG2:
+        print(red_tsetters.__repr__())
 
-        elif agent_json["ntype"] == Follower.__name__:
-            new_agent = Follower(name=agent_json["name"],
-                                 goal=agent_json["goal"],
-                                 max_move=agent_json["max_move"],
-                                 variability=agent_json["variability"])
+    red_followers = Composite(RED_FOLLOWERS)
+    blue_followers = Composite(BLUE_FOLLOWERS)
+    for i in range(NUM_FOLLOWERS):
+        blue_followers += create_follower(i)
 
-        else:
-            logging.error("agent found whose NTYPE is neither "
-                          "{} nor {}, but {}".format(Hipster.__name__,
-                                                     Follower.__name__,
-                                                     agent_json["ntype"]))
+    opp_group = {str(red_tsetters): blue_tsetters,
+                 str(blue_tsetters): red_tsetters,
+                 str(red_followers): blue_followers,
+                 str(blue_followers): red_followers}
 
-        if new_agent:
-            self.add_agent_from_json(new_agent, agent_json)
+    if DEBUG2:
+        print(blue_followers.__repr__())
+
+    society = Env("society", members=[blue_tsetters, red_tsetters,
+                                      blue_followers, red_followers])
+    return (blue_tsetters, red_tsetters, blue_followers, red_followers,
+            opp_group, society)
+
+
+def main():
+    global red_tsetters
+    global blue_tsetters
+    global red_followers
+    global blue_followers
+    global society
+    global opp_group
+
+    (blue_tsetters, red_tsetters, blue_followers, red_followers, opp_group,
+     society) = set_up()
+
+    if DEBUG2:
+        print(society.__repr__())
+
+    society()
+    return 0
+
+
+if __name__ == "__main__":
+    main()

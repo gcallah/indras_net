@@ -185,6 +185,8 @@ class Agent(object):
         If the agent has no `act()` function, do nothing.
         Agents should return True if they did, in fact,
         'do something,' or False if they did not.
+        If the agent is located, by default it should shuffle
+        about.
         """
         self.duration -= 1
         if self.duration > 0:
@@ -223,6 +225,12 @@ class Agent(object):
 #    def __idiv__(self, scalar):
 #        self.val_vect /= scalar
 #        return self
+
+    def move(self):
+        print("Agent move has been called")
+        if self.islocated() and self.locator is not None:
+            print("Agent move called; placing member")
+            self.locator.place_member(self)
 
     def isactive(self):
         return self.active

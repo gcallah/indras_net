@@ -8,7 +8,7 @@ from collections import OrderedDict
 from random import choice
 from copy import copy
 
-from indra2.agent import Agent, join, INF, AgentEncoder, is_composite
+from indra.agent import Agent, join, INF, AgentEncoder, is_composite
 
 DEBUG = False
 
