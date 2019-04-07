@@ -69,8 +69,8 @@ def wolf_action(agent):
     # Wolves eat close sheep 
     hood = sheep.subset(in_hood, agent, HOOD_SIZE, name="hood")
     # here you should filter hood based on isactive()!
-    if len(hood) > 0:
-        prey = rand_sheep(hood)
+    prey = hood.rand_member()
+    if len(hood) > 0 and prey.isactive():
         if DEBUG:
             print(str(agent) + " is eating " + str(prey))
         agent.duration += prey.duration
