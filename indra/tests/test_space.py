@@ -10,6 +10,8 @@ from indra.agent import Agent
 from indra.tests.test_agent import create_newton, create_hardy, create_leibniz
 from indra.tests.test_agent import create_ramanujan
 
+REP_RAND_TESTS = 20
+
 
 def create_space():
     space = Space("test space")
@@ -98,6 +100,23 @@ class SpaceTestCase(TestCase):
         self.assertTrue(y2 >= 4)
         self.assertTrue(y2 <= 8)
 
+    def test_gen_new_pos(self):
+        """
+        Making sure new pos is within max_move of old pos.
+        Since this test relies on random numbers, let's repeat it.
+        """
+        for i in range(REP_RAND_TESTS):
+            # test with different max moves:
+            max_move = (i // 2) + 1
+            (old_x, old_y) = self.newton.get_pos()
+            (new_x, new_y) = self.space.gen_new_pos(self.newton, max_move)
+            if not abs(old_x - new_x) <= max_move:
+                print("Failed test with ", old_x, " ", new_x)
+            if not abs(old_y - new_y) <= max_move:
+                print("Failed test with ", old_y, " ", new_y)
+            self.assertTrue(abs(old_x - new_x) <= max_move)
+            self.assertTrue(abs(old_y - new_y) <= max_move)
+
     def test_location(self):
         """
         Test that an added agent has a location.
@@ -110,12 +129,12 @@ class SpaceTestCase(TestCase):
         """
         Can we add an agent to a location?
         """
-        n_add = create_newton()
         x, y = self.space.rand_x(), self.space.rand_y()
         if (x, y) not in self.space.locations:
-            n_add.set_pos(x, y)
-            self.space.add_location(x, y, n_add)
-            self.assertTrue(self.space.locations[n_add.pos] == n_add)
+            self.newton.set_pos(self.space, x, y)
+            self.space.add_location(x, y, self.newton)
+            self.assertTrue(self.space.locations[self.newton.pos] ==
+                            self.newton)
 
     def test_move_location(self):
         """
@@ -134,11 +153,19 @@ class SpaceTestCase(TestCase):
         self.assertTrue((x, y) not in self.space.locations)
 
     def test_move(self):
-        (old_x, old_y) = (self.newton.get_x(), self.newton.get_y())
-        self.space.move(self.newton)
-        (new_x, new_y) = (self.newton.get_x(), self.newton.get_y())
-        self.assertTrue(abs(new_x - old_x) <= DEF_MAX_MOVE)
-        self.assertTrue(abs(new_y - old_y) <= DEF_MAX_MOVE)
+        for i in range(REP_RAND_TESTS):
+            print("Looping in test_move")
+            # test with different max moves:
+            max_move = (i // 2) + 1
+            (old_x, old_y) = (self.newton.get_x(), self.newton.get_y())
+            self.newton.move(max_move)
+            (new_x, new_y) = (self.newton.get_x(), self.newton.get_y())
+            if not abs(old_x - new_x) <= max_move:
+                print("Failed x test with ", old_x, " ", new_x, " ", max_move)
+            if not abs(old_y - new_y) <= max_move:
+                print("Failed y test with ", old_y, " ", new_y, " ", max_move)
+            self.assertTrue(abs(new_x - old_x) <= max_move)
+            self.assertTrue(abs(new_y - old_y) <= max_move)
 
 if __name__ == '__main__':
     main()

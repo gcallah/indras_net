@@ -87,7 +87,7 @@ class Space(Composite):
         """
         return len(self.locations) >= self.grid_size()
 
-    def place_members(self, members):
+    def place_members(self, members, max_move=None):
         """
         Locate all members of this space in x, y grid.
         Default is to randomly place members.
@@ -95,9 +95,9 @@ class Space(Composite):
         if members is not None:
             for nm, mbr in members.items():
                 if not is_composite(mbr):  # by default don't locate groups
-                    self.place_member(mbr)
+                    self.place_member(mbr, max_move)
                 else:  # place composite's members
-                    self.place_members(mbr.members)
+                    self.place_members(mbr.members, max_move)
 
     def rand_x(self, low=0, high=None):
         """
@@ -129,43 +129,49 @@ class Space(Composite):
         """
         return bound(y, 0, self.height)
 
+    def gen_new_pos(self, mbr, max_move):
+        """
+        Generate new random position within max_move of current pos.
+        """
+        low_x = 0
+        high_x = self.width
+        low_y = 0
+        high_y = self.height
+        if max_move is not None and mbr.islocated():
+            low_x = self.constrain_x(mbr.get_x() - max_move)
+            high_x = self.constrain_x(mbr.get_x() + max_move)
+            low_y = self.constrain_y(mbr.get_y() - max_move)
+            high_y = self.constrain_y(mbr.get_y() + max_move)
+        x = self.rand_x(low_x, high_x)
+        y = self.rand_y(low_y, high_y)
+        return (x, y)
+
     def place_member(self, mbr, max_move=None):
         """
         By default, locate a member at a random x, y spot in our grid.
-        max_move is not used yet!
+        `max_move` constrains where that can be.
         """
         if self.is_full():
             self.user.log("Can't fit no more folks in this space!")
             return None
 
         if not is_composite(mbr):
-            low_x = 0
-            high_x = self.width
-            low_y = 0
-            high_y = self.height
-            if max_move is not None and mbr.islocated():
-                low_x = self.constrain_x(mbr.get_x() - max_move)
-                high_x = self.constrain_x(mbr.get_x() + max_move)
-                low_y = self.constrain_y(mbr.get_y() - max_move)
-                high_y = self.constrain_y(mbr.get_y() + max_move)
-            x = self.rand_x(low_x, high_x)
-            y = self.rand_y(low_y, high_y)
+            (x, y) = self.gen_new_pos(mbr, max_move)
             if (x, y) not in self.locations:
                 if mbr.islocated():
                     self.move_location(x, y, mbr.get_x(), mbr.get_y())
                 else:
                     self.add_location(x, y, mbr)
-                mbr.set_pos(x, y)
+                # if I am setting pos, I am agent's locator!
+                mbr.set_pos(self, x, y)
                 return (x, y)
-            else:
+            elif max_move is None:
                 # if the random position is already taken,
                 # find the member a new position
-                return self.place_member(mbr)
+                # but if max_move is not None, the hood might be filled!
+                return self.place_member(mbr, max_move)
         else:
-            return self.place_members(mbr.members)
-
-    def move(self, mbr, max_move=DEF_MAX_MOVE):
-        self.place_member(mbr, max_move)
+            return self.place_members(mbr.members, max_move)
 
     def __iadd__(self, other):
         super().__iadd__(other)
