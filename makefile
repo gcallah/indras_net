@@ -19,6 +19,7 @@ prod: $(SRCS) $(OBJ)
 # this now cutover to new indra:
 pytests:
 	cd indra; make pytests
+	cd models; make pytests
 
 lint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
 

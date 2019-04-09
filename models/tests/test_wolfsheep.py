@@ -38,26 +38,25 @@ class WolfsheepTestCase(TestCase):
         # yet to be enhanced
         wolf_action(self.wolf)
         self.assertEqual(self.wolf.name, TEST_WNAME)
-        # this test can't be right:
-        # self.assertEqual(self.wolf.duration, WOLF_LIFESPAN+SHEEP_LIFESPAN)
-        # because wolf eats sheep
 
     def test_sheep_action(self):
         # yet to be enhanced
+        time_to_repro = self.sheep["time_to_repr"]
         sheep_action(self.sheep)
-        # action doesn't change name!
-        # self.assertEqual(self.sheep.name, TEST_SNAME) 
-        self.assertEqual(self.sheep.duration, SHEEP_LIFESPAN)
+        if time_to_repro == 1:
+            self.assertEqual(self.sheep["time_to_repr"], SHEEP_REPRO_PERIOD)
+        else:
+            self.assertEqual(self.sheep["time_to_repr"], time_to_repro - 1)
 
     def test_wolf_action_repr_period(self):
         new_wolf = create_wolf(1)
         wolf_action(new_wolf)
-        self.assertEqual(new_wolf['time_to_repr'], WOLF_REPRO_PERIOD-1)
+        self.assertEqual(new_wolf['time_to_repr'], WOLF_REPRO_PERIOD - 1)
 
     def test_sheep_action_repr_period(self):
         new_sheep = create_sheep(1)
         sheep_action(new_sheep)
-        self.assertEqual(new_sheep['time_to_repr'], SHEEP_REPRO_PERIOD-1)
+        self.assertEqual(new_sheep['time_to_repr'], SHEEP_REPRO_PERIOD - 1)
 
 
 
