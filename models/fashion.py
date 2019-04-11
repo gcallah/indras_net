@@ -15,10 +15,10 @@ import numpy as np
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
-NUM_TSETTERS = 20
-NUM_FOLLOWERS = 15
+NUM_TSETTERS = 5
+NUM_FOLLOWERS = 55
 """
-Adding weighted average for having a sine curve 
+Adding weighted average for having a sine curve
 """
 ENV_WEIGHT = 0.6
 weightings = [1.0, ENV_WEIGHT]
