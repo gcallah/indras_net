@@ -15,8 +15,8 @@ import numpy as np
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
-NUM_TSETTERS = 15
-NUM_FOLLOWERS = 35
+NUM_TSETTERS = 5
+NUM_FOLLOWERS = 55
 """
 Adding weighted average for having a sine curve
 """
@@ -83,29 +83,31 @@ def env_unfavorable(my_color, my_pref, op1, op2):
 
 
 def follower_action(agent):
-    changing_color(agent, red_followers, blue_followers)
+    common_action(agent, red_tsetters, blue_tsetters, lt, gt)
 
-def changing_color(agent, agent1, agent2):
+
+def tsetter_action(agent):
+    common_action(agent, red_followers, blue_followers, gt, lt)
+
+
+def common_action(agent, others_red, others_blue, op1, op2):
     changed = False
-    num_red_fs = max(len(red_followers.subset(in_hood, agent, HOOD_SIZE)),
-                     NOT_ZERO)   # prevent div by zero!
-    num_blue_fs = max(len(blue_followers.subset(in_hood, agent, HOOD_SIZE)),
-                      NOT_ZERO)   # prevent div by zero!
-    total_fs = num_red_fs + num_blue_fs
-    if total_fs <= 0:
+    num_others_red = max(len(others_red.subset(in_hood, agent, HOOD_SIZE)),
+                         NOT_ZERO)   # prevent div by zero!
+    num_others_blue = max(len(others_blue.subset(in_hood, agent, HOOD_SIZE)),
+                          NOT_ZERO)   # prevent div by zero!
+    total_others = num_others_red + num_others_blue
+    if total_others <= 0:
         return False
 
-    env_color = ratio_to_sin(num_red_fs / total_fs)
+    env_color = ratio_to_sin(num_others_red / total_others)
 
     agent[COLOR_PREF] = new_color_pref(agent[COLOR_PREF], env_color)
-    if env_unfavorable(agent[DISPLAY_COLOR], agent[COLOR_PREF], gt, lt):
+    if env_unfavorable(agent[DISPLAY_COLOR], agent[COLOR_PREF], op1, op2):
         changed = True
         agent[DISPLAY_COLOR] = not agent[DISPLAY_COLOR]
         change_color(agent, society, opp_group)
     return changed
-
-def tsetter_action(agent):
-    changing_color(agent, red_tsetters, blue_tsetters)
 
 
 def create_tsetter(i, color=RED):
