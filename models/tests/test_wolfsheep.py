@@ -48,15 +48,15 @@ class WolfsheepTestCase(TestCase):
         else:
             self.assertEqual(self.sheep["time_to_repr"], time_to_repro - 1)
 
-    def test_wolf_action_repr_period(self):
-        new_wolf = create_wolf(1)
-        wolf_action(new_wolf)
-        self.assertEqual(new_wolf['time_to_repr'], WOLF_REPRO_PERIOD - 1)
-
-    def test_sheep_action_repr_period(self):
-        new_sheep = create_sheep(1)
-        sheep_action(new_sheep)
-        self.assertEqual(new_sheep['time_to_repr'], SHEEP_REPRO_PERIOD - 1)
+#    def test_wolf_action_repr_period(self):
+#        new_wolf = create_wolf(1)
+#        wolf_action(new_wolf)
+#        self.assertEqual(new_wolf['time_to_repr'], WOLF_REPRO_PERIOD - 1)
+#
+#    def test_sheep_action_repr_period(self):
+#        new_sheep = create_sheep(1)
+#        sheep_action(new_sheep)
+#        self.assertEqual(new_sheep['time_to_repr'], SHEEP_REPRO_PERIOD - 1)
 
 
 

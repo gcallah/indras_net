@@ -48,7 +48,7 @@ class PopHist():
 class Env(Space):
     """
     A collection of entities that share a space and time.
-    An env *is* a space and *has* a timeline.
+    An env *is* a space and *has* a timeline (PopHist).
     That makes the inheritance work out as we want it to.
     """
     def __init__(self, name, **kwargs):
@@ -73,6 +73,10 @@ class Env(Space):
             self.user = TestUser(getpass.getuser(), self)
 
     def __call__(self):
+        """
+        Calling the env makes it run. If we are on a terminal, we ask the user
+        to put up a menu and choose. For tests, we just run N (default) turns.
+        """
         if (self.user is None) or (self.user_type == TEST):
             self.runN()
         else:
