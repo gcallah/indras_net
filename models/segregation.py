@@ -38,12 +38,15 @@ city = None
 
 opp_group = None
 
+red_agents = None
+blue_agents = None
 
-def env_unfavorable(my_hood, my_tolerance):
+
+def env_unfavorable(hood_ratio, my_tolerance):
     """
     Is the environment to our agent's liking or not??
     """
-    return True
+    return hood_ratio < my_tolerance
 
 
 def agent_action(agent):
@@ -57,12 +60,12 @@ def agent_action(agent):
     if total_neighbors <= 0:
         return False
 
-    hood_ratio = 1  # calculate based on others / total
+    hood_ratio = 0  # calculate based on my_group / total
 
     if DEBUG:
         print("Something about action")
 
-    return not env_unfavorable(agent[TOLERANCE], hood_ratio)
+    return not env_unfavorable(hood_ratio, agent[TOLERANCE])
 
 
 def create_agent(i, color):
