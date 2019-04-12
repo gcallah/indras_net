@@ -15,8 +15,8 @@ import numpy as np
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
-NUM_TSETTERS = 5
-NUM_FOLLOWERS = 55
+NUM_TSETTERS = 15
+NUM_FOLLOWERS = 35
 """
 Adding weighted average for having a sine curve
 """
@@ -83,26 +83,9 @@ def env_unfavorable(my_color, my_pref, op1, op2):
 
 
 def follower_action(agent):
-    changed = False
-    num_red_ts = max(len(red_tsetters.subset(in_hood, agent, HOOD_SIZE)),
-                     NOT_ZERO)   # prevent div by zero!
-    num_blue_ts = max(len(blue_tsetters.subset(in_hood, agent, HOOD_SIZE)),
-                      NOT_ZERO)   # prevent div by zero!
-    total_ts = num_red_ts + num_blue_ts
-    if total_ts <= 0:
-        return False
+    changing_color(agent, red_followers, blue_followers)
 
-    env_color = ratio_to_sin(num_red_ts / total_ts)
-
-    agent[COLOR_PREF] = new_color_pref(agent[COLOR_PREF], env_color)
-    if env_unfavorable(agent[DISPLAY_COLOR], agent[COLOR_PREF], lt, gt):
-        changed = True
-        agent[DISPLAY_COLOR] = not agent[DISPLAY_COLOR]
-        change_color(agent, society, opp_group)
-    return changed
-
-
-def tsetter_action(agent):
+def changing_color(agent, agent1, agent2):
     changed = False
     num_red_fs = max(len(red_followers.subset(in_hood, agent, HOOD_SIZE)),
                      NOT_ZERO)   # prevent div by zero!
@@ -120,6 +103,9 @@ def tsetter_action(agent):
         agent[DISPLAY_COLOR] = not agent[DISPLAY_COLOR]
         change_color(agent, society, opp_group)
     return changed
+
+def tsetter_action(agent):
+    changing_color(agent, red_tsetters, blue_tsetters)
 
 
 def create_tsetter(i, color=RED):
