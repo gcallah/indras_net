@@ -15,8 +15,7 @@ from indra.env import Env
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
-NUM_TSETTERS = 5
-NUM_FOLLOWERS = 10
+NUM_AGENT = 5
 
 COLOR_PREF = "color_pref"
 DISPLAY_COLOR = "display_color"
@@ -26,14 +25,12 @@ RED = 1.0
 
 HOOD_SIZE = 4
 
-FOLLOWER_PRENM = "follower"
-TSETTER_PRENM = "tsetter"
+NOT_ZERO = .001
 
 RED_AGENT = "Red Agent"
 BLUE_AGENT = "Blue Agent"
 
-red_tsetters = None
-blue_tsetters = None
+
 red_followers = None
 blue_followers = None
 society = None
@@ -65,10 +62,12 @@ def agent_action(agent):
     if total_neighbors <= 0:
         return False
 
-    ratio = 1  # calculate based on others / total
+    hood_ratio = 1  # calculate based on others / total
 
     print("in action new color = " + str(ncp))
     agent[COLOR_PREF] = ncp
+
+
     if DEBUG:
         print("In action, we get new pref = " + str(agent[COLOR_PREF])
               + " display color = " + str(agent[DISPLAY_COLOR])
@@ -83,11 +82,10 @@ def create_agent(i, color=RED):
     """
     Creates agent of specified color type
     """
-    return Agent(TSETTER_PRENM + str(i),
-                 action=tsetter_action,
+    return Agent(color + str(i),
+                 action=agent_action,
                  attrs={COLOR_PREF: color,
                         DISPLAY_COLOR: color})
-
 
 def set_up():
     """
@@ -95,13 +93,13 @@ def set_up():
     """
     blue_agents = Composite(BLUE_AGENT)
     red_agents = Composite(RED_AGENT)
-    for i in range(NUM_TSETTERS):
+    for i in range(NUM_AGENT):
         red_agents += create_agent(i, color=RED)
 
     if DEBUG2:
-        print(red_tsetters.__repr__())
+        print(red_agents.__repr__())
 
-    for i in range(NUM_FOLLOWERS):
+    for i in range(NUM_AGENT):
         blue_agents += create_agent(i, color=BLUE)
 
     if DEBUG2:
