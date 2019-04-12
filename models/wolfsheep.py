@@ -43,6 +43,7 @@ sheep_created = 0
 def isactive(agent, *args):
     return agent.isactive()
 
+
 # yet to discuss with Professor for refactoring
 # don't do this recursively: instead add a filter in the action
 def rand_sheep(hood):
@@ -69,7 +70,7 @@ def wolf_action(agent):
     if DEBUG2:
         print("Num sheep = " + str(num_sheep))
 
-    # Wolves eat close sheep 
+    # Wolves eat close sheep
     hood = sheep.subset(in_hood, agent, HOOD_SIZE, name="hood")
     live_hood = hood.subset(isactive, agent, name="livehood")
     if len(live_hood) > 0:

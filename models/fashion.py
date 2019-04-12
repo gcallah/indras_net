@@ -83,11 +83,11 @@ def env_unfavorable(my_color, my_pref, op1, op2):
 
 
 def follower_action(agent):
-    common_action(agent, red_tsetters, blue_tsetters, lt, gt)
+    return common_action(agent, red_tsetters, blue_tsetters, lt, gt)
 
 
 def tsetter_action(agent):
-    common_action(agent, red_followers, blue_followers, gt, lt)
+    return common_action(agent, red_followers, blue_followers, gt, lt)
 
 
 def common_action(agent, others_red, others_blue, op1, op2):
