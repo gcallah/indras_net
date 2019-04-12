@@ -21,14 +21,16 @@ NUM_FOLLOWERS = 10
 COLOR_PREF = "color_pref"
 DISPLAY_COLOR = "display_color"
 
+BLUE = 0.0
+RED = 1.0
+
 HOOD_SIZE = 4
 
 FOLLOWER_PRENM = "follower"
 TSETTER_PRENM = "tsetter"
-RED_FOLLOWERS = "Red Followers"
-BLUE_FOLLOWERS = "Blue Followers"
-RED_TSETTERS = "Red Trendsetters"
-BLUE_TSETTERS = "Blue Trendsetters"
+
+RED_AGENT = "Red Agent"
+BLUE_AGENT = "Blue Agent"
 
 red_tsetters = None
 blue_tsetters = None
@@ -79,7 +81,7 @@ def agent_action(agent):
 
 def create_agent(i, color=RED):
     """
-    Create a trendsetter: all RED to start.
+    Creates agent of specified color type
     """
     return Agent(TSETTER_PRENM + str(i),
                  action=tsetter_action,
@@ -91,8 +93,8 @@ def set_up():
     """
     A func to set up run that can also be used by test code.
     """
-    blue_agents = Composite(BLUE_TSETTERS)
-    red_agents = Composite(RED_TSETTERS)
+    blue_agents = Composite(BLUE_AGENT)
+    red_agents = Composite(RED_AGENT)
     for i in range(NUM_TSETTERS):
         red_agents += create_agent(i, color=RED)
 
@@ -106,10 +108,14 @@ def set_up():
         print(blue_agents.__repr__())
 
     city = Env("A city", members=[blue_agents, red_agents])
-    return (blue_agents, red_agents, society)
+    return (blue_agents, red_agents, city)
 
 
 def main():
+
+    global blue_agents
+    global red_agents
+    global city
     (blue_agents, red_agents, city) = set_up()
 
     if DEBUG2:
