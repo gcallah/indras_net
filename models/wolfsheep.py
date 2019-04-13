@@ -19,7 +19,7 @@ WOLF_LIFESPAN = 5
 WOLF_REPRO_PERIOD = 6
 
 SHEEP_LIFESPAN = 8
-SHEEP_REPRO_PERIOD = 6
+SHEEP_REPRO_PERIOD = 3
 
 AGT_WOLF_NAME = "wolf"
 AGT_SHEEP_NAME = "sheep"
@@ -46,9 +46,22 @@ def isactive(agent, *args):
 
 # yet to discuss with Professor for refactoring
 # don't do this recursively: instead add a filter in the action
-def rand_sheep(hood):
-    return hood.rand_member()
+# def rand_sheep(hood):
+#     return hood.rand_member()
 
+
+def eat(wolf, sheep):
+    """
+    Wolves eat active sheep from the neighbourhood
+    """
+    hood = sheep.subset(in_hood, wolf, HOOD_SIZE, name="hood")
+    live_hood = hood.subset(isactive, wolf, name="livehood")
+    if len(live_hood) > 0:
+        prey = live_hood.rand_member()
+        if DEBUG:
+            print(str(wolf) + " is eating " + str(prey))
+        wolf.duration += prey.duration
+        prey.die()
 
 def sheep_action(agent):
     global sheep
@@ -71,14 +84,8 @@ def wolf_action(agent):
         print("Num sheep = " + str(num_sheep))
 
     # Wolves eat close sheep
-    hood = sheep.subset(in_hood, agent, HOOD_SIZE, name="hood")
-    live_hood = hood.subset(isactive, agent, name="livehood")
-    if len(live_hood) > 0:
-        prey = live_hood.rand_member()
-        if DEBUG:
-            print(str(agent) + " is eating " + str(prey))
-        agent.duration += prey.duration
-        prey.die()
+    eat(agent, sheep)
+
     agent["time_to_repr"] -= 1
     if agent["time_to_repr"] == 0:
         # reproduce

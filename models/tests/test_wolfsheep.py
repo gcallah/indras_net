@@ -36,8 +36,13 @@ class WolfsheepTestCase(TestCase):
 
     def test_wolf_action(self):
         # yet to be enhanced
+        time_to_repro = self.wolf["time_to_repr"]
         wolf_action(self.wolf)
-        self.assertEqual(self.wolf.name, TEST_WNAME)
+        if time_to_repro == 1:
+            self.assertEqual(self.wolf["time_to_repr"], WOLF_REPRO_PERIOD)
+        else:
+            self.assertEqual(self.wolf["time_to_repr"], time_to_repro - 1)
+
 
     def test_sheep_action(self):
         # yet to be enhanced
