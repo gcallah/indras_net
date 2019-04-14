@@ -7,7 +7,7 @@ from indra.agent import Agent
 from models.wolfsheep import create_sheep, create_wolf, set_up, wolf_action, sheep_action
 from models.wolfsheep import AGT_WOLF_NAME, AGT_SHEEP_NAME, ERR_MSG
 from models.wolfsheep import WOLF_LIFESPAN, SHEEP_LIFESPAN, SHEEP_REPRO_PERIOD
-from models.wolfsheep import WOLF_REPRO_PERIOD
+from models.wolfsheep import WOLF_REPRO_PERIOD, eat
 import models.wolfsheep as wolfsheep
 
 TEST_SNUM = 3
@@ -52,6 +52,14 @@ class WolfsheepTestCase(TestCase):
             self.assertEqual(self.sheep["time_to_repr"], SHEEP_REPRO_PERIOD)
         else:
             self.assertEqual(self.sheep["time_to_repr"], time_to_repro - 1)
+
+    def test_eat(self):
+        new_wolf = create_wolf(1)
+        new_sheep = create_sheep(1)
+        eat(new_wolf, new_sheep)
+        self.assertEqual(new_wolf.duration, WOLF_LIFESPAN+SHEEP_LIFESPAN)
+
+
 
 #    def test_wolf_action_repr_period(self):
 #        new_wolf = create_wolf(1)
