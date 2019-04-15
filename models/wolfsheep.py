@@ -49,13 +49,26 @@ def isactive(agent, *args):
 # def rand_sheep(hood):
 #     return hood.rand_member()
 
-
-def eat(wolf, prey):
+def eat(agent, prey):
     """
-    Wolf's duration increases by sheep's duration
-    """
-    wolf.duration += prey.duration
+     Wolf's duration increases by sheep's duration
+     """
+    if DEBUG:
+        print(str(agent) + " is eating " + str(prey))
+    agent.duration += prey.duration
     prey.die()
+
+
+def getPrey(agent, sheep):
+    """
+        Wolves eat active sheep from the neighbourhood
+    """
+    hood = sheep.subset(in_hood, agent, HOOD_SIZE, name="hood")
+    live_hood = hood.subset(isactive, agent, name="livehood")
+    if len(live_hood) > 0:
+        prey = live_hood.rand_member()
+    return prey
+
 
 def sheep_action(agent):
     global sheep
@@ -70,23 +83,15 @@ def sheep_action(agent):
 
 
 def wolf_action(agent):
-    """
-    Wolves eat active sheep from the neighbourhood
-    """
     global wolves
     global wolves_created
 
     num_sheep = len(sheep)
     if DEBUG2:
         print("Num sheep = " + str(num_sheep))
-
-    hood = sheep.subset(in_hood, agent, HOOD_SIZE, name="hood")
-    live_hood = hood.subset(isactive, agent, name="livehood")
-    if len(live_hood) > 0:
-        prey = live_hood.rand_member()
-        if DEBUG:
-            print(str(agent) + " is eating " + str(prey))
-    eat(agent, sheep)
+    prey = getPrey(agent, sheep)
+    if prey is not None:
+        eat(agent, prey)
 
     agent["time_to_repr"] -= 1
     if agent["time_to_repr"] == 0:

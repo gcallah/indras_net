@@ -7,7 +7,7 @@ from indra.agent import Agent
 from models.wolfsheep import create_sheep, create_wolf, set_up, wolf_action, sheep_action
 from models.wolfsheep import AGT_WOLF_NAME, AGT_SHEEP_NAME, ERR_MSG
 from models.wolfsheep import WOLF_LIFESPAN, SHEEP_LIFESPAN, SHEEP_REPRO_PERIOD
-from models.wolfsheep import WOLF_REPRO_PERIOD, eat
+from models.wolfsheep import WOLF_REPRO_PERIOD, getPrey, eat
 import models.wolfsheep as wolfsheep
 
 TEST_SNUM = 3
@@ -35,7 +35,6 @@ class WolfsheepTestCase(TestCase):
         self.assertEqual(new_sheep.name, AGT_SHEEP_NAME + str(1))
 
     def test_wolf_action(self):
-        # yet to be enhanced
         time_to_repro = self.wolf["time_to_repr"]
         wolf_action(self.wolf)
         if time_to_repro == 1:
@@ -45,7 +44,6 @@ class WolfsheepTestCase(TestCase):
 
 
     def test_sheep_action(self):
-        # yet to be enhanced
         time_to_repro = self.sheep["time_to_repr"]
         sheep_action(self.sheep)
         if time_to_repro == 1:
@@ -55,9 +53,18 @@ class WolfsheepTestCase(TestCase):
 
     def test_eat(self):
         new_wolf = create_wolf(1)
-        new_sheep = create_sheep(1)
-        eat(new_wolf, new_sheep)
+        prey = getPrey(new_wolf, wolfsheep.sheep)
+        eat(new_wolf, prey)
         self.assertEqual(new_wolf.duration, WOLF_LIFESPAN+SHEEP_LIFESPAN)
+
+    def test_active_prey(self):
+        new_wolf = create_wolf(1)
+        prey = getPrey(new_wolf, wolfsheep.sheep)
+        #isActive = isactive(prey, *args)
+        self.assertEqual(prey.isactive(), True)
+        eat(new_wolf, prey)
+        self.assertEqual(prey.isactive(), False)  # After wolf eats the sheep, it becomes inactive
+
 
 
 
