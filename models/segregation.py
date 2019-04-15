@@ -1,8 +1,6 @@
 """
     This is the segregation model re-written in indra.
-    It is starting life as a clone of the fashion model.
 """
-
 import math
 import statistics as sts
 from operator import gt, lt
@@ -31,7 +29,6 @@ NOT_ZERO = .001
 
 group_names = ["Blue Agent", "Red Agent"]
 
-
 reds = None
 blues = None
 city = None
@@ -50,8 +47,6 @@ def env_unfavorable(hood_ratio, my_tolerance):
 
 
 def agent_action(agent):
-    #print(agent.to_json())
-    #print(agent)
 
     num_red = max(len(red_agents.subset(in_hood, agent, HOOD_SIZE)),
                      NOT_ZERO)   # prevent div by zero!
@@ -65,7 +60,7 @@ def agent_action(agent):
     if total_neighbors <= 0:
         return False
 
-    hood_ratio = groups_count[agent[COLOR]] / total_neighbors
+    hood_ratio = groups_count[int(agent[COLOR])] / total_neighbors
     if env_unfavorable(hood_ratio, agent[TOLERANCE]):
         city.place_member(agent)
 
@@ -118,7 +113,6 @@ def main():
 
     city()
     return 0
-
 
 if __name__ == "__main__":
     main()
