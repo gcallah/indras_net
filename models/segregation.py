@@ -29,7 +29,7 @@ HOOD_SIZE = 4
 
 NOT_ZERO = .001
 
-group_names = ["Red Agent", "Blue Agent"]
+group_names = ["Blue Agent", "Red Agent"]
 
 
 reds = None
@@ -60,18 +60,20 @@ def agent_action(agent):
                       NOT_ZERO)   # prevent div by zero!
     total_neighbors = num_red + num_blue
 
+    groups_count = [num_blue, num_red]
+
     if total_neighbors <= 0:
         return False
 
     hood_ratio = 0 
-    if agent['color'] == 0:
+    if agent['color'] == RED:
         hood_ratio = num_red / total_neighbors
-        if hood_ratio < 0.5:
+        if env_unfavorable(hood_ratio, agent['tolerance']):
             city.place_member(agent)
 
-    if agent['color'] == 1:
+    if agent['color'] == BLUE:
         hood_ratio = num_blue / total_neighbors
-        if hood_ratio < 0.5:
+        if env_unfavorable(hood_ratio, agent['tolerance']):
             city.place_member(agent)
 
     if DEBUG:
