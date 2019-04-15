@@ -50,20 +50,21 @@ def env_unfavorable(hood_ratio, my_tolerance):
 
 
 def agent_action(agent):
-    changed = False
+    # changed = False
     num_red = max(len(red_agents.subset(in_hood, agent, HOOD_SIZE)),
                      NOT_ZERO)   # prevent div by zero!
 
     num_blue = max(len(blue_agents.subset(in_hood, agent, HOOD_SIZE)),
                       NOT_ZERO)   # prevent div by zero!
     total_neighbors = num_red + num_blue
+
     if total_neighbors <= 0:
         return False
 
     hood_ratio = 0  # calculate based on my_group / total
 
     if DEBUG:
-        print("Something about action")
+        print(agent)
 
     return not env_unfavorable(hood_ratio, agent[TOLERANCE])
 

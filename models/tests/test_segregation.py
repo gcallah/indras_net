@@ -12,7 +12,7 @@ import models.segregation as seg
 TEST_ANUM = 999999
 
 
-class SegregationTestCase(TestCase):
+""" class SegregationTestCase(TestCase):
     def setUp(self):
         (seg.blue_agents, seg.red_agents, seg.city) = set_up()
 
@@ -38,4 +38,4 @@ class SegregationTestCase(TestCase):
         env_fav = env_unfavorable(0.6, 0.5)
         self.assertEqual(env_fav, False)
 
-
+ """
