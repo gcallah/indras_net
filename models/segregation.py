@@ -65,21 +65,14 @@ def agent_action(agent):
     if total_neighbors <= 0:
         return False
 
-    hood_ratio = 0 
-    if agent['color'] == RED:
-        hood_ratio = num_red / total_neighbors
-        if env_unfavorable(hood_ratio, agent['tolerance']):
-            city.place_member(agent)
-
-    if agent['color'] == BLUE:
-        hood_ratio = num_blue / total_neighbors
-        if env_unfavorable(hood_ratio, agent['tolerance']):
-            city.place_member(agent)
+    hood_ratio = groups_count[agent[COLOR]] / total_neighbors
+    if env_unfavorable(hood_ratio, agent[TOLERANCE]):
+        city.place_member(agent)
 
     if DEBUG:
         print(agent.to_json())
 
-    return not env_unfavorable(hood_ratio, agent[TOLERANCE])
+    return env_unfavorable(hood_ratio, agent[TOLERANCE])
 
 
 def create_agent(i, color):
