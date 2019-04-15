@@ -15,7 +15,7 @@ from indra.env import Env
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
-NUM_AGENT = 5
+NUM_AGENT = 30
 
 TOLERANCE = "tolerance"
 COLOR = "color"
@@ -50,7 +50,9 @@ def env_unfavorable(hood_ratio, my_tolerance):
 
 
 def agent_action(agent):
-    # changed = False
+    #print(agent.to_json())
+    #print(agent)
+
     num_red = max(len(red_agents.subset(in_hood, agent, HOOD_SIZE)),
                      NOT_ZERO)   # prevent div by zero!
 
@@ -61,10 +63,19 @@ def agent_action(agent):
     if total_neighbors <= 0:
         return False
 
-    hood_ratio = 0  # calculate based on my_group / total
+    hood_ratio = 0 
+    if agent['color'] == 0:
+        hood_ratio = num_red / total_neighbors
+        if hood_ratio < 0.5:
+            city.place_member(agent)
+
+    if agent['color'] == 1:
+        hood_ratio = num_blue / total_neighbors
+        if hood_ratio < 0.5:
+            city.place_member(agent)
 
     if DEBUG:
-        print(agent)
+        print(agent.to_json())
 
     return not env_unfavorable(hood_ratio, agent[TOLERANCE])
 
