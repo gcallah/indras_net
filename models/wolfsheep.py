@@ -10,10 +10,10 @@ from indra.env import Env
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
-NUM_WOLVES = 3
-NUM_SHEEP = 10
+NUM_WOLVES = 5
+NUM_SHEEP = 20
 SHEEP_WOLVES_RATIO = 2
-HOOD_SIZE = 4
+HOOD_SIZE = 10
 
 WOLF_LIFESPAN = 5
 WOLF_REPRO_PERIOD = 6
@@ -33,7 +33,7 @@ ERR_MSG = "Invalid agent name"
 wolves = None
 sheep = None
 meadow = None
-
+prey = None
 create_wolf = None
 create_sheep = None
 wolves_created = 0
@@ -63,6 +63,7 @@ def getPrey(agent, sheep):
     """
         Wolves eat active sheep from the neighbourhood
     """
+    global prey
     hood = sheep.subset(in_hood, agent, HOOD_SIZE, name="hood")
     live_hood = hood.subset(isactive, agent, name="livehood")
     if len(live_hood) > 0:
