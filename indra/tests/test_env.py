@@ -90,6 +90,7 @@ class EnvTestCase(TestCase):
         Test the construction of line graph data.
         """
         global travis
+        travis = os.getenv("TRAVIS")
         if not travis:
             self.env.pop_hist = self.fill_pop_hist()
             ret = self.env.line_data()
@@ -100,6 +101,9 @@ class EnvTestCase(TestCase):
         Test the construction of scatter plot data.
         """
         global travis
+        travis = os.getenv("TRAVIS")
+        print("\n\ntravis = ", travis)
+        print()
         if not travis:
             our_grp = Composite(GRP1, members=[self.newton])
             self.env = Env("Test env", members=[our_grp])
@@ -115,5 +119,4 @@ class EnvTestCase(TestCase):
 
 
 if __name__ == '__main__':
-    travis = os.getenv("TRAVIS")
     main()
