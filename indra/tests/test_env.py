@@ -9,6 +9,7 @@ import indra.display_methods as disp
 from indra.env import Env, PopHist, POP_HIST_HDR, POP_SEP
 from indra.user import TEST, WEB
 from indra.agent import Agent
+from indra.composite import Composite
 from indra.tests.test_agent import create_newton
 from indra.tests.test_composite import create_calcguys, create_cambguys
 
@@ -39,17 +40,27 @@ class EnvTestCase(TestCase):
         self.pop_hist.record_pop(GRP2, 10)
         self.pop_hist.record_pop(GRP1, 20)
         self.pop_hist.record_pop(GRP2, 20)
+        return self.pop_hist
 
     def test_user_type(self):
+        """
+        Make sure our user type is test.
+        """
         self.assertEqual(self.env.user_type, TEST)
 
     def test_runN(self):
+        """
+        Test running for N turns.
+        """
         NUM_PERIODS = 10
         self.env += self.newton
         acts = self.env.runN(NUM_PERIODS)
         self.assertEqual(acts, NUM_PERIODS)
 
     def test_str_pop(self):
+        """
+        Test converting the pop history to a string.
+        """
         self.fill_pop_hist()
         s = str(self.pop_hist)
         self.assertEqual(s, POP_HIST_HDR + GRP1 + POP_SEP + GRP2 + POP_SEP)
@@ -63,7 +74,7 @@ class EnvTestCase(TestCase):
 
     def test_add_switch(self):
         self.env.add_switch(self.newton, self.calcs, self.cambs)
-        self.assertIn((self.newton, self.calcs, self.cambs),self.env.switches)
+        self.assertIn((self.newton, self.calcs, self.cambs), self.env.switches)
 
     def test_has_disp(self):
         if not disp.plt_present:
@@ -71,22 +82,26 @@ class EnvTestCase(TestCase):
         else:
             self.assertTrue(self.env.has_disp())
 
-    # def test_line_data(self):
-    #     self.fill_pop_hist()
-    #     ret = self.env.line_data()
-    #     self.assertEqual(ret, (1, {GRP1: {"data": [10, 20]}, GRP2: {"data": [10, 20]}}))
-    #
-    # def test_plot_data(self):
-    #     self.pop_hist.record_pop(GRP1, 10)
-    #     ret = self.env.plot_data()
-    #     current_var = self.env.members[GRP1]
-    #     current_agent_pos = current_var[GRP1].pos
-    #     (x, y) = current_agent_pos
-    #     self.assertEqual(ret, {GRP1: {X: [x], Y: [y]}})
+    def test_line_data(self):
+        """
+        Test the construction of line graph data.
+        """
+        self.env.pop_hist = self.fill_pop_hist()
+        ret = self.env.line_data()
+        self.assertEqual(ret, (2, {GRP1: {"data": [10, 20]}, GRP2: {"data": [10, 20]}}))
+
+    def test_plot_data(self):
+        """
+        Test the construction of scatter plot data.
+        """
+        our_grp = Composite(GRP1, members=[self.newton])
+        self.env = Env("Test env", members=[our_grp])
+        ret = self.env.plot_data()
+        (x, y) = self.newton.pos
+        self.assertEqual(ret, {GRP1: {X: [x], Y: [y]}})
 
     def test_headless(self):
-        bool = (self.env.user_type == WEB) or (self.env.user_type == TEST)
-        if bool:
+        if (self.env.user_type == WEB) or (self.env.user_type == TEST):
             self.assertTrue(self.env.headless())
         else:
             self.assertTrue(not self.env.headless())

@@ -6,6 +6,13 @@ then
     export ignores="test_user\.py"
 fi
 
-nosetests --ignore-files=$ignores --exe --verbose --with-coverage --cover-package=indra
+if [ -z $1 ]
+then
+    export capture=""
+else
+    export capture="--nocapture"
+fi
+
+nosetests --ignore-files=$ignores --exe --verbose --with-coverage --cover-package=indra $capture
 
 #--ignore-files="$ignores"
