@@ -32,7 +32,7 @@ def run(user, test_run=False):
             user.tell("Steps = " + str(steps))
         else:
             steps = DEF_STEPS
-        
+
         acts = user.env.runN(periods=steps)
     except (ValueError, TypeError) as e:
         user.tell("You must enter an integer value for # of steps: "

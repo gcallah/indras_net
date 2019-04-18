@@ -6,7 +6,7 @@ of agents that share a timeline and a Space.
 import os
 import getpass
 import indra.display_methods as disp
-from indra.agent import join, switch
+from indra.agent import join, switch, Agent
 from indra.space import Space
 from indra.user import TermUser, TERMINAL, WEB, TEST, TestUser
 
@@ -54,7 +54,7 @@ class Env(Space):
     def __init__(self, name, **kwargs):
         super().__init__(name, **kwargs)
         self.pop_hist = PopHist()  # this will record pops across time
-        # Make sure variesties are present in the history
+        # Make sure varieties are present in the history
         for mbr in self.members:
             self.pop_hist.record_pop(mbr, self.pop_count(mbr))
 
@@ -197,26 +197,35 @@ class Env(Space):
         return (period, data)
 
     def plot_data(self):
+        """
+        This is the data for our scatter plot.
+        This code assumes the env holds groups, and the groups
+        hold agents with positions.
+        This assumption is dangerous, and we should address it.
+        """
         if not disp.plt_present:
             self.user.tell("ERROR: No graphing package installed")
             return
 
         data = {}
-        for var in self.members:
-            data[var] = {}
+        for variety in self.members:
+            data[variety] = {}
             # matplotlib wants a list of x coordinates, and a list of y
             # coordinates:
-            data[var][X] = []
-            data[var][Y] = []
+            data[variety][X] = []
+            data[variety][Y] = []
             # TODO: define colors in env?
-            # data[var]["color"] = self.agents.get_var_color(var)
-            current_var = self.members[var]
-            for agent in current_var:
-                current_agent_pos = current_var[agent].pos
-                if current_agent_pos is not None:
-                    (x, y) = current_agent_pos
-                    data[var][X].append(x)
-                    data[var][Y].append(y)
+            # data[variety]["color"] = self.agents.get_var_color(variety)
+            current_variety = self.members[variety]
+            for agent_nm in current_variety:
+                # temp fix for one of the dangers mentioned above:
+                # we might not be at the level of agents!
+                if isinstance(current_variety[agent_nm], Agent):
+                    current_agent_pos = current_variety[agent_nm].pos
+                    if current_agent_pos is not None:
+                        (x, y) = current_agent_pos
+                        data[variety][X].append(x)
+                        data[variety][Y].append(y)
         return data
 
     def headless(self):

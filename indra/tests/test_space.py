@@ -139,6 +139,7 @@ class SpaceTestCase(TestCase):
     def test_move_location(self):
         """
         Can we move agent from one location to another?
+        This test sometimes fails: we need to explore!
         """
         x, y = self.space.rand_x(), self.space.rand_y()
         self.space.move_location(x, y, self.newton.get_x(), self.newton.get_y())
@@ -153,17 +154,15 @@ class SpaceTestCase(TestCase):
         self.assertTrue((x, y) not in self.space.locations)
 
     def test_move(self):
+        """
+        Test whether moving an agent stays within its max move.
+        """
         for i in range(REP_RAND_TESTS):
-            print("Looping in test_move")
             # test with different max moves:
             max_move = (i // 2) + 1
             (old_x, old_y) = (self.newton.get_x(), self.newton.get_y())
             self.newton.move(max_move)
             (new_x, new_y) = (self.newton.get_x(), self.newton.get_y())
-            if not abs(old_x - new_x) <= max_move:
-                print("Failed x test with ", old_x, " ", new_x, " ", max_move)
-            if not abs(old_y - new_y) <= max_move:
-                print("Failed y test with ", old_y, " ", new_y, " ", max_move)
             self.assertTrue(abs(new_x - old_x) <= max_move)
             self.assertTrue(abs(new_y - old_y) <= max_move)
 
