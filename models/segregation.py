@@ -39,15 +39,30 @@ red_agents = None
 blue_agents = None
 
 
+def my_group_index(agent):
+    return int(agent[COLOR])
+
+
+def other_group_index(agent):
+    return not my_group_index(agent)
+
+
 def env_unfavorable(hood_ratio, my_tolerance):
     """
     Is the environment to our agent's liking or not??
     """
+    print("In env unfavorable.", flush=True)
     return hood_ratio < my_tolerance
 
 
 def agent_action(agent):
-
+    """
+    If the agent is surrounded by more "others" than it is comfortable
+    with, the agent will move.
+    """
+    print("________________________")
+    print("In seg agent action")
+    print("________________________", flush=True)
     num_red = max(len(red_agents.subset(in_hood, agent, HOOD_SIZE)),
                      NOT_ZERO)   # prevent div by zero!
 
@@ -57,10 +72,14 @@ def agent_action(agent):
 
     groups_count = [num_blue, num_red]
 
-    if total_neighbors <= 0:
+    others = groups_count[other_group_index(agent)]
+    print("________________________")
+    print("Others count = ", others)
+    print("________________________", flush=True)
+    if groups_count[other_group_index(agent)] <= 0:
         return False
 
-    hood_ratio = groups_count[int(agent[COLOR])] / total_neighbors
+    hood_ratio = groups_count[my_group_index(agent)] / total_neighbors
     if env_unfavorable(hood_ratio, agent[TOLERANCE]):
         city.place_member(agent)
 

@@ -102,8 +102,6 @@ class Env(Space):
         group: which group child will join
         """
         self.switches.append((agent, grp1, grp2))
-        if DEBUG:
-            self.user.tell("{} added to switches".format(str(agent)))
         # do we need to connect agent to env (self)?
 
     def runN(self, periods=DEF_TIME):

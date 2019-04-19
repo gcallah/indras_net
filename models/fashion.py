@@ -57,7 +57,7 @@ opp_group = None
 
 
 def change_color(agent, society, opp_group):
-    if DEBUG:
+    if DEBUG2:
         print("Agent " + str(agent) + " is changing colors from "
               + str(agent.primary_group()) + " to "
               + str(opp_group[str(agent.primary_group())]))
