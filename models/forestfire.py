@@ -2,16 +2,16 @@
     This is the fashion model re-written in indra.
 """
 
-import math
+# import math
 import random
-from operator import gt, lt
+# from operator import gt, lt
 
-from indra.agent import Agent, X_VEC, Y_VEC, NEUTRAL
-from indra.agent import ratio_to_sin
+from indra.agent import Agent
+# from indra.agent import ratio_to_sin
 from indra.composite import Composite
-from indra.space import in_hood
+# from indra.space import in_hood
 from indra.env import Env
-import numpy as np
+# import numpy as np
 
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
@@ -28,6 +28,7 @@ ON_FIRE = "On Fire"
 BURNED_OUT = "Burned Out"
 NEW_GROWTH = "New Growth"
 
+opp_group = None
 # states numbers
 HE = 0
 OF = 1
@@ -36,7 +37,7 @@ NG = 3
 
 NUM_STATES = 4
 
-STATE_MAP = { HE: HEALTHY, OF: ON_FIRE, BO: BURNED_OUT, NG: NEW_GROWTH }
+STATE_MAP = {HE: HEALTHY, OF: ON_FIRE, BO: BURNED_OUT, NG: NEW_GROWTH}
 
 STATE_TRANS = [
     [.98, .02, 0.0, 0.0],
@@ -46,12 +47,13 @@ STATE_TRANS = [
 ]
 
 
-group_map = { HE: None, OF: None, BO: None, NG: None }
+group_map = {HE: None, OF: None, BO: None, NG: None}
 
 
 def change_state(agent):
     new_state = (agent["state"] + 1) % NUM_STATES
-    agent.locator.add_switch(agent, group_map[agent["state"]], group_map(new_state))
+    agent.locator.add_switch(agent, group_map[agent["state"]],
+                             group_map[new_state])
     agent["state"] = new_state
 
 
@@ -81,10 +83,9 @@ def set_up():
     for i in range(int(FOREST_HEIGHT * FOREST_WIDTH * DENSITY)):
         healthy += create_tree(i)
 
-    forest = Env("Forest", members=[healthy, on_fire,
-                                      burned_out, new_growth])
+    forest = Env("Forest", members=[healthy, on_fire, burned_out, new_growth])
     global group_map
-    group_map = { HE: healthy, OF: on_fire, BO: burned_out, NG: new_growth }
+    group_map = {HE: healthy, OF: on_fire, BO: burned_out, NG: new_growth}
     return (forest, group_map)
 
 
