@@ -60,7 +60,7 @@ def change_state(agent):
 def tree_action(agent):
     if random.random() > .5:
         change_state(agent)
-    return False
+    return True
 
 
 def create_tree(i, state=HE):

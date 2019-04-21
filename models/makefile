@@ -18,6 +18,16 @@ tests: pytests lint
 %.pylint:
 	$(PYLINT) $(PYLINTFLAGS) $*.py
 
+test_seg:
+	nosetests tests.test_segregation
+
+# for some reason the following test hangs:
+# test_fashion:
+# 	nosetests tests.test_fashion
+
+test_wolfsheep:
+	nosetests tests.test_wolfsheep
+
 nocrud:
 	-rm *~
 	-rm *.log

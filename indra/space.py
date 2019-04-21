@@ -159,7 +159,6 @@ class Space(Composite):
             (x, y) = self.gen_new_pos(mbr, max_move)
             if (x, y) not in self.locations:
                 if mbr.islocated():
-                    print("We see " + str(mbr) + " as located.")
                     self.move_location(x, y, mbr.get_x(), mbr.get_y())
                 else:
                     self.add_location(x, y, mbr)

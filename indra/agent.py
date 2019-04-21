@@ -185,11 +185,8 @@ class Agent(object):
     def __call__(self):
         """
         Agents will 'act' by being called as a function.
-        If the agent has no `act()` function, do nothing.
-        Agents should return True if they did, in fact,
-        'do something,' or False if they did not.
-        If the agent is located, by default it should shuffle
-        about.
+        If the agent has no `action()` function, do nothing.
+        If returns False, by default agent will move.
         """
         self.duration -= 1
         if self.duration > 0:
