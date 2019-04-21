@@ -94,7 +94,8 @@ class EnvTestCase(TestCase):
         if not travis:
             self.env.pop_hist = self.fill_pop_hist()
             ret = self.env.line_data()
-            self.assertEqual(ret, (2, {GRP1: {"data": [10, 20]}, GRP2: {"data": [10, 20]}}))
+            self.assertEqual(ret, (2, {GRP1: {"data": [10, 20]},
+                                       GRP2: {"data": [10, 20]}}))
 
     def test_plot_data(self):
         """
@@ -102,8 +103,6 @@ class EnvTestCase(TestCase):
         """
         global travis
         travis = os.getenv("TRAVIS")
-        print("\n\ntravis = ", travis)
-        print()
         if not travis:
             our_grp = Composite(GRP1, members=[self.newton])
             self.env = Env("Test env", members=[our_grp])

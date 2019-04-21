@@ -10,16 +10,14 @@ PYLINTFLAGS =
 PYTHONFILES = $(shell ls $(DJANGO_DIR)/*.py)
 PYTHONFILES += $(shell ls $(MODELS_DIR)/*.py)
 
-tags:
+FORCE:
+
+tags: FORCE
 	ctags --recurse .
 
-prod: $(SRCS) $(OBJ)
+prod:
 	cd indra; make prod
-
-# this now cutover to new indra:
-pytests:
-	cd indra; make pytests
-	cd models; make pytests
+	cd models; make prod
 
 lint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
 

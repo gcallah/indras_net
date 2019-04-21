@@ -184,7 +184,6 @@ class Env(Space):
 
     def line_data(self):
         data = {}
-        # TODO: implement period?
         period = None
         for var in self.pop_hist.pops:
             data[var] = {}
