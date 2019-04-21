@@ -7,7 +7,7 @@ from indra.agent import Agent
 from models.wolfsheep import create_sheep, create_wolf, set_up, wolf_action, sheep_action
 from models.wolfsheep import AGT_WOLF_NAME, AGT_SHEEP_NAME, ERR_MSG
 from models.wolfsheep import WOLF_LIFESPAN, SHEEP_LIFESPAN, SHEEP_REPRO_PERIOD
-from models.wolfsheep import WOLF_REPRO_PERIOD, getPrey, eat
+from models.wolfsheep import WOLF_REPRO_PERIOD, getPrey, eat, reproduce
 import models.wolfsheep as wolfsheep
 
 TEST_SNUM = 3
@@ -47,7 +47,7 @@ class WolfsheepTestCase(TestCase):
         time_to_repro = self.sheep["time_to_repr"]
         sheep_action(self.sheep)
         if time_to_repro == 1:
-            self.assertEqual(self.sheep["time_to_repr"], SHEEP_REPRO_PERIOD)
+                self.assertEqual(self.sheep["time_to_repr"], SHEEP_REPRO_PERIOD)
         else:
             self.assertEqual(self.sheep["time_to_repr"], time_to_repro - 1)
 
@@ -65,7 +65,11 @@ class WolfsheepTestCase(TestCase):
         eat(new_wolf, prey)
         self.assertEqual(prey.isactive(), False)  # After wolf eats the sheep, it becomes inactive
 
-
+    def test_reproduce(self):
+        new_wolf = create_wolf(1)
+        new_wolf["time_to_repr"] = 0
+        reproduce(new_wolf)
+        self.assertEqual(new_wolf["time_to_repr"], WOLF_REPRO_PERIOD)
 
 
 #    def test_wolf_action_repr_period(self):
