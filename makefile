@@ -19,6 +19,10 @@ prod:
 	cd indra; make prod
 	cd models; make prod
 
+tests:
+	cd indra; make tests
+	cd models; make tests
+
 lint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
 
 %.pylint:

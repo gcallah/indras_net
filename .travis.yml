@@ -13,7 +13,7 @@ env:
     - PYTHONPATH=/home/travis/build/gcallah/indras_net
 
 script:
-    - make pytests
+    - make tests
 
 after_success:
     - codecov
