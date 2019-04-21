@@ -291,5 +291,10 @@ class Agent(object):
                 "duration": self.duration,
                 "pos": self.pos,
                 "attrs": self.attrs_to_dict(),
-                "groups": grp_nms
+                "groups": grp_nms,
+                "locator": self.locator,
+                "prim_group": self.prim_group,
+                "active": self.active,
+                "type_sig": self.type_sig,
+                "action": self.action
                 }
