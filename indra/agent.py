@@ -254,7 +254,7 @@ class Agent(object):
     def attrs_to_dict(self):
         d = OrderedDict()
         for key in self.attrs:
-            d[key] = self[key]
+            d[key] = self.val_vect[self.attrs[key]]
         return d
 
     def same_type(self, other):
