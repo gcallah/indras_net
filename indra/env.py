@@ -188,7 +188,7 @@ class Env(Space):
         for var in self.pop_hist.pops:
             data[var] = {}
             data[var]["data"] = self.pop_hist.pops[var]
-            # TODO: define colors in env?
+            data[var]["color"] = self.members[var].get_color()
             if not period:
                 period = len(data[var]["data"])
         return (period, data)
@@ -211,7 +211,7 @@ class Env(Space):
             # coordinates:
             data[variety][X] = []
             data[variety][Y] = []
-            # TODO: define colors in env?
+            data[variety]["color"] = self.members[variety].get_color()
             # data[variety]["color"] = self.agents.get_var_color(variety)
             current_variety = self.members[variety]
             for agent_nm in current_variety:

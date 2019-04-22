@@ -111,12 +111,11 @@ def draw_graph(graph, title, hierarchy=False, root=None):
 
 
 def get_color(var, i):
-    color = None
     if "color" in var:
-        color = var["color"]
-    else:
-        color = colors[i % NUM_COLORS]
-    return color
+        # Make sure it's a valid color
+        if var["color"] in colors:
+            return var["color"]
+    return colors[i % NUM_COLORS]
 
 
 def assemble_lgraph_data(key, values, color, data=None):
