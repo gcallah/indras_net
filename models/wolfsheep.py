@@ -6,6 +6,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.space import in_hood
 from indra.env import Env
+from indra.display_methods import BLACK, GREEN
 
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
@@ -148,14 +149,14 @@ def set_up():
     """
     A func to set up run that can also be used by test code.
     """
-    wolves = Composite(COMP_WOLF_NAME)
+    wolves = Composite(COMP_WOLF_NAME, {"color": BLACK})
     for i in range(NUM_WOLVES):
         wolves += create_wolf(i)
 
     if DEBUG2:
         print(wolves.__repr__())
 
-    sheep = Composite(COMP_SHEEP_NAME)
+    sheep = Composite(COMP_SHEEP_NAME, {"color": GREEN})
     for i in range(NUM_SHEEP):
         sheep += create_sheep(i)
 
