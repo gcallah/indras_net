@@ -70,6 +70,7 @@ def getPrey(agent, sheep):
         prey = live_hood.rand_member()
     return prey
 
+
 def reproduce(agent):
     """
     Agents reproduce when "time_to_repr" reaches 0
@@ -77,7 +78,6 @@ def reproduce(agent):
     if agent["time_to_repr"] == 0:
         meadow.add_child(create_wolf(wolves_created), wolves)
         agent["time_to_repr"] = WOLF_REPRO_PERIOD
-
 
 
 def sheep_action(agent):
@@ -103,7 +103,6 @@ def wolf_action(agent):
     if prey is not None:
         eat(agent, prey)
     agent["time_to_repr"] -= 1
-        # reproduce
     reproduce(agent)
     return False
 

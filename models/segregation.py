@@ -1,9 +1,6 @@
 """
-    This is the segregation model re-written in indra.
+    This is Schelling's segregation model re-written in indra V2.
 """
-import math
-import statistics as sts
-from operator import gt, lt
 
 from indra.agent import Agent
 from indra.composite import Composite
@@ -64,10 +61,10 @@ def agent_action(agent):
     print("In seg agent action")
     print("________________________", flush=True)
     num_red = max(len(red_agents.subset(in_hood, agent, HOOD_SIZE)),
-                     NOT_ZERO)   # prevent div by zero!
+                  NOT_ZERO)   # prevent div by zero!
 
     num_blue = max(len(blue_agents.subset(in_hood, agent, HOOD_SIZE)),
-                      NOT_ZERO)   # prevent div by zero!
+                   NOT_ZERO)   # prevent div by zero!
     total_neighbors = num_red + num_blue
 
     groups_count = [num_blue, num_red]
@@ -98,6 +95,7 @@ def create_agent(i, color):
                  attrs={TOLERANCE: DEF_TOLERANCE,
                         COLOR: color})
 
+
 def set_up():
     """
     A func to set up run that can also be used by test code.
@@ -121,7 +119,6 @@ def set_up():
 
 
 def main():
-
     global blue_agents
     global red_agents
     global city
@@ -132,6 +129,7 @@ def main():
 
     city()
     return 0
+
 
 if __name__ == "__main__":
     main()
