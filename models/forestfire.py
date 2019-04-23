@@ -11,9 +11,9 @@ from indra.display_methods import RED, GREEN, BLACK, CYAN
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
-FOREST_WIDTH = 10
-FOREST_HEIGHT = 10
-DENSITY = .40
+FOREST_WIDTH = 100
+FOREST_HEIGHT = 100
+DENSITY = .44
 
 TREE_PREFIX = "Tree"
 
@@ -77,7 +77,8 @@ def set_up():
     for i in range(int(FOREST_HEIGHT * FOREST_WIDTH * DENSITY)):
         healthy += plant_tree(i)
 
-    forest = Env("Forest", members=[healthy, on_fire, burned_out, new_growth])
+    forest = Env("Forest", height=FOREST_HEIGHT, width=FOREST_WIDTH,
+                 members=[healthy, on_fire, burned_out, new_growth])
     global group_map
     group_map = {HE: healthy, OF: on_fire, BO: burned_out, NG: new_growth}
     return (forest, group_map)

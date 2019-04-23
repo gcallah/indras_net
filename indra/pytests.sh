@@ -15,4 +15,3 @@ fi
 
 nosetests --ignore-files=$ignores --exe --verbose --with-coverage --cover-package=indra $capture
 
-#--ignore-files="$ignores"
