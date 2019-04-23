@@ -2,16 +2,10 @@
     This is the fashion model re-written in indra.
 """
 
-# import math
-import random
-# from operator import gt, lt
-
+from indra.agent import prob_state_trans
 from indra.agent import Agent
-# from indra.agent import ratio_to_sin
 from indra.composite import Composite
-# from indra.space import in_hood
 from indra.env import Env
-# import numpy as np
 from indra.display_methods import RED, GREEN, BLACK, CYAN
 
 DEBUG = True  # turns debugging code on or off
@@ -54,17 +48,12 @@ def get_new_state(old_state):
     return (old_state + 1) % NUM_STATES
 
 
-def change_state(agent):
-    new_state = get_new_state(agent["state"])
-    agent.locator.add_switch(agent, group_map[agent["state"]],
-                             group_map[new_state])
-    agent["state"] = new_state
-    return new_state
-
-
 def tree_action(agent):
-    if random.random() > .5:
-        change_state(agent)
+    old_state = agent["state"]
+    agent["state"] = prob_state_trans(old_state, STATE_TRANS)
+    if old_state != agent["state"]:
+        agent.locator.add_switch(agent, group_map[old_state],
+                                 group_map[agent["state"]])
     return True
 
 
