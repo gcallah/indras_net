@@ -10,6 +10,8 @@ from indra.agent import ratio_to_sin
 from indra.composite import Composite
 from indra.space import in_hood
 from indra.env import Env
+# from indra.display_methods import RED, BLUE, CYAN, MAGENTA
+
 import numpy as np
 
 DEBUG = True  # turns debugging code on or off

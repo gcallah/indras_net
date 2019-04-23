@@ -12,6 +12,7 @@ from indra.composite import Composite
 # from indra.space import in_hood
 from indra.env import Env
 # import numpy as np
+from indra.display_methods import RED, GREEN, BLACK, CYAN
 
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
@@ -76,10 +77,10 @@ def set_up():
     """
     A func to set up run that can also be used by test code.
     """
-    healthy = Composite(HEALTHY)
-    on_fire = Composite(ON_FIRE)
-    burned_out = Composite(BURNED_OUT)
-    new_growth = Composite(NEW_GROWTH)
+    healthy = Composite(HEALTHY, {"color": GREEN})
+    on_fire = Composite(ON_FIRE, {"color": RED})
+    burned_out = Composite(BURNED_OUT, {"color": BLACK})
+    new_growth = Composite(NEW_GROWTH, {"color": CYAN})
     for i in range(int(FOREST_HEIGHT * FOREST_WIDTH * DENSITY)):
         healthy += create_tree(i)
 
