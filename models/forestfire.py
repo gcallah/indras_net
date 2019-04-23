@@ -29,7 +29,6 @@ ON_FIRE = "On Fire"
 BURNED_OUT = "Burned Out"
 NEW_GROWTH = "New Growth"
 
-opp_group = None
 # states numbers
 HE = 0
 OF = 1
@@ -51,11 +50,16 @@ STATE_TRANS = [
 group_map = {HE: None, OF: None, BO: None, NG: None}
 
 
+def get_new_state(old_state):
+    return (old_state + 1) % NUM_STATES
+
+
 def change_state(agent):
-    new_state = (agent["state"] + 1) % NUM_STATES
+    new_state = get_new_state(agent["state"])
     agent.locator.add_switch(agent, group_map[agent["state"]],
                              group_map[new_state])
     agent["state"] = new_state
+    return new_state
 
 
 def tree_action(agent):
@@ -64,7 +68,7 @@ def tree_action(agent):
     return True
 
 
-def create_tree(i, state=HE):
+def plant_tree(i, state=HE):
     """
     Create a trendsetter: all RED to start.
     """
@@ -82,7 +86,7 @@ def set_up():
     burned_out = Composite(BURNED_OUT, {"color": BLACK})
     new_growth = Composite(NEW_GROWTH, {"color": CYAN})
     for i in range(int(FOREST_HEIGHT * FOREST_WIDTH * DENSITY)):
-        healthy += create_tree(i)
+        healthy += plant_tree(i)
 
     forest = Env("Forest", members=[healthy, on_fire, burned_out, new_growth])
     global group_map

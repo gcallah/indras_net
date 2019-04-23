@@ -255,6 +255,9 @@ class Composite(Agent):
                 "attrs": self.attrs_to_dict(),
                 "members": self.members}
 
+    def has_color(self):
+        return "color" in self.attrs
+
     def get_color(self):
         if "color" in self.attrs:
             return self.val_vect[self.attrs["color"]]

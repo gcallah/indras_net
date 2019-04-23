@@ -21,6 +21,8 @@ Y = 1
 POP_HIST_HDR = "PopHist for "
 POP_SEP = ", "
 
+color_num = 0
+
 
 class PopHist():
     """
@@ -182,13 +184,21 @@ class Env(Space):
         else:
             return None
 
+    def get_color(self, variety):
+        if variety in self.members and self.members[variety].has_color():
+            return self.members[variety].get_color()
+        else:
+            global color_num
+            color_num += 1
+            return disp.get_color(variety, color_num)
+
     def line_data(self):
         data = {}
         period = None
         for var in self.pop_hist.pops:
             data[var] = {}
             data[var]["data"] = self.pop_hist.pops[var]
-            data[var]["color"] = self.members[var].get_color()
+            data[var]["color"] = self.get_color(var)
             if not period:
                 period = len(data[var]["data"])
         return (period, data)

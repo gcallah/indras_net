@@ -28,6 +28,9 @@ test_seg:
 test_wolfsheep:
 	nosetests tests.test_wolfsheep
 
+test_forestfire:
+	nosetests tests.test_forestfire
+
 nocrud:
 	-rm *~
 	-rm *.log
