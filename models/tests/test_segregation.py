@@ -6,7 +6,7 @@ from unittest import TestCase, main
 from indra.agent import Agent
 from indra.composite import Composite
 from indra.env import Env
-from models.segregation import set_up, create_agent, RED, BLUE
+from models.segregation import set_up, create_agent, RED_TEAM, BLUE_TEAM
 from models.segregation import env_unfavorable, agent_action
 from models.segregation import group_names, agent_action, my_group_index
 from models.segregation import env_unfavorable, agent_action, other_group_index
@@ -29,25 +29,25 @@ class SegregationTestCase(TestCase):
         seg.city = None
 
     def test_my_group_index(self):
-        red_agent = create_agent(TEST_ANUM, color=RED)
-        self.assertEqual(RED, my_group_index(red_agent))
-        blue_agent = create_agent(TEST_ANUM, color=BLUE)
-        self.assertEqual(BLUE, my_group_index(blue_agent))
+        red_agent = create_agent(TEST_ANUM, color=RED_TEAM)
+        self.assertEqual(RED_TEAM, my_group_index(red_agent))
+        blue_agent = create_agent(TEST_ANUM, color=BLUE_TEAM)
+        self.assertEqual(BLUE_TEAM, my_group_index(blue_agent))
 
     def test_other_group_index(self):
-        red_agent = create_agent(TEST_ANUM, color=RED)
-        self.assertEqual(BLUE, other_group_index(red_agent))
-        blue_agent = create_agent(TEST_ANUM, color=BLUE)
-        self.assertEqual(RED, other_group_index(blue_agent))
+        red_agent = create_agent(TEST_ANUM, color=RED_TEAM)
+        self.assertEqual(BLUE_TEAM, other_group_index(red_agent))
+        blue_agent = create_agent(TEST_ANUM, color=BLUE_TEAM)
+        self.assertEqual(RED_TEAM, other_group_index(blue_agent))
 
     def test_create_agent(self):
-        fred = create_agent(TEST_ANUM, color=RED) 
-        freds_nm = group_names[RED] + str(TEST_ANUM)
+        fred = create_agent(TEST_ANUM, color=RED_TEAM) 
+        freds_nm = group_names[RED_TEAM] + str(TEST_ANUM)
         self.assertEqual(freds_nm, str(fred))
 
     def create_little_city(self, with_blue=False):
         red_agents = Composite("My reds")
-        test_agent = create_agent(TEST_ANUM, color=RED) 
+        test_agent = create_agent(TEST_ANUM, color=RED_TEAM) 
         red_agents += test_agent
         blue_agents = Composite("My blues")
         if with_blue:
@@ -56,7 +56,7 @@ class SegregationTestCase(TestCase):
             print_sep()
             for i in range(0, SMALL_GRID):
                 print_sep()
-                blue_agents += create_agent(TEST_ANUM + 1, color=BLUE)
+                blue_agents += create_agent(TEST_ANUM + 1, color=BLUE_TEAM)
 
         my_city = Env("Small city for test", width=SMALL_GRID,
                            height=SMALL_GRID,

@@ -6,6 +6,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.space import in_hood
 from indra.env import Env
+from indra.display_methods import RED, BLUE
 
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
@@ -17,8 +18,8 @@ COLOR = "color"
 
 DEF_TOLERANCE = .5
 
-BLUE = 0
-RED = 1
+BLUE_TEAM = 0
+RED_TEAM = 1
 
 HOOD_SIZE = 4
 
@@ -100,16 +101,16 @@ def set_up():
     """
     A func to set up run that can also be used by test code.
     """
-    blue_agents = Composite(group_names[BLUE] + " group")
-    red_agents = Composite(group_names[RED] + " group")
+    blue_agents = Composite(group_names[BLUE_TEAM] + " group", {"color": BLUE})
+    red_agents = Composite(group_names[RED_TEAM] + " group", {"color": RED})
     for i in range(NUM_AGENT):
-        red_agents += create_agent(i, color=RED)
+        red_agents += create_agent(i, color=RED_TEAM)
 
     if DEBUG2:
         print(red_agents.__repr__())
 
     for i in range(NUM_AGENT):
-        blue_agents += create_agent(i, color=BLUE)
+        blue_agents += create_agent(i, color=BLUE_TEAM)
 
     if DEBUG2:
         print(blue_agents.__repr__())

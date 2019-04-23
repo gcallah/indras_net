@@ -123,27 +123,6 @@ def create_sheep(i):
                  action=sheep_action,
                  attrs={"time_to_repr": SHEEP_REPRO_PERIOD})
 
-#
-# wolves = Composite("wolves")
-# for i in range(NUM_WOLVES):
-#     wolves += create_wolf(i)
-#
-# if DEBUG2:
-#     print(wolves.__repr__())
-#
-# sheep = Composite("sheep")
-# for i in range(NUM_SHEEP):
-#     sheep += create_sheep(i)
-#
-# if DEBUG2:
-#     print(sheep.__repr__())
-#
-# meadow = Env("meadow", members=[wolves, sheep])
-# if DEBUG2:
-#     print(meadow.__repr__())
-#
-# meadow()
-
 
 def set_up():
     """
