@@ -185,7 +185,7 @@ class Env(Space):
             return None
 
     def get_color(self, variety):
-        if variety in self.members:
+        if variety in self.members and self.members[variety].has_color():
             return self.members[variety].get_color()
         else:
             global color_num
