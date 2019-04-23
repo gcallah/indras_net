@@ -5,7 +5,7 @@ import sys
 import numpy as np
 from math import pi, sin
 import json
-# from random import uniform
+from random import random
 from collections import OrderedDict
 
 DEBUG = True  # turns debugging code on or off
@@ -27,7 +27,25 @@ INF = sys.maxsize  # really any very big number would do here!
 DEF_MAX_MOVE = 2
 
 
+def prob_state_trans(curr_state, states):
+    """
+    Do a probabilistic state transition.
+    """
+    new_state = curr_state
+    r = random()
+    cum_prob = 0.0
+    for trans_state in range(len(states[curr_state])):
+        cum_prob += states[curr_state][trans_state]
+        if cum_prob >= r:
+            new_state = trans_state
+            break
+    return new_state
+
+
 def ratio_to_sin(ratio):
+    """
+    Take a ratio of y to x and turn it into a sine.
+    """
     return sin(ratio * pi / 2)
 
 

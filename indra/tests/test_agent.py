@@ -5,6 +5,9 @@ This is the test suite for agent.py.
 from unittest import TestCase, main
 
 from indra.agent import Agent, ratio_to_sin, NEUTRAL
+from indra.agent import prob_state_trans
+
+REP_RAND_TESTS = 20
 
 LEIBBYEAR = 1646
 LEIBDYEAR = 1716
@@ -192,6 +195,26 @@ class AgentTestCase(TestCase):
         self.assertEqual(ratio_to_sin(0), 0)
         self.assertEqual(ratio_to_sin(1), 1)
         self.assertAlmostEqual(ratio_to_sin(.5), NEUTRAL)
+
+    def test_prob_state_trans(self):
+        STATE_TRANS = [
+            [.98, .02, 0.0, 0.0],
+            [0.0, 0.0, 1.0, 0.0],
+            [0.0, 0.0, .96, .04],
+            [1.0, 0.0, 0.0, 0.0],
+        ]
+        for i in range(REP_RAND_TESTS):
+            new_state = prob_state_trans(0, STATE_TRANS)
+            self.assertNotEqual(new_state, 2)
+            self.assertNotEqual(new_state, 3)
+            new_state = prob_state_trans(1, STATE_TRANS)
+            self.assertEqual(new_state, 2)
+            new_state = prob_state_trans(2, STATE_TRANS)
+            self.assertNotEqual(new_state, 0)
+            self.assertNotEqual(new_state, 1)
+            new_state = prob_state_trans(3, STATE_TRANS)
+            self.assertEqual(new_state, 0)
+
 
 if __name__ == '__main__':
     main()

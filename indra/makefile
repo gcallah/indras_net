@@ -13,6 +13,9 @@ lint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
 pytests: $(PYTHONFILES)
 	./pytests.sh
 
+test_agent:
+	nosetests tests.test_agent
+
 tests: pytests lint
 
 %.pylint:
