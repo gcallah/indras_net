@@ -138,8 +138,8 @@ class Env(Space):
 
     def has_disp(self):
         if not disp.plt_present:
-            self.user.tell("ERROR: Graphing package encounters a problem: " +
-                           disp.plt_present_error_message)
+            self.user.tell("ERROR: Graphing package encounters a problem: "
+                           + disp.plt_present_error_message)
             return False
         else:
             return True
@@ -212,8 +212,8 @@ class Env(Space):
         This assumption is dangerous, and we should address it.
         """
         if not disp.plt_present:
-            self.user.tell("ERROR: Graphing package encounters a problem: " +
-                           disp.plt_present_error_message)
+            self.user.tell("ERROR: Graphing package encounters a problem: "
+                           + disp.plt_present_error_message)
             return
 
         data = {}
