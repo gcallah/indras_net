@@ -3,6 +3,7 @@ PYLINT = flake8
 PYLINTFLAGS = --ignore=E741,W503 --exclude=interactive.py,segregation.py
 PYTHONFILES = $(shell ls *.py)
 TEST_FILES = $(shell ls $(TESTDIR)/test_*.py)
+SHELL := /bin/bash
 
 prod: tests
 	-git commit -a
