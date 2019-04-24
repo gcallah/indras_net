@@ -14,7 +14,7 @@ pytests: $(PYTHONFILES)
 	./pytests.sh
 
 test_agent:
-	nosetests3 tests.test_agent
+	nosetests tests.test_agent
 
 tests: pytests lint
 
