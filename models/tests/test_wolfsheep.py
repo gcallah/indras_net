@@ -7,7 +7,8 @@ from indra.agent import Agent
 from models.wolfsheep import create_sheep, create_wolf, set_up, wolf_action, sheep_action
 from models.wolfsheep import AGT_WOLF_NAME, AGT_SHEEP_NAME, ERR_MSG
 from models.wolfsheep import WOLF_LIFESPAN, SHEEP_LIFESPAN, SHEEP_REPRO_PERIOD
-from models.wolfsheep import WOLF_REPRO_PERIOD, getPrey, eat, reproduce
+from models.wolfsheep import WOLF_REPRO_PERIOD, get_prey, eat, reproduce
+from models.wolfsheep import isactive, wolves_created
 import models.wolfsheep as wolfsheep
 
 TEST_SNUM = 3
@@ -52,24 +53,30 @@ class WolfsheepTestCase(TestCase):
             self.assertEqual(self.sheep["time_to_repr"], time_to_repro - 1)
 
     def test_eat(self):
-        new_wolf = create_wolf(1)
-        prey = getPrey(new_wolf, wolfsheep.sheep)
-        eat(new_wolf, prey)
-        self.assertEqual(new_wolf.duration, WOLF_LIFESPAN+SHEEP_LIFESPAN)
+        """
+        When wolf eats sheep, wolf gains life, sheep dies.
+        """
+        eat(self.wolf, self.sheep)
+        self.assertEqual(self.wolf.duration, WOLF_LIFESPAN
+                         + SHEEP_LIFESPAN)
+        # the sheep should be dead!
+        self.assertFalse(isactive(self.sheep))
 
-    def test_active_prey(self):
-        new_wolf = create_wolf(1)
-        prey = getPrey(new_wolf, wolfsheep.sheep)
-        #isActive = isactive(prey, *args)
-        self.assertEqual(prey.isactive(), True)
-        eat(new_wolf, prey)
-        self.assertEqual(prey.isactive(), False)  # After wolf eats the sheep, it becomes inactive
+    def test_isactive(self):
+        """
+        Test to see if isactive returns  correct values for alive and dead
+        agents.
+        """
+        self.assertEqual(True, isactive(self.sheep))
+        self.sheep.die()
+        self.assertEqual(False, isactive(self.sheep))
 
     def test_reproduce(self):
-        new_wolf = create_wolf(1)
-        new_wolf["time_to_repr"] = 0
-        reproduce(new_wolf)
-        self.assertEqual(new_wolf["time_to_repr"], WOLF_REPRO_PERIOD)
+        self.wolf
+        self.wolf["time_to_repr"] = 0
+        self.assertTrue(reproduce(self.wolf, create_wolf,
+                                  wolves_created, wolfsheep.wolves))
+        self.assertEqual(self.wolf["time_to_repr"], WOLF_REPRO_PERIOD)
 
 
 #    def test_wolf_action_repr_period(self):

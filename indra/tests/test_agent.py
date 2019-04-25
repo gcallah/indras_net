@@ -111,11 +111,8 @@ class AgentTestCase(TestCase):
                + '{\n        "' + ANM + '": ' + str(AGE)
                + '\n    },'
                + '\n    "groups": "",'
-               + '\n    "locator": null,'
-               + '\n    "prim_group": null,'
                + '\n    "active": true,'
-               + '\n    "type_sig": 1,'
-               + '\n    "action": null\n}')
+               + '\n    "type_sig": 1\n}')
         self.assertEqual(rep, repr(self.hardy))
 
     def test_len(self):
