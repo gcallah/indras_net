@@ -13,6 +13,7 @@ import io
 import os
 from indra.user import TERMINAL, WEB
 plt_present = True
+plt_present_error_message = ""
 
 try:
     import matplotlib as mpl
@@ -22,8 +23,9 @@ try:
     import matplotlib.pyplot as plt
     import matplotlib.animation as animation
     plt.ion()
-except ImportError:
+except ImportError as e:
     plt_present = False
+    plt_present_error_message = e.msg
 
 global imageIO
 
