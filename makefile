@@ -15,9 +15,10 @@ FORCE:
 tags: FORCE
 	ctags --recurse .
 
-prod:
-	cd indra; make prod
-	cd models; make prod
+# run tests then commit
+prod: tests
+	git commit -a
+	git push origin master
 
 tests:
 	cd indra; make tests
