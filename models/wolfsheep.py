@@ -11,10 +11,11 @@ from indra.display_methods import BLACK, GREEN
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
-NUM_WOLVES = 5
-NUM_SHEEP = 20
-SHEEP_WOLVES_RATIO = 2
-HOOD_SIZE = 10
+NUM_WOLVES = 3
+NUM_SHEEP = 6
+HOOD_SIZE = 3
+MEADOW_HEIGHT = 4
+MEADOW_WIDTH = 4
 
 WOLF_LIFESPAN = 5
 WOLF_REPRO_PERIOD = 6
@@ -34,7 +35,6 @@ ERR_MSG = "Invalid agent name"
 wolves = None
 sheep = None
 meadow = None
-prey = None
 create_wolf = None
 create_sheep = None
 wolves_created = 0
@@ -42,13 +42,15 @@ sheep_created = 0
 
 
 def isactive(agent, *args):
+    """
+    See if what wolf is going to eat is alive!
+    """
     return agent.isactive()
 
 
-# yet to discuss with Professor for refactoring
-# don't do this recursively: instead add a filter in the action
-# def rand_sheep(hood):
-#     return hood.rand_member()
+def live_and_close(agent, *args):
+    return in_hood(agent, *args) and isactive(agent, *args)
+
 
 def eat(agent, prey):
     """
@@ -56,29 +58,37 @@ def eat(agent, prey):
      """
     if DEBUG:
         print(str(agent) + " is eating " + str(prey))
+        print("The prey is alive? ", isactive(prey))
     agent.duration += prey.duration
     prey.die()
 
 
-def getPrey(agent, sheep):
+def get_prey(agent, sheep):
     """
         Wolves eat active sheep from the neighbourhood
     """
-    global prey
+    prey = None
+    print("\nIn get_prey()\n")
     hood = sheep.subset(in_hood, agent, HOOD_SIZE, name="hood")
-    live_hood = hood.subset(isactive, agent, name="livehood")
-    if len(live_hood) > 0:
-        prey = live_hood.rand_member()
+    if len(hood) > 0:
+        # print(repr(hood))
+        live_hood = hood.subset(isactive, agent, name="livehood")
+        # print(repr(live_hood))
+        if len(live_hood) > 0:
+            prey = live_hood.rand_member()
     return prey
 
 
-def reproduce(agent):
+def reproduce(agent, create_func, num_created, group):
     """
     Agents reproduce when "time_to_repr" reaches 0
     """
     if agent["time_to_repr"] == 0:
-        meadow.add_child(create_wolf(wolves_created), wolves)
-        agent["time_to_repr"] = WOLF_REPRO_PERIOD
+        meadow.add_child(create_func(num_created), group)
+        agent["time_to_repr"] = agent["orig_repr_time"]
+        return True
+    else:
+        return False
 
 
 def sheep_action(agent):
@@ -86,10 +96,7 @@ def sheep_action(agent):
     global sheep_created
 
     agent["time_to_repr"] -= 1
-    if agent["time_to_repr"] == 0:
-        # reproduce
-        meadow.add_child(create_sheep(sheep_created), sheep)
-        agent["time_to_repr"] = SHEEP_REPRO_PERIOD
+    reproduce(agent, create_sheep, sheep_created, sheep)
     return False
 
 
@@ -97,14 +104,11 @@ def wolf_action(agent):
     global wolves
     global wolves_created
 
-    num_sheep = len(sheep)
-    if DEBUG2:
-        print("Num sheep = " + str(num_sheep))
-    prey = getPrey(agent, sheep)
+    prey = get_prey(agent, sheep)
     if prey is not None:
         eat(agent, prey)
     agent["time_to_repr"] -= 1
-    reproduce(agent)
+    reproduce(agent, create_wolf, wolves_created, wolves)
     return False
 
 
@@ -113,7 +117,8 @@ def create_wolf(i):
     wolves_created += 1
     return Agent(AGT_WOLF_NAME + str(i), duration=WOLF_LIFESPAN,
                  action=wolf_action,
-                 attrs={"time_to_repr": WOLF_REPRO_PERIOD})
+                 attrs={"time_to_repr": WOLF_REPRO_PERIOD,
+                        "orig_repr_time": WOLF_REPRO_PERIOD})
 
 
 def create_sheep(i):
@@ -121,7 +126,8 @@ def create_sheep(i):
     sheep_created += 1
     return Agent(AGT_SHEEP_NAME + str(i), duration=SHEEP_LIFESPAN,
                  action=sheep_action,
-                 attrs={"time_to_repr": SHEEP_REPRO_PERIOD})
+                 attrs={"time_to_repr": SHEEP_REPRO_PERIOD,
+                        "orig_repr_time": SHEEP_REPRO_PERIOD})
 
 
 def set_up():
@@ -142,7 +148,8 @@ def set_up():
     if DEBUG2:
         print(sheep.__repr__())
 
-    meadow = Env("meadow", members=[wolves, sheep])
+    meadow = Env("meadow", members=[wolves, sheep],
+                 height=MEADOW_HEIGHT, width=MEADOW_WIDTH)
     return (wolves, sheep, meadow)
 
 
