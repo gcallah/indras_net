@@ -6,6 +6,7 @@ from indra.agent import prob_state_trans
 from indra.agent import Agent
 from indra.composite import Composite
 from indra.env import Env
+# from indra.space import in_hood
 from indra.display_methods import RED, GREEN, BLACK, CYAN
 
 DEBUG = True  # turns debugging code on or off
@@ -54,6 +55,14 @@ def tree_action(agent):
     if old_state != agent["state"]:
         agent.locator.add_switch(agent, group_map[old_state],
                                  group_map[agent["state"]])
+    return True
+
+
+def isHealthy(agent):
+    return True
+
+
+def isOnfire(agent):
     return True
 
 
