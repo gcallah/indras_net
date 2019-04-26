@@ -114,7 +114,7 @@ def set_up():
         print(blue_agents.__repr__())
 
     city = Env("A city", members=[blue_agents, red_agents],
-              height=DEF_CITY_DIM, width=DEF_CITY_DIM)
+               height=DEF_CITY_DIM, width=DEF_CITY_DIM)
     return (blue_agents, red_agents, city)
 
 

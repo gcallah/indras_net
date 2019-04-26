@@ -20,7 +20,7 @@ prod: tests
 	git commit -a
 	git push origin master
 
-tests:
+tests: FORCE
 	cd indra; make tests
 	cd models; make tests
 

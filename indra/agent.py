@@ -216,8 +216,8 @@ class Agent(object):
                     self.move()
                 return True
             elif DEBUG:
-                print("I'm " + self.name +
-                      " and I ain't got no action to do!")
+                print("I'm " + self.name
+                      + " and I ain't got no action to do!")
         else:
             self.active = False
         return False
