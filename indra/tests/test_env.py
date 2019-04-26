@@ -96,8 +96,9 @@ class EnvTestCase(TestCase):
         if not travis:
             self.env.pop_hist = self.fill_pop_hist()
             ret = self.env.line_data()
-#            self.assertEqual(ret, (2, {GRP1: {"data": [10, 20]},
-#                                       GRP2: {"data": [10, 20]}}))
+            self.assertEqual(ret, (2,
+                                   {GRP1: {"color": "r", "data": [10, 20]},
+                                    GRP2: {"color": "g", "data": [10, 20]}}))
 
     def test_plot_data(self):
         """
