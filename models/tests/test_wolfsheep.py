@@ -78,6 +78,11 @@ class WolfsheepTestCase(TestCase):
                                   wolves_created, wolfsheep.wolves))
         self.assertEqual(self.wolf["time_to_repr"], WOLF_REPRO_PERIOD)
 
+    def test_reproduce_nonzerotimetorepr(self):
+        self.wolf
+        self.wolf["time_to_repr"] = 1
+        self.assertFalse(reproduce(self.wolf, create_wolf,
+                                  wolves_created, wolfsheep.wolves))
 
 #    def test_wolf_action_repr_period(self):
 #        new_wolf = create_wolf(1)
