@@ -28,14 +28,23 @@ class WolfsheepTestCase(TestCase):
         self.test_sheep = None
 
     def test_create_wolf(self):
+        """
+         Test to see if wolf is created
+        """
         new_wolf = create_wolf(1)
         self.assertEqual(new_wolf.name, AGT_WOLF_NAME + str(1))
 
     def test_create_sheep(self):
+        """
+        Test to see if sheep is created
+        """
         new_sheep = create_sheep(1)
         self.assertEqual(new_sheep.name, AGT_SHEEP_NAME + str(1))
 
     def test_wolf_action(self):
+        """
+        Wolves act by eating a random sheep from the meadow.
+        """
         time_to_repro = self.wolf["time_to_repr"]
         wolf_action(self.wolf)
         if time_to_repro == 1:
@@ -72,6 +81,9 @@ class WolfsheepTestCase(TestCase):
         self.assertEqual(False, isactive(self.sheep))
 
     def test_reproduce(self):
+        """
+        Test to see if wolves reproduce at the right time.
+        """
         self.wolf
         self.wolf["time_to_repr"] = 0
         self.assertTrue(reproduce(self.wolf, create_wolf,
@@ -79,21 +91,10 @@ class WolfsheepTestCase(TestCase):
         self.assertEqual(self.wolf["time_to_repr"], WOLF_REPRO_PERIOD)
 
     def test_reproduce_nonzerotimetorepr(self):
+        """
+        Negative test to check the reproduction of wolves.
+        """
         self.wolf
         self.wolf["time_to_repr"] = 1
         self.assertFalse(reproduce(self.wolf, create_wolf,
                                   wolves_created, wolfsheep.wolves))
-
-#    def test_wolf_action_repr_period(self):
-#        new_wolf = create_wolf(1)
-#        wolf_action(new_wolf)
-#        self.assertEqual(new_wolf['time_to_repr'], WOLF_REPRO_PERIOD - 1)
-#
-#    def test_sheep_action_repr_period(self):
-#        new_sheep = create_sheep(1)
-#        sheep_action(new_sheep)
-#        self.assertEqual(new_sheep['time_to_repr'], SHEEP_REPRO_PERIOD - 1)
-
-
-
-
