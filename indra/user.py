@@ -138,3 +138,23 @@ class TestUser(TermUser):
             Can't present menu to a scripted test!
         """
         run(self)  # noqa: W391
+
+
+class WebUser(TermUser):
+    """
+    This is our web user, who is expected to communicate with a web page
+    frontend.
+    """
+    def tell(self, msg, end='\n'):
+        """
+        Tell the user something by showing it on the web page
+        """
+        # Some json thing
+        pass
+
+    def ask(self, msg, default=None):
+        """
+        Ask the user something and present it to the web page
+        """
+        # Some json thing
+        pass
