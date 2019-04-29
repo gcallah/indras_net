@@ -7,17 +7,21 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.env import Env
 from models.segregation import set_up, create_agent, RED_TEAM, BLUE_TEAM
-from models.segregation import env_unfavorable, agent_action
+from models.segregation import env_favorable, agent_action
 from models.segregation import group_names, agent_action, my_group_index
-from models.segregation import env_unfavorable, agent_action, other_group_index
+from models.segregation import other_group_index
 import models.segregation as seg
 
 TEST_ANUM = 999999
 
+REP_RAND_TESTS = 20
+
 SMALL_GRID = 4
+
 
 def print_sep():
     print("________________________", flush=True)
+
 
 class SegregationTestCase(TestCase):
     def setUp(self):
@@ -45,16 +49,18 @@ class SegregationTestCase(TestCase):
         freds_nm = group_names[RED_TEAM] + str(TEST_ANUM)
         self.assertEqual(freds_nm, str(fred))
 
-    def create_little_city(self, with_blue=False):
+    def agent_in_little_city(self, with_blue=False):
         red_agents = Composite("My reds")
         test_agent = create_agent(TEST_ANUM, color=RED_TEAM) 
         red_agents += test_agent
+        for i in range(0, SMALL_GRID * SMALL_GRID // 2 - 2):
+            red_agents += create_agent(TEST_ANUM + i + 1, color=RED_TEAM) 
         blue_agents = Composite("My blues")
         if with_blue:
             print_sep()
             print("Creating blue agents")
             print_sep()
-            for i in range(0, SMALL_GRID):
+            for i in range(0, SMALL_GRID * SMALL_GRID // 2 - 2):
                 print_sep()
                 blue_agents += create_agent(TEST_ANUM + 1, color=BLUE_TEAM)
 
@@ -68,17 +74,16 @@ class SegregationTestCase(TestCase):
         We are going to test two cases: one where agent should
         be satisfied with neighborhood, and one not.
         """
-        print_sep()
-        print("In test_agent_action")
-        print_sep()
-        fred = self.create_little_city()
-        # self.assertEqual(agent_action(fred), False)
-        # fred = self.create_little_city(with_blue=True)
-        # self.assertEqual(ret, True)
+        pass
+#        for i in range(REP_RAND_TESTS):
+#            fred = self.agent_in_little_city()
+#            # self.assertEqual(agent_action(fred), True)
+#            fred = self.agent_in_little_city(with_blue=True)
+#        # self.assertEqual(agent_action(fred), False)
 
-    def test_env_unfavorable(self):
-        env_fav = env_unfavorable(0.4, 0.5)
-        self.assertEqual(env_fav, True)
-
-        env_fav = env_unfavorable(0.6, 0.5)
+    def test_env_favorable(self):
+        env_fav = env_favorable(0.4, 0.5)
         self.assertEqual(env_fav, False)
+
+        env_fav = env_favorable(0.6, 0.5)
+        self.assertEqual(env_fav, True)

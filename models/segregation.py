@@ -11,7 +11,9 @@ from indra.display_methods import RED, BLUE
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
-NUM_AGENT = 30
+NUM_AGENTS = 100
+
+DEF_CITY_DIM = 20
 
 TOLERANCE = "tolerance"
 COLOR = "color"
@@ -45,12 +47,12 @@ def other_group_index(agent):
     return not my_group_index(agent)
 
 
-def env_unfavorable(hood_ratio, my_tolerance):
+def env_favorable(hood_ratio, my_tolerance):
     """
     Is the environment to our agent's liking or not??
     """
-    print("In env unfavorable.", flush=True)
-    return hood_ratio < my_tolerance
+    print("In env favorable.", flush=True)
+    return hood_ratio >= my_tolerance
 
 
 def agent_action(agent):
@@ -78,13 +80,9 @@ def agent_action(agent):
         return False
 
     hood_ratio = groups_count[my_group_index(agent)] / total_neighbors
-    if env_unfavorable(hood_ratio, agent[TOLERANCE]):
-        city.place_member(agent)
-
     if DEBUG:
         print(agent.to_json())
-
-    return env_unfavorable(hood_ratio, agent[TOLERANCE])
+    return env_favorable(hood_ratio, agent[TOLERANCE])
 
 
 def create_agent(i, color):
@@ -103,19 +101,20 @@ def set_up():
     """
     blue_agents = Composite(group_names[BLUE_TEAM] + " group", {"color": BLUE})
     red_agents = Composite(group_names[RED_TEAM] + " group", {"color": RED})
-    for i in range(NUM_AGENT):
+    for i in range(NUM_AGENTS):
         red_agents += create_agent(i, color=RED_TEAM)
 
     if DEBUG2:
         print(red_agents.__repr__())
 
-    for i in range(NUM_AGENT):
+    for i in range(NUM_AGENTS):
         blue_agents += create_agent(i, color=BLUE_TEAM)
 
     if DEBUG2:
         print(blue_agents.__repr__())
 
-    city = Env("A city", members=[blue_agents, red_agents])
+    city = Env("A city", members=[blue_agents, red_agents],
+               height=DEF_CITY_DIM, width=DEF_CITY_DIM)
     return (blue_agents, red_agents, city)
 
 

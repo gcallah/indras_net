@@ -24,7 +24,7 @@ NEUT_VEC = np.array([NEUTRAL, NEUTRAL])
 
 INF = sys.maxsize  # really any very big number would do here!
 
-DEF_MAX_MOVE = 2
+DEF_MAX_MOVE = None
 
 
 def prob_state_trans(curr_state, states):
@@ -216,7 +216,8 @@ class Agent(object):
                     self.move()
                 return True
             elif DEBUG:
-                print("I'm " + self.name + " and I ain't got no action to do!")
+                print("I'm " + self.name
+                      + " and I ain't got no action to do!")
         else:
             self.active = False
         return False
