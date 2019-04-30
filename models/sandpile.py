@@ -5,52 +5,34 @@
 
 from indra.agent import Agent
 from indra.composite import Composite
-from indra.space import in_hood
+# from indra.space import in_hood
 from indra.env import Env
+import indra.display_methods as disp
 
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
-NUM_AGENT = 30
+HEIGHT = 8
+WIDTH = 8
 
-TOLERANCE = "tolerance"
-COLOR = "color"
+MAX_SAND = 5
 
-DEF_TOLERANCE = .5
+sandpile = None
 
-BLUE = 0
-RED = 1
-
-HOOD_SIZE = 4
-
-NOT_ZERO = .001
-
-group_names = ["Blue Agent", "Red Agent"]
-
-reds = None
-blues = None
-city = None
-
-opp_group = None
-
-red_agents = None
-blue_agents = None
+group0 = None
+group1 = None
+group2 = None
+group3 = None
+group4 = None
+group5 = None
 
 
-def my_group_index(agent):
-    return int(agent[COLOR])
-
-
-def other_group_index(agent):
-    return not my_group_index(agent)
-
-
-def env_unfavorable(hood_ratio, my_tolerance):
+def env_unfavorable(sand_height):
     """
     Is the environment to our agent's liking or not??
+    Here, the question is, "Is there too much sand?"
     """
-    print("In env unfavorable.", flush=True)
-    return hood_ratio < my_tolerance
+    return sand_height > MAX_SAND
 
 
 def agent_action(agent):
@@ -58,78 +40,64 @@ def agent_action(agent):
     If the agent is surrounded by more "others" than it is comfortable
     with, the agent will move.
     """
-    print("________________________")
-    print("In seg agent action")
-    print("________________________", flush=True)
-    num_red = max(len(red_agents.subset(in_hood, agent, HOOD_SIZE)),
-                  NOT_ZERO)   # prevent div by zero!
-
-    num_blue = max(len(blue_agents.subset(in_hood, agent, HOOD_SIZE)),
-                   NOT_ZERO)   # prevent div by zero!
-    total_neighbors = num_red + num_blue
-
-    groups_count = [num_blue, num_red]
-
-    others = groups_count[other_group_index(agent)]
-    print("________________________")
-    print("Others count = ", others)
-    print("________________________", flush=True)
-    if groups_count[other_group_index(agent)] <= 0:
-        return False
-
-    hood_ratio = groups_count[my_group_index(agent)] / total_neighbors
-    if env_unfavorable(hood_ratio, agent[TOLERANCE]):
-        city.place_member(agent)
-
-    if DEBUG:
-        print(agent.to_json())
-
-    return env_unfavorable(hood_ratio, agent[TOLERANCE])
+    return env_unfavorable(agent["grains"])
 
 
-def create_agent(i, color):
+def create_agent(i):
     """
-    Creates agent of specified color type
+    Creates agent for holding sand.
     """
-    return Agent(group_names[color] + str(i),
+    return Agent("sand location" + str(i),
                  action=agent_action,
-                 attrs={TOLERANCE: DEF_TOLERANCE,
-                        COLOR: color})
+                 attrs={"grains": 0})
 
 
 def set_up():
     """
     A func to set up run that can also be used by test code.
     """
-    blue_agents = Composite(group_names[BLUE] + " group")
-    red_agents = Composite(group_names[RED] + " group")
-    for i in range(NUM_AGENT):
-        red_agents += create_agent(i, color=RED)
+    group0 = Composite("Group0", {"color": disp.BLACK})
+    group1 = Composite("Group1", {"color": disp.MAGENTA})
+    group2 = Composite("Group2", {"color": disp.BLUE})
+    group3 = Composite("Group3", {"color": disp.CYAN})
+    group4 = Composite("Group4", {"color": disp.RED})
+    group5 = Composite("Group5", {"color": disp.YELLOW})
+    for i in range(HEIGHT * WIDTH):
+        group0 += create_agent(i)
 
-    if DEBUG2:
-        print(red_agents.__repr__())
-
-    for i in range(NUM_AGENT):
-        blue_agents += create_agent(i, color=BLUE)
-
-    if DEBUG2:
-        print(blue_agents.__repr__())
-
-    city = Env("A city", members=[blue_agents, red_agents])
-    return (blue_agents, red_agents, city)
+    sandpile = Env("A sandpile", members=[
+                   group0,
+                   group1,
+                   group2,
+                   group3,
+                   group4,
+                   group5
+                   ],
+                   height=HEIGHT, width=WIDTH)
+    return (group0,
+            group1,
+            group2,
+            group3,
+            group4,
+            group5,
+            sandpile)
 
 
 def main():
-
-    global blue_agents
-    global red_agents
-    global city
-    (blue_agents, red_agents, city) = set_up()
+    global sandpile
+    global group0
+    global group1
+    global group2
+    global group3
+    global group4
+    global group5
+    (group0, group1, group2, group3, group4, group5,
+     sandpile) = set_up()
 
     if DEBUG2:
-        print(city.__repr__())
+        print(sandpile.__repr__())
 
-    city()
+    sandpile()
     return 0
 
 
