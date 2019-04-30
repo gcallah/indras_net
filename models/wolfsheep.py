@@ -11,11 +11,11 @@ from indra.display_methods import BLACK, GREEN
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
-NUM_WOLVES = 3
-NUM_SHEEP = 6
+NUM_WOLVES = 10
+NUM_SHEEP = 30
 HOOD_SIZE = 3
-MEADOW_HEIGHT = 4
-MEADOW_WIDTH = 4
+# MEADOW_HEIGHT = 4
+# MEADOW_WIDTH = 4
 
 WOLF_LIFESPAN = 5
 WOLF_REPRO_PERIOD = 6
@@ -57,8 +57,8 @@ def eat(agent, prey):
      Wolf's duration increases by sheep's duration
      """
     if DEBUG:
-        print(str(agent) + " is eating " + str(prey))
         print("The prey is alive? ", isactive(prey))
+        print(str(agent) + " is eating " + str(prey))
     agent.duration += prey.duration
     prey.die()
 
@@ -68,12 +68,9 @@ def get_prey(agent, sheep):
         Wolves eat active sheep from the neighbourhood
     """
     prey = None
-    print("\nIn get_prey()\n")
     hood = sheep.subset(in_hood, agent, HOOD_SIZE, name="hood")
     if len(hood) > 0:
-        # print(repr(hood))
         live_hood = hood.subset(isactive, agent, name="livehood")
-        # print(repr(live_hood))
         if len(live_hood) > 0:
             prey = live_hood.rand_member()
     return prey
@@ -113,6 +110,9 @@ def wolf_action(agent):
 
 
 def create_wolf(i):
+    """
+    Method to create wolf
+    """
     global wolves_created
     wolves_created += 1
     return Agent(AGT_WOLF_NAME + str(i), duration=WOLF_LIFESPAN,
@@ -122,6 +122,9 @@ def create_wolf(i):
 
 
 def create_sheep(i):
+    """
+    Method to create sheep
+    """
     global sheep_created
     sheep_created += 1
     return Agent(AGT_SHEEP_NAME + str(i), duration=SHEEP_LIFESPAN,
@@ -148,8 +151,7 @@ def set_up():
     if DEBUG2:
         print(sheep.__repr__())
 
-    meadow = Env("meadow", members=[wolves, sheep],
-                 height=MEADOW_HEIGHT, width=MEADOW_WIDTH)
+    meadow = Env("meadow", members=[wolves, sheep])
     return (wolves, sheep, meadow)
 
 
