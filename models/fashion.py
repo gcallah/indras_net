@@ -10,7 +10,7 @@ from indra.agent import ratio_to_sin
 from indra.composite import Composite
 from indra.space import in_hood
 from indra.env import Env
-from indra.display_methods import CYAN, MAGENTA
+from indra.display_methods import CYAN, MAGENTA, NAVY, DARKRED
 
 import numpy as np
 
@@ -136,8 +136,8 @@ def set_up():
     """
     A func to set up run that can also be used by test code.
     """
-    blue_tsetters = Composite(BLUE_TSETTERS, {"color": BLUE})
-    red_tsetters = Composite(RED_TSETTERS, {"color": RED})
+    blue_tsetters = Composite(BLUE_TSETTERS, {"color": NAVY})
+    red_tsetters = Composite(RED_TSETTERS, {"color": DARKRED})
     for i in range(NUM_TSETTERS):
         red_tsetters += create_tsetter(i)
 
