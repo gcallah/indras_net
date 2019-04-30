@@ -230,13 +230,16 @@ class Composite(Agent):
 
     def isactive(self):
         """
-        A composite is active if any of its members are active;
-        otherwise, it is inactive.
+        For now, composites just stay active.
         """
-        for member in self.members.values():
-            if member.isactive():
-                return True
-        return False
+        return True
+# we should look at bringing back this logic at some point,
+# but the problem is it will block pending actions like deleting dead members
+# from the group.
+#        for member in self.members.values():
+#            if member.isactive():
+#                return True
+#        return False
 
     def is_mbr_comp(self, mbr):
         return is_composite(self.members[mbr])

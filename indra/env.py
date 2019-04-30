@@ -212,7 +212,7 @@ class Env(Space):
         This assumption is dangerous, and we should address it.
         """
         if not disp.plt_present:
-            self.user.tell("ERROR: Graphing package encounters a problem: "
+            self.user.tell("ERROR: Graphing package encountered a problem: "
                            + disp.plt_present_error_message)
             return
 

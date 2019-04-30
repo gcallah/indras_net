@@ -7,7 +7,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.env import Env
 from indra.space import in_hood
-from indra.display_methods import RED, GREEN, BLACK, CYAN, YELLOW
+from indra.display_methods import RED, GREEN, BLACK, SPRINGGREEN, YELLOW
 
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
@@ -101,7 +101,7 @@ def set_up():
     new_fire = Composite(NEW_FIRE, {"color": YELLOW})
     on_fire = Composite(ON_FIRE, {"color": RED})
     burned_out = Composite(BURNED_OUT, {"color": BLACK})
-    new_growth = Composite(NEW_GROWTH, {"color": CYAN})
+    new_growth = Composite(NEW_GROWTH, {"color": SPRINGGREEN})
     for i in range(int(FOREST_HEIGHT * FOREST_WIDTH * DENSITY)):
         healthy += plant_tree(i)
 

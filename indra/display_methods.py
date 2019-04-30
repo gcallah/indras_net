@@ -39,7 +39,13 @@ MAGENTA = 'm'
 CYAN = 'c'
 BLACK = 'k'
 WHITE = 'w'
-colors = [BLUE, RED, GREEN, YELLOW, MAGENTA, CYAN, BLACK, WHITE]
+GRAY = 'gray'
+TAN = 'tan'
+NAVY = 'navy'
+DARKRED = 'darkred'
+SPRINGGREEN = 'springgreen'
+colors = [BLUE, RED, GREEN, YELLOW, MAGENTA, CYAN, BLACK, WHITE,
+          GRAY, TAN, NAVY, DARKRED, SPRINGGREEN]
 NUM_COLORS = len(colors)
 X = 0
 Y = 1
