@@ -8,6 +8,7 @@ from indra.composite import Composite
 # from indra.space import in_hood
 from indra.env import Env
 import indra.display_methods as disp
+from indra.space import in_hood
 
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
@@ -16,6 +17,8 @@ HEIGHT = 8
 WIDTH = 8
 
 MAX_SAND = 5
+
+NEARBY = 1
 
 sandpile = None
 
@@ -40,6 +43,18 @@ def agent_action(agent):
     If the agent is surrounded by more "others" than it is comfortable
     with, the agent will move.
     """
+    if(env_unfavorable):
+        nearby = group0.subset(in_hood, agent, NEARBY)
+        nearby += group1.subset(in_hood, agent, NEARBY)
+        nearby += group2.subset(in_hood, agent, NEARBY)
+        nearby += group3.subset(in_hood, agent, NEARBY)
+        nearby += group4.subset(in_hood, agent, NEARBY)
+        nearby += group5.subset(in_hood, agent, NEARBY)
+
+        for i in range(agent["grains"]):
+            pass
+    
+
     return env_unfavorable(agent["grains"])
 
 
