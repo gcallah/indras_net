@@ -53,7 +53,6 @@ def agent_action(agent):
 
         for i in range(agent["grains"]):
             pass
-    
 
     return env_unfavorable(agent["grains"])
 
