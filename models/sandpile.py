@@ -18,6 +18,8 @@ WIDTH = 8
 
 MAX_SAND = 5
 
+SAND_PREFIX = "sand location"
+
 NEARBY = 1
 
 sandpile = None
@@ -61,7 +63,7 @@ def create_agent(i):
     """
     Creates agent for holding sand.
     """
-    return Agent("sand location" + str(i),
+    return Agent(SAND_PREFIX + str(i),
                  action=agent_action,
                  attrs={"grains": 0})
 

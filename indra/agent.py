@@ -42,6 +42,10 @@ def prob_state_trans(curr_state, states):
     return new_state
 
 
+def possible_trans(states, start_state, end_state):
+    return states[start_state][end_state]
+
+
 def ratio_to_sin(ratio):
     """
     Take a ratio of y to x and turn it into a sine.

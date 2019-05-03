@@ -32,7 +32,7 @@ class Composite(Agent):
     """
 
     def __init__(self, name, attrs=None, members=None,
-                 duration=INF):
+                 duration=INF, action=None):
         self.members = OrderedDict()
         super().__init__(name, attrs=attrs, duration=duration)
         if members is not None:
@@ -102,6 +102,10 @@ class Composite(Agent):
         del_list = []
         self.duration -= 1
         if self.duration > 0:
+            if self.action is not None:
+                # the action was defined outside this class, so pass self:
+                self.action(self)
+
             for (key, member) in self.members.items():
                 if member.isactive():
                     total_acts += member()

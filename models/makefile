@@ -21,6 +21,9 @@ tests: pytests lint
 test_seg:
 	nosetests tests.test_segregation
 
+test_sand:
+	nosetests tests.test_sandpile
+
 # for some reason the following test hangs:
 # test_fashion:
 # 	nosetests tests.test_fashion

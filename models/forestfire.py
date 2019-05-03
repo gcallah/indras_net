@@ -48,6 +48,7 @@ STATE_TRANS = [
 ]
 
 on_fire = None
+healthy = None
 
 group_map = {HE: None, NF: None, OF: None, BO: None, NG: None}
 
@@ -65,6 +66,7 @@ def tree_action(agent):
     This is what trees do each turn in the forest.
     """
     global on_fire
+
     old_state = agent["state"]
     if is_healthy(agent):
         nearby_fires = on_fire.subset(in_hood, agent, NEARBY)
@@ -85,7 +87,8 @@ def tree_action(agent):
 
 def plant_tree(i, state=HE):
     """
-    Create a trendsetter: all RED to start.
+    Plant a new tree!
+    By default, they start out healthy.
     """
     return Agent(TREE_PREFIX + str(i),
                  action=tree_action,
@@ -97,6 +100,8 @@ def set_up():
     A func to set up run that can also be used by test code.
     """
     global on_fire
+    global healthy
+
     healthy = Composite(HEALTHY, {"color": GREEN})
     new_fire = Composite(NEW_FIRE, {"color": YELLOW})
     on_fire = Composite(ON_FIRE, {"color": RED})
@@ -107,6 +112,7 @@ def set_up():
 
     forest = Env("Forest", height=FOREST_HEIGHT, width=FOREST_WIDTH,
                  members=[healthy, new_fire, on_fire, burned_out, new_growth])
+
     global group_map
     group_map = {HE: healthy, NF: new_fire,
                  OF: on_fire, BO: burned_out, NG: new_growth}

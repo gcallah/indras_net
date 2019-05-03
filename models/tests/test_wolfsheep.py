@@ -9,7 +9,7 @@ from models.wolfsheep import AGT_WOLF_NAME, AGT_SHEEP_NAME, ERR_MSG
 from models.wolfsheep import WOLF_LIFESPAN, SHEEP_LIFESPAN, SHEEP_REPRO_PERIOD
 from models.wolfsheep import WOLF_REPRO_PERIOD, get_prey, eat, reproduce
 from models.wolfsheep import isactive, wolves_created
-import models.wolfsheep as wolfsheep
+import models.wolfsheep as ws
 
 TEST_SNUM = 3
 TEST_WNUM = 3
@@ -19,7 +19,7 @@ TEST_SNAME = AGT_SHEEP_NAME + str(TEST_SNUM)
 
 class WolfsheepTestCase(TestCase):
     def setUp(self):
-        (wolfsheep.wolves, wolfsheep.sheep, wolfsheep.meadow) = set_up()
+        (ws.wolves, ws.sheep, ws.meadow) = set_up()
         self.wolf = create_wolf(TEST_WNUM)
         self.sheep = create_sheep(TEST_SNUM)
 
@@ -87,7 +87,7 @@ class WolfsheepTestCase(TestCase):
         self.wolf
         self.wolf["time_to_repr"] = 0
         self.assertTrue(reproduce(self.wolf, create_wolf,
-                                  wolves_created, wolfsheep.wolves))
+                                  wolves_created, ws.wolves))
         self.assertEqual(self.wolf["time_to_repr"], WOLF_REPRO_PERIOD)
 
     def test_reproduce_nonzerotimetorepr(self):
@@ -97,4 +97,4 @@ class WolfsheepTestCase(TestCase):
         self.wolf
         self.wolf["time_to_repr"] = 1
         self.assertFalse(reproduce(self.wolf, create_wolf,
-                                  wolves_created, wolfsheep.wolves))
+                                  wolves_created, ws.wolves))
