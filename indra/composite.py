@@ -34,7 +34,8 @@ class Composite(Agent):
     def __init__(self, name, attrs=None, members=None,
                  duration=INF, action=None):
         self.members = OrderedDict()
-        super().__init__(name, attrs=attrs, duration=duration)
+        super().__init__(name, attrs=attrs, duration=duration,
+                         action=action)
         if members is not None:
             for member in members:
                 join(self, member)

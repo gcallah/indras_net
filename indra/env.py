@@ -79,6 +79,9 @@ class Env(Space):
         Calling the env makes it run. If we are on a terminal, we ask the user
         to put up a menu and choose. For tests, we just run N (default) turns.
         """
+        if self.action is not None:
+            # the action was defined outside this class, so pass self:
+            self.action(self)
         if (self.user is None) or (self.user_type == TEST):
             self.runN()
         else:
