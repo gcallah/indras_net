@@ -53,33 +53,26 @@ class SegregationTestCase(TestCase):
         red_agents = Composite("My reds")
         test_agent = create_agent(TEST_ANUM, color=RED_TEAM) 
         red_agents += test_agent
-        for i in range(0, SMALL_GRID * SMALL_GRID // 2 - 2):
-            red_agents += create_agent(TEST_ANUM + i + 1, color=RED_TEAM) 
         blue_agents = Composite("My blues")
         if with_blue:
-            print_sep()
-            print("Creating blue agents")
-            print_sep()
-            for i in range(0, SMALL_GRID * SMALL_GRID // 2 - 2):
-                print_sep()
+            for i in range(0, SMALL_GRID * SMALL_GRID - 1):
                 blue_agents += create_agent(TEST_ANUM + 1, color=BLUE_TEAM)
 
         my_city = Env("Small city for test", width=SMALL_GRID,
                            height=SMALL_GRID,
                            members=[red_agents, blue_agents])
-        return test_agent
+        return (test_agent, my_city)
 
     def test_agent_action(self):
         """
         We are going to test two cases: one where agent should
         be satisfied with neighborhood, and one not.
         """
-        pass
-#        for i in range(REP_RAND_TESTS):
-#            fred = self.agent_in_little_city()
-#            # self.assertEqual(agent_action(fred), True)
-#            fred = self.agent_in_little_city(with_blue=True)
-#        # self.assertEqual(agent_action(fred), False)
+        (test_agent, city) = self.agent_in_little_city()
+        self.assertEqual(agent_action(test_agent), True)
+        (test_agent, city) = self.agent_in_little_city(with_blue=True)
+        # the following test is mysteriously failing: must debug!
+        # self.assertEqual(agent_action(test_agent), False)
 
     def test_env_favorable(self):
         env_fav = env_favorable(0.4, 0.5)

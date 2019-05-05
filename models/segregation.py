@@ -60,9 +60,6 @@ def agent_action(agent):
     If the agent is surrounded by more "others" than it is comfortable
     with, the agent will move.
     """
-    print("________________________")
-    print("In seg agent action")
-    print("________________________", flush=True)
     num_red = max(len(red_agents.subset(in_hood, agent, HOOD_SIZE)),
                   NOT_ZERO)   # prevent div by zero!
 
@@ -72,10 +69,6 @@ def agent_action(agent):
 
     groups_count = [num_blue, num_red]
 
-    others = groups_count[other_group_index(agent)]
-    print("________________________")
-    print("Others count = ", others)
-    print("________________________", flush=True)
     if groups_count[other_group_index(agent)] <= 0:
         return False
 
