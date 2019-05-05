@@ -147,18 +147,30 @@ class Space(Composite):
         y = self.rand_y(low_y, high_y)
         return (x, y)
 
-    def place_member(self, mbr, max_move=None):
+    def is_empty(self, x, y):
+        """
+        See if cell x,y is empty.
+        xy should be a tuple.
+        """
+        return (x, y) not in self.locations
+
+    def place_member(self, mbr, max_move=None, xy=None):
         """
         By default, locate a member at a random x, y spot in our grid.
         `max_move` constrains where that can be.
+        Setting `xy` picks a particular spot to place member.
+        `xy` must be a tuple!
         """
         if self.is_full():
             self.user.log("Can't fit no more folks in this space!")
             return None
 
         if not is_composite(mbr):
-            (x, y) = self.gen_new_pos(mbr, max_move)
-            if (x, y) not in self.locations:
+            if xy is not None:
+                (x, y) = xy  # it had better be a tuple!
+            else:
+                (x, y) = self.gen_new_pos(mbr, max_move)
+            if self.is_empty(x, y):
                 if mbr.islocated():
                     self.move_location(x, y, mbr.get_x(), mbr.get_y())
                 else:
@@ -166,10 +178,13 @@ class Space(Composite):
                 # if I am setting pos, I am agent's locator!
                 mbr.set_pos(self, x, y)
                 return (x, y)
-            elif max_move is None:
+            elif (max_move is None) and (xy is None):
                 # if the random position is already taken,
                 # find the member a new position
                 # but if max_move is not None, the hood might be filled!
+                # so we need something to detect a full neighborhood as well.
+                # and if xy is not None, the user asked for a particular
+                # spot: don't give them another, but return None.
                 return self.place_member(mbr, max_move)
         else:
             return self.place_members(mbr.members, max_move)

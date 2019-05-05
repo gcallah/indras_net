@@ -22,6 +22,9 @@ test_agent:
 test_env:
 	nosetests tests.test_env --nocapture
 
+test_space:
+	nosetests tests.test_space --nocapture
+
 tests: pytests lint
 
 %.pylint:

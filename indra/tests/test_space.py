@@ -36,10 +36,12 @@ class SpaceTestCase(TestCase):
     def setUp(self):
         (self.space, self.newton) = create_space()
         self.teeny_space = create_teeny_space()
+        self.test_agent = Agent("test agent")
 
     def tearDown(self):
         self.space = None
         self.teeny_space = None
+        self.test_agent = None
 
     def test_constrain_x(self):
         """
@@ -76,6 +78,23 @@ class SpaceTestCase(TestCase):
         """
         for agent in self.space:
             self.assertTrue(self.space[agent].islocated())
+
+    def test_place_member_xy(self):
+        """
+        Test placing an agent at a particular x, y spot.
+        We will run this DEF_HEIGHT times, to test multiple
+        possible placements.
+        """
+        for i in range(DEF_HEIGHT):
+            spot = self.space.place_member(mbr=self.test_agent, xy=(i, i))
+            if spot is not None:
+                # the print output will usually be captured by nose,
+                # but that can be turned off with --nocapture.
+                print("Placed agent, running actual test")
+                (x, y) = (self.test_agent.get_x(),
+                          self.test_agent.get_y())
+                self.assertEqual((x, y), (i, i))
+
 
     def test_rand_x(self):
         """
@@ -165,6 +184,11 @@ class SpaceTestCase(TestCase):
             (new_x, new_y) = (self.newton.get_x(), self.newton.get_y())
             self.assertTrue(abs(new_x - old_x) <= max_move)
             self.assertTrue(abs(new_y - old_y) <= max_move)
+
+    def test_is_empty(self):
+        (x, y) = (self.newton.get_x(), self.newton.get_y())
+        self.assertFalse(self.space.is_empty(x, y))
+
 
 if __name__ == '__main__':
     main()
