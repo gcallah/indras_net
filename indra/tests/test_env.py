@@ -127,7 +127,7 @@ class EnvTestCase(TestCase):
     def test_env_action(self):
         self.env()
         # must debug this test!
-        # self.assertEqual(self.env.name, "Monjur")
+        self.assertEqual(self.env.name, "Monjur")
 
 
 if __name__ == '__main__':

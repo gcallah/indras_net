@@ -5,6 +5,8 @@ PYTHONFILES = $(shell ls *.py)
 TEST_FILES = $(shell ls $(TESTDIR)/test_*.py)
 SHELL := /bin/bash
 
+export user_type = test
+
 prod: tests
 	-git commit -a
 	git push origin master
@@ -15,7 +17,10 @@ pytests: $(PYTHONFILES)
 	./pytests.sh
 
 test_agent:
-	nosetests tests.test_agent
+	nosetests tests.test_agent --nocapture
+
+test_env:
+	nosetests tests.test_env --nocapture
 
 tests: pytests lint
 

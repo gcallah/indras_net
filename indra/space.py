@@ -64,7 +64,8 @@ class Space(Composite):
 
     def __init__(self, name, width=DEF_WIDTH, height=DEF_HEIGHT,
                  attrs=None, members=None, action=None):
-        super().__init__(name, attrs=attrs, members=members)
+        super().__init__(name, attrs=attrs, members=members,
+                         action=action)
         self.width = width
         self.height = height
 
