@@ -9,6 +9,7 @@ models = {
              2: ("Forest Fire", models.forestfire.main),
              3: ("Abelian Sandpile", models.sandpile.main),
              4: ("Schelling's Segregation Model", models.segregation.main),
+             5: ("Predator-Prey Model", models.wolfsheep.main),
          }
 
 
