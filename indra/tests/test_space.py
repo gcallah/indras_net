@@ -229,7 +229,7 @@ class SpaceTestCase(TestCase):
         self.assertTrue(self.test_agent3.name in hood)
 
         space += self.test_agent4
-        space.place_member(mbr=self.test_agent3, xy=(0, DEF_HEIGHT))
+        space.place_member(mbr=self.test_agent4, xy=(0, DEF_HEIGHT))
         hood = space.get_vonneumann_hood(self.test_agent)
         self.assertTrue(self.test_agent4.name not in hood)
 
