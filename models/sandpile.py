@@ -45,18 +45,10 @@ def agent_action(agent):
     If the agent is surrounded by more "others" than it is comfortable
     with, the agent will move.
     """
-    if(env_unfavorable):
-        nearby = group0.subset(in_hood, agent, NEARBY)
-        nearby += group1.subset(in_hood, agent, NEARBY)
-        nearby += group2.subset(in_hood, agent, NEARBY)
-        nearby += group3.subset(in_hood, agent, NEARBY)
-        nearby += group4.subset(in_hood, agent, NEARBY)
-        nearby += group5.subset(in_hood, agent, NEARBY)
-
-        for i in range(agent["grains"]):
-            pass
-
     return env_unfavorable(agent["grains"])
+
+def env_action():
+    pass
 
 
 def create_agent(i):
@@ -66,7 +58,6 @@ def create_agent(i):
     return Agent(SAND_PREFIX + str(i),
                  action=agent_action,
                  attrs={"grains": 0})
-
 
 def set_up():
     """
@@ -81,7 +72,7 @@ def set_up():
     for i in range(HEIGHT * WIDTH):
         group0 += create_agent(i)
 
-    sandpile = Env("A sandpile", members=[
+    sandpile = Env("A sandpile", action=env_action, members=[
                    group0,
                    group1,
                    group2,
