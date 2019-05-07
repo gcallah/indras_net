@@ -39,12 +39,15 @@ class SpaceTestCase(TestCase):
         self.test_agent = Agent("test agent")
         self.test_agent2 = Agent("test agent 2")
         self.test_agent3 = Agent("test agent 3")
+        self.test_agent4 = Agent("test agent 4")
 
     def tearDown(self):
         self.space = None
         self.teeny_space = None
         self.test_agent = None
         self.test_agent2 = None
+        self.test_agent3 = None
+        self.test_agent4 = None
 
     def test_constrain_x(self):
         """
@@ -209,9 +212,6 @@ class SpaceTestCase(TestCase):
     def test_get_vonneumann_hood(self):
         """
         Get von Neumann neighborhood.
-        Need to add:
-            1) Case for x's different, y's the same.
-            2) Case for two agents far apart.
         """
         space = Space("test space")
         space += self.test_agent
@@ -227,6 +227,11 @@ class SpaceTestCase(TestCase):
         space.place_member(mbr=self.test_agent3, xy=(1, 0))
         hood = space.get_vonneumann_hood(self.test_agent)
         self.assertTrue(self.test_agent3.name in hood)
+
+        space += self.test_agent4
+        space.place_member(mbr=self.test_agent3, xy=(0, DEF_HEIGHT))
+        hood = space.get_vonneumann_hood(self.test_agent)
+        self.assertTrue(self.test_agent4.name not in hood)
 
 
 
