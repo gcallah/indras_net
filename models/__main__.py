@@ -1,7 +1,6 @@
-from indra.entry_point import entry_point
 import models.fashion
 import models.forestfire
-import models.sand
+import models.sandpile
 import models.wolfsheep
 
 models = {
