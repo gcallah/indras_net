@@ -55,6 +55,24 @@ def in_hood(agent, other, hood_sz):
     return d < hood_sz
 
 
+def is_vn_close(x1, x2, y1, y2):
+    return ((x1 == x2) and (abs(y1 - y2) == 1)
+            or ((y1 == y2) and (abs(x1 - x2) == 1)))
+
+
+def in_vonneumann(possible_neighbor, center_agent):
+    if ((not possible_neighbor.islocated()) or (not center_agent.islocated())):
+        return False
+    else:
+        center_x = center_agent.get_x()
+        center_y = center_agent.get_y()
+        other_x = possible_neighbor.get_x()
+        other_y = possible_neighbor.get_y()
+        print("About to eval ", center_agent.name, " and ",
+              possible_neighbor.name)
+        return is_vn_close(center_x, other_x, center_y, other_y)
+
+
 class Space(Composite):
     """
     A collection of entities that share a space.
@@ -150,9 +168,17 @@ class Space(Composite):
     def is_empty(self, x, y):
         """
         See if cell x,y is empty.
-        xy should be a tuple.
         """
         return (x, y) not in self.locations
+
+    def get_agent_at(self, x, y):
+        """
+        Return agent at cell x,y
+        If cell is empty return None.
+        """
+        if self.is_empty(x, y):
+            return None
+        return self.locations[(x, y)]
 
     def place_member(self, mbr, max_move=None, xy=None):
         """
@@ -212,3 +238,13 @@ class Space(Composite):
         Remove a member from the locations.
         """
         del self.locations[(x, y)]
+
+    def get_moore_hood(self, agent):
+        """
+        To be written!
+        """
+        pass
+
+    def get_vonneumann_hood(self, center_agent):
+        return self.subset(in_vonneumann, center_agent,
+                           name=center_agent.name + "'s vn hood")
