@@ -38,6 +38,7 @@ class SpaceTestCase(TestCase):
         self.teeny_space = create_teeny_space()
         self.test_agent = Agent("test agent")
         self.test_agent2 = Agent("test agent 2")
+        self.test_agent3 = Agent("test agent 3")
 
     def tearDown(self):
         self.space = None
@@ -215,11 +216,21 @@ class SpaceTestCase(TestCase):
         space = Space("test space")
         space += self.test_agent
         space += self.test_agent2
+
         space.place_member(mbr=self.test_agent, xy=(0, 0))
         space.place_member(mbr=self.test_agent2, xy=(0, 1))
         hood = space.get_vonneumann_hood(self.test_agent)
         print(repr(hood))
         self.assertTrue(self.test_agent2.name in hood)
+
+        space += self.test_agent3
+        space.place_member(mbr=self.test_agent3, xy=(1, 0))
+        hood = space.get_vonneumann_hood(self.test_agent)
+        self.assertTrue(self.test_agent3.name in hood)
+
+
+
+
 
 if __name__ == '__main__':
     main()
