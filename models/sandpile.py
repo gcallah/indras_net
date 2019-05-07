@@ -8,7 +8,7 @@ from indra.composite import Composite
 # from indra.space import in_hood
 from indra.env import Env
 import indra.display_methods as disp
-from indra.space import in_hood
+# from indra.space import in_hood
 
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
@@ -47,6 +47,7 @@ def agent_action(agent):
     """
     return env_unfavorable(agent["grains"])
 
+
 def env_action():
     pass
 
@@ -58,6 +59,7 @@ def create_agent(i):
     return Agent(SAND_PREFIX + str(i),
                  action=agent_action,
                  attrs={"grains": 0})
+
 
 def set_up():
     """
