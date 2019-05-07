@@ -58,6 +58,9 @@ def get_new_state(old_state):
 
 
 def is_healthy(agent, *args):
+    """
+    Checking whether the state is healthy or not
+    """
     return agent["state"] == HE
 
 
