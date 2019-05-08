@@ -3,6 +3,7 @@
 
 from flask import Flask
 from flask_restplus import Resource, Api
+import json
 
 app = Flask(__name__)
 api = Api(app)
@@ -16,16 +17,9 @@ class HelloWorld(Resource):
 
 @api.route('/models')
 class Models(Resource):
-    models = {
-        "Adam Smith's Fashion Model": "models.fashion.main",
-        "Forest Fire": "models.forestfire.main",
-        "Abelian Sandpile": "models.sandpile.main",
-        "Schelling's Segregation Model": "models.segregation.main",
-        "Predator-Prey Model": "models.wolfsheep.main"
-    }
-
     def get(self):
-        return Models.models
+        with open("models/models.json") as file:
+            return json.loads(file.read())
 
 
 if __name__ == '__main__':

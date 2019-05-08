@@ -1,0 +1,7 @@
+{
+  "Adam Smith's Fashion Model": "models.fashion.main",
+  "Forest Fire": "models.forestfire.main",
+  "Abelian Sandpile": "models.sandpile.main",
+  "Schelling's Segregation Model": "models.segregation.main",
+  "Predator-Prey Model": "models.wolfsheep.main"
+}
