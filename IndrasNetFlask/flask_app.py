@@ -8,6 +8,9 @@ import json
 app = Flask(__name__)
 api = Api(app)
 
+with open("models/models.json") as file:
+    models_database = json.loads(file.read())
+
 
 @api.route('/hello')
 class HelloWorld(Resource):
@@ -18,8 +21,7 @@ class HelloWorld(Resource):
 @api.route('/models')
 class Models(Resource):
     def get(self):
-        with open("models/models.json") as file:
-            return json.loads(file.read())
+        return models_database
 
 
 if __name__ == '__main__':
