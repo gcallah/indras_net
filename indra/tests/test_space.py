@@ -220,7 +220,6 @@ class SpaceTestCase(TestCase):
         space.place_member(mbr=self.test_agent, xy=(0, 0))
         space.place_member(mbr=self.test_agent2, xy=(0, 1))
         hood = space.get_vonneumann_hood(self.test_agent)
-        print(repr(hood))
         self.assertTrue(self.test_agent2.name in hood)
 
         space += self.test_agent3
@@ -232,9 +231,6 @@ class SpaceTestCase(TestCase):
         space.place_member(mbr=self.test_agent4, xy=(0, DEF_HEIGHT))
         hood = space.get_vonneumann_hood(self.test_agent)
         self.assertTrue(self.test_agent4.name not in hood)
-
-
-
 
 
 if __name__ == '__main__':

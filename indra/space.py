@@ -68,8 +68,6 @@ def in_vonneumann(possible_neighbor, center_agent):
         center_y = center_agent.get_y()
         other_x = possible_neighbor.get_x()
         other_y = possible_neighbor.get_y()
-        print("About to eval ", center_agent.name, " and ",
-              possible_neighbor.name)
         return is_vn_close(center_x, other_x, center_y, other_y)
 
 
