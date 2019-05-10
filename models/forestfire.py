@@ -7,14 +7,14 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.env import Env
 from indra.space import in_hood
-from indra.display_methods import RED, GREEN, BLACK, SPRINGGREEN, YELLOW
+from indra.display_methods import RED, GREEN, BLACK, SPRINGGREEN, TOMATO
 
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
 FOREST_WIDTH = 40
 FOREST_HEIGHT = 40
-DENSITY = .50
+DENSITY = .44
 
 NEARBY = 1.8
 
@@ -40,7 +40,7 @@ STATE_MAP = {HE: HEALTHY, NF: NEW_FIRE,
              OF: ON_FIRE, BO: BURNED_OUT, NG: NEW_GROWTH}
 
 STATE_TRANS = [
-    [.98, .02, 0.0, 0.0, 0.0],
+    [.985, .015, 0.0, 0.0, 0.0],
     [0.0, 0.0, 1.0, 0.0, 0.0],
     [0.0, 0.0, 0.0, 1.0, 0.0],
     [0.0, 0.0, 0.0, .99, .01],
@@ -106,7 +106,7 @@ def set_up():
     global healthy
 
     healthy = Composite(HEALTHY, {"color": GREEN})
-    new_fire = Composite(NEW_FIRE, {"color": YELLOW})
+    new_fire = Composite(NEW_FIRE, {"color": TOMATO})
     on_fire = Composite(ON_FIRE, {"color": RED})
     burned_out = Composite(BURNED_OUT, {"color": BLACK})
     new_growth = Composite(NEW_GROWTH, {"color": SPRINGGREEN})

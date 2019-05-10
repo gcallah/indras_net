@@ -31,22 +31,23 @@ global imageIO
 
 anim_func = None
 
-BLUE = 'b'
-RED = 'r'
-GREEN = 'g'
-YELLOW = 'y'
-MAGENTA = 'm'
-CYAN = 'c'
-BLACK = 'k'
-WHITE = 'w'
-GRAY = 'gray'
-TAN = 'tan'
-NAVY = 'navy'
-DARKRED = 'darkred'
-SPRINGGREEN = 'springgreen'
 PURPLE = 'purple'
+NAVY = 'navy'
+BLUE = 'b'
+CYAN = 'c'
+GREEN = 'g'
+SPRINGGREEN = 'springgreen'
+YELLOW = 'y'
+TAN = 'tan'
 ORANGE = 'orange'
 ORANGERED = 'orangered'
+TOMATO = 'tomato'
+RED = 'r'
+DARKRED = 'darkred'
+MAGENTA = 'm'
+WHITE = 'w'
+GRAY = 'gray'
+BLACK = 'k'
 
 colors = [PURPLE,
           NAVY,
@@ -58,6 +59,7 @@ colors = [PURPLE,
           TAN,
           ORANGE,
           ORANGERED,
+          TOMATO,
           RED,
           DARKRED,
           MAGENTA,
