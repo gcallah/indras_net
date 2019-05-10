@@ -2,115 +2,65 @@
     This is the fashion model re-written in indra.
 """
 
-
-from indra.agent import Agent, X_VEC, Y_VEC
+from indra.agent import Agent
 from indra.composite import Composite
 from indra.env import Env
-from indra.display_methods import NAVY, DARKRED, SPRINGGREEN, GRAY
+from indra.display_methods import RED, BLUE
+
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
-NUM_TSETTERS = 5
-NUM_FOLLOWERS = 55
-"""
-Adding weighted average for having a sine curve
-"""
-ENV_WEIGHT = 0.6
-weightings = [1.0, ENV_WEIGHT]
+NUM_RED = 5
+NUM_BLUE = 5
 
-COLOR_PREF = "color_pref"
-DISPLAY_COLOR = "display_color"
-
-BLUE = 0.0
-RED = 1.0
-
-# for future use as we move to vector representation:
-BLUE_VEC = X_VEC
-RED_VEC = Y_VEC
-
-NOT_ZERO = .001
-
-TOO_SMALL = .01
-BIG_ENOUGH = .03
-
-HOOD_SIZE = 4
-
-FOLLOWER_PRENM = "follower"
-TSETTER_PRENM = "tsetter"
-RED_FOLLOWERS = "Red Followers"
-BLUE_FOLLOWERS = "Blue Followers"
-RED_TSETTERS = "Red Trendsetters"
-BLUE_TSETTERS = "Blue Trendsetters"
-
-red_tsetters = None
-blue_tsetters = None
-red_followers = None
-blue_followers = None
-society = None
-
-opp_group = None
+red_group = None
+blue_group = None
+env = None
 
 
-def create_tsetter(i, color=RED):
+def agent_action(agent):
+    print("I'm " + agent.name + " and I'm acting.")
+    # return False means to move
+    return False
+
+
+def create_agent(color, i):
     """
-    Create a trendsetter: all RED to start.
+    Create an agent.
     """
-    return Agent(TSETTER_PRENM + str(i))
-
-
-def create_follower(i, color=BLUE):
-    """
-    Create a follower: all BLUE to start.
-    """
-    return Agent(FOLLOWER_PRENM + str(i))
+    return Agent(color + str(i), action=agent_action)
 
 
 def set_up():
     """
     A func to set up run that can also be used by test code.
     """
-    blue_tsetters = Composite(BLUE_TSETTERS, {"color": NAVY})
-    red_tsetters = Composite(RED_TSETTERS, {"color": DARKRED})
-    for i in range(NUM_TSETTERS):
-        red_tsetters += create_tsetter(i)
+    blue_group = Composite("Blues", {"color": BLUE})
+    red_group = Composite("Reds", {"color": RED})
+    for i in range(NUM_RED):
+        red_group += create_agent("red", i)
 
     if DEBUG2:
-        print(red_tsetters.__repr__())
+        print(red_group.__repr__())
 
-    red_followers = Composite(RED_FOLLOWERS, {"color": SPRINGGREEN})
-    blue_followers = Composite(BLUE_FOLLOWERS, {"color": GRAY})
-    for i in range(NUM_FOLLOWERS):
-        blue_followers += create_follower(i)
+    for i in range(NUM_BLUE):
+        blue_group += create_agent("blue", i)
 
-    opp_group = {str(red_tsetters): blue_tsetters,
-                 str(blue_tsetters): red_tsetters,
-                 str(red_followers): blue_followers,
-                 str(blue_followers): red_followers}
-
-    if DEBUG2:
-        print(blue_followers.__repr__())
-
-    society = Env("society", members=[blue_tsetters, red_tsetters,
-                                      blue_followers, red_followers])
-    return (blue_tsetters, red_tsetters, blue_followers, red_followers,
-            opp_group, society)
+    env = Env("env", members=[blue_group, red_group])
+    return (blue_group, red_group, env)
 
 
 def main():
-    global red_tsetters
-    global blue_tsetters
-    global red_followers
-    global blue_followers
-    global society
-    global opp_group
+    global red_group
+    global blue_group
+    global env
 
-    (blue_tsetters, red_tsetters, blue_followers, red_followers, opp_group,
-     society) = set_up()
+    (blue_group, red_group, env) = set_up()
 
     if DEBUG2:
-        print(society.__repr__())
+        print(env.__repr__())
 
-    society()
+    env()
     return 0
 
 
