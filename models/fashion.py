@@ -10,7 +10,7 @@ from indra.agent import ratio_to_sin
 from indra.composite import Composite
 from indra.space import in_hood
 from indra.env import Env
-from indra.display_methods import NAVY, DARKRED, SPRINGGREEN, GRAY
+from indra.display_methods import NAVY, DARKRED, RED, BLUE
 
 import numpy as np
 
@@ -28,8 +28,8 @@ weightings = [1.0, ENV_WEIGHT]
 COLOR_PREF = "color_pref"
 DISPLAY_COLOR = "display_color"
 
-BLUE = 0.0
-RED = 1.0
+BLUE_SIN = 0.0
+RED_SIN = 1.0
 
 # for future use as we move to vector representation:
 BLUE_VEC = X_VEC
@@ -78,7 +78,7 @@ def new_color_pref(old_pref, env_color):
 def env_unfavorable(my_color, my_pref, op1, op2):
     # we're going to add a small value to NEUTRAL so we sit on fence
     # op1 and op2 should be greater than or less than comparisons
-    if my_color == RED:
+    if my_color == RED_SIN:
         return op1(my_pref, (NEUTRAL - TOO_SMALL))
     else:
         return op2(my_pref, (NEUTRAL + TOO_SMALL))
@@ -112,9 +112,9 @@ def common_action(agent, others_red, others_blue, op1, op2):
     return changed
 
 
-def create_tsetter(i, color=RED):
+def create_tsetter(i, color=RED_SIN):
     """
-    Create a trendsetter: all RED to start.
+    Create a trendsetter: all RED_SIN to start.
     """
     return Agent(TSETTER_PRENM + str(i),
                  action=tsetter_action,
@@ -122,9 +122,9 @@ def create_tsetter(i, color=RED):
                         DISPLAY_COLOR: color})
 
 
-def create_follower(i, color=BLUE):
+def create_follower(i, color=BLUE_SIN):
     """
-    Create a follower: all BLUE to start.
+    Create a follower: all BLUE_SIN to start.
     """
     return Agent(FOLLOWER_PRENM + str(i),
                  action=follower_action,
@@ -144,8 +144,8 @@ def set_up():
     if DEBUG2:
         print(red_tsetters.__repr__())
 
-    red_followers = Composite(RED_FOLLOWERS, {"color": SPRINGGREEN})
-    blue_followers = Composite(BLUE_FOLLOWERS, {"color": GRAY})
+    red_followers = Composite(RED_FOLLOWERS, {"color": RED})
+    blue_followers = Composite(BLUE_FOLLOWERS, {"color": BLUE})
     for i in range(NUM_FOLLOWERS):
         blue_followers += create_follower(i)
 

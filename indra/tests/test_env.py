@@ -102,8 +102,8 @@ class EnvTestCase(TestCase):
             self.env.pop_hist = self.fill_pop_hist()
             ret = self.env.line_data()
             self.assertEqual(ret, (2,
-                                   {GRP1: {"color": "r", "data": [10, 20]},
-                                    GRP2: {"color": "g", "data": [10, 20]}}))
+                                   {GRP1: {"color": "navy", "data": [10, 20]},
+                                    GRP2: {"color": "b", "data": [10, 20]}}))
 
     def test_plot_data(self):
         """

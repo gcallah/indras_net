@@ -44,8 +44,28 @@ TAN = 'tan'
 NAVY = 'navy'
 DARKRED = 'darkred'
 SPRINGGREEN = 'springgreen'
-colors = [BLUE, RED, GREEN, YELLOW, MAGENTA, CYAN, BLACK, WHITE,
-          GRAY, TAN, NAVY, DARKRED, SPRINGGREEN]
+PURPLE = 'purple'
+ORANGE = 'orange'
+ORANGERED = 'orangered'
+
+colors = [PURPLE,
+          NAVY,
+          BLUE,
+          CYAN,
+          GREEN,
+          SPRINGGREEN,
+          YELLOW,
+          TAN,
+          ORANGE,
+          ORANGERED,
+          RED,
+          DARKRED,
+          MAGENTA,
+          BLACK,
+          GRAY,
+          WHITE
+          ]
+
 NUM_COLORS = len(colors)
 X = 0
 Y = 1
