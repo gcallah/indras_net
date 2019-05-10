@@ -14,7 +14,7 @@ DEBUG2 = False  # turns deeper debugging code on or off
 
 FOREST_WIDTH = 40
 FOREST_HEIGHT = 40
-DENSITY = .22
+DENSITY = .50
 
 NEARBY = 1.8
 
@@ -71,7 +71,7 @@ def tree_action(agent):
     if is_healthy(agent):
         nearby_fires = on_fire.subset(in_hood, agent, NEARBY)
         if len(nearby_fires) > 0:
-            if DEBUG:
+            if DEBUG2:
                 print("Setting nearby tree on fire!")
             agent["state"] = NF
 
