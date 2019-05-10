@@ -11,9 +11,9 @@ from indra.display_methods import RED, BLUE
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
-NUM_AGENTS = 100
+NUM_AGENTS = 500
 
-DEF_CITY_DIM = 20
+DEF_CITY_DIM = 40
 
 TOLERANCE = "tolerance"
 COLOR = "color"
@@ -51,7 +51,6 @@ def env_favorable(hood_ratio, my_tolerance):
     """
     Is the environment to our agent's liking or not??
     """
-    print("In env favorable.", flush=True)
     return hood_ratio >= my_tolerance
 
 
@@ -73,8 +72,6 @@ def agent_action(agent):
         return False
 
     hood_ratio = groups_count[my_group_index(agent)] / total_neighbors
-    if DEBUG:
-        print(agent.to_json())
     return env_favorable(hood_ratio, agent[TOLERANCE])
 
 
