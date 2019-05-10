@@ -29,16 +29,22 @@ class Composite(Agent):
         attrs: a dictionary of group properties
         members: a list of members, that will be turned
             into a dictionary
+        member_creator: a function to create members
+        num_members: how many to create
     """
 
     def __init__(self, name, attrs=None, members=None,
-                 duration=INF, action=None):
+                 duration=INF, action=None, member_creator=None,
+                 num_members=None):
         self.members = OrderedDict()
         super().__init__(name, attrs=attrs, duration=duration,
                          action=action)
         if members is not None:
             for member in members:
                 join(self, member)
+        if member_creator is not None:
+            for i in range(num_members):
+                self += member_creator(name, i)
 
     def __repr__(self):
         return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)

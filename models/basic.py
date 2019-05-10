@@ -10,8 +10,8 @@ from indra.display_methods import RED, BLUE
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
-NUM_RED = 5
-NUM_BLUE = 5
+NUM_RED = 8
+NUM_BLUE = 8
 
 red_group = None
 blue_group = None
@@ -35,16 +35,12 @@ def set_up():
     """
     A func to set up run that can also be used by test code.
     """
-    blue_group = Composite("Blues", {"color": BLUE})
-    red_group = Composite("Reds", {"color": RED})
-    for i in range(NUM_RED):
-        red_group += create_agent("red", i)
-
-    if DEBUG2:
-        print(red_group.__repr__())
-
-    for i in range(NUM_BLUE):
-        blue_group += create_agent("blue", i)
+    blue_group = Composite("Blues", {"color": BLUE},
+                           member_creator=create_agent,
+                           num_members=NUM_BLUE)
+    red_group = Composite("Reds", {"color": RED},
+                          member_creator=create_agent,
+                          num_members=NUM_RED)
 
     env = Env("env", members=[blue_group, red_group])
     return (blue_group, red_group, env)
