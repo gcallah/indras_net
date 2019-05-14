@@ -13,8 +13,8 @@ import indra.display_methods as disp
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
-HEIGHT = 8
-WIDTH = 8
+HEIGHT = 2
+WIDTH = 2
 
 MAX_SAND = 5
 
@@ -49,22 +49,19 @@ def change_color(agent, sandpile, opp_group):
                         opp_group[str(agent.primary_group())])
 
 
-def agent_action(agent):
+def grain_action(agent):
     """
     If the agent is surrounded by more "others" than it is comfortable
     with, the agent will move.
     """
-    # neighbor = get_vonneumann_hood(agent)
-
-    height = agent["grains"]
-    if env_unfavorable(height):
-        for _ in range(height):
-            pass
+    print("from grain_action")
+    neighbors = sandpile.get_vonneumann_hood(agent)
+    for neighbor in neighbors:
+        print(neighbor)
 
 
-def env_action():
-    # center_agent = get_agent_at(HEIGHT/2, WIDTH/2) # how to call
-    # center_agent['grains'] += 1
+def sandpile_action(sanpile):
+    sandpile.attrs["center agent"]["grains"] += 1
     print("test_env_action")
 
 
@@ -73,7 +70,7 @@ def create_agent(i):
     Creates agent for holding sand.
     """
     return Agent(SAND_PREFIX + str(i),
-                 action=agent_action,
+                 action=grain_action,
                  attrs={"grains": 0})
 
 
@@ -90,7 +87,7 @@ def set_up():
     for i in range(HEIGHT * WIDTH):
         group0 += create_agent(i)
 
-    sandpile = Env("A sandpile", action=env_action, members=[
+    sandpile = Env("A sandpile", action=sandpile_action, members=[
                    group0,
                    group1,
                    group2,
@@ -99,6 +96,9 @@ def set_up():
                    group5
                    ],
                    height=HEIGHT, width=WIDTH)
+    sandpile.attrs["center agent"] = sandpile.get_agent_at(HEIGHT / 2,
+                                                           WIDTH / 2)
+
     return (group0,
             group1,
             group2,
