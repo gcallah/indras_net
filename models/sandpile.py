@@ -5,7 +5,7 @@
 
 from indra.agent import Agent
 from indra.composite import Composite
-from indra.space import in_hood
+# from indra.space import in_hood
 from indra.env import Env
 import indra.display_methods as disp
 
@@ -40,17 +40,21 @@ def env_unfavorable(sand_height):
     return sand_height > MAX_SAND
 
 
+def change_color(agent, sandpile, opp_group):
+    if DEBUG2:
+        print("Agent " + str(agent) + " is changing colors from "
+              + str(agent.primary_group()) + " to "
+              + str(opp_group[str(agent.primary_group())]))
+    sandpile.add_switch(agent, agent.primary_group(),
+                        opp_group[str(agent.primary_group())])
+
+
 def agent_action(agent):
     """
     If the agent is surrounded by more "others" than it is comfortable
     with, the agent will move.
     """
-    nearby = group0.subset(in_hood, agent, NEARBY)
-    nearby += group1.subset(in_hood, agent, NEARBY)
-    nearby += group2.subset(in_hood, agent, NEARBY)
-    nearby += group3.subset(in_hood, agent, NEARBY)
-    nearby += group4.subset(in_hood, agent, NEARBY)
-    nearby += group5.subset(in_hood, agent, NEARBY)
+    # neighbor = get_vonneumann_hood(agent)
 
     height = agent["grains"]
     if env_unfavorable(height):
@@ -59,7 +63,9 @@ def agent_action(agent):
 
 
 def env_action():
-    pass
+    # center_agent = get_agent_at(HEIGHT/2, WIDTH/2) # how to call
+    # center_agent['grains'] += 1
+    print("test_env_action")
 
 
 def create_agent(i):
