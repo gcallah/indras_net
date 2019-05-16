@@ -7,7 +7,13 @@ import json
 
 app = Flask(__name__)
 api = Api(app)
-dir = ""
+
+if __name__ == '__main__':
+    # On local machines, use relative path
+    dir = ""
+else:
+    # On the server, use absolute path
+    dir = "/home/indrasnet/indras_net/"
 
 with open(dir + "models/models.json") as file:
     models_database = json.loads(file.read())["models_database"]
@@ -47,7 +53,3 @@ class Model(Resource):
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8000, debug=True)
-    # On local machines, use relative path
-else:
-    # On the server, use absolute path
-    dir = "/home/indrasnet/indras_net/"
