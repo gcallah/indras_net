@@ -1,7 +1,24 @@
 {
-  "Adam Smith's Fashion Model": "models.fashion.main",
-  "Forest Fire": "models.forestfire.main",
-  "Abelian Sandpile": "models.sandpile.main",
-  "Schelling's Segregation Model": "models.segregation.main",
-  "Predator-Prey Model": "models.wolfsheep.main"
+  "models_database": [
+    {
+      "name":"Adam Smith's Fashion Model",
+      "path":"models.fashion.main"
+    },
+    {
+      "name":"Forest Fire",
+      "path":"models.forestfire.main"
+    },
+    {
+      "name":"Abelian Sandpile",
+      "path":"models.sandpile.main"
+    },
+    {
+      "name":"Schelling's Segregation Model",
+      "path":"models.segregation.main"
+    },
+    {
+      "name":"Predator-Prey Model",
+      "path":"models.wolfsheep.main"
+    }
+  ]
 }
