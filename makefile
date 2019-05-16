@@ -19,6 +19,7 @@ tags: FORCE
 prod: tests
 	git commit -a
 	git push origin master
+	ssh indrasnet@ssh.pythonanywhere.com 'cd /home/indrasnet/indras_net; /home/indrasnet/indras_net/rebuild.sh'
 
 tests: FORCE
 	cd indra; make tests
