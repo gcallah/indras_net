@@ -6,7 +6,8 @@
     },
     {
       "name":"Forest Fire",
-      "path":"models.forestfire.main"
+      "path":"models.forestfire.main",
+      "props":"forestfire.props.json"
     },
     {
       "name":"Abelian Sandpile",

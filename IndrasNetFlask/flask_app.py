@@ -26,5 +26,17 @@ class Models(Resource):
         return models_response
 
 
+@api.route('/models/<int:model_id>')
+class Props(Resource):
+    def get(self, model_id):
+        try:
+            with open("IndrasNetFlask/data/" +
+                      models_database[model_id]["props"]) as file:
+                return json.loads(file.read())
+
+        except KeyError:
+            return {"Error": "Invalid model id " + str(model_id)}
+
+
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8000, debug=True)

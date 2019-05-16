@@ -14,7 +14,7 @@
         "loval": 2
     },
     "density": {
-        "val": .44,
+        "val": 0.44,
         "question": "What is the density of tree's in the forest?",
         "atype": "dbl",
         "hival": 1.0,
