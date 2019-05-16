@@ -10,6 +10,8 @@ api = Api(app)
 
 with open("models/models.json") as file:
     models_database = json.loads(file.read())
+    models_response = \
+        [model["name"] for model in models_database["models_database"]]
 
 
 @api.route('/hello')
@@ -21,7 +23,7 @@ class HelloWorld(Resource):
 @api.route('/models')
 class Models(Resource):
     def get(self):
-        return models_database
+        return models_response
 
 
 if __name__ == '__main__':
