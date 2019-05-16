@@ -9,9 +9,9 @@ app = Flask(__name__)
 api = Api(app)
 
 with open("models/models.json") as file:
-    models_database = json.loads(file.read())
+    models_database = json.loads(file.read())["models_database"]
     models_response = \
-        [model["name"] for model in models_database["models_database"]]
+        [model["name"] for model in models_database]
 
 
 @api.route('/hello')
