@@ -26,7 +26,7 @@ class Models(Resource):
         return models_response
 
 
-@api.route('/models/<int:model_id>')
+@api.route('/models/<int:model_id>/props')
 class Props(Resource):
     def get(self, model_id):
         try:
@@ -36,6 +36,12 @@ class Props(Resource):
 
         except KeyError:
             return {"Error": "Invalid model id " + str(model_id)}
+
+
+@api.route('/models/<int:model_id>/run')
+class Model(Resource):
+    def put(self, model_id):
+        pass
 
 
 if __name__ == '__main__':
