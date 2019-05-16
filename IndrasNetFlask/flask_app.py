@@ -17,8 +17,14 @@ else:
 
 with open(dir + "models/models.json") as file:
     models_database = json.loads(file.read())["models_database"]
-    models_response = \
-        [model["name"] for model in models_database]
+    models_response = []
+    for model in models_database:
+        doc = ""
+        if "doc" in model:
+            doc = model["doc"]
+        models_response.append(
+                               {"name": model["name"],
+                                "doc": doc})
 
 
 @api.route('/hello')
@@ -37,7 +43,7 @@ class Models(Resource):
 class Props(Resource):
     def get(self, model_id):
         try:
-            with open(dir + "IndrasNetFlask/data/" +
+            with open(dir + "IndrasNetFlask/" +
                       models_database[model_id]["props"]) as file:
                 return json.loads(file.read())
 
@@ -48,7 +54,8 @@ class Props(Resource):
 @api.route('/models/<int:model_id>/run')
 class Model(Resource):
     def put(self, model_id):
-        pass
+        return {"name": models_database[model_id]["name"],
+                "status": "Is running!"}
 
 
 if __name__ == '__main__':

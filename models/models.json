@@ -7,7 +7,8 @@
     {
       "name":"Forest Fire",
       "path":"models.forestfire.main",
-      "props":"data/forestfire.props.json"
+      "props":"data/forestfire.props.json",
+      "doc": "A model forest with trees that randomly catch fire."
     },
     {
       "name":"Abelian Sandpile",
