@@ -12,9 +12,8 @@ class Home extends Component {
   async componentDidMount() {
     this.setState({ loadingData: true });
     document.title = "Title";
-    const res = await axios.get('http://indrasnet.pythonanywhere.com/models')
+    const res = await axios.get('https://indrasnet.pythonanywhere.com/models')
     this.setState({ allItems: res.data });
-    console.log(res.data);
     this.setState({ loadingData: false });
   }
 

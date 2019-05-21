@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 export default props => {
   return (
     <Menu style={{ marginTop: '0px', }} size={'large'}>
-      <Menu.Item><Link to='/'>Hello</Link></Menu.Item>
+      <Menu.Item><Link to='/'>Indras</Link></Menu.Item>
       <Menu.Menu position="right">
         <Menu.Item><Link to='/'>Some Link</Link></Menu.Item>
       </Menu.Menu>
