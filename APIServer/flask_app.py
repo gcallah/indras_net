@@ -1,11 +1,13 @@
 
-# A very simple Flask Hello World app for you to get started with...
+# Indra API server
 
 from flask import Flask
 from flask_restplus import Resource, Api
+from flask_cors import CORS
 import json
 
 app = Flask(__name__)
+CORS(app)
 api = Api(app)
 
 if __name__ == '__main__':
@@ -36,16 +38,13 @@ class HelloWorld(Resource):
 @api.route('/models')
 class Models(Resource):
     def get(self):
-        response =  models_response
-        response.headers.add('Access-Control-Allow-Origin', '*')
-        return response
-
+        return  models_response
 
 @api.route('/models/<int:model_id>/props')
 class Props(Resource):
     def get(self, model_id):
         try:
-            with open(dir + "IndrasNetFlask/" +
+            with open(dir + "APIServer/" +
                       models_database[model_id]["props"]) as file:
                 return json.loads(file.read())
 

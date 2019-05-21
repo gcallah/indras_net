@@ -1,4 +1,3 @@
-networkx
 numpy
-django
-django-extensions
+flask
+flask-cors
