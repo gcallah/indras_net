@@ -4,9 +4,10 @@ BOXPLOTS = $(shell ls $(BOX_DATA)/plot*.pdf)
 DOCKER_DIR = docker
 REPO = indras_net
 MODELS_DIR = models
+API_DIR = APIServer
 PYLINT = flake8
 PYLINTFLAGS = 
-PYTHONFILES = $(shell ls $(DJANGO_DIR)/*.py)
+PYTHONFILES = $(shell ls $(API_DIR)/*.py)
 PYTHONFILES += $(shell ls $(MODELS_DIR)/*.py)
 
 FORCE:
