@@ -1,8 +1,8 @@
 #!/bin/bash
-# for the production server: fetches new code,
+# This runs on the production server: fetches new code,
 # installs needed packages, and restarts the server.
 
-# get new source code
+# get new source code onto the server
 git pull origin master
 # activate our virtual env:
 source /home/indrasnet/.virtualenvs/django2/bin/activate
