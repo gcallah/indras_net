@@ -2,7 +2,6 @@ BOX_DIR = bigbox
 BOX_DATA = $(BOX_DIR)/data
 BOXPLOTS = $(shell ls $(BOX_DATA)/plot*.pdf)
 DOCKER_DIR = docker
-DJANGO_DIR = IndrasNet
 REPO = indras_net
 MODELS_DIR = models
 PYLINT = flake8
@@ -29,14 +28,6 @@ lint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
 
 %.pylint:
 	$(PYLINT) $(PYLINTFLAGS) $*.py
-
-db: $(DJANGO_DIR)/models.py
-	python ./manage.py makemigrations IndrasNet
-	python ./manage.py migrate
-	git add IndrasNet/migrations/*.py
-	git add $(DJANGO_DIR)/migrations/*.py
-	-git commit $(DJANGO_DIR)/migrations/*.py
-	git push origin master
 
 # dev container has dev tools
 dev_container: $(DOCKER_DIR)/Dockerfile $(DOCKER_DIR)/requirements.txt $(DOCKER_DIR)/requirements-dev.txt
