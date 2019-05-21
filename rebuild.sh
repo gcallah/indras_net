@@ -3,6 +3,7 @@
 # installs needed packages, and restarts the server.
 
 git pull origin master
+# activate our virtual env:
 source /home/indrasnet/.virtualenvs/django2/bin/activate
 pip install -r docker/requirements.txt
 echo "going to reboot the webserver"
