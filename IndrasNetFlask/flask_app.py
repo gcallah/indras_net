@@ -36,7 +36,9 @@ class HelloWorld(Resource):
 @api.route('/models')
 class Models(Resource):
     def get(self):
-        return models_response
+        response =  models_response
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
 
 
 @api.route('/models/<int:model_id>/props')
