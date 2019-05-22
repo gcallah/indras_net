@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Loader, Dimmer, Menu } from "semantic-ui-react";
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 class Home extends Component {
   state = {
@@ -20,11 +21,8 @@ class Home extends Component {
   renderMenu = () => {
     let items = this.state.allItems.map((item, id) => {
       return (
-        <Menu.Item
-          key={id}
-          name={item.name}
-          href='/'
-        >
+        <Menu.Item key={id}>
+          <Link to='/wip'>{item.name}</Link>
         </Menu.Item>
       );
     });

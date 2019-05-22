@@ -49,3 +49,12 @@ nocrud:
 	-rm *.out
 	-rm .*swp
 	-rm *.csv
+
+build-webapp:
+	- rm -r static || true
+	- rm webapp.html || true
+	- cd webapp && \
+	npm run build && \
+	mv build/index.html build/webapp.html && \
+	cp -r build/* .. && \
+	cd ..
