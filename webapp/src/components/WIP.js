@@ -9,7 +9,7 @@ class WIP extends Component {
 
   async componentDidMount() {
     this.setState({ loadingData: true });
-    document.title = "Indras | Work in Progress";
+    document.title = "Indra | Work in Progress";
     this.setState({ loadingData: false });
   }
 
@@ -25,7 +25,8 @@ class WIP extends Component {
     return (
       <div>
         <br />
-        <h1 style={{ "textAlign": "center" }}>Welcome!</h1>
+        <h1 style={{ "textAlign": "center" }}>Welcome to the Indra ABM platform!
+        </h1>
         <br /><br />
 
         <h2>Work in Progress!</h2>
