@@ -50,6 +50,7 @@ nocrud:
 	-rm .*swp
 	-rm *.csv
 
+# Build react files to generate static assets (HTML, CSS, JS)
 build-webapp:
 	- rm -r static || true
 	- rm webapp.html || true
@@ -58,3 +59,15 @@ build-webapp:
 	mv build/index.html build/webapp.html && \
 	cp -r build/* .. && \
 	cd ..
+
+# Build the webapp react docker image
+webapp-image:
+	docker build -f webapp/Dockerfile.dev -t gcallah/indras_webapp webapp
+
+# Mount resources and run the react webapp
+webapp-run:
+	docker run --rm -p 3000:3000 -v `pwd`/webapp/public:/home/public -v `pwd`/webapp/src:/home/src --name webapp-dev-container gcallah/indras_webapp
+
+# Mount resources and explore the react webapp image
+webapp-run-interactive:
+	docker run --rm -it -p 3000:3000 -v `pwd`/webapp/public:/home/public -v `pwd`/webapp/src:/home/src --name webapp-dev-container gcallah/indras_webapp sh
