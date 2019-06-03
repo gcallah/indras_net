@@ -29,7 +29,7 @@ class WIP extends Component {
         </h1>
         <br /><br />
 
-        <h2>Work in Progress!</h2>
+        <p>We will have this model running soon!</p>
 
         <br /><br />
       </div>

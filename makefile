@@ -4,24 +4,31 @@ BOXPLOTS = $(shell ls $(BOX_DATA)/plot*.pdf)
 DOCKER_DIR = docker
 REPO = indras_net
 MODELS_DIR = models
-WEB_DIR = WebApp
+WEB_DIR = webapp
+WEB_PUBLIC = $(WEB_DIR)/public
+WEB_SRC = $(WEB_DIR)/src
 API_DIR = APIServer
 PYLINT = flake8
 PYLINTFLAGS = 
 PYTHONFILES = $(shell ls $(API_DIR)/*.py)
 PYTHONFILES += $(shell ls $(MODELS_DIR)/*.py)
-WEBFILES = $(shell ls $(WEB_DIR)/*.js)
-WEBFILES += $(shell ls $(WEB_DIR)/*.css)
+WEBFILES = $(shell ls $(WEB_SRC)/*.js)
+WEBFILES += $(shell ls $(WEB_SRC)/components/*.js)
+WEBFILES += $(shell ls $(WEB_SRC)/*.css)
+WEBFILES += $(shell ls $(WEB_SRC)/components/*.css)
 
 FORCE:
 
-# Build react files to generate static assets (HTML, CSS, JS)
-webapp: $(WEB_DIR)/index.html
+setup_react:
+	cd $(WEB_DIR); npm install
 
-$(WEB_DIR)/index.html: $(WEBFILES)
+# Build react files to generate static assets (HTML, CSS, JS)
+webapp: $(WEB_PUBLIC)/index.html
+
+$(WEB_PUBLIC)/index.html: $(WEBFILES)
 	- rm -r static || true
 	- rm webapp.html || true
-	- cd webapp && \
+	- cd $(WEB_DIR) && \
 	npm run build && \
 	mv build/index.html build/webapp.html && \
 	cp -r build/* .. && \
@@ -68,11 +75,3 @@ nocrud:
 # Build the webapp react docker image
 webapp-image:
 	docker build -f webapp/Dockerfile.dev -t gcallah/indras_webapp webapp
-
-# Mount resources and run the react webapp
-webapp-run:
-	docker run --rm -p 3000:3000 -v `pwd`/webapp/public:/home/public -v `pwd`/webapp/src:/home/src --name webapp-dev-container gcallah/indras_webapp
-
-# Mount resources and explore the react webapp image
-webapp-run-interactive:
-	docker run --rm -it -p 3000:3000 -v `pwd`/webapp/public:/home/public -v `pwd`/webapp/src:/home/src --name webapp-dev-container gcallah/indras_webapp sh

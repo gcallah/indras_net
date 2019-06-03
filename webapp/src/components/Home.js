@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 class Home extends Component {
+  api_server = 'https://indrasnet.pythonanywhere.com/';
   state = {
     msg: '',
     allItems: [],
@@ -13,7 +14,7 @@ class Home extends Component {
   async componentDidMount() {
     this.setState({ loadingData: true });
     document.title = "Title";
-    const res = await axios.get('https://indrasnet.pythonanywhere.com/models')
+    const res = await axios.get(this.api_server + 'models')
     this.setState({ allItems: res.data });
     this.setState({ loadingData: false });
   }
