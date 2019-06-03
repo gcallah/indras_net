@@ -1,3 +1,4 @@
+matplotlib
 numpy
 flask
 flask_restplus
