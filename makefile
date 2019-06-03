@@ -4,13 +4,28 @@ BOXPLOTS = $(shell ls $(BOX_DATA)/plot*.pdf)
 DOCKER_DIR = docker
 REPO = indras_net
 MODELS_DIR = models
+WEB_DIR = WebApp
 API_DIR = APIServer
 PYLINT = flake8
 PYLINTFLAGS = 
 PYTHONFILES = $(shell ls $(API_DIR)/*.py)
 PYTHONFILES += $(shell ls $(MODELS_DIR)/*.py)
+WEBFILES = $(shell ls $(WEB_DIR)/*.js)
+WEBFILES += $(shell ls $(WEB_DIR)/*.css)
 
 FORCE:
+
+# Build react files to generate static assets (HTML, CSS, JS)
+webapp: $(WEB_DIR)/index.html
+
+$(WEB_DIR)/index.html: $(WEBFILES)
+	- rm -r static || true
+	- rm webapp.html || true
+	- cd webapp && \
+	npm run build && \
+	mv build/index.html build/webapp.html && \
+	cp -r build/* .. && \
+	cd ..
 
 tags: FORCE
 	ctags --recurse .
@@ -49,16 +64,6 @@ nocrud:
 	-rm *.out
 	-rm .*swp
 	-rm *.csv
-
-# Build react files to generate static assets (HTML, CSS, JS)
-build-webapp:
-	- rm -r static || true
-	- rm webapp.html || true
-	- cd webapp && \
-	npm run build && \
-	mv build/index.html build/webapp.html && \
-	cp -r build/* .. && \
-	cd ..
 
 # Build the webapp react docker image
 webapp-image:
