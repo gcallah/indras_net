@@ -2,6 +2,8 @@
     This is the fashion model re-written in indra.
 """
 
+from propargs.propargs import PropArgs
+
 from indra.agent import Agent
 from indra.composite import Composite
 from indra.env import Env
@@ -9,9 +11,6 @@ from indra.display_methods import RED, BLUE
 
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
-
-NUM_RED = 8
-NUM_BLUE = 8
 
 red_group = None
 blue_group = None
@@ -35,14 +34,18 @@ def set_up():
     """
     A func to set up run that can also be used by test code.
     """
+    ds_file = 'basic2.props.json'
+    pa = PropArgs.create_props('forest_fire_props',
+                               ds_file=ds_file)
     blue_group = Composite("Blues", {"color": BLUE},
                            member_creator=create_agent,
-                           num_members=NUM_BLUE)
+                           num_members=pa['num_blue'])
     red_group = Composite("Reds", {"color": RED},
                           member_creator=create_agent,
-                          num_members=NUM_RED)
+                          num_members=pa['num_red'])
 
-    env = Env("env", members=[blue_group, red_group])
+    env = Env("env", height=pa['grid_height'], width=pa['grid_width'],
+              members=[blue_group, red_group])
     return (blue_group, red_group, env)
 
 

@@ -2,6 +2,8 @@
     This is the fashion model re-written in indra.
 """
 
+from propargs.propargs import PropArgs
+
 from indra.agent import prob_state_trans
 from indra.agent import Agent
 from indra.composite import Composite
@@ -11,10 +13,6 @@ from indra.display_methods import RED, GREEN, BLACK, SPRINGGREEN, TOMATO
 
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
-
-FOREST_WIDTH = 40
-FOREST_HEIGHT = 40
-DENSITY = .44
 
 NEARBY = 1.8
 
@@ -105,15 +103,21 @@ def set_up():
     global on_fire
     global healthy
 
+    ds_file = 'forestfire.props.json'
+    pa = PropArgs.create_props('forest_fire_props', ds_file=ds_file)
+    forest_height = pa['grid_height']
+    forest_width = pa['grid_width']
+    forest_density = pa['density']
+
     healthy = Composite(HEALTHY, {"color": GREEN})
     new_fire = Composite(NEW_FIRE, {"color": TOMATO})
     on_fire = Composite(ON_FIRE, {"color": RED})
     burned_out = Composite(BURNED_OUT, {"color": BLACK})
     new_growth = Composite(NEW_GROWTH, {"color": SPRINGGREEN})
-    for i in range(int(FOREST_HEIGHT * FOREST_WIDTH * DENSITY)):
+    for i in range(int(forest_height * forest_width * forest_density)):
         healthy += plant_tree(i)
 
-    forest = Env("Forest", height=FOREST_HEIGHT, width=FOREST_WIDTH,
+    forest = Env("Forest", height=forest_height, width=forest_width,
                  members=[healthy, new_fire, on_fire, burned_out, new_growth])
 
     global group_map
