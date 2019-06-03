@@ -4,4 +4,3 @@ coverage
 nose
 selenium
 urllib3
-ipython
