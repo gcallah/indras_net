@@ -52,11 +52,13 @@ class Props(Resource):
             return {"Error": "Invalid model id " + str(model_id)}
 
 
-@api.route('/models/<int:model_id>/run')
+@api.route('/models/<int:model_id>/menu')
 class Model(Resource):
     def put(self, model_id):
         return {"name": models_database[model_id]["name"],
-                "status": "Is running!"}
+                "status": "Is running!",
+                "menu": ["Item 1", "Item 2", "Item 3"]
+               }
 
 
 if __name__ == '__main__':
