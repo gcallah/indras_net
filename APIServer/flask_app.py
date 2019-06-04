@@ -12,7 +12,7 @@ api = Api(app)
 
 if __name__ == '__main__':
     # On local machines, use relative path
-    dir = ""
+    dir = "/Users/ziruizhou/Desktop/indras_net/"
 else:
     # On the server, use absolute path
     dir = "/home/indrasnet/indras_net/"
@@ -38,7 +38,7 @@ class HelloWorld(Resource):
 @api.route('/models')
 class Models(Resource):
     def get(self):
-        return  models_response
+        return models_response
 
 @api.route('/models/<int:model_id>/props')
 class Props(Resource):
@@ -50,6 +50,20 @@ class Props(Resource):
 
         except KeyError:
             return {"Error": "Invalid model id " + str(model_id)}
+
+@api.route('/models/<int:menuitem_id>/props')
+class Props(Resource):
+    def get(self, menuitem_id):
+        try:
+            ...
+            #executing specific menu item
+        except KeyError:
+            return {"Error": "Invalid menu item id " + str(menuitem_id)}
+
+    def put(self, menuitem_id):
+        return {"execute": menuitem_id,
+                "menu": ["Item 1", "Item 2", "Item 3"]
+               }
 
 
 @api.route('/models/<int:model_id>/menu')
