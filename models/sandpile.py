@@ -56,6 +56,7 @@ def place_action(agent):
     print("in place_action with sand height of ", agent["grains"])
     print("and pos = ", agent.pos)
     neighbors = sandpile.get_vonneumann_hood(agent)
+    print("test")
     for neighbor in neighbors:
         print(agent.name, " has neighbor ", neighbor.name)
 

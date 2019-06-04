@@ -2,7 +2,7 @@
 This is the test suite for space.py.
 """
 
-from unittest import TestCase, main
+from unittest import TestCase, main, skip
 
 from indra.space import Space, distance, out_of_bounds
 from indra.space import DEF_HEIGHT, DEF_WIDTH, DEF_MAX_MOVE
@@ -217,6 +217,7 @@ class SpaceTestCase(TestCase):
         (x, y) = (self.newton.get_x(), self.newton.get_y())
         self.assertFalse(self.space.is_empty(x, y))
 
+    # @skip("Skipping von neumann test")
     def test_get_vonneumann_hood(self):
         """
         Get von Neumann neighborhood.
@@ -224,21 +225,24 @@ class SpaceTestCase(TestCase):
         space = Space("test space")
         space += self.test_agent
         space += self.test_agent2
-
-        space.place_member(mbr=self.test_agent, xy=(0, 0))
-        space.place_member(mbr=self.test_agent2, xy=(0, 1))
-        hood = space.get_vonneumann_hood(self.test_agent)
-        self.assertTrue(self.test_agent2.name in hood)
-
         space += self.test_agent3
-        space.place_member(mbr=self.test_agent3, xy=(1, 0))
-        hood = space.get_vonneumann_hood(self.test_agent)
-        self.assertTrue(self.test_agent3.name in hood)
-
         space += self.test_agent4
-        space.place_member(mbr=self.test_agent4, xy=(0, DEF_HEIGHT))
-        hood = space.get_vonneumann_hood(self.test_agent)
-        self.assertTrue(self.test_agent4.name not in hood)
+
+        for i in range(REP_RAND_TESTS):
+            print("Looping in von Neumann")
+
+            space.place_member(mbr=self.test_agent, xy=(0, 0))
+            space.place_member(mbr=self.test_agent2, xy=(0, 1))
+            hood = space.get_vonneumann_hood(self.test_agent)
+            self.assertTrue(self.test_agent2.name in hood)
+
+            space.place_member(mbr=self.test_agent3, xy=(1, 0))
+            hood = space.get_vonneumann_hood(self.test_agent)
+            self.assertTrue(self.test_agent3.name in hood)
+
+            space.place_member(mbr=self.test_agent4, xy=(0, DEF_HEIGHT))
+            hood = space.get_vonneumann_hood(self.test_agent)
+            self.assertTrue(self.test_agent4.name not in hood)
 
 
 if __name__ == '__main__':

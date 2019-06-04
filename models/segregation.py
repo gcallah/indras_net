@@ -41,14 +41,12 @@ red_agents = None
 blue_agents = None
 
 
-#def get_tolerance(default_tolerance):
- #   return default_tolerance
-
 def get_tolerance(default_tolerance):
     tol = random.gauss(default_tolerance, DEF_SIGMA)
     tol = max(tol, 0.0)
     tol = min(tol, 1.0)
     return tol;
+
 
 def my_group_index(agent):
     return int(agent[COLOR])
