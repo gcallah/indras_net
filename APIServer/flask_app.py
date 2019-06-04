@@ -50,6 +50,32 @@ class Props(Resource):
         except KeyError:
             return {"Error": "Invalid model id " + str(model_id)}
 
+    def put(self, model_id):
+        try: 
+             with open(dir + "APIServer/" +
+                      models_database[model_id]["props"]) as file:
+                return {"questions": ["Question 1", "Question 2", "Question 3"]}
+        except KeyError:
+            return {"Error": "Invalid model id " + str(model_id)}
+
+@api.route('/models/<int:question1>/<int:question2>/<float:question3>/props')
+class Props(Resource):
+    def get(self, question1, question2, question3):
+        try:
+            ...
+            #executing the answers.
+        except KeyError:
+            return {"Error" : "Out of range"}
+
+    def put(self, question1, question2, question3):
+        return {"menu": ["Item 1", "Item 2", "Item 3"],
+                "grid_height": question1,
+                "grid_width": question2,
+                "density" : question3
+                }
+
+
+
 @api.route('/models/<int:menuitem_id>/props')
 class Props(Resource):
     def get(self, menuitem_id):
@@ -64,7 +90,7 @@ class Props(Resource):
                 "menu": ["Item 1", "Item 2", "Item 3"]
                }
 
-
+#Ask Professor!!!!!
 @api.route('/models/<int:model_id>/menu')
 class Model(Resource):
     def put(self, model_id):
@@ -72,7 +98,6 @@ class Model(Resource):
                 "status": "Is running!",
                 "menu": ["Item 1", "Item 2", "Item 3"]
                }
-
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8000, debug=True)
