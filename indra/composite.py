@@ -269,6 +269,9 @@ class Composite(Agent):
                 "attrs": self.attrs_to_dict(),
                 "members": self.members}
 
+    def attrs_to_dict(self):
+        return "Simon must write this!"
+
     def has_color(self):
         return "color" in self.attrs
 

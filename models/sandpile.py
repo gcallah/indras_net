@@ -18,7 +18,7 @@ WIDTH = 2
 
 MAX_SAND = 5
 
-SAND_PREFIX = "sand location"
+SAND_PREFIX = "sand_location"
 
 NEARBY = 1
 
@@ -49,20 +49,20 @@ def change_color(agent, sandpile, opp_group):
                         opp_group[str(agent.primary_group())])
 
 
-def grain_action(agent):
+def place_action(agent):
     """
-    If the agent is surrounded by more "others" than it is comfortable
-    with, the agent will move.
+    See if we are carrying too much sand at this locale.
     """
-    print("from grain_action")
+    print("in place_action with sand height of ", agent["grains"])
+    print("and pos = ", agent.pos)
     neighbors = sandpile.get_vonneumann_hood(agent)
     for neighbor in neighbors:
-        print(neighbor)
+        print(agent.name, " has neighbor ", neighbor.name)
 
 
 def sandpile_action(sanpile):
-    sandpile.attrs["center agent"]["grains"] += 1
-    print("test_env_action")
+    sandpile.attrs["center_agent"]["grains"] += 1
+    print("in sandpile_action")
 
 
 def create_agent(i):
@@ -70,7 +70,7 @@ def create_agent(i):
     Creates agent for holding sand.
     """
     return Agent(SAND_PREFIX + str(i),
-                 action=grain_action,
+                 action=place_action,
                  attrs={"grains": 0})
 
 
@@ -84,7 +84,7 @@ def set_up():
     group3 = Composite("Group3", {"color": disp.CYAN})
     group4 = Composite("Group4", {"color": disp.RED})
     group5 = Composite("Group5", {"color": disp.YELLOW})
-    for i in range(HEIGHT * WIDTH):
+    for i in range((HEIGHT) * (WIDTH)):
         group0 += create_agent(i)
 
     sandpile = Env("A sandpile", action=sandpile_action, members=[
@@ -96,7 +96,7 @@ def set_up():
                    group5
                    ],
                    height=HEIGHT, width=WIDTH)
-    sandpile.attrs["center agent"] = sandpile.get_agent_at(HEIGHT / 2,
+    sandpile.attrs["center_agent"] = sandpile.get_agent_at(HEIGHT / 2,
                                                            WIDTH / 2)
 
     return (group0,
