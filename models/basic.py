@@ -34,8 +34,8 @@ def set_up():
     """
     A func to set up run that can also be used by test code.
     """
-    ds_file = 'basic2.props.json'
-    pa = PropArgs.create_props('forest_fire_props',
+    ds_file = 'props/basic.props.json'
+    pa = PropArgs.create_props('basic_props',
                                ds_file=ds_file)
     blue_group = Composite("Blues", {"color": BLUE},
                            member_creator=create_agent,

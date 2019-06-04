@@ -9,12 +9,13 @@ from indra.env import Env
 from models.segregation import set_up, create_agent, RED_TEAM, BLUE_TEAM
 from models.segregation import env_favorable, agent_action
 from models.segregation import group_names, agent_action, my_group_index
-from models.segregation import other_group_index
+from models.segregation import other_group_index, get_tolerance
+from models.segregation import DEF_TOLERANCE
 import models.segregation as seg
 
 TEST_ANUM = 999999
 
-REP_RAND_TESTS = 20
+REP_RAND_TESTS = 100
 
 SMALL_GRID = 4
 
@@ -32,6 +33,17 @@ class SegregationTestCase(TestCase):
         seg.red_agents = None
         seg.city = None
 
+    def test_get_tolerance(self):
+        """
+        Test that our tolerance function gets a good distribution.
+        """
+        sum = 0
+        for i in range(REP_RAND_TESTS):
+            sum += get_tolerance(DEF_TOLERANCE)
+        avg = sum / REP_RAND_TESTS
+        self.assertLess(DEF_TOLERANCE - .2, avg)
+        self.assertGreater(DEF_TOLERANCE + .2, avg)
+
     def test_my_group_index(self):
         red_agent = create_agent(TEST_ANUM, color=RED_TEAM)
         self.assertEqual(RED_TEAM, my_group_index(red_agent))
@@ -45,6 +57,9 @@ class SegregationTestCase(TestCase):
         self.assertEqual(RED_TEAM, other_group_index(blue_agent))
 
     def test_create_agent(self):
+        """
+        Test that creating an agent works.
+        """
         fred = create_agent(TEST_ANUM, color=RED_TEAM) 
         freds_nm = group_names[RED_TEAM] + str(TEST_ANUM)
         self.assertEqual(freds_nm, str(fred))
