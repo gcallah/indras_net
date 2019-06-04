@@ -5,7 +5,7 @@
 
 from indra.agent import Agent
 from indra.composite import Composite
-#from indra.space import in_hood
+# from indra.space import in_hood
 from indra.env import Env
 import indra.display_methods as disp
 
