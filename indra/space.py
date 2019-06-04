@@ -186,10 +186,12 @@ class Space(Composite):
 
     def move_location(self, nx, ny, ox, oy):
         """
-        Move a member to a new position.
+        Move a member to a new position, if that position
+        is not already occupied.
         """
-        self.locations[(nx, ny)] = self.locations[(ox, oy)]
-        del self.locations[(ox, oy)]
+        if (nx, ny) not in self.locations:
+            self.locations[(nx, ny)] = self.locations[(ox, oy)]
+            del self.locations[(ox, oy)]
 
     def remove_location(self, x, y):
         """
