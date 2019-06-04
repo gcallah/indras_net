@@ -76,7 +76,7 @@ class Props(Resource):
 
 
 
-@api.route('/models/<int:menuitem_id>/props')
+@api.route('/models/<int:menuitem_id>/menu')
 class Props(Resource):
     def get(self, menuitem_id):
         try:
@@ -91,13 +91,13 @@ class Props(Resource):
                }
 
 #Ask Professor!!!!!
-@api.route('/models/<int:model_id>/menu')
-class Model(Resource):
-    def put(self, model_id):
-        return {"name": models_database[model_id]["name"],
-                "status": "Is running!",
-                "menu": ["Item 1", "Item 2", "Item 3"]
-               }
+# @api.route('/models/<int:model_id>/menu')
+# class Model(Resource):
+#     def put(self, model_id):
+#         return {"name": models_database[model_id]["name"],
+#                 "status": "Is running!",
+#                 "menu": ["Item 1", "Item 2", "Item 3"]
+#                }
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8000, debug=True)
