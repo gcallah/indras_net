@@ -22,6 +22,11 @@ GRP2 = "Group2"
 X = 0
 Y = 1
 
+def env_action(env):
+    print("Calling action for env")
+    env.name = "Monjur"
+    return True
+
 
 class EnvTestCase(TestCase):
     def setUp(self):
@@ -29,7 +34,7 @@ class EnvTestCase(TestCase):
         self.calcs = create_calcguys()
         self.cambs = create_cambguys()
         self.pop_hist = PopHist()
-        self.env = Env("Test env")
+        self.env = Env("Test env", action=env_action)
 
     def tearDown(self):
         self.newton = None
@@ -97,8 +102,8 @@ class EnvTestCase(TestCase):
             self.env.pop_hist = self.fill_pop_hist()
             ret = self.env.line_data()
             self.assertEqual(ret, (2,
-                                   {GRP1: {"color": "r", "data": [10, 20]},
-                                    GRP2: {"color": "g", "data": [10, 20]}}))
+                                   {GRP1: {"color": "navy", "data": [10, 20]},
+                                    GRP2: {"color": "b", "data": [10, 20]}}))
 
     def test_plot_data(self):
         """
@@ -118,6 +123,11 @@ class EnvTestCase(TestCase):
             self.assertTrue(self.env.headless())
         else:
             self.assertTrue(not self.env.headless())
+
+    def test_env_action(self):
+        self.env()
+        # must debug this test!
+        self.assertEqual(self.env.name, "Monjur")
 
 
 if __name__ == '__main__':

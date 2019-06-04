@@ -36,10 +36,18 @@ class SpaceTestCase(TestCase):
     def setUp(self):
         (self.space, self.newton) = create_space()
         self.teeny_space = create_teeny_space()
+        self.test_agent = Agent("test agent")
+        self.test_agent2 = Agent("test agent 2")
+        self.test_agent3 = Agent("test agent 3")
+        self.test_agent4 = Agent("test agent 4")
 
     def tearDown(self):
         self.space = None
         self.teeny_space = None
+        self.test_agent = None
+        self.test_agent2 = None
+        self.test_agent3 = None
+        self.test_agent4 = None
 
     def test_constrain_x(self):
         """
@@ -76,6 +84,34 @@ class SpaceTestCase(TestCase):
         """
         for agent in self.space:
             self.assertTrue(self.space[agent].islocated())
+
+    def test_place_member_xy(self):
+        """
+        Test placing an agent at a particular x, y spot.
+        We will run this DEF_HEIGHT times, to test multiple
+        possible placements.
+        """
+        space = Space("test space")
+        for i in range(DEF_HEIGHT):
+            spot = space.place_member(mbr=self.test_agent, xy=(i, i))
+            if spot is not None:
+                # the print output will usually be captured by nose,
+                # but that can be turned off with --nocapture.
+                (x, y) = (self.test_agent.get_x(),
+                          self.test_agent.get_y())
+                self.assertEqual((x, y), (i, i))
+
+    def test_get_agent_at(self):
+        """
+        Test getting an agent from some locale.
+        """
+        space = Space("test space")
+        # before adding agent, all cells are empty:
+        self.assertEqual(space.get_agent_at(1, 1), None)
+        for i in range(DEF_HEIGHT):
+            spot = space.place_member(mbr=self.test_agent, xy=(i, i))
+            whos_there = space.get_agent_at(i, i)
+            self.assertEqual(whos_there, self.test_agent)
 
     def test_rand_x(self):
         """
@@ -173,6 +209,37 @@ class SpaceTestCase(TestCase):
             (new_x, new_y) = (self.newton.get_x(), self.newton.get_y())
             self.assertTrue(abs(new_x - old_x) <= max_move)
             self.assertTrue(abs(new_y - old_y) <= max_move)
+
+    def test_is_empty(self):
+        """
+        Is cell empty?
+        """
+        (x, y) = (self.newton.get_x(), self.newton.get_y())
+        self.assertFalse(self.space.is_empty(x, y))
+
+    def test_get_vonneumann_hood(self):
+        """
+        Get von Neumann neighborhood.
+        """
+        space = Space("test space")
+        space += self.test_agent
+        space += self.test_agent2
+
+        space.place_member(mbr=self.test_agent, xy=(0, 0))
+        space.place_member(mbr=self.test_agent2, xy=(0, 1))
+        hood = space.get_vonneumann_hood(self.test_agent)
+        self.assertTrue(self.test_agent2.name in hood)
+
+        space += self.test_agent3
+        space.place_member(mbr=self.test_agent3, xy=(1, 0))
+        hood = space.get_vonneumann_hood(self.test_agent)
+        self.assertTrue(self.test_agent3.name in hood)
+
+        space += self.test_agent4
+        space.place_member(mbr=self.test_agent4, xy=(0, DEF_HEIGHT))
+        hood = space.get_vonneumann_hood(self.test_agent)
+        self.assertTrue(self.test_agent4.name not in hood)
+
 
 if __name__ == '__main__':
     main()

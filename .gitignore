@@ -23,6 +23,7 @@ models/old_models/*
 .ipynb_checkpoints/
 *.csv
 *.json
+*node_modules
 bigbox/data/mppref1.2/.RData
 bigbox/data/mppref1.2/.Rhistory
 bigbox/tmp/*
@@ -41,4 +42,7 @@ indras_net.egg-info/*
 /indra2/.idea/modules.xml
 /indra2/.idea/vcs.xml
 /indra2/.idea/workspace.xml
+/models/.coverage.py
 .ds_store
+!/APIServer/data/*.json
+!/webapp/*json

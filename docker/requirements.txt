@@ -1,4 +1,7 @@
-networkx
+ipython
+matplotlib
 numpy
-django
-django-extensions
+flask
+flask_restplus
+flask-cors
+propargs

@@ -6,16 +6,16 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.space import in_hood
 from indra.env import Env
-from indra.display_methods import BLACK, GREEN
+from indra.display_methods import TAN, GRAY
 
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
-NUM_WOLVES = 10
-NUM_SHEEP = 30
+NUM_WOLVES = 1
+NUM_SHEEP = 1
 HOOD_SIZE = 3
-# MEADOW_HEIGHT = 4
-# MEADOW_WIDTH = 4
+MEADOW_HEIGHT = 2
+MEADOW_WIDTH = 2
 
 WOLF_LIFESPAN = 5
 WOLF_REPRO_PERIOD = 6
@@ -137,21 +137,22 @@ def set_up():
     """
     A func to set up run that can also be used by test code.
     """
-    wolves = Composite(COMP_WOLF_NAME, {"color": BLACK})
+    wolves = Composite(COMP_WOLF_NAME, {"color": TAN})
     for i in range(NUM_WOLVES):
         wolves += create_wolf(i)
 
     if DEBUG2:
         print(wolves.__repr__())
 
-    sheep = Composite(COMP_SHEEP_NAME, {"color": GREEN})
+    sheep = Composite(COMP_SHEEP_NAME, {"color": GRAY})
     for i in range(NUM_SHEEP):
         sheep += create_sheep(i)
 
     if DEBUG2:
         print(sheep.__repr__())
 
-    meadow = Env("meadow", members=[wolves, sheep])
+    meadow = Env("meadow", members=[wolves, sheep],
+                 height=MEADOW_HEIGHT, width=MEADOW_WIDTH)
     return (wolves, sheep, meadow)
 
 

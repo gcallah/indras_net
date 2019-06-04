@@ -1,0 +1,26 @@
+{
+  "models_database": [
+    {
+      "name":"Adam Smith's Fashion Model",
+      "path":"models.fashion.main"
+    },
+    {
+      "name":"Forest Fire",
+      "path":"models.forestfire.main",
+      "props":"data/forestfire.props.json",
+      "doc": "A model forest with trees that randomly catch fire."
+    },
+    {
+      "name":"Abelian Sandpile",
+      "path":"models.sandpile.main"
+    },
+    {
+      "name":"Schelling's Segregation Model",
+      "path":"models.segregation.main"
+    },
+    {
+      "name":"Predator-Prey Model",
+      "path":"models.wolfsheep.main"
+    }
+  ]
+}

@@ -29,15 +29,22 @@ class Composite(Agent):
         attrs: a dictionary of group properties
         members: a list of members, that will be turned
             into a dictionary
+        member_creator: a function to create members
+        num_members: how many to create
     """
 
     def __init__(self, name, attrs=None, members=None,
-                 duration=INF):
+                 duration=INF, action=None, member_creator=None,
+                 num_members=None):
         self.members = OrderedDict()
-        super().__init__(name, attrs=attrs, duration=duration)
+        super().__init__(name, attrs=attrs, duration=duration,
+                         action=action)
         if members is not None:
             for member in members:
                 join(self, member)
+        if member_creator is not None:
+            for i in range(num_members):
+                self += member_creator(name, i)
 
     def __repr__(self):
         return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
@@ -102,6 +109,10 @@ class Composite(Agent):
         del_list = []
         self.duration -= 1
         if self.duration > 0:
+            if self.action is not None:
+                # the action was defined outside this class, so pass self:
+                self.action(self)
+
             for (key, member) in self.members.items():
                 if member.isactive():
                     total_acts += member()
@@ -230,13 +241,16 @@ class Composite(Agent):
 
     def isactive(self):
         """
-        A composite is active if any of its members are active;
-        otherwise, it is inactive.
+        For now, composites just stay active.
         """
-        for member in self.members.values():
-            if member.isactive():
-                return True
-        return False
+        return True
+# we should look at bringing back this logic at some point,
+# but the problem is it will block pending actions like deleting dead members
+# from the group.
+#        for member in self.members.values():
+#            if member.isactive():
+#                return True
+#        return False
 
     def is_mbr_comp(self, mbr):
         return is_composite(self.members[mbr])

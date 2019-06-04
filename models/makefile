@@ -1,6 +1,6 @@
 TESTDIR = tests
 PYLINT = flake8
-PYLINTFLAGS = --ignore=E741,W503 --exclude=interactive.py
+PYLINTFLAGS = --ignore=E741,W503 --exclude=interactive.py,__main__.py
 PYTHONFILES = $(shell ls *.py)
 TEST_FILES = $(shell ls $(TESTDIR)/test_*.py)
 
@@ -19,17 +19,20 @@ tests: pytests lint
 	$(PYLINT) $(PYLINTFLAGS) $*.py
 
 test_seg:
-	nosetests tests.test_segregation
+	nosetests tests.test_segregation --nocapture
+
+test_sand:
+	nosetests tests.test_sandpile --nocapture
 
 # for some reason the following test hangs:
 # test_fashion:
 # 	nosetests tests.test_fashion
 
 test_wolfsheep:
-	nosetests tests.test_wolfsheep
+	nosetests tests.test_wolfsheep --nocapture
 
 test_forestfire:
-	nosetests tests.test_forestfire
+	nosetests tests.test_forestfire --nocapture
 
 nocrud:
 	-rm *~

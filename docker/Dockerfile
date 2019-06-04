@@ -9,5 +9,6 @@ RUN pip install -r requirements-dev.txt
 
 ENV user_type TERMINAL
 ENV PYTHONPATH "/home/IndrasNet:${PYTHONPATH}"
+ENV PROPS_DIR "/home/IndrasNet/APIServer/data/"
 
 WORKDIR /home/IndrasNet/

@@ -11,6 +11,7 @@ install:
 
 env:
     - PYTHONPATH=/home/travis/build/gcallah/indras_net
+    - PROPS_DIR=/home/travis/build/gcallah/indras_net/APIServer/data/
 
 script:
     - make tests

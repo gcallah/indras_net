@@ -53,8 +53,8 @@ class Env(Space):
     An env *is* a space and *has* a timeline (PopHist).
     That makes the inheritance work out as we want it to.
     """
-    def __init__(self, name, **kwargs):
-        super().__init__(name, **kwargs)
+    def __init__(self, name, action=None, **kwargs):
+        super().__init__(name, action=action, **kwargs)
         self.pop_hist = PopHist()  # this will record pops across time
         # Make sure varieties are present in the history
         for mbr in self.members:
@@ -79,6 +79,9 @@ class Env(Space):
         Calling the env makes it run. If we are on a terminal, we ask the user
         to put up a menu and choose. For tests, we just run N (default) turns.
         """
+        if self.action is not None:
+            # the action was defined outside this class, so pass self:
+            self.action(self)
         if (self.user is None) or (self.user_type == TEST):
             self.runN()
         else:
@@ -212,7 +215,7 @@ class Env(Space):
         This assumption is dangerous, and we should address it.
         """
         if not disp.plt_present:
-            self.user.tell("ERROR: Graphing package encounters a problem: "
+            self.user.tell("ERROR: Graphing package encountered a problem: "
                            + disp.plt_present_error_message)
             return
 

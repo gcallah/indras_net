@@ -2,23 +2,46 @@ BOX_DIR = bigbox
 BOX_DATA = $(BOX_DIR)/data
 BOXPLOTS = $(shell ls $(BOX_DATA)/plot*.pdf)
 DOCKER_DIR = docker
-DJANGO_DIR = IndrasNet
 REPO = indras_net
 MODELS_DIR = models
+WEB_DIR = webapp
+WEB_PUBLIC = $(WEB_DIR)/public
+WEB_SRC = $(WEB_DIR)/src
+API_DIR = APIServer
 PYLINT = flake8
 PYLINTFLAGS = 
-PYTHONFILES = $(shell ls $(DJANGO_DIR)/*.py)
+PYTHONFILES = $(shell ls $(API_DIR)/*.py)
 PYTHONFILES += $(shell ls $(MODELS_DIR)/*.py)
+WEBFILES = $(shell ls $(WEB_SRC)/*.js)
+WEBFILES += $(shell ls $(WEB_SRC)/components/*.js)
+WEBFILES += $(shell ls $(WEB_SRC)/*.css)
+WEBFILES += $(shell ls $(WEB_SRC)/components/*.css)
 
 FORCE:
+
+setup_react:
+	cd $(WEB_DIR); npm install
+
+# Build react files to generate static assets (HTML, CSS, JS)
+webapp: $(WEB_PUBLIC)/index.html
+
+$(WEB_PUBLIC)/index.html: $(WEBFILES)
+	- rm -r static || true
+	- rm webapp.html || true
+	- cd $(WEB_DIR) && \
+	npm run build && \
+	mv build/index.html build/webapp.html && \
+	cp -r build/* .. && \
+	cd ..
 
 tags: FORCE
 	ctags --recurse .
 
 # run tests then commit
 prod: tests
-	git commit -a
+	- git commit -a
 	git push origin master
+	ssh indrasnet@ssh.pythonanywhere.com 'cd /home/indrasnet/indras_net; /home/indrasnet/indras_net/rebuild.sh'
 
 tests: FORCE
 	cd indra; make tests
@@ -28,14 +51,6 @@ lint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
 
 %.pylint:
 	$(PYLINT) $(PYLINTFLAGS) $*.py
-
-db: $(DJANGO_DIR)/models.py
-	python ./manage.py makemigrations IndrasNet
-	python ./manage.py migrate
-	git add IndrasNet/migrations/*.py
-	git add $(DJANGO_DIR)/migrations/*.py
-	-git commit $(DJANGO_DIR)/migrations/*.py
-	git push origin master
 
 # dev container has dev tools
 dev_container: $(DOCKER_DIR)/Dockerfile $(DOCKER_DIR)/requirements.txt $(DOCKER_DIR)/requirements-dev.txt
@@ -56,3 +71,7 @@ nocrud:
 	-rm *.out
 	-rm .*swp
 	-rm *.csv
+
+# Build the webapp react docker image
+webapp-image:
+	docker build -f webapp/Dockerfile.dev -t gcallah/indras_webapp webapp

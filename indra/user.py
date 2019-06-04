@@ -12,7 +12,7 @@ WEB = "web"
 GUI = "gui"
 NOT_IMPL = "Choice not yet implemented."
 CANT_ASK_TEST = "Can't ask anything of a scripted test"
-DEF_STEPS = 4
+DEF_STEPS = 1
 
 
 def not_impl(user):
