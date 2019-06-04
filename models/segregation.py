@@ -1,6 +1,7 @@
 """
     This is Schelling's segregation model re-written in indra V2.
 """
+import random
 
 from indra.agent import Agent
 from indra.composite import Composite
@@ -19,6 +20,7 @@ TOLERANCE = "tolerance"
 COLOR = "color"
 
 DEF_TOLERANCE = .5
+DEF_SIGMA = .2
 
 BLUE_TEAM = 0
 RED_TEAM = 1
@@ -38,6 +40,15 @@ opp_group = None
 red_agents = None
 blue_agents = None
 
+
+#def get_tolerance(default_tolerance):
+ #   return default_tolerance
+
+def get_tolerance(default_tolerance):
+    tol = random.gauss(default_tolerance, DEF_SIGMA)
+    tol = max(tol, 0.0)
+    tol = min(tol, 1.0)
+    return tol;
 
 def my_group_index(agent):
     return int(agent[COLOR])
@@ -79,9 +90,10 @@ def create_agent(i, color):
     """
     Creates agent of specified color type
     """
+    this_tolerance = get_tolerance(DEF_TOLERANCE)
     return Agent(group_names[color] + str(i),
                  action=agent_action,
-                 attrs={TOLERANCE: DEF_TOLERANCE,
+                 attrs={TOLERANCE: this_tolerance,
                         COLOR: color})
 
 
