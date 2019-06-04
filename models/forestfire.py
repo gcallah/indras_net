@@ -103,7 +103,7 @@ def set_up():
     global on_fire
     global healthy
 
-    ds_file = 'forestfire.props.json'
+    ds_file = 'props/forestfire.props.json'
     pa = PropArgs.create_props('forest_fire_props', ds_file=ds_file)
     forest_height = pa['grid_height']
     forest_width = pa['grid_width']
