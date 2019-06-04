@@ -1,6 +1,6 @@
 
 # Indra API server
-
+import os
 from flask import Flask
 from flask_restplus import Resource, Api
 from flask_cors import CORS
@@ -10,9 +10,10 @@ app = Flask(__name__)
 CORS(app)
 api = Api(app)
 
+home_dir = os.getenv("HOME", "")
 if __name__ == '__main__':
     # On local machines, use relative path
-    dir = "/Users/ziruizhou/Desktop/indras_net/"
+    dir = home_dir + "/Desktop/indras_net/"
 else:
     # On the server, use absolute path
     dir = "/home/indrasnet/indras_net/"
@@ -62,6 +63,7 @@ class Props(Resource):
 class Props(Resource):
     def get(self, question1, question2, question3):
         try:
+            #Ask Professor!!!!!
             ...
             #executing the answers.
         except KeyError:
@@ -75,11 +77,11 @@ class Props(Resource):
                 }
 
 
-
 @api.route('/models/<int:menuitem_id>/menu')
 class Props(Resource):
     def get(self, menuitem_id):
         try:
+            #Ask Professor!!!!!
             ...
             #executing specific menu item
         except KeyError:
