@@ -280,6 +280,13 @@ class Agent(object):
             d[key] = self.val_vect[self.attrs[key]]
         return d
 
+    def attrs_to_dict(self, other):
+        return "test"
+        # d = OrderedDict()
+        # for key in self.attrs:
+        #     d[key] = self.val_vect[self.attrs[key]]
+        # return d
+
     def same_type(self, other):
         return self.type_sig == other.type_sig
 
