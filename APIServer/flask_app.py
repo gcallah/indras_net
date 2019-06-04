@@ -47,7 +47,6 @@ class Props(Resource):
             with open(dir + "APIServer/" +
                       models_database[model_id]["props"]) as file:
                 return json.loads(file.read())
-
         except KeyError:
             return {"Error": "Invalid model id " + str(model_id)}
 
