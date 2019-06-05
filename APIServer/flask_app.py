@@ -6,6 +6,8 @@ from flask_restplus import Resource, Api
 from flask_cors import CORS
 import json
 
+# from propargs.propargs import PropArgs
+
 app = Flask(__name__)
 CORS(app)
 api = Api(app)
@@ -52,7 +54,7 @@ class Props(Resource):
             return {"Error": "Invalid model id " + str(model_id)}
 
     def put(self, model_id):
-        try: 
+        try:
              with open(dir + "APIServer/" +
                       models_database[model_id]["props"]) as file:
                 return {"questions": ["Question 1", "Question 2", "Question 3"]}
