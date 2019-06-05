@@ -18,15 +18,13 @@ else:
     dir = "/home/indrasnet/indras_net/"
 
 with open(dir + "models/models.json") as file:
-    models_database = json.loads(file.read())["models_database"]
+    models_db = json.loads(file.read())["models_database"]
     models_response = []
-    for model in models_database:
+    for model in models_db:
         doc = ""
         if "doc" in model:
             doc = model["doc"]
-        models_response.append(
-                               {"name": model["name"],
-                                "doc": doc})
+        models_response.append({"name": model["name"], "doc": doc})
 
 
 @api.route('/hello')
@@ -45,7 +43,7 @@ class Models(Resource):
 class Props(Resource):
     def get(self, model_id):
         try:
-            with open(dir + "models/" + models_database[model_id]["props"]) as file:
+            with open(dir + "models/" + models_db[model_id]["props"]) as file:
                 return json.loads(file.read())
 
         except KeyError:
@@ -53,11 +51,10 @@ class Props(Resource):
 
     def put(self, model_id):
         try:
-            with open(dir + "models/" + models_database[model_id]["props"]):
-                return {"questions": ["Question 1", "Question 2", "Question 3"]}
+            with open(dir + "models/" + models_db[model_id]["props"]):
+                return {"questions": ["Question 1"]}
         except KeyError:
             return {"Error": "Invalid model id " + str(model_id)}
-
 
 
 # @api.route("/models/<int:question1>/<int:question2>/<float:question3>/props")
@@ -90,18 +87,18 @@ class Props(Resource):
 #             return {"Error": "Invalid menu item id " + str(menuitem_id)}
 
 #     def put(self, menuitem_id):
-#         return {"execute": menuitem_id, "menu": ["Item 1", "Item 2", "Item 3"]}
+#         return {"execute": menuitem_id, "menu":
+    #             ["Item 1", "Item 2", "Item 3"]}
 
 
 # Ask Professor!!!!!
 # @api.route('/models//menu')
 # class Model(Resource):
 #     def put(self, model_id):
-#         return {"name": models_database[model_id]["name"],
+#         return {"name": models_db[model_id]["name"],
 #                 "status": "Is running!",
 #                 "menu": ["Item 1", "Item 2", "Item 3"]
 #                }
 
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=8000, debug=True)
-
