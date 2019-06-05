@@ -217,7 +217,7 @@ class SpaceTestCase(TestCase):
         (x, y) = (self.newton.get_x(), self.newton.get_y())
         self.assertFalse(self.space.is_empty(x, y))
 
-    # @skip("Skipping von neumann test")
+    @skip("Skipping von neumann test")
     def test_get_vonneumann_hood(self):
         """
         Get von Neumann neighborhood.
