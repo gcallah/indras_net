@@ -3,28 +3,32 @@
     {
       "name": "Adam Smith's Fashion Model",
       "run": "models.fashion.main()",
+      "props": "models/props/fashion.props.json",
       "doc": "A model of trendsetters and followers in the world of fashion."
     },
     {
       "name": "Forest Fire",
       "run": "models.forestfire.main()",
-      "props": "props/forestfire.props.json",
+      "props": "models/props/forestfire.props.json",
       "doc": "A model forest with trees that randomly catch fire."
     },
     {
       "name": "Abelian Sandpile",
       "run": "models.sandpile.main()",
+      "props": "models/props/sandpile.props.json",
       "doc": "A sandpile that makes colorful patterns as the sand tumbles down."
     },
     {
       "name": "Schelling's Segregation Model",
       "run": "models.segregation.main()",
+      "props": "models/props/segregation.props.json",
       "doc": "Thomas Schelling's famous model of segregated neighborhoods."
     },
     {
       "name": "Predator-Prey Model",
       "run": "models.wolfsheep.main()",
-      "doc": "Wolves eat sheep in a meadow and their populations cycle."
+      "props": "models/props/wolfsheep.props.json",
+      "doc": "Wolves eat sheep in a meadow and their populations' cycle."
     }
   ]
 }
