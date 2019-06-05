@@ -24,36 +24,40 @@ with open(dir + "models/models.json") as file:
         doc = ""
         if "doc" in model:
             doc = model["doc"]
-        models_response.append({"name": model["name"], "doc": doc})
+        models_response.append(
+                               {"name": model["name"],
+                                "doc": doc})
 
 
-@api.route("/hello")
+@api.route('/hello')
 class HelloWorld(Resource):
     def get(self):
-        return {"hello": "world"}
+        return {'hello': 'world'}
 
 
-@api.route("/models")
+@api.route('/models')
 class Models(Resource):
     def get(self):
         return models_response
 
 
-@api.route("/models/<int:model_id>/props")
+@api.route('/models/<int:model_id>/props')
 class Props(Resource):
     def get(self, model_id):
         try:
-            with open(dir + "APIServer/" + models_database[model_id]["props"]) as file:
+            with open(dir + "models/" + models_database[model_id]["props"]) as file:
                 return json.loads(file.read())
+
         except KeyError:
             return {"Error": "Invalid model id " + str(model_id)}
 
     def put(self, model_id):
         try:
-            with open(dir + "APIServer/" + models_database[model_id]["props"]) as file:
+            with open(dir + "models/" + models_database[model_id]["props"]):
                 return {"questions": ["Question 1", "Question 2", "Question 3"]}
         except KeyError:
             return {"Error": "Invalid model id " + str(model_id)}
+
 
 
 # @api.route("/models/<int:question1>/<int:question2>/<float:question3>/props")
@@ -75,18 +79,18 @@ class Props(Resource):
 #         }
 
 
-@api.route("/models/<int:menuitem_id>/menu")
-class Props(Resource):
-    def get(self, menuitem_id):
-        try:
-            # Ask Professor!!!!!
-            ...
-            # executing specific menu item
-        except KeyError:
-            return {"Error": "Invalid menu item id " + str(menuitem_id)}
+# @api.route("/models/<int:menuitem_id>/menu")
+# class Props(Resource):
+#     def get(self, menuitem_id):
+#         try:
+#             # Ask Professor!!!!!
+#             ...
+#             # executing specific menu item
+#         except KeyError:
+#             return {"Error": "Invalid menu item id " + str(menuitem_id)}
 
-    def put(self, menuitem_id):
-        return {"execute": menuitem_id, "menu": ["Item 1", "Item 2", "Item 3"]}
+#     def put(self, menuitem_id):
+#         return {"execute": menuitem_id, "menu": ["Item 1", "Item 2", "Item 3"]}
 
 
 # Ask Professor!!!!!
@@ -100,3 +104,4 @@ class Props(Resource):
 
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=8000, debug=True)
+
