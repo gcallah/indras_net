@@ -1,8 +1,7 @@
 -r requirements.txt
+jupyter
 flake8
 coverage
 nose
-django-autofixture
 selenium
 urllib3
-ipython

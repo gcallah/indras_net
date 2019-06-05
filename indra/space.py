@@ -55,6 +55,22 @@ def in_hood(agent, other, hood_sz):
     return d < hood_sz
 
 
+def is_vn_close(x1, x2, y1, y2):
+    return ((x1 == x2) and (abs(y1 - y2) == 1)
+            or ((y1 == y2) and (abs(x1 - x2) == 1)))
+
+
+def in_vonneumann(possible_neighbor, center_agent):
+    if ((not possible_neighbor.islocated()) or (not center_agent.islocated())):
+        return False
+    else:
+        center_x = center_agent.get_x()
+        center_y = center_agent.get_y()
+        other_x = possible_neighbor.get_x()
+        other_y = possible_neighbor.get_y()
+        return is_vn_close(center_x, other_x, center_y, other_y)
+
+
 class Space(Composite):
     """
     A collection of entities that share a space.
@@ -63,8 +79,9 @@ class Space(Composite):
     """
 
     def __init__(self, name, width=DEF_WIDTH, height=DEF_HEIGHT,
-                 attrs=None, members=None):
-        super().__init__(name, attrs=attrs, members=members)
+                 attrs=None, members=None, action=None):
+        super().__init__(name, attrs=attrs, members=members,
+                         action=action)
         self.width = width
         self.height = height
 
@@ -87,7 +104,7 @@ class Space(Composite):
         """
         return len(self.locations) >= self.grid_size()
 
-    def place_members(self, members):
+    def place_members(self, members, max_move=None):
         """
         Locate all members of this space in x, y grid.
         Default is to randomly place members.
@@ -95,9 +112,9 @@ class Space(Composite):
         if members is not None:
             for nm, mbr in members.items():
                 if not is_composite(mbr):  # by default don't locate groups
-                    self.place_member(mbr)
+                    self.place_member(mbr, max_move)
                 else:  # place composite's members
-                    self.place_members(mbr.members)
+                    self.place_members(mbr.members, max_move)
 
     def rand_x(self, low=0, high=None):
         """
@@ -129,43 +146,72 @@ class Space(Composite):
         """
         return bound(y, 0, self.height)
 
-    def place_member(self, mbr, max_move=None):
+    def gen_new_pos(self, mbr, max_move):
+        """
+        Generate new random position within max_move of current pos.
+        """
+        low_x = 0
+        high_x = self.width
+        low_y = 0
+        high_y = self.height
+        if max_move is not None and mbr.islocated():
+            low_x = self.constrain_x(mbr.get_x() - max_move)
+            high_x = self.constrain_x(mbr.get_x() + max_move)
+            low_y = self.constrain_y(mbr.get_y() - max_move)
+            high_y = self.constrain_y(mbr.get_y() + max_move)
+        x = self.rand_x(low_x, high_x)
+        y = self.rand_y(low_y, high_y)
+        return (x, y)
+
+    def is_empty(self, x, y):
+        """
+        See if cell x,y is empty.
+        """
+        return (x, y) not in self.locations
+
+    def get_agent_at(self, x, y):
+        """
+        Return agent at cell x,y
+        If cell is empty return None.
+        """
+        if self.is_empty(x, y):
+            return None
+        return self.locations[(x, y)]
+
+    def place_member(self, mbr, max_move=None, xy=None):
         """
         By default, locate a member at a random x, y spot in our grid.
-        max_move is not used yet!
+        `max_move` constrains where that can be.
+        Setting `xy` picks a particular spot to place member.
+        `xy` must be a tuple!
         """
         if self.is_full():
             self.user.log("Can't fit no more folks in this space!")
             return None
 
         if not is_composite(mbr):
-            low_x = 0
-            high_x = self.width
-            low_y = 0
-            high_y = self.height
-            if max_move is not None and mbr.islocated():
-                low_x = self.constrain_x(mbr.get_x() - max_move)
-                high_x = self.constrain_x(mbr.get_x() + max_move)
-                low_y = self.constrain_y(mbr.get_y() - max_move)
-                high_y = self.constrain_y(mbr.get_y() + max_move)
-            x = self.rand_x(low_x, high_x)
-            y = self.rand_y(low_y, high_y)
-            if (x, y) not in self.locations:
+            if xy is not None:
+                (x, y) = xy  # it had better be a tuple!
+            else:
+                (x, y) = self.gen_new_pos(mbr, max_move)
+            if self.is_empty(x, y):
                 if mbr.islocated():
                     self.move_location(x, y, mbr.get_x(), mbr.get_y())
                 else:
                     self.add_location(x, y, mbr)
-                mbr.set_pos(x, y)
+                # if I am setting pos, I am agent's locator!
+                mbr.set_pos(self, x, y)
                 return (x, y)
-            else:
+            elif (max_move is None) and (xy is None):
                 # if the random position is already taken,
                 # find the member a new position
-                return self.place_member(mbr)
+                # but if max_move is not None, the hood might be filled!
+                # so we need something to detect a full neighborhood as well.
+                # and if xy is not None, the user asked for a particular
+                # spot: don't give them another, but return None.
+                return self.place_member(mbr, max_move)
         else:
-            return self.place_members(mbr.members)
-
-    def move(self, mbr, max_move=DEF_MAX_MOVE):
-        self.place_member(mbr, max_move)
+            return self.place_members(mbr.members, max_move)
 
     def __iadd__(self, other):
         super().__iadd__(other)
@@ -180,13 +226,25 @@ class Space(Composite):
 
     def move_location(self, nx, ny, ox, oy):
         """
-        Move a member to a new position.
+        Move a member to a new position, if that position
+        is not already occupied.
         """
-        self.locations[(nx, ny)] = self.locations[(ox, oy)]
-        del self.locations[(ox, oy)]
+        if (nx, ny) not in self.locations:
+            self.locations[(nx, ny)] = self.locations[(ox, oy)]
+            del self.locations[(ox, oy)]
 
     def remove_location(self, x, y):
         """
         Remove a member from the locations.
         """
         del self.locations[(x, y)]
+
+    def get_moore_hood(self, agent):
+        """
+        To be written!
+        """
+        pass
+
+    def get_vonneumann_hood(self, center_agent):
+        return self.subset(in_vonneumann, center_agent,
+                           name=center_agent.name + "'s vn hood")

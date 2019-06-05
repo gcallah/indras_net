@@ -5,7 +5,13 @@ if [ "$USER" == "arnavshah" ]
 then
     export ignores="test_user\.py"
 fi
-echo "$ignores"
-nosetests --ignore-files=$ignores --exe --verbose --with-coverage --cover-package=indra
 
-#--ignore-files="$ignores"
+if [ -z $1 ]
+then
+    export capture=""
+else
+    export capture="--nocapture"
+fi
+
+nosetests --ignore-files=$ignores --exe --verbose --with-coverage --cover-package=indra $capture
+

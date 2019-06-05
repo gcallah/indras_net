@@ -5,7 +5,7 @@ import sys
 import numpy as np
 from math import pi, sin
 import json
-# from random import uniform
+from random import random
 from collections import OrderedDict
 
 DEBUG = True  # turns debugging code on or off
@@ -24,8 +24,32 @@ NEUT_VEC = np.array([NEUTRAL, NEUTRAL])
 
 INF = sys.maxsize  # really any very big number would do here!
 
+DEF_MAX_MOVE = None
+
+
+def prob_state_trans(curr_state, states):
+    """
+    Do a probabilistic state transition.
+    """
+    new_state = curr_state
+    r = random()
+    cum_prob = 0.0
+    for trans_state in range(len(states[curr_state])):
+        cum_prob += states[curr_state][trans_state]
+        if cum_prob >= r:
+            new_state = trans_state
+            break
+    return new_state
+
+
+def possible_trans(states, start_state, end_state):
+    return states[start_state][end_state]
+
 
 def ratio_to_sin(ratio):
+    """
+    Take a ratio of y to x and turn it into a sine.
+    """
     return sin(ratio * pi / 2)
 
 
@@ -134,7 +158,8 @@ class Agent(object):
     def islocated(self):
         return self.pos is not None
 
-    def set_pos(self, x, y):
+    def set_pos(self, locator, x, y):
+        self.locator = locator  # whoever sets my pos is my locator!
         self.pos = (x, y)
 
     def get_pos(self):
@@ -182,20 +207,21 @@ class Agent(object):
     def __call__(self):
         """
         Agents will 'act' by being called as a function.
-        If the agent has no `act()` function, do nothing.
-        Agents should return True if they did, in fact,
-        'do something,' or False if they did not.
-        If the agent is located, by default it should shuffle
-        about.
+        If the agent has no `action()` function, do nothing.
+        If returns False, by default agent will move.
         """
         self.duration -= 1
         if self.duration > 0:
             if self.action is not None:
                 # the action was defined outside this class, so pass self:
-                self.action(self)
+                if not self.action(self):
+                    # False return means agent is "unhappy" and
+                    # so agent will move (if located).
+                    self.move()
                 return True
             elif DEBUG:
-                print("I'm " + self.name + " and I ain't got no action to do!")
+                print("I'm " + self.name
+                      + " and I ain't got no action to do!")
         else:
             self.active = False
         return False
@@ -226,11 +252,14 @@ class Agent(object):
 #        self.val_vect /= scalar
 #        return self
 
-    def move(self):
-        print("Agent move has been called")
-        if self.islocated() and self.locator is not None:
-            print("Agent move called; placing member")
-            self.locator.place_member(self)
+    def move(self, max_move=DEF_MAX_MOVE):
+        """
+        Move this agent to a random pos within max_move
+        of its current pos.
+        """
+        if (self.islocated() and self.locator is not None
+                and not self.locator.is_full()):
+            self.locator.place_member(self, max_move)
 
     def isactive(self):
         return self.active
@@ -248,7 +277,7 @@ class Agent(object):
     def attrs_to_dict(self):
         d = OrderedDict()
         for key in self.attrs:
-            d[key] = self[key]
+            d[key] = self.val_vect[self.attrs[key]]
         return d
 
     def same_type(self, other):
@@ -285,5 +314,7 @@ class Agent(object):
                 "duration": self.duration,
                 "pos": self.pos,
                 "attrs": self.attrs_to_dict(),
-                "groups": grp_nms
+                "groups": grp_nms,
+                "active": self.active,
+                "type_sig": self.type_sig,
                 }

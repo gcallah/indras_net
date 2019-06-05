@@ -9,8 +9,8 @@ from models.fashion import set_up, DEBUG, DEBUG2, create_follower
 from models.fashion import change_color, create_tsetter
 from models.fashion import follower_action, tsetter_action, new_color_pref
 from models.fashion import FOLLOWER_PRENM, RED_FOLLOWERS, env_unfavorable
-from models.fashion import BLUE_FOLLOWERS, RED, NEUTRAL, BIG_ENOUGH
-from models.fashion import BLUE, TSETTER_PRENM, BLUE_TSETTERS, RED_TSETTERS
+from models.fashion import BLUE_FOLLOWERS, RED_SIN, NEUTRAL, BIG_ENOUGH
+from models.fashion import BLUE_SIN, TSETTER_PRENM, BLUE_TSETTERS, RED_TSETTERS
 import models.fashion as fshn
 
 TEST_FNUM = 999
@@ -54,33 +54,33 @@ class FashionTestCase(TestCase):
         """
         Test if the env is unfavorable to the agent.
         """
-        self.assertTrue(env_unfavorable(RED, BLUE, lt, gt))
-        self.assertFalse(env_unfavorable(RED, RED, lt, gt))
-        self.assertFalse(env_unfavorable(RED, NEUTRAL, lt, gt))
-        self.assertTrue(env_unfavorable(RED, NEUTRAL - BIG_ENOUGH, lt, gt))
-        self.assertTrue(env_unfavorable(BLUE, NEUTRAL + BIG_ENOUGH, lt, gt))
+        self.assertTrue(env_unfavorable(RED_SIN, BLUE_SIN, lt, gt))
+        self.assertFalse(env_unfavorable(RED_SIN, RED_SIN, lt, gt))
+        self.assertFalse(env_unfavorable(RED_SIN, NEUTRAL, lt, gt))
+        self.assertTrue(env_unfavorable(RED_SIN, NEUTRAL - BIG_ENOUGH, lt, gt))
+        self.assertTrue(env_unfavorable(BLUE_SIN, NEUTRAL + BIG_ENOUGH, lt, gt))
 
     def test_new_color_pref(self):
         """
         Make sure determining a new color pref works.
         The tests against neutral need to be re-written.
         """
-        new_pref = new_color_pref(RED, RED)
-        self.assertEqual(new_pref, RED)
-        new_pref = new_color_pref(BLUE, BLUE)
-        self.assertEqual(new_pref, BLUE)
-        new_pref = new_color_pref(BLUE, RED)
+        new_pref = new_color_pref(RED_SIN, RED_SIN)
+        self.assertEqual(new_pref, RED_SIN)
+        new_pref = new_color_pref(BLUE_SIN, BLUE_SIN)
+        self.assertEqual(new_pref, BLUE_SIN)
+        new_pref = new_color_pref(BLUE_SIN, RED_SIN)
         # self.assertAlmostEqual(new_pref, NEUTRAL)
-        new_pref = new_color_pref(RED, BLUE)
+        new_pref = new_color_pref(RED_SIN, BLUE_SIN)
         # self.assertAlmostEqual(new_pref, NEUTRAL)
 
     def test_create_tsetter(self):
-        new_agent = create_tsetter(2, RED)
+        new_agent = create_tsetter(2, RED_SIN)
 
         self.assertEqual(new_agent.name, TSETTER_PRENM +str(2))
 
     def test_create_follower(self):
-        new_follower = create_follower(2 , BLUE)
+        new_follower = create_follower(2 , BLUE_SIN)
         self.assertEqual(new_follower.name, FOLLOWER_PRENM + str(2))
 
     def test_follower_action(self):
@@ -97,10 +97,8 @@ class FashionTestCase(TestCase):
         oldt_grp = tsetter.primary_group()
         ratio = tsetter_action(tsetter)
         if ratio <= 1:
-            # pass
             self.assertEqual(len(fshn.society.switches), 1)
         else:
-            # pass
             self.assertEqual(tsetter.primary_group(), oldt_grp)
 
     def test_main(self):

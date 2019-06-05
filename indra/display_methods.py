@@ -13,6 +13,7 @@ import io
 import os
 from indra.user import TERMINAL, WEB
 plt_present = True
+plt_present_error_message = ""
 
 try:
     import matplotlib as mpl
@@ -22,22 +23,51 @@ try:
     import matplotlib.pyplot as plt
     import matplotlib.animation as animation
     plt.ion()
-except ImportError:
+except ImportError as e:
     plt_present = False
+    plt_present_error_message = e.msg
 
 global imageIO
 
 anim_func = None
 
+PURPLE = 'purple'
+NAVY = 'navy'
 BLUE = 'b'
-RED = 'r'
-GREEN = 'g'
-YELLOW = 'y'
-MAGENTA = 'm'
 CYAN = 'c'
-BLACK = 'k'
+GREEN = 'g'
+SPRINGGREEN = 'springgreen'
+YELLOW = 'y'
+TAN = 'tan'
+ORANGE = 'orange'
+ORANGERED = 'orangered'
+TOMATO = 'tomato'
+RED = 'r'
+DARKRED = 'darkred'
+MAGENTA = 'm'
 WHITE = 'w'
-colors = [BLUE, RED, GREEN, YELLOW, MAGENTA, CYAN, BLACK, WHITE]
+GRAY = 'gray'
+BLACK = 'k'
+
+colors = [PURPLE,
+          NAVY,
+          BLUE,
+          CYAN,
+          GREEN,
+          SPRINGGREEN,
+          YELLOW,
+          TAN,
+          ORANGE,
+          ORANGERED,
+          TOMATO,
+          RED,
+          DARKRED,
+          MAGENTA,
+          BLACK,
+          GRAY,
+          WHITE
+          ]
+
 NUM_COLORS = len(colors)
 X = 0
 Y = 1
@@ -111,16 +141,17 @@ def draw_graph(graph, title, hierarchy=False, root=None):
 
 
 def get_color(var, i):
-    color = None
     if "color" in var:
-        color = var["color"]
-    if color is None:
-        color = colors[i % NUM_COLORS]
-    return color
+        # Make sure it's a valid color
+        if var["color"] in colors:
+            return var["color"]
+    return colors[i % NUM_COLORS]
 
 
 def assemble_lgraph_data(key, values, color, data=None):
-    # put our data in right form for line graph
+    """
+    Put our data in right form for line graph.
+    """
     if data is None:
         data = {}
 

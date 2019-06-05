@@ -1,0 +1,24 @@
+FROM node:10-alpine
+
+ENV ENV="/etc/profile"
+
+RUN apk update && \
+    apk upgrade && \
+    apk --update add \
+    gcc \
+    bash \
+    tree \
+    nano \
+    vim \
+    rm -rf /var/cache/apk/*
+
+WORKDIR /home
+
+ADD package.json .
+ADD .ashrc .
+
+RUN npm install
+RUN npm audit fix
+RUN cat .ashrc >> "$ENV"
+
+CMD ["npm", "start"]

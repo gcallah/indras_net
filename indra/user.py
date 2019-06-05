@@ -12,7 +12,7 @@ WEB = "web"
 GUI = "gui"
 NOT_IMPL = "Choice not yet implemented."
 CANT_ASK_TEST = "Can't ask anything of a scripted test"
-DEF_STEPS = 4
+DEF_STEPS = 1
 
 
 def not_impl(user):
@@ -32,6 +32,7 @@ def run(user, test_run=False):
             user.tell("Steps = " + str(steps))
         else:
             steps = DEF_STEPS
+
         acts = user.env.runN(periods=steps)
     except (ValueError, TypeError) as e:
         user.tell("You must enter an integer value for # of steps: "
@@ -137,3 +138,23 @@ class TestUser(TermUser):
             Can't present menu to a scripted test!
         """
         run(self)  # noqa: W391
+
+
+class WebUser(TermUser):
+    """
+    This is our web user, who is expected to communicate with a web page
+    frontend.
+    """
+    def tell(self, msg, end='\n'):
+        """
+        Tell the user something by showing it on the web page
+        """
+        # Some json thing
+        pass
+
+    def ask(self, msg, default=None):
+        """
+        Ask the user something and present it to the web page
+        """
+        # Some json thing
+        pass

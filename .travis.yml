@@ -10,10 +10,10 @@ install:
     - pip install -r docker/requirements-dev.txt
 
 env:
-    - PYTHONPATH=/home/travis/build/gcallah/indras_net
+    - PYTHONPATH=/home/travis/build/gcallah/indras_net props_dir=/home/travis/build/gcallah/indras_net/APIServer/data/
 
 script:
-    - make pytests
+    - make tests
 
 after_success:
     - codecov

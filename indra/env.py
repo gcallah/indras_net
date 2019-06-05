@@ -6,7 +6,7 @@ of agents that share a timeline and a Space.
 import os
 import getpass
 import indra.display_methods as disp
-from indra.agent import join, switch
+from indra.agent import join, switch, Agent
 from indra.space import Space
 from indra.user import TermUser, TERMINAL, WEB, TEST, TestUser
 
@@ -20,6 +20,8 @@ Y = 1
 
 POP_HIST_HDR = "PopHist for "
 POP_SEP = ", "
+
+color_num = 0
 
 
 class PopHist():
@@ -48,13 +50,13 @@ class PopHist():
 class Env(Space):
     """
     A collection of entities that share a space and time.
-    An env *is* a space and *has* a timeline.
+    An env *is* a space and *has* a timeline (PopHist).
     That makes the inheritance work out as we want it to.
     """
-    def __init__(self, name, **kwargs):
-        super().__init__(name, **kwargs)
+    def __init__(self, name, action=None, **kwargs):
+        super().__init__(name, action=action, **kwargs)
         self.pop_hist = PopHist()  # this will record pops across time
-        # Make sure variesties are present in the history
+        # Make sure varieties are present in the history
         for mbr in self.members:
             self.pop_hist.record_pop(mbr, self.pop_count(mbr))
 
@@ -73,6 +75,13 @@ class Env(Space):
             self.user = TestUser(getpass.getuser(), self)
 
     def __call__(self):
+        """
+        Calling the env makes it run. If we are on a terminal, we ask the user
+        to put up a menu and choose. For tests, we just run N (default) turns.
+        """
+        if self.action is not None:
+            # the action was defined outside this class, so pass self:
+            self.action(self)
         if (self.user is None) or (self.user_type == TEST):
             self.runN()
         else:
@@ -98,8 +107,6 @@ class Env(Space):
         group: which group child will join
         """
         self.switches.append((agent, grp1, grp2))
-        if DEBUG:
-            self.user.tell("{} added to switches".format(str(agent)))
         # do we need to connect agent to env (self)?
 
     def runN(self, periods=DEF_TIME):
@@ -134,7 +141,8 @@ class Env(Space):
 
     def has_disp(self):
         if not disp.plt_present:
-            self.user.tell("ERROR: No graphing package installed")
+            self.user.tell("ERROR: Graphing package encounters a problem: "
+                           + disp.plt_present_error_message)
             return False
         else:
             return True
@@ -180,39 +188,56 @@ class Env(Space):
         else:
             return None
 
+    def get_color(self, variety):
+        if variety in self.members and self.members[variety].has_color():
+            return self.members[variety].get_color()
+        else:
+            global color_num
+            color_num += 1
+            return disp.get_color(variety, color_num)
+
     def line_data(self):
         data = {}
-        # TODO: implement period?
         period = None
         for var in self.pop_hist.pops:
             data[var] = {}
             data[var]["data"] = self.pop_hist.pops[var]
-            # TODO: define colors in env?
+            data[var]["color"] = self.get_color(var)
             if not period:
                 period = len(data[var]["data"])
         return (period, data)
 
     def plot_data(self):
+        """
+        This is the data for our scatter plot.
+        This code assumes the env holds groups, and the groups
+        hold agents with positions.
+        This assumption is dangerous, and we should address it.
+        """
         if not disp.plt_present:
-            self.user.tell("ERROR: No graphing package installed")
+            self.user.tell("ERROR: Graphing package encountered a problem: "
+                           + disp.plt_present_error_message)
             return
 
         data = {}
-        for var in self.members:
-            data[var] = {}
+        for variety in self.members:
+            data[variety] = {}
             # matplotlib wants a list of x coordinates, and a list of y
             # coordinates:
-            data[var][X] = []
-            data[var][Y] = []
-            # TODO: define colors in env?
-            # data[var]["color"] = self.agents.get_var_color(var)
-            current_var = self.members[var]
-            for agent in current_var:
-                current_agent_pos = current_var[agent].pos
-                if current_agent_pos is not None:
-                    (x, y) = current_agent_pos
-                    data[var][X].append(x)
-                    data[var][Y].append(y)
+            data[variety][X] = []
+            data[variety][Y] = []
+            data[variety]["color"] = self.members[variety].get_color()
+            # data[variety]["color"] = self.agents.get_var_color(variety)
+            current_variety = self.members[variety]
+            for agent_nm in current_variety:
+                # temp fix for one of the dangers mentioned above:
+                # we might not be at the level of agents!
+                if isinstance(current_variety[agent_nm], Agent):
+                    current_agent_pos = current_variety[agent_nm].pos
+                    if current_agent_pos is not None:
+                        (x, y) = current_agent_pos
+                        data[variety][X].append(x)
+                        data[variety][Y].append(y)
         return data
 
     def headless(self):
