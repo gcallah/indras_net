@@ -51,8 +51,10 @@ class Props(Resource):
         try:
             with open(dir + models_db[model_id]["props"]) as file:
                 return json.loads(file.read())
-        except (IndexError, KeyError, ValueError,FileNotFoundError):
+        except (IndexError, KeyError, ValueError):
             return {"Error": "Invalid model id " + str(model_id)}
+        except FileNotFoundError:
+            return {"Error": "File not found"}
 
     def put(self, model_id):
         url = 'https://indrasnet.pythonanywhere.com/models/<int:model_id>/props'
