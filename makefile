@@ -10,8 +10,7 @@ WEB_SRC = $(WEB_DIR)/src
 API_DIR = APIServer
 PYLINT = flake8
 PYLINTFLAGS = 
-PYTHONFILES = $(shell ls $(API_DIR)/*.py)
-PYTHONFILES += $(shell ls $(MODELS_DIR)/*.py)
+PYTHONFILES = $(shell ls $(MODELS_DIR)/*.py)
 WEBFILES = $(shell ls $(WEB_SRC)/*.js)
 WEBFILES += $(shell ls $(WEB_SRC)/components/*.js)
 WEBFILES += $(shell ls $(WEB_SRC)/*.css)
@@ -44,6 +43,7 @@ prod: tests
 	ssh indrasnet@ssh.pythonanywhere.com 'cd /home/indrasnet/indras_net; /home/indrasnet/indras_net/rebuild.sh'
 
 tests: FORCE
+	cd APIServer; make tests
 	cd indra; make tests
 	cd models; make tests
 
@@ -71,6 +71,7 @@ nocrud:
 	-rm *.out
 	-rm .*swp
 	-rm *.csv
+	-rm models/.coverage
 
 # Build the webapp react docker image
 webapp-image:

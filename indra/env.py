@@ -8,7 +8,7 @@ import getpass
 import indra.display_methods as disp
 from indra.agent import join, switch, Agent
 from indra.space import Space
-from indra.user import TermUser, TERMINAL, WEB, TEST, TestUser
+from indra.user import TermUser, TERMINAL, WEB, TEST, TestUser, USER_EXIT
 
 DEBUG = True
 DEBUG2 = False
@@ -87,7 +87,8 @@ class Env(Space):
         else:
             while True:
                 # run until user exit!
-                self.user()
+                if self.user() == USER_EXIT:
+                    break
 
     def add_child(self, agent, group):
         """

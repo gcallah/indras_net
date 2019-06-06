@@ -35,8 +35,6 @@ AGT_SHEEP_NAME = "sheep"
 COMP_WOLF_NAME = "wolves"
 COMP_SHEEP_NAME = "sheep"
 
-ERR_MSG = "Invalid agent name"
-
 
 wolves = None
 sheep = None

@@ -4,6 +4,7 @@ from flask import Flask
 from flask_restplus import Resource, Api
 from flask_cors import CORS
 import json
+import urllib.request
 
 app = Flask(__name__)
 CORS(app)
@@ -18,15 +19,18 @@ else:
     dir = "/home/indrasnet/indras_net/"
 
 with open(dir + "models/models.json") as file:
-    models_database = json.loads(file.read())["models_database"]
+    models_db = json.loads(file.read())["models_database"]
     models_response = []
-    for model in models_database:
+    for model in models_db:
         doc = ""
         if "doc" in model:
             doc = model["doc"]
-        models_response.append(
-                               {"name": model["name"],
-                                "doc": doc})
+        models_response.append({"name": model["name"], "doc": doc})
+
+# propargs = api.model(“props”, {
+#    “grid_height”: fields.String(“The height of the grid“),
+#    “gird_width”: fields.String(“The “)
+# })
 
 
 @api.route('/hello')
@@ -45,19 +49,21 @@ class Models(Resource):
 class Props(Resource):
     def get(self, model_id):
         try:
-            with open(dir + "models/" + models_database[model_id]["props"]) as file:
+            with open(dir + models_db[model_id]["props"]) as file:
                 return json.loads(file.read())
-
-        except IndexError:
+        except (IndexError, KeyError, ValueError):
             return {"Error": "Invalid model id " + str(model_id)}
+        except FileNotFoundError:
+            return {"Error": "File not found"}
 
     def put(self, model_id):
+        url = 'https://indrasnet.pythonanywhere.com/models/<int:model_id>/props'  # noqa: E501
+        response = urllib.request.urlopen(url)
         try:
-            with open(dir + "models/" + models_database[model_id]["props"]):
-                return {"questions": ["Question 1", "Question 2", "Question 3"]}
-        except IndexError:
-            return {"Error": "Invalid model id " + str(model_id)}
-
+            data = (json.loads(response.read()))  # noqa: F841
+            return {"Menu": "menu will be returned here"}
+        except ValueError:
+            return {"Error": "Invalid model answer " + str(model_id)}
 
 
 # @api.route("/models/<int:question1>/<int:question2>/<float:question3>/props")
@@ -88,20 +94,19 @@ class Props(Resource):
 #             # executing specific menu item
 #         except KeyError:
 #             return {"Error": "Invalid menu item id " + str(menuitem_id)}
-
 #     def put(self, menuitem_id):
-#         return {"execute": menuitem_id, "menu": ["Item 1", "Item 2", "Item 3"]}
+#         return {"execute": menuitem_id, "menu":
+    #             ["Item 1", "Item 2", "Item 3"]}
 
 
 # Ask Professor!!!!!
 # @api.route('/models//menu')
 # class Model(Resource):
 #     def put(self, model_id):
-#         return {"name": models_database[model_id]["name"],
+#         return {"name": models_db[model_id]["name"],
 #                 "status": "Is running!",
 #                 "menu": ["Item 1", "Item 2", "Item 3"]
 #                }
 
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=8000, debug=True)
-

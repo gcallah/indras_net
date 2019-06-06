@@ -6,11 +6,15 @@ from propargs.propargs import PropArgs
 
 from indra.agent import Agent
 from indra.composite import Composite
+from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.env import Env
 from indra.display_methods import RED, BLUE
 
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
+
+DEF_NUM_BLUE = 10
+DEF_NUM_RED = 10
 
 red_group = None
 blue_group = None
@@ -38,12 +42,14 @@ def set_up():
                                ds_file='props/basic.props.json')
     blue_group = Composite("Blues", {"color": BLUE},
                            member_creator=create_agent,
-                           num_members=pa['num_blue'])
+                           num_members=pa.get('num_blue', DEF_NUM_BLUE))
     red_group = Composite("Reds", {"color": RED},
                           member_creator=create_agent,
-                          num_members=pa['num_red'])
+                          num_members=pa.get('num_red', DEF_NUM_RED))
 
-    env = Env("env", height=pa['grid_height'], width=pa['grid_width'],
+    env = Env("env",
+              height=pa.get('grid_height', DEF_HEIGHT),
+              width=pa.get('grid_width', DEF_WIDTH),
               members=[blue_group, red_group])
     return (blue_group, red_group, env)
 
