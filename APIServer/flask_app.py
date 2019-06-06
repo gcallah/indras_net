@@ -43,17 +43,17 @@ class Models(Resource):
 class Props(Resource):
     def get(self, model_id):
         try:
-            with open(dir + "models/" + models_db[model_id]["props"]) as file:
+            with open(dir + models_db[model_id]["props"]) as file:
                 return json.loads(file.read())
 
-        except KeyError:
+        except IndexError:
             return {"Error": "Invalid model id " + str(model_id)}
 
     def put(self, model_id):
         try:
-            with open(dir + "models/" + models_db[model_id]["props"]):
+            with open(dir + models_db[model_id]["props"]):
                 return {"questions": ["Question 1"]}
-        except KeyError:
+        except IndexError:
             return {"Error": "Invalid model id " + str(model_id)}
 
 
