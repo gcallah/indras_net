@@ -85,7 +85,6 @@ class Props(Resource):
 #             # executing specific menu item
 #         except KeyError:
 #             return {"Error": "Invalid menu item id " + str(menuitem_id)}
-
 #     def put(self, menuitem_id):
 #         return {"execute": menuitem_id, "menu":
     #             ["Item 1", "Item 2", "Item 3"]}
