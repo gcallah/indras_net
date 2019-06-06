@@ -26,20 +26,19 @@
     "atype": "INT",
     "hival": 100,
     "loval": 1
-  }
+  },
   "mean_tol": {
       "val": 0.5,
       "question": "What tolerance should agents have?",
-      "atype": "FLOAT",
+      "atype": "DBL",
       "hival": 0.9,
       "loval": 0.1
-  }
-  "tol_diviation": {
+  },
+  "tol_deviation": {
       "val": 0.2,
-      "question": "What tolerance diviation should agents have?",
-      "atype": "FLOAT",
+      "question": "What should the standard deviation of the agents' tolerance be?",
+      "atype": "DBL",
       "hival": 0.3,
-      "loval": 0.1
-  }
+      "loval": 0.01
   }
 }
