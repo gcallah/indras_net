@@ -67,8 +67,15 @@ def sandpile_action(sanpile):
           ", which has a height of",
           (sandpile.attrs["center_agent"]["grains"]))
     sandpile.attrs["center_agent"]["grains"] += 1
+    # Change color
+    if (env_unfavorable(sandpile.attrs["center_agent"]["grains"])):
+        topple(sandpile, sandpile.attrs["center_agent"])
     print("in sandpile_action")
-    change_color(sandpile.attrs["center_agent"]["grains"], sandpile, )
+
+
+def topple(sandpile, agent):
+    print("Sandpile in", agent.pos, "is toppling")
+    agent["grains"] = 0
 
 
 def create_agent(i):
