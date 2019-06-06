@@ -57,11 +57,11 @@ class Props(Resource):
             return {"Error": "File not found"}
 
     def put(self, model_id):
-        url = 'https://indrasnet.pythonanywhere.com/models/<int:model_id>/props'
+        url = 'https://indrasnet.pythonanywhere.com/models/<int:model_id>/props'  # noqa: E501
         response = urllib.request.urlopen(url)
         try:
-            data = (json.loads(response.read()))
-            return menu #where the menu file located???
+            data = (json.loads(response.read()))  # noqa: F841
+            return {"Menu": "menu will be returned here"}
         except ValueError:
             return {"Error": "Invalid model answer " + str(model_id)}
 
