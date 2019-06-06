@@ -18,7 +18,7 @@ WIDTH = 2
 
 MAX_SAND = 5
 
-SAND_PREFIX = "sand_location"
+SAND_PREFIX = "sand_location "
 
 NEARBY = 1
 

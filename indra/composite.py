@@ -270,7 +270,10 @@ class Composite(Agent):
                 "members": self.members}
 
     def attrs_to_dict(self):
-        return "Simon must write this!"
+        if self.attrs != None:
+            return self.attrs
+        else:
+            return "No attrs"
 
     def has_color(self):
         return "color" in self.attrs
