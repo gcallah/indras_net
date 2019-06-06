@@ -28,18 +28,18 @@
     "loval": 1
   }
   "mean_tol": {
-      "val": .5
+      "val": 0.5,
       "question": "What tolerance should agents have?",
       "atype": "FLOAT",
-      "hival": .9,
-      "loval": .1
+      "hival": 0.9,
+      "loval": 0.1
   }
   "tol_diviation": {
-      "val": .2
+      "val": 0.2,
       "question": "What tolerance diviation should agents have?",
       "atype": "FLOAT",
-      "hival": .3,
-      "loval": .1
+      "hival": 0.3,
+      "loval": 0.1
   }
   }
 }
