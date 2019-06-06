@@ -13,6 +13,7 @@ GUI = "gui"
 NOT_IMPL = "Choice not yet implemented."
 CANT_ASK_TEST = "Can't ask anything of a scripted test"
 DEF_STEPS = 1
+USER_EXIT = -999
 
 
 def not_impl(user):
@@ -42,7 +43,7 @@ def run(user, test_run=False):
 
 def leave(user):
     user.tell("Goodbye, " + user.name + ", I will miss you!")
-    exit(0)
+    return USER_EXIT
 
 
 def scatter_plot(user):
@@ -115,7 +116,7 @@ class TermUser(Agent):
             choice = int(self.ask("Type the # of your choice then Enter:",
                          default=RUN))
             if choice in term_menu:
-                term_menu[choice][FUNC](self)
+                return term_menu[choice][FUNC](self)
             else:
                 raise ValueError
         except ValueError as e:

@@ -5,7 +5,7 @@ This is the test suite for space.py.
 from unittest import TestCase, main
 from indra.agent import Agent
 from models.wolfsheep import create_sheep, create_wolf, set_up, wolf_action, sheep_action
-from models.wolfsheep import AGT_WOLF_NAME, AGT_SHEEP_NAME, ERR_MSG
+from models.wolfsheep import AGT_WOLF_NAME, AGT_SHEEP_NAME
 from models.wolfsheep import WOLF_LIFESPAN, SHEEP_LIFESPAN, SHEEP_REPRO_PERIOD
 from models.wolfsheep import WOLF_REPRO_PERIOD, get_prey, eat, reproduce
 from models.wolfsheep import isactive, wolves_created
