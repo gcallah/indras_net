@@ -71,6 +71,7 @@ nocrud:
 	-rm *.out
 	-rm .*swp
 	-rm *.csv
+	-rm models/.coverage
 
 # Build the webapp react docker image
 webapp-image:
