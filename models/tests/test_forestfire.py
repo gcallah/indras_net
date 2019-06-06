@@ -58,4 +58,5 @@ class ForestfireTestCase(TestCase):
             self.assertTrue(True)
             end_state = self.test_tree["state"]
             self.assertTrue(possible_trans(STATE_TRANS,
-                                       start_state, end_state))
+                                           start_state,
+                                           end_state))

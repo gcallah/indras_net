@@ -118,7 +118,8 @@ def set_up():
         healthy += plant_tree(i)
 
     forest = Env("Forest", height=forest_height, width=forest_width,
-                 members=[healthy, new_fire, on_fire, burned_out, new_growth])
+                 members=[healthy, new_fire, on_fire, burned_out,
+                          new_growth])
 
     global group_map
     group_map = {HE: healthy, NF: new_fire,
