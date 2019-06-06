@@ -53,14 +53,19 @@ def place_action(agent):
     """
     See if we are carrying too much sand at this locale.
     """
-    print("in place_action with sand height of", agent["grains"], "and pos =", agent.pos)
+    print("in place_action with sand height of",
+          agent["grains"],
+          "and pos =", agent.pos)
     neighbors = sandpile.get_vonneumann_hood(agent)
     for neighbor in neighbors:
         print(agent.name, " has neighbor ", neighbor.name)
 
 
 def sandpile_action(sanpile):
-    print("Adding a grain to", (sandpile.attrs["center_agent"]).pos, ", which has a height of", (sandpile.attrs["center_agent"]["grains"]))
+    print("Adding a grain to",
+          (sandpile.attrs["center_agent"]).pos,
+          ", which has a height of",
+          (sandpile.attrs["center_agent"]["grains"]))
     sandpile.attrs["center_agent"]["grains"] += 1
     print("in sandpile_action")
     change_color(sandpile.attrs["center_agent"]["grains"], sandpile, )
