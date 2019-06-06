@@ -13,12 +13,12 @@ import indra.display_methods as disp
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
-HEIGHT = 2
-WIDTH = 2
+HEIGHT = 4
+WIDTH = 4
 
 MAX_SAND = 5
 
-SAND_PREFIX = "sand_location"
+SAND_PREFIX = "sand_location "
 
 NEARBY = 1
 
@@ -53,17 +53,17 @@ def place_action(agent):
     """
     See if we are carrying too much sand at this locale.
     """
-    print("in place_action with sand height of ", agent["grains"])
-    print("and pos = ", agent.pos)
+    print("in place_action with sand height of", agent["grains"], "and pos =", agent.pos)
     neighbors = sandpile.get_vonneumann_hood(agent)
-    print("test")
     for neighbor in neighbors:
         print(agent.name, " has neighbor ", neighbor.name)
 
 
 def sandpile_action(sanpile):
+    print("Adding a grain to", (sandpile.attrs["center_agent"]).pos, ", which has a height of", (sandpile.attrs["center_agent"]["grains"]))
     sandpile.attrs["center_agent"]["grains"] += 1
     print("in sandpile_action")
+    change_color(sandpile.attrs["center_agent"]["grains"], sandpile, )
 
 
 def create_agent(i):
