@@ -4,6 +4,7 @@ from flask import Flask
 from flask_restplus import Resource, Api
 from flask_cors import CORS
 import json
+import urllib.request
 
 app = Flask(__name__)
 CORS(app)
@@ -26,6 +27,11 @@ with open(dir + "models/models.json") as file:
             doc = model["doc"]
         models_response.append({"name": model["name"], "doc": doc})
 
+# propargs = api.model(“props”, {
+#    “grid_height”: fields.String(“The height of the grid“),
+#    “gird_width”: fields.String(“The “)
+# })
+
 
 @api.route('/hello')
 class HelloWorld(Resource):
@@ -45,16 +51,17 @@ class Props(Resource):
         try:
             with open(dir + models_db[model_id]["props"]) as file:
                 return json.loads(file.read())
-
-        except IndexError:
+        except (IndexError, KeyError, ValueError,FileNotFoundError):
             return {"Error": "Invalid model id " + str(model_id)}
 
     def put(self, model_id):
+        url = 'https://indrasnet.pythonanywhere.com/models/<int:model_id>/props'
+        response = urllib.request.urlopen(url)
         try:
-            with open(dir + models_db[model_id]["props"]):
-                return {"questions": ["Question 1"]}
-        except IndexError:
-            return {"Error": "Invalid model id " + str(model_id)}
+            data = (json.loads(response.read()))
+            return menu #where the menu file located???
+        except ValueError:
+            return {"Error": "Invalid model answer " + str(model_id)}
 
 
 # @api.route("/models/<int:question1>/<int:question2>/<float:question3>/props")
