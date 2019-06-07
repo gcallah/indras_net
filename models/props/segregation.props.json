@@ -15,14 +15,14 @@
   },
   "num_blue": {
     "val": 20,
-    "question": "How many blue agents should there be?",
+    "question": "How many blue agents do you want?",
     "atype": "INT",
     "hival": 100,
     "loval": 1
   },
   "num_red": {
     "val": 20,
-    "question": "How many red agents should there be?",
+    "question": "How many red agents do you want?",
     "atype": "INT",
     "hival": 100,
     "loval": 1
