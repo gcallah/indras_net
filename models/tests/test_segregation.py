@@ -1,5 +1,5 @@
 """
-This is the test suite for space.py.
+This is the test suite for segregation.py.
 """
 
 from unittest import TestCase, main
@@ -10,7 +10,7 @@ from models.segregation import set_up, create_agent, RED_TEAM, BLUE_TEAM
 from models.segregation import env_favorable, agent_action
 from models.segregation import group_names, agent_action, my_group_index
 from models.segregation import other_group_index, get_tolerance
-from models.segregation import DEF_TOLERANCE
+from models.segregation import DEF_TOLERANCE, DEF_SIGMA
 import models.segregation as seg
 
 TEST_ANUM = 999999
@@ -39,39 +39,53 @@ class SegregationTestCase(TestCase):
         """
         sum = 0
         for i in range(REP_RAND_TESTS):
-            sum += get_tolerance(DEF_TOLERANCE)
+            sum += get_tolerance(DEF_TOLERANCE, DEF_SIGMA)
         avg = sum / REP_RAND_TESTS
         self.assertLess(DEF_TOLERANCE - .2, avg)
         self.assertGreater(DEF_TOLERANCE + .2, avg)
 
     def test_my_group_index(self):
-        red_agent = create_agent(TEST_ANUM, color=RED_TEAM)
+        red_agent = create_agent(TEST_ANUM, 
+                                 DEF_TOLERANCE, DEF_SIGMA,
+                                 color=RED_TEAM)
         self.assertEqual(RED_TEAM, my_group_index(red_agent))
-        blue_agent = create_agent(TEST_ANUM, color=BLUE_TEAM)
+        blue_agent = create_agent(TEST_ANUM,
+                                  DEF_TOLERANCE, DEF_SIGMA,
+                                  color=BLUE_TEAM)
         self.assertEqual(BLUE_TEAM, my_group_index(blue_agent))
 
     def test_other_group_index(self):
-        red_agent = create_agent(TEST_ANUM, color=RED_TEAM)
+        red_agent = create_agent(TEST_ANUM,
+                                 DEF_TOLERANCE, DEF_SIGMA,
+                                 color=RED_TEAM)
         self.assertEqual(BLUE_TEAM, other_group_index(red_agent))
-        blue_agent = create_agent(TEST_ANUM, color=BLUE_TEAM)
+        blue_agent = create_agent(TEST_ANUM,
+                                  DEF_TOLERANCE, DEF_SIGMA,
+                                  color=BLUE_TEAM)
         self.assertEqual(RED_TEAM, other_group_index(blue_agent))
 
     def test_create_agent(self):
         """
         Test that creating an agent works.
         """
-        fred = create_agent(TEST_ANUM, color=RED_TEAM) 
+        fred = create_agent(TEST_ANUM,
+                            DEF_TOLERANCE, DEF_SIGMA,
+                            color=RED_TEAM) 
         freds_nm = group_names[RED_TEAM] + str(TEST_ANUM)
         self.assertEqual(freds_nm, str(fred))
 
     def agent_in_little_city(self, with_blue=False):
         red_agents = Composite("My reds")
-        test_agent = create_agent(TEST_ANUM, color=RED_TEAM) 
+        test_agent = create_agent(TEST_ANUM,
+                                  DEF_TOLERANCE, DEF_SIGMA,
+                                  color=RED_TEAM) 
         red_agents += test_agent
         blue_agents = Composite("My blues")
         if with_blue:
             for i in range(0, SMALL_GRID * SMALL_GRID - 1):
-                blue_agents += create_agent(TEST_ANUM + 1, color=BLUE_TEAM)
+                blue_agents += create_agent(TEST_ANUM + 1,
+                                            DEF_TOLERANCE, DEF_SIGMA,
+                                            color=BLUE_TEAM)
 
         my_city = Env("Small city for test", width=SMALL_GRID,
                            height=SMALL_GRID,

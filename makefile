@@ -38,7 +38,7 @@ tags: FORCE
 
 # run tests then commit
 prod: tests
-	- git commit -a
+	- git commit -a -m "Building production."
 	git push origin master
 	ssh indrasnet@ssh.pythonanywhere.com 'cd /home/indrasnet/indras_net; /home/indrasnet/indras_net/rebuild.sh'
 
