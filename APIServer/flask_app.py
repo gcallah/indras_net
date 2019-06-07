@@ -1,10 +1,9 @@
 # Indra API server
 import os
 from flask import Flask
-from flask_restplus import Resource, Api
+from flask_restplus import Resource, Api, fields
 from flask_cors import CORS
 import json
-import urllib.request
 
 app = Flask(__name__)
 CORS(app)
@@ -27,11 +26,6 @@ with open(dir + "models/models.json") as file:
             doc = model["doc"]
         models_response.append({"name": model["name"], "doc": doc})
 
-# propargs = api.model(“props”, {
-#    “grid_height”: fields.String(“The height of the grid“),
-#    “gird_width”: fields.String(“The “)
-# })
-
 
 @api.route('/hello')
 class HelloWorld(Resource):
@@ -45,58 +39,45 @@ class Models(Resource):
         return models_response
 
 
+props = api.model("props", {
+    "model ID": fields.Integer,
+    "props": fields.String("Enter propargs.")
+})
+
+
 @api.route('/models/<int:model_id>/props')
 class Props(Resource):
     def get(self, model_id):
         try:
             with open(dir + models_db[model_id]["props"]) as file:
-                return json.loads(file.read())
+                props = json.loads(file.read())
+                return props
         except (IndexError, KeyError, ValueError):
             return {"Error": "Invalid model id " + str(model_id)}
         except FileNotFoundError:
             return {"Error": "File not found"}
 
+    @api.expect(props)
     def put(self, model_id):
-        url = 'https://indrasnet.pythonanywhere.com/models/<int:model_id>/props'  # noqa: E501
-        response = urllib.request.urlopen(url)
         try:
-            data = (json.loads(response.read()))  # noqa: F841
+            # update props
+            props = api.payload  # noqa F841
             return {"Menu": "menu will be returned here"}
         except ValueError:
             return {"Error": "Invalid model answer " + str(model_id)}
 
 
-# @api.route("/models/<int:question1>/<int:question2>/<float:question3>/props")
-# class Props(Resource):
-#     def get(self, question1, question2, question3):
-#         try:
-#             # Ask Professor!!!!!
-#             ...
-#             # executing the answers.
-#         except KeyError:
-#             return {"Error": "Out of range"}
+@api.route("/models/<int:menuitem_id>/menu")
+class Menu(Resource):
+    def get(self, menuitem_id):
+        try:
+            ...
+            # executing specific menu item
+        except KeyError:
+            return {"Error": "Invalid menu item id " + str(menuitem_id)}
 
-#     def put(self, question1, question2, question3):
-#         return {
-#             "menu": ["Item 1", "Item 2", "Item 3"],
-#             "grid_height": question1,
-#             "grid_width": question2,
-#             "density": question3,
-#         }
-
-
-# @api.route("/models/<int:menuitem_id>/menu")
-# class Props(Resource):
-#     def get(self, menuitem_id):
-#         try:
-#             # Ask Professor!!!!!
-#             ...
-#             # executing specific menu item
-#         except KeyError:
-#             return {"Error": "Invalid menu item id " + str(menuitem_id)}
-#     def put(self, menuitem_id):
-#         return {"execute": menuitem_id, "menu":
-    #             ["Item 1", "Item 2", "Item 3"]}
+    def put(self, menuitem_id):
+        return {"execute menu item": menuitem_id, "Menu": "menu will be returned here"}  # noqa E501
 
 
 # Ask Professor!!!!!
