@@ -1,10 +1,5 @@
 import json
 
-import models.fashion
-import models.forestfire
-import models.sandpile
-import models.wolfsheep
-
 
 def main(args=None):
     welcome = "Welcome to Indra! Please choose a model:"
