@@ -1,10 +1,9 @@
 # Indra API server
 import os
 from flask import Flask
-from flask_restplus import Resource, Api
+from flask_restplus import Resource, Api, fields
 from flask_cors import CORS
 import json
-import urllib.request
 
 app = Flask(__name__)
 CORS(app)
@@ -45,22 +44,29 @@ class Models(Resource):
         return models_response
 
 
+props = api.model("props", {
+    "model ID": fields.Integer,
+    "props": fields.String("Enter propargs.")
+})
+
+
 @api.route('/models/<int:model_id>/props')
 class Props(Resource):
     def get(self, model_id):
         try:
             with open(dir + models_db[model_id]["props"]) as file:
-                return json.loads(file.read())
+                props = json.loads(file.read())
+                return props
         except (IndexError, KeyError, ValueError):
             return {"Error": "Invalid model id " + str(model_id)}
         except FileNotFoundError:
             return {"Error": "File not found"}
 
+    @api.expect(props)
     def put(self, model_id):
-        url = 'https://indrasnet.pythonanywhere.com/models/<int:model_id>/props'  # noqa: E501
-        response = urllib.request.urlopen(url)
         try:
-            data = (json.loads(response.read()))  # noqa: F841
+            # update props
+            props = api.payload  # noqa F841
             return {"Menu": "menu will be returned here"}
         except ValueError:
             return {"Error": "Invalid model answer " + str(model_id)}
