@@ -108,7 +108,7 @@ def sandpile_action(sandpile):
     print("in sandpile_action")
 
 
-def topple(sandpile, agent):
+def topple(agent):
     if DEBUG:
         print("Sandpile in", agent.pos, "is toppling")
     agent["grains"] = 0
