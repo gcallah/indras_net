@@ -41,12 +41,24 @@ def env_unfavorable(sand_height):
 
 
 def change_color(agent, sandpile, opp_group):
-    if DEBUG2:
+    if DEBUG:
         print("Agent " + str(agent) + " is changing colors from "
               + str(agent.primary_group()) + " to "
               + str(opp_group[str(agent.primary_group())]))
     sandpile.add_switch(agent, agent.primary_group(),
                         opp_group[str(agent.primary_group())])
+
+def get_next_group(agent):
+    curr_group = agent.primary_group()
+    curr_group_num_char = str((agent.primary_group()))[5]
+    next_group_num = int(curr_group_num_char) + 1
+    if (next_group_num == 6):
+        next_group_num = 0
+    next_group = sandpile.members["Group" + str(next_group_num)]
+    return next_group
+
+def add_grain(agent):
+    agent["grains"] += 1
 
 
 def place_action(agent):
@@ -60,9 +72,11 @@ def place_action(agent):
 
 
 def sandpile_action(sanpile):
-    print("Adding a grain to", (sandpile.attrs["center_agent"]).pos, ", which has a height of", (sandpile.attrs["center_agent"]["grains"]))
-    sandpile.attrs["center_agent"]["grains"] += 1
-    #Change color
+    if DEBUG:
+        print("Adding a grain to", (sandpile.attrs["center_agent"]).pos,", which has a height of", (sandpile.attrs["center_agent"]["grains"]), "and is in", (sandpile.attrs["center_agent"]).primary_group())
+    add_grain(sandpile.attrs["center_agent"])
+    next_group = get_next_group(sandpile.attrs["center_agent"])
+    sandpile.attrs["center_agent"].switch_groups((sandpile.attrs["center_agent"]).primary_group(), next_group)
     if (env_unfavorable(sandpile.attrs["center_agent"]["grains"])):
         topple(sandpile, sandpile.attrs["center_agent"])
     print("in sandpile_action")
