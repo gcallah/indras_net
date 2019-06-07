@@ -1,8 +1,9 @@
 """
 This file defines User, which represents a user in our system.
 """
-# import json
-
+import json
+import indra.user
+from propargs.propargs import PropArgs
 from indra.agent import Agent  # , DEBUG2  # DEBUG,
 from IPython import embed
 
@@ -66,14 +67,6 @@ FUNC = 1
 QUIT = 0
 RUN = 1
 
-
-term_menu = {RUN: (str(RUN) + ") Run for N periods (DEFAULT).", run),
-             2: ("2) Display a population graph.", line_graph),
-             3: ("3) Display a scatter plot.", scatter_plot),
-             4: ("4) Leave menu for interactive python session.", ipython),
-             QUIT: (str(QUIT) + ") Quit.", leave)}
-
-
 class TermUser(Agent):
     """
     A representation of the user in the system.
@@ -108,19 +101,45 @@ class TermUser(Agent):
         """
         return self.user.tell(msg, end)
 
+        
     def __call__(self):
+        DEFAULT_CHOICE = '0'
+        menu_item = None
+        menu_list = None 
+        with open("/Users/dennisfenchenko/indras_net/indra/menu.props.json", 'r') as f:
+            menu_item = json.load(f)
+        menu_list = menu_item["menu_database"]
+        menu_display = "Displaying the menu"
+        stars = "*" * len(menu_display)
         self.tell("What would you like to do?")
-        for key, item in term_menu.items():
-            self.tell(item[MSG])
-        try:
-            choice = int(self.ask("Type the # of your choice then Enter:",
-                         default=RUN))
-            if choice in term_menu:
-                return term_menu[choice][FUNC](self)
-            else:
-                raise ValueError
-        except ValueError as e:
-            self.tell("Invalid option: " + str(e))
+        print("\n",
+              stars, "\n",
+              menu_display, "\n",
+              stars)
+        for choice, menuId in enumerate(menu_list):
+            print(str(choice) + ". ", menuId["question"])
+        c = input()
+        if not c or c.isspace():
+            c = DEFAULT_CHOICE
+        choice = int(c)
+        if choice >= 0 and choice < len(menu_list):
+            ret = 0
+            exec(menu_list[choice]["run"])
+            return ret
+        else:
+            self.user.tell("Invalid Option")           
+                
+            #for key, item in pa.get("term_menu", term_menu).items():
+                #self.tell(item[MSG])
+            #try:
+                #choice = int(self.ask("Type the # of your choice then Enter:",
+                             #default=RUN))
+                #if choice in pa.get("term_menu", term_menu):
+                    #return term_menu[choice][FUNC](self)
+                #else:
+                    #raise ValueError
+            #except ValueError as e:
+                #self.tell("Invalid option: " + str(e))
 
 
 class TestUser(TermUser):
