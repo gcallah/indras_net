@@ -1,5 +1,5 @@
 """
-    This is wolfram model re-written in indra.
+    This is rm -f ./.git/index.lock re-written in indra.
 """
 
 from indra.env import Env
