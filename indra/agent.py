@@ -303,7 +303,7 @@ class Agent(object):
                 self.prim_group = group
 
     def switch_groups(self, g1, g2):
-        self.leave_group(g1)
+        self.del_group(g1)
         self.add_group(g2)
 
     def to_json(self):
