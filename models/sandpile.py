@@ -53,7 +53,8 @@ def get_next_group(agent):
     curr_group_num_char = str((agent.primary_group()))[5]
     next_group_num = int(curr_group_num_char) + 1
     if (next_group_num == 6):
-        next_group_num = 1
+        print("TIME to switch")
+        next_group_num = 0
     next_group = sandpile.members["Group" + str(next_group_num)]
     return next_group
 
@@ -64,8 +65,12 @@ def add_grain(agent):
 
 
 def switch_groups(agent, sandpile, next_group):
-    change_color(agent, sandpile, sandpile.members)
+    if DEBUG:
+        print("Agent will now switch from", agent.primary_group(), "to", next_group)
     agent.switch_groups(agent.primary_group(), next_group)
+    if DEBUG:
+        print("Agent has switched to", agent.primary_group())
+    change_color(agent, sandpile, sandpile.members)
 
 
 def place_action(agent):
@@ -89,6 +94,8 @@ def sandpile_action(sanpile):
             "and is in", (sandpile.attrs["center_agent"]).primary_group())
     add_grain(sandpile.attrs["center_agent"])
     next_group = get_next_group(sandpile.attrs["center_agent"])
+    if DEBUG:
+        print("New group:", next_group)
     switch_groups(sandpile.attrs["center_agent"], sandpile, next_group)
     #sandpile.attrs["center_agent"].switch_groups((sandpile.attrs["center_agent"]).primary_group(), next_group)
     if (env_unfavorable(sandpile.attrs["center_agent"]["grains"])):
