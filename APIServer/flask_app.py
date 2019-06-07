@@ -26,11 +26,6 @@ with open(dir + "models/models.json") as file:
             doc = model["doc"]
         models_response.append({"name": model["name"], "doc": doc})
 
-# propargs = api.model(“props”, {
-#    “grid_height”: fields.String(“The height of the grid“),
-#    “gird_width”: fields.String(“The “)
-# })
-
 
 @api.route('/hello')
 class HelloWorld(Resource):
@@ -72,37 +67,17 @@ class Props(Resource):
             return {"Error": "Invalid model answer " + str(model_id)}
 
 
-# @api.route("/models/<int:question1>/<int:question2>/<float:question3>/props")
-# class Props(Resource):
-#     def get(self, question1, question2, question3):
-#         try:
-#             # Ask Professor!!!!!
-#             ...
-#             # executing the answers.
-#         except KeyError:
-#             return {"Error": "Out of range"}
+@api.route("/models/<int:menuitem_id>/menu")
+class Menu(Resource):
+    def get(self, menuitem_id):
+        try:
+            ...
+            # executing specific menu item
+        except KeyError:
+            return {"Error": "Invalid menu item id " + str(menuitem_id)}
 
-#     def put(self, question1, question2, question3):
-#         return {
-#             "menu": ["Item 1", "Item 2", "Item 3"],
-#             "grid_height": question1,
-#             "grid_width": question2,
-#             "density": question3,
-#         }
-
-
-# @api.route("/models/<int:menuitem_id>/menu")
-# class Props(Resource):
-#     def get(self, menuitem_id):
-#         try:
-#             # Ask Professor!!!!!
-#             ...
-#             # executing specific menu item
-#         except KeyError:
-#             return {"Error": "Invalid menu item id " + str(menuitem_id)}
-#     def put(self, menuitem_id):
-#         return {"execute": menuitem_id, "menu":
-    #             ["Item 1", "Item 2", "Item 3"]}
+    def put(self, menuitem_id):
+        return {"execute menu item": menuitem_id, "Menu": "menu will be returned here"}  # noqa E501
 
 
 # Ask Professor!!!!!
