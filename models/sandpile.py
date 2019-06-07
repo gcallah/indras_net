@@ -46,15 +46,13 @@ def change_color(agent, sandpile, opp_group):
               + str(agent.primary_group()) + " to "
               + str(opp_group[str(agent.primary_group())]))
     sandpile.add_switch(agent, agent.primary_group(),
-                        opp_group[str(agent.primary_group())])
+                        opp_group)
 
 
 def get_next_group(agent):
-    # curr_group = agent.primary_group()
     curr_group_num_char = str((agent.primary_group()))[5]
     next_group_num = int(curr_group_num_char) + 1
-    if (next_group_num == 6):
-        print("TIME to switch")
+    if (next_group_num == 6):#dont hard code
         next_group_num = 0
     next_group = sandpile.members["Group" + str(next_group_num)]
     return next_group
@@ -69,9 +67,11 @@ def add_grain(agent):
 def switch_groups(agent, sandpile, next_group):
     if DEBUG:
         print("Agent will now switch from", agent.primary_group(), "to", next_group)
+        print("Color:", agent.primary_group().get_color())
     agent.switch_groups(agent.primary_group(), next_group)
     if DEBUG:
         print("Agent has switched to", agent.primary_group())
+        print("Color:", agent.primary_group().get_color())
     change_color(agent, sandpile, sandpile.members)
 
 
@@ -89,11 +89,13 @@ def place_action(agent):
 
 def sandpile_action(sandpile):
     if DEBUG:
-        print("Adding a grain to",
-              sandpile.attrs["center_agent"].pos,
-              ", which has a height of",
+        print("Adding a grain to (",
+              sandpile.attrs["center_agent"].get_x(), ",",
+              sandpile.attrs["center_agent"].get_y(),
+              ") which has a height of",
               sandpile.attrs["center_agent"]["grains"],
-              "and is in", sandpile.attrs["center_agent"].primary_group())
+              "and is in group", 
+              sandpile.attrs["center_agent"].primary_group())
     add_grain(sandpile.attrs["center_agent"])
     next_group = get_next_group(sandpile.attrs["center_agent"])
     if DEBUG:
@@ -106,7 +108,7 @@ def sandpile_action(sandpile):
     print("in sandpile_action")
 
 
-def topple(agent):
+def topple(sandpile, agent):
     if DEBUG:
         print("Sandpile in", agent.pos, "is toppling")
     agent["grains"] = 0
