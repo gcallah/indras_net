@@ -3,6 +3,7 @@
 """
 import random
 
+from propargs.propargs import PropArgs
 from indra.agent import Agent
 from indra.composite import Composite
 from indra.space import in_hood
@@ -17,6 +18,7 @@ NUM_AGENTS = 500
 DEF_CITY_DIM = 40
 
 TOLERANCE = "tolerance"
+DEVIATION = "deviation"
 COLOR = "color"
 
 DEF_TOLERANCE = .5
@@ -41,8 +43,8 @@ red_agents = None
 blue_agents = None
 
 
-def get_tolerance(default_tolerance):
-    tol = random.gauss(default_tolerance, DEF_SIGMA)
+def get_tolerance(default_tolerance, sigma):
+    tol = random.gauss(default_tolerance, sigma)
     tol = max(tol, 0.0)
     tol = min(tol, 1.0)
     return tol
@@ -84,11 +86,12 @@ def agent_action(agent):
     return env_favorable(hood_ratio, agent[TOLERANCE])
 
 
-def create_agent(i, color):
+def create_agent(i, mean_tol, dev, color):
     """
     Creates agent of specified color type
     """
-    this_tolerance = get_tolerance(DEF_TOLERANCE)
+    this_tolerance = get_tolerance(mean_tol,
+                                   dev)
     return Agent(group_names[color] + str(i),
                  action=agent_action,
                  attrs={TOLERANCE: this_tolerance,
@@ -99,22 +102,29 @@ def set_up():
     """
     A func to set up run that can also be used by test code.
     """
+    pa = PropArgs.create_props('basic_props',
+                               ds_file='props/segregation.props.json')
     blue_agents = Composite(group_names[BLUE_TEAM] + " group", {"color": BLUE})
     red_agents = Composite(group_names[RED_TEAM] + " group", {"color": RED})
-    for i in range(NUM_AGENTS):
-        red_agents += create_agent(i, color=RED_TEAM)
+    for i in range(pa['num_red']):
+        red_agents += create_agent(i,
+                                   pa.get('mean_tol', DEF_TOLERANCE),
+                                   pa.get('deviation', DEF_SIGMA),
+                                   color=RED_TEAM)
 
     if DEBUG2:
         print(red_agents.__repr__())
 
-    for i in range(NUM_AGENTS):
-        blue_agents += create_agent(i, color=BLUE_TEAM)
-
+    for i in range(pa['num_blue']):
+        blue_agents += create_agent(i,
+                                    pa.get('mean_tol', DEF_TOLERANCE),
+                                    pa.get('deviation', DEF_SIGMA),
+                                    color=BLUE_TEAM)
     if DEBUG2:
         print(blue_agents.__repr__())
 
     city = Env("A city", members=[blue_agents, red_agents],
-               height=DEF_CITY_DIM, width=DEF_CITY_DIM)
+               height=pa['grid_height'], width=pa['grid_width'])
     return (blue_agents, red_agents, city)
 
 

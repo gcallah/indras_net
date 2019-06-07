@@ -4,7 +4,7 @@
 
 import math
 from operator import gt, lt
-
+from propargs.propargs import PropArgs
 from indra.agent import Agent, X_VEC, Y_VEC, NEUTRAL
 from indra.agent import ratio_to_sin
 from indra.composite import Composite
@@ -19,11 +19,13 @@ DEBUG2 = False  # turns deeper debugging code on or off
 
 NUM_TSETTERS = 5
 NUM_FOLLOWERS = 55
+pa = PropArgs.create_props('basic_props',
+                           ds_file='props/fashion.props.json')
 """
 Adding weighted average for having a sine curve
 """
 ENV_WEIGHT = 0.6
-weightings = [1.0, ENV_WEIGHT]
+weightings = [1.0, pa.get('env_weight', ENV_WEIGHT)]
 
 COLOR_PREF = "color_pref"
 DISPLAY_COLOR = "display_color"
@@ -138,7 +140,7 @@ def set_up():
     """
     blue_tsetters = Composite(BLUE_TSETTERS, {"color": NAVY})
     red_tsetters = Composite(RED_TSETTERS, {"color": DARKRED})
-    for i in range(NUM_TSETTERS):
+    for i in range(pa.get('num_tsetters', NUM_TSETTERS)):
         red_tsetters += create_tsetter(i)
 
     if DEBUG2:
@@ -146,7 +148,7 @@ def set_up():
 
     red_followers = Composite(RED_FOLLOWERS, {"color": RED})
     blue_followers = Composite(BLUE_FOLLOWERS, {"color": BLUE})
-    for i in range(NUM_FOLLOWERS):
+    for i in range(pa.get('num_followers', NUM_FOLLOWERS)):
         blue_followers += create_follower(i)
 
     opp_group = {str(red_tsetters): blue_tsetters,

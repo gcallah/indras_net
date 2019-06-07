@@ -270,7 +270,7 @@ class Composite(Agent):
                 "members": self.members}
 
     def attrs_to_dict(self):
-        if self.attrs != None:
+        if self.attrs is not None:
             return self.attrs
         else:
             return "No attrs"
