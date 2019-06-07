@@ -7,7 +7,6 @@ from indra.agent import Agent
 from indra.composite import Composite
 # from indra.space import in_hood
 from indra.env import Env
-import indra.display_methods as disp
 
 
 DEBUG = True  # turns debugging code on or off
@@ -16,157 +15,90 @@ DEBUG2 = False  # turns deeper debugging code on or off
 HEIGHT = 4
 WIDTH = 4
 
-MAX_SAND = 5
-
 SAND_PREFIX = "sand_location "
 
 NEARBY = 1
 
+NUM_GROUPS = 6
+
 sandpile = None
 
-group0 = None
-group1 = None
-group2 = None
-group3 = None
-group4 = None
-group5 = None
-
-
-def env_unfavorable(sand_height):
-    """
-    Is the environment to our agent's liking or not??
-    Here, the question is, "Is there too much sand?"
-    """
-    return sand_height > MAX_SAND
-
-
-def change_color(agent, sandpile, opp_group):
-    if DEBUG:
-        print("Agent " + str(agent) + " is changing colors from "
-              + str(agent.primary_group()) + " to "
-              + str(opp_group[str(agent.primary_group())]))
-    sandpile.add_switch(agent, agent.primary_group(),
-                        opp_group)
-
-
-def get_next_group(agent):
-    curr_group_num_char = str((agent.primary_group()))[5]
-    next_group_num = int(curr_group_num_char) + 1
-    if (next_group_num == 6):#dont hard code
-        next_group_num = 0
-    next_group = sandpile.members["Group" + str(next_group_num)]
-    return next_group
-
-
-def add_grain(agent):
-    agent["grains"] += 1
-    if DEBUG:
-        print("Agent has height of", agent["grains"], "now")
-
-
-def switch_groups(agent, sandpile, next_group):
-    if DEBUG:
-        print("Agent will now switch from", agent.primary_group(), "to", next_group)
-        print("Color:", agent.primary_group().get_color())
-    agent.switch_groups(agent.primary_group(), next_group)
-    if DEBUG:
-        print("Agent has switched to", agent.primary_group())
-        print("Color:", agent.primary_group().get_color())
-    change_color(agent, sandpile, sandpile.members)
-
-
-def place_action(agent):
-    """
-    See if we are carrying too much sand at this locale.
-    """
-    print("in place_action with sand height of",
-          agent["grains"],
-          "and pos =", agent.pos)
-    neighbors = sandpile.get_vonneumann_hood(agent)
-    for neighbor in neighbors:
-        print(agent.name, " has neighbor ", neighbor.name)
-
-
-def sandpile_action(sandpile):
-    if DEBUG:
-        print("Adding a grain to (",
-              sandpile.attrs["center_agent"].get_x(), ",",
-              sandpile.attrs["center_agent"].get_y(),
-              ") which has a height of",
-              sandpile.attrs["center_agent"]["grains"],
-              "and is in group", 
-              sandpile.attrs["center_agent"].primary_group())
-    add_grain(sandpile.attrs["center_agent"])
-    next_group = get_next_group(sandpile.attrs["center_agent"])
-    if DEBUG:
-        print("New group:", next_group)
-    switch_groups(sandpile.attrs["center_agent"], sandpile, next_group)
-    # sandpile.attrs["center_agent"].
-    # switch_groups(sandpile.attrs["center_agent"].primary_group(), next_group)
-    if (env_unfavorable(sandpile.attrs["center_agent"]["grains"])):
-        topple(sandpile, sandpile.attrs["center_agent"])
-    print("in sandpile_action")
+groups = []
+group_indices = {}
 
 
 def topple(sandpile, agent):
     if DEBUG:
         print("Sandpile in", agent.pos, "is toppling")
-    agent["grains"] = 0
+    # add grain for neighbors!
+
+
+def change_group(agent, sandpile, curr_group_idx, next_group_idx):
+    if DEBUG:
+        print("Say something about group switch")
+    sandpile.add_switch(agent, groups[curr_group_idx], groups[next_group_idx])
+
+
+def curr_group(agent):
+    return group_indices[agent.primary_group().name]
+
+
+def next_group(curr_group_idx):
+    return (curr_group_idx + 1) % NUM_GROUPS
+
+
+def add_grain(agent):
+    curr_group_idx = curr_group(agent)
+    next_group_idx = next_group(curr_group_idx)
+    change_group(agent, sandpile, curr_group_idx, next_group_idx)
+    if next_group_idx == 0:
+        topple(sandpile, agent)
+    return next_group_idx
+
+
+def sandpile_action(sandpile):
+    """
+    The sandpile just drops grains on the center agent.
+    """
+    if DEBUG:
+        print("Adding a grain to (",
+              sandpile.attrs["center_agent"].get_x(), ",",
+              sandpile.attrs["center_agent"].get_y(),
+              " and is in group ",
+              sandpile.attrs["center_agent"].primary_group())
+    add_grain(sandpile.attrs["center_agent"])
 
 
 def create_agent(i):
     """
     Creates agent for holding sand.
     """
-    return Agent(SAND_PREFIX + str(i),
-                 action=place_action,
-                 attrs={"grains": 0})
+    return Agent(SAND_PREFIX + str(i))
 
 
 def set_up():
     """
     A func to set up run that can also be used by test code.
     """
-    group0 = Composite("Group0", {"color": disp.BLACK})
-    group1 = Composite("Group1", {"color": disp.MAGENTA})
-    group2 = Composite("Group2", {"color": disp.BLUE})
-    group3 = Composite("Group3", {"color": disp.CYAN})
-    group4 = Composite("Group4", {"color": disp.RED})
-    group5 = Composite("Group5", {"color": disp.YELLOW})
-    for i in range((HEIGHT) * (WIDTH)):
-        group0 += create_agent(i)
+    for i in range(NUM_GROUPS):
+        groups.append(Composite("Group" + str(i)))
+        group_indices[groups[i].name] = i
 
-    sandpile = Env("A sandpile", action=sandpile_action, members=[
-                   group0,
-                   group1,
-                   group2,
-                   group3,
-                   group4,
-                   group5
-                   ],
+    for i in range((HEIGHT) * (WIDTH)):
+        groups[0] += create_agent(i)
+
+    sandpile = Env("A sandpile", action=sandpile_action, members=groups,
                    height=HEIGHT, width=WIDTH)
     sandpile.attrs["center_agent"] = sandpile.get_agent_at(HEIGHT / 2,
                                                            WIDTH / 2)
 
-    return (group0,
-            group1,
-            group2,
-            group3,
-            group4,
-            group5,
-            sandpile)
+    return (groups, group_indices, sandpile)
 
 
 def main():
     global sandpile
-    global group0
-    global group1
-    global group2
-    global group3
-    global group4
-    global group5
-    (group0, group1, group2, group3, group4, group5,
-     sandpile) = set_up()
+    global groups
+    (groups, group_indices, sandpile) = set_up()
 
     if DEBUG2:
         print(sandpile.__repr__())
