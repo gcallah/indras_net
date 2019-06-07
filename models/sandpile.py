@@ -48,8 +48,9 @@ def change_color(agent, sandpile, opp_group):
     sandpile.add_switch(agent, agent.primary_group(),
                         opp_group[str(agent.primary_group())])
 
+
 def get_next_group(agent):
-    curr_group = agent.primary_group()
+    # curr_group = agent.primary_group()
     curr_group_num_char = str((agent.primary_group()))[5]
     next_group_num = int(curr_group_num_char) + 1
     if (next_group_num == 6):
@@ -57,6 +58,7 @@ def get_next_group(agent):
         next_group_num = 0
     next_group = sandpile.members["Group" + str(next_group_num)]
     return next_group
+
 
 def add_grain(agent):
     agent["grains"] += 1
@@ -85,25 +87,26 @@ def place_action(agent):
         print(agent.name, " has neighbor ", neighbor.name)
 
 
-def sandpile_action(sanpile):
+def sandpile_action(sandpile):
     if DEBUG:
-        print("Adding a grain to", 
-            (sandpile.attrs["center_agent"]).pos,
-            ", which has a height of", 
-            (sandpile.attrs["center_agent"]["grains"]), 
-            "and is in", (sandpile.attrs["center_agent"]).primary_group())
+        print("Adding a grain to",
+              sandpile.attrs["center_agent"].pos,
+              ", which has a height of",
+              sandpile.attrs["center_agent"]["grains"],
+              "and is in", sandpile.attrs["center_agent"].primary_group())
     add_grain(sandpile.attrs["center_agent"])
     next_group = get_next_group(sandpile.attrs["center_agent"])
     if DEBUG:
         print("New group:", next_group)
     switch_groups(sandpile.attrs["center_agent"], sandpile, next_group)
-    #sandpile.attrs["center_agent"].switch_groups((sandpile.attrs["center_agent"]).primary_group(), next_group)
+    # sandpile.attrs["center_agent"].
+    # switch_groups(sandpile.attrs["center_agent"].primary_group(), next_group)
     if (env_unfavorable(sandpile.attrs["center_agent"]["grains"])):
         topple(sandpile, sandpile.attrs["center_agent"])
     print("in sandpile_action")
 
 
-def topple(sandpile, agent):
+def topple(agent):
     if DEBUG:
         print("Sandpile in", agent.pos, "is toppling")
     agent["grains"] = 0

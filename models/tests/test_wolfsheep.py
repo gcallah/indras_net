@@ -84,7 +84,6 @@ class WolfsheepTestCase(TestCase):
         """
         Test to see if wolves reproduce at the right time.
         """
-        self.wolf
         self.wolf["time_to_repr"] = 0
         self.assertTrue(reproduce(self.wolf, create_wolf,
                                   wolves_created, ws.wolves))
@@ -94,7 +93,6 @@ class WolfsheepTestCase(TestCase):
         """
         Negative test to check the reproduction of wolves.
         """
-        self.wolf
         self.wolf["time_to_repr"] = 1
         self.assertFalse(reproduce(self.wolf, create_wolf,
                                   wolves_created, ws.wolves))
