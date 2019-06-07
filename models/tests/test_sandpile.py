@@ -34,4 +34,3 @@ class SandpileTestCase(TestCase):
         for i in range(NUM_GROUPS * 3):
             self.assertTrue(next_group(i) < NUM_GROUPS)
             self.assertTrue(next_group(i) >= 0)
-
