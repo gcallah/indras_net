@@ -69,7 +69,7 @@ def change_color(agent, society, opp_group):
                        opp_group[str(agent.primary_group())])
 
 
-def new_color_pref(old_pref, env_color):     
+def new_color_pref(old_pref, env_color):
     me = math.asin(old_pref)
     env = math.asin(env_color)
     avg = np.average([me,env], weights=weightings)   # noqa: E231
@@ -138,8 +138,6 @@ def set_up():
     """
     A func to set up run that can also be used by test code.
     """
-  #  pa = PropArgs.create_props('basic_props',
-   #                            ds_file='props/fashion.props.json')    
     blue_tsetters = Composite(BLUE_TSETTERS, {"color": NAVY})
     red_tsetters = Composite(RED_TSETTERS, {"color": DARKRED})
     for i in range(pa.get('num_tsetters', NUM_TSETTERS)):
