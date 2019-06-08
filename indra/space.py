@@ -245,6 +245,27 @@ class Space(Composite):
         """
         pass
 
-    def get_vonneumann_hood(self, center_agent):
-        return self.subset(in_vonneumann, center_agent,
-                           name=center_agent.name + "'s vn hood")
+    def get_vonneumann_hood(self, agent):
+        """
+        Takes in an agent and returns a dictionary of its vonneuman neighbors
+        """
+        agent_x = agent.get_x()
+        agent_y = agent.get_y()
+        left = self.get_agent_at(agent_x - 1, agent_y)
+        right = self.get_agent_at(agent_x + 1, agent_y)
+        top = self.get_agent_at(agent_x, agent_y + 1)
+        bottom = self.get_agent_at(agent_x, agent_y - 1)
+        if DEBUG:
+            print(left.get_x(),",",left.get_y())
+            print(right.get_x(),",",right.get_y())
+            print(top.get_x(),",",top.get_y())
+            print(bottom.get_x(),",",bottom.get_y())
+        vonneumann_neighbors = {"left":left, "right":right, "top":top, "bottom":bottom}
+        return vonneumann_neighbors
+
+
+
+
+
+
+

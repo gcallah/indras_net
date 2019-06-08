@@ -12,8 +12,8 @@ from indra.env import Env
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
-HEIGHT = 4
-WIDTH = 4
+HEIGHT = 5
+WIDTH = 5
 
 SAND_PREFIX = "sand_location "
 
@@ -30,7 +30,7 @@ group_indices = {}
 def topple(sandpile, agent):
     if DEBUG:
         print("Sandpile in", agent.pos, "is toppling")
-    # add grain for neighbors!
+    neighbors = sandpile.get_vonneumann_hood(agent)
 
 
 def change_group(agent, sandpile, curr_group_idx, next_group_idx):
@@ -52,6 +52,7 @@ def add_grain(agent):
     next_group_idx = next_group(curr_group_idx)
     change_group(agent, sandpile, curr_group_idx, next_group_idx)
     if next_group_idx == 0:
+
         topple(sandpile, agent)
     return next_group_idx
 
@@ -61,19 +62,22 @@ def sandpile_action(sandpile):
     The sandpile just drops grains on the center agent.
     """
     if DEBUG:
-        print("Adding a grain to (",
+        print("Adding a grain to sandpile in position (",
               sandpile.attrs["center_agent"].get_x(), ",",
-              sandpile.attrs["center_agent"].get_y(),
-              " and is in group ",
-              sandpile.attrs["center_agent"].primary_group())
+              sandpile.attrs["center_agent"].get_y(), ")",
+              "which is in the group",
+              sandpile.attrs["center_agent"].primary_group())     
     add_grain(sandpile.attrs["center_agent"])
+
+def place_action(agent):
+    print("Place_action with pos", agent.pos, "and group", agent.primary_group())
 
 
 def create_agent(i):
     """
     Creates agent for holding sand.
     """
-    return Agent(SAND_PREFIX + str(i))
+    return Agent(SAND_PREFIX + str(i), action=place_action)
 
 
 def set_up():
@@ -89,8 +93,8 @@ def set_up():
 
     sandpile = Env("A sandpile", action=sandpile_action, members=groups,
                    height=HEIGHT, width=WIDTH)
-    sandpile.attrs["center_agent"] = sandpile.get_agent_at(HEIGHT / 2,
-                                                           WIDTH / 2)
+    sandpile.attrs["center_agent"] = sandpile.get_agent_at(int(HEIGHT / 2),
+                                                           int(WIDTH / 2))
 
     return (groups, group_indices, sandpile)
 
