@@ -13,16 +13,16 @@
     "hival": 100,
     "loval": 2
   },
-  "num_blue": {
+  "num_sheep": {
     "val": 20,
-    "question": "How many blue agents do you want?",
+    "question": "How many sheep do you want?",
     "atype": "INT",
     "hival": 100,
     "loval": 1
   },
-  "num_red": {
+  "num_wolves": {
     "val": 20,
-    "question": "How many red agents do you want?",
+    "question": "How many wolves do you want?",
     "atype": "INT",
     "hival": 100,
     "loval": 1

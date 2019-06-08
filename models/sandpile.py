@@ -30,7 +30,7 @@ group_indices = {}
 def topple(sandpile, agent):
     if DEBUG:
         print("Sandpile in", agent.pos, "is toppling")
-    neighbors = sandpile.get_vonneumann_hood(agent)
+    # neighbors = sandpile.get_vonneumann_hood(agent)
 
 
 def change_group(agent, sandpile, curr_group_idx, next_group_idx):
@@ -66,11 +66,13 @@ def sandpile_action(sandpile):
               sandpile.attrs["center_agent"].get_x(), ",",
               sandpile.attrs["center_agent"].get_y(), ")",
               "which is in the group",
-              sandpile.attrs["center_agent"].primary_group())     
+              sandpile.attrs["center_agent"].primary_group())
     add_grain(sandpile.attrs["center_agent"])
 
+
 def place_action(agent):
-    print("Place_action with pos", agent.pos, "and group", agent.primary_group())
+    print("Place_action with pos", agent.pos, "and group",
+          agent.primary_group())
 
 
 def create_agent(i):
