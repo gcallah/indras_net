@@ -1,4 +1,5 @@
 import json
+from run_dict import rdict
 
 
 def main(args=None):
@@ -18,7 +19,7 @@ def main(args=None):
             print(str(choice) + ". ", model["name"])
         choice = int(input())
         if choice >= 0 and choice < len(model_list):
-            exec(model_list[choice]["run"])
+            rdict[model_list[choice]["run"]]()
         else:
             return 0
 
