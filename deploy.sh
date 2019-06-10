@@ -6,7 +6,7 @@ chmod 600 ~/.ssh/id_rsa # Allow read access to the private key
 ssh-add ~/.ssh/id_rsa # Add the private key to SSH
 
 echo "SSHing to PythonAnywhere."
-ssh indrasnet@ssh.pythonanywhere.com << EOF
+ssh -o "StrictHostKeyChecking no" indrasnet@ssh.pythonanywhere.com << EOF
     cd /home/indrasnet/indras_net
     /home/indrasnet/indras_net/rebuild.sh
 EOF
