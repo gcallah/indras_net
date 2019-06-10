@@ -1,6 +1,7 @@
 """
 This file defines User, which represents a user in our system.
 """
+import os
 import json
 from indra.agent import Agent  # , DEBUG2  # DEBUG,
 from IPython import embed
@@ -13,6 +14,10 @@ NOT_IMPL = "Choice not yet implemented."
 CANT_ASK_TEST = "Can't ask anything of a scripted test"
 DEF_STEPS = 1
 USER_EXIT = -999
+
+menu_dir = os.getenv("INDRA_HOME", ".") + "/indra"
+menu_file = "menu.json"
+menu_src = menu_dir + "/" + menu_file
 
 
 def not_impl(user):
@@ -57,6 +62,16 @@ def line_graph(user):
 
 def ipython(user):
     embed()
+    return 0
+
+
+menu_functions = {
+    "run": run,
+    "leave": leave,
+    "scatter_plot": scatter_plot,
+    "line_graph": line_graph,
+    "ipython": ipython,
+}
 
 
 MSG = 0
@@ -103,8 +118,7 @@ class TermUser(Agent):
         DEFAULT_CHOICE = '0'
         menu_item = None
         menu_list = None
-        with open("menu.props.json",
-                  'r') as f:
+        with open(menu_src, 'r') as f:
             menu_item = json.load(f)
         menu_list = menu_item["menu_database"]
         menu_display = "Displaying the menu"
@@ -121,9 +135,7 @@ class TermUser(Agent):
             c = DEFAULT_CHOICE
         choice = int(c)
         if choice >= 0 and choice < len(menu_list):
-            ret = 0
-            exec(menu_list[choice]["run"])
-            return ret
+            return menu_functions[menu_list[choice]["run"]](self)
         else:
             self.user.tell("Invalid Option")
 
