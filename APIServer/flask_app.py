@@ -14,14 +14,10 @@ user = APIUser("Dennis", None)
 
 indra_dir = os.getenv("INDRA_HOME", ".")
 
-with open(indra_dir + "/models/models.json") as file:
-    models_db = json.loads(file.read())["models_database"]
-    models_response = []
-    for model in models_db:
-        doc = ""
-        if "doc" in model:
-            doc = model["doc"]
-        models_response.append({"name": model["name"], "doc": doc})
+
+def load_models():
+    with open(indra_dir + "/models/models.json") as file:
+        return json.loads(file.read())["models_database"]
 
 
 @api.route('/hello')
@@ -33,6 +29,15 @@ class HelloWorld(Resource):
 @api.route('/models')
 class Models(Resource):
     def get(self):
+        global indra_dir
+
+        models_db = load_models()
+        models_response = []
+        for model in models_db:
+            doc = ""
+            if "doc" in model:
+                doc = model["doc"]
+            models_response.append({"name": model["name"], "doc": doc})
         return models_response
 
 
@@ -46,6 +51,7 @@ props = api.model("props", {
 class Props(Resource):
     def get(self, model_id):
         try:
+            models_db = load_models()
             with open(dir + models_db[model_id]["props"]) as file:
                 props = json.loads(file.read())
                 return props
