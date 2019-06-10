@@ -41,8 +41,6 @@ prod: tests
 	- git commit -a -m "Building production."
 	- git pull origin master
 	git push origin master
-	# trying to do this through travis now:
-#	ssh indrasnet@ssh.pythonanywhere.com 'cd /home/indrasnet/indras_net; /home/indrasnet/indras_net/rebuild.sh'
 
 tests: FORCE
 	cd APIServer; make tests
