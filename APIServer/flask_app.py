@@ -10,8 +10,10 @@ app = Flask(__name__)
 CORS(app)
 api = Api(app)
 
-indra_dir = os.getenv("INDRA_HOME", "")
-print("INDRA_HOME = " + indra_dir)
+user = APIUser("Dennis", None)
+
+indra_dir = os.getenv("INDRA_HOME", ".")
+
 with open(indra_dir + "/models/models.json") as file:
     models_db = json.loads(file.read())["models_database"]
     models_response = []
@@ -62,14 +64,12 @@ class Props(Resource):
             return {"Error": "Invalid model answer " + str(model_id)}
 
 
-@api.route("/models/<int:menuitem_id>/menu")
+@api.route("/models/<int:model_id>/menu")
 class Menu(Resource):
-    def get(self, menuitem_id):
-        try:
-            self.user = APIUser("API User", None)
-            return self.user()
-        except KeyError:
-            return {"Error": "Invalid menu item id " + str(menuitem_id)}
+    global user
+
+    def get(self, model_id):
+        return user()
 
     def put(self, menuitem_id):
         return {"execute menu item": menuitem_id, "Menu": "menu will be returned here"}  # noqa E501
