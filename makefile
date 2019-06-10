@@ -14,7 +14,6 @@ PYTHONFILES = $(shell ls $(MODELS_DIR)/*.py)
 WEBFILES = $(shell ls $(WEB_SRC)/*.js)
 WEBFILES += $(shell ls $(WEB_SRC)/components/*.js)
 WEBFILES += $(shell ls $(WEB_SRC)/*.css)
-WEBFILES += $(shell ls $(WEB_SRC)/components/*.css)
 
 FORCE:
 
@@ -37,6 +36,9 @@ $(WEB_PUBLIC)/index.html: $(WEBFILES)
 tags: FORCE
 	ctags --recurse .
 	git add tags
+
+submods:
+	cd utils; git pull origin master
 
 # run tests then commit
 prod: tests
