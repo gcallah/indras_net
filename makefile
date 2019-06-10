@@ -33,8 +33,10 @@ $(WEB_PUBLIC)/index.html: $(WEBFILES)
 	cp -r build/* .. && \
 	cd ..
 
+# build tags file for vim:
 tags: FORCE
 	ctags --recurse .
+	git add tags
 
 # run tests then commit
 prod: tests
