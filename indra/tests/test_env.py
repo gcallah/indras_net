@@ -8,7 +8,7 @@ from unittest import TestCase, main
 import indra.display_methods as disp
 
 from indra.env import Env, PopHist, POP_HIST_HDR, POP_SEP
-from indra.user import TEST, WEB
+from indra.user import TEST, API
 from indra.agent import Agent
 from indra.composite import Composite
 from indra.tests.test_agent import create_newton
@@ -119,7 +119,7 @@ class EnvTestCase(TestCase):
             self.assertEqual(ret, {GRP1: {X: [x], Y: [y], 'color': None}})
 
     def test_headless(self):
-        if (self.env.user_type == WEB) or (self.env.user_type == TEST):
+        if (self.env.user_type == API) or (self.env.user_type == TEST):
             self.assertTrue(self.env.headless())
         else:
             self.assertTrue(not self.env.headless())

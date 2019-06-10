@@ -11,14 +11,14 @@ import numpy as np
 import logging
 import io
 import os
-from indra.user import TERMINAL, WEB
+from indra.user import TERMINAL, API
 plt_present = True
 plt_present_error_message = ""
 
 try:
     import matplotlib as mpl
     user_type = os.getenv("user_type", TERMINAL)
-    if user_type == WEB:  # you can change this to right value!
+    if user_type == API:
         mpl.use('Agg')
     import matplotlib.pyplot as plt
     import matplotlib.animation as animation

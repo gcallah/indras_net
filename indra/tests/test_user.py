@@ -6,7 +6,7 @@ from unittest import TestCase, main
 
 from indra.env import Env
 from indra.user import not_impl, NOT_IMPL, TermUser, TestUser, run, CANT_ASK_TEST
-from indra.user import line_graph, scatter_plot, DEF_STEPS
+from indra.user import line_graph, scatter_plot, DEF_STEPS, get_menu_json
 from indra.tests.test_agent import create_newton
 from indra.tests.test_env import GRP1, GRP2
 
@@ -73,6 +73,14 @@ class UserTestCase(TestCase):
 
     def test_task(self):
         self.assertEqual(self.test_user.ask("Silly question?"), CANT_ASK_TEST)
+
+    def test_get_menu_json(self):
+        """
+        See if we can read in the menu!
+        """
+        menu = get_menu_json()
+        self.assertTrue(len(menu) >= 2)
+
 
 if __name__ == '__main__':
     main()
