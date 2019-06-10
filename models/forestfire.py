@@ -16,9 +16,6 @@ DEBUG2 = False  # turns deeper debugging code on or off
 
 NEARBY = 1.8
 
-DEF_DIM = 30
-DEF_DENSITY = .44
-
 TREE_PREFIX = "Tree"
 
 # tree condition strings
@@ -108,9 +105,9 @@ def set_up():
 
     ds_file = 'props/forestfire.props.json'
     pa = PropArgs.create_props('forest_fire_props', ds_file=ds_file)
-    forest_height = pa.get('grid_height', DEF_DIM)
-    forest_width = pa.get('grid_width', DEF_DIM)
-    forest_density = pa.get('density', DEF_DENSITY)
+    forest_height = pa['grid_height']
+    forest_width = pa['grid_width']
+    forest_density = pa['density']
 
     healthy = Composite(HEALTHY, {"color": GREEN})
     new_fire = Composite(NEW_FIRE, {"color": TOMATO})
@@ -121,8 +118,7 @@ def set_up():
         healthy += plant_tree(i)
 
     forest = Env("Forest", height=forest_height, width=forest_width,
-                 members=[healthy, new_fire, on_fire, burned_out,
-                          new_growth])
+                 members=[healthy, new_fire, on_fire, burned_out, new_growth])
 
     global group_map
     group_map = {HE: healthy, NF: new_fire,
