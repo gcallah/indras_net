@@ -30,7 +30,9 @@ group_indices = {}
 def topple(sandpile, agent):
     if DEBUG:
         print("Sandpile in", agent.pos, "is toppling")
-    # neighbors = sandpile.get_vonneumann_hood(agent)
+    neighbors = sandpile.get_vonneumann_hood(agent)
+    for neighbor in neighbors:
+        print(neighbor)
 
 
 def change_group(agent, sandpile, curr_group_idx, next_group_idx):
