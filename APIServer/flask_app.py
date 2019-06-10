@@ -49,10 +49,12 @@ props = api.model("props", {
 
 @api.route('/models/<int:model_id>/props')
 class Props(Resource):
+    global indra_dir
+
     def get(self, model_id):
         try:
             models_db = load_models()
-            with open(dir + models_db[model_id]["props"]) as file:
+            with open(indra_dir + "/" + models_db[model_id]["props"]) as file:
                 props = json.loads(file.read())
                 return props
         except (IndexError, KeyError, ValueError):
