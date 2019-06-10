@@ -19,13 +19,12 @@ DEBUG2 = False  # turns deeper debugging code on or off
 
 NUM_TSETTERS = 5
 NUM_FOLLOWERS = 55
-pa = PropArgs.create_props('basic_props',
-                           ds_file='props/fashion.props.json')
+
 """
 Adding weighted average for having a sine curve
 """
 ENV_WEIGHT = 0.6
-weightings = [1.0, pa.get('env_weight', ENV_WEIGHT)]
+weightings = [1.0, ENV_WEIGHT]
 
 COLOR_PREF = "color_pref"
 DISPLAY_COLOR = "display_color"
@@ -138,6 +137,8 @@ def set_up():
     """
     A func to set up run that can also be used by test code.
     """
+    pa = PropArgs.create_props('basic_props',
+                               ds_file='props/fashion.props.json')
     blue_tsetters = Composite(BLUE_TSETTERS, {"color": NAVY})
     red_tsetters = Composite(RED_TSETTERS, {"color": DARKRED})
     for i in range(pa.get('num_tsetters', NUM_TSETTERS)):

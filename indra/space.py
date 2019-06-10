@@ -245,6 +245,9 @@ class Space(Composite):
         """
         pass
 
-    def get_vonneumann_hood(self, center_agent):
-        return self.subset(in_vonneumann, center_agent,
-                           name=center_agent.name + "'s vn hood")
+    def get_vonneumann_hood(self, agent):
+        """
+        Takes in an agent and returns a the group of its vonneuman neighbors
+        """
+        return self.subset(in_vonneumann, agent,
+                           name=agent.name + "'s vn hood")

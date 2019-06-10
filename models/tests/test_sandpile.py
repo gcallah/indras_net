@@ -4,7 +4,6 @@ from indra.composite import Composite
 from indra.env import Env
 from models.sandpile import set_up, create_agent, next_group, topple
 from models.sandpile import NUM_GROUPS, SAND_PREFIX
-import sandpile as sp
 
 TEST_ANUM = 999999
 
@@ -14,9 +13,8 @@ SMALL_GRID = 4
 
 class SandpileTestCase(TestCase):
     def setUp(self):
-        sp.set_up()
+        set_up()
         self.test_agent = create_agent(TEST_ANUM)
-        sp.groups[0] += self.test_agent
         pass
 
     def tearDown(self):

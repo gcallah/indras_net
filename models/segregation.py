@@ -13,7 +13,8 @@ from indra.display_methods import RED, BLUE
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
-NUM_AGENTS = 500
+NUM_RED = 250
+NUM_BLUE = 250
 
 DEF_CITY_DIM = 40
 
@@ -106,7 +107,7 @@ def set_up():
                                ds_file='props/segregation.props.json')
     blue_agents = Composite(group_names[BLUE_TEAM] + " group", {"color": BLUE})
     red_agents = Composite(group_names[RED_TEAM] + " group", {"color": RED})
-    for i in range(pa['num_red']):
+    for i in range(pa.get('num_red', NUM_RED)):
         red_agents += create_agent(i,
                                    pa.get('mean_tol', DEF_TOLERANCE),
                                    pa.get('deviation', DEF_SIGMA),
@@ -115,7 +116,7 @@ def set_up():
     if DEBUG2:
         print(red_agents.__repr__())
 
-    for i in range(pa['num_blue']):
+    for i in range(pa.get('num_blue', NUM_BLUE)):
         blue_agents += create_agent(i,
                                     pa.get('mean_tol', DEF_TOLERANCE),
                                     pa.get('deviation', DEF_SIGMA),
@@ -124,7 +125,8 @@ def set_up():
         print(blue_agents.__repr__())
 
     city = Env("A city", members=[blue_agents, red_agents],
-               height=pa['grid_height'], width=pa['grid_width'])
+               height=pa.get('grid_height', DEF_CITY_DIM),
+               width=pa.get('grid_width', DEF_CITY_DIM))
     return (blue_agents, red_agents, city)
 
 

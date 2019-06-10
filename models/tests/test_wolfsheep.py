@@ -2,6 +2,7 @@
 This is the test suite for space.py.
 """
 
+from propargs.propargs import PropArgs
 from unittest import TestCase, main
 from indra.agent import Agent
 from models.wolfsheep import create_sheep, create_wolf, set_up, wolf_action, sheep_action
@@ -19,9 +20,11 @@ TEST_SNAME = AGT_SHEEP_NAME + str(TEST_SNUM)
 
 class WolfsheepTestCase(TestCase):
     def setUp(self):
+        self.pa = PropArgs.create_props('wolfsheep_props',
+                                        ds_file='../props/wolfsheep.props.json')
         (ws.wolves, ws.sheep, ws.meadow) = set_up()
-        self.wolf = create_wolf(TEST_WNUM)
-        self.sheep = create_sheep(TEST_SNUM)
+        self.wolf = create_wolf(TEST_WNUM, self.pa)
+        self.sheep = create_sheep(TEST_SNUM, self.pa)
 
     def tearDown(self):
         self.test_wolves = None
@@ -31,14 +34,14 @@ class WolfsheepTestCase(TestCase):
         """
          Test to see if wolf is created
         """
-        new_wolf = create_wolf(1)
+        new_wolf = create_wolf(1, self.pa)
         self.assertEqual(new_wolf.name, AGT_WOLF_NAME + str(1))
 
     def test_create_sheep(self):
         """
         Test to see if sheep is created
         """
-        new_sheep = create_sheep(1)
+        new_sheep = create_sheep(1, self.pa)
         self.assertEqual(new_sheep.name, AGT_SHEEP_NAME + str(1))
 
     def test_wolf_action(self):

@@ -10,8 +10,6 @@ from indra.display_methods import TAN, GRAY
 
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
-pa = PropArgs.create_props('basic_props',
-                           ds_file='props/wolfsheep.props.json')
 NUM_WOLVES = 8
 NUM_SHEEP = 20
 HOOD_SIZE = 3
@@ -40,6 +38,7 @@ create_wolf = None
 create_sheep = None
 wolves_created = 0
 sheep_created = 0
+pa = None
 
 
 def isactive(agent, *args):
@@ -81,8 +80,9 @@ def reproduce(agent, create_func, num_created, group):
     """
     Agents reproduce when "time_to_repr" reaches 0
     """
+    global pa
     if agent["time_to_repr"] == 0:
-        meadow.add_child(create_func(num_created), group)
+        meadow.add_child(create_func(num_created, pa), group)
         agent["time_to_repr"] = agent["orig_repr_time"]
         return True
     else:
@@ -110,7 +110,7 @@ def wolf_action(agent):
     return False
 
 
-def create_wolf(i):
+def create_wolf(i, pa):
     """
     Method to create wolf
     """
@@ -125,7 +125,7 @@ def create_wolf(i):
                         pa.get('wolf_repro_period', WOLF_REPRO_PERIOD)})
 
 
-def create_sheep(i):
+def create_sheep(i, pa):
     """
     Method to create sheep
     """
@@ -144,16 +144,19 @@ def set_up():
     """
     A func to set up run that can also be used by test code.
     """
+    global pa
+    pa = PropArgs.create_props('wolfsheep_props',
+                               ds_file='props/wolfsheep.props.json')
     wolves = Composite(COMP_WOLF_NAME, {"color": TAN})
     for i in range(pa.get('num_wolves', NUM_WOLVES)):
-        wolves += create_wolf(i)
+        wolves += create_wolf(i, pa)
 
     if DEBUG2:
         print(wolves.__repr__())
 
     sheep = Composite(COMP_SHEEP_NAME, {"color": GRAY})
-    for i in range(pa.get('num_sheeps', NUM_SHEEP)):
-        sheep += create_sheep(i)
+    for i in range(pa.get('num_sheep', NUM_SHEEP)):
+        sheep += create_sheep(i, pa)
 
     if DEBUG2:
         print(sheep.__repr__())

@@ -33,15 +33,16 @@ $(WEB_PUBLIC)/index.html: $(WEBFILES)
 	cp -r build/* .. && \
 	cd ..
 
+# build tags file for vim:
 tags: FORCE
 	ctags --recurse .
+	git add tags
 
 # run tests then commit
 prod: tests
 	- git commit -a -m "Building production."
 	- git pull origin master
 	git push origin master
-	ssh indrasnet@ssh.pythonanywhere.com 'cd /home/indrasnet/indras_net; /home/indrasnet/indras_net/rebuild.sh'
 
 tests: FORCE
 	cd APIServer; make tests
