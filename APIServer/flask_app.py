@@ -1,6 +1,6 @@
 # Indra API server
 import os
-# from indra.user import APIUser
+from indra.user import APIUser
 from flask import Flask
 from flask_restplus import Resource, Api, fields
 from flask_cors import CORS
@@ -66,8 +66,8 @@ class Props(Resource):
 class Menu(Resource):
     def get(self, menuitem_id):
         try:
-            ...
-            # executing specific menu item
+            self.user = APIUser("API User", None)
+            return self.user()
         except KeyError:
             return {"Error": "Invalid menu item id " + str(menuitem_id)}
 
