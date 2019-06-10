@@ -18,7 +18,7 @@ script:
     - make tests
 
 after_success:
-    - ./deploy.sh
+    # - ./deploy.sh
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
     - make prod_container
     - make deploy_container
