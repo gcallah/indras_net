@@ -1,0 +1,31 @@
+{
+    "menu_database": [
+        {
+            "val": 0,
+            "run": "indra.user.run(self)",
+            "question": "Run for N periods",
+            "atype": "INT",
+            "loval": 1
+        },
+        {
+            "val": 1,
+            "run": "indra.user.line_graph(self)",
+            "question": "Display a population graph."
+        },
+        {
+            "val": 2,
+            "run": "indra.user.scatter_plot(self)",
+            "question": "Display a scatter plot."
+        },
+        {
+            "val": 3,
+            "run": "indra.user.ipython(self)",
+            "question": "Leave menu for interactive python session."
+        },
+        {
+            "val": 4,
+            "run": "ret = indra.user.leave(self)",
+            "question": "Quit (but not really)." 
+        }
+    ]
+}
