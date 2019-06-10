@@ -65,14 +65,11 @@ FUNC = 1
 QUIT = 0
 RUN = 1
 
+
 class TermUser(Agent):
-
     """
-    
     A representation of the user in the system.
-    
     """
-
     def __init__(self, name, env, **kwargs):
         super().__init__(name, **kwargs)
         self.env = env  # this class needs this all the time, we think
@@ -102,12 +99,11 @@ class TermUser(Agent):
         """
         return self.user.tell(msg, end)
 
-        
     def __call__(self):
         DEFAULT_CHOICE = '0'
         menu_item = None
         menu_list = None
-        with open("/indras_net/indra/menu.props.json",
+        with open("menu.props.json",
                   'r') as f:
             menu_item = json.load(f)
         menu_list = menu_item["menu_database"]
@@ -130,6 +126,7 @@ class TermUser(Agent):
             return ret
         else:
             self.user.tell("Invalid Option")
+
 
 class TestUser(TermUser):
     """
