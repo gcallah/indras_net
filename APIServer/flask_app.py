@@ -1,5 +1,6 @@
 # Indra API server
 import os
+from indra.user import APIUser
 from flask import Flask
 from flask_restplus import Resource, Api, fields
 from flask_cors import CORS
@@ -9,15 +10,9 @@ app = Flask(__name__)
 CORS(app)
 api = Api(app)
 
-home_dir = os.getenv("HOME", "")
-if __name__ == "__main__":
-    # On local machines, use relative path
-    dir = home_dir + "/Desktop/indras_net/"
-else:
-    # On the server, use absolute path
-    dir = "/home/indrasnet/indras_net/"
-
-with open(dir + "models/models.json") as file:
+indra_dir = os.getenv("INDRA_HOME", "")
+print("INDRA_HOME = " + indra_dir)
+with open(indra_dir + "/models/models.json") as file:
     models_db = json.loads(file.read())["models_database"]
     models_response = []
     for model in models_db:
@@ -71,8 +66,8 @@ class Props(Resource):
 class Menu(Resource):
     def get(self, menuitem_id):
         try:
-            ...
-            # executing specific menu item
+            self.user = APIUser("API User", None)
+            return self.user()
         except KeyError:
             return {"Error": "Invalid menu item id " + str(menuitem_id)}
 
