@@ -2,8 +2,6 @@
 This file defines User, which represents a user in our system.
 """
 import json
-import indra.user
-from propargs.propargs import PropArgs
 from indra.agent import Agent  # , DEBUG2  # DEBUG,
 from IPython import embed
 
@@ -68,8 +66,11 @@ QUIT = 0
 RUN = 1
 
 class TermUser(Agent):
+
     """
+    
     A representation of the user in the system.
+    
     """
 
     def __init__(self, name, env, **kwargs):
@@ -105,8 +106,9 @@ class TermUser(Agent):
     def __call__(self):
         DEFAULT_CHOICE = '0'
         menu_item = None
-        menu_list = None 
-        with open("/Users/dennisfenchenko/indras_net/indra/menu.props.json", 'r') as f:
+        menu_list = None
+        with open("/indras_net/indra/menu.props.json",
+                  'r') as f:
             menu_item = json.load(f)
         menu_list = menu_item["menu_database"]
         menu_display = "Displaying the menu"
@@ -127,20 +129,7 @@ class TermUser(Agent):
             exec(menu_list[choice]["run"])
             return ret
         else:
-            self.user.tell("Invalid Option")           
-                
-            #for key, item in pa.get("term_menu", term_menu).items():
-                #self.tell(item[MSG])
-            #try:
-                #choice = int(self.ask("Type the # of your choice then Enter:",
-                             #default=RUN))
-                #if choice in pa.get("term_menu", term_menu):
-                    #return term_menu[choice][FUNC](self)
-                #else:
-                    #raise ValueError
-            #except ValueError as e:
-                #self.tell("Invalid option: " + str(e))
-
+            self.user.tell("Invalid Option")
 
 class TestUser(TermUser):
     """
