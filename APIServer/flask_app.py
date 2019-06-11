@@ -15,11 +15,17 @@ api = Api(app)
 user = APIUser("Dennis", None)
 
 indra_dir = os.getenv("INDRA_HOME", ".")
+pub_dir = "/home/indrasnet/indras_net"
 
 
 def load_models():
-    with open(indra_dir + "/models/models.json") as file:
-        return json.loads(file.read())["models_database"]
+    try:
+        with open(indra_dir + "/models/models.json") as file:
+            return json.loads(file.read())["models_database"]
+    except FileNotFoundError:
+        # return {"Error": "File not found"}
+        with open(pub_dir + "/models/models.json") as file:
+            return json.loads(file.read())["models_database"]
 
 
 def err_return(s):
