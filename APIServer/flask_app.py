@@ -23,11 +23,9 @@ def err_return(s):
 
 
 def load_models():
-    try:
-        with open(indra_dir + "/models/models.json") as file:
-            return json.loads(file.read())["models_database"]
-    except FileNotFoundError:
-        return err_return("File not found")
+    model_file = indra_dir + "/models/models.json"
+    with open(model_file) as file:
+        return json.loads(file.read())["models_database"]
 
 
 @api.route('/hello')
@@ -41,7 +39,11 @@ class Models(Resource):
     def get(self):
         global indra_dir
 
-        models_db = load_models()
+        try:
+            models_db = load_models()
+        except FileNotFoundError:
+            return err_return("Model file not found.")
+
         models_response = []
         for model in models_db:
             doc = ""
@@ -70,7 +72,7 @@ class Props(Resource):
         except (IndexError, KeyError, ValueError):
             return err_return("Invalid model id " + str(model_id))
         except FileNotFoundError:
-            return err_return("File not found")
+            return err_return("Models or props file not found")
 
     @api.expect(props)
     def put(self, model_id):
