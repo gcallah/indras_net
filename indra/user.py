@@ -16,6 +16,7 @@ DEF_STEPS = 1
 USER_EXIT = -999
 
 menu_dir = os.getenv("INDRA_HOME", ".") + "/indra"
+print("menu_dir = " + menu_dir)
 menu_file = "menu.json"
 menu_src = menu_dir + "/" + menu_file
 

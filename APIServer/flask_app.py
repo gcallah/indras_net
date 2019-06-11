@@ -6,6 +6,8 @@ from flask_restplus import Resource, Api, fields
 from flask_cors import CORS
 import json
 
+ERROR = "Error:"
+
 app = Flask(__name__)
 CORS(app)
 api = Api(app)
@@ -18,6 +20,10 @@ indra_dir = os.getenv("INDRA_HOME", ".")
 def load_models():
     with open(indra_dir + "/models/models.json") as file:
         return json.loads(file.read())["models_database"]
+
+
+def err_return(s):
+    return {ERROR: s}
 
 
 @api.route('/hello')
@@ -58,9 +64,9 @@ class Props(Resource):
                 props = json.loads(file.read())
                 return props
         except (IndexError, KeyError, ValueError):
-            return {"Error": "Invalid model id " + str(model_id)}
+            return err_return("Invalid model id " + str(model_id))
         except FileNotFoundError:
-            return {"Error": "File not found"}
+            return err_return("File not found")
 
     @api.expect(props)
     def put(self, model_id):
@@ -69,7 +75,7 @@ class Props(Resource):
             props = api.payload  # noqa F841
             return {"Menu": "menu will be returned here"}
         except ValueError:
-            return {"Error": "Invalid model answer " + str(model_id)}
+            return err_return("Invalid model answer " + str(model_id))
 
 
 @api.route("/models/<int:model_id>/menu")
