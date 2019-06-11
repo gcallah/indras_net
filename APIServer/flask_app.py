@@ -16,8 +16,11 @@ indra_dir = os.getenv("INDRA_HOME", ".")
 
 
 def load_models():
-    with open(indra_dir + "/models/models.json") as file:
-        return json.loads(file.read())["models_database"]
+    try:
+        with open(indra_dir + "/models/models.json") as file:
+            return json.loads(file.read())["models_database"]
+    except FileNotFoundError:
+        return {"Error": "File not found"}
 
 
 @api.route('/hello')
