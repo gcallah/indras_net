@@ -249,5 +249,7 @@ class Space(Composite):
         """
         Takes in an agent and returns a the group of its vonneuman neighbors
         """
+        if DEBUG:
+            print("GETTING V NEIGHBORS")
         return self.subset(in_vonneumann, agent,
                            name=agent.name + "'s vn hood")

@@ -31,6 +31,7 @@ def topple(sandpile, agent):
     if DEBUG:
         print("Sandpile in", agent.pos, "is toppling")
     neighbors = sandpile.get_vonneumann_hood(agent)
+    print("The neighbors have the color of", neighbors.get_color())
     for neighbor in neighbors:
         print(neighbor)
 
