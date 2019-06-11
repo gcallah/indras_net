@@ -14,8 +14,7 @@ api = Api(app)
 
 user = APIUser("Dennis", None)
 
-indra_dir = os.getenv("INDRA_HOME", ".")
-pub_dir = "/home/indrasnet/indras_net"
+indra_dir = os.getenv("INDRA_HOME", "/home/indrasnet/indras_net")
 
 
 def err_return(s):
