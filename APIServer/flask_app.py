@@ -18,11 +18,11 @@ pub_dir = "/home/indrasnet/indras_net"
 
 def load_models():
     try:
-        with open(indra_dir + "/models/models.json") as file:
+        with open(indra_dir + "/models/props/models.json") as file:
             return json.loads(file.read())["models_database"]
     except FileNotFoundError:
         # return {"Error": "File not found"}
-        with open(pub_dir + "/models/models.json") as file:
+        with open(pub_dir + "/models/props/models.json") as file:
             return json.loads(file.read())["models_database"]
 
 
