@@ -29,16 +29,8 @@ group_indices = {}
 def topple(sandpile, agent):
     if DEBUG:
         print("Sandpile in", agent.pos, "is toppling")
-
     for neighbor in agent.attrs["neighbors"]:
-        # print("BEFORE ADD_GRAIN: Grain is being added to the neighbor at (", neighbor.get_x(), ",", neighbor.get_y(), ")")  # noqa E501
-        # print("BEFORE ADD_GRAIN: current group of neighbor: ", neighbor.primary_group())  # noqa E501
-        # if DEBUG:
         add_grain(sandpile, neighbor)
-
-        # print("AFTER ADD_GRAIN: Grain is being added to the neighbor at (", neighbor.get_x(), ",", neighbor.get_y(), ")")  # noqa E501
-        # print("AFTER ADD_GRAIN: current group of neighbor: ", neighbor.primary_group())  # noqa E501
-        # print('\n')
 
 
 def curr_group(agent):
