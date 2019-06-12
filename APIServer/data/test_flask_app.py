@@ -1,37 +1,35 @@
 import os
-import tempfile
-import json
-import pytest
+from unittest import TestCase, main
+from APIServer.flask_app import app, HelloWorld
 from flask_restplus import Resource, Api, fields
-from flask_app import app, HelloWorld
 
-# @pytest.fixture
-# def client():
-#     db_fd, flask_app.app.config['DATABASE'] = tempfile.mkstemp()
-#     flask_app.app.config['TESTING'] = True
-#     client = flask_app.app.test_client()
+# TEST_DB = 'test.db'
+# class BasicTests(TestCase):
+#     def setUp(self):
+#         # app.config['TESTING'] = True
+#         # app.config['WTF_CSRF_ENABLED'] = False
+#         # app.config['DEBUG'] = False
+#         # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
+#         #                                         os.path.join(app.config['BASEDIR'], TEST_DB)
+#         self.app = app.test_client()
+#         db.drop_all()
+#         db.create_all()
 #
-#     with flask_app.app.app_context():
-#         flask_app.init_db()
+#     # executed after each test
+#     def tearDown(self):
+#         pass
 #
-#     yield client
-#
-#     os.close(db_fd)
-#     os.unlink(flask_app.app.config['DATABASE'])
+#     def test_main_page(self):
+#         response = self.app.get('/', follow_redirects=True)
+#         self.assertEqual(response.status_code, 200)
 
-@pytest.fixture
-def client(request):
-    test_client = app.test_client()
+class HelloWorldTest(TestCase):
+    def setUp(self):
+        self.HelloWorld = HelloWorld(Resource)
 
-    def teardown():
-        pass
+    def test_HelloWorld(self):
+        rv = self.HelloWorld.get()
+        self.assertEqual(rv, {'hello': 'world'})
 
-    request.addfinalizer(teardown)
-    return test_client
-
-
-class HelloworldTest(Resource):
-    def test_get(client):
-        rv = client.HelloWorld.get()
-        assert rv == "hello: world"
-
+if __name__ == "__main__":
+    main()
