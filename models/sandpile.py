@@ -1,16 +1,20 @@
 """
-    This is an abelican sandpile model.
-    Starting life of sandpile as segregation clone.
+This is an abelian sandpile model.
+Starting life of sandpile as segregation clone.
 """
 
 from indra.agent import Agent, switch
 from indra.composite import Composite
-# from indra.space import in_hood
 from indra.env import Env
 
 
+<<<<<<< HEAD
 DEBUG = False  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
+=======
+DEBUG = True  # Turns debugging code on or off
+DEBUG2 = False  # Turns deeper debugging code on or off
+>>>>>>> a51031cc47c4b075cbce65cb62a399d1a5d5a2fe
 
 HEIGHT = 5
 WIDTH = 5
@@ -49,6 +53,7 @@ def is_on_edge(x, y, x1, y1, x2, y2):
 
 def topple(sandpile, agent):
     if DEBUG:
+<<<<<<< HEAD
         print("Sandpile in", agent.pos, "is toppling")
 
     for neighbor in agent.attrs["neighbors"]:
@@ -71,38 +76,79 @@ def change_group(agent, sandpile, curr_group_idx, next_group_idx):
 
 
 def curr_group(agent):
+=======
+        print("Sandpile in", agent.pos, "is toppling and is in",
+              agent.primary_group())
+    for neighbor in agent.attrs["neighbors"]:
+        if DEBUG:
+            print("Grain is being added to the neighbor at", neighbor.pos)
+        add_grain(sandpile, neighbor)
+
+
+def get_curr_group_idx(agent):
+>>>>>>> a51031cc47c4b075cbce65cb62a399d1a5d5a2fe
     return group_indices[agent.primary_group().name]
 
 
-def next_group(curr_group_idx):
+def get_next_group_idx(curr_group_idx):
     return (curr_group_idx + 1) % NUM_GROUPS
 
 
+<<<<<<< HEAD
 def add_grain(sandpile, agent):
     curr_group_idx = curr_group(agent)
     next_group_idx = next_group(curr_group_idx)
+=======
+def change_group(agent, sandpile, curr_group_idx, next_group_idx):
+    """
+    Change group from current group index passed in
+    to the next group index passed in
+    """
+    switch(agent, groups[curr_group_idx], groups[next_group_idx])
+
+
+def add_grain(sandpile, agent):
+    """
+    Addd a grain to whichever agent is passed in
+    """
+    curr_group_idx = get_curr_group_idx(agent)
+    next_group_idx = get_next_group_idx(curr_group_idx)
+    if DEBUG:
+        print("Agent at", agent.pos, "is changing group from",
+              agent.primary_group(), "to", next_group_idx)
+>>>>>>> a51031cc47c4b075cbce65cb62a399d1a5d5a2fe
     change_group(agent, sandpile, curr_group_idx, next_group_idx)
+    if DEBUG:
+        print("Agent at", agent.pos, "has changed to", agent.primary_group())
     if next_group_idx == 0:
         topple(sandpile, agent)
-    return next_group_idx
 
 
 def sandpile_action(sandpile):
     """
-    The sandpile just drops grains on the center agent.
+    Drop a grain on the center agent.
     """
     if DEBUG:
-        print("Adding a grain to sandpile in position (",
-              sandpile.attrs["center_agent"].get_x(), ",",
-              sandpile.attrs["center_agent"].get_y(), ")",
+        print("Adding a grain to sandpile in position",
+              sandpile.attrs["center_agent"].pos,
               "which is in the group",
               sandpile.attrs["center_agent"].primary_group())
     add_grain(sandpile, sandpile.attrs["center_agent"])
+<<<<<<< HEAD
 
 
 def place_action(agent):
     # print("Place_action with pos", agent.pos, "and group",
     # agent.primary_group())
+=======
+    print("Grain has been added to sandpile in position",
+          sandpile.attrs["center_agent"].pos,
+          "which is now in the group",
+          sandpile.attrs["center_agent"].primary_group())
+
+
+def place_action(agent):
+>>>>>>> a51031cc47c4b075cbce65cb62a399d1a5d5a2fe
     if not any(agent.attrs):
         neighbors = sandpile.get_vonneumann_hood(agent)
         agent.attrs = neighbors

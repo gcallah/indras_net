@@ -8,7 +8,7 @@ import getpass
 import indra.display_methods as disp
 from indra.agent import join, switch, Agent
 from indra.space import Space
-from indra.user import TermUser, TERMINAL, WEB, TEST, TestUser, USER_EXIT
+from indra.user import TermUser, TERMINAL, API, TEST, TestUser, USER_EXIT
 
 DEBUG = False
 DEBUG2 = False
@@ -243,4 +243,4 @@ class Env(Space):
         return data
 
     def headless(self):
-        return (self.user_type == WEB) or (self.user_type == TEST)
+        return (self.user_type == API) or (self.user_type == TEST)
