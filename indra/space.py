@@ -63,7 +63,8 @@ class Space(Composite):
     """
 
     def __init__(self, name, width=DEF_WIDTH, height=DEF_HEIGHT,
-                 attrs=None, members=None, action=None):
+                 attrs=None, members=None, action=None,
+                 random_placing=True):
         super().__init__(name, attrs=attrs, members=members,
                          action=action)
         self.width = width
@@ -72,9 +73,12 @@ class Space(Composite):
         # the location of members in the space
         self.locations = {}
 
-        # by making two class methods for place_members and
+        # by making two class methods for rand_place_members and
         # place_member, we allow two places to override
-        self.place_members(self.members)
+        if random_placing:
+            self.rand_place_members(self.members)
+        else:
+            self.consec_place_members(self.members)
 
     def grid_size(self):
         """
@@ -88,17 +92,36 @@ class Space(Composite):
         """
         return len(self.locations) >= self.grid_size()
 
-    def place_members(self, members, max_move=None):
+    def rand_place_members(self, members, max_move=None):
         """
         Locate all members of this space in x, y grid.
-        Default is to randomly place members.
+        This randomly places members.
         """
         if members is not None:
             for nm, mbr in members.items():
                 if not is_composite(mbr):  # by default don't locate groups
                     self.place_member(mbr, max_move)
                 else:  # place composite's members
-                    self.place_members(mbr.members, max_move)
+                    self.rand_place_members(mbr.members, max_move)
+
+    def consec_place_members(self, members, curr_row=0, curr_col=0):
+        """
+        Locate all members of this space in x, y grid.
+        This places members one after another:
+        row 0, [cols 0 - self.width),
+        row 1, [cols 0 - self.width),
+        row 1, [cols 0 - self.width),
+        .
+        .
+        .
+        row self.height - 1, [cols 0 - self.width)
+        """
+        if members is not None:
+            for nm, mbr in members.items():
+                if not is_composite(mbr):  # by default don't locate groups
+                    self.place_member(mbr)  # add (curr_row, curr_col) tuple
+                else:  # place composite's members
+                    self.consec_place_members(mbr.members, curr_row, curr_col)
 
     def rand_x(self, low=0, high=None):
         """
@@ -195,7 +218,7 @@ class Space(Composite):
                 # spot: don't give them another, but return None.
                 return self.place_member(mbr, max_move)
         else:
-            return self.place_members(mbr.members, max_move)
+            return self.rand_place_members(mbr.members, max_move)
 
     def __iadd__(self, other):
         super().__iadd__(other)
@@ -231,6 +254,7 @@ class Space(Composite):
 
     def get_neighbors(self, agent, width, height):
         lst = []
+        # why not return a Composite?
         agent_dict = {"neighbors": lst}
         dx = [0, 0, 1, -1]
         dy = [-1, 1, 0, 0]
@@ -240,35 +264,20 @@ class Space(Composite):
         for i in range(len(dx)):
             neighbor_x = agent_x + dx[i]
             neighbor_y = agent_y + dy[i]
-            if not out_of_bounds(neighbor_x, neighbor_y, 0, 0, width, height):  # Change so that the gird is not hard coded but depends on the WIDTH and HEIGHT  # noqa E501
-                agent_dict["neighbors"].append(self.get_agent_at(neighbor_x, neighbor_y))  # noqa E501
+            if not out_of_bounds(neighbor_x, neighbor_y, 0, 0, width, height):
+                agent_dict["neighbors"].append(self.get_agent_at(neighbor_x,
+                                                                 neighbor_y))
         if DEBUG:
             print("In get_neighbors")
             for i in agent_dict["neighbors"]:
-                print("Neighbor to agent located in (", agent_x, ",", agent_y, "): (", i.get_x(), ",", i.get_y(), ")")  # noqa E501
+                print("Neighbor to agent located in (", agent_x, ",",
+                      agent_y, "): (", i.get_x(), ",", i.get_y(), ")")
         return agent_dict
-        # return grp_from_nm_dict("Vonneuman neighbors", agent_dict["neighbors"])  # noqa E501
-        dx = [0, 0, 1, -1]
-        dy = [-1, 1, 0, 0]
-        agent_x = agent.get_x()
-        agent_y = agent.get_y()
 
-        for i in range(len(dx)):
-            neighbor_x = agent_x + dx[i]
-            neighbor_y = agent_y + dy[i]
-            if not out_of_bounds(neighbor_x, neighbor_y, 0, 0, 5, 5): # Change so that the gird is not hard coded but depends on the WIDTH and HEIGHT  # noqa E501
-                agent_dict["neighbors"].append(self.get_agent_at(neighbor_x, neighbor_y))  # noqa E501
-        if DEBUG:
-            print("In get_neighbors")
-            for i in agent_dict["neighbors"]:
-                print("Neighbor to agent located in (", agent_x, ",", agent_y, "): (", i.get_x(), ",", i.get_y(), ")")  # noqa E501
-        return agent_dict
-        # return grp_from_nm_dict("Vonneuman neighbors", agent_dict["neighbors"])  # noqa E501
-
-    def get_vonneumann_hood(self, agent, width, height):
+    def get_vonneumann_hood(self, agent):
         """
         Takes in an agent and returns a the group of its vonneuman neighbors
         """
         if DEBUG:
             print("In get_vonneumann_hood")
-        return self.get_neighbors(agent, width, height)
+        return self.get_neighbors(agent, self.width, self.height)

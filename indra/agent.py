@@ -135,6 +135,7 @@ class Agent(object):
         self.action = action
         self.duration = duration
         self.attrs = OrderedDict()
+        self.neighbors = None
         if attrs is not None:
             for i, (k, v) in enumerate(attrs.items()):
                 self.attrs[k] = i  # store index into np.array!

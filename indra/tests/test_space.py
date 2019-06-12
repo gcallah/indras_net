@@ -77,9 +77,9 @@ class SpaceTestCase(TestCase):
         self.assertFalse(self.space.is_full())
         self.assertTrue(self.teeny_space.is_full())
 
-    def test_place_members(self):
+    def test_rand_place_members(self):
         """
-        Test place_members() by making sure all agents have a pos
+        Test rand_place_members() by making sure all agents have a pos
         when done.
         """
         for agent in self.space:

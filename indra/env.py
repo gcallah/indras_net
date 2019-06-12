@@ -120,7 +120,7 @@ class Env(Space):
             # before members act, give birth to new agents
             # we will have tuple of agent and group
             # do group += agent
-
+            # self.user.tell("In period ", i)
             if self.womb is not None:
                 for (agent, group) in self.womb:
                     join(group, agent)

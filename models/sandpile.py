@@ -3,6 +3,8 @@ This is an abelian sandpile model.
 Starting life of sandpile as segregation clone.
 """
 
+from propargs.propargs import PropArgs
+
 from indra.agent import Agent, switch
 from indra.composite import Composite
 from indra.env import Env
@@ -11,8 +13,8 @@ from indra.env import Env
 DEBUG = False  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
-HEIGHT = 5
-WIDTH = 5
+DEF_HEIGHT = 50
+DEF_WIDTH = 50
 
 SAND_PREFIX = "sand_location "
 
@@ -85,9 +87,9 @@ def sandpile_action(sandpile):
     add_grain(sandpile, sandpile.attrs["center_agent"])
 
 
-def place_action(agent):  # noqa F811
-    if not any(agent.attrs):
-        neighbors = sandpile.get_vonneumann_hood(agent, WIDTH, HEIGHT)
+def place_action(agent):
+    if not any(agent.attrs):  # if agent.neighbors is None:
+        neighbors = sandpile.get_vonneumann_hood(agent)
         agent.attrs = neighbors
 
 
@@ -102,17 +104,21 @@ def set_up():
     """
     A func to set up run that can also be used by test code.
     """
+    pa = PropArgs.create_props('sandpile_props',
+                               ds_file='props/sandpile.props.json')
+    width = pa.get('grid_width', DEF_WIDTH)
+    height = pa.get('grid_height', DEF_HEIGHT)
     for i in range(NUM_GROUPS):
         groups.append(Composite("Group" + str(i)))
         group_indices[groups[i].name] = i
 
-    for i in range((HEIGHT) * (WIDTH)):
+    for i in range(height * width):
         groups[0] += create_agent(i)
 
     sandpile = Env("A sandpile", action=sandpile_action, members=groups,
-                   height=HEIGHT, width=WIDTH)
-    sandpile.attrs["center_agent"] = sandpile.get_agent_at(int(HEIGHT / 2),
-                                                           int(WIDTH / 2))
+                   height=height, width=width)
+    sandpile.attrs["center_agent"] = sandpile.get_agent_at(height // 2,
+                                                           width // 2)
 
     return (groups, group_indices, sandpile)
 
