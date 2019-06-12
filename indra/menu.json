@@ -2,30 +2,28 @@
     "menu_database": [
         {
             "val": 0,
-            "run": "run",
-            "question": "Run for N periods",
-            "atype": "INT",
-            "loval": 1
+            "func": "run",
+            "question": "Run for N periods"
         },
         {
             "val": 1,
-            "run": "line_graph",
+            "func": "line_graph",
             "question": "Display a population graph."
         },
         {
             "val": 2,
-            "run": "scatter_plot",
+            "func": "scatter_plot",
             "question": "Display a scatter plot."
         },
         {
             "val": 3,
-            "run": "ipython",
+            "func": "ipython",
             "question": "Leave menu for interactive python session."
         },
         {
             "val": 4,
-            "run": "leave",
-            "question": "Quit (but not really)." 
+            "func": "leave",
+            "question": "Quit)." 
         }
     ]
 }

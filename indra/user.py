@@ -8,7 +8,7 @@ from IPython import embed
 
 TERMINAL = "terminal"
 TEST = "test"
-WEB = "web"
+API = "api"
 GUI = "gui"
 NOT_IMPL = "Choice not yet implemented."
 CANT_ASK_TEST = "Can't ask anything of a scripted test"
@@ -16,8 +16,10 @@ DEF_STEPS = 1
 USER_EXIT = -999
 
 menu_dir = os.getenv("INDRA_HOME", ".") + "/indra"
+print("menu_dir = " + menu_dir)
 menu_file = "menu.json"
 menu_src = menu_dir + "/" + menu_file
+PA_menu_src = "/home/indrasnet/indras_net" + "/indra/" + menu_file
 
 
 def not_impl(user):
@@ -74,20 +76,34 @@ menu_functions = {
 }
 
 
-MSG = 0
-FUNC = 1
+def get_menu_json():
+    menu_json = None
+    try:
+        with open(menu_src, 'r') as f:
+            menu_db = json.load(f)
+            menu_json = menu_db["menu_database"]
+    except FileNotFoundError:
+        with open(PA_menu_src, 'r') as f:
+            menu_db = json.load(f)
+            menu_json = menu_db["menu_database"]
+    return menu_json
 
-QUIT = 0
-RUN = 1
 
-
-class TermUser(Agent):
+class User(Agent):
     """
     A representation of the user in the system.
     """
     def __init__(self, name, env, **kwargs):
         super().__init__(name, **kwargs)
         self.env = env  # this class needs this all the time, we think
+
+
+class TermUser(User):
+    """
+    A representation of the user on a terminal.
+    """
+    def __init__(self, name, env, **kwargs):
+        super().__init__(name, env, **kwargs)
 
     def tell(self, msg, end='\n'):
         """
@@ -116,26 +132,22 @@ class TermUser(Agent):
 
     def __call__(self):
         DEFAULT_CHOICE = '0'
-        menu_item = None
-        menu_list = None
-        with open(menu_src, 'r') as f:
-            menu_item = json.load(f)
-        menu_list = menu_item["menu_database"]
-        menu_display = "Displaying the menu"
-        stars = "*" * len(menu_display)
+        menu = get_menu_json()
+        menu_title = "Displaying the menu"
+        stars = "*" * len(menu_title)
         self.tell("What would you like to do?")
         print("\n",
               stars, "\n",
-              menu_display, "\n",
+              menu_title, "\n",
               stars)
-        for choice, menuId in enumerate(menu_list):
-            print(str(choice) + ". ", menuId["question"])
+        for choice, menu_item in enumerate(menu):
+            print(str(choice) + ". ", menu_item["question"])
         c = input()
         if not c or c.isspace():
             c = DEFAULT_CHOICE
         choice = int(c)
-        if choice >= 0 and choice < len(menu_list):
-            return menu_functions[menu_list[choice]["run"]](self)
+        if choice >= 0 and choice < len(menu):
+            return menu_functions[menu[choice]["func"]](self)
         else:
             self.user.tell("Invalid Option")
 
@@ -158,7 +170,7 @@ class TestUser(TermUser):
         run(self)  # noqa: W391
 
 
-class WebUser(TermUser):
+class APIUser(TermUser):
     """
     This is our web user, who is expected to communicate with a web page
     frontend.
@@ -166,9 +178,9 @@ class WebUser(TermUser):
     def tell(self, msg, end='\n'):
         """
         Tell the user something by showing it on the web page
+        The below code is just a possible way to implement this!
         """
-        # Some json thing
-        pass
+        return {"msg_to_user": '"' + msg + '"'}
 
     def ask(self, msg, default=None):
         """
@@ -176,3 +188,6 @@ class WebUser(TermUser):
         """
         # Some json thing
         pass
+
+    def __call__(self):
+        return get_menu_json()
