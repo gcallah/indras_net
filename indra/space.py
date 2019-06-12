@@ -6,6 +6,7 @@ from random import randint
 from math import sqrt
 from indra.agent import is_composite
 from indra.composite import Composite
+from indra.composite import grp_from_nm_dict
 
 DEF_WIDTH = 10
 DEF_HEIGHT = 10
@@ -53,22 +54,6 @@ def in_hood(agent, other, hood_sz):
               + " and " + str(other) + " is "
               + str(d))
     return d < hood_sz
-
-
-def is_vn_close(x1, x2, y1, y2):
-    return ((x1 == x2) and (abs(y1 - y2) == 1)
-            or ((y1 == y2) and (abs(x1 - x2) == 1)))
-
-
-def in_vonneumann(possible_neighbor, center_agent):
-    if ((not possible_neighbor.islocated()) or (not center_agent.islocated())):
-        return False
-    else:
-        center_x = center_agent.get_x()
-        center_y = center_agent.get_y()
-        other_x = possible_neighbor.get_x()
-        other_y = possible_neighbor.get_y()
-        return is_vn_close(center_x, other_x, center_y, other_y)
 
 
 class Space(Composite):
@@ -245,11 +230,33 @@ class Space(Composite):
         """
         pass
 
+    def get_neighbors(self, agent):
+        lst = []
+        agent_dict = {"neighbors": lst}
+        dx = [0,0,1,-1]
+        dy = [-1,1,0,0]
+        agent_x = agent.get_x()
+        agent_y = agent.get_y()
+
+        for i in range (len(dx)):
+            neighbor_x = agent_x + dx[i]  
+            neighbor_y = agent_y + dy[i]
+            if not out_of_bounds(neighbor_x, neighbor_y, 0, 0, 5, 5): # Change so that the gird is not hard coded but depends on the WIDTH and HEIGHT
+                agent_dict["neighbors"].append(self.get_agent_at(neighbor_x, neighbor_y))
+        if DEBUG:
+            print("In get_neighbors")
+            for i in agent_dict["neighbors"]:
+                print("Neighbor to agent located in (", agent_x, ",", agent_y, "): (", i.get_x(), ",", i.get_y(), ")")
+        return agent_dict
+        #return grp_from_nm_dict("Vonneuman neighbors", agent_dict["neighbors"])
+
     def get_vonneumann_hood(self, agent):
         """
         Takes in an agent and returns a the group of its vonneuman neighbors
         """
         if DEBUG:
-            print("GETTING V NEIGHBORS")
-        return self.subset(in_vonneumann, agent,
-                           name=agent.name + "'s vn hood")
+            print("In get_vonneumann_hood")
+        return self.get_neighbors(agent)
+
+
+
