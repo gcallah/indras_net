@@ -33,7 +33,7 @@ class HelloWorldTest(TestCase):
         rv = self.Props.get(model_id)
         self.assertEqual(type(rv), dict)
         
-    def test_getMenu(self):
+    def test_Get_Menu(self):
         """
         Testing whether we are getting the menu.
         """
@@ -41,13 +41,13 @@ class HelloWorldTest(TestCase):
         rv = self.Menu.get(model_id)
         self.assertEqual(type(rv), list)
         
-    def test_putMenu(self):
+    def test_Put_Menu(self):
         """
         Testing whether we are able to put the menu in
         """
         menuitem_id = 1
         rv = self.Menu.put(menuitem_id)
-        self.assertEqual(type(rv), dict)
+        self.assertEqual(rv, {"execute menu item": menuitem_id, "Menu": "menu will be returned here"})
         
 
     # def test_Put_Props(self):
