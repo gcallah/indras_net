@@ -229,7 +229,7 @@ class Space(Composite):
         """
         pass
 
-    def get_neighbors(self, agent):
+    def get_neighbors(self, agent, width, height):
         lst = []
         agent_dict = {"neighbors": lst}
         dx = [0, 0, 1, -1]
@@ -240,7 +240,7 @@ class Space(Composite):
         for i in range(len(dx)):
             neighbor_x = agent_x + dx[i]
             neighbor_y = agent_y + dy[i]
-            if not out_of_bounds(neighbor_x, neighbor_y, 0, 0, 5, 5):  # Change so that the gird is not hard coded but depends on the WIDTH and HEIGHT  # noqa E501
+            if not out_of_bounds(neighbor_x, neighbor_y, 0, 0, width, height):  # Change so that the gird is not hard coded but depends on the WIDTH and HEIGHT  # noqa E501
                 agent_dict["neighbors"].append(self.get_agent_at(neighbor_x, neighbor_y))  # noqa E501
         if DEBUG:
             print("In get_neighbors")
@@ -265,10 +265,10 @@ class Space(Composite):
         return agent_dict
         # return grp_from_nm_dict("Vonneuman neighbors", agent_dict["neighbors"])  # noqa E501
 
-    def get_vonneumann_hood(self, agent):
+    def get_vonneumann_hood(self, agent, width, height):
         """
         Takes in an agent and returns a the group of its vonneuman neighbors
         """
         if DEBUG:
             print("In get_vonneumann_hood")
-        return self.get_neighbors(agent)
+        return self.get_neighbors(agent, width, height)
