@@ -87,7 +87,7 @@ def sandpile_action(sandpile):
 
 def place_action(agent):  # noqa F811
     if not any(agent.attrs):
-        neighbors = sandpile.get_vonneumann_hood(agent)
+        neighbors = sandpile.get_vonneumann_hood(agent, WIDTH, HEIGHT)
         agent.attrs = neighbors
 
 
