@@ -13,8 +13,8 @@ from indra.env import Env
 DEBUG = False  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
-DEF_HEIGHT = 50
-DEF_WIDTH = 50
+DEF_HEIGHT = 10
+DEF_WIDTH = 10
 
 SAND_PREFIX = "sand_location "
 
