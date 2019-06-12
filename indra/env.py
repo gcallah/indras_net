@@ -10,7 +10,7 @@ from indra.agent import join, switch, Agent
 from indra.space import Space
 from indra.user import TermUser, TERMINAL, WEB, TEST, TestUser, USER_EXIT
 
-DEBUG = True
+DEBUG = False
 DEBUG2 = False
 DEF_USER = "User"
 DEF_TIME = 10
@@ -127,6 +127,7 @@ class Env(Space):
                 del self.womb[:]
             if self.switches is not None:
                 for (agent, grp1, grp2) in self.switches:
+                    # print("SWITCHING IS HAPPENING with", grp1, "and", grp2)
                     switch(agent, grp1, grp2)
                 del self.switches[:]
 

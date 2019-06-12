@@ -8,7 +8,7 @@ import json
 from random import random
 from collections import OrderedDict
 
-DEBUG = True  # turns debugging code on or off
+DEBUG = False  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
 # x and y indices
@@ -153,6 +153,7 @@ class Agent(object):
                 self.locator = self.prim_group
 
     def primary_group(self):
+        # print("We are at primary_group FUNCTION: ", self.prim_group)
         return self.prim_group
 
     def islocated(self):
@@ -293,7 +294,7 @@ class Agent(object):
     def add_group(self, group):
         if str(group) not in self.groups:
             if DEBUG2:
-                print("Join group being called on " + self.name
+                print("Join group being called on " + str(self.pos)
                       + " to join group: " + group.name)
             self.groups[group.name] = group
             if is_space(group):

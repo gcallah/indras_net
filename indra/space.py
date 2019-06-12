@@ -15,7 +15,7 @@ MAX_HEIGHT = 200
 
 DEF_MAX_MOVE = 2
 
-DEBUG = True
+DEBUG = False
 DEBUG2 = False
 
 
@@ -245,9 +245,30 @@ class Space(Composite):
         """
         pass
 
+    def get_neighbors(self, agent):
+        lst = []
+        agent_dict = {"neighbors": lst}
+        dx = [0, 0, 1, -1]
+        dy = [-1, 1, 0, 0]
+        agent_x = agent.get_x()
+        agent_y = agent.get_y()
+
+        for i in range(len(dx)):
+            neighbor_x = agent_x + dx[i]
+            neighbor_y = agent_y + dy[i]
+            if not out_of_bounds(neighbor_x, neighbor_y, 0, 0, 5, 5):  # Change so that the gird is not hard coded but depends on the WIDTH and HEIGHT  # noqa E501
+                agent_dict["neighbors"].append(self.get_agent_at(neighbor_x, neighbor_y))  # noqa E501
+        if DEBUG:
+            print("In get_neighbors")
+            for i in agent_dict["neighbors"]:
+                print("Neighbor to agent located in (", agent_x, ",", agent_y, "): (", i.get_x(), ",", i.get_y(), ")")  # noqa E501
+        return agent_dict
+        # return grp_from_nm_dict("Vonneuman neighbors", agent_dict["neighbors"])  # noqa E501
+
     def get_vonneumann_hood(self, agent):
         """
         Takes in an agent and returns a the group of its vonneuman neighbors
         """
-        return self.subset(in_vonneumann, agent,
-                           name=agent.name + "'s vn hood")
+        if DEBUG:
+            print("In get_vonneumann_hood")
+        return self.get_neighbors(agent)
