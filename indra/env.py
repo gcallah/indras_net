@@ -53,8 +53,9 @@ class Env(Space):
     An env *is* a space and *has* a timeline (PopHist).
     That makes the inheritance work out as we want it to.
     """
-    def __init__(self, name, action=None, **kwargs):
-        super().__init__(name, action=action, **kwargs)
+    def __init__(self, name, action=None, random_placing=True, **kwargs):
+        super().__init__(name, action=action, random_placing=random_placing,
+                         **kwargs)
         self.pop_hist = PopHist()  # this will record pops across time
         # Make sure varieties are present in the history
         for mbr in self.members:
@@ -127,7 +128,6 @@ class Env(Space):
                 del self.womb[:]
             if self.switches is not None:
                 for (agent, grp1, grp2) in self.switches:
-                    # print("SWITCHING IS HAPPENING with", grp1, "and", grp2)
                     switch(agent, grp1, grp2)
                 del self.switches[:]
 

@@ -32,7 +32,6 @@ def topple(sandpile, agent):
     if DEBUG:
         print("Sandpile in", agent.pos, "is toppling")
     for neighbor in agent.neighbors:
-        print("Type of neighbor: ", type(neighbor))
         add_grain(sandpile, neighbor)
 
 
@@ -109,7 +108,7 @@ def set_up():
         groups[0] += create_agent(i)
 
     sandpile = Env("A sandpile", action=sandpile_action, members=groups,
-                   height=height, width=width)
+                   height=height, width=width, random_placing=False)
     sandpile.attrs["center_agent"] = sandpile.get_agent_at(height // 2,
                                                            width // 2)
 
