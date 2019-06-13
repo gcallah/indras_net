@@ -94,14 +94,5 @@ class Menu(Resource):
         return {"execute menu item": menuitem_id, "Menu": "menu will be returned here"}  # noqa E501
 
 
-# Ask Professor!!!!!
-# @api.route('/models//menu')
-# class Model(Resource):
-#     def put(self, model_id):
-#         return {"name": models_db[model_id]["name"],
-#                 "status": "Is running!",
-#                 "menu": ["Item 1", "Item 2", "Item 3"]
-#                }
-
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=8000, debug=True)

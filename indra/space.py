@@ -118,8 +118,19 @@ class Space(Composite):
         """
         if members is not None:
             for nm, mbr in members.items():
-                if not is_composite(mbr):  # by default don't locate groups
-                    self.place_member(mbr)  # add (curr_row, curr_col) tuple
+                if not is_composite(mbr):
+                    if DEBUG:
+                        print("Placing member at (", curr_row, ",",
+                              curr_col, ")")
+                    self.place_member(mbr, xy=(curr_row, curr_col))
+                    if (curr_row == self.width - 1):
+                        curr_row = 0
+                        curr_col += 1
+                    elif (curr_row == self.height - 1):
+                        curr_col = 0
+                        curr_row += 1
+                    else:
+                        curr_row += 1
                 else:  # place composite's members
                     self.consec_place_members(mbr.members, curr_row, curr_col)
 
@@ -252,7 +263,7 @@ class Space(Composite):
         """
         pass
 
-    def vonneumann_hood(self, agent):
+    def get_vonneumann_hood(self, agent):
         """
         Takes in an agent and returns a composite of its vonneuman neighbors
         """
@@ -277,11 +288,3 @@ class Space(Composite):
             for i in agent_dict["neighbors"]:
                 print("Neighbor to agent located in", agent.pos, "is", i.pos)
         return grp_from_nm_dict("Vonneuman neighbors", agent_dict["neighbors"])
-
-    def get_vonneumann_hood(self, agent):
-        """
-        Takes in an agent and returns a the group of its vonneuman neighbors
-        """
-        if DEBUG:
-            print("In get_vonneumann_hood")
-        return self.vonneumann_hood(agent)
