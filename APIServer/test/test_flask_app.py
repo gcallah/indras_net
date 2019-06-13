@@ -41,7 +41,6 @@ class hello_wold_test(TestCase):
         menuitem_id = 1
         with app.test_request_context():  
             rv = self.Props.put(menuitem_id)
-        #self.assertEqual(type(rv), String) 
         self.assertEqual(rv, {"Menu" : "menu will be returned here"})
         
         
@@ -67,23 +66,6 @@ class hello_wold_test(TestCase):
         """
         rv = err_return("error message")
         self.assertEqual(rv, {"Error:": "error message"})
-        
-
-    # def test_Put_Props(self):
-    #     """
-    #     See if we can put props.
-    #     """
-    #     model_id = 1
-    #     with app.app_context():
-    #         rv = self.Props.put(model_id)
-    #         self.assertEqual(rv, "Menu : menu will be returned here")
-    #
-    #     # with app.test_client() as c:
-    #     #     rv = c.Props.put(model_id)
-    #     #     self.assertEqual(rv, "Menu : menu will be returned here")
-    #
-    #     # rv = self.Props.put(model_id)
-    #     # self.assertEqual(rv, "Menu : menu will be returned here")
 
 
 if __name__ == "__main__":
