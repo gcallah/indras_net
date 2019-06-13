@@ -5,7 +5,7 @@ of agents related spatially.
 from random import randint
 from math import sqrt
 from indra.agent import is_composite
-from indra.composite import Composite
+from indra.composite import Composite, grp_from_nm_dict
 
 DEF_WIDTH = 10
 DEF_HEIGHT = 10
@@ -252,9 +252,13 @@ class Space(Composite):
         """
         pass
 
-    def get_neighbors(self, agent, width, height):
+    def vonneumann_hood(self, agent):
+        """
+        Takes in an agent and returns a composite of its vonneuman neighbors
+        """
+        if DEBUG:
+            print("In get_vonneumann_hood")
         lst = []
-        # why not return a Composite?
         agent_dict = {"neighbors": lst}
         dx = [0, 0, 1, -1]
         dy = [-1, 1, 0, 0]
@@ -264,15 +268,15 @@ class Space(Composite):
         for i in range(len(dx)):
             neighbor_x = agent_x + dx[i]
             neighbor_y = agent_y + dy[i]
-            if not out_of_bounds(neighbor_x, neighbor_y, 0, 0, width, height):
-                agent_dict["neighbors"].append(self.get_agent_at(neighbor_x,
-                                                                 neighbor_y))
+            if not out_of_bounds(neighbor_x, neighbor_y, 0, 0,
+                                 self.width, self.height):
+                agent_dict["neighbors"].append(
+                    self.get_agent_at(neighbor_x, neighbor_y))
         if DEBUG:
             print("In get_neighbors")
             for i in agent_dict["neighbors"]:
-                print("Neighbor to agent located in (", agent_x, ",",
-                      agent_y, "): (", i.get_x(), ",", i.get_y(), ")")
-        return agent_dict
+                print("Neighbor to agent located in", agent.pos, "is", i.pos)
+        return grp_from_nm_dict("Vonneuman neighbors", agent_dict["neighbors"])
 
     def get_vonneumann_hood(self, agent):
         """
@@ -280,4 +284,4 @@ class Space(Composite):
         """
         if DEBUG:
             print("In get_vonneumann_hood")
-        return self.get_neighbors(agent, self.width, self.height)
+        return self.vonneumann_hood(agent)

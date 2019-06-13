@@ -31,15 +31,8 @@ group_indices = {}
 def topple(sandpile, agent):
     if DEBUG:
         print("Sandpile in", agent.pos, "is toppling")
-    for neighbor in agent.attrs["neighbors"]:
-        add_grain(sandpile, neighbor)
-
-
-def curr_group(agent):
-    print("Sandpile in", agent.pos, "is toppling and is in", agent.primary_group())  # noqa E501
-    for neighbor in agent.attrs["neighbors"]:
-        if DEBUG:
-            print("Grain is being added to the neighbor at", neighbor.pos)
+    for neighbor in agent.neighbors:
+        print("Type of neighbor: ", type(neighbor))
         add_grain(sandpile, neighbor)
 
 
@@ -88,9 +81,9 @@ def sandpile_action(sandpile):
 
 
 def place_action(agent):
-    if not any(agent.attrs):  # if agent.neighbors is None:
+    if agent.neighbors is None:
         neighbors = sandpile.get_vonneumann_hood(agent)
-        agent.attrs = neighbors
+        agent.neighbors = neighbors
 
 
 def create_agent(i):
