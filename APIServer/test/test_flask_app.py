@@ -33,13 +33,13 @@ class hello_wold_test(TestCase):
         rv = self.Props.get(model_id)
         self.assertEqual(type(rv), dict)
         
-    def test_put_props(self):
-        """
-        Test whether we are able to put props
-        """
-        menuitem_id = 1 
-        rv = self.Props.put(menuitem_id)
-        self.assertEqual(type(rv), String)
+    # def test_put_props(self):
+    #     """
+    #     Test whether we are able to put props
+    #     """
+    #     menuitem_id = 1
+    #     rv = self.Props.put(menuitem_id)
+    #     self.assertEqual(rv, "Menu : menu will be returned here")
         
     def test_get_menu(self):
         """
@@ -55,7 +55,7 @@ class hello_wold_test(TestCase):
         """
         menuitem_id = 1
         rv = self.Menu.put(menuitem_id)
-        self.assertEqual(type(rv), dict)
+        self.assertEqual(rv, {"execute menu item": menuitem_id, "Menu": "menu will be returned here"})
         
 
     # def test_Put_Props(self):
