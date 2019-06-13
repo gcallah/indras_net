@@ -1,5 +1,5 @@
 from unittest import TestCase, main
-from APIServer.flask_app import app, HelloWorld, Models, Props, Menu
+from APIServer.flask_app import app, HelloWorld, Models, Props, Menu, err_return
 from flask_restplus import Resource, Api, fields
 import json
 
@@ -37,9 +37,9 @@ class hello_wold_test(TestCase):
         """
         Test whether we are able to put props
         """
-        menuitem_id = 1 
+        menuitem_id = 1
         rv = self.Props.put(menuitem_id)
-        self.assertEqual(type(rv), String)
+        self.assertEqual(rv, "Menu : menu will be returned here")
         
     def test_get_menu(self):
         """
@@ -55,7 +55,14 @@ class hello_wold_test(TestCase):
         """
         menuitem_id = 1
         rv = self.Menu.put(menuitem_id)
-        self.assertEqual(type(rv), dict)
+        self.assertEqual(rv, {"execute menu item": menuitem_id, "Menu": "menu will be returned here"})
+
+    def test_err_return(self):
+        """
+        Testing whether we are able to get the right error message
+        """
+        rv = err_return("error message")
+        self.assertEqual(rv, {"Error:": "error message"})
         
 
     # def test_Put_Props(self):
