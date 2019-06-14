@@ -107,14 +107,8 @@ class Space(Composite):
     def consec_place_members(self, members, curr_row=0, curr_col=0):
         """
         Locate all members of this space in x, y grid.
-        This places members one after another:
-        row 0, [cols 0 - self.width),
-        row 1, [cols 0 - self.width),
-        row 1, [cols 0 - self.width),
-        .
-        .
-        .
-        row self.height - 1, [cols 0 - self.width)
+        Place members consecutively, starting from (0, 0) and
+        moving to (1, 0), (2, 0), etc
         """
         if members is not None:
             for nm, mbr in members.items():
@@ -265,17 +259,14 @@ class Space(Composite):
 
     def get_vonneumann_hood(self, agent):
         """
-        Takes in an agent and returns a composite of its vonneuman neighbors
+        Takes in an agent and returns a Composite of its vonneuman neighbors
         """
-        if DEBUG:
-            print("In get_vonneumann_hood")
         lst = []
         agent_dict = {"neighbors": lst}
         dx = [0, 0, 1, -1]
         dy = [-1, 1, 0, 0]
         agent_x = agent.get_x()
         agent_y = agent.get_y()
-
         for i in range(len(dx)):
             neighbor_x = agent_x + dx[i]
             neighbor_y = agent_y + dy[i]
@@ -284,7 +275,6 @@ class Space(Composite):
                 agent_dict["neighbors"].append(
                     self.get_agent_at(neighbor_x, neighbor_y))
         if DEBUG:
-            print("In get_neighbors")
             for i in agent_dict["neighbors"]:
                 print("Neighbor to agent located in", agent.pos, "is", i.pos)
         return grp_from_nm_dict("Vonneuman neighbors", agent_dict["neighbors"])

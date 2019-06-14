@@ -36,10 +36,18 @@ def topple(sandpile, agent):
 
 
 def get_curr_group_idx(agent):
+    """
+    Returns the int index of the current group
+    Ex) returns 0 if group is Group 0
+    """
     return group_indices[agent.primary_group().name]
 
 
 def get_next_group_idx(curr_group_idx):
+    """
+    Returns the int index of the next group
+    Ex) returns 1 if curr_group_idx group is Group 0
+    """
     return (curr_group_idx + 1) % NUM_GROUPS
 
 

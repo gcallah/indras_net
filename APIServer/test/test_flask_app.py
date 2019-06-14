@@ -1,11 +1,7 @@
 from unittest import TestCase, main
-<<<<<<< HEAD
-from APIServer.flask_app import app, HelloWorld, Models, Props, Menu, load_models
-=======
 from APIServer.flask_app import app, HelloWorld, Models, Props, Menu, err_return
->>>>>>> 96073958a1a62bfa6d3e4cc24db03f05787efb96
 from flask_restplus import Resource, Api, fields
-import json
+# import json
 
 
 class hello_wold_test(TestCase):
@@ -45,7 +41,6 @@ class hello_wold_test(TestCase):
         menuitem_id = 1
         with app.test_request_context():  
             rv = self.Props.put(menuitem_id)
-        #self.assertEqual(type(rv), String) 
         self.assertEqual(rv, {"Menu" : "menu will be returned here"})
         
         
@@ -63,9 +58,6 @@ class hello_wold_test(TestCase):
         """
         menuitem_id = 1
         rv = self.Menu.put(menuitem_id)
-<<<<<<< HEAD
-        self.assertEqual(type(rv), dict)
-=======
         self.assertEqual(rv, {"execute menu item": menuitem_id, "Menu": "menu will be returned here"})
 
     def test_err_return(self):
@@ -74,24 +66,6 @@ class hello_wold_test(TestCase):
         """
         rv = err_return("error message")
         self.assertEqual(rv, {"Error:": "error message"})
->>>>>>> 96073958a1a62bfa6d3e4cc24db03f05787efb96
-        
-
-    # def test_Put_Props(self):
-    #     """
-    #     See if we can put props.
-    #     """
-    #     model_id = 1
-    #     with app.app_context():
-    #         rv = self.Props.put(model_id)
-    #         self.assertEqual(rv, "Menu : menu will be returned here")
-    #
-    #     # with app.test_client() as c:
-    #     #     rv = c.Props.put(model_id)
-    #     #     self.assertEqual(rv, "Menu : menu will be returned here")
-    #
-    #     # rv = self.Props.put(model_id)
-    #     # self.assertEqual(rv, "Menu : menu will be returned here")
 
 
 if __name__ == "__main__":
