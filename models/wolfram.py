@@ -14,7 +14,7 @@ Y = 1
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
-# default number of agents 
+# default number of agents
 DEF_NUM_WHITE = 10
 DEF_NUM_BLACK = 10
 
@@ -67,11 +67,11 @@ def set_up():
     pa = PropArgs.create_props('basic_props',
                                ds_file='props/basic.props.json')
     white_group = Composite("Whites", {"color": WHITE},
-                           member_creator=create_agent,
-                           num_members=pa.get('num_white', DEF_NUM_WHITE))
+                            member_creator=create_agent,
+                            num_members=pa.get('num_white', DEF_NUM_WHITE))
     black_group = Composite("Blacks", {"color": BLACK},
-                          member_creator=create_agent,
-                          num_members=pa.get('num_black', DEF_NUM_BLACK))
+                            member_creator=create_agent,
+                            num_members=pa.get('num_black', DEF_NUM_BLACK))
 
     env = Env("env",
               height=pa.get('grid_height', DEF_HEIGHT),
@@ -84,9 +84,9 @@ def main():
     global white_group
     global black_group
     global env
-    #(black, white, wolframEnv) = setup()
+#   (black, white, wolframEnv) = setup()
     (black, white, env) = set_up()
-    #wolframEnv()
+#   wolframEnv()
     env()
     return 0
 
