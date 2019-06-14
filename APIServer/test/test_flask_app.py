@@ -94,8 +94,7 @@ class hello_wold_test(TestCase):
         with app.test_request_context():  
             rv = self.Props.put(menuitem_id)
         self.assertEqual(rv, {"Menu" : "menu will be returned here"})
-        
-        
+
     def test_get_menu(self):
         """
         Testing whether we are getting the menu.
