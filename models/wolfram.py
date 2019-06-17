@@ -6,7 +6,7 @@ from indra.agent import Agent
 from indra.env import Env
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.composite import Composite
-from indra.display_methods import BLACK, WHITE
+from indra.display_methods import RED, BLUE
 
 X = 0
 Y = 1
@@ -15,25 +15,25 @@ DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
 # default number of agents
-DEF_NUM_WHITE = 10
-DEF_NUM_BLACK = 10
+DEF_NUM_RED = 10
+DEF_NUM_BLUE = 10
 
 # states
-B = 1
-W = 0
+R = 1
+B = 0
 
-STATE_MAP = {B: BLACK, W: WHITE}
+STATE_MAP = {R: RED, B: BLUE}
 
 # Some rule dictionaries:
 RULE30 = {
-    (B, B, B): W,
-    (B, B, W): W,
-    (B, W, B): W,
-    (B, W, W): B,
-    (W, B, B): B,
-    (W, B, W): B,
-    (W, W, B): B,
-    (W, W, W): W
+    (R, R, R): B,
+    (R, R, B): B,
+    (R, B, R): B,
+    (R, B, B): R,
+    (B, R, R): R,
+    (B, R, B): R,
+    (B, B, R): R,
+    (B, B, B): B
 }
 
 GRID_WIDTH = 30
@@ -41,10 +41,10 @@ GRID_HEIGHT = 30
 
 
 def setup():
-    black = Composite("black", {"color": BLACK})
-    white = Composite("white", {"color": WHITE})
+    red = Composite("red", {"color": RED})
+    blue = Composite("blue", {"color": BLUE})
     wolframEnv = Env("wolframEnv", height=GRID_HEIGHT, width=GRID_WIDTH)
-    return (black, white, wolframEnv)
+    return (red, blue, wolframEnv)
 
 
 def agent_action(agent):
@@ -66,26 +66,26 @@ def set_up():
     """
     pa = PropArgs.create_props('basic_props',
                                ds_file='props/basic.props.json')
-    white_group = Composite("Whites", {"color": WHITE},
+    blue_group = Composite("blues", {"color": BLUE},
                             member_creator=create_agent,
-                            num_members=pa.get('num_white', DEF_NUM_WHITE))
-    black_group = Composite("Blacks", {"color": BLACK},
+                            num_members=pa.get('num_blue', DEF_NUM_BLUE))
+    red_group = Composite("reds", {"color": RED},
                             member_creator=create_agent,
-                            num_members=pa.get('num_black', DEF_NUM_BLACK))
+                            num_members=pa.get('num_red', DEF_NUM_RED))
 
     env = Env("env",
               height=pa.get('grid_height', DEF_HEIGHT),
               width=pa.get('grid_width', DEF_WIDTH),
-              members=[white_group, black_group])
-    return (white_group, black_group, env)
+              members=[blue_group, red_group])
+    return (blue_group, red_group, env)
 
 
 def main():
-    global white_group
-    global black_group
+    global blue_group
+    global red_group
     global env
-#   (black, white, wolframEnv) = setup()
-    (black, white, env) = set_up()
+#   (red, blue, wolframEnv) = setup()
+    (red, blue, env) = set_up()
 #   wolframEnv()
     env()
     return 0
