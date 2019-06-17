@@ -89,10 +89,10 @@ class Props(Resource):
 class Menu(Resource):
     global user
 
-    def get(self, model_id):
+    def get(self, model_id, menuitem_id):
         return user()
 
-    def put(self, menuitem_id):
+    def put(self, model_id, menuitem_id):
         return {"execute menu item": menuitem_id, "Menu": "menu will be returned here"}  # noqa E501
 
 
