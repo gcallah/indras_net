@@ -59,6 +59,13 @@ props = api.model("props", {
     "props": fields.String("Enter propargs.")
 })
 
+@api.route("/models/<int:model_id>/menu/")
+class ModelMenu(Resource):
+    global user
+
+    def get(self, model_id):
+        return user()
+
 
 @api.route('/models/<int:model_id>/props')
 class Props(Resource):
@@ -86,11 +93,8 @@ class Props(Resource):
 
 
 @api.route("/models/<int:model_id>/menu/<int:menuitem_id>")
-class Menu(Resource):
+class MenuItem(Resource):
     global user
-
-    def get(self, model_id, menuitem_id):
-        return user()
 
     def put(self, model_id, menuitem_id):
         return {"execute menu item": menuitem_id, "Menu": "menu will be returned here"}  # noqa E501

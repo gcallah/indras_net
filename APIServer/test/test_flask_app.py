@@ -1,5 +1,5 @@
 from unittest import TestCase, main
-from APIServer.flask_app import app, HelloWorld, Models, Props, Menu, err_return
+from APIServer.flask_app import app, HelloWorld, Models, Props, ModelMenu, MenuItem, err_return
 from flask_restplus import Resource, Api, fields
 import random
 # import json
@@ -68,7 +68,8 @@ class hello_wold_test(TestCase):
         self.HelloWorld = HelloWorld(Resource)
         self.Model = Models(Resource)
         self.Props = Props(Resource)
-        self.Menu = Menu(Resource)
+        self.ModelMenu = ModelMenu(Resource)
+        self.MenuItem = MenuItem(Resource)
 
     def test_hello_world(self):
         """
@@ -110,20 +111,21 @@ class hello_wold_test(TestCase):
             rv = self.Props.put(menuitem_id)
         self.assertEqual(rv, {"Menu" : "menu will be returned here"})
 
-    def test_get_menu(self):
+    def test_get_ModelMenu(self):
         """
         Testing whether we are getting the menu.
         """
         model_id = random.randint(0, 5)
-        rv = self.Menu.get(model_id)
+        rv = self.ModelMenu.get(model_id)
         self.assertEqual(rv, menu)
         
-    def test_put_menu(self):
+    def test_put_MenuItem(self):
         """
         Testing whether we are able to put the menu in
         """
         menuitem_id = 1
-        rv = self.Menu.put(menuitem_id)
+        model_id = random.randint(0,5)
+        rv = self.MenuItem.put(model_id, menuitem_id)
         self.assertEqual(rv, {"execute menu item": menuitem_id, "Menu": "menu will be returned here"})
 
     def test_err_return(self):
