@@ -86,9 +86,9 @@ def main():
     global blue_group
     global red_group
     global env
-    #(red, blue, wolframEnv) = setup()
+    # (red, blue, wolframEnv) = setup()
     (red, blue, env) = set_up()
-    #wolframEnv()
+    #  wolframEnv()
     env()
     return 0
 
