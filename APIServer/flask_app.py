@@ -59,6 +59,7 @@ props = api.model("props", {
     "props": fields.String("Enter propargs.")
 })
 
+
 @api.route("/models/<int:model_id>/menu/")
 class ModelMenu(Resource):
     global user
