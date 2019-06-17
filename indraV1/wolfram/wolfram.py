@@ -50,13 +50,13 @@ class WolframAgent(ga.GridAgent):
         self.is_active = False
 
     def act(self):
-        #make sure we only update the row we need to
+        #  Make sure we only update the row we need to
         (x, y) = self.pos
         if y == self.env.height - 1 - self.env.period:
             self.is_active = True
         if not self.is_active:
             return
-        #Find the information needed
+        #  Find the information needed
         check_list = [(x - 1, y + 1),(x, y + 1), (x + 1, y + 1)]
         result = [W, W, W]
         for i in range(len(check_list)):
@@ -65,7 +65,7 @@ class WolframAgent(ga.GridAgent):
                     result[i] = neighbor.state
                     break
         
-        #Make change
+        #  Make change
         self.state = self.env.check_rules(tuple(result))
         self.is_active = False
 

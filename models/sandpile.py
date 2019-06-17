@@ -31,23 +31,23 @@ group_indices = {}
 def topple(sandpile, agent):
     if DEBUG:
         print("Sandpile in", agent.pos, "is toppling")
-    for neighbor in agent.attrs["neighbors"]:
-        add_grain(sandpile, neighbor)
-
-
-def curr_group(agent):
-    print("Sandpile in", agent.pos, "is toppling and is in", agent.primary_group())  # noqa E501
-    for neighbor in agent.attrs["neighbors"]:
-        if DEBUG:
-            print("Grain is being added to the neighbor at", neighbor.pos)
+    for neighbor in agent.neighbors:
         add_grain(sandpile, neighbor)
 
 
 def get_curr_group_idx(agent):
+    """
+    Returns the int index of the current group
+    Ex) returns 0 if group is Group 0
+    """
     return group_indices[agent.primary_group().name]
 
 
 def get_next_group_idx(curr_group_idx):
+    """
+    Returns the int index of the next group
+    Ex) returns 1 if curr_group_idx group is Group 0
+    """
     return (curr_group_idx + 1) % NUM_GROUPS
 
 
@@ -88,9 +88,9 @@ def sandpile_action(sandpile):
 
 
 def place_action(agent):
-    if not any(agent.attrs):  # if agent.neighbors is None:
+    if agent.neighbors is None:
         neighbors = sandpile.get_vonneumann_hood(agent)
-        agent.attrs = neighbors
+        agent.neighbors = neighbors
 
 
 def create_agent(i):
@@ -116,7 +116,7 @@ def set_up():
         groups[0] += create_agent(i)
 
     sandpile = Env("A sandpile", action=sandpile_action, members=groups,
-                   height=height, width=width)
+                   height=height, width=width, random_placing=False)
     sandpile.attrs["center_agent"] = sandpile.get_agent_at(height // 2,
                                                            width // 2)
 

@@ -5,7 +5,7 @@ of agents related spatially.
 from random import randint
 from math import sqrt
 from indra.agent import is_composite
-from indra.composite import Composite
+from indra.composite import Composite, grp_from_nm_dict
 
 DEF_WIDTH = 10
 DEF_HEIGHT = 10
@@ -107,19 +107,24 @@ class Space(Composite):
     def consec_place_members(self, members, curr_row=0, curr_col=0):
         """
         Locate all members of this space in x, y grid.
-        This places members one after another:
-        row 0, [cols 0 - self.width),
-        row 1, [cols 0 - self.width),
-        row 1, [cols 0 - self.width),
-        .
-        .
-        .
-        row self.height - 1, [cols 0 - self.width)
+        Place members consecutively, starting from (0, 0) and
+        moving to (1, 0), (2, 0), etc
         """
         if members is not None:
             for nm, mbr in members.items():
-                if not is_composite(mbr):  # by default don't locate groups
-                    self.place_member(mbr)  # add (curr_row, curr_col) tuple
+                if not is_composite(mbr):
+                    if DEBUG:
+                        print("Placing member at (", curr_row, ",",
+                              curr_col, ")")
+                    self.place_member(mbr, xy=(curr_row, curr_col))
+                    if (curr_row == self.width - 1):
+                        curr_row = 0
+                        curr_col += 1
+                    elif (curr_row == self.height - 1):
+                        curr_col = 0
+                        curr_row += 1
+                    else:
+                        curr_row += 1
                 else:  # place composite's members
                     self.consec_place_members(mbr.members, curr_row, curr_col)
 
@@ -252,32 +257,24 @@ class Space(Composite):
         """
         pass
 
-    def get_neighbors(self, agent, width, height):
+    def get_vonneumann_hood(self, agent):
+        """
+        Takes in an agent and returns a Composite of its vonneuman neighbors
+        """
         lst = []
-        # why not return a Composite?
         agent_dict = {"neighbors": lst}
         dx = [0, 0, 1, -1]
         dy = [-1, 1, 0, 0]
         agent_x = agent.get_x()
         agent_y = agent.get_y()
-
         for i in range(len(dx)):
             neighbor_x = agent_x + dx[i]
             neighbor_y = agent_y + dy[i]
-            if not out_of_bounds(neighbor_x, neighbor_y, 0, 0, width, height):
-                agent_dict["neighbors"].append(self.get_agent_at(neighbor_x,
-                                                                 neighbor_y))
+            if not out_of_bounds(neighbor_x, neighbor_y, 0, 0,
+                                 self.width, self.height):
+                agent_dict["neighbors"].append(
+                    self.get_agent_at(neighbor_x, neighbor_y))
         if DEBUG:
-            print("In get_neighbors")
             for i in agent_dict["neighbors"]:
-                print("Neighbor to agent located in (", agent_x, ",",
-                      agent_y, "): (", i.get_x(), ",", i.get_y(), ")")
-        return agent_dict
-
-    def get_vonneumann_hood(self, agent):
-        """
-        Takes in an agent and returns a the group of its vonneuman neighbors
-        """
-        if DEBUG:
-            print("In get_vonneumann_hood")
-        return self.get_neighbors(agent, self.width, self.height)
+                print("Neighbor to agent located in", agent.pos, "is", i.pos)
+        return grp_from_nm_dict("Vonneuman neighbors", agent_dict["neighbors"])

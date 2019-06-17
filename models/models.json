@@ -1,30 +1,35 @@
 {
   "models_database": [
     {
+      "model ID": 0,
       "name": "Adam Smith's Fashion Model",
       "run": "fashion",
       "props": "models/props/fashion.props.json",
       "doc": "A model of trendsetters and followers in the world of fashion."
     },
     {
+      "model ID": 1,
       "name": "Forest Fire",
       "run": "forestfire",
       "props": "models/props/forestfire.props.json",
       "doc": "A model forest with trees that randomly catch fire."
     },
     {
+      "model ID": 2,
       "name": "Abelian Sandpile",
       "run": "sandpile",
       "props": "models/props/sandpile.props.json",
       "doc": "A sandpile that makes colorful patterns as the sand tumbles down."
     },
     {
+      "model ID": 3,
       "name": "Schelling's Segregation Model",
       "run": "segregation",
       "props": "models/props/segregation.props.json",
       "doc": "Thomas Schelling's famous model of segregated neighborhoods."
     },
     {
+      "model ID": 4,
       "name": "Predator-Prey Model",
       "run": "wolfsheep",
       "props": "models/props/wolfsheep.props.json",

@@ -48,7 +48,9 @@ class Models(Resource):
             doc = ""
             if "doc" in model:
                 doc = model["doc"]
-            models_response.append({"name": model["name"], "doc": doc})
+            models_response.append({"model ID": model["model ID"],
+                                    "name": model["name"],
+                                    "doc": doc})
         return models_response
 
 
@@ -56,6 +58,14 @@ props = api.model("props", {
     "model ID": fields.Integer,
     "props": fields.String("Enter propargs.")
 })
+
+
+@api.route("/models/<int:model_id>/menu/")
+class ModelMenu(Resource):
+    global user
+
+    def get(self, model_id):
+        return user()
 
 
 @api.route('/models/<int:model_id>/props')
@@ -83,25 +93,13 @@ class Props(Resource):
             return err_return("Invalid model answer " + str(model_id))
 
 
-@api.route("/models/<int:model_id>/menu")
-class Menu(Resource):
+@api.route("/models/<int:model_id>/menu/<int:menuitem_id>")
+class MenuItem(Resource):
     global user
 
-    def get(self, model_id):
-        return user()
-
-    def put(self, menuitem_id):
+    def put(self, model_id, menuitem_id):
         return {"execute menu item": menuitem_id, "Menu": "menu will be returned here"}  # noqa E501
 
-
-# Ask Professor!!!!!
-# @api.route('/models//menu')
-# class Model(Resource):
-#     def put(self, model_id):
-#         return {"name": models_db[model_id]["name"],
-#                 "status": "Is running!",
-#                 "menu": ["Item 1", "Item 2", "Item 3"]
-#                }
 
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=8000, debug=True)
