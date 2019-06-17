@@ -60,7 +60,7 @@ props = api.model("props", {
 })
 
 
-@api.route("/models/<int:model_id>/menu/")
+@api.route("/models/menu/<int:model_id>/")
 class ModelMenu(Resource):
     global user
 
@@ -68,7 +68,7 @@ class ModelMenu(Resource):
         return user()
 
 
-@api.route('/models/<int:model_id>/props')
+@api.route('/models/props/<int:model_id>')
 class Props(Resource):
     global indra_dir
 
@@ -93,7 +93,7 @@ class Props(Resource):
             return err_return("Invalid model answer " + str(model_id))
 
 
-@api.route("/models/<int:model_id>/menu/<int:menuitem_id>")
+@api.route("/models/menu/<int:model_id>/<int:menuitem_id>")
 class MenuItem(Resource):
     global user
 
