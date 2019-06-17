@@ -1,7 +1,9 @@
 """
-    This is rm -f ./.git/index.lock re-written in indra.
+
 """
+
 from propargs.propargs import PropArgs
+
 from indra.agent import Agent
 from indra.env import Env
 from indra.space import DEF_HEIGHT, DEF_WIDTH
@@ -11,20 +13,20 @@ from indra.display_methods import RED, BLUE
 X = 0
 Y = 1
 
-DEBUG = True  # turns debugging code on or off
-DEBUG2 = False  # turns deeper debugging code on or off
+DEBUG = True  # Turns debugging code on or off
+DEBUG2 = False  # Turns deeper debugging code on or off
 
-# default number of agents
+# Default number of agents
 DEF_NUM_RED = 10
 DEF_NUM_BLUE = 10
 
-# states
+# States
 R = 1
 B = 0
 
 STATE_MAP = {R: RED, B: BLUE}
 
-# Some rule dictionaries:
+# Some dictionaries of rules:
 RULE30 = {
     (R, R, R): B,
     (R, R, B): B,
@@ -49,7 +51,7 @@ def setup():
 
 def agent_action(agent):
     print("I'm " + agent.name + " and I'm acting.")
-    # return False means to move
+    # Returning false means to move
     return False
 
 
@@ -84,9 +86,9 @@ def main():
     global blue_group
     global red_group
     global env
-#   (red, blue, wolframEnv) = setup()
+    #(red, blue, wolframEnv) = setup()
     (red, blue, env) = set_up()
-#   wolframEnv()
+    #wolframEnv()
     env()
     return 0
 
