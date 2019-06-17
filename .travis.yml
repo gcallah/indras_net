@@ -1,27 +1,22 @@
 language: python
 python:
-    - '3.6'
-
+- '3.6'
 services:
-    - docker
-
+- docker
 before_install:
-    - openssl aes-256-cbc -K $encrypted_6790f5b7593b_key -iv $encrypted_6790f5b7593b_iv -in indra.enc -out ~/.ssh/indra -d
-
+- openssl aes-256-cbc -K $encrypted_6790f5b7593b_key -iv $encrypted_6790f5b7593b_iv
+  -in id_rsa.enc -out ~\/.ssh/id_rsa -d
+- openssl aes-256-cbc -K $encrypted_6790f5b7593b_key -iv $encrypted_6790f5b7593b_iv
+  -in indra.enc -out ~/.ssh/indra -d
 install:
-    - pip install -r docker/requirements-dev.txt
-
+- pip install -r docker/requirements-dev.txt
 env:
-    - PYTHONPATH=/home/travis/build/gcallah/indras_net props_dir=/home/travis/build/gcallah/indras_net/APIServer/data/
-
+- PYTHONPATH=/home/travis/build/gcallah/indras_net props_dir=/home/travis/build/gcallah/indras_net/APIServer/data/
 script:
-    - make tests
-
+- make tests
 after_success:
-    # - ./deploy.sh
-    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-    - make prod_container
-    - make deploy_container
-
+- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+- make prod_container
+- make deploy_container
 notifications:
   slack: indras-net:QlnWeHMOpmEHCGJfG3SndDTr
