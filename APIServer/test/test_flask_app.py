@@ -63,7 +63,7 @@ menu = [{"val": 0, "func": "run", "question": "Run for N periods"},
         ]
 
 
-class hello_wold_test(TestCase):
+class Test(TestCase):
     def setUp(self):
         self.HelloWorld = HelloWorld(Resource)
         self.Model = Models(Resource)
