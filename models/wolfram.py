@@ -67,11 +67,11 @@ def set_up():
     pa = PropArgs.create_props('basic_props',
                                ds_file='props/basic.props.json')
     blue_group = Composite("blues", {"color": BLUE},
-                            member_creator=create_agent,
-                            num_members=pa.get('num_blue', DEF_NUM_BLUE))
+                           member_creator=create_agent,
+                           num_members=pa.get('num_blue', DEF_NUM_BLUE))
     red_group = Composite("reds", {"color": RED},
-                            member_creator=create_agent,
-                            num_members=pa.get('num_red', DEF_NUM_RED))
+                          member_creator=create_agent,
+                          num_members=pa.get('num_red', DEF_NUM_RED))
 
     env = Env("env",
               height=pa.get('grid_height', DEF_HEIGHT),
