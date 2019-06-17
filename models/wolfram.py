@@ -74,7 +74,6 @@ def set_up():
     red_group = Composite("reds", {"color": RED},
                           member_creator=create_agent,
                           num_members=pa.get('num_red', DEF_NUM_RED))
-
     env = Env("env",
               height=pa.get('grid_height', DEF_HEIGHT),
               width=pa.get('grid_width', DEF_WIDTH),
