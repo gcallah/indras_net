@@ -85,7 +85,7 @@ class Props(Resource):
             return err_return("Invalid model answer " + str(model_id))
 
 
-@api.route("/models/<int:model_id>/menu")
+@api.route("/models/<int:model_id>/menu/<int:menuitem_id")
 class Menu(Resource):
     global user
 
