@@ -4,11 +4,26 @@ from flask_restplus import Resource, Api, fields
 import random
 # import json
 
-model_menu = [{"name": "Adam Smith's Fashion Model", "doc": "A model of trendsetters and followers in the world of fashion."},
-              {"name": "Forest Fire", "doc": "A model forest with trees that randomly catch fire."},
-              {"name": "Abelian Sandpile", "doc": "A sandpile that makes colorful patterns as the sand tumbles down."},
-              {"name": "Schelling's Segregation Model", "doc": "Thomas Schelling's famous model of segregated neighborhoods."},
-              {"name": "Predator-Prey Model", "doc": "Wolves eat sheep in a meadow and their populations' cycle."}
+model_menu = [{"model ID": 0,
+               "name": "Adam Smith's Fashion Model",
+               "doc": "A model of trendsetters and followers in the world of fashion."
+               },
+              {"model ID": 1,
+               "name": "Forest Fire",
+               "doc": "A model forest with trees that randomly catch fire."
+               },
+              {"model ID": 2,
+               "name": "Abelian Sandpile",
+               "doc": "A sandpile that makes colorful patterns as the sand tumbles down."
+               },
+              {"model ID": 3,
+               "name": "Schelling's Segregation Model",
+               "doc": "Thomas Schelling's famous model of segregated neighborhoods."
+               },
+              {"model ID": 4,
+               "name": "Predator-Prey Model",
+               "doc": "Wolves eat sheep in a meadow and their populations' cycle."
+               }
               ]
 
 props_0 = {"grid_height": {"val": 20, "question": "What is the grid height?", "atype": "INT", "hival": 100, "loval": 2},

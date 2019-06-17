@@ -48,7 +48,9 @@ class Models(Resource):
             doc = ""
             if "doc" in model:
                 doc = model["doc"]
-            models_response.append({"name": model["name"], "doc": doc})
+            models_response.append({"model ID": model["model ID"],
+                                    "name": model["name"],
+                                    "doc": doc})
         return models_response
 
 
