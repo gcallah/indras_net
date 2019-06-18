@@ -265,15 +265,11 @@ class Space(Composite):
                 curr_agent = self.get_agent_at(i, row_num)
                 curr_agent_x = curr_agent.get_x()
                 for i in range (-1, 2):
-                    if not out_of_bounds(curr_agent_x, row_num +1, 0, 0,
-                                         self.width, self.height):neighbors_dict["neighbors"].append(self.get_agent_at(curr_agent_x, row_num+1))
+                    if not out_of_bounds(curr_agent_x + i, row_num + 1, 0, 0, self.width, self.height):
+                        neighbors_dict["neighbors"].append(self.get_agent_at(curr_agent_x + i, row_num + 1))
                 curr_agent.neighbors = grp_from_nm_dict("Row neighbors", neighbors_dict["neighbors"])
-                row+= curr_agent 
+                row += curr_agent 
             return row
-                
-             
-        # now loop through each col adding each agent from self.locations
-        #  to the row, e.g., row += self.locations
 
     def get_moore_hood(self, agent):
         """
