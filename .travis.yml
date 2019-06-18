@@ -1,4 +1,5 @@
 language: python
+
 python:
     - '3.6'
 
@@ -6,7 +7,7 @@ services:
     - docker
 
 before_install:
-    - openssl aes-256-cbc -K $encrypted_6790f5b7593b_key -iv $encrypted_6790f5b7593b_iv -in indra.enc -out ~/.ssh/indra -d
+    - openssl aes-256-cbc -K $encrypted_6790f5b7593b_key -iv $encrypted_6790f5b7593b_iv -in id_rsa.enc -out ~/.ssh/id_rsa -d
 
 install:
     - pip install -r docker/requirements-dev.txt
@@ -18,7 +19,7 @@ script:
     - make tests
 
 after_success:
-    # - ./deploy.sh
+    - ./deploy.sh
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
     - make prod_container
     - make deploy_container

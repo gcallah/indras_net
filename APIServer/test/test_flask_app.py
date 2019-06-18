@@ -1,5 +1,5 @@
 from unittest import TestCase, main
-from APIServer.flask_app import app, HelloWorld, Models, Props, ModelMenu, MenuItem, err_return
+from APIServer.flask_app import app, HelloWorld, Models, Props, ModelMenu, MenuItem, err_return, load_models
 from flask_restplus import Resource, Api, fields
 import random
 # import json
@@ -22,6 +22,38 @@ model_menu = [{"model ID": 0,
                },
               {"model ID": 4,
                "name": "Predator-Prey Model",
+               "doc": "Wolves eat sheep in a meadow and their populations' cycle."
+               }
+              ]
+
+model_cmenu = [{"model ID": 0,
+               "name": "Adam Smith's Fashion Model",
+               "run": "fashion",
+               "props": "models/props/fashion.props.json",
+               "doc": "A model of trendsetters and followers in the world of fashion."
+               },
+              {"model ID": 1,
+               "name": "Forest Fire",
+               "run": "forestfire",
+               "props": "models/props/forestfire.props.json",
+               "doc": "A model forest with trees that randomly catch fire."
+               },
+              {"model ID": 2,
+               "name": "Abelian Sandpile",
+               "run": "sandpile",
+               "props": "models/props/sandpile.props.json",
+               "doc": "A sandpile that makes colorful patterns as the sand tumbles down."
+               },
+              {"model ID": 3,
+               "name": "Schelling's Segregation Model",
+               "run": "segregation",
+               "props": "models/props/segregation.props.json",
+               "doc": "Thomas Schelling's famous model of segregated neighborhoods."
+               },
+              {"model ID": 4,
+               "name": "Predator-Prey Model",
+               "run": "wolfsheep",
+               "props": "models/props/wolfsheep.props.json",
                "doc": "Wolves eat sheep in a meadow and their populations' cycle."
                }
               ]
@@ -70,6 +102,14 @@ class Test(TestCase):
         self.Props = Props(Resource)
         self.ModelMenu = ModelMenu(Resource)
         self.MenuItem = MenuItem(Resource)
+        self.LoadModels = load_models()
+
+    def test_load_models(self):
+        """
+        See if models can be loaded.
+        """
+        rv = self.LoadModels
+        self.assertEqual(rv, model_cmenu)
 
     def test_hello_world(self):
         """
@@ -101,21 +141,28 @@ class Test(TestCase):
             self.assertEqual(rv, props_3)
         else:
             self.assertEqual(rv, props_4)
+        model_id = 5
+        rv = self.Props.get(model_id)
+        self.assertEqual(rv, {'Error:': 'Invalid model id 5'})
         
     def test_put_props(self):
         """
         Test whether we are able to put props
         """
-        menuitem_id = 1
+        model_id = random.randint(0, 4)
         with app.test_request_context():  
-            rv = self.Props.put(menuitem_id)
-        self.assertEqual(rv, {"Menu" : "menu will be returned here"})
+            rv = self.Props.put(model_id)
+        self.assertEqual(rv, {"Menu": "menu will be returned here"})
+        # model_id = 5
+        # with app.test_request_context():
+        #     rv = self.Props.put(model_id)
+        # self.assertEqual(rv, {'Error:': 'Invalid model answer 5'})
 
     def test_get_ModelMenu(self):
         """
         Testing whether we are getting the menu.
         """
-        model_id = random.randint(0, 5)
+        model_id = random.randint(0, 4)
         rv = self.ModelMenu.get(model_id)
         self.assertEqual(rv, menu)
         
@@ -123,8 +170,8 @@ class Test(TestCase):
         """
         Testing whether we are able to put the menu in
         """
-        menuitem_id = 1
-        model_id = random.randint(0,5)
+        menuitem_id = random.randint(0, 4)
+        model_id = random.randint(0,4)
         rv = self.MenuItem.put(model_id, menuitem_id)
         self.assertEqual(rv, {"execute menu item": menuitem_id, "Menu": "menu will be returned here"})
 
