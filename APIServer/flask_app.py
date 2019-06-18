@@ -92,7 +92,7 @@ class Props(Resource):
     @api.expect(props)
     def put(self, model_id):
         try:
-            props = api.payload["props"]  # noqa F841
+            # props = api.payload["props"]  # noqa F841
             return {"Menu": load_menu()}
         except ValueError:
             return err_return("Invalid model answer " + str(model_id))

@@ -153,14 +153,14 @@ class Test(TestCase):
         rv = self.Props.get(model_id)
         self.assertEqual(rv, {'Error:': 'Invalid model id 5'})
         
-    # def test_put_props(self):
-    #     """
-    #     Test whether we are able to put props
-    #     """
-    #     model_id = random.randint(0, 4)
-    #     with app.test_request_context():
-    #         rv = self.Props.put(model_id)
-    #     self.assertEqual(rv, {"Menu": menu})
+    def test_put_props(self):
+        """
+        Test whether we are able to put props
+        """
+        model_id = random.randint(0, 4)
+        with app.test_request_context():
+            rv = self.Props.put(model_id)
+        self.assertEqual(rv, {"Menu": menu})
 
     def test_get_ModelMenu(self):
         """
