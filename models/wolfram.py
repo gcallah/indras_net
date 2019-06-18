@@ -4,21 +4,17 @@
 
 from propargs.propargs import PropArgs
 
-from indra.agent import Agent
+from indra.agent import Agent, switch
 from indra.env import Env
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.composite import Composite
-from indra.display_methods import BLACK, WHITE
+from indra.display_methods import BLACK, WHITE, BLUE
 
 X = 0
 Y = 1
 
 DEBUG = True  # Turns debugging code on or off
 DEBUG2 = False  # Turns deeper debugging code on or off
-
-# Default number of agents
-DEF_NUM_WHITE = 10
-DEF_NUM_BLACK = 10
 
 # States
 B = 1
@@ -38,15 +34,22 @@ RULE30 = {
     (W, W, W): W
 }
 
-GRID_WIDTH = 30
-GRID_HEIGHT = 30
+GRID_WIDTH = 31
+GRID_HEIGHT = 31
+
+groups = []
 
 
-def setup():
-    black = Composite("black", {"color": BLACK})
-    white = Composite("white", {"color": WHITE})
-    wolframEnv = Env("wolframEnv", height=GRID_HEIGHT, width=GRID_WIDTH)
-    return (white, black, wolframEnv)
+def create_agent(name):
+    """
+    Create an agent with the passed in name
+    """
+    return Agent(str(name), action=agent_action)
+
+
+def wolfram_action(env):
+    if DEBUG:
+        print("In wolfram_action")
 
 
 def agent_action(agent):
@@ -55,11 +58,8 @@ def agent_action(agent):
     return False
 
 
-def create_agent(color, i):
-    """
-    Create an agent.
-    """
-    return Agent(color + str(i), action=agent_action)
+def get_neighbors(agent):
+    wolfram_env.get_neighbors(agent)
 
 
 def set_up():
@@ -68,27 +68,31 @@ def set_up():
     """
     pa = PropArgs.create_props('basic_props',
                                ds_file='props/basic.props.json')
-    black_group = Composite("blacks", {"color": BLACK},
-                            member_creator=create_agent,
-                            num_members=pa.get('num_black', DEF_NUM_BLACK))
-    white_group = Composite("whites", {"color": WHITE},
-                            member_creator=create_agent,
-                            num_members=pa.get('num_white', DEF_NUM_WHITE))
-    env = Env("env",
-              height=pa.get('grid_height', DEF_HEIGHT),
-              width=pa.get('grid_width', DEF_WIDTH),
-              members=[black_group, white_group])
-    return (black_group, white_group, env)
+    width = pa.get('grid_width', DEF_WIDTH)
+    height = pa.get('grid_height', DEF_HEIGHT)
+    black = Composite("black", {"color": BLACK})
+    white = Composite("blue", {"color": BLUE})
+    groups.append(white)
+    groups.append(black)
+    print("Height and width: ", height, width)
+    for i in range(height * width):
+        groups[0] += create_agent(i)
+    wolfram_env = Env("wolfram env",
+                      action=wolfram_action,
+                      height=height,
+                      width=width,
+                      members=groups)
+    wolfram_env.attrs["center_agent"] = wolfram_env.get_agent_at(height // 2,
+                                                                 width - 1)
+    switch(wolfram_env.attrs["center_agent"], white, black)
+    return (groups, wolfram_env)
 
 
 def main():
-    global black_group
-    global white_group
-    global env
-    # (white, black, wolframEnv) = setup()
-    (white, black, env) = set_up()
-    #  wolframEnv()
-    env()
+    global groups
+    global wolfram_env
+    (groups, wolfram_env) = set_up()
+    wolfram_env()
     return 0
 
 
