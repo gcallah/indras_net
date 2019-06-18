@@ -259,16 +259,20 @@ class Space(Composite):
         if row_num < 0 or row_num >= self.height:
             return None
         else:
+            lst = []
             row = Composite("Row " + str(row_num))
             for i in self.width:
                 neighbors_dict = {"neighbors": lst}
                 curr_agent = self.get_agent_at(i, row_num)
                 curr_agent_x = curr_agent.get_x()
-                for i in range (-1, 2):
-                    if not out_of_bounds(curr_agent_x + i, row_num + 1, 0, 0, self.width, self.height):
-                        neighbors_dict["neighbors"].append(self.get_agent_at(curr_agent_x + i, row_num + 1))
-                curr_agent.neighbors = grp_from_nm_dict("Row neighbors", neighbors_dict["neighbors"])
-                row += curr_agent 
+                for i in range(-1, 2):
+                    if not out_of_bounds(curr_agent_x + i, row_num + 1, 0, 0, 
+                        self.width, self.height):
+                        neighbors_dict["neighbors"].append(
+                            self.get_agent_at(curr_agent_x + i, row_num + 1))
+                curr_agent.neighbors = grp_from_nm_dict(
+                    "Row neighbors", neighbors_dict["neighbors"])
+                row += curr_agent
             return row
 
     def get_moore_hood(self, agent):
@@ -298,3 +302,4 @@ class Space(Composite):
             for i in agent_dict["neighbors"]:
                 print("Neighbor to agent located in", agent.pos, "is", i.pos)
         return grp_from_nm_dict("Vonneuman neighbors", agent_dict["neighbors"])
+        
