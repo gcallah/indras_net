@@ -266,8 +266,8 @@ class Space(Composite):
                 curr_agent = self.get_agent_at(i, row_num)
                 curr_agent_x = curr_agent.get_x()
                 for i in range(-1, 2):
-                    if not out_of_bounds(curr_agent_x + i, row_num + 1, 0, 0, 
-                        self.width, self.height):
+                    if not out_of_bounds(curr_agent_x + i, row_num + 1, 0, 0,
+                                         self.width, self.height):
                         neighbors_dict["neighbors"].append(
                             self.get_agent_at(curr_agent_x + i, row_num + 1))
                 curr_agent.neighbors = grp_from_nm_dict(
@@ -302,4 +302,3 @@ class Space(Composite):
             for i in agent_dict["neighbors"]:
                 print("Neighbor to agent located in", agent.pos, "is", i.pos)
         return grp_from_nm_dict("Vonneuman neighbors", agent_dict["neighbors"])
-        
