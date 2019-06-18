@@ -251,6 +251,17 @@ class Space(Composite):
         """
         del self.locations[(x, y)]
 
+    def get_row_hood(self, row_num):
+        """
+        Collects all agents in row `row_num` into a Composite
+        and return that collection.
+        """
+        if row_num < 0 or row_num >= self.height:
+            return None
+        # row = Composite("Row " + str(row_num))
+        # now loop through each col adding each agent from self.locations
+        #  to the row, e.g., row += self.locations
+
     def get_moore_hood(self, agent):
         """
         To be written!
