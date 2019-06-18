@@ -1,5 +1,5 @@
 from unittest import TestCase, main
-from APIServer.flask_app import app, HelloWorld, Models, Props, ModelMenu, MenuItem, err_return, load_models
+from APIServer.flask_app import app, HelloWorld, Models, Props, ModelMenu, MenuItem, err_return, load_models, load_menu
 from flask_restplus import Resource, Api, fields
 import random
 # import json
@@ -103,6 +103,7 @@ class Test(TestCase):
         self.ModelMenu = ModelMenu(Resource)
         self.MenuItem = MenuItem(Resource)
         self.LoadModels = load_models()
+        self.LoadMenu = load_menu()
 
     def test_load_models(self):
         """
@@ -110,6 +111,13 @@ class Test(TestCase):
         """
         rv = self.LoadModels
         self.assertEqual(rv, model_cmenu)
+
+    def test_load_menu(self):
+        """
+        See if the menu can be loaded.
+        """
+        rv = self.LoadMenu
+        self.assertEqual(rv, menu)
 
     def test_hello_world(self):
         """
@@ -150,13 +158,9 @@ class Test(TestCase):
         Test whether we are able to put props
         """
         model_id = random.randint(0, 4)
-        with app.test_request_context():  
+        with app.test_request_context():
             rv = self.Props.put(model_id)
-        self.assertEqual(rv, {"Menu": "menu will be returned here"})
-        # model_id = 5
-        # with app.test_request_context():
-        #     rv = self.Props.put(model_id)
-        # self.assertEqual(rv, {'Error:': 'Invalid model answer 5'})
+        self.assertEqual(rv, {"Menu": menu})
 
     def test_get_ModelMenu(self):
         """
@@ -173,7 +177,7 @@ class Test(TestCase):
         menuitem_id = random.randint(0, 4)
         model_id = random.randint(0,4)
         rv = self.MenuItem.put(model_id, menuitem_id)
-        self.assertEqual(rv, {"execute menu item": menuitem_id, "Menu": "menu will be returned here"})
+        self.assertEqual(rv, {"execute menu item": menuitem_id, "Menu": menu})
 
     def test_err_return(self):
         """

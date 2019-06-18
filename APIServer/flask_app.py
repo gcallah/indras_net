@@ -27,6 +27,12 @@ def load_models():
         return json.loads(file.read())["models_database"]
 
 
+def load_menu():
+    menu_file = indra_dir + "/indra/menu.json"
+    with open(menu_file) as file:
+        return json.loads(file.read())["menu_database"]
+
+
 @api.route('/hello')
 class HelloWorld(Resource):
     def get(self):
@@ -86,9 +92,8 @@ class Props(Resource):
     @api.expect(props)
     def put(self, model_id):
         try:
-            # update props
-            props = api.payload  # noqa F841
-            return {"Menu": "menu will be returned here"}
+            # props = api.payload["props"]  # noqa F841
+            return {"Menu": load_menu()}
         except ValueError:
             return err_return("Invalid model answer " + str(model_id))
 
@@ -98,7 +103,7 @@ class MenuItem(Resource):
     global user
 
     def put(self, model_id, menuitem_id):
-        return {"execute menu item": menuitem_id, "Menu": "menu will be returned here"}  # noqa E501
+        return {"execute menu item": menuitem_id, "Menu": load_menu()}  # noqa E501
 
 
 if __name__ == "__main__":
