@@ -40,9 +40,14 @@ tags: FORCE
 submods:
 	cd utils; git pull origin master
 
-# run tests then commit
+# run tests then commit all, then push
 prod: tests
 	- git commit -a -m "Building production."
+	- git pull origin master
+	git push origin master
+
+# run tests then push just what is already committed:
+prod1: tests
 	- git pull origin master
 	git push origin master
 
