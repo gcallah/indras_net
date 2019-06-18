@@ -1,6 +1,6 @@
+.coverage
 .Rdata
 *.txt
-*.props
 *.log
 *.out
 *~
