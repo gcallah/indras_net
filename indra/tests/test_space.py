@@ -48,12 +48,12 @@ class SpaceTestCase(TestCase):
         self.test_agent2 = None
         self.test_agent3 = None
         self.test_agent4 = None
-
+        
     def test_get_row_hood(self):
-        row_grp = self.teeny_space.get_row_hood(0)
-        for cell in row_grp:
-            pass
-            # assert(cell.get_y() == 0)
+            row_grp = self.teeny_space.get_row_hood(1)
+            for cell in row_grp:
+                pass
+                #assert(cell.get_y() == 2)        
 
     def test_constrain_x(self):
         """
