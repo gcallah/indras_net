@@ -3,59 +3,59 @@ from APIServer.flask_app import app, HelloWorld, Models, Props, ModelMenu, MenuI
 from flask_restplus import Resource, Api, fields
 import random
 
-model_menu = [{"model ID": 0,
-               "name": "Adam Smith's Fashion Model",
-               "doc": "A model of trendsetters and followers in the world of fashion."
-               },
-              {"model ID": 1,
-               "name": "Forest Fire",
-               "doc": "A model forest with trees that randomly catch fire."
-               },
-              {"model ID": 2,
-               "name": "Abelian Sandpile",
-               "doc": "A sandpile that makes colorful patterns as the sand tumbles down."
-               },
-              {"model ID": 3,
-               "name": "Schelling's Segregation Model",
-               "doc": "Thomas Schelling's famous model of segregated neighborhoods."
-               },
-              {"model ID": 4,
-               "name": "Predator-Prey Model",
-               "doc": "Wolves eat sheep in a meadow and their populations' cycle."
-               }
-              ]
+# model_menu = [{"model ID": 0,
+#                "name": "Adam Smith's Fashion Model",
+#                "doc": "A model of trendsetters and followers in the world of fashion."
+#                },
+#               {"model ID": 1,
+#                "name": "Forest Fire",
+#                "doc": "A model forest with trees that randomly catch fire."
+#                },
+#               {"model ID": 2,
+#                "name": "Abelian Sandpile",
+#                "doc": "A sandpile that makes colorful patterns as the sand tumbles down."
+#                },
+#               {"model ID": 3,
+#                "name": "Schelling's Segregation Model",
+#                "doc": "Thomas Schelling's famous model of segregated neighborhoods."
+#                },
+#               {"model ID": 4,
+#                "name": "Predator-Prey Model",
+#                "doc": "Wolves eat sheep in a meadow and their populations' cycle."
+#                }
+#               ]
 
-model_cmenu = [{"model ID": 0,
-               "name": "Adam Smith's Fashion Model",
-               "run": "fashion",
-               "props": "models/props/fashion.props.json",
-               "doc": "A model of trendsetters and followers in the world of fashion."
-               },
-              {"model ID": 1,
-               "name": "Forest Fire",
-               "run": "forestfire",
-               "props": "models/props/forestfire.props.json",
-               "doc": "A model forest with trees that randomly catch fire."
-               },
-              {"model ID": 2,
-               "name": "Abelian Sandpile",
-               "run": "sandpile",
-               "props": "models/props/sandpile.props.json",
-               "doc": "A sandpile that makes colorful patterns as the sand tumbles down."
-               },
-              {"model ID": 3,
-               "name": "Schelling's Segregation Model",
-               "run": "segregation",
-               "props": "models/props/segregation.props.json",
-               "doc": "Thomas Schelling's famous model of segregated neighborhoods."
-               },
-              {"model ID": 4,
-               "name": "Predator-Prey Model",
-               "run": "wolfsheep",
-               "props": "models/props/wolfsheep.props.json",
-               "doc": "Wolves eat sheep in a meadow and their populations' cycle."
-               }
-              ]
+# model_cmenu = [{"model ID": 0,
+#                "name": "Adam Smith's Fashion Model",
+#                "run": "fashion",
+#                "props": "models/props/fashion.props.json",
+#                "doc": "A model of trendsetters and followers in the world of fashion."
+#                },
+#               {"model ID": 1,
+#                "name": "Forest Fire",
+#                "run": "forestfire",
+#                "props": "models/props/forestfire.props.json",
+#                "doc": "A model forest with trees that randomly catch fire."
+#                },
+#               {"model ID": 2,
+#                "name": "Abelian Sandpile",
+#                "run": "sandpile",
+#                "props": "models/props/sandpile.props.json",
+#                "doc": "A sandpile that makes colorful patterns as the sand tumbles down."
+#                },
+#               {"model ID": 3,
+#                "name": "Schelling's Segregation Model",
+#                "run": "segregation",
+#                "props": "models/props/segregation.props.json",
+#                "doc": "Thomas Schelling's famous model of segregated neighborhoods."
+#                },
+#               {"model ID": 4,
+#                "name": "Predator-Prey Model",
+#                "run": "wolfsheep",
+#                "props": "models/props/wolfsheep.props.json",
+#                "doc": "Wolves eat sheep in a meadow and their populations' cycle."
+#                }
+#               ]
 
 props_0 = {"grid_height": {"val": 20, "question": "What is the grid height?", "atype": "INT", "hival": 100, "loval": 2},
            "grid_width": {"val": 20, "question": "What is the grid width?", "atype": "INT", "hival": 100, "loval": 2},
@@ -109,7 +109,7 @@ class Test(TestCase):
         See if models can be loaded.
         """
         rv = self.LoadModels
-        self.assertEqual(rv, model_cmenu)
+        self.assertGreater(len(rv), 1)
 
     def test_load_menu(self):
         """
@@ -129,8 +129,8 @@ class Test(TestCase):
         """
         See if we can get models.
         """
-        rv = self.Model.get()
-        self.assertEqual(rv, model_menu)
+        model_list = self.Model.get()
+        self.assertGreater(len(model_list), 1)
 
     def test_get_props(self):
         """
