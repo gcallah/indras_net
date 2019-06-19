@@ -8,7 +8,7 @@ from indra.agent import Agent, switch
 from indra.env import Env
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.composite import Composite
-from indra.display_methods import BLACK, WHITE, BLUE
+from indra.display_methods import BLACK, WHITE
 
 X = 0
 Y = 1
@@ -92,7 +92,10 @@ def check_rule(left, middle, right):
     right_color = get_color(right_group)
     color_tuple = (left_color, middle_color, right_color)
     new_color = RULE30[color_tuple]  # Change to allow user to pick the rule
-    return new_color
+    if new_color == 0:
+        return False
+    else:
+        return True
 
 
 def wolfram_action(wolfram_env):
@@ -103,7 +106,7 @@ def wolfram_action(wolfram_env):
     if DEBUG:
         print("The current active row is at y =", active_row_y)
     active_row = wolfram_env.get_row_hood(active_row_y)
-    # next_row = wolfram_env.get_row_hood(active_row_y - 1)
+    next_row = wolfram_env.get_row_hood(active_row_y - 1)
     for i in range(1, len(active_row) - 1):
         curr_agent = active_row[i]
         left_agent = active_row[i - 1]
@@ -112,7 +115,10 @@ def wolfram_action(wolfram_env):
             print("curr_agent is at", curr_agent.get_pos(),
                   ", left_agent is at", left_agent.get_pos(),
                   ", and right_agent is at", right_agent.get_pos())
-        # new_color = check_rule(left_agent, curr_agent, right_agent)
+        changing_color = check_rule(left_agent, curr_agent, right_agent)
+        next_curr_agent = next_row[i]
+        if changing_color:
+            change_color(wolfram_env, next_curr_agent)
 
 
 def agent_action(agent):
@@ -130,7 +136,7 @@ def set_up():
     width = pa.get('grid_width', DEF_WIDTH)
     height = pa.get('grid_height', DEF_HEIGHT)
     black = Composite("black", {"color": BLACK})
-    white = Composite("blue", {"color": BLUE})
+    white = Composite("white", {"color": WHITE})
     groups.append(white)
     groups.append(black)
     for i in range(height * width):

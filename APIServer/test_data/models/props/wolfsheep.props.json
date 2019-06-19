@@ -1,0 +1,30 @@
+{
+  "grid_height": {
+    "val": 20,
+    "question": "What is the grid height?",
+    "atype": "INT",
+    "hival": 100,
+    "loval": 2
+  },
+  "grid_width": {
+    "val": 20,
+    "question": "What is the grid width?",
+    "atype": "INT",
+    "hival": 100,
+    "loval": 2
+  },
+  "num_sheep": {
+    "val": 20,
+    "question": "How many sheep do you want?",
+    "atype": "INT",
+    "hival": 100,
+    "loval": 1
+  },
+  "num_wolves": {
+    "val": 20,
+    "question": "How many wolves do you want?",
+    "atype": "INT",
+    "hival": 100,
+    "loval": 1
+  }
+}
