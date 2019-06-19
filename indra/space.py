@@ -15,7 +15,7 @@ MAX_HEIGHT = 200
 
 DEF_MAX_MOVE = 2
 
-DEBUG = False
+DEBUG = True
 DEBUG2 = False
 
 
@@ -260,20 +260,14 @@ class Space(Composite):
             return None
         else:
             lst = []
-            row = Composite("Row " + str(row_num))
-            for i in self.width:
-                neighbors_dict = {"neighbors": lst}
-                curr_agent = self.get_agent_at(i, row_num)
-                curr_agent_x = curr_agent.get_x()
-                for i in range(-1, 2):
-                    if not out_of_bounds(curr_agent_x + i, row_num + 1, 0, 0,
-                                         self.width, self.height):
-                        neighbors_dict["neighbors"].append(
-                            self.get_agent_at(curr_agent_x + i, row_num + 1))
-                curr_agent.neighbors = grp_from_nm_dict(
-                    "Row neighbors", neighbors_dict["neighbors"])
-                row += curr_agent
-            return row
+            agent_dict = {"neighbors": lst}
+            for x in range(self.width):
+                agent_dict["neighbors"].append(self.get_agent_at(x, row_num))
+            if DEBUG:
+                print("Agents in row", row_num)
+                for i in agent_dict["neighbors"]:
+                    print(i.get_pos())
+            return grp_from_nm_dict("Row neighbors", agent_dict["neighbors"])
 
     def get_moore_hood(self, agent):
         """
