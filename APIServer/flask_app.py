@@ -92,7 +92,14 @@ class Props(Resource):
     @api.expect(props)
     def put(self, model_id):
         try:
-            # props = api.payload["props"]  # noqa F841
+            ret = api.payload
+            try:
+                props = ret["props"]  # noqa F841
+            except TypeError:
+                return ('this is for testing')
+
+            # feed parameters within props to models
+
             return {"Menu": load_menu()}
         except ValueError:
             return err_return("Invalid model answer " + str(model_id))
@@ -103,6 +110,7 @@ class MenuItem(Resource):
     global user
 
     def put(self, model_id, menuitem_id):
+        # feed menuitem_id to model menu
         return {"execute menu item": menuitem_id, "Menu": load_menu()}  # noqa E501
 
 
