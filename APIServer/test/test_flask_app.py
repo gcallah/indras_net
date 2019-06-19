@@ -2,7 +2,6 @@ from unittest import TestCase, main
 from APIServer.flask_app import app, HelloWorld, Models, Props, ModelMenu, MenuItem, err_return, load_models, load_menu
 from flask_restplus import Resource, Api, fields
 import random
-# import json
 
 model_menu = [{"model ID": 0,
                "name": "Adam Smith's Fashion Model",
