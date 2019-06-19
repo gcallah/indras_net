@@ -4,8 +4,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 class ModelDetail extends Component {
-  api_server = 'https://indrasnet.pythonanywhere.com/';
-
+  api_server = 'https://indrasnet.pythonanywhere.com/models/props/';
   state = {
     msg: '',
     model_detail: {},
@@ -14,21 +13,21 @@ class ModelDetail extends Component {
 
   async componentDidMount() {
     this.setState({ loadingData: true });
-    document.title = "Title";
-    const res = await axios.get(this.api_server + 'models/props/' + this.props.id)
-    console.log("Getting from models/props/id -PROPS: ")
+    document.title = "Indra | Property";
+    console.log("This is props.id: ")
+    const {menu_id} = this.props.location.state
+    const res = await axios.get(this.api_server + menu_id.id)
+    console.log(res.data)
     this.setState({ model_detail: res.data });
-    console.log(this.state.model_detail)
     this.setState({ loadingData: false });
   }
 
   renderModelDetail= () => {
-      console.log("DEBUGGING in renderModelDetail")
       return (
         <div>
           <Card key={this.props.id}>
             <Link to={{
-              pathname: `/models/props/` + this.props.id,
+              pathname: `/models/props/` + this.props.location.state.id,
               state: {
                 msg: 'Linking the ModelDetail',
                 model_detail: this.state.model_detail
@@ -50,14 +49,11 @@ class ModelDetail extends Component {
       );
     }
 
-    console.log("This is in ModelDetail: ")
-    console.log(this.props.id)
-
     return (
       <div>
         <br />
+        <h1 style={{ "textAlign": "center" }}> List of properties </h1>
         <br /><br />
-        <p> List of properties </p>
         {this.state.model_detail && this.renderModelDetail()}
         <br /><br />
       </div>
