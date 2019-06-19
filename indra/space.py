@@ -15,7 +15,7 @@ MAX_HEIGHT = 200
 
 DEF_MAX_MOVE = 2
 
-DEBUG = True
+DEBUG = False
 DEBUG2 = False
 
 
@@ -263,10 +263,6 @@ class Space(Composite):
             agent_dict = {"neighbors": lst}
             for x in range(self.width):
                 agent_dict["neighbors"].append(self.get_agent_at(x, row_num))
-            if DEBUG:
-                print("Agents in row", row_num)
-                for i in agent_dict["neighbors"]:
-                    print(i.get_pos())
             return grp_from_nm_dict("Row neighbors", agent_dict["neighbors"])
 
     def get_moore_hood(self, agent):
@@ -275,24 +271,50 @@ class Space(Composite):
         """
         pass
 
+    def get_x_hood(self, agent, composite=False):
+        lst = []
+        agent_dict = {"x neighbors": lst}
+        agent_x = agent.get_x()
+        agent_y = agent.get_y()
+        neighbor_x_coords = [-1, 1]
+        for i in neighbor_x_coords:
+            neighbor_x = agent_x + i
+            if not out_of_bounds(neighbor_x, agent_y, 0, 0,
+                                 self.width, self.height):
+                agent_dict["x neighbors"].append(
+                    self.get_agent_at(neighbor_x, agent_y))
+        if (composite):
+            return grp_from_nm_dict("x neighbors", agent_dict["x neighbors"])
+        else:
+            return agent_dict
+
+    def get_y_hood(self, agent, composite=False):
+        lst = []
+        agent_dict = {"y neighbors": lst}
+        agent_x = agent.get_x()
+        agent_y = agent.get_y()
+        neighbor_y_coords = [-1, 1]
+        for i in neighbor_y_coords:
+            neighbor_y = agent_y + i
+            if not out_of_bounds(agent_x, neighbor_y, 0, 0,
+                                 self.width, self.height):
+                agent_dict["y neighbors"].append(
+                    self.get_agent_at(agent_x, neighbor_y))
+        if (composite):
+            return grp_from_nm_dict("y neighbors", agent_dict["y neighbors"])
+        else:
+            return agent_dict
+
     def get_vonneumann_hood(self, agent):
         """
         Takes in an agent and returns a Composite of its vonneuman neighbors
         """
+        x_neighbors = self.get_x_hood(agent)
+        y_neighbors = self.get_y_hood(agent)
         lst = []
         agent_dict = {"neighbors": lst}
-        dx = [0, 0, 1, -1]
-        dy = [-1, 1, 0, 0]
-        agent_x = agent.get_x()
-        agent_y = agent.get_y()
-        for i in range(len(dx)):
-            neighbor_x = agent_x + dx[i]
-            neighbor_y = agent_y + dy[i]
-            if not out_of_bounds(neighbor_x, neighbor_y, 0, 0,
-                                 self.width, self.height):
-                agent_dict["neighbors"].append(
-                    self.get_agent_at(neighbor_x, neighbor_y))
-        if DEBUG:
-            for i in agent_dict["neighbors"]:
-                print("Neighbor to agent located in", agent.pos, "is", i.pos)
+        for y in y_neighbors["y neighbors"]:
+            agent_dict["neighbors"].append(y)
+        for x in x_neighbors["x neighbors"]:
+            agent_dict["neighbors"].append(x)
         return grp_from_nm_dict("Vonneuman neighbors", agent_dict["neighbors"])
