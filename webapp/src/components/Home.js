@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import { Loader, Dimmer, Menu } from "semantic-ui-react";
+import { Loader, Dimmer, Menu, Card, CardHeader } from "semantic-ui-react";
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import ModelDetail from './ModelDetail';
 
 class Home extends Component {
   api_server = 'https://indrasnet.pythonanywhere.com/';
@@ -19,15 +20,25 @@ class Home extends Component {
     this.setState({ loadingData: false });
   }
 
+
   renderMenu = () => {
+    console.log("DEBUGGING")
     let items = this.state.allItems.map((item, id) => {
+      console.log("This is in renderMenu: ")
+      console.log(id)
+      console.log(item.name)
+      if (this.state.allItems && this.state.allItems.length) {
+        console.log("It's not empty")
+      }
       return (
-        <Menu.Item key={id}>
-          <Link to='/wip'>{item.name}</Link>
-        </Menu.Item>
+        <div>
+          <Card>
+            <Card.Header key={id} href={'/models/props/' + id}> <Link to='/modelDetail'> </Link> {item.name}</Card.Header>
+            <ModelDetail id={id} />
+          </Card>
+        </div>
       );
     });
-
     return <Menu vertical style={{
       maxHeight: '20em',
       maxwidth: '40em',
@@ -43,7 +54,6 @@ class Home extends Component {
         </Dimmer>
       );
     }
-
     return (
       <div>
         <br />
@@ -52,7 +62,6 @@ class Home extends Component {
 
         We have several models:
         {this.state.allItems && this.renderMenu()}
-
         <br /><br />
       </div>
     );
