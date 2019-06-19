@@ -132,7 +132,7 @@ def set_up():
     A func to set up run that can also be used by test code.
     """
     pa = PropArgs.create_props('basic_props',
-                               ds_file='props/basic.props.json')
+                               ds_file='props/wolfram.props.json')
     width = pa.get('grid_width', DEF_WIDTH)
     height = pa.get('grid_height', DEF_HEIGHT)
     black = Composite("black", {"color": BLACK})
