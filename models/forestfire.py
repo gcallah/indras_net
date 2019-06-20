@@ -99,15 +99,16 @@ def plant_tree(i, state=HE):
                  attrs={"state": state})
 
 
-def set_up():
+def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
     global on_fire
     global healthy
-
     ds_file = 'props/forestfire.props.json'
-    pa = PropArgs.create_props('forest_fire_props', ds_file=ds_file)
+    pa = props
+    if pa is None:
+        pa = PropArgs.create_props('forest_fire_props', ds_file=ds_file)
     forest_height = pa.get('grid_height', DEF_DIM)
     forest_width = pa.get('grid_width', DEF_DIM)
     forest_density = pa.get('density', DEF_DENSITY)

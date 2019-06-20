@@ -140,13 +140,15 @@ def create_sheep(i, pa):
                                                  SHEEP_REPRO_PERIOD)})
 
 
-def set_up():
+def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
     global pa
-    pa = PropArgs.create_props('wolfsheep_props',
-                               ds_file='props/wolfsheep.props.json')
+    pa = props
+    if pa is None:
+        pa = PropArgs.create_props('wolfsheep_props',
+                                   ds_file='props/wolfsheep.props.json')
     wolves = Composite(COMP_WOLF_NAME, {"color": TAN})
     for i in range(pa.get('num_wolves', NUM_WOLVES)):
         wolves += create_wolf(i, pa)

@@ -8,7 +8,7 @@ from indra.env import Env
 from indra.space import DEF_WIDTH
 from indra.composite import Composite
 from indra.display_methods import BLACK, WHITE
-
+import ast
 X = 0
 Y = 1
 
@@ -37,6 +37,22 @@ GRID_WIDTH = 30
 GRID_HEIGHT = 30
 
 groups = []
+
+template = {}
+
+rules = [
+    (B, B, B),
+    (B, B, W),
+    (B, W, B),
+    (B, W, W),
+    (W, B, B),
+    (W, B, W),
+    (W, W, B),
+    (W, W, W)
+]
+
+pa = PropArgs.create_props('basic_props',
+                           ds_file='props/wolfram.props.json')
 
 
 def create_agent(x, y):
@@ -78,6 +94,31 @@ def get_color(group):
         return 1
 
 
+def generate_wolfram_rules():
+    with open("wolfram_rules.txt", "w+") as f:
+        for i in range(256):
+            binary = bin(i + 256)[3:]
+            for j in range(len(binary)):
+                rule = str(rules[j])
+                template[rule] = int(binary[j])
+            f.write(str(template) + "\n")
+
+    print("256 rules are successfully generated")
+
+
+def read_wolfram_rules(file_name):
+    rules_sets = []
+    with open(file_name, "r") as f:
+        all_rules = f.readlines()
+        for i in all_rules:
+            rules_sets.append(ast.literal_eval(i))
+
+    return rules_sets
+
+
+generate_wolfram_rules()
+
+
 def check_rule(left, middle, right):
     """
     Takes in the current agent, the agent left and right to it,
@@ -91,7 +132,8 @@ def check_rule(left, middle, right):
     middle_color = get_color(middle_group)
     right_color = get_color(right_group)
     color_tuple = (left_color, middle_color, right_color)
-    new_color = RULE30[color_tuple]  # Change to allow user to pick the rule
+#    new_color = RULE30[color_tuple]  # Change to allow user to pick the rule
+    new_color = pa.get('rule_num', RULE30[color_tuple])
     if new_color == 0:
         return False
     else:
@@ -130,8 +172,7 @@ def set_up():
     """
     A func to set up run that can also be used by test code.
     """
-    pa = PropArgs.create_props('basic_props',
-                               ds_file='props/wolfram.props.json')
+
     width = pa.get('grid_width', DEF_WIDTH)
     height = 0
     if (width % 2 == 1):
