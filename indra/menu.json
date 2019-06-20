@@ -23,7 +23,7 @@
         {
             "val": 4,
             "func": "leave",
-            "question": "Quit)." 
+            "question": "Quit." 
         }
     ]
 }
