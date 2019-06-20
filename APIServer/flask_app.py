@@ -5,6 +5,9 @@ from flask import Flask
 from flask_restplus import Resource, Api, fields
 from flask_cors import CORS
 import json
+from models import basic
+from models import fashion, forestfire
+# from models import segregation, wolfram, wolfsheep, sandpile
 
 ERROR = "Error:"
 
@@ -95,9 +98,15 @@ class Props(Resource):
             ret = api.payload
             try:
                 props = ret["props"]  # noqa F841
+                if model_id == 5:
+                    basic.set_up(props)
+                elif model_id == 0:
+                    fashion.set_up(props)
+                elif model_id == 1:
+                    forestfire.set_up(props)
+
             except TypeError:
                 return ('this is for testing')
-            # feed parameters within props to models
             return {"Menu": load_menu()}
 
         except ValueError:
