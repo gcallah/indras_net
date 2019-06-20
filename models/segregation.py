@@ -99,12 +99,14 @@ def create_agent(i, mean_tol, dev, color):
                         COLOR: color})
 
 
-def set_up():
+def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    pa = PropArgs.create_props('basic_props',
-                               ds_file='props/segregation.props.json')
+    pa = props
+    if pa is None:
+        pa = PropArgs.create_props('basic_props',
+                                   ds_file='props/segregation.props.json')
     blue_agents = Composite(group_names[BLUE_TEAM] + " group", {"color": BLUE})
     red_agents = Composite(group_names[RED_TEAM] + " group", {"color": RED})
     for i in range(pa.get('num_red', NUM_RED)):

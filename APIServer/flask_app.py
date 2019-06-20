@@ -6,8 +6,8 @@ from flask_restplus import Resource, Api, fields
 from flask_cors import CORS
 import json
 from models import basic
-from models import fashion, forestfire
-# from models import segregation, wolfram, wolfsheep, sandpile
+from models import fashion, forestfire, sandpile
+from models import segregation, wolfsheep
 
 ERROR = "Error:"
 
@@ -104,11 +104,15 @@ class Props(Resource):
                     fashion.set_up(props)
                 elif model_id == 1:
                     forestfire.set_up(props)
-
+                elif model_id == 2:
+                    sandpile.set_up(props)
+                elif model_id == 3:
+                    segregation.set_up(props)
+                elif model_id == 4:
+                    wolfsheep.set_up(props)
             except TypeError:
                 return ('this is for testing')
             return {"Menu": load_menu()}
-
         except ValueError:
             return err_return("Invalid model answer " + str(model_id))
 
