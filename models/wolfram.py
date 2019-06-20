@@ -8,7 +8,7 @@ from indra.env import Env
 from indra.space import DEF_WIDTH
 from indra.composite import Composite
 from indra.display_methods import BLACK, WHITE
-
+import ast
 X = 0
 Y = 1
 
@@ -39,7 +39,7 @@ GRID_HEIGHT = 30
 groups = []
 
 template = {}
-    
+
 rules = [
     (B, B, B),
     (B, B, W),
@@ -50,6 +50,7 @@ rules = [
     (W, W, B),
     (W, W, W)
 ]
+
 
 def create_agent(x, y):
     """
@@ -89,9 +90,9 @@ def get_color(group):
     else:
         return 1
 
-    
+
 def generate_wolfram_rules():
-    with open("wolfram_rules.txt","w+") as f: 
+    with open("wolfram_rules.txt", "w+") as f:
         for i in range(256):
             binary = bin(i + 256)[3:]
             for j in range(len(binary)):
@@ -100,7 +101,8 @@ def generate_wolfram_rules():
             f.write(str(template) + "\n")
 
     print("256 rules are successfully generated")
-        
+
+
 def read_wolfram_rules(file_name):
     rules_sets = []
     with open(file_name, "r") as f:
@@ -109,11 +111,11 @@ def read_wolfram_rules(file_name):
             rules_sets.append(ast.literal_eval(i))
 
     return rules_sets
-    
+
+
 generate_wolfram_rules()
-   #print(read_wolfram_rules("wolfram_rules.txt"))
-   
-    
+
+
 def check_rule(left, middle, right):
     """
     Takes in the current agent, the agent left and right to it,
