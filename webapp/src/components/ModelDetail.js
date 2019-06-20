@@ -64,9 +64,9 @@ class ModelDetail extends Component {
         <form>
 		      {this.state.grid_height ? <label> {this.state.grid_height['question']} : <input type="int" defaultValue={this.state.grid_height['val']} onChange={this.handleChange} name='grid_height' /></label>
 			     : null}
-	        <br /><br/>
-          <label> {this.state.grid_width['question']} :</label>
-          <input type="int" defaultValue={this.state.grid_height['val']} name='grid_width' onChange={this.handleChange}/>
+	   <br /><br/>
+          {this.state.grid_width ? <label> {this.state.grid_width['question']} : <input type="int" defaultValue={this.state.grid_width['val']} name='grid_width' onChange={this.handleChange}/> </label> : null}
+          
           <br /><br/>
 
           {this.state.num_blue ? <label> {this.state.num_blue['question']} : <input type="int"      defaultValue={this.state.num_blue['val']} onChange={this.handleChange} name='num_blue' /></label>

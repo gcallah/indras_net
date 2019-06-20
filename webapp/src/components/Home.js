@@ -33,7 +33,7 @@ class Home extends Component {
     });
 
     return <Menu vertical style={{
-      maxHeight: '20em',
+      maxHeight: '30em',
       maxwidth: '40em',
       overflowY: 'scroll',
     }}>{items}</Menu>;
