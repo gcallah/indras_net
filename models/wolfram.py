@@ -14,7 +14,7 @@ X = 0
 Y = 1
 
 DEBUG = True  # Turns debugging code on or off
-DEBUG2 = False  # Turns deeper debugging code on or off
+DEBUG2 = True  # Turns deeper debugging code on or off
 
 # States
 B = 1
@@ -116,9 +116,9 @@ def wolfram_action(wolfram_env):
         left_agent = active_row[i - 1]
         right_agent = active_row[i + 1]
         if DEBUG2:
-            print("curr_agent is at", curr_agent.get_pos() +
-                  ", left_agent is at", left_agent.get_pos() +
-                  ", and right_agent is at", right_agent.get_pos())
+            print("curr_agent is at", curr_agent.get_pos()
+                  + ", left_agent is at", left_agent.get_pos()
+                  + ", and right_agent is at", right_agent.get_pos())
         changing_color = check_rule(left_agent, curr_agent, right_agent)
         next_curr_agent = next_row[i]
         if changing_color:
@@ -138,14 +138,16 @@ def set_up():
                                ds_file='props/wolfram.props.json')
     width = pa.get('grid_width', DEF_WIDTH)
     height = pa.get('grid_height', DEF_HEIGHT)
-    #height = (width // 2) + 1
+    # if (width % 2 == 1):
+    #     height = (width // 2) + 1
+    # else:
+    #     height = (width // 2)
     black = Composite("black", {"color": BLACK})
     white = Composite("white", {"color": WHITE})
     groups.append(white)
     groups.append(black)
     for y in range(height):
         for x in range(width):
-            i += 1
             groups[0] += create_agent(x, y)
     wolfram_env = Env("wolfram env",
                       action=wolfram_action,
