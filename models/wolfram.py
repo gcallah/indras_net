@@ -51,6 +51,9 @@ rules = [
     (W, W, W)
 ]
 
+pa = PropArgs.create_props('basic_props',
+                           ds_file='props/wolfram.props.json')
+
 
 def create_agent(x, y):
     """
@@ -129,7 +132,8 @@ def check_rule(left, middle, right):
     middle_color = get_color(middle_group)
     right_color = get_color(right_group)
     color_tuple = (left_color, middle_color, right_color)
-    new_color = RULE30[color_tuple]  # Change to allow user to pick the rule
+#    new_color = RULE30[color_tuple]  # Change to allow user to pick the rule
+    new_color = pa.get('rule_num', RULE30[color_tuple])
     if new_color == 0:
         return False
     else:
@@ -168,8 +172,7 @@ def set_up():
     """
     A func to set up run that can also be used by test code.
     """
-    pa = PropArgs.create_props('basic_props',
-                               ds_file='props/wolfram.props.json')
+
     width = pa.get('grid_width', DEF_WIDTH)
     height = 0
     if (width % 2 == 1):
