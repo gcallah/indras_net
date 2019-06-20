@@ -104,7 +104,7 @@ class Space(Composite):
                 else:  # place composite's members
                     self.rand_place_members(mbr.members, max_move)
 
-    def consec_place_members(self, members, curr_row=0, curr_col=0):
+    def consec_place_members(self, members, curr_col=0, curr_row=0):
         """
         Locate all members of this space in x, y grid.
         Place members consecutively, starting from (0, 0) and
@@ -113,20 +113,20 @@ class Space(Composite):
         if members is not None:
             for nm, mbr in members.items():
                 if not is_composite(mbr):
-                    if DEBUG:
-                        print("Placing member at (", curr_row, ",",
-                              curr_col, ")")
-                    self.place_member(mbr, xy=(curr_row, curr_col))
-                    if (curr_row == self.width - 1):
-                        curr_row = 0
+                    if (curr_col < self.width):
+                        self.place_member(mbr, xy=(curr_col, curr_row))
+                        if DEBUG:
+                            print("Placing member at (" + str(curr_col) + ","
+                                  + str(curr_row) + ")")
                         curr_col += 1
-                    elif (curr_row == self.height - 1):
+                    if (curr_col == self.width):
+                        if DEBUG:
+                            print("Moving up a row from", curr_row,
+                                  "to", curr_row + 1)
                         curr_col = 0
                         curr_row += 1
-                    else:
-                        curr_row += 1
                 else:  # place composite's members
-                    self.consec_place_members(mbr.members, curr_row, curr_col)
+                    self.consec_place_members(mbr.members, curr_col, curr_row)
 
     def rand_x(self, low=0, high=None):
         """

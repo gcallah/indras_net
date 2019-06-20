@@ -1,12 +1,11 @@
 """
-
 """
 
 from propargs.propargs import PropArgs
 
 from indra.agent import Agent, switch
 from indra.env import Env
-from indra.space import DEF_HEIGHT, DEF_WIDTH
+from indra.space import DEF_WIDTH
 from indra.composite import Composite
 from indra.display_methods import BLACK, WHITE
 
@@ -14,7 +13,7 @@ X = 0
 Y = 1
 
 DEBUG = True  # Turns debugging code on or off
-DEBUG2 = True  # Turns deeper debugging code on or off
+DEBUG2 = False  # Turns deeper debugging code on or off
 
 # States
 B = 1
@@ -45,10 +44,7 @@ def create_agent(x, y):
     Create an agent with the passed in name
     """
     name = "(" + str(x) + "," + str(y) + ")"
-    agent = Agent(name, action=agent_action)
-    if DEBUG2:
-        print(agent.name)
-    return agent
+    return Agent(name=name, action=agent_action)
 
 
 def change_color(wolfram_env, agent):
@@ -107,7 +103,7 @@ def wolfram_action(wolfram_env):
     The action that will be taken every period
     """
     active_row_y = get_active_row(wolfram_env)
-    if DEBUG2:
+    if DEBUG:
         print("The current active row is at y =", active_row_y)
     active_row = wolfram_env.get_row_hood(active_row_y)
     next_row = wolfram_env.get_row_hood(active_row_y - 1)
@@ -116,9 +112,9 @@ def wolfram_action(wolfram_env):
         left_agent = active_row[i - 1]
         right_agent = active_row[i + 1]
         if DEBUG2:
-            print("curr_agent is at", curr_agent.get_pos()
-                  + ", left_agent is at", left_agent.get_pos()
-                  + ", and right_agent is at", right_agent.get_pos())
+            print("curr_agent is at", curr_agent.get_pos(),
+                  ", left_agent is at", left_agent.get_pos(),
+                  ", and right_agent is at", right_agent.get_pos())
         changing_color = check_rule(left_agent, curr_agent, right_agent)
         next_curr_agent = next_row[i]
         if changing_color:
@@ -127,7 +123,7 @@ def wolfram_action(wolfram_env):
 
 def agent_action(agent):
     if DEBUG:
-        print("Agent located at", agent.name, "is acting")
+        print("Agent located at " + agent.name + " is acting")
 
 
 def set_up():
@@ -137,11 +133,11 @@ def set_up():
     pa = PropArgs.create_props('basic_props',
                                ds_file='props/wolfram.props.json')
     width = pa.get('grid_width', DEF_WIDTH)
-    height = pa.get('grid_height', DEF_HEIGHT)
-    # if (width % 2 == 1):
-    #     height = (width // 2) + 1
-    # else:
-    #     height = (width // 2)
+    height = 0
+    if (width % 2 == 1):
+        height = (width // 2) + 1
+    else:
+        height = (width // 2)
     black = Composite("black", {"color": BLACK})
     white = Composite("white", {"color": WHITE})
     groups.append(white)
@@ -155,7 +151,7 @@ def set_up():
                       width=width,
                       members=groups,
                       random_placing=False)
-    first_agent = wolfram_env.get_agent_at(height // 2, width - 1)
+    first_agent = wolfram_env.get_agent_at(width // 2, height - 1)
     change_color(wolfram_env, first_agent)
     return (groups, wolfram_env)
 
