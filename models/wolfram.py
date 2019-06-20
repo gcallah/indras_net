@@ -34,17 +34,21 @@ RULE30 = {
     (W, W, W): W
 }
 
-GRID_WIDTH = 31
-GRID_HEIGHT = 31
+GRID_WIDTH = 30
+GRID_HEIGHT = 30
 
 groups = []
 
 
-def create_agent(name):
+def create_agent(x, y):
     """
     Create an agent with the passed in name
     """
-    return Agent(str(name), action=agent_action)
+    name = "(" + str(x) + "," + str(y) + ")"
+    agent = Agent(name, action=agent_action)
+    if DEBUG2:
+        print(agent.name)
+    return agent
 
 
 def change_color(wolfram_env, agent):
@@ -103,7 +107,7 @@ def wolfram_action(wolfram_env):
     The action that will be taken every period
     """
     active_row_y = get_active_row(wolfram_env)
-    if DEBUG:
+    if DEBUG2:
         print("The current active row is at y =", active_row_y)
     active_row = wolfram_env.get_row_hood(active_row_y)
     next_row = wolfram_env.get_row_hood(active_row_y - 1)
@@ -112,8 +116,8 @@ def wolfram_action(wolfram_env):
         left_agent = active_row[i - 1]
         right_agent = active_row[i + 1]
         if DEBUG2:
-            print("curr_agent is at", curr_agent.get_pos(),
-                  ", left_agent is at", left_agent.get_pos(),
+            print("curr_agent is at", curr_agent.get_pos() +
+                  ", left_agent is at", left_agent.get_pos() +
                   ", and right_agent is at", right_agent.get_pos())
         changing_color = check_rule(left_agent, curr_agent, right_agent)
         next_curr_agent = next_row[i]
@@ -122,9 +126,8 @@ def wolfram_action(wolfram_env):
 
 
 def agent_action(agent):
-    print("I'm " + agent.name + " and I'm acting.")
-    # Returning false means to move
-    return False
+    if DEBUG:
+        print("Agent located at", agent.name, "is acting")
 
 
 def set_up():
@@ -135,12 +138,15 @@ def set_up():
                                ds_file='props/wolfram.props.json')
     width = pa.get('grid_width', DEF_WIDTH)
     height = pa.get('grid_height', DEF_HEIGHT)
+    #height = (width // 2) + 1
     black = Composite("black", {"color": BLACK})
     white = Composite("white", {"color": WHITE})
     groups.append(white)
     groups.append(black)
-    for i in range(height * width):
-        groups[0] += create_agent(i)
+    for y in range(height):
+        for x in range(width):
+            i += 1
+            groups[0] += create_agent(x, y)
     wolfram_env = Env("wolfram env",
                       action=wolfram_action,
                       height=height,
