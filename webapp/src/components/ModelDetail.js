@@ -12,6 +12,7 @@ class ModelDetail extends Component {
       model_detail: {},
       grid_height: {},
       grid_width: {},
+      num_blue: {},
       loadingData: false,
     }
     this.handleChange = this.handleChange.bind(this);
@@ -24,7 +25,8 @@ class ModelDetail extends Component {
     const res = await axios.get(this.api_server + menu_id.id)
     this.setState({ model_detail: res.data });
     this.setState({grid_height: res.data['grid_height']});
-    this.setState({grid_width: res.data['grid_width']})
+    this.setState({grid_width: res.data['grid_width']});
+    this.setState({num_blue: res.data['num_blue']});
     this.setState({ loadingData: false });
   }
   
@@ -37,11 +39,6 @@ class ModelDetail extends Component {
     this.setState({
       [event.target.name] : newVar
     }) 
-    console.log(this.state.grid_height);
-    console.log(this.state.grid_height['val']);
-
-    console.log(this.state.grid_width);
-    console.log(this.state.grid_width['val']);
   }
 
   handleSubmit(event) {
@@ -65,12 +62,15 @@ class ModelDetail extends Component {
         <h1 style={{ "textAlign": "left" }}> List of properties </h1>
         <br /><br />
         <form>
-		      <label> {this.state.grid_height['question']} :</label>
-			    <input type="int" defaultValue={this.state.grid_height['val']} name='grid_height' onChange={this.handleChange}/>
+		      {this.state.grid_height ? <label> {this.state.grid_height['question']} : <input type="int" defaultValue={this.state.grid_height['val']} onChange={this.handleChange} name='grid_height' /></label>
+			     : null}
 	        <br /><br/>
           <label> {this.state.grid_width['question']} :</label>
           <input type="int" defaultValue={this.state.grid_height['val']} name='grid_width' onChange={this.handleChange}/>
           <br /><br/>
+
+          {this.state.num_blue ? <label> {this.state.num_blue['question']} : <input type="int"      defaultValue={this.state.num_blue['val']} onChange={this.handleChange} name='num_blue' /></label>
+			     : null}
         </form>
         <br /><br />
       </div>
