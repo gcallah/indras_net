@@ -97,10 +97,9 @@ class Props(Resource):
                 props = ret["props"]  # noqa F841
             except TypeError:
                 return ('this is for testing')
-
             # feed parameters within props to models
-
             return {"Menu": load_menu()}
+
         except ValueError:
             return err_return("Invalid model answer " + str(model_id))
 
