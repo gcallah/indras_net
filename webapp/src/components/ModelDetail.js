@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Loader, Card, Dimmer } from "semantic-ui-react";
+import { Loader, Dimmer } from "semantic-ui-react";
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
@@ -8,38 +8,27 @@ class ModelDetail extends Component {
   state = {
     msg: '',
     model_detail: {},
+    grid_height: {},
+    grid_width: {},
     loadingData: false,
   }
 
   async componentDidMount() {
     this.setState({ loadingData: true });
     document.title = "Indra | Property";
-    console.log("This is props.id: ")
     const {menu_id} = this.props.location.state
     const res = await axios.get(this.api_server + menu_id.id)
-    console.log(res.data)
     this.setState({ model_detail: res.data });
+    this.setState({grid_height: res.data['grid_height']});
+    this.setState({grid_width: res.data['grid_width']})
     this.setState({ loadingData: false });
+    console.log(this.state.grid_height['val']);
   }
-
-  renderModelDetail= () => {
-      return (
-        <div>
-          <Card key={this.props.id}>
-            <Link to={{
-              pathname: `/models/props/` + this.props.location.state.id,
-              state: {
-                msg: 'Linking the ModelDetail',
-                model_detail: this.state.model_detail
-              }
-            }}>
-            </Link>
-          </Card>
-        </div>
-      );
-    return <Card.Content>{this.state.model_detail}</Card.Content>;
+   handleChange = (event) => {
+   //this.setState({ [target['val']]: target.value });
+   this.setState({grid_height: event.target.value});
+   console.log(this.state.grid_height['val']);
   }
-
   render() {
     if (this.state.loadingData) {
       return (
@@ -48,13 +37,18 @@ class ModelDetail extends Component {
         </Dimmer>
       );
     }
-
     return (
       <div>
         <br />
-        <h1 style={{ "textAlign": "center" }}> List of properties </h1>
+        <br />
+        <h1 style={{ "textAlign": "center" }}>Welcome to the Indra ABM platform!</h1>
+        <h1 style={{ "textAlign": "left" }}> List of properties </h1>
         <br /><br />
-        {this.state.model_detail && this.renderModelDetail()}
+        <form>
+		<label>Grid Height :</label>
+			<input type="int" defaultValue={this.state.grid_height['val']} onChange={this.updateState}/>
+	        <br /><br/>
+        </form>
         <br /><br />
       </div>
     );
