@@ -9,10 +9,11 @@ from indra.space import DEF_WIDTH
 from indra.composite import Composite
 from indra.display_methods import BLACK, WHITE
 import ast
+
 X = 0
 Y = 1
 
-DEBUG = True  # Turns debugging code on or off
+DEBUG = False  # Turns debugging code on or off
 DEBUG2 = False  # Turns deeper debugging code on or off
 
 # States
@@ -88,35 +89,30 @@ def get_active_row(wolfram_env):
 
 
 def get_color(group):
+    """
+    Returns 0 or 1, 0 for white and 1 for black
+    when passed in a group
+    """
     if group == groups[0]:
         return 0
     else:
         return 1
 
 
-def generate_wolfram_rules():
-    with open("wolfram_rules.txt", "w+") as f:
-        for i in range(256):
-            binary = bin(i + 256)[3:]
-            for j in range(len(binary)):
-                rule = str(rules[j])
-                template[rule] = int(binary[j])
-            f.write(str(template) + "\n")
-
-    print("256 rules are successfully generated")
-
-
-def read_wolfram_rules(file_name):
-    rules_sets = []
-    with open(file_name, "r") as f:
-        all_rules = f.readlines()
-        for i in all_rules:
-            rules_sets.append(ast.literal_eval(i))
-
-    return rules_sets
-
-
-generate_wolfram_rules()
+def get_rule(rule_num):
+    """
+    Takes in an int for the rule_num
+    and returns a dictionary that contains those rules
+    read from a master texte file that contains all 256 rules
+    """
+    rule_txt = ""
+    with open("wolfram_rules.txt") as rule_line:
+        for i, line in enumerate(rule_line):
+            if i == rule_num:
+                rule_txt = line
+                break
+                break
+    return ast.literal_eval(rule_txt)
 
 
 def check_rule(left, middle, right):
@@ -132,8 +128,9 @@ def check_rule(left, middle, right):
     middle_color = get_color(middle_group)
     right_color = get_color(right_group)
     color_tuple = (left_color, middle_color, right_color)
-#    new_color = RULE30[color_tuple]  # Change to allow user to pick the rule
-    new_color = pa.get('rule_num', RULE30[color_tuple])
+    rule_num = pa.get('rule_number', RULE30[color_tuple])
+    rule_dict = get_rule(rule_num)
+    new_color = rule_dict[str(color_tuple)]
     if new_color == 0:
         return False
     else:

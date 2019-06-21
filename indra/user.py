@@ -96,6 +96,9 @@ class User(Agent):
         super().__init__(name, **kwargs)
         self.env = env  # this class needs this all the time, we think
 
+    def error(user, error_type):
+        user.tell(error_type)
+
 
 class TermUser(User):
     """
