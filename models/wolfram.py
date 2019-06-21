@@ -1,4 +1,5 @@
 """
+Wolfram's cellular automata model
 """
 
 from propargs.propargs import PropArgs
@@ -10,11 +11,7 @@ from indra.composite import Composite
 from indra.display_methods import BLACK, WHITE
 import ast
 
-X = 0
-Y = 1
-
 DEBUG = False  # Turns debugging code on or off
-DEBUG2 = False  # Turns deeper debugging code on or off
 
 # States
 B = 1
@@ -39,26 +36,13 @@ GRID_HEIGHT = 30
 
 groups = []
 
-template = {}
-
-rules = [
-    (B, B, B),
-    (B, B, W),
-    (B, W, B),
-    (B, W, W),
-    (W, B, B),
-    (W, B, W),
-    (W, W, B),
-    (W, W, W)
-]
-
 pa = PropArgs.create_props('basic_props',
                            ds_file='props/wolfram.props.json')
 
 
 def create_agent(x, y):
     """
-    Create an agent with the passed in name
+    Create an agent with the passed x, y value as its name.
     """
     name = "(" + str(x) + "," + str(y) + ")"
     return Agent(name=name, action=agent_action)
@@ -66,7 +50,7 @@ def create_agent(x, y):
 
 def change_color(wolfram_env, agent):
     """
-    Automatically change color from one group to the other
+    Automatically change color from one to the other.
     """
     curr_group = agent.primary_group()
     next_group = groups[0]
@@ -78,7 +62,7 @@ def change_color(wolfram_env, agent):
 def get_active_row(wolfram_env):
     """
     Returns an int of the current row, which is the bottom most row with
-    an alive agent
+    an alive agent.
     """
     for y in range(0, wolfram_env.height):
         row_to_check = wolfram_env.get_row_hood(y)
@@ -91,7 +75,7 @@ def get_active_row(wolfram_env):
 def get_color(group):
     """
     Returns 0 or 1, 0 for white and 1 for black
-    when passed in a group
+    when passed in a group.
     """
     if group == groups[0]:
         return 0
@@ -103,30 +87,28 @@ def get_rule(rule_num):
     """
     Takes in an int for the rule_num
     and returns a dictionary that contains those rules
-    read from a master texte file that contains all 256 rules
+    read from a master texte file that contains all 256 rules.
     """
-    rule_txt = ""
+    rule_str = ""
     with open("wolfram_rules.txt") as rule_line:
         for i, line in enumerate(rule_line):
             if i == rule_num:
-                rule_txt = line
+                rule_str = line
                 break
                 break
-    return ast.literal_eval(rule_txt)
+    return ast.literal_eval(rule_str)
 
 
 def check_rule(left, middle, right):
     """
-    Takes in the current agent, the agent left and right to it,
+    Takes in the current agent, the agent to its left and right,
     and returns the color that the current agent needs to change to
-    in the next row based on the given rule
+    in the next row based on the rule picked by the user.
+    Default rule is rule 30.
     """
-    left_group = left.primary_group()
-    middle_group = middle.primary_group()
-    right_group = right.primary_group()
-    left_color = get_color(left_group)
-    middle_color = get_color(middle_group)
-    right_color = get_color(right_group)
+    left_color = get_color(left.primary_group())
+    middle_color = get_color(middle.primary_group())
+    right_color = get_color(right.primary_group())
     color_tuple = (left_color, middle_color, right_color)
     rule_num = pa.get('rule_number', RULE30[color_tuple])
     rule_dict = get_rule(rule_num)
@@ -139,7 +121,7 @@ def check_rule(left, middle, right):
 
 def wolfram_action(wolfram_env):
     """
-    The action that will be taken every period
+    The action that will be taken every period.
     """
     active_row_y = get_active_row(wolfram_env)
     if DEBUG:
@@ -150,7 +132,7 @@ def wolfram_action(wolfram_env):
         curr_agent = active_row[i]
         left_agent = active_row[i - 1]
         right_agent = active_row[i + 1]
-        if DEBUG2:
+        if DEBUG:
             print("curr_agent is at", curr_agent.get_pos(),
                   ", left_agent is at", left_agent.get_pos(),
                   ", and right_agent is at", right_agent.get_pos())
