@@ -14,7 +14,7 @@ SMALL_GRID = 4
 class SandpileTestCase(TestCase):
     def setUp(self):
         set_up()
-        self.test_agent = create_agent(TEST_ANUM)
+        self.test_agent = create_agent(TEST_ANUM, TEST_ANUM)
         pass
 
     def tearDown(self):
@@ -22,8 +22,9 @@ class SandpileTestCase(TestCase):
         pass
 
     def test_create_agent(self):
-        agent = create_agent(TEST_ANUM)
-        self.assertEqual(agent.name, SAND_PREFIX + str(TEST_ANUM))
+        agent = create_agent(TEST_ANUM, TEST_ANUM)
+        test_name = "(" + str(TEST_ANUM) + "," + str(TEST_ANUM) + ")"
+        self.assertEqual(agent.name, test_name)
 
     def test_next_group(self):
         """
