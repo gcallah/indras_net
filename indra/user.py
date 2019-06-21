@@ -110,6 +110,8 @@ class TermUser(User):
         self.menu = get_menu_json()
         self.menu_title = "Menu of Actions"
         self.stars = "*" * len(self.menu_title)
+        self.all_menu = True
+        self.to_exclude = []
 
     def tell(self, msg, end='\n'):
         """
@@ -146,6 +148,10 @@ class TermUser(User):
         except ValueError:
             return False
 
+    def exclude_choices(self, to_exclude):
+        self.all_menu = False
+        self.to_exclude = to_exclude
+
     def __call__(self):
         print('\n'
               + self.stars
@@ -153,9 +159,13 @@ class TermUser(User):
               + self.menu_title
               + '\n'
               + self.stars)
-        for item in self.menu:
-            print(item["id"], ". ", item["question"])
-
+        if self.all_menu:
+            for item in self.menu:
+                print(str(item["id"]) + ". ", item["question"])
+        else:
+            for item in self.menu:
+                if item["func"] not in self.to_exclude:
+                    print(str(item["id"]) + ". ", item["question"])
         self.tell("Please choose a number from the menu above:")
         c = input()
         if not c or c.isspace():
@@ -166,7 +176,6 @@ class TermUser(User):
                 for item in self.menu:
                     if item["id"] == choice:
                         return menu_functions[item["func"]](self)
-
             self.tell("ERROR: " + str(c)
                       + " is an invalid option. "
                       + "Please enter a valid option.")
