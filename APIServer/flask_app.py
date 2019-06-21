@@ -69,14 +69,6 @@ props = api.model("props", {
 })
 
 
-@api.route("/models/menu/<int:model_id>/")
-class ModelMenu(Resource):
-    global user
-
-    def get(self, model_id):
-        return user()
-
-
 @api.route('/models/props/<int:model_id>')
 class Props(Resource):
     global indra_dir
@@ -117,13 +109,24 @@ class Props(Resource):
             return err_return("Invalid model answer " + str(model_id))
 
 
-@api.route("/models/menu/<int:model_id>/<int:menuitem_id>")
+@api.route("/models/menu/<int:model_id>/")
+class ModelMenu(Resource):
+    global user
+
+    def get(self, model_id):
+        return user()
+
+
+@api.route("/models/menu/<int:model_id>/<int:menu_id>")
 class MenuItem(Resource):
     global user
 
-    def put(self, model_id, menuitem_id):
-        # feed menuitem_id to model menu
-        return {"execute menu item": menuitem_id, "Menu": load_menu()}  # noqa E501
+    def put(self, menu_id):
+        if menu_id >= 0 and menu_id < 6 and (type(menu_id) is int):
+            return user(menu_id)
+        else:
+            return err_return("Invalid menu id " + str(menu_id))
+        # return {"execute menu item": menuitem_id, "Menu": load_menu()}  # noqa E501
 
 
 if __name__ == "__main__":

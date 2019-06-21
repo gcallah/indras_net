@@ -213,5 +213,10 @@ class APIUser(TermUser):
         # Some json thing
         pass
 
-    def __call__(self):
-        return get_menu_json()
+    def __call__(self, menuid=None):
+        menu_id = menuid
+        menu = get_menu_json()
+        if menu_id is None:
+            return menu
+        else:
+            return menu_functions[menu[menu_id]["func"]](self)
