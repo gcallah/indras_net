@@ -105,7 +105,7 @@ def set_up():
     A func to set up run that can also be used by test code.
     """
     pa = PropArgs.create_props('sandpile_props',
-                                ds_file='props/sandpile.props.json')
+                               ds_file='props/sandpile.props.json')
     width = pa.get('grid_width', DEF_WIDTH)
     height = pa.get('grid_height', DEF_HEIGHT)
     for i in range(NUM_GROUPS):
@@ -115,11 +115,11 @@ def set_up():
         for x in range(width):
             groups[0] += create_agent(x, y)
     sandpile = Env("A sandpile",
-                    action=sandpile_action,
-                    members=groups,
-                    height=height,
-                    width=width,
-                    random_placing=False)
+                   action=sandpile_action,
+                   members=groups,
+                   height=height,
+                   width=width,
+                   random_placing=False)
     sandpile.attrs["center_agent"] = sandpile.get_agent_at(height // 2,
                                                            width // 2)
 
