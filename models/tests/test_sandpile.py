@@ -21,9 +21,10 @@ class SandpileTestCase(TestCase):
         self.test_agent = None
         pass
 
-    # def test_create_agent(self):
-    #     agent = create_agent(TEST_ANUM, TEST_ANUM)
-    #     self.assertEqual(agent.name, str((TEST_ANUM, TEST_ANUM)))
+    def test_create_agent(self):
+        agent = create_agent(TEST_ANUM, TEST_ANUM)
+        test_name = "(" + str(TEST_ANUM) + "," + str(TEST_ANUM) + ")"
+        self.assertEqual(agent.name, test_name)
 
     def test_next_group(self):
         """
