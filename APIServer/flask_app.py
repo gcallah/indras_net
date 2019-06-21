@@ -122,7 +122,8 @@ class MenuItem(Resource):
     global user
 
     def put(self, menu_id):
-        if menu_id >= 0 and menu_id < 6 and (type(menu_id) is int):
+        if 0 <= menu_id < 6 and (type(menu_id) is int):
+            user.tell("execute menu item" + menu_id + "Menu" + load_menu())
             return user(menu_id)
         else:
             return err_return("Invalid menu id " + str(menu_id))
