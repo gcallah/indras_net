@@ -11,7 +11,6 @@ from indra.env import Env
 
 
 DEBUG = False  # turns debugging code on or off
-DEBUG2 = False  # turns deeper debugging code on or off
 
 DEF_HEIGHT = 10
 DEF_WIDTH = 10
@@ -28,11 +27,12 @@ groups = []
 group_indices = {}
 
 
-def topple(sandpile, agent):
-    if DEBUG:
-        print("Sandpile in", agent.pos, "is toppling")
-    for neighbor in agent.neighbors:
-        add_grain(sandpile, neighbor)
+def create_agent(x, y):
+    """
+    Create an agent with the passed x, y value as its name.
+    """
+    name = "(" + str(x) + "," + str(y) + ")"
+    return Agent(name=name, action=place_action)
 
 
 def get_curr_group_idx(agent):
@@ -75,6 +75,13 @@ def add_grain(sandpile, agent):
         topple(sandpile, agent)
 
 
+def topple(sandpile, agent):
+    if DEBUG:
+        print("Sandpile in", agent.pos, "is toppling")
+    for neighbor in agent.neighbors:
+        add_grain(sandpile, neighbor)
+
+
 def sandpile_action(sandpile):
     """
     Drop a grain on the center agent.
@@ -93,32 +100,26 @@ def place_action(agent):
         agent.neighbors = neighbors
 
 
-def create_agent(i):
-    """
-    Creates agent for holding sand.
-    """
-    return Agent(SAND_PREFIX + str(i), action=place_action)
-
-
-def set_up(props=None):
+def set_up():
     """
     A func to set up run that can also be used by test code.
     """
-    pa = props
-    if pa is None:
-        pa = PropArgs.create_props('sandpile_props',
-                                   ds_file='props/sandpile.props.json')
+    pa = PropArgs.create_props('sandpile_props',
+                                ds_file='props/sandpile.props.json')
     width = pa.get('grid_width', DEF_WIDTH)
     height = pa.get('grid_height', DEF_HEIGHT)
     for i in range(NUM_GROUPS):
         groups.append(Composite("Group" + str(i)))
         group_indices[groups[i].name] = i
-
-    for i in range(height * width):
-        groups[0] += create_agent(i)
-
-    sandpile = Env("A sandpile", action=sandpile_action, members=groups,
-                   height=height, width=width, random_placing=False)
+    for y in range(height):
+        for x in range(width):
+            groups[0] += create_agent(x, y)
+    sandpile = Env("A sandpile",
+                    action=sandpile_action,
+                    members=groups,
+                    height=height,
+                    width=width,
+                    random_placing=False)
     sandpile.attrs["center_agent"] = sandpile.get_agent_at(height // 2,
                                                            width // 2)
 
@@ -129,10 +130,6 @@ def main():
     global sandpile
     global groups
     (groups, group_indices, sandpile) = set_up()
-
-    if DEBUG2:
-        print(sandpile.__repr__())
-
     sandpile()
     return 0
 
