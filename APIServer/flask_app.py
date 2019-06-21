@@ -5,9 +5,8 @@ from flask import Flask
 from flask_restplus import Resource, Api, fields
 from flask_cors import CORS
 import json
-from models import basic
-from models import fashion, forestfire, sandpile
-from models import segregation, wolfsheep
+from models.run_dict import setup_dict
+
 
 ERROR = "Error:"
 
@@ -90,18 +89,7 @@ class Props(Resource):
             ret = api.payload
             try:
                 props = ret["props"]  # noqa F841
-                if model_id == 5:
-                    basic.set_up(props)
-                elif model_id == 0:
-                    fashion.set_up(props)
-                elif model_id == 1:
-                    forestfire.set_up(props)
-                elif model_id == 2:
-                    sandpile.set_up(props)
-                elif model_id == 3:
-                    segregation.set_up(props)
-                elif model_id == 4:
-                    wolfsheep.set_up(props)
+                setup_dict[model_id["run"]](props)
             except TypeError:
                 return ('this is for testing')
             return {"Menu": load_menu()}
