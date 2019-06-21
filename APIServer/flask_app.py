@@ -117,11 +117,11 @@ class ModelMenu(Resource):
         return user()
 
 
-@api.route("/models/menu/<int:model_id>/<int:menuitem_id>")
+@api.route("/models/menu/<int:model_id>/<int:menu_id>")
 class MenuItem(Resource):
     global user
 
-    def put(self, model_id, menu_id):
+    def put(self, menu_id):
         if menu_id >= 0 and menu_id < 6 and (type(menu_id) is int):
             return user(menu_id)
         else:
