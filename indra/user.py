@@ -132,26 +132,42 @@ class TermUser(User):
         """
         return self.user.tell(msg, end)
 
+    # def exclude_choices(self, excluded_choices):
+    #     for i in excluded_choices:
+
+    def is_number(self, c):
+        try:
+            int(c)
+            return True
+        except ValueError:
+            return False
+
     def __call__(self):
         DEFAULT_CHOICE = '0'
         menu = get_menu_json()
-        menu_title = "Displaying the menu"
-        stars = "*" * len(menu_title)
-        self.tell("What would you like to do?")
-        print("\n",
-              stars, "\n",
-              menu_title, "\n",
-              stars)
+        menu_title = "Please pick from the menu below\n"
+        stars = "*" * len(menu_title) + "\n"
+        self.tell("\nWhat would you like to do?")
+        print(stars
+              + menu_title
+              + stars)
         for choice, menu_item in enumerate(menu):
             print(str(choice) + ". ", menu_item["question"])
         c = input()
         if not c or c.isspace():
             c = DEFAULT_CHOICE
-        choice = int(c)
-        if choice >= 0 and choice < len(menu):
-            return menu_functions[menu[choice]["func"]](self)
+        if self.is_number(c):
+            choice = int(c)
+            if choice >= 0 and choice < len(menu) and (type(choice) is int):
+                return menu_functions[menu[choice]["func"]](self)
+            else:
+                self.tell("ERROR: " + str(c)
+                          + " is an invalid option."
+                          + "\nPlease enter a valid option.")
         else:
-            self.user.tell("Invalid Option")
+            self.tell("ERROR: " + str(c)
+                      + " is an invalid option."
+                      + "\nPlease enter a valid option.")
 
 
 class TestUser(TermUser):
