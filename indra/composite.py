@@ -282,6 +282,6 @@ class Composite(Agent):
 
     def get_color(self):
         if "color" in self.attrs:
-            return self.val_vect[self.attrs["color"]]
+            return self.attrs["color"]
         else:
             return None

@@ -157,37 +157,6 @@ class AgentTestCase(TestCase):
             s += attr
         self.assertEqual(s, "placetime")
 
-    def test_reversed(self):
-        l1 = create_leibniz()
-        s = ''
-        for attr in reversed(l1):
-            s += attr
-        self.assertEqual(s, "timeplace")
-
-    def test_imul(self):
-        h = create_hardy()
-        h *= 2.0
-        self.assertEqual(h[ANM], AGE * 2.0)
-
-    def test_iadd(self):
-        h = create_hardy()
-        h += 2.0
-        self.assertEqual(h[ANM], AGE + 2.0)
-
-    def test_isub(self):
-        h = create_hardy()
-        h -= 2.0
-        self.assertEqual(h[ANM], AGE - 2.0)
-
-    def test_magnitude(self):
-        h = create_hardy()
-        self.assertEqual(h.magnitude(), AGE)
-
-    def test_sum(self):
-        n = create_newton()
-        tsum = sum(n[k] for k in n)
-        self.assertAlmostEqual(n.sum(), tsum)
-
     def test_ratio_to_sin(self):
         self.assertEqual(ratio_to_sin(0), 0)
         self.assertEqual(ratio_to_sin(1), 1)

@@ -147,12 +147,13 @@ class TermUser(User):
         menu = get_menu_json()
         menu_title = "Please pick from the menu below\n"
         stars = "*" * len(menu_title) + "\n"
-        self.tell("\nWhat would you like to do?")
         print(stars
               + menu_title
               + stars)
         for choice, menu_item in enumerate(menu):
             print(str(choice) + ". ", menu_item["question"])
+
+        self.tell("Please choose a number from the menu above:")
         c = input()
         if not c or c.isspace():
             c = DEFAULT_CHOICE
