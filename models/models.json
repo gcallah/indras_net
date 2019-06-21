@@ -41,6 +41,13 @@
       "run": "wolfsheep",
       "props": "models/props/wolfsheep.props.json",
       "doc": "Wolves eat sheep in a meadow and their populations' cycle."
+    },
+    {
+      "model ID": 5,
+      "name": "Scheduler Model",
+      "run": "scheduler",
+      "props": "models/props/scheduler.props.json",
+      "doc": "Schedule scarce resources among consumers."
     }
   ]
 }
