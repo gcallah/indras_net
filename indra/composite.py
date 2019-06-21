@@ -235,10 +235,8 @@ class Composite(Agent):
     def subset(self, predicate, *args, name=None):
         new_dict = OrderedDict()
         for mbr in self:
-            print("entering the for loop")
             if predicate(self[mbr], *args):
                 new_dict[mbr] = self[mbr]
-                print("in predicate")
         return grp_from_nm_dict(name, new_dict)
 
     def isactive(self):
