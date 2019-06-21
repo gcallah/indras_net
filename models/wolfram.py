@@ -17,9 +17,7 @@ DEBUG = False  # Turns debugging code on or off
 B = 1
 W = 0
 
-STATE_MAP = {B: BLACK, W: WHITE}
-
-# Some dictionaries of rules:
+# The default dictionary of rules
 RULE30 = {
     (B, B, B): W,
     (B, B, W): W,
@@ -30,9 +28,6 @@ RULE30 = {
     (W, W, B): B,
     (W, W, W): W
 }
-
-GRID_WIDTH = 30
-GRID_HEIGHT = 30
 
 groups = []
 
@@ -128,18 +123,25 @@ def wolfram_action(wolfram_env):
         print("The current active row is at y =", active_row_y)
     active_row = wolfram_env.get_row_hood(active_row_y)
     next_row = wolfram_env.get_row_hood(active_row_y - 1)
-    for i in range(1, len(active_row) - 1):
-        curr_agent = active_row[i]
-        left_agent = active_row[i - 1]
-        right_agent = active_row[i + 1]
-        if DEBUG:
-            print("curr_agent is at", curr_agent.get_pos(),
-                  ", left_agent is at", left_agent.get_pos(),
-                  ", and right_agent is at", right_agent.get_pos())
-        changing_color = check_rule(left_agent, curr_agent, right_agent)
-        next_curr_agent = next_row[i]
-        if changing_color:
-            change_color(wolfram_env, next_curr_agent)
+    if active_row_y == 0:
+        wolfram_env.user.tell("ERROR: You have exceeded the maximum height"
+                              + "and cannot run the model for more periods."
+                              + "\nYou can still ask for population graph"
+                              + "or scatter plot.")
+        wolfram_env.user.exclude_choice([0])
+    else:
+        for i in range(1, len(active_row) - 1):
+            curr_agent = active_row[i]
+            left_agent = active_row[i - 1]
+            right_agent = active_row[i + 1]
+            if DEBUG:
+                print("curr_agent is at", curr_agent.get_pos(),
+                      ", left_agent is at", left_agent.get_pos(),
+                      ", and right_agent is at", right_agent.get_pos())
+            changing_color = check_rule(left_agent, curr_agent, right_agent)
+            next_curr_agent = next_row[i]
+            if changing_color:
+                change_color(wolfram_env, next_curr_agent)
 
 
 def agent_action(agent):
