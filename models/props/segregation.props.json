@@ -1,30 +1,30 @@
 {
   "grid_height": {
-    "val": 20,
+    "val": 30,
     "question": "What is the grid height?",
     "atype": "INT",
     "hival": 100,
     "loval": 2
   },
   "grid_width": {
-    "val": 20,
+    "val": 30,
     "question": "What is the grid width?",
     "atype": "INT",
     "hival": 100,
     "loval": 2
   },
   "num_blue": {
-    "val": 100,
+    "val": 250,
     "question": "How many blue agents do you want?",
     "atype": "INT",
-    "hival": 100,
+    "hival": 1000,
     "loval": 1
   },
   "num_red": {
-    "val": 100,
+    "val": 250,
     "question": "How many red agents do you want?",
     "atype": "INT",
-    "hival": 100,
+    "hival": 1000,
     "loval": 1
   },
   "mean_tol": {

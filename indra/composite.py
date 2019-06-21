@@ -235,10 +235,8 @@ class Composite(Agent):
     def subset(self, predicate, *args, name=None):
         new_dict = OrderedDict()
         for mbr in self:
-            print("entering the for loop")
             if predicate(self[mbr], *args):
                 new_dict[mbr] = self[mbr]
-                print("in predicate")
         return grp_from_nm_dict(name, new_dict)
 
     def isactive(self):
@@ -282,6 +280,6 @@ class Composite(Agent):
 
     def get_color(self):
         if "color" in self.attrs:
-            return self.val_vect[self.attrs["color"]]
+            return self.attrs["color"]
         else:
             return None

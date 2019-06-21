@@ -13,6 +13,7 @@ GUI = "gui"
 NOT_IMPL = "Choice not yet implemented."
 CANT_ASK_TEST = "Can't ask anything of a scripted test"
 DEF_STEPS = 1
+DEFAULT_CHOICE = '1'
 USER_EXIT = -999
 
 menu_dir = os.getenv("INDRA_HOME", ".") + "/indra"
@@ -106,6 +107,9 @@ class TermUser(User):
     """
     def __init__(self, name, env, **kwargs):
         super().__init__(name, env, **kwargs)
+        self.menu = get_menu_json()
+        self.menu_title = "Menu of Actions"
+        self.stars = "*" * len(self.menu_title)
 
     def tell(self, msg, end='\n'):
         """
@@ -143,31 +147,33 @@ class TermUser(User):
             return False
 
     def __call__(self):
-        DEFAULT_CHOICE = '0'
-        menu = get_menu_json()
-        menu_title = "Please pick from the menu below\n"
-        stars = "*" * len(menu_title) + "\n"
-        self.tell("\nWhat would you like to do?")
-        print(stars
-              + menu_title
-              + stars)
-        for choice, menu_item in enumerate(menu):
-            print(str(choice) + ". ", menu_item["question"])
+        print('\n'
+              + self.stars
+              + '\n'
+              + self.menu_title
+              + '\n'
+              + self.stars)
+        for item in self.menu:
+            print(item["id"], ". ", item["question"])
+
+        self.tell("Please choose a number from the menu above:")
         c = input()
         if not c or c.isspace():
             c = DEFAULT_CHOICE
         if self.is_number(c):
             choice = int(c)
-            if choice >= 0 and choice < len(menu) and (type(choice) is int):
-                return menu_functions[menu[choice]["func"]](self)
-            else:
-                self.tell("ERROR: " + str(c)
-                          + " is an invalid option."
-                          + "\nPlease enter a valid option.")
+            if choice >= 0:
+                for item in self.menu:
+                    if item["id"] == choice:
+                        return menu_functions[item["func"]](self)
+
+            self.tell("ERROR: " + str(c)
+                      + " is an invalid option. "
+                      + "Please enter a valid option.")
         else:
             self.tell("ERROR: " + str(c)
-                      + " is an invalid option."
-                      + "\nPlease enter a valid option.")
+                      + " is an invalid option. "
+                      + "Please enter a valid option.")
 
 
 class TestUser(TermUser):
@@ -207,5 +213,10 @@ class APIUser(TermUser):
         # Some json thing
         pass
 
-    def __call__(self):
-        return get_menu_json()
+    def __call__(self, menuid=None):
+        menu_id = menuid
+        menu = get_menu_json()
+        if menu_id is None:
+            return menu
+        else:
+            return menu_functions[menu[menu_id]["func"]](self)

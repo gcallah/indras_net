@@ -137,11 +137,7 @@ class Agent(object):
         self.attrs = OrderedDict()
         self.neighbors = None
         if attrs is not None:
-            for i, (k, v) in enumerate(attrs.items()):
-                self.attrs[k] = i  # store index into np.array!
-                self.val_vect = np.array(list(attrs.values()))
-        else:
-            self.val_vect = np.array([])
+            self.attrs = attrs
         self.type_sig = type_hash(self)
         self.active = True
         self.groups = {}
@@ -174,10 +170,15 @@ class Agent(object):
         return self.pos[Y]
 
     def __eq__(self, other):
-        if (type(self) != type(other) or self.type_sig != other.type_sig):
+        if (type(self) != type(other) or len(self) != len(other)):
             return False
         else:
-            return np.array_equal(self.val_vect, other.val_vect)
+            for key in self:
+                if key not in other:
+                    return False
+                elif other[key] != self[key]:
+                    return False
+            return True
 
     def __str__(self):
         return self.name
@@ -189,22 +190,16 @@ class Agent(object):
         return len(self.attrs)
 
     def __getitem__(self, key):
-        return self.val_vect[self.attrs[key]]
+        return self.attrs[key]
 
     def __setitem__(self, key, value):
-        if key not in self.attrs:
-            raise KeyError(key)
-        index = self.attrs[key]
-        self.val_vect[index] = value
+        self.attrs[key] = value
 
     def __contains__(self, item):
         return item in self.attrs
 
     def __iter__(self):
         return iter(self.attrs)
-
-    def __reversed__(self):
-        return reversed(self.attrs)
 
     def __call__(self):
         """
@@ -229,18 +224,27 @@ class Agent(object):
         return False
 
     def __iadd__(self, scalar):
-        self.val_vect += scalar
+        """
+        Empty implementation for now.
+        """
         return self
 
     def __isub__(self, scalar):
-        self.val_vect -= scalar
+        """
+        Empty implementation for now.
+        """
         return self
 
     def __imul__(self, scalar):
-        self.val_vect *= scalar
+        """
+        Empty implementation for now.
+        """
         return self
 
     def __add__(self, other):
+        """
+        Adds agent and group to make new group.
+        """
         import composite
         if isinstance(other, Agent):
             return composite.Composite(
@@ -248,11 +252,6 @@ class Agent(object):
                 members=[self, other])
         else:
             return None
-
-# numpy doesn't implement this! must investigage.
-#    def __idiv__(self, scalar):
-#        self.val_vect /= scalar
-#        return self
 
     def move(self, max_move=DEF_MAX_MOVE):
         """
@@ -270,17 +269,11 @@ class Agent(object):
         self.duration = 0
         self.active = False
 
-    def magnitude(self):
-        return np.linalg.norm(self.val_vect)
-
-    def sum(self):
-        return self.val_vect.sum()
-
     def attrs_to_dict(self):
-        d = OrderedDict()
-        for key in self.attrs:
-            d[key] = self.val_vect[self.attrs[key]]
-        return d
+        """
+        Now attrs ARE a dict, so just return 'em.
+        """
+        return self.attrs
 
     def same_type(self, other):
         return self.type_sig == other.type_sig
