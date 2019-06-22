@@ -279,7 +279,7 @@ class Composite(Agent):
         return "color" in self.attrs
 
     def get_color(self):
-        if "color" in self.attrs:
-            return self.attrs["color"]
-        else:
-            return None
+        return self.attrs.get("color", None)
+
+    def get_marker(self):
+        return self.attrs.get("marker", None)

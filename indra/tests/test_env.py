@@ -116,7 +116,8 @@ class EnvTestCase(TestCase):
             self.env = Env("Test env", members=[our_grp])
             ret = self.env.plot_data()
             (x, y) = self.newton.pos
-            self.assertEqual(ret, {GRP1: {X: [x], Y: [y], 'color': None}})
+            self.assertEqual(ret, {GRP1: {X: [x], Y: [y], 'color': None,
+                                          'marker': None}})
 
     def test_headless(self):
         if (self.env.user_type == API) or (self.env.user_type == TEST):

@@ -8,7 +8,7 @@ from indra.agent import Agent, switch
 from indra.env import Env
 from indra.space import DEF_WIDTH
 from indra.composite import Composite
-from indra.display_methods import BLACK, WHITE
+from indra.display_methods import BLACK, WHITE, SQUARE
 import ast
 
 DEBUG = False  # Turns debugging code on or off
@@ -158,8 +158,8 @@ def set_up():
         height = (width // 2) + 1
     else:
         height = (width // 2)
-    black = Composite("black", {"color": BLACK})
-    white = Composite("white", {"color": WHITE})
+        black = Composite("black", {"color": BLACK, "marker": SQUARE})
+        white = Composite("white", {"color": WHITE})
     groups.append(white)
     groups.append(black)
     for y in range(height):
