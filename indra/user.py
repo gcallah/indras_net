@@ -3,7 +3,7 @@ This file defines User, which represents a user in our system.
 """
 import os
 import json
-from indra.agent import Agent  # , DEBUG2  # DEBUG,
+from indra.agent import Agent
 from IPython import embed
 
 TERMINAL = "terminal"
@@ -97,9 +97,6 @@ class User(Agent):
         super().__init__(name, **kwargs)
         self.env = env  # this class needs this all the time, we think
 
-    def error(user, error_type):
-        user.tell(error_type)
-
 
 class TermUser(User):
     """
@@ -110,8 +107,8 @@ class TermUser(User):
         self.menu = get_menu_json()
         self.menu_title = "Menu of Actions"
         self.stars = "*" * len(self.menu_title)
-        self.all_menu = True
         self.to_exclude = []
+        self.not_to_exclude_id = []
 
     def tell(self, msg, end='\n'):
         """
@@ -138,9 +135,6 @@ class TermUser(User):
         """
         return self.user.tell(msg, end)
 
-    # def exclude_choices(self, excluded_choices):
-    #     for i in excluded_choices:
-
     def is_number(self, c):
         try:
             int(c)
@@ -149,7 +143,6 @@ class TermUser(User):
             return False
 
     def exclude_choices(self, to_exclude):
-        self.all_menu = False
         self.to_exclude = to_exclude
 
     def __call__(self):
@@ -159,13 +152,10 @@ class TermUser(User):
               + self.menu_title
               + '\n'
               + self.stars)
-        if self.all_menu:
-            for item in self.menu:
+        for item in self.menu:
+            if item["func"] not in self.to_exclude:
                 print(str(item["id"]) + ". ", item["question"])
-        else:
-            for item in self.menu:
-                if item["func"] not in self.to_exclude:
-                    print(str(item["id"]) + ". ", item["question"])
+                self.not_to_exclude_id.append(item["id"])
         self.tell("Please choose a number from the menu above:")
         c = input()
         if not c or c.isspace():
@@ -174,8 +164,9 @@ class TermUser(User):
             choice = int(c)
             if choice >= 0:
                 for item in self.menu:
-                    if item["id"] == choice:
-                        return menu_functions[item["func"]](self)
+                    if choice in self.not_to_exclude_id:
+                        if item["id"] == choice:
+                            return menu_functions[item["func"]](self)
             self.tell("ERROR: " + str(c)
                       + " is an invalid option. "
                       + "Please enter a valid option.")

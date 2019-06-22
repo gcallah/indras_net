@@ -125,7 +125,7 @@ def wolfram_action(wolfram_env):
     if active_row_y == 0:
         wolfram_env.user.tell("ERROR: You have exceeded the maximum height"
                               + " and cannot run the model for more periods."
-                              + "\nYou can still ask for scatter plot.")
+                              + "\nYou can still ask for a scatter plot.")
         wolfram_env.user.exclude_choices(["run", "line_graph"])
     else:
         for i in range(1, len(active_row) - 1):
