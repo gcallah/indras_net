@@ -72,6 +72,17 @@ NUM_COLORS = len(colors)
 X = 0
 Y = 1
 
+DEFAULT_MARKER = '8'
+SQUARE = 's'
+TREE = '^'
+CIRCLE = 'o'
+
+markers = [DEFAULT_MARKER,
+           SQUARE,
+           TREE,
+           CIRCLE
+           ]
+
 
 def expects_plt(fn):
     """
@@ -146,6 +157,14 @@ def get_color(var, i):
         if var["color"] in colors:
             return var["color"]
     return colors[i % NUM_COLORS]
+
+
+def get_marker(var, i):
+    if "marker" in var:
+        # Make sure it's a valid marker
+        if var["marker"] in markers:
+            return var["marker"]
+    return DEFAULT_MARKER
 
 
 def assemble_lgraph_data(key, values, color, data=None):
@@ -314,8 +333,9 @@ class ScatterPlot():
                 logging.debug("Array length mismatch in scatter plot")
                 next
             color = get_color(varieties[var], i)
+            marker = get_marker(varieties[var], i)
             scat = plt.scatter(x_array, y_array,
                                c=color, label=var,
-                               alpha=1.0, marker="8",
+                               alpha=1.0, marker=marker,
                                edgecolors='none', s=self.s)
             self.scats.append(scat)

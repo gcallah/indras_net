@@ -198,6 +198,12 @@ class Env(Space):
             color_num += 1
             return disp.get_color(variety, color_num)
 
+    def get_marker(self, variety):
+        if variety in self.members:
+            return self.members[variety].get_marker()
+        else:
+            return None
+
     def line_data(self):
         data = {}
         period = None
@@ -229,7 +235,7 @@ class Env(Space):
             data[variety][X] = []
             data[variety][Y] = []
             data[variety]["color"] = self.members[variety].get_color()
-            # data[variety]["color"] = self.agents.get_var_color(variety)
+            data[variety]["marker"] = self.members[variety].get_marker()
             current_variety = self.members[variety]
             for agent_nm in current_variety:
                 # temp fix for one of the dangers mentioned above:
