@@ -232,7 +232,7 @@ class APIUser(User):
         Tell the user something by showing it on the web page
         The below code is just a possible way to implement this!
         """
-        self.user_msgs += (msg + '\n')
+        self.user_msgs += (msg + end)
 
     def ask(self, msg, default=None):
         """

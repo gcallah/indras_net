@@ -67,6 +67,7 @@ handleChange = name => (e) => {
         </Dimmer>
       );
     }
+    const inputStyle = { marginBottom: '10px', width:'3%'};
     return (
       <div>
         <br />
@@ -75,7 +76,7 @@ handleChange = name => (e) => {
         <h1 style={{ "textAlign": "left" }}> List of properties </h1>
         <br /><br />
         <form>
-            {this.state.grid_height ?<div><label> {this.state.grid_height['question']} :   </label><Slider
+            {this.state.grid_height ?<div><label>    {this.state.grid_height['question']}</label><input style={inputStyle} value={this.state.grid_height['val']}/><Slider style={{width:'50%'}}
           min={this.state.grid_height['lowval']}
           max={this.state.grid_height['hival']}
           defaultValue={this.state.grid_height['val']}
