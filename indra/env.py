@@ -53,9 +53,11 @@ class Env(Space):
     An env *is* a space and *has* a timeline (PopHist).
     That makes the inheritance work out as we want it to.
     """
-    def __init__(self, name, action=None, random_placing=True, **kwargs):
+    def __init__(self, name, action=None, random_placing=True,
+                 props=None, **kwargs):
         super().__init__(name, action=action, random_placing=random_placing,
                          **kwargs)
+        self.props = props
         self.pop_hist = PopHist()  # this will record pops across time
         # Make sure varieties are present in the history
         for mbr in self.members:

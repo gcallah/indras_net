@@ -1,0 +1,30 @@
+{
+  "grid_height": {
+    "val": 20,
+    "question": "What is the grid height?",
+    "atype": "INT",
+    "hival": 100,
+    "loval": 2
+  },
+  "grid_width": {
+    "val": 20,
+    "question": "What is the grid width?",
+    "atype": "INT",
+    "hival": 100,
+    "loval": 2
+  },
+  "num_consumers": {
+    "val": 20,
+    "question": "How many consumers do you want?",
+    "atype": "INT",
+    "hival": 100,
+    "loval": 1
+  },
+  "num_producers": {
+    "val": 20,
+    "question": "How many producers do you want?",
+    "atype": "INT",
+    "hival": 100,
+    "loval": 1
+  }
+}
