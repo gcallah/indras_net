@@ -96,9 +96,32 @@ class User(Agent):
     def __init__(self, name, env, **kwargs):
         super().__init__(name, **kwargs)
         self.env = env  # this class needs this all the time, we think
+        self.menu = get_menu_json()
+        self.to_exclude = []
 
     def to_json(self):
         return {"name": self.name}
+
+    def exclude_menu_item(self, to_exclude):
+        self.to_exclude = to_exclude
+
+    def tell(self, msg, end='\n'):
+        """
+        How to tell the user something.
+        """
+        pass
+
+    def ask(self, msg, default=None):
+        """
+        How to ask the user something.
+        """
+        pass
+
+    def tell_err(self, msg, end='\n'):
+        self.tell("ERROR: " + msg, end)
+
+    def tell_warn(self, msg, end='\n'):
+        self.tell("WARNING: " + msg, end)
 
 
 class TermUser(User):
@@ -107,10 +130,8 @@ class TermUser(User):
     """
     def __init__(self, name, env, **kwargs):
         super().__init__(name, env, **kwargs)
-        self.menu = get_menu_json()
         self.menu_title = "Menu of Actions"
         self.stars = "*" * len(self.menu_title)
-        self.to_exclude = []
         self.not_to_exclude_id = []
 
     def tell(self, msg, end='\n'):
