@@ -93,7 +93,7 @@ class Props(Resource):
                 setup_dict[model_id["run"]](props)
                 return str({"Menu": load_menu()}) + "      Props:" + str(props)
             except TypeError:
-                return ('not setting up the model')
+                return 'not setting up the model'
         except ValueError:
             return err_return("Invalid model answer " + str(model_id))
 
@@ -119,7 +119,7 @@ class MenuItem(Resource):
                 rdict[model_id["run"]](menu_id)
                 return user.to_json()
             except TypeError:
-                return ('not running the model')
+                return 'not running the model'
         else:
             return err_return("Invalid menu id " + str(menu_id))
 
