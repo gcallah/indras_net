@@ -6,7 +6,6 @@
     "hival": 100,
     "lowval": 2
   },
-  
   "rule_number": {
      "val": 30,
      "question": "What rule would you like to apply?",
