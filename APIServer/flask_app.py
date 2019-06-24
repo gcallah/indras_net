@@ -5,7 +5,8 @@ from flask import Flask
 from flask_restplus import Resource, Api, fields
 from flask_cors import CORS
 import json
-# from models.run_dict import setup_dict
+from models.run_dict import setup_dict
+from models.run_dict import rdict
 
 
 ERROR = "Error:"
@@ -89,10 +90,10 @@ class Props(Resource):
             ret = api.payload
             try:
                 props = ret["props"]  # noqa F841
-                # setup_dict[model_id["run"]](props)
+                setup_dict[model_id["run"]](props)
                 return str({"Menu": load_menu()}) + "      Props:" + str(props)
             except TypeError:
-                return ('this is for testing')
+                return ('not setting up the model')
         except ValueError:
             return err_return("Invalid model answer " + str(model_id))
 
@@ -105,17 +106,20 @@ class ModelMenu(Resource):
         return user()
 
 
-@api.route("/models/menu/<int:menu_id>")
-# @api.route("/models/menu/<int:model_id>/<int:menu_id>")
+# @api.route("/models/menu/<int:menu_id>")
+@api.route("/models/menu/<int:model_id>/<int:menu_id>")
 class MenuItem(Resource):
     global user
 
-    def put(self, menu_id):
+    def put(self, model_id, menu_id):
         if 0 <= menu_id < 6 and (type(menu_id) is int):
-            user.tell("execute menu item" + str(menu_id))
-            user.tell(str(load_menu()))
-            return user.to_json()
-            # return user(menu_id)
+            try:
+                user.tell("execute menu item" + str(menu_id))
+                user.tell(str(load_menu()))
+                rdict[model_id["run"]](menu_id)
+                return user.to_json()
+            except TypeError:
+                return ('not running the model')
         else:
             return err_return("Invalid menu id " + str(menu_id))
 

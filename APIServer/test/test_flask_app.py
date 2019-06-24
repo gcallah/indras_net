@@ -93,8 +93,7 @@ class Test(TestCase):
         model_id = random.randint(0, 5)
         with app.test_request_context():
             rv = self.Props.put(model_id)
-        # self.assertEqual(rv, {"Menu": menu})
-        self.assertEqual(rv, "this is for testing")
+        self.assertEqual(rv, "not setting up the model")
 
     def test_get_ModelMenu(self):
         """
@@ -111,11 +110,11 @@ class Test(TestCase):
         """
         Testing whether we are able to put the menu in
         """
-        # menuitem_id = random.randint(0, 4)
-        # model_id = random.randint(0,5)
-        # rv = self.MenuItem.put(model_id, menuitem_id)
-        # self.assertEqual(rv, {"execute menu item": menuitem_id, "Menu": menu})
-        return True
+        model_id = random.randint(0, 5)
+        menu_id = random.randint(0, 5)
+        with app.test_request_context():
+            rv = self.MenuItem.put(model_id, menu_id)
+        self.assertEqual(rv, "not running the model")
 
     def test_err_return(self):
         """
