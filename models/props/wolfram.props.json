@@ -4,7 +4,7 @@
     "question": "What is the grid width?",
     "atype": "INT",
     "hival": 100,
-    "loval": 2
+    "lowval": 2
   },
   
   "rule_number": {
@@ -12,6 +12,6 @@
      "question": "What rule would you like to apply?",
      "atype": "INT",
      "hival": 256,
-     "loval": 1
+     "lowval": 1
   }
 }

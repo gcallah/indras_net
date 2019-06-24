@@ -9,7 +9,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.env import Env
 from indra.space import in_hood
-from indra.display_methods import RED, GREEN, BLACK, SPRINGGREEN, TOMATO
+from indra.display_methods import RED, GREEN, BLACK, SPRINGGREEN, TOMATO, TREE
 
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
@@ -113,11 +113,11 @@ def set_up(props=None):
     forest_width = pa.get('grid_width', DEF_DIM)
     forest_density = pa.get('density', DEF_DENSITY)
 
-    healthy = Composite(HEALTHY, {"color": GREEN})
-    new_fire = Composite(NEW_FIRE, {"color": TOMATO})
-    on_fire = Composite(ON_FIRE, {"color": RED})
-    burned_out = Composite(BURNED_OUT, {"color": BLACK})
-    new_growth = Composite(NEW_GROWTH, {"color": SPRINGGREEN})
+    healthy = Composite(HEALTHY, {"color": GREEN, "marker": TREE})
+    new_fire = Composite(NEW_FIRE, {"color": TOMATO, "marker": TREE})
+    on_fire = Composite(ON_FIRE, {"color": RED, "marker": TREE})
+    burned_out = Composite(BURNED_OUT, {"color": BLACK, "marker": TREE})
+    new_growth = Composite(NEW_GROWTH, {"color": SPRINGGREEN, "marker": TREE})
     for i in range(int(forest_height * forest_width * forest_density)):
         healthy += plant_tree(i)
 

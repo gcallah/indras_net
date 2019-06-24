@@ -8,7 +8,7 @@ from indra.agent import Agent, switch
 from indra.env import Env
 from indra.space import DEF_WIDTH
 from indra.composite import Composite
-from indra.display_methods import BLACK, WHITE
+from indra.display_methods import BLACK, WHITE, SQUARE
 import ast
 
 DEBUG = False  # Turns debugging code on or off
@@ -90,7 +90,6 @@ def get_rule(rule_num):
             if i == rule_num:
                 rule_str = line
                 break
-                break
     return ast.literal_eval(rule_str)
 
 
@@ -125,10 +124,9 @@ def wolfram_action(wolfram_env):
     next_row = wolfram_env.get_row_hood(active_row_y - 1)
     if active_row_y == 0:
         wolfram_env.user.tell("ERROR: You have exceeded the maximum height"
-                              + "and cannot run the model for more periods."
-                              + "\nYou can still ask for population graph"
-                              + "or scatter plot.")
-        wolfram_env.user.exclude_choice([0])
+                              + " and cannot run the model for more periods."
+                              + "\nYou can still ask for a scatter plot.")
+        wolfram_env.user.exclude_choices(["run", "line_graph"])
     else:
         for i in range(1, len(active_row) - 1):
             curr_agent = active_row[i]
@@ -160,8 +158,8 @@ def set_up():
         height = (width // 2) + 1
     else:
         height = (width // 2)
-    black = Composite("black", {"color": BLACK})
-    white = Composite("white", {"color": WHITE})
+        black = Composite("black", {"color": BLACK, "marker": SQUARE})
+        white = Composite("white", {"color": WHITE})
     groups.append(white)
     groups.append(black)
     for y in range(height):
@@ -173,6 +171,7 @@ def set_up():
                       width=width,
                       members=groups,
                       random_placing=False)
+    wolfram_env.user.exclude_choices(["line_graph"])
     first_agent = wolfram_env.get_agent_at(width // 2, height - 1)
     change_color(wolfram_env, first_agent)
     return (groups, wolfram_env)
