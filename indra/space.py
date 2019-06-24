@@ -272,6 +272,12 @@ class Space(Composite):
         pass
 
     def get_x_hood(self, agent, composite=False):
+        """
+        Takes in an agent and returns either a Composite or a dictionary
+        of its x neighbors.
+        For example, if the agent is located at (0, 0),
+        get_x_hood would return (-1, 0) and (1, 0)
+        """
         lst = []
         agent_dict = {"x neighbors": lst}
         agent_x = agent.get_x()
@@ -289,6 +295,12 @@ class Space(Composite):
             return agent_dict
 
     def get_y_hood(self, agent, composite=False):
+        """
+        Takes in an agent and returns either a Composite or a dictionary
+        of its y neighbors.
+        For example, if the agent is located at (0, 0),
+        get_x_hood would return (0, -1) and (0, 1)
+        """
         lst = []
         agent_dict = {"y neighbors": lst}
         agent_x = agent.get_x()
@@ -305,6 +317,54 @@ class Space(Composite):
         else:
             return agent_dict
 
+    def get_top_lr_hood(self, agent, composite=False):
+        """
+        Takes in an agent and returns either a Composite or a dictionary
+        of its top left and right neighbors.
+        For example, if the agent is located at (0, 0),
+        get_top_lr_hood would return (-1, 1) and (1, 1)
+        """
+        lst = []
+        agent_dict = {"top l and r neighbors": lst}
+        agent_x = agent.get_x()
+        agent_y = agent.get_y()
+        neighbor_x_coords = [-1, 1]
+        for i in neighbor_x_coords:
+            neighbor_x = agent_x + i
+            if not out_of_bounds(neighbor_x, agent_y + 1, 0, 0,
+                                 self.width, self.height):
+                agent_dict["top l and r neighbors"].append(
+                    self.get_agent_at(neighbor_x, agent_y + 1))
+        if (composite):
+            return grp_from_nm_dict("top l and r neighbors",
+                                    agent_dict["top l and r neighbors"])
+        else:
+            return agent_dict
+
+    def get_bottom_lr_hood(self, agent, composite=False):
+        """
+        Takes in an agent and returns either a Composite or a dictionary
+        of its bottom left and right neighbors.
+        For example, if the agent is located at (0, 0),
+        get_bottom_lr_hood would return (-1, -1) and (1, -1)
+        """
+        lst = []
+        agent_dict = {"bottom l and r neighbors": lst}
+        agent_x = agent.get_x()
+        agent_y = agent.get_y()
+        neighbor_x_coords = [-1, 1]
+        for i in neighbor_x_coords:
+            neighbor_x = agent_x + i
+            if not out_of_bounds(neighbor_x, agent_y - 1, 0, 0,
+                                 self.width, self.height):
+                agent_dict["bottom l and r neighbors"].append(
+                    self.get_agent_at(neighbor_x, agent_y - 1))
+        if (composite):
+            return grp_from_nm_dict("bottom l and r neighbors",
+                                    agent_dict["bottom l and r neighbors"])
+        else:
+            return agent_dict
+
     def get_vonneumann_hood(self, agent):
         """
         Takes in an agent and returns a Composite of its vonneuman neighbors
@@ -318,3 +378,23 @@ class Space(Composite):
         for x in x_neighbors["x neighbors"]:
             agent_dict["neighbors"].append(x)
         return grp_from_nm_dict("Vonneuman neighbors", agent_dict["neighbors"])
+
+    def get_all_neighbors(self, agent):
+        """
+        Takes in an agent and returns a Composite of all of its neighbors
+        """
+        x_neighbors = self.get_x_hood(agent)
+        y_neighbors = self.get_y_hood(agent)
+        top_neighbors = self.get_top_lr_hood(agent)
+        bottom_neightbors = self.get_bottom_lr_hood(agent)
+        lst = []
+        agent_dict = {"neighbors": lst}
+        for y in y_neighbors["y neighbors"]:
+            agent_dict["neighbors"].append(y)
+        for x in x_neighbors["x neighbors"]:
+            agent_dict["neighbors"].append(x)
+        for t in top_neighbors["top l and r neighbors"]:
+            agent_dict["neighbors"].append(t)
+        for b in bottom_neightbors["bottom l and r neighbors"]:
+            agent_dict["neighbors"].append(b)
+        return grp_from_nm_dict("All neighbors", agent_dict["neighbors"])

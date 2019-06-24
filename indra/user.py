@@ -62,7 +62,7 @@ def line_graph(user):
     return user.env.line_graph()
 
 
-def ipython(user):
+def debug(user):
     embed()
     return 0
 
@@ -72,7 +72,7 @@ menu_functions = {
     "leave": leave,
     "scatter_plot": scatter_plot,
     "line_graph": line_graph,
-    "ipython": ipython,
+    "debug": debug,
 }
 
 
@@ -96,6 +96,9 @@ class User(Agent):
     def __init__(self, name, env, **kwargs):
         super().__init__(name, **kwargs)
         self.env = env  # this class needs this all the time, we think
+
+    def to_json(self):
+        return {"name": self.name}
 
 
 class TermUser(User):
@@ -194,17 +197,21 @@ class TestUser(TermUser):
         run(self)  # noqa: W391
 
 
-class APIUser(TermUser):
+class APIUser(User):
     """
     This is our web user, who is expected to communicate with a web page
     frontend.
     """
+    def __init__(self, name, env, **kwargs):
+        super().__init__(name, env, **kwargs)
+        self.user_msgs = ''
+
     def tell(self, msg, end='\n'):
         """
         Tell the user something by showing it on the web page
         The below code is just a possible way to implement this!
         """
-        return {"msg_to_user": '"' + msg + '"'}
+        self.user_msgs += (msg + end)
 
     def ask(self, msg, default=None):
         """
@@ -220,3 +227,7 @@ class APIUser(TermUser):
             return menu
         else:
             return menu_functions[menu[menu_id]["func"]](self)
+
+    def to_json(self):
+        return {"user_msgs": self.user_msgs,
+                "name": self.name}

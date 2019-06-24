@@ -17,8 +17,8 @@
         },
         {
             "id": 4,
-            "func": "ipython",
-            "question": "Leave menu for interactive python session."
+            "func": "debug",
+            "question": "Enter debugger."
         },
         {
             "id": 0,
