@@ -105,17 +105,19 @@ class ModelMenu(Resource):
         return user()
 
 
-@api.route("/models/menu/<int:model_id>/<int:menu_id>")
+@api.route("/models/menu/<int:menu_id>")
+# @api.route("/models/menu/<int:model_id>/<int:menu_id>")
 class MenuItem(Resource):
     global user
 
     def put(self, menu_id):
         if 0 <= menu_id < 6 and (type(menu_id) is int):
-            user.tell("execute menu item" + menu_id + "Menu" + load_menu())
-            return user(menu_id)
+            user.tell("execute menu item" + str(menu_id))
+            user.tell(str(load_menu()))
+            return user.to_json()
+            # return user(menu_id)
         else:
             return err_return("Invalid menu id " + str(menu_id))
-        # return {"execute menu item": menuitem_id, "Menu": load_menu()}  # noqa E501
 
 
 if __name__ == "__main__":
