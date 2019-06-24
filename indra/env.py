@@ -250,3 +250,8 @@ class Env(Space):
 
     def headless(self):
         return (self.user_type == API) or (self.user_type == TEST)
+
+    def to_json(self):
+        rep = super().to_json()
+        rep["user"] = self.user.to_json()
+        return rep
