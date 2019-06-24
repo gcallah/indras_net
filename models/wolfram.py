@@ -12,8 +12,9 @@ from indra.composite import Composite
 from indra.display_methods import BLACK, WHITE, SQUARE
 
 DEBUG = False  # Turns debugging code on or off
+DEF_RULE = 30
 
-# States
+# Group codes:
 W = 0
 B = 1
 
@@ -129,6 +130,7 @@ def set_up():
                                ds_file='props/wolfram.props.json')
 
     width = pa.get('grid_width', DEF_WIDTH)
+    rule_dict = get_rule(pa.get('rule_number', DEF_RULE))
     height = 0
     if (width % 2 == 1):
         height = (width // 2) + 1
@@ -150,7 +152,6 @@ def set_up():
                       members=groups)
     wolfram_env.user.exclude_choices(["line_graph"])
     first_agent = wolfram_env.get_agent_at(width // 2, height - 1)
-    rule_dict = get_rule(wolfram_env.props['rule_number'])
     change_color(wolfram_env, first_agent)
     return (groups, wolfram_env, rule_dict)
 
