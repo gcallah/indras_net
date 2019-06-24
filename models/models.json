@@ -1,49 +1,49 @@
 {
   "models_database": [
     {
-      "model ID": 6,
+      "model ID": 0,
       "name": "A Basic Model",
       "run": "basic",
       "props": "models/props/basic.props.json",
       "doc": "A model just for testing and cloning."
     },
     {
-      "model ID": 0,
+      "model ID": 1,
       "name": "Adam Smith's Fashion Model",
       "run": "fashion",
       "props": "models/props/fashion.props.json",
       "doc": "A model of trendsetters and followers in the world of fashion."
     },
     {
-      "model ID": 1,
+      "model ID": 2,
       "name": "Forest Fire",
       "run": "forestfire",
       "props": "models/props/forestfire.props.json",
       "doc": "A model forest with trees that randomly catch fire."
     },
     {
-      "model ID": 2,
+      "model ID": 3,
       "name": "Abelian Sandpile",
       "run": "sandpile",
       "props": "models/props/sandpile.props.json",
       "doc": "A sandpile that makes colorful patterns as the sand tumbles down."
     },
     {
-      "model ID": 3,
+      "model ID": 4,
       "name": "Schelling's Segregation Model",
       "run": "segregation",
       "props": "models/props/segregation.props.json",
       "doc": "Thomas Schelling's famous model of segregated neighborhoods."
     },
     {
-      "model ID": 4,
+      "model ID": 5,
       "name": "Predator-Prey Model",
       "run": "wolfsheep",
       "props": "models/props/wolfsheep.props.json",
       "doc": "Wolves eat sheep in a meadow and their populations' cycle."
     },
     {
-      "model ID": 5,
+      "model ID": 6,
       "name": "Scheduler Model",
       "run": "scheduler",
       "props": "models/props/scheduler.props.json",
