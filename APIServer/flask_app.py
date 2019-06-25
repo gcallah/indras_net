@@ -88,7 +88,7 @@ class Props(Resource):
     def put(self, model_id):
         # try:
         ret = api.payload
-        return type(ret)
+        return str(type(ret)) + str(model_id)
         #     try:
         #         props = ret["props"]  # noqa F841
         #         setup_dict[model_id["run"]](props)
