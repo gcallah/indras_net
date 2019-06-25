@@ -74,7 +74,7 @@ class Test(TestCase):
         """
         See if we can get props.
         """
-        model_id = random.randint(0, 5)
+        model_id = random.randint(0, 6)
         rv = self.Props.get(model_id)
 
         test_model_file = indra_dir + "/models/models.json"
@@ -90,7 +90,7 @@ class Test(TestCase):
         """
         Test whether we are able to put props
         """
-        model_id = random.randint(0, 5)
+        model_id = random.randint(0, 6)
         with app.test_request_context():
             rv = self.Props.put(model_id)
         self.assertEqual(rv, "not setting up the model")
@@ -99,7 +99,7 @@ class Test(TestCase):
         """
         Testing whether we are getting the menu.
         """
-        model_id = random.randint(0, 5)
+        model_id = random.randint(0, 6)
         rv = self.ModelMenu.get(model_id)
         test_menu_file = indra_dir + "/indra/menu.json"
         with open(test_menu_file) as file:
@@ -110,7 +110,7 @@ class Test(TestCase):
         """
         Testing whether we are able to put the menu in
         """
-        model_id = random.randint(0, 5)
+        model_id = random.randint(0, 6)
         menu_id = random.randint(0, 5)
         with app.test_request_context():
             rv = self.MenuItem.put(model_id, menu_id)

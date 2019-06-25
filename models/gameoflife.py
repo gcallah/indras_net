@@ -33,26 +33,21 @@ def change_color(gameoflife_env, agent):
     switch(agent, curr_group, next_group)
 
 
-def get_color(group):
-    """
-    Returns 0 or 1, 0 for white and 1 for black
-    when passed in a group.
-    """
-    if group == groups[0]:
-        return 0
-    else:
-        return 1
-
-
 def apply_live_rules(gameoflife_env, agent):
-    num_live_neighbors = agent.neighbors
-    if (num_live_neighbors != 2 and num_live_neighbors != 3
-       and num_live_neighbors is not None):
+    print("apply live rules")
+    num_live_neighbors = 0
+    for neighbor in agent.neighbors:
+        if neighbor.primary_group() == groups[1]:
+            num_live_neighbors += 1
+    if (num_live_neighbors != 2 and num_live_neighbors != 3):
         change_color(gameoflife_env, agent)
 
 
 def apply_dead_rules(gameoflife_env, agent):
-    num_live_neighbors = agent.neighbors
+    num_live_neighbors = 0
+    for neighbor in agent.neighbors:
+        if neighbor.primary_group() == groups[1]:
+            num_live_neighbors += 1
     if num_live_neighbors == 3:
         change_color(gameoflife_env, agent)
 
@@ -64,23 +59,21 @@ def gameoflife_action(gameoflife_env):
     for y in range(0, gameoflife_env.height):
         for x in range(0, gameoflife_env.width):
             curr_agent = gameoflife_env.get_agent_at(x, y)
-            if curr_agent.primary_group() == groups[1]:
+            if curr_agent.neighbors is not None:
                 if DEBUG:
-                    print("Agent at", curr_agent.get_pos(), "has",
-                          curr_agent.neighbors, "neighbors")
-                apply_live_rules(gameoflife_env, curr_agent)
-            else:
-                apply_dead_rules(gameoflife_env, curr_agent)
+                    print("Alive neighbors for agent at", curr_agent.get_pos())
+                    for i in curr_agent.neighbors:
+                        if i.primary_group() == groups[1]:
+                            print("     ", i.get_pos())
+                if curr_agent.primary_group() == groups[1]:
+                    apply_live_rules(gameoflife_env, curr_agent)
+                else:
+                    apply_dead_rules(gameoflife_env, curr_agent)
 
 
 def agent_action(agent):
     if agent.neighbors is None:
-        neighbors = gameoflife_env.get_all_neighbors(agent)
-        num_live_neighbors = 0
-        for neighbor in neighbors:
-            if neighbor.primary_group() == groups[1]:
-                num_live_neighbors += 1
-        agent.neighbors = num_live_neighbors
+        agent.neighbors = gameoflife_env.get_all_neighbors(agent)
 
 
 def set_up():
@@ -108,12 +101,22 @@ def set_up():
 
     a = gameoflife_env.get_agent_at((width // 2), (height // 2))
     change_color(gameoflife_env, a)
-    b = gameoflife_env.get_agent_at((width // 2), (height // 2) + 1)
+    b = gameoflife_env.get_agent_at((width // 2) + 1, (height // 2))
     change_color(gameoflife_env, b)
-    c = gameoflife_env.get_agent_at((width // 2) + 1, (height // 2))
+    c = gameoflife_env.get_agent_at((width // 2) - 1, (height // 2))
     change_color(gameoflife_env, c)
-    d = gameoflife_env.get_agent_at((width // 2) + 1, (height // 2) + 1)
+    d = gameoflife_env.get_agent_at((width // 2), (height // 2) - 1)
     change_color(gameoflife_env, d)
+
+    # if a.primary_group() == groups[1]:
+    #     print("A")
+    # if b.primary_group() == groups[1]:
+    #     print("B")
+
+    # print(a.get_pos())
+    # print(b.get_pos())
+    # print(c.get_pos())
+    # print(d.get_pos())
 
     return (groups, gameoflife_env)
 
