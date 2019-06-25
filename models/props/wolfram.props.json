@@ -1,6 +1,6 @@
 {
   "grid_width": {
-    "val": 30,
+    "val": 60,
     "question": "What is the grid width?",
     "atype": "INT",
     "hival": 100,

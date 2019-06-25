@@ -23,7 +23,7 @@ NUM_GROUPS = 4
 
 sandpile = None
 
-groups = []
+groups = None
 group_indices = {}
 
 
@@ -104,10 +104,13 @@ def set_up():
     """
     A func to set up run that can also be used by test code.
     """
+    global groups
+
     pa = PropArgs.create_props('sandpile_props',
                                ds_file='props/sandpile.props.json')
     width = pa.get('grid_width', DEF_WIDTH)
     height = pa.get('grid_height', DEF_HEIGHT)
+    groups = []
     for i in range(NUM_GROUPS):
         groups.append(Composite("Group" + str(i)))
         group_indices[groups[i].name] = i
