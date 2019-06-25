@@ -49,7 +49,7 @@ def get_active_row(wolfram_env):
         for x in row_to_check:
             if x.primary_group() == groups[1]:
                 return y
-    return -1
+    return None
 
 
 def get_color(group):
@@ -99,7 +99,6 @@ def wolfram_action(wolfram_env):
                                    + "\nYou can still ask for a scatter plot.")
         wolfram_env.user.exclude_choices(["run", "line_graph"])
         return False
-
     if DEBUG:
         print("The current active row is at y = ", active_row_y)
     active_row = wolfram_env.get_row_hood(active_row_y)
@@ -109,9 +108,9 @@ def wolfram_action(wolfram_env):
         left = active_row[i - 1]
         right = active_row[i + 1]
         if DEBUG:
-            print("curr_agent is at ", curr.get_pos(),
-                  ", left_agent is at ", left.get_pos(),
-                  ", and right_agent is at ", right.get_pos())
+            print("curr_agent is at ", str(curr.get_pos())
+                  + ", left_agent is at ", str(left.get_pos())
+                  + ", and right_agent is at", right.get_pos())
         left_color = get_color(left.primary_group())
         middle_color = get_color(curr.primary_group())
         right_color = get_color(right.primary_group())
@@ -132,10 +131,7 @@ def set_up():
     width = pa.get('grid_width', DEF_WIDTH)
     rule_dict = get_rule(pa.get('rule_number', DEF_RULE))
     height = 0
-    if (width % 2 == 1):
-        height = (width // 2) + 1
-    else:
-        height = (width // 2)
+    height = (width // 2) + (width % 2)
     black = Composite("black", {"color": BLACK, "marker": SQUARE})
     white = Composite("white", {"color": WHITE})
     groups = []

@@ -2,12 +2,8 @@ import React, { Component } from "react";
 import { Loader, Dimmer, Menu } from "semantic-ui-react";
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import ModelDetail from './ModelDetail';
-class Home extends Component {
-  constructor(props) {
-        super(props);
-  }
 
+class Home extends Component {
   api_server = 'https://indrasnet.pythonanywhere.com/';
   state = {
     msg: '',

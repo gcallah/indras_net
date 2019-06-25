@@ -100,8 +100,7 @@ class Test(TestCase):
         """
         Testing whether we are getting the menu.
         """
-        model_id = random.randint(0, 6)
-        rv = self.ModelMenu.get(model_id)
+        rv = self.ModelMenu.get()
         test_menu_file = indra_dir + "/indra/menu.json"
         with open(test_menu_file) as file:
             test_menu = json.loads(file.read())["menu_database"]
