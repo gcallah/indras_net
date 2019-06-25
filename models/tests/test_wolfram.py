@@ -3,7 +3,8 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.env import Env
 from models.wolfram import create_agent, set_up, B, W
-from models.wolfram import turn_black, get_active_row, get_color, get_rule, next_color, wolfram_action
+from models.wolfram import turn_black, get_active_row, get_color, get_rule
+from models.wolfram import next_color, wolfram_action
 import models.wolfram as wolf
 
 TEST_ANUM = 999999
