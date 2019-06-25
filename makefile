@@ -1,3 +1,6 @@
+# Need to export as ENV var
+export TEMPLATE_DIR = templates
+
 BOX_DIR = bigbox
 BOX_DATA = $(BOX_DIR)/data
 BOXPLOTS = $(shell ls $(BOX_DATA)/plot*.pdf)
@@ -17,7 +20,6 @@ WEBFILES += $(shell ls $(WEB_SRC)/*.css)
 
 UTILS_DIR = utils
 PTML_DIR = html_src
-TEMPLATE_DIR = templates
 INCS = $(TEMPLATE_DIR)/head.txt $(TEMPLATE_DIR)/logo.txt $(TEMPLATE_DIR)/menu.txt
 
 HTMLFILES = $(shell ls $(PTML_DIR)/*.ptml | sed -e 's/.ptml/.html/' | sed -e 's/html_src\///')

@@ -35,6 +35,12 @@ p {
     line-height: 140%;
 }
 
+p.menu {
+    text-align: center;
+    margin: .4em 4em .8em 4em;
+    font-size: 1.4em;
+}
+
 h1,h2,h3,h4,h5 {
     font-weight: 400;
 }
