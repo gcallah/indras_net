@@ -31,6 +31,7 @@ class PopHist():
     """
     def __init__(self):
         self.pops = {}
+        self.periods = 0
 
     def __str__(self):
         s = POP_HIST_HDR
@@ -40,6 +41,9 @@ class PopHist():
 
     def __repr__(self):
         return(str(self))  # for now!
+
+    def add_period(self):
+        self.periods += 1
 
     def record_pop(self, mbr, count):
         if mbr not in self.pops:
@@ -76,6 +80,9 @@ class Env(Space):
             self.user.tell("Welcome to Indra, " + str(self.user) + "!")
         elif (self.user_type == TEST):
             self.user = TestUser(getpass.getuser(), self)
+
+    def get_periods(self):
+        return self.pop_hist.periods
 
     def __call__(self):
         """
@@ -133,6 +140,7 @@ class Env(Space):
                     switch(agent, grp1, grp2)
                 del self.switches[:]
 
+            self.pop_hist.add_period()
             for mbr in self.pop_hist.pops:
                 if mbr in self.members and self.is_mbr_comp(mbr):
                     self.pop_hist.record_pop(mbr, self.pop_count(mbr))
