@@ -5,7 +5,7 @@ from flask import Flask
 from flask_restplus import Resource, Api, fields
 from flask_cors import CORS
 import json
-# from models.run_dict import setup_dict
+from models.run_dict import setup_dict
 from models.run_dict import rdict
 
 
@@ -86,15 +86,16 @@ class Props(Resource):
 
     @api.expect(props)
     def put(self, model_id):
-        # try:
         ret = api.payload
+        # type of ret is dict
         try:
+            # setup dict
+            setup_dict[model_id["run"]](model_id)
+            # finished setting up
             string = "Props:" + str(ret) + str(model_id)
             return str({"Menu": load_menu()}) + string
         except TypeError:
             return 'not setting up the model'
-        # except ValueError:
-        #     return err_return("Invalid model answer " + str(model_id))
 
 
 @api.route("/models/menu/<int:model_id>/")
