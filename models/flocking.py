@@ -36,10 +36,13 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    pa = props
-    if pa is None:
+    if props is None:
         pa = PropArgs.create_props('flocking_props',
                                    ds_file='props/flocking.props.json')
+    else:
+        pa = PropArgs.create_props('flocking_props',
+                                   prop_dict=props)
+
     bird_group = Composite("Birds", {"color": BLUE},
                            member_creator=create_agent,
                            num_members=pa.get('num_birds', DEF_NUM_BIRDS))

@@ -137,10 +137,13 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    pa = props
-    if pa is None:
-        pa = PropArgs.create_props('basic_props',
+    if props is None:
+        pa = PropArgs.create_props('fashion_props',
                                    ds_file='props/fashion.props.json')
+    else:
+        pa = PropArgs.create_props('fashion_props',
+                                   prop_dict=props)
+
     blue_tsetters = Composite(BLUE_TSETTERS, {"color": NAVY})
     red_tsetters = Composite(RED_TSETTERS, {"color": DARKRED})
     for i in range(pa.get('num_tsetters', NUM_TSETTERS)):

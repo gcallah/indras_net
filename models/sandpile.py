@@ -100,12 +100,17 @@ def place_action(agent):
         agent.neighbors = neighbors
 
 
-def set_up():
+def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    pa = PropArgs.create_props('sandpile_props',
-                               ds_file='props/sandpile.props.json')
+    if props is None:
+        pa = PropArgs.create_props('sandpile_props',
+                                   ds_file='props/sandpile.props.json')
+    else:
+        pa = PropArgs.create_props('sandpile_props',
+                                   prop_dict=props)
+
     width = pa.get('grid_width', DEF_WIDTH)
     height = pa.get('grid_height', DEF_HEIGHT)
     for i in range(NUM_GROUPS):

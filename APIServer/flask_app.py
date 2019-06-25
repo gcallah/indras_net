@@ -1,10 +1,11 @@
 # Indra API server
 import os
-from indra.user import APIUser
 from flask import Flask
 from flask_restplus import Resource, Api, fields
 from flask_cors import CORS
 import json
+# from propargs.propargs import PropArgs as pa
+from indra.user import APIUser
 from models.run_dict import setup_dict
 from models.run_dict import rdict
 
@@ -86,16 +87,12 @@ class Props(Resource):
 
     @api.expect(props)
     def put(self, model_id):
-        ret = api.payload
-        # type of ret is dict
+        props_dict = api.payload
         try:
-            # setup dict
-            setup_dict[model_id["run"]](model_id)
-            # finished setting up
-            string = "Props:" + str(ret) + str(model_id)
-            return str({"Menu": load_menu()}) + string
+            return setup_dict[model_id["run"]](props_dict)
         except TypeError:
-            return 'not setting up the model'
+            string = "Props:" + str(props_dict) + str(model_id)
+            return str({"Menu": load_menu()}) + string
 
 
 @api.route("/models/menu/")
