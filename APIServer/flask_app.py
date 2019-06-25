@@ -5,7 +5,7 @@ from flask import Flask
 from flask_restplus import Resource, Api, fields
 from flask_cors import CORS
 import json
-# from models.run_dict import setup_dict
+from models.run_dict import setup_dict
 from models.run_dict import rdict
 
 
@@ -88,14 +88,12 @@ class Props(Resource):
     def put(self, model_id):
         # try:
         ret = api.payload
-        return {str(model_id): type(ret) == dict}
-        # return str(type(ret)) + str(model_id)
-        #     try:
-        #         props = ret["props"]  # noqa F841
-        #         setup_dict[model_id["run"]](props)
-        #         return str({"Menu": load_menu()}) + "Props:" + str(props)
-        #     except TypeError:
-        #         return 'not setting up the model'
+        # return {str(model_id): type(ret) == dict}
+        try:
+            setup_dict[model_id["run"]](ret)
+            return str({"Menu": load_menu()}) + "Props:" + str(props)
+        except TypeError:
+            return 'not setting up the model'
         # except ValueError:
         #     return err_return("Invalid model answer " + str(model_id))
 
