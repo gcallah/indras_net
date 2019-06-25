@@ -15,6 +15,13 @@ WEBFILES = $(shell ls $(WEB_SRC)/*.js)
 WEBFILES += $(shell ls $(WEB_SRC)/components/*.js)
 WEBFILES += $(shell ls $(WEB_SRC)/*.css)
 
+UTILS_DIR = utils
+PTML_DIR = html_src
+TEMPLATE_DIR = templates
+INCS = $(TEMPLATE_DIR)/head.txt $(TEMPLATE_DIR)/logo.txt $(TEMPLATE_DIR)/menu.txt
+
+HTMLFILES = $(shell ls $(PTML_DIR)/*.ptml | sed -e 's/.ptml/.html/' | sed -e 's/html_src\///')
+
 FORCE:
 
 setup_react:
@@ -39,6 +46,13 @@ tags: FORCE
 
 submods:
 	cd utils; git pull origin master
+
+local: $(HTMLFILES) $(INCS)
+
+%.html: $(PTML_DIR)/%.ptml $(INCS)
+	python3 $(UTILS_DIR)/html_checker.py $< 
+	$(UTILS_DIR)/html_include.awk <$< >$@
+	git add $@
 
 # run tests then commit all, then push
 prod: tests
