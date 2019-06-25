@@ -88,10 +88,9 @@ class Props(Resource):
     def put(self, model_id):
         # try:
         ret = api.payload
-        # return {str(model_id): type(ret) == dict}
         try:
-            # setup_dict[model_id["run"]](ret)
-            return str({"Menu": load_menu()}) + "Props:" + str(ret) + str(model_id)
+            string = "Props:" + str(ret) + str(model_id)
+            return str({"Menu": load_menu()}) + string
         except TypeError:
             return 'not setting up the model'
         # except ValueError:
