@@ -5,7 +5,7 @@ from flask import Flask
 from flask_restplus import Resource, Api, fields
 from flask_cors import CORS
 import json
-from models.run_dict import setup_dict
+# from models.run_dict import setup_dict
 from models.run_dict import rdict
 
 
@@ -90,7 +90,7 @@ class Props(Resource):
             ret = api.payload
             try:
                 props = ret["props"]  # noqa F841
-                setup_dict[model_id["run"]](props)
+                # setup_dict[model_id["run"]](props)
                 return str({"Menu": load_menu()}) + "      Props:" + str(props)
             except TypeError:
                 return 'not setting up the model'
