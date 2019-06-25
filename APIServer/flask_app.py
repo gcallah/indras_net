@@ -98,11 +98,11 @@ class Props(Resource):
             return 'not setting up the model'
 
 
-@api.route("/models/menu/<int:model_id>/")
+@api.route("/models/menu/")
 class ModelMenu(Resource):
     global user
 
-    def get(self, model_id):
+    def get(self):
         return user()
 
 
