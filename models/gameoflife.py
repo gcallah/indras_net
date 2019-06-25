@@ -1,6 +1,8 @@
 """
 Conway's Game of Life model
 """
+from random import randint
+
 from propargs.propargs import PropArgs
 
 from indra.agent import Agent, switch
@@ -95,6 +97,17 @@ def agent_action(agent):
         agent.neighbors = gameoflife_env.get_all_neighbors(agent)
 
 
+def populate_board(gameoflife_env, width, height):
+    num_agent = int(0.1 * (width * height))
+    upper_limit = int((width / 2) + (width / 4))
+    lower_limit = int((width / 2) - (width / 4)) + 1
+    for i in range(num_agent):
+        agent = gameoflife_env.get_agent_at(randint(lower_limit, upper_limit),
+                                            randint(lower_limit, upper_limit))
+        if agent.primary_group() != groups[1]:
+            change_color(gameoflife_env, agent)
+
+
 def set_up():
     """
     A func to set up run that can also be used by test code.
@@ -117,14 +130,7 @@ def set_up():
                          members=groups,
                          random_placing=False)
     gameoflife_env.user.exclude_choices(["line_graph"])
-    a = gameoflife_env.get_agent_at((width // 2), (height // 2))
-    change_color(gameoflife_env, a)
-    b = gameoflife_env.get_agent_at((width // 2) + 1, (height // 2))
-    change_color(gameoflife_env, b)
-    c = gameoflife_env.get_agent_at((width // 2) - 1, (height // 2))
-    change_color(gameoflife_env, c)
-    d = gameoflife_env.get_agent_at((width // 2), (height // 2) - 1)
-    change_color(gameoflife_env, d)
+    populate_board(gameoflife_env, width, height)
     return (groups, gameoflife_env)
 
 

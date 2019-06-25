@@ -5,7 +5,7 @@ from flask import Flask
 from flask_restplus import Resource, Api, fields
 from flask_cors import CORS
 import json
-# from models.run_dict import setup_dict
+from models.run_dict import setup_dict
 from models.run_dict import rdict
 
 
@@ -77,8 +77,8 @@ class Props(Resource):
         try:
             models_db = load_models()
             with open(indra_dir + "/" + models_db[model_id]["props"]) as file:
-                props = json.loads(file.read())
-                return props
+                model_prop = json.loads(file.read())
+                return model_prop
         except (IndexError, KeyError, ValueError):
             return err_return("Invalid model id " + str(model_id))
         except FileNotFoundError:
@@ -86,26 +86,26 @@ class Props(Resource):
 
     @api.expect(props)
     def put(self, model_id):
-        # try:
         ret = api.payload
+        # type of ret is dict
         try:
+            # setup dict
+            setup_dict[model_id["run"]](model_id)
+            # finished setting up
             string = "Props:" + str(ret) + str(model_id)
             return str({"Menu": load_menu()}) + string
         except TypeError:
             return 'not setting up the model'
-        # except ValueError:
-        #     return err_return("Invalid model answer " + str(model_id))
 
 
-@api.route("/models/menu/<int:model_id>/")
+@api.route("/models/menu/")
 class ModelMenu(Resource):
     global user
 
-    def get(self, model_id):
+    def get(self):
         return user()
 
 
-# @api.route("/models/menu/<int:menu_id>")
 @api.route("/models/menu/<int:model_id>/<int:menu_id>")
 class MenuItem(Resource):
     global user
