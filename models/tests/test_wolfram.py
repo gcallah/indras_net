@@ -19,7 +19,13 @@ class WolframTestCase(TestCase):
 
     def test_next_color(self):
         self.assertEqual(next_color(wolf.rule_dict, B, B, B), W)
+        self.assertEqual(next_color(wolf.rule_dict, B, B, W), W)
+        self.assertEqual(next_color(wolf.rule_dict, B, W, B), W)
+        self.assertEqual(next_color(wolf.rule_dict, B, W, W), B)   
         self.assertEqual(next_color(wolf.rule_dict, W, B, B), B)
+        self.assertEqual(next_color(wolf.rule_dict, W, B, W), B)
+        self.assertEqual(next_color(wolf.rule_dict, W, W, B), B)
+        self.assertEqual(next_color(wolf.rule_dict, W, W, W), W)                
 
 #    def test_create_agent(self):
 #        a = create_agent(0, 0)
