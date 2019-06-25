@@ -86,16 +86,15 @@ class Props(Resource):
 
     @api.expect(props)
     def put(self, model_id):
+        # try:
+        ret = api.payload
         try:
-            ret = api.payload
-            try:
-                props = ret["props"]  # noqa F841
-                # setup_dict[model_id["run"]](props)
-                return str({"Menu": load_menu()}) + "      Props:" + str(props)
-            except TypeError:
-                return 'not setting up the model'
-        except ValueError:
-            return err_return("Invalid model answer " + str(model_id))
+            string = "Props:" + str(ret) + str(model_id)
+            return str({"Menu": load_menu()}) + string
+        except TypeError:
+            return 'not setting up the model'
+        # except ValueError:
+        #     return err_return("Invalid model answer " + str(model_id))
 
 
 @api.route("/models/menu/<int:model_id>/")
