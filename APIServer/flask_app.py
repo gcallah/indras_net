@@ -88,7 +88,7 @@ class Props(Resource):
     def put(self, model_id):
         # try:
         ret = api.payload
-        return (type(ret) == dict, str(model_id))
+        return {str(model_id): type(ret) == dict}
         # return str(type(ret)) + str(model_id)
         #     try:
         #         props = ret["props"]  # noqa F841
