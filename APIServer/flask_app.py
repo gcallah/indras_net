@@ -91,7 +91,7 @@ class Props(Resource):
         # return {str(model_id): type(ret) == dict}
         try:
             # setup_dict[model_id["run"]](ret)
-            return str({"Menu": load_menu()}) + "Props:" + str(ret)
+            return str({"Menu": load_menu()}) + "Props:" + str(ret) + str(model_id)
         except TypeError:
             return 'not setting up the model'
         # except ValueError:
