@@ -18,7 +18,7 @@ DEF_RULE = 30
 W = 0
 B = 1
 
-groups = []
+groups = None
 wolfram_env = None
 rule_dict = None
 
@@ -31,14 +31,12 @@ def create_agent(x, y):
     return Agent(name=name, action=None)
 
 
-def change_color(wolfram_env, agent):
+def turn_black(wolfram_env, groups, agent):
     """
     Automatically change color from one to the other.
     """
-    curr_group = agent.primary_group()
-    if curr_group == groups[W]:
-        next_group = groups[B]
-    switch(agent, curr_group, next_group)
+    if agent.primary_group() == groups[W]:
+        switch(agent, groups[W], groups[B])
 
 
 def get_active_row(wolfram_env):
@@ -118,7 +116,7 @@ def wolfram_action(wolfram_env):
         middle_color = get_color(curr.primary_group())
         right_color = get_color(right.primary_group())
         if next_color(rule_dict, left_color, middle_color, right_color):
-            change_color(wolfram_env, next_row[i])
+            turn_black(wolfram_env, groups, next_row[i])
     return True
 
 
@@ -126,6 +124,8 @@ def set_up():
     """
     A func to set up run that can also be used by test code.
     """
+    global groups
+
     pa = PropArgs.create_props('basic_props',
                                ds_file='props/wolfram.props.json')
 
@@ -138,11 +138,12 @@ def set_up():
         height = (width // 2)
     black = Composite("black", {"color": BLACK, "marker": SQUARE})
     white = Composite("white", {"color": WHITE})
+    groups = []
     groups.append(white)
     groups.append(black)
     for y in range(height):
         for x in range(width):
-            groups[0] += create_agent(x, y)
+            groups[W] += create_agent(x, y)
     wolfram_env = Env("wolfram env",
                       action=wolfram_action,
                       random_placing=False,
@@ -152,7 +153,7 @@ def set_up():
                       members=groups)
     wolfram_env.user.exclude_choices(["line_graph"])
     first_agent = wolfram_env.get_agent_at(width // 2, height - 1)
-    change_color(wolfram_env, first_agent)
+    turn_black(wolfram_env, groups, first_agent)
     return (groups, wolfram_env, rule_dict)
 
 
