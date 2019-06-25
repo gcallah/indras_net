@@ -28,6 +28,9 @@ test_sand:
 # test_fashion:
 # 	nosetests tests.test_fashion
 
+test_wolfram:
+	nosetests tests.test_wolfram --nocapture
+
 test_wolfsheep:
 	nosetests tests.test_wolfsheep --nocapture
 
