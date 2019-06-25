@@ -77,8 +77,8 @@ class Props(Resource):
         try:
             models_db = load_models()
             with open(indra_dir + "/" + models_db[model_id]["props"]) as file:
-                props = json.loads(file.read())
-                return props
+                model_prop = json.loads(file.read())
+                return model_prop
         except (IndexError, KeyError, ValueError):
             return err_return("Invalid model id " + str(model_id))
         except FileNotFoundError:
@@ -106,7 +106,6 @@ class ModelMenu(Resource):
         return user()
 
 
-# @api.route("/models/menu/<int:menu_id>")
 @api.route("/models/menu/<int:model_id>/<int:menu_id>")
 class MenuItem(Resource):
     global user
