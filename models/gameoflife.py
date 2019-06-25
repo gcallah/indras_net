@@ -34,28 +34,43 @@ def change_color(gameoflife_env, agent):
 
 
 def apply_live_rules(gameoflife_env, agent):
+    """
+    Apply the rules for live agents.
+    The agent passed in should be alive.
+    """
     print("apply live rules")
     num_live_neighbors = 0
     for neighbor in agent.neighbors:
         if neighbor.primary_group() == groups[1]:
             num_live_neighbors += 1
     if (num_live_neighbors != 2 and num_live_neighbors != 3):
-        change_color(gameoflife_env, agent)
+        return True
+    else:
+        return False
 
 
 def apply_dead_rules(gameoflife_env, agent):
+    """
+    Apply the rules for dead agents.
+    The agent passed in should be dead.
+    """
     num_live_neighbors = 0
     for neighbor in agent.neighbors:
         if neighbor.primary_group() == groups[1]:
             num_live_neighbors += 1
     if num_live_neighbors == 3:
-        change_color(gameoflife_env, agent)
+        return True
+    else:
+        return False
 
 
 def gameoflife_action(gameoflife_env):
     """
     The action that will be taken every period.
+    Loops through every agent, determines whether it is alove or dead,
+    and passed it to the corresponding rule function.
     """
+    to_be_changed = []
     for y in range(0, gameoflife_env.height):
         for x in range(0, gameoflife_env.width):
             curr_agent = gameoflife_env.get_agent_at(x, y)
@@ -66,9 +81,13 @@ def gameoflife_action(gameoflife_env):
                         if i.primary_group() == groups[1]:
                             print("     ", i.get_pos())
                 if curr_agent.primary_group() == groups[1]:
-                    apply_live_rules(gameoflife_env, curr_agent)
+                    if apply_live_rules(gameoflife_env, curr_agent):
+                        to_be_changed.append(curr_agent)
                 else:
-                    apply_dead_rules(gameoflife_env, curr_agent)
+                    if apply_dead_rules(gameoflife_env, curr_agent):
+                        to_be_changed.append(curr_agent)
+    for to_change in to_be_changed:
+        change_color(gameoflife_env, to_change)
 
 
 def agent_action(agent):
@@ -98,7 +117,6 @@ def set_up():
                          members=groups,
                          random_placing=False)
     gameoflife_env.user.exclude_choices(["line_graph"])
-
     a = gameoflife_env.get_agent_at((width // 2), (height // 2))
     change_color(gameoflife_env, a)
     b = gameoflife_env.get_agent_at((width // 2) + 1, (height // 2))
@@ -107,17 +125,6 @@ def set_up():
     change_color(gameoflife_env, c)
     d = gameoflife_env.get_agent_at((width // 2), (height // 2) - 1)
     change_color(gameoflife_env, d)
-
-    # if a.primary_group() == groups[1]:
-    #     print("A")
-    # if b.primary_group() == groups[1]:
-    #     print("B")
-
-    # print(a.get_pos())
-    # print(b.get_pos())
-    # print(c.get_pos())
-    # print(d.get_pos())
-
     return (groups, gameoflife_env)
 
 
