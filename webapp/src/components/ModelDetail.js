@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import { Loader, Dimmer } from "semantic-ui-react";
 import axios from 'axios';
-import { Link } from 'react-router-dom';
-
+import { Link, Route } from 'react-router-dom';
 
 class ModelDetail extends Component {
   api_server = 'https://indrasnet.pythonanywhere.com/models/props/';
@@ -12,10 +11,12 @@ class ModelDetail extends Component {
       msg: '',
       model_details: {},
       loadingData: false,
+      redirect: false,
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
+
   async componentDidMount() {
     this.setState({ loadingData: true });
     document.title = "Indra | Property";
@@ -34,12 +35,19 @@ class ModelDetail extends Component {
                                        );
   }
 
- handleChange = (e) =>{ 
+  setRedirect = () => {
+    this.setState({
+      redirect: true
+    })
+  }
+
+  handleChange = (e) =>{ 
    let model_detail = this.state.model_details;
    const {name,value} = e.target
    model_detail[name]['val']= value
-   this.setState({model_details:model_detail}) 
-}
+   this.setState({model_details:model_detail})
+  }
+
   handleSubmit = event => {
     event.preventDefault();
     axios.put(this.api_server + this.state.id,this.state.model_details)
@@ -48,9 +56,8 @@ class ModelDetail extends Component {
         console.log(res.data);
       },
      console.log(this.state.model_details))
+    this.props.history.replace( '/models/menu/' + this.state.id );
   }
-
-
 
   render() {
     if (this.state.loadingData) {
@@ -75,7 +82,7 @@ class ModelDetail extends Component {
         }
         </form>
         <br /><br />
-        <button onClick={this.handleSubmit}>Submit</button>
+        <button onClick={this.handleSubmit.bind( this )}>Submit</button>
       </div>
     );
   }
