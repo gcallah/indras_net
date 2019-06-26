@@ -105,10 +105,14 @@ def set_up(props=None):
     """
     global on_fire
     global healthy
+
     ds_file = 'props/forestfire.props.json'
-    pa = props
-    if pa is None:
+    if props is None:
         pa = PropArgs.create_props('forest_fire_props', ds_file=ds_file)
+    else:
+        pa = PropArgs.create_props('forest_fire_props',
+                                   prop_dict=props)
+
     forest_height = pa.get('grid_height', DEF_DIM)
     forest_width = pa.get('grid_width', DEF_DIM)
     forest_density = pa.get('density', DEF_DENSITY)
