@@ -1,6 +1,7 @@
 from unittest import TestCase, main
 from indra.agent import Agent
 from indra.composite import Composite
+from indra.space import Space, grp_from_nm_dict
 from indra.env import Env
 from models.gameoflife import create_agent, set_up
 from models.gameoflife import change_color, apply_live_rules, apply_dead_rules, gameoflife_action, agent_action, populate_board
@@ -28,8 +29,8 @@ class GameOfLifeTestCase(TestCase):
     def test_change_color(self):
         agent = create_agent(TEST_ANUM, TEST_ANUM)
         g.groups =[]
-        g.groups.append(Composite("black"))
         g.groups.append(Composite("white"))
+        g.groups.append(Composite("black"))
         g.groups[0] += agent
         change_color(g.gameoflife_env, agent)
         self.assertEqual(agent.primary_group(), g.groups[1])
@@ -39,8 +40,8 @@ class GameOfLifeTestCase(TestCase):
         b = create_agent(TEST_ANUM - 1, TEST_ANUM)
         c = create_agent(TEST_ANUM + 1, TEST_ANUM)
         g.groups =[]
-        g.groups.append(Composite("black"))
         g.groups.append(Composite("white"))
+        g.groups.append(Composite("black"))
         g.groups[1] += a
         g.groups[1] += b
         g.groups[1] += c
@@ -58,8 +59,8 @@ class GameOfLifeTestCase(TestCase):
         c = create_agent(TEST_ANUM + 1, TEST_ANUM)
         d = create_agent(TEST_ANUM, TEST_ANUM + 1)
         g.groups =[]
-        g.groups.append(Composite("black"))
         g.groups.append(Composite("white"))
+        g.groups.append(Composite("black"))
         g.groups[0] += a
         g.groups[1] += b
         g.groups[1] += c
@@ -73,6 +74,28 @@ class GameOfLifeTestCase(TestCase):
         a.neighbors = neighbors
         self.assertEqual(apply_dead_rules(g.gameoflife_env, a), True)
 
+    # def test_gameoflife_action(self):
+    #     a = create_agent(TEST_ANUM, TEST_ANUM)
+    #     b = create_agent(TEST_ANUM - 1, TEST_ANUM)
+    #     c = create_agent(TEST_ANUM + 1, TEST_ANUM)
+    #     d = create_agent(TEST_ANUM, TEST_ANUM + 1)
+    #     g.groups = []
+    #     g.groups.append(Composite("white"))
+    #     g.groups.append(Composite("black"))
+    #     g.groups[0] += a
+    #     g.groups[1] += b
+    #     g.groups[1] += c
+    #     g.groups[1] += d
+    #     lst = []
+    #     neighbors_dict = {"neighbors": lst}
+    #     neighbors_dict["neighbors"].append(b)
+    #     neighbors_dict["neighbors"].append(c)
+    #     neighbors_dict["neighbors"].append(d)
+    #     neighbors_composite = grp_from_nm_dict("All neighbors", neighbors_dict["neighbors"])
+    #     a.neighbors = neighbors_composite
+    #     gameoflife_action(g.gameoflife_env)
+    #     self.assertEqual(a.primary_group(), g.groups[1])
+    #     self.assertEqual(len(a.neighbors), 3)
 
 
 

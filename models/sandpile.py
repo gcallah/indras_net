@@ -93,7 +93,7 @@ def sandpile_action(sandpile):
     add_grain(sandpile, sandpile.attrs["center_agent"])
 
 
-def place_action(agent):
+def place_action(sandpile, agent):
     if agent.neighbors is None:
         neighbors = sandpile.get_vonneumann_hood(agent)
         agent.neighbors = neighbors

@@ -70,7 +70,7 @@ def gameoflife_action(gameoflife_env):
     """
     The action that will be taken every period.
     Loops through every agent, determines whether it is alive or dead,
-    and passed it to the corresponding rule function.
+    and passes it to the corresponding rule function.
     """
     to_be_changed = []
     for y in range(0, gameoflife_env.height):
