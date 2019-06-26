@@ -21,10 +21,9 @@ NEARBY = 1
 
 NUM_GROUPS = 4
 
-sandpile = None
-
 groups = None
-group_indices = {}
+group_indices = None
+sandpile = None
 
 
 def create_agent(x, y):
@@ -111,6 +110,7 @@ def set_up():
     width = pa.get('grid_width', DEF_WIDTH)
     height = pa.get('grid_height', DEF_HEIGHT)
     groups = []
+    group_indices = {}
     for i in range(NUM_GROUPS):
         groups.append(Composite("Group" + str(i)))
         group_indices[groups[i].name] = i
@@ -130,8 +130,9 @@ def set_up():
 
 
 def main():
-    global sandpile
     global groups
+    global group_indices
+    global sandpile
     (groups, group_indices, sandpile) = set_up()
     sandpile()
     return 0

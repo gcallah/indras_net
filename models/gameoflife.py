@@ -13,7 +13,7 @@ from indra.display_methods import BLACK, WHITE, SQUARE
 
 DEBUG = True  # Turns debugging code on or off
 
-groups = []
+groups = None
 
 
 def create_agent(x, y):
@@ -69,7 +69,7 @@ def apply_dead_rules(gameoflife_env, agent):
 def gameoflife_action(gameoflife_env):
     """
     The action that will be taken every period.
-    Loops through every agent, determines whether it is alove or dead,
+    Loops through every agent, determines whether it is alive or dead,
     and passed it to the corresponding rule function.
     """
     to_be_changed = []
@@ -112,12 +112,15 @@ def set_up():
     """
     A func to set up run that can also be used by test code.
     """
+    global groups
+
     pa = PropArgs.create_props('basic_props',
                                ds_file='props/gameoflife.props.json')
     width = pa.get('grid_width', DEF_WIDTH)
     height = pa.get('grid_height', DEF_HEIGHT)
     black = Composite("black", {"color": BLACK, "marker": SQUARE})
     white = Composite("white", {"color": WHITE})
+    groups = []
     groups.append(white)
     groups.append(black)
     for y in range(height):
