@@ -1,18 +1,15 @@
 import React, { Component } from "react";
-import { Loader, Dimmer, Menu} from "semantic-ui-react";
-class Props extends Component {
+import { Loader, Dimmer } from "semantic-ui-react";
+
+class Menu extends Component {
   state = {
     msg: '',
     loadingData: false,
   }
-  //id is in props
-
-  //request API server with id for specific model - props 
-  //return what API return
 
   async componentDidMount() {
     this.setState({ loadingData: true });
-    document.title = "Indra | Work in Progress";
+    document.title = "Indra | Menu";
     this.setState({ loadingData: false });
   }
 
@@ -24,19 +21,20 @@ class Props extends Component {
         </Dimmer>
       );
     }
-    console.log('ONCLICK')
-    console.log(this.props.item['model ID'])
+
     return (
       <div>
         <br />
         <h1 style={{ "textAlign": "center" }}>Welcome to the Indra ABM platform!
         </h1>
         <br /><br />
-        <Menu.Item key={this.props.id} onClick={() => this.props.handleChange(this.props.item['model ID'])}>
-        </Menu.Item>     
+
+        <p>We will have the model menu displaying soon!</p>
+
+        <br /><br />
       </div>
     );
   }
 }
 
-export default Props;
+export default Menu;

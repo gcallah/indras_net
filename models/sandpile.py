@@ -21,10 +21,9 @@ NEARBY = 1
 
 NUM_GROUPS = 4
 
+groups = None
+group_indices = None
 sandpile = None
-
-groups = []
-group_indices = {}
 
 
 def create_agent(x, y):
@@ -94,20 +93,29 @@ def sandpile_action(sandpile):
     add_grain(sandpile, sandpile.attrs["center_agent"])
 
 
-def place_action(agent):
+def place_action(sandpile, agent):
     if agent.neighbors is None:
         neighbors = sandpile.get_vonneumann_hood(agent)
         agent.neighbors = neighbors
 
 
-def set_up():
+def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    pa = PropArgs.create_props('sandpile_props',
-                               ds_file='props/sandpile.props.json')
+    global groups
+
+    if props is None:
+        pa = PropArgs.create_props('sandpile_props',
+                                   ds_file='props/sandpile.props.json')
+    else:
+        pa = PropArgs.create_props('sandpile_props',
+                                   prop_dict=props)
+
     width = pa.get('grid_width', DEF_WIDTH)
     height = pa.get('grid_height', DEF_HEIGHT)
+    groups = []
+    group_indices = {}
     for i in range(NUM_GROUPS):
         groups.append(Composite("Group" + str(i)))
         group_indices[groups[i].name] = i
@@ -127,8 +135,9 @@ def set_up():
 
 
 def main():
-    global sandpile
     global groups
+    global group_indices
+    global sandpile
     (groups, group_indices, sandpile) = set_up()
     sandpile()
     return 0

@@ -4,6 +4,7 @@ import Layout from './components/Layout';
 import Home from './components/Home';
 import WIP from './components/WIP';
 import ModelDetail from './components/ModelDetail'
+import Menu from "./components/Menu"
 
 class App extends Component {
   render() {
@@ -14,6 +15,7 @@ class App extends Component {
             <Route exact path="/" component={Home} />
             <Route exact path="/wip" component={WIP} />
             <Route exact path="/models/props/:id" component={ModelDetail} />
+            <Route exact path="/models/menu/:id" component={Menu} />
           </Switch>
         </Layout>
       </HashRouter>

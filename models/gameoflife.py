@@ -1,6 +1,8 @@
 """
 Conway's Game of Life model
 """
+from random import randint
+
 from propargs.propargs import PropArgs
 
 from indra.agent import Agent, switch
@@ -11,7 +13,7 @@ from indra.display_methods import BLACK, WHITE, SQUARE
 
 DEBUG = True  # Turns debugging code on or off
 
-groups = []
+groups = None
 
 
 def create_agent(x, y):
@@ -67,8 +69,8 @@ def apply_dead_rules(gameoflife_env, agent):
 def gameoflife_action(gameoflife_env):
     """
     The action that will be taken every period.
-    Loops through every agent, determines whether it is alove or dead,
-    and passed it to the corresponding rule function.
+    Loops through every agent, determines whether it is alive or dead,
+    and passes it to the corresponding rule function.
     """
     to_be_changed = []
     for y in range(0, gameoflife_env.height):
@@ -95,16 +97,30 @@ def agent_action(agent):
         agent.neighbors = gameoflife_env.get_all_neighbors(agent)
 
 
+def populate_board(gameoflife_env, width, height):
+    num_agent = int(0.1 * (width * height))
+    upper_limit = int((width / 2) + (width / 4))
+    lower_limit = int((width / 2) - (width / 4)) + 1
+    for i in range(num_agent):
+        agent = gameoflife_env.get_agent_at(randint(lower_limit, upper_limit),
+                                            randint(lower_limit, upper_limit))
+        if agent.primary_group() != groups[1]:
+            change_color(gameoflife_env, agent)
+
+
 def set_up():
     """
     A func to set up run that can also be used by test code.
     """
+    global groups
+
     pa = PropArgs.create_props('basic_props',
                                ds_file='props/gameoflife.props.json')
     width = pa.get('grid_width', DEF_WIDTH)
     height = pa.get('grid_height', DEF_HEIGHT)
     black = Composite("black", {"color": BLACK, "marker": SQUARE})
     white = Composite("white", {"color": WHITE})
+    groups = []
     groups.append(white)
     groups.append(black)
     for y in range(height):
@@ -117,14 +133,7 @@ def set_up():
                          members=groups,
                          random_placing=False)
     gameoflife_env.user.exclude_choices(["line_graph"])
-    a = gameoflife_env.get_agent_at((width // 2), (height // 2))
-    change_color(gameoflife_env, a)
-    b = gameoflife_env.get_agent_at((width // 2) + 1, (height // 2))
-    change_color(gameoflife_env, b)
-    c = gameoflife_env.get_agent_at((width // 2) - 1, (height // 2))
-    change_color(gameoflife_env, c)
-    d = gameoflife_env.get_agent_at((width // 2), (height // 2) - 1)
-    change_color(gameoflife_env, d)
+    populate_board(gameoflife_env, width, height)
     return (groups, gameoflife_env)
 
 
