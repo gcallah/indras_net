@@ -170,7 +170,7 @@ def set_up(props=None):
     meadow = Env("meadow", members=[wolves, sheep],
                  height=pa.get('meadow_height', MEADOW_HEIGHT),
                  width=pa.get('meadow_width', MEADOW_WIDTH))
-    return (wolves, sheep, meadow)
+    return (meadow, wolves, sheep)
 
 
 def main():
@@ -178,7 +178,7 @@ def main():
     global sheep
     global meadow
 
-    (wolves, sheep, meadow) = set_up()
+    (meadow, wolves, sheep) = set_up()
 
     if DEBUG2:
         print(meadow.__repr__())

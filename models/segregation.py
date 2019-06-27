@@ -103,10 +103,13 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    pa = props
-    if pa is None:
-        pa = PropArgs.create_props('basic_props',
+    if props is None:
+        pa = PropArgs.create_props('fashion_props',
                                    ds_file='props/segregation.props.json')
+    else:
+        pa = PropArgs.create_props('fashion_props',
+                                   prop_dict=props)
+
     blue_agents = Composite(group_names[BLUE_TEAM] + " group", {"color": BLUE})
     red_agents = Composite(group_names[RED_TEAM] + " group", {"color": RED})
     for i in range(pa.get('num_red', NUM_RED)):
@@ -129,14 +132,14 @@ def set_up(props=None):
     city = Env("A city", members=[blue_agents, red_agents],
                height=pa.get('grid_height', DEF_CITY_DIM),
                width=pa.get('grid_width', DEF_CITY_DIM))
-    return (blue_agents, red_agents, city)
+    return (city, blue_agents, red_agents)
 
 
 def main():
     global blue_agents
     global red_agents
     global city
-    (blue_agents, red_agents, city) = set_up()
+    (city, blue_agents, red_agents) = set_up()
 
     if DEBUG2:
         print(city.__repr__())

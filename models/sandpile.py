@@ -131,14 +131,14 @@ def set_up(props=None):
     sandpile.attrs["center_agent"] = sandpile.get_agent_at(height // 2,
                                                            width // 2)
 
-    return (groups, group_indices, sandpile)
+    return (sandpile, groups, group_indices)
 
 
 def main():
     global groups
     global group_indices
     global sandpile
-    (groups, group_indices, sandpile) = set_up()
+    (sandpile, groups, group_indices) = set_up()
     sandpile()
     return 0
 
