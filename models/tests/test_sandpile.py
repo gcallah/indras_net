@@ -20,7 +20,7 @@ sandpile = None
 class SandpileTestCase(TestCase):
     def setUp(self):
         # self.test_agent = create_agent(TEST_X, TEST_Y)
-        (sp.groups, sp.group_indices, sp.sandpile) = set_up()
+        (sp.sandpile, sp.groups, sp.group_indices) = set_up()
 
     def tearDown(self):
         self.test_agent = None
