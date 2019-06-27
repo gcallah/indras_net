@@ -14,9 +14,9 @@ DEF_WIDTH = 10
 
 NUM_GROUPS = 4
 
+sandpile_env = None
 groups = None
 group_indices = None
-sandpile_env = None
 
 
 def create_agent(x, y):
@@ -114,23 +114,23 @@ def set_up(props=None):
     for y in range(height):
         for x in range(width):
             groups[0] += create_agent(x, y)
-    sandpile = Env("A sandpile",
-                   action=sandpile_action,
-                   members=groups,
-                   height=height,
-                   width=width,
-                   random_placing=False)
-    sandpile.attrs["center_agent"] = sandpile.get_agent_at(height // 2,
-                                                           width // 2)
-    return (sandpile, groups, group_indices)
+    sandpile_env = Env("A sandpile",
+                       action=sandpile_action,
+                       members=groups,
+                       height=height,
+                       width=width,
+                       random_placing=False)
+    sandpile_env.attrs["center_agent"] = sandpile_env.get_agent_at(height // 2,
+                                                                   width // 2)
+    return (sandpile_env, groups, group_indices)
 
 
 def main():
+    global sandpile_env
     global groups
     global group_indices
-    global sandpile
-    (sandpile, groups, group_indices) = set_up()
-    sandpile()
+    (sandpile_env, groups, group_indices) = set_up()
+    sandpile_env()
     return 0
 
 
