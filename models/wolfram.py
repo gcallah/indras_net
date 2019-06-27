@@ -146,7 +146,7 @@ def set_up(props=None):
     all_rows = []
     for i in range(height):
         all_rows.append(wolfram_env.get_row_hood(i))
-    return (groups, wolfram_env, rule_dict, all_rows)
+    return (wolfram_env, groups, rule_dict, all_rows)
 
 
 def main():
@@ -154,7 +154,7 @@ def main():
     global wolfram_env
     global rule_dict
     global all_rows
-    (groups, wolfram_env, rule_dict, all_rows) = set_up()
+    (wolfram_env, groups, rule_dict, all_rows) = set_up()
     wolfram_env()
     return 0
 

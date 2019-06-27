@@ -104,14 +104,19 @@ def populate_board(gameoflife_env, width, height):
             change_color(gameoflife_env, agent)
 
 
-def set_up():
+def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
     global groups
 
-    pa = PropArgs.create_props('basic_props',
-                               ds_file='props/gameoflife.props.json')
+    ds_file = 'props/gameoflife.props.json'
+    if props is None:
+        pa = PropArgs.create_props('forest_fire_props', ds_file=ds_file)
+    else:
+        pa = PropArgs.create_props('forest_fire_props',
+                                   prop_dict=props)
+
     width = pa.get('grid_width', DEF_WIDTH)
     height = pa.get('grid_height', DEF_HEIGHT)
     black = Composite("black", {"color": BLACK, "marker": SQUARE})
@@ -129,7 +134,6 @@ def set_up():
                          members=groups,
                          random_placing=False)
     gameoflife_env.user.exclude_choices(["line_graph"])
-    # populate_board(gameoflife_env, width, height)
     a = gameoflife_env.get_agent_at((width // 2), (height // 2))
     change_color(gameoflife_env, a)
     b = gameoflife_env.get_agent_at((width // 2) - 1, (height // 2))
@@ -139,12 +143,14 @@ def set_up():
     d = gameoflife_env.get_agent_at((width // 2), (height // 2) + 1)
     change_color(gameoflife_env, d)
     return (groups, gameoflife_env)
+    populate_board(gameoflife_env, width, height)
+    return (gameoflife_env, groups)
 
 
 def main():
     global groups
     global gameoflife_env
-    (groups, gameoflife_env) = set_up()
+    (gameoflife_env, groups) = set_up()
     gameoflife_env()
     return 0
 

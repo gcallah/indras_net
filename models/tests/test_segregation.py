@@ -26,7 +26,7 @@ def print_sep():
 
 class SegregationTestCase(TestCase):
     def setUp(self):
-        (seg.blue_agents, seg.red_agents, seg.city) = set_up()
+        (seg.city, seg.blue_agents, seg.red_agents) = set_up()
 
     def tearDown(self):
         seg.blue_agents = None

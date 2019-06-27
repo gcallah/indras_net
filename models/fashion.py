@@ -167,8 +167,8 @@ def set_up(props=None):
 
     society = Env("society", members=[blue_tsetters, red_tsetters,
                                       blue_followers, red_followers])
-    return (blue_tsetters, red_tsetters, blue_followers, red_followers,
-            opp_group, society)
+    return (society, blue_tsetters, red_tsetters, blue_followers,
+            red_followers, opp_group)
 
 
 def main():
@@ -179,8 +179,8 @@ def main():
     global society
     global opp_group
 
-    (blue_tsetters, red_tsetters, blue_followers, red_followers, opp_group,
-     society) = set_up()
+    (society, blue_tsetters, red_tsetters, blue_followers, red_followers,
+     opp_group) = set_up()
 
     if DEBUG2:
         print(society.__repr__())
