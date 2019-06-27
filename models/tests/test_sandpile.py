@@ -85,27 +85,28 @@ class SandpileTestCase(TestCase):
         sandpile_action(sp.sandpile)
         self.assertEqual(sp.sandpile.attrs["center_agent"].primary_group(), sp.groups[1])
 
-    def test_place_action(self):
-        a = create_agent(TEST_X, TEST_Y)
-        b = create_agent(TEST_X - 1, TEST_Y)
-        c = create_agent(TEST_X + 1, TEST_Y)
-        d = create_agent(TEST_X, TEST_Y - 1)
-        e = create_agent(TEST_X, TEST_Y + 1)
-        sp.groups = []
-        sp.groups.append(Composite("Group" + str(0)))
-        sp.groups[0] += a
-        sp.groups[0] += b
-        sp.groups[0] += c
-        sp.groups[0] += d
-        sp.groups[0] += e
-        sp.sandpile = Env("Sandpile", members=sp.groups)
-        correct_neighbors = Composite("Vonneuman neighbors")
-        correct_neighbors += b
-        correct_neighbors += c
-        correct_neighbors += d
-        correct_neighbors += e
-        place_action(sp.sandpile, a)
-        print("a.n = ", repr(a.neighbors))
-        print("cn = ", repr(correct_neighbors))
+    # def test_place_action(self):
+    #     a = create_agent(TEST_X, TEST_Y)
+    #     b = create_agent(TEST_X - 1, TEST_Y)
+    #     c = create_agent(TEST_X + 1, TEST_Y)
+    #     d = create_agent(TEST_X, TEST_Y - 1)
+    #     e = create_agent(TEST_X, TEST_Y + 1)
+    #     sp.groups = []
+    #     sp.groups.append(Composite("Group" + str(0)))
+    #     sp.groups[0] += a
+    #     sp.groups[0] += b
+    #     sp.groups[0] += c
+    #     sp.groups[0] += d
+    #     sp.groups[0] += e
+    #     sp.sandpile = Env("Sandpile", members=sp.groups)
+    #     correct_neighbors = Composite("Vonneuman neighbors")
+    #     correct_neighbors += b
+    #     correct_neighbors += c
+    #     correct_neighbors += d
+    #     correct_neighbors += e
+    #     place_action(sp.sandpile, a)
+    #     print("a.n = ", repr(a.neighbors))
+    #     print("cn = ", repr(correct_neighbors))
         # I think you should loop like agent.py line 176
+        # self.assertCountEqual(a.neighbors, correct_neighbors)
         # self.assertEqual(a.neighbors, correct_neighbors)
