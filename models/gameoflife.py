@@ -142,8 +142,7 @@ def set_up(props=None):
     change_color(gameoflife_env, c)
     d = gameoflife_env.get_agent_at((width // 2), (height // 2) + 1)
     change_color(gameoflife_env, d)
-    return (groups, gameoflife_env)
-    populate_board(gameoflife_env, width, height)
+    # populate_board(gameoflife_env, width, height)
     return (gameoflife_env, groups)
 
 
