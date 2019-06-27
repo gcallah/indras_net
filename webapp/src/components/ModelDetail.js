@@ -10,11 +10,13 @@ class ModelDetail extends Component {
     this.state = {
       msg: '',
       model_details: {},
+      errorMessage:'',
       loadingData: false,
       redirect: false,
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.checkValidity = this.checkValidity.bind(this);
   }
 
   async componentDidMount() {
@@ -25,6 +27,7 @@ class ModelDetail extends Component {
     this.setState({id:menu_id.id})
     this.setState({ model_details: properties.data });
     this.states(properties.data);
+    this.errors(properties.data);
     this.setState({ loadingData: false });
   }
   
@@ -32,7 +35,19 @@ class ModelDetail extends Component {
     //loop over objects in data and create object in this.state
     Object.keys(this.state.model_details).forEach(item => 
          this.setState({[item]: data[item]})
-                                       );
+       );
+  }
+  errors(data){
+    Object.keys(this.state.model_details).forEach(item => 
+       this.setState(prevState => ({
+          model_details: {
+             ...prevState.model_details,          
+             [item]: {                     
+                  ...prevState.model_details[item],  
+                  errorMessage: ''        
+                     }
+                          }
+  })))
   }
 
   setRedirect = () => {
@@ -44,10 +59,31 @@ class ModelDetail extends Component {
   handleChange = (e) =>{ 
    let model_detail = this.state.model_details;
    const {name,value} = e.target
-   model_detail[name]['val']= value
-   this.setState({model_details:model_detail})
+   let valid = this.checkValidity(name,value)
+   if (valid){
+      model_detail[name]['val']= value
+      model_detail[name]['errorMessage']=""
+      this.setState({model_details:model_detail})
+   }else{
+      model_detail[name]['errorMessage']="Wrong Input Type"
+      this.setState({model_details:model_detail})
+      console.log(this.state.model_details[name]['errorMessage'])
+  }         
   }
-
+  
+  checkValidity(name,value){
+    if (value<=this.state.model_details[name]['hival'] && value >=this.state.model_details[name]['lowval']){
+       if (this.state.model_details[name]['atype'] === 'INT' && !!(value%1)=== false){
+             return true
+      }else if(this.state.model_details[name]['atype'] === 'DBL' && !!(value%1)=== true){
+      	     return true
+      }else{
+             return false
+      }
+ }else{
+             return false
+      }
+ }
   handleSubmit = event => {
     event.preventDefault();
     axios.put(this.api_server + this.state.id,this.state.model_details)
@@ -77,7 +113,7 @@ class ModelDetail extends Component {
         <form>
             {
            Object.keys(this.state.model_details).map((item,i)=> {
-                return(<label key={i}>{this.state.model_details[item]['question']} :<input type={this.state.model_details[item]['atype']} defaultValue={this.state.model_details[item]['val']} onChange={this.handleChange} name={item} /><br/><br/></label>
+                return(<label key={i}>{this.state.model_details[item]['question']} :<input type={this.state.model_details[item]['atype']} defaultValue={this.state.model_details[item]['val']} onChange={this.handleChange} name={item} /><span>{this.state.model_details[item]['errorMessage']}</span><br/><br/></label>
             )})
         }
         </form>
