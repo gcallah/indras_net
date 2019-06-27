@@ -96,11 +96,9 @@ def populate_board(gameoflife_env, width, height):
     upper_limit = int((width / 2) + (width / 4))
     lower_limit = int((width / 2) - (width / 4)) + 1
     for i in range(num_agent):
-        print(i)
         agent = gameoflife_env.get_agent_at(randint(lower_limit, upper_limit),
                                             randint(lower_limit, upper_limit))
         if agent.primary_group() != groups[1]:
-            print("Placing agent at", agent)
             change_color(gameoflife_env, agent)
 
 
@@ -116,7 +114,6 @@ def set_up(props=None):
     else:
         pa = PropArgs.create_props('forest_fire_props',
                                    prop_dict=props)
-
     width = pa.get('grid_width', DEF_WIDTH)
     height = pa.get('grid_height', DEF_HEIGHT)
     black = Composite("black", {"color": BLACK, "marker": SQUARE})
@@ -134,15 +131,15 @@ def set_up(props=None):
                          members=groups,
                          random_placing=False)
     gameoflife_env.user.exclude_choices(["line_graph"])
-    a = gameoflife_env.get_agent_at((width // 2), (height // 2))
-    change_color(gameoflife_env, a)
-    b = gameoflife_env.get_agent_at((width // 2) - 1, (height // 2))
-    change_color(gameoflife_env, b)
-    c = gameoflife_env.get_agent_at((width // 2) + 1, (height // 2))
-    change_color(gameoflife_env, c)
-    d = gameoflife_env.get_agent_at((width // 2), (height // 2) + 1)
-    change_color(gameoflife_env, d)
-    # populate_board(gameoflife_env, width, height)
+    # a = gameoflife_env.get_agent_at((width // 2), (height // 2))
+    # change_color(gameoflife_env, a)
+    # b = gameoflife_env.get_agent_at((width // 2) - 1, (height // 2))
+    # change_color(gameoflife_env, b)
+    # c = gameoflife_env.get_agent_at((width // 2) + 1, (height // 2))
+    # change_color(gameoflife_env, c)
+    # d = gameoflife_env.get_agent_at((width // 2), (height // 2) + 1)
+    # change_color(gameoflife_env, d)
+    populate_board(gameoflife_env, width, height)
     return (gameoflife_env, groups)
 
 
