@@ -88,8 +88,10 @@ class Props(Resource):
     @api.expect(props)
     def put(self, model_id):
         props_dict = api.payload
+        models_db = load_models()
         try:
-            return setup_dict[model_id["run"]](props_dict)
+            env = setup_dict[models_db[model_id]["run"]](props=props_dict)[0]
+            return env
         except TypeError:
             string = "Props:" + str(props_dict) + str(model_id)
             return str({"Menu": load_menu()}) + string

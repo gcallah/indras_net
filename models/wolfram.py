@@ -135,14 +135,14 @@ def set_up(props=None):
     wolfram_env.user.exclude_choices(["line_graph"])
     first_agent = wolfram_env.get_agent_at(width // 2, height - 1)
     turn_black(wolfram_env, groups, first_agent)
-    return (groups, wolfram_env, rule_dict)
+    return (wolfram_env, groups, rule_dict)
 
 
 def main():
     global groups
     global wolfram_env
     global rule_dict
-    (groups, wolfram_env, rule_dict) = set_up()
+    (wolfram_env, groups, rule_dict) = set_up()
     wolfram_env()
     return 0
 

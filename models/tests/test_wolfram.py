@@ -10,7 +10,7 @@ TEST_ANUM = 999999
 
 class WolframTestCase(TestCase):
     def setUp(self):
-        (wolf.groups, wolf.wolfram_env, wolf.rule_dict) = set_up()
+        (wolf.wolfram_env, wolf.groups, wolf.rule_dict) = set_up()
 
     def tearDown(self):
         wolf.groups = None

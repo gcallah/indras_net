@@ -13,7 +13,7 @@ gameoflife_env = None
 
 class GameOfLifeTestCase(TestCase):
     def setUp(self):
-        (g.groups, g.gameoflife_env) = set_up()
+        (g.gameoflife_env, g.groups) = set_up()
         pass
 
     def tearDown(self):

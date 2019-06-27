@@ -20,8 +20,8 @@ TEST_FNAME = FOLLOWER_PRENM + str(TEST_FNUM)
 
 class FashionTestCase(TestCase):
     def setUp(self):
-        (fshn.blue_tsetters, fshn.red_tsetters, fshn.blue_followers,
-         fshn.red_followers, fshn.opp_group, fshn.society) = set_up()
+        (fshn.society, fshn.blue_tsetters, fshn.red_tsetters,
+         fshn.blue_followers, fshn.red_followers, fshn.opp_group) = set_up()
         self.test_follower = create_follower(TEST_FNUM)
         self.test_tsetter = create_tsetter(TEST_TNUM)
         fshn.red_tsetters += self.test_tsetter
