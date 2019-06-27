@@ -1,15 +1,20 @@
 import React, { Component } from "react";
 import { Loader, Dimmer } from "semantic-ui-react";
+import axios from 'axios';
 
 class Menu extends Component {
+  api_server = 'https://indrasnet.pythonanywhere.com/models/menu/';
   state = {
     msg: '',
+    menu_list:{},
     loadingData: false,
   }
 
   async componentDidMount() {
     this.setState({ loadingData: true });
     document.title = "Indra | Menu";
+    const menu = await axios.get(this.api_server);
+    this.setState({menu_list:menu.data})
     this.setState({ loadingData: false });
   }
 
@@ -28,9 +33,9 @@ class Menu extends Component {
         <h1 style={{ "textAlign": "center" }}>Welcome to the Indra ABM platform!
         </h1>
         <br /><br />
-
-        <p>We will have the model menu displaying soon!</p>
-
+          { Object.keys(this.state.menu_list).map((item,i)=>
+     <li key={i}>{this.state.menu_list[item]['question']}</li>)}
+        
         <br /><br />
       </div>
     );

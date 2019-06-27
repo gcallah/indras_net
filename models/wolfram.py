@@ -21,7 +21,6 @@ B = 1
 groups = None
 rule_dict = None
 wolfram_env = None
-all_rows = None
 
 
 def create_agent(x, y):
@@ -79,8 +78,7 @@ def wolfram_action(wolfram_env):
     """
     The action that will be taken every period.
     """
-    periods = wolfram_env.get_periods()
-    active_row_y = wolfram_env.height - periods - 1
+    active_row_y = wolfram_env.height - wolfram_env.get_periods() - 1
     if active_row_y < 1:
         wolfram_env.user.tell_warn("You have exceeded the maximum height"
                                    + " and cannot run the model"
@@ -90,8 +88,8 @@ def wolfram_action(wolfram_env):
         return False
     wolfram_env.user.tell("\nChecking agents in row " + str(active_row_y)
                           + " against the rule...")
-    active_row = all_rows[active_row_y]
-    next_row = all_rows[active_row_y - 1]
+    active_row = wolfram_env.get_row_hood(active_row_y)
+    next_row = wolfram_env.get_row_hood(active_row_y - 1)
     first_agent_key = "(0," + str(active_row_y) + ")"
     left_color = get_color(active_row[first_agent_key].primary_group())
     x = 0
@@ -143,18 +141,14 @@ def set_up(props=None):
     wolfram_env.user.exclude_choices(["line_graph"])
     first_agent = wolfram_env.get_agent_at(width // 2, height - 1)
     turn_black(wolfram_env, groups, first_agent)
-    all_rows = []
-    for i in range(height):
-        all_rows.append(wolfram_env.get_row_hood(i))
-    return (wolfram_env, groups, rule_dict, all_rows)
+    return (wolfram_env, groups, rule_dict)
 
 
 def main():
     global groups
     global wolfram_env
     global rule_dict
-    global all_rows
-    (wolfram_env, groups, rule_dict, all_rows) = set_up()
+    (wolfram_env, groups, rule_dict) = set_up()
     wolfram_env()
     return 0
 
