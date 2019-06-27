@@ -1,8 +1,8 @@
 """
 Wolfram's cellular automata model
 """
-
 import ast
+
 from propargs.propargs import PropArgs
 
 from indra.agent import Agent, switch
@@ -19,8 +19,8 @@ W = 0
 B = 1
 
 groups = None
-wolfram_env = None
 rule_dict = None
+wolfram_env = None
 
 
 def create_agent(x, y):
@@ -78,8 +78,7 @@ def wolfram_action(wolfram_env):
     """
     The action that will be taken every period.
     """
-    periods = wolfram_env.get_periods()
-    active_row_y = wolfram_env.height - periods - 1
+    active_row_y = wolfram_env.height - wolfram_env.get_periods() - 1
     if active_row_y < 1:
         wolfram_env.user.tell_warn("You have exceeded the maximum height"
                                    + " and cannot run the model"
@@ -91,12 +90,21 @@ def wolfram_action(wolfram_env):
                           + " against the rule...")
     active_row = wolfram_env.get_row_hood(active_row_y)
     next_row = wolfram_env.get_row_hood(active_row_y - 1)
-    for i in range(1, len(active_row) - 1):
-        left_color = get_color(active_row[i - 1].primary_group())
-        middle_color = get_color(active_row[i].primary_group())
-        right_color = get_color(active_row[i + 1].primary_group())
-        if next_color(rule_dict, left_color, middle_color, right_color):
-            turn_black(wolfram_env, groups, next_row[i])
+    first_agent_key = "(0," + str(active_row_y) + ")"
+    left_color = get_color(active_row[first_agent_key].primary_group())
+    x = 0
+    for agent in active_row:
+        if (x > 0) and (x < wolfram_env.width - 1):
+            middle_color = get_color(active_row[agent].primary_group())
+            right_color = get_color(active_row["(" + str(x + 1) + ","
+                                               + str(active_row_y)
+                                               + ")"].primary_group())
+            if next_color(rule_dict, left_color, middle_color, right_color):
+                next_row_agent_key = ("(" + str(x) + ","
+                                      + str(active_row_y - 1) + ")")
+                turn_black(wolfram_env, groups, next_row[next_row_agent_key])
+            left_color = middle_color
+        x += 1
     return True
 
 
@@ -105,14 +113,12 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     global groups
-
     if props is None:
         pa = PropArgs.create_props('wolfram_props',
                                    ds_file='props/wolfram.props.json')
     else:
         pa = PropArgs.create_props('wolfram_props',
                                    prop_dict=props)
-
     width = pa.get('grid_width', DEF_WIDTH)
     rule_dict = get_rule(pa.get('rule_number', DEF_RULE))
     height = 0
@@ -125,7 +131,7 @@ def set_up(props=None):
     for y in range(height):
         for x in range(width):
             groups[W] += create_agent(x, y)
-    wolfram_env = Env("wolfram env",
+    wolfram_env = Env("Wolfram env",
                       action=wolfram_action,
                       random_placing=False,
                       props=pa,
