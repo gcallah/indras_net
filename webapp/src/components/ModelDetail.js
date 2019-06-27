@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Loader, Dimmer } from "semantic-ui-react";
 import axios from 'axios';
-import { Link, Route } from 'react-router-dom';
 
 class ModelDetail extends Component {
   api_server = 'https://indrasnet.pythonanywhere.com/models/props/';
@@ -78,7 +77,7 @@ class ModelDetail extends Component {
       model_detail[name]['disabledButton']=true
       this.setState({model_details:model_detail})
     }  
-    this.state.disabled_button = this.errorSubmit()     
+    this.setState({disabled_button: this.errorSubmit()}) 
   }
   
   checkValidity(name,value){
