@@ -10,9 +10,8 @@ class ModelDetail extends Component {
     this.state = {
       msg: '',
       model_details: {},
-      errorMessage:'',
       loadingData: false,
-      redirect: false,
+      disabled_button: false,
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -50,12 +49,6 @@ class ModelDetail extends Component {
   })))
   }
 
-  setRedirect = () => {
-    this.setState({
-      redirect: true
-    })
-  }
-
   handleChange = (e) =>{ 
    let model_detail = this.state.model_details;
    const {name,value} = e.target
@@ -64,12 +57,15 @@ class ModelDetail extends Component {
       model_detail[name]['val']= value
       model_detail[name]['errorMessage']=""
       this.setState({model_details:model_detail})
+      this.setState({disabled_button:false})
    }else{
       model_detail[name]['errorMessage']="Wrong Input Type"
       this.setState({model_details:model_detail})
       console.log(this.state.model_details[name]['errorMessage'])
+      this.setState({disabled_button:true})
   }         
   }
+
   
   checkValidity(name,value){
     if (value<=this.state.model_details[name]['hival'] && value >=this.state.model_details[name]['lowval']){
@@ -95,7 +91,9 @@ class ModelDetail extends Component {
     this.props.history.replace( '/models/menu/' + this.state.id );
   }
 
+
   render() {
+    const { disabled_button } = this.state;
     if (this.state.loadingData) {
       return (
         <Dimmer active inverted>
@@ -118,7 +116,7 @@ class ModelDetail extends Component {
         }
         </form>
         <br /><br />
-        <button onClick={this.handleSubmit.bind( this )}>Submit</button>
+        <button disabled={disabled_button} onClick={!disabled_button ? this.handleSubmit.bind( this ) : null}>Submit</button>
       </div>
     );
   }
