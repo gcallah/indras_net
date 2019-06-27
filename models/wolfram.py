@@ -1,8 +1,8 @@
 """
 Wolfram's cellular automata model
 """
-
 import ast
+
 from propargs.propargs import PropArgs
 
 from indra.agent import Agent, switch
@@ -19,8 +19,9 @@ W = 0
 B = 1
 
 groups = None
-wolfram_env = None
 rule_dict = None
+wolfram_env = None
+all_rows = None
 
 
 def create_agent(x, y):
@@ -89,14 +90,23 @@ def wolfram_action(wolfram_env):
         return False
     wolfram_env.user.tell("\nChecking agents in row " + str(active_row_y)
                           + " against the rule...")
-    active_row = wolfram_env.get_row_hood(active_row_y)
-    next_row = wolfram_env.get_row_hood(active_row_y - 1)
-    for i in range(1, len(active_row) - 1):
-        left_color = get_color(active_row[i - 1].primary_group())
-        middle_color = get_color(active_row[i].primary_group())
-        right_color = get_color(active_row[i + 1].primary_group())
-        if next_color(rule_dict, left_color, middle_color, right_color):
-            turn_black(wolfram_env, groups, next_row[i])
+    active_row = all_rows[active_row_y]
+    next_row = all_rows[active_row_y - 1]
+    first_agent_key = "(0," + str(active_row_y) + ")"
+    left_color = get_color(active_row[first_agent_key].primary_group())
+    x = 0
+    for agent in active_row:
+        if (x > 0) and (x < wolfram_env.width - 1):
+            middle_color = get_color(active_row[agent].primary_group())
+            right_color = get_color(active_row["(" + str(x + 1) + ","
+                                               + str(active_row_y)
+                                               + ")"].primary_group())
+            if next_color(rule_dict, left_color, middle_color, right_color):
+                next_row_agent_key = ("(" + str(x) + ","
+                                      + str(active_row_y - 1) + ")")
+                turn_black(wolfram_env, groups, next_row[next_row_agent_key])
+            left_color = middle_color
+        x += 1
     return True
 
 
@@ -105,14 +115,12 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     global groups
-
     if props is None:
         pa = PropArgs.create_props('wolfram_props',
                                    ds_file='props/wolfram.props.json')
     else:
         pa = PropArgs.create_props('wolfram_props',
                                    prop_dict=props)
-
     width = pa.get('grid_width', DEF_WIDTH)
     rule_dict = get_rule(pa.get('rule_number', DEF_RULE))
     height = 0
@@ -125,7 +133,7 @@ def set_up(props=None):
     for y in range(height):
         for x in range(width):
             groups[W] += create_agent(x, y)
-    wolfram_env = Env("wolfram env",
+    wolfram_env = Env("Wolfram env",
                       action=wolfram_action,
                       random_placing=False,
                       props=pa,
@@ -135,14 +143,18 @@ def set_up(props=None):
     wolfram_env.user.exclude_choices(["line_graph"])
     first_agent = wolfram_env.get_agent_at(width // 2, height - 1)
     turn_black(wolfram_env, groups, first_agent)
-    return (groups, wolfram_env, rule_dict)
+    all_rows = []
+    for i in range(height):
+        all_rows.append(wolfram_env.get_row_hood(i))
+    return (groups, wolfram_env, rule_dict, all_rows)
 
 
 def main():
     global groups
     global wolfram_env
     global rule_dict
-    (groups, wolfram_env, rule_dict) = set_up()
+    global all_rows
+    (groups, wolfram_env, rule_dict, all_rows) = set_up()
     wolfram_env()
     return 0
 

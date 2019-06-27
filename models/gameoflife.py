@@ -40,10 +40,9 @@ def apply_live_rules(gameoflife_env, agent):
     Apply the rules for live agents.
     The agent passed in should be alive.
     """
-    print("apply live rules")
     num_live_neighbors = 0
     for neighbor in agent.neighbors:
-        if neighbor.primary_group() == groups[1]:
+        if (agent.neighbors[neighbor]).primary_group() == groups[1]:
             num_live_neighbors += 1
     if (num_live_neighbors != 2 and num_live_neighbors != 3):
         return True
@@ -58,7 +57,7 @@ def apply_dead_rules(gameoflife_env, agent):
     """
     num_live_neighbors = 0
     for neighbor in agent.neighbors:
-        if neighbor.primary_group() == groups[1]:
+        if (agent.neighbors[neighbor]).primary_group() == groups[1]:
             num_live_neighbors += 1
     if num_live_neighbors == 3:
         return True
@@ -77,11 +76,6 @@ def gameoflife_action(gameoflife_env):
         for x in range(0, gameoflife_env.width):
             curr_agent = gameoflife_env.get_agent_at(x, y)
             if curr_agent.neighbors is not None:
-                if DEBUG:
-                    print("Alive neighbors for agent at", curr_agent.get_pos())
-                    for i in curr_agent.neighbors:
-                        if i.primary_group() == groups[1]:
-                            print("     ", i.get_pos())
                 if curr_agent.primary_group() == groups[1]:
                     if apply_live_rules(gameoflife_env, curr_agent):
                         to_be_changed.append(curr_agent)
@@ -102,9 +96,11 @@ def populate_board(gameoflife_env, width, height):
     upper_limit = int((width / 2) + (width / 4))
     lower_limit = int((width / 2) - (width / 4)) + 1
     for i in range(num_agent):
+        print(i)
         agent = gameoflife_env.get_agent_at(randint(lower_limit, upper_limit),
                                             randint(lower_limit, upper_limit))
         if agent.primary_group() != groups[1]:
+            print("Placing agent at", agent)
             change_color(gameoflife_env, agent)
 
 
@@ -126,14 +122,22 @@ def set_up():
     for y in range(height):
         for x in range(width):
             groups[0] += create_agent(x, y)
-    gameoflife_env = Env("game of life env",
+    gameoflife_env = Env("Game of Life env",
                          action=gameoflife_action,
                          height=height,
                          width=width,
                          members=groups,
                          random_placing=False)
     gameoflife_env.user.exclude_choices(["line_graph"])
-    populate_board(gameoflife_env, width, height)
+    # populate_board(gameoflife_env, width, height)
+    a = gameoflife_env.get_agent_at((width // 2), (height // 2))
+    change_color(gameoflife_env, a)
+    b = gameoflife_env.get_agent_at((width // 2) - 1, (height // 2))
+    change_color(gameoflife_env, b)
+    c = gameoflife_env.get_agent_at((width // 2) + 1, (height // 2))
+    change_color(gameoflife_env, c)
+    d = gameoflife_env.get_agent_at((width // 2), (height // 2) + 1)
+    change_color(gameoflife_env, d)
     return (groups, gameoflife_env)
 
 
