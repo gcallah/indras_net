@@ -8,7 +8,6 @@ class ModelDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      msg: '',
       model_details: {},
       loadingData: false,
       disabled_button: false,
@@ -53,31 +52,37 @@ class ModelDetail extends Component {
    let model_detail = this.state.model_details;
    const {name,value} = e.target
    let valid = this.checkValidity(name,value)
-   if (valid){
+   if (valid === 1){
       model_detail[name]['val']= value
       model_detail[name]['errorMessage']=""
       this.setState({model_details:model_detail})
       this.setState({disabled_button:false})
-   }else{
-      model_detail[name]['errorMessage']="Wrong Input Type"
+     
+   }else if(valid === -1){
+      model_detail[name]['errorMessage']="**Wrong Input Type"
+      model_detail[name]['val']= this.state[name]['val']
       this.setState({model_details:model_detail})
-      console.log(this.state.model_details[name]['errorMessage'])
+      console.log(this.state.model_details[name])
       this.setState({disabled_button:true})
-  }         
+  }else{
+      model_detail[name]['errorMessage']=`**Please input a number between ${this.state[name]['lowval']} and ${this.state[name]['hival']}.`
+      model_detail[name]['val']= this.state[name]['val']
+      this.setState({model_details:model_detail})
+      this.setState({disabled_button:true})
+    }       
   }
-
   
   checkValidity(name,value){
     if (value<=this.state.model_details[name]['hival'] && value >=this.state.model_details[name]['lowval']){
        if (this.state.model_details[name]['atype'] === 'INT' && !!(value%1)=== false){
-             return true
-      }else if(this.state.model_details[name]['atype'] === 'DBL' && !!(value%1)=== true){
-      	     return true
+             return 1
+      }else if(this.state.model_details[name]['atype'] === 'DBL'){
+             return 1
       }else{
-             return false
+             return -1
       }
  }else{
-             return false
+             return 0
       }
  }
   handleSubmit = event => {
@@ -90,7 +95,6 @@ class ModelDetail extends Component {
      console.log(this.state.model_details))
     this.props.history.replace( '/models/menu/' + this.state.id );
   }
-
 
   render() {
     const { disabled_button } = this.state;
@@ -111,7 +115,7 @@ class ModelDetail extends Component {
         <form>
             {
            Object.keys(this.state.model_details).map((item,i)=> {
-                return(<label key={i}>{this.state.model_details[item]['question']} :<input type={this.state.model_details[item]['atype']} defaultValue={this.state.model_details[item]['val']} onChange={this.handleChange} name={item} /><span>{this.state.model_details[item]['errorMessage']}</span><br/><br/></label>
+                return(<label key={i}>{this.state.model_details[item]['question']} :<input type={this.state.model_details[item]['atype']} defaultValue={this.state.model_details[item]['val']} onChange={this.handleChange} name={item} /><span style={{color:"red",fontSize: 12}}>{this.state.model_details[item]['errorMessage']}</span><br/><br/></label>
             )})
         }
         </form>
