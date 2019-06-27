@@ -45,7 +45,7 @@ figure {
 figcaption {
     color: #369;
     font-style: italic;
-    text-align: center;
+    margin: .4em 4em .8em 12em;
     margin: .8em 1em .6em 1em;
 }
 
