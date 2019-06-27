@@ -93,8 +93,7 @@ class Props(Resource):
             env = setup_dict[models_db[model_id]["run"]](props=props_dict)[0]
             return env
         except TypeError:
-            string = "Props:" + str(props_dict) + str(model_id)
-            return str({"Menu": load_menu()}) + string
+            return err_return("model failed to be accessed")
 
 
 @api.route("/models/menu/")
@@ -110,11 +109,12 @@ class MenuItem(Resource):
     global user
 
     def put(self, model_id, menu_id):
+        models_db = load_models()
         if 0 <= menu_id < 6 and (type(menu_id) is int):
             try:
                 user.tell("execute menu item" + str(menu_id))
                 user.tell(str(load_menu()))
-                rdict[model_id["run"]](menu_id)
+                rdict[models_db[model_id]["run"]](menu_id)
                 return user.to_json()
             except TypeError:
                 return 'not running the model'
