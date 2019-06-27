@@ -5,7 +5,7 @@ of agents related spatially.
 from random import randint
 from math import sqrt
 from indra.agent import is_composite
-from indra.composite import Composite, grp_from_nm_dict
+from indra.composite import Composite
 
 DEF_WIDTH = 10
 DEF_HEIGHT = 10
@@ -259,11 +259,10 @@ class Space(Composite):
         if row_num < 0 or row_num >= self.height:
             return None
         else:
-            lst = []
-            agent_dict = {"neighbors": lst}
+            row_hood = Composite("Row neighbors")
             for x in range(self.width):
-                agent_dict["neighbors"].append(self.get_agent_at(x, row_num))
-            return grp_from_nm_dict("Row neighbors", agent_dict["neighbors"])
+                row_hood += (self.get_agent_at(x, row_num))
+            return row_hood
 
     def get_moore_hood(self, agent):
         """
@@ -271,15 +270,14 @@ class Space(Composite):
         """
         pass
 
-    def get_x_hood(self, agent, composite=False):
+    def get_x_hood(self, agent):
         """
         Takes in an agent and returns either a Composite or a dictionary
         of its x neighbors.
         For example, if the agent is located at (0, 0),
         get_x_hood would return (-1, 0) and (1, 0)
         """
-        lst = []
-        agent_dict = {"x neighbors": lst}
+        x_hood = Composite("x neighbors")
         agent_x = agent.get_x()
         agent_y = agent.get_y()
         neighbor_x_coords = [-1, 1]
@@ -287,22 +285,17 @@ class Space(Composite):
             neighbor_x = agent_x + i
             if not out_of_bounds(neighbor_x, agent_y, 0, 0,
                                  self.width, self.height):
-                agent_dict["x neighbors"].append(
-                    self.get_agent_at(neighbor_x, agent_y))
-        if (composite):
-            return grp_from_nm_dict("x neighbors", agent_dict["x neighbors"])
-        else:
-            return agent_dict
+                x_hood += self.get_agent_at(neighbor_x, agent_y)
+        return x_hood
 
-    def get_y_hood(self, agent, composite=False):
+    def get_y_hood(self, agent):
         """
         Takes in an agent and returns either a Composite or a dictionary
         of its y neighbors.
         For example, if the agent is located at (0, 0),
-        get_x_hood would return (0, -1) and (0, 1)
+        get_y_hood would return (0, -1) and (0, 1)
         """
-        lst = []
-        agent_dict = {"y neighbors": lst}
+        y_hood = Composite("y neighbors")
         agent_x = agent.get_x()
         agent_y = agent.get_y()
         neighbor_y_coords = [-1, 1]
@@ -310,22 +303,17 @@ class Space(Composite):
             neighbor_y = agent_y + i
             if not out_of_bounds(agent_x, neighbor_y, 0, 0,
                                  self.width, self.height):
-                agent_dict["y neighbors"].append(
-                    self.get_agent_at(agent_x, neighbor_y))
-        if (composite):
-            return grp_from_nm_dict("y neighbors", agent_dict["y neighbors"])
-        else:
-            return agent_dict
+                y_hood += (self.get_agent_at(agent_x, neighbor_y))
+        return y_hood
 
-    def get_top_lr_hood(self, agent, composite=False):
+    def get_top_lr_hood(self, agent):
         """
         Takes in an agent and returns either a Composite or a dictionary
         of its top left and right neighbors.
         For example, if the agent is located at (0, 0),
         get_top_lr_hood would return (-1, 1) and (1, 1)
         """
-        lst = []
-        agent_dict = {"top l and r neighbors": lst}
+        bottom_lr_hood = Composite("top l and r neighbors")
         agent_x = agent.get_x()
         agent_y = agent.get_y()
         neighbor_x_coords = [-1, 1]
@@ -333,23 +321,17 @@ class Space(Composite):
             neighbor_x = agent_x + i
             if not out_of_bounds(neighbor_x, agent_y + 1, 0, 0,
                                  self.width, self.height):
-                agent_dict["top l and r neighbors"].append(
-                    self.get_agent_at(neighbor_x, agent_y + 1))
-        if (composite):
-            return grp_from_nm_dict("top l and r neighbors",
-                                    agent_dict["top l and r neighbors"])
-        else:
-            return agent_dict
+                bottom_lr_hood += (self.get_agent_at(neighbor_x, agent_y + 1))
+        return bottom_lr_hood
 
-    def get_bottom_lr_hood(self, agent, composite=False):
+    def get_bottom_lr_hood(self, agent):
         """
         Takes in an agent and returns either a Composite or a dictionary
         of its bottom left and right neighbors.
         For example, if the agent is located at (0, 0),
         get_bottom_lr_hood would return (-1, -1) and (1, -1)
         """
-        lst = []
-        agent_dict = {"bottom l and r neighbors": lst}
+        top_lr_hood = Composite("top l and r neighbors")
         agent_x = agent.get_x()
         agent_y = agent.get_y()
         neighbor_x_coords = [-1, 1]
@@ -357,13 +339,8 @@ class Space(Composite):
             neighbor_x = agent_x + i
             if not out_of_bounds(neighbor_x, agent_y - 1, 0, 0,
                                  self.width, self.height):
-                agent_dict["bottom l and r neighbors"].append(
-                    self.get_agent_at(neighbor_x, agent_y - 1))
-        if (composite):
-            return grp_from_nm_dict("bottom l and r neighbors",
-                                    agent_dict["bottom l and r neighbors"])
-        else:
-            return agent_dict
+                top_lr_hood += (neighbor_x, agent_y - 1)
+        return top_lr_hood
 
     def get_vonneumann_hood(self, agent):
         """
@@ -371,13 +348,7 @@ class Space(Composite):
         """
         x_neighbors = self.get_x_hood(agent)
         y_neighbors = self.get_y_hood(agent)
-        lst = []
-        agent_dict = {"neighbors": lst}
-        for y in y_neighbors["y neighbors"]:
-            agent_dict["neighbors"].append(y)
-        for x in x_neighbors["x neighbors"]:
-            agent_dict["neighbors"].append(x)
-        return grp_from_nm_dict("Vonneuman neighbors", agent_dict["neighbors"])
+        return (x_neighbors + y_neighbors)
 
     def get_all_neighbors(self, agent):
         """
@@ -386,15 +357,5 @@ class Space(Composite):
         x_neighbors = self.get_x_hood(agent)
         y_neighbors = self.get_y_hood(agent)
         top_neighbors = self.get_top_lr_hood(agent)
-        bottom_neightbors = self.get_bottom_lr_hood(agent)
-        lst = []
-        agent_dict = {"neighbors": lst}
-        for y in y_neighbors["y neighbors"]:
-            agent_dict["neighbors"].append(y)
-        for x in x_neighbors["x neighbors"]:
-            agent_dict["neighbors"].append(x)
-        for t in top_neighbors["top l and r neighbors"]:
-            agent_dict["neighbors"].append(t)
-        for b in bottom_neightbors["bottom l and r neighbors"]:
-            agent_dict["neighbors"].append(b)
-        return grp_from_nm_dict("All neighbors", agent_dict["neighbors"])
+        bottom_neighbors = self.get_bottom_lr_hood(agent)
+        return (x_neighbors + y_neighbors + top_neighbors + bottom_neighbors)

@@ -1,29 +1,22 @@
 """
-This is an abelian sandpile model.
-Starting life of sandpile as segregation clone.
+Abelian sandpile model
 """
-
 from propargs.propargs import PropArgs
 
 from indra.agent import Agent, switch
 from indra.composite import Composite
 from indra.env import Env
 
-
-DEBUG = False  # turns debugging code on or off
+DEBUG = False  # Turns debugging code on or off
 
 DEF_HEIGHT = 10
 DEF_WIDTH = 10
-
-SAND_PREFIX = "sand_location "
-
-NEARBY = 1
 
 NUM_GROUPS = 4
 
 groups = None
 group_indices = None
-sandpile = None
+sandpile_env = None
 
 
 def create_agent(x, y):
@@ -50,7 +43,7 @@ def get_next_group_idx(curr_group_idx):
     return (curr_group_idx + 1) % NUM_GROUPS
 
 
-def change_group(agent, sandpile, curr_group_idx, next_group_idx):  # noqa F811
+def change_group(agent, sandpile_env, curr_group_idx, next_group_idx):  # noqa F811
     """
     Change group from current group index passed in
     to the next group index passed in
@@ -58,7 +51,7 @@ def change_group(agent, sandpile, curr_group_idx, next_group_idx):  # noqa F811
     switch(agent, groups[curr_group_idx], groups[next_group_idx])
 
 
-def add_grain(sandpile, agent):
+def add_grain(sandpile_env, agent):
     """
     Addd a grain to whichever agent is passed in
     """
@@ -67,35 +60,35 @@ def add_grain(sandpile, agent):
     if DEBUG:
         print("Agent at", agent.pos, "is changing group from",
               agent.primary_group(), "to", next_group_idx)
-    change_group(agent, sandpile, curr_group_idx, next_group_idx)
+    change_group(agent, sandpile_env, curr_group_idx, next_group_idx)
     if DEBUG:
         print("Agent at", agent.pos, "has changed to", agent.primary_group())
     if next_group_idx == 0:
-        topple(sandpile, agent)
+        topple(sandpile_env, agent)
 
 
-def topple(sandpile, agent):
+def topple(sandpile_env, agent):
     if DEBUG:
         print("Sandpile in", agent.pos, "is toppling")
     for neighbor in agent.neighbors:
-        add_grain(sandpile, neighbor)
+        add_grain(sandpile_env, agent.neighbors[neighbor])
 
 
-def sandpile_action(sandpile):
+def sandpile_action(sandpile_env):
     """
-    Drop a grain on the center agent.
+    Add a grain to the center agent.
     """
     if DEBUG:
         print("Adding a grain to sandpile in position",
-              sandpile.attrs["center_agent"].pos,
+              sandpile_env.attrs["center_agent"].pos,
               "which is in the group",
-              sandpile.attrs["center_agent"].primary_group())
-    add_grain(sandpile, sandpile.attrs["center_agent"])
+              sandpile_env.attrs["center_agent"].primary_group())
+    add_grain(sandpile_env, sandpile_env.attrs["center_agent"])
 
 
-def place_action(sandpile, agent):
+def place_action(agent):
     if agent.neighbors is None:
-        neighbors = sandpile.get_vonneumann_hood(agent)
+        neighbors = sandpile_env.get_vonneumann_hood(agent)
         agent.neighbors = neighbors
 
 
@@ -111,7 +104,6 @@ def set_up(props=None):
     else:
         pa = PropArgs.create_props('sandpile_props',
                                    prop_dict=props)
-
     width = pa.get('grid_width', DEF_WIDTH)
     height = pa.get('grid_height', DEF_HEIGHT)
     groups = []
@@ -130,7 +122,6 @@ def set_up(props=None):
                    random_placing=False)
     sandpile.attrs["center_agent"] = sandpile.get_agent_at(height // 2,
                                                            width // 2)
-
     return (sandpile, groups, group_indices)
 
 
