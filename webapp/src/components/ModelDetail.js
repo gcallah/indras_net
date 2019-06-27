@@ -42,10 +42,18 @@ class ModelDetail extends Component {
              ...prevState.model_details,          
              [item]: {                     
                   ...prevState.model_details[item],  
-                  errorMessage: ''        
+                  errorMessage: '' ,
+                  disabledButton: false,       
                      }
                           }
   })))
+  }
+
+  errorSubmit(){
+    let ans = false
+     Object.keys(this.state.model_details).forEach(item => 
+       ans = ans || this.state.model_details[item]['disabledButton'])
+    return ans
   }
 
   handleChange = (e) =>{ 
@@ -55,21 +63,22 @@ class ModelDetail extends Component {
    if (valid === 1){
       model_detail[name]['val']= value
       model_detail[name]['errorMessage']=""
+      model_detail[name]['disabledButton']=false
       this.setState({model_details:model_detail})
-      this.setState({disabled_button:false})
      
    }else if(valid === -1){
       model_detail[name]['errorMessage']="**Wrong Input Type"
       model_detail[name]['val']= this.state[name]['val']
+      model_detail[name]['disabledButton']=true
       this.setState({model_details:model_detail})
       console.log(this.state.model_details[name])
-      this.setState({disabled_button:true})
   }else{
       model_detail[name]['errorMessage']=`**Please input a number between ${this.state[name]['lowval']} and ${this.state[name]['hival']}.`
       model_detail[name]['val']= this.state[name]['val']
+      model_detail[name]['disabledButton']=true
       this.setState({model_details:model_detail})
-      this.setState({disabled_button:true})
-    }       
+    }  
+    this.state.disabled_button = this.errorSubmit()     
   }
   
   checkValidity(name,value){
@@ -98,6 +107,7 @@ class ModelDetail extends Component {
 
   render() {
     const { disabled_button } = this.state;
+
     if (this.state.loadingData) {
       return (
         <Dimmer active inverted>
