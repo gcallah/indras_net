@@ -8,6 +8,8 @@ from models.sandpile import main as spmain
 from models.sandpile import set_up as spset_up
 from models.segregation import main as semain
 from models.segregation import set_up as seset_up
+from models.scheduler import main as scmain
+from models.scheduler import set_up as scset_up
 from models.wolfsheep import main as wsmain
 from models.wolfsheep import set_up as wsset_up
 
@@ -17,6 +19,7 @@ rdict = {
     "fashion": famain,
     "forestfire": ffmain,
     "sandpile": spmain,
+    "scheduler": scmain,
     "segregation": semain,
     "wolfsheep": wsmain,
 }
@@ -26,6 +29,7 @@ setup_dict = {
     "fashion": faset_up,
     "forestfire": ffset_up,
     "sandpile": spset_up,
+    "scheduler": scset_up,
     "segregation": seset_up,
     "wolfsheep": wsset_up,
 }

@@ -3,6 +3,7 @@ This file defines User, which represents a user in our system.
 """
 import os
 import json
+import sys
 from indra.agent import Agent
 from IPython import embed
 
@@ -65,6 +66,10 @@ def line_graph(user):
 def debug(user):
     embed()
     return 0
+
+
+def tell_debug(msg, end='\n'):
+    print("DEBUG: " + msg, file=sys.stderr, end=end)
 
 
 menu_functions = {

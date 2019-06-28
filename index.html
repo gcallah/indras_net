@@ -37,8 +37,15 @@
   <p>
     Indra is an agent-based modeling (ABM) system built using Python,
     Javascript, Awk, Bash, and YAML.
-    <br>
-    <br>
+    We've made some Jupyter notebooks to help explain how the system is
+    programmed, <a
+        href="https://github.com/gcallah/indras_net/blob/master/indra/InteractiveIndra.ipynb">here</a>
+    and
+    <a
+        href="https://github.com/gcallah/indras_net/blob/master/indra/AFirstModel.ipynb">here</a>.
+  </p>
+
+  <p>
     The ultimate goal is to simplify ABM creation so that a
     model can be specified in only a few lines of code, or by
     filling in a few parameters on a screen.
@@ -61,6 +68,13 @@
       Forest Fire
     </a>
   </h4>
+
+  <figure>
+      <img src="graphics/forestfire.png" width="18%">
+      <figcaption>
+          The forest is burning!
+      </figcaption>
+  </figure>
 
   <p>
     Simulates fires starting and spreading through a forest. Burned out trees
@@ -99,8 +113,8 @@
     </a>
   </h4>
   <p>
-    Schelling's famous model of neighborhood segrgegation, even if no one
-    has a preference for such neighborhoods.
+    Schelling's famous model of how neighborhood segrgegation can occur,
+    even if no one has a preference for such segregation.
   </p>
 
   <h4>
@@ -108,6 +122,14 @@
       Abelian Sandpile Model
     </a>
   </h4>
+
+  <figure>
+      <img src="graphics/sandpile.png" width="14%">
+      <figcaption>
+          Who knew sand could be so colorful?
+      </figcaption>
+  </figure>
+
   <p>
   <a href="https://en.wikipedia.org/wiki/Abelian_sandpile_model">Described
       here</a>. 
@@ -118,80 +140,18 @@
       Wolfram Model
     </a>
   </h4>
+
+  <figure>
+      <img src="graphics/wolfram.png" width="14%">
+      <figcaption>
+          Triangles upon triangles.
+      </figcaption>
+  </figure>
   <p>
     Stephen Wolfram's
     <a href="https://en.wikipedia.org/wiki/Wolfram_code">Wolfram
       code</a>.
   </p>
-
-  <h2>
-    Project Architecture
-  </h2>
-
-  <h3>
-    Agents and Environments
-  </h3>
-  <p>
-    Indra&rsquo;s structure can be appreciated philosophically. We
-    start by considering the following question, What are the most
-    general features of all population dynamics?
-  </p>
-
-  <p>
-    In order to have a population we have to have members of that population,
-    and since these members must *do* something we call them "<a
-    href=https://github.com/gcallah/Indra/blob/master/indra/entity.py>agents.
-    </a>" So these agents act, and action always has a definite character,
-    designed to reach an end. For this reason, all agents are also assigned a
-    goal. For example, sheep are agents that run away from wolves because their
-    goal is to not be eaten. These agents all exist within some world defining
-    the ways they may interact with other agents. For example, wolves are
-    agents limited by distance. They have to reach the sheep before they can
-    eat them! This world in which interaction takes place we call the "<a
-                                                                           href=https://github.com/gcallah/Indra/blob/master/indra/env.py>environment</a>,"
-                                                                       env for
-                                                                       short.
-  </p> <p> All agents act, and while respose to the external env is not strictly
-  required, whenever an agent needs to know something about it's external
-  world, it has to peer into its env to see what&rsquo;s about. For this
-  reason, agents access information about other agents strictly through the env
-  object that it lives
-      in.
-  </p>
-
-  <h3>
-    The User, the Menu, and the Environment
-  </h3>
-
-  <p>
-    The
-    <a href="https://github.com/gcallah/Indra/blob/master/indra/user.py">
-      user
-    </a>
-    is of course given control to run the program and to display its data.
-    But the key idea here is that the "user" appears as another node in
-    Indra's net, meaning the agents can conceivably "see" the user and
-    interact with him/her.
-    His primary method of interface is through the
-    <a href="https://github.com/gcallah/Indra/blob/master/indra/menu.py">
-      menu
-    </a>, but more complicated interactions are possible.
-  </p>
-
-  <h3>
-    Graphics Capabilities
-  </h3>
-  <p>
-    We currently have fairly extensive graphics capabilities built in
-    to the system through
-    <a href="https://en.wikipedia.org/wiki/Matplotlib">
-      matplotlib.
-    </a>
-    These include plotting changes in agent populations, tracing agent
-    movement (live) on a scatter plot, and examining the
-    object-hierarchy at play in a program at any point in time.
-  </p>
-
 
 </body>
 

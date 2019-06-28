@@ -24,21 +24,29 @@ table, th, td {
 
 p {
     margin: 8px 40px 8px 40px;
+    padding: 0;
+    line-height: 140%;
 }
 
 ol, ul, dl, li {
     margin: 20px 12px 8px 12px;
 }
 
-p {
-    padding: 0;
-    line-height: 140%;
-}
-
 p.menu {
     text-align: center;
     margin: .4em 4em .8em 4em;
     font-size: 1.4em;
+}
+
+figure {
+    margin: .4em 4em .8em 12em;
+}
+
+figcaption {
+    color: #69c;
+    font-style: italic;
+    margin: .4em 4em .8em 12em;
+    margin: .8em 1em .6em 1em;
 }
 
 h1,h2,h3,h4,h5 {
