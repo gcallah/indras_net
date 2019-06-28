@@ -36,44 +36,44 @@ class GameOfLifeTestCase(TestCase):
         change_color(g.gameoflife_env, agent)
         self.assertEqual(agent.primary_group(), g.groups[1])
 
-    # def test_apply_live_rules(self):
-    #     a = create_agent(TEST_X, TEST_Y)
-    #     b = create_agent(TEST_X - 1, TEST_Y)
-    #     c = create_agent(TEST_X + 1, TEST_Y)
-    #     g.groups =[]
-    #     g.groups.append(Composite("white"))
-    #     g.groups.append(Composite("black"))
-    #     g.groups[1] += a
-    #     g.groups[1] += b
-    #     g.groups[1] += c
-    #     neighbors = []
-    #     neighbors.append(b)
-    #     a.neighbors = neighbors
-    #     self.assertEqual(apply_live_rules(g.gameoflife_env, a), True)
-    #     neighbors.append(c)
-    #     a.neighbors = neighbors
-    #     self.assertEqual(apply_live_rules(g.gameoflife_env, a), False)
+    def test_apply_live_rules(self):
+        a = create_agent(TEST_X, TEST_Y)
+        b = create_agent(TEST_X - 1, TEST_Y)
+        c = create_agent(TEST_X + 1, TEST_Y)
+        g.groups =[]
+        g.groups.append(Composite("white"))
+        g.groups.append(Composite("black"))
+        g.groups[1] += a
+        g.groups[1] += b
+        g.groups[1] += c
+        neighbors = Composite("agent_neighbors")
+        neighbors += b
+        a.neighbors = neighbors
+        self.assertEqual(apply_live_rules(g.gameoflife_env, a), True)
+        neighbors += c
+        a.neighbors = neighbors
+        self.assertEqual(apply_live_rules(g.gameoflife_env, a), False)
 
-    # def test_apply_dead_rules(self):
-    #     a = create_agent(TEST_X, TEST_Y)
-    #     b = create_agent(TEST_X - 1, TEST_Y)
-    #     c = create_agent(TEST_X + 1, TEST_Y)
-    #     d = create_agent(TEST_X, TEST_Y + 1)
-    #     g.groups =[]
-    #     g.groups.append(Composite("white"))
-    #     g.groups.append(Composite("black"))
-    #     g.groups[0] += a
-    #     g.groups[1] += b
-    #     g.groups[1] += c
-    #     g.groups[1] += d
-    #     neighbors = []
-    #     neighbors.append(b)
-    #     neighbors.append(c)
-    #     a.neighbors = neighbors
-    #     self.assertEqual(apply_dead_rules(g.gameoflife_env, a), False)
-    #     neighbors.append(d)
-    #     a.neighbors = neighbors
-    #     self.assertEqual(apply_dead_rules(g.gameoflife_env, a), True)
+    def test_apply_dead_rules(self):
+        a = create_agent(TEST_X, TEST_Y)
+        b = create_agent(TEST_X - 1, TEST_Y)
+        c = create_agent(TEST_X + 1, TEST_Y)
+        d = create_agent(TEST_X, TEST_Y + 1)
+        g.groups =[]
+        g.groups.append(Composite("white"))
+        g.groups.append(Composite("black"))
+        g.groups[0] += a
+        g.groups[1] += b
+        g.groups[1] += c
+        g.groups[1] += d
+        neighbors = Composite("agent_neighbors")
+        neighbors += b
+        neighbors += c
+        a.neighbors = neighbors
+        self.assertEqual(apply_dead_rules(g.gameoflife_env, a), False)
+        neighbors += d
+        a.neighbors = neighbors
+        self.assertEqual(apply_dead_rules(g.gameoflife_env, a), True)
 
     # def test_gameoflife_action(self):
     #     a = create_agent(TEST_ANUM, TEST_ANUM)
