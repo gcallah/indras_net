@@ -72,7 +72,7 @@ class SandpileTestCase(TestCase):
         sp.groups[0] += b
         sp.groups[0] += c
         sp.groups[1] += a
-        neighbors = Composite("neighbors")
+        neighbors = Composite("agent_neighbors")
         neighbors += b
         neighbors += c
         a.neighbors = neighbors
