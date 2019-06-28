@@ -4,13 +4,11 @@ Abelian sandpile model
 from propargs.propargs import PropArgs
 
 from indra.agent import Agent, switch
-from indra.composite import Composite
 from indra.env import Env
+from indra.space import DEF_WIDTH, DEF_HEIGHT
+from indra.composite import Composite
 
 DEBUG = False  # Turns debugging code on or off
-
-DEF_HEIGHT = 10
-DEF_WIDTH = 10
 
 NUM_GROUPS = 4
 
@@ -29,31 +27,32 @@ def create_agent(x, y):
 
 def get_curr_group_idx(agent):
     """
-    Returns the int index of the current group
-    Ex) returns 0 if group is Group 0
+    Returns the int index of the current group.
+    Ex) Returns 0 if group is Group 0
     """
     return group_indices[agent.primary_group().name]
 
 
 def get_next_group_idx(curr_group_idx):
     """
-    Returns the int index of the next group
-    Ex) returns 1 if curr_group_idx group is Group 0
+    Returns the int index of the next group.
+    Ex) Returns 1 if curr_group_idx group is Group 0
     """
     return (curr_group_idx + 1) % NUM_GROUPS
 
 
 def change_group(agent, sandpile_env, curr_group_idx, next_group_idx):  # noqa F811
     """
-    Change group from current group index passed in
-    to the next group index passed in
+    Change group from curr_group_idx passed in
+    to the next_group_idx passed in.
     """
     switch(agent, groups[curr_group_idx], groups[next_group_idx])
 
 
 def add_grain(sandpile_env, agent):
     """
-    Addd a grain to whichever agent is passed in
+    Addd a grain to the agent that is passed in
+    by changing the group that it is in.
     """
     curr_group_idx = get_curr_group_idx(agent)
     next_group_idx = get_next_group_idx(curr_group_idx)
@@ -76,7 +75,8 @@ def topple(sandpile_env, agent):
 
 def sandpile_action(sandpile_env):
     """
-    Add a grain to the center agent.
+    The action that will be taken avery period.
+    Adds a grain to the center agent.
     """
     if DEBUG:
         print("Adding a grain to sandpile in position",
