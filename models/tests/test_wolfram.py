@@ -18,13 +18,10 @@ class WolframTestCase(TestCase):
         wolf.rule_dict = None
 
     def test_create_agent(self):
-<<<<<<< HEAD
-=======
         """
         Creates an agent at (0, 0) using create_agent method
         and checks that the agent was stored in the right location.
         """
->>>>>>> df20334a84c30e50c79ee212c8c6e078799e6279
         a = create_agent(0, 0)
         self.assertEqual(a.name, '(0,0)')
 
@@ -56,14 +53,11 @@ class WolframTestCase(TestCase):
         self.assertEqual(get_color(wolf.groups[W]), W)
 
     def test_get_rule(self):
-<<<<<<< HEAD
-=======
         """
         Creates a dictionary of a rule (rule 30 in this case)
         then compares it to what get_rule returns 
         given that get_rule was passed in the parameter to return rule 30.
         """
->>>>>>> df20334a84c30e50c79ee212c8c6e078799e6279
         rule30 =  {"(1, 1, 1)": 0,
         "(1, 1, 0)": 0,
         "(1, 0, 1)": 0,
