@@ -11,8 +11,9 @@ from indra.space import DEF_WIDTH, DEF_HEIGHT
 from indra.composite import Composite
 from indra.display_methods import BLACK, WHITE, SQUARE
 
-DEBUG = True  # Turns debugging code on or off
+DEBUG = False  # Turns debugging code on or off
 
+gameoflife_env = None
 groups = None
 
 
@@ -144,8 +145,8 @@ def set_up(props=None):
 
 
 def main():
-    global groups
     global gameoflife_env
+    global groups
     (gameoflife_env, groups) = set_up()
     gameoflife_env()
     return 0

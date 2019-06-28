@@ -62,24 +62,24 @@ class SandpileTestCase(TestCase):
         add_grain(sp.sandpile, a)
         self.assertEqual(a.primary_group(), sp.groups[1])
 
-    # def test_topple(self):
-    #     a = create_agent(TEST_X, TEST_Y)
-    #     b = create_agent(TEST_X - 1, TEST_Y)
-    #     c = create_agent(TEST_X + 1, TEST_Y)
-    #     sp.groups = []
-    #     sp.groups.append(Composite("Group" + str(0)))
-    #     sp.groups.append(Composite("Group" + str(1)))
-    #     sp.groups[0] += b
-    #     sp.groups[0] += c
-    #     sp.groups[1] += a
-    #     neighbors = []
-    #     neighbors.append(b)
-    #     neighbors.append(c)
-    #     a.neighbors = neighbors
-    #     topple(sp.sandpile, a)
-    #     self.assertEqual(a.primary_group(), sp.groups[1])
-    #     self.assertEqual(b.primary_group(), sp.groups[1])
-    #     self.assertEqual(c.primary_group(), sp.groups[1])
+    def test_topple(self):
+        a = create_agent(TEST_X, TEST_Y)
+        b = create_agent(TEST_X - 1, TEST_Y)
+        c = create_agent(TEST_X + 1, TEST_Y)
+        sp.groups = []
+        sp.groups.append(Composite("Group" + str(0)))
+        sp.groups.append(Composite("Group" + str(1)))
+        sp.groups[0] += b
+        sp.groups[0] += c
+        sp.groups[1] += a
+        neighbors = Composite("neighbors")
+        neighbors += b
+        neighbors += c
+        a.neighbors = neighbors
+        topple(sp.sandpile, a)
+        self.assertEqual(a.primary_group(), sp.groups[1])
+        self.assertEqual(b.primary_group(), sp.groups[1])
+        self.assertEqual(c.primary_group(), sp.groups[1])
 
     def test_sandpile_action(self):
         sandpile_action(sp.sandpile)
