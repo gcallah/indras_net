@@ -4,7 +4,7 @@ from indra.composite import Composite
 from indra.space import Space
 from indra.env import Env
 from models.gameoflife import create_agent, set_up
-from models.gameoflife import change_color, apply_live_rules, apply_dead_rules, gameoflife_action, agent_action, populate_board
+from models.gameoflife import change_color, apply_live_rules, apply_dead_rules, gameoflife_action, agent_action, populate_board_random
 import models.gameoflife as g
 
 TEST_X = 1
@@ -93,7 +93,7 @@ class GameOfLifeTestCase(TestCase):
         neighbors_composite+= d
         a.neighbors = neighbors_composite
         gameoflife_action(g.gameoflife_env)
-        # self.assertEqual(a.primary_group(), g.groups[1])
+        self.assertEqual(a.primary_group(), g.groups[1])
         self.assertEqual(len(a.neighbors), 3)
 
     # def test_agent_action(self):
