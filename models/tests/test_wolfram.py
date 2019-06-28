@@ -17,9 +17,9 @@ class WolframTestCase(TestCase):
         wolf.wolfram_env = None
         wolf.rule_dict = None
 
-    # def test_create_agent(self):
-    #     a = create_agent(0, 0)
-    #     self.assertEqual(a.name, '(0,0)')
+    def test_create_agent(self):
+        a = create_agent(0, 0)
+        self.assertEqual(a.name, '(0,0)')
 
     # def test_turn_black(self):
     #     agent = create_agent(0, 0)
@@ -33,29 +33,29 @@ class WolframTestCase(TestCase):
     #     """
     #     self.assertEqual(get_color(wolf.groups[B]), B)
 
-    # def test_get_rule(self):
-    #     rule30 =  {"(1, 1, 1)": 0,
-    #     "(1, 1, 0)": 0,
-    #     "(1, 0, 1)": 0,
-    #     "(1, 0, 0)": 1,
-    #     "(0, 1, 1)": 1,
-    #     "(0, 1, 0)": 1,
-    #     "(0, 0, 1)": 1,
-    #     "(0, 0, 0)": 0}
-    #     self.assertEqual(get_rule(30), rule30)
+    def test_get_rule(self):
+        rule30 =  {"(1, 1, 1)": 0,
+        "(1, 1, 0)": 0,
+        "(1, 0, 1)": 0,
+        "(1, 0, 0)": 1,
+        "(0, 1, 1)": 1,
+        "(0, 1, 0)": 1,
+        "(0, 0, 1)": 1,
+        "(0, 0, 0)": 0}
+        self.assertEqual(get_rule(30), rule30)
 
-    # def test_next_color(self):
-    #     """
-    #     Ensure we get proper color based on trio from previous row.
-    #     """
-    #     self.assertEqual(next_color(wolf.rule_dict, B, B, B), W)
-    #     self.assertEqual(next_color(wolf.rule_dict, B, B, W), W)
-    #     self.assertEqual(next_color(wolf.rule_dict, B, W, B), W)
-    #     self.assertEqual(next_color(wolf.rule_dict, B, W, W), B)   
-    #     self.assertEqual(next_color(wolf.rule_dict, W, B, B), B)
-    #     self.assertEqual(next_color(wolf.rule_dict, W, B, W), B)
-    #     self.assertEqual(next_color(wolf.rule_dict, W, W, B), B)
-    #     self.assertEqual(next_color(wolf.rule_dict, W, W, W), W)
+    def test_next_color(self):
+        """
+        Ensure we get proper color based on trio from previous row.
+        """
+        self.assertEqual(next_color(wolf.rule_dict, B, B, B), W)
+        self.assertEqual(next_color(wolf.rule_dict, B, B, W), W)
+        self.assertEqual(next_color(wolf.rule_dict, B, W, B), W)
+        self.assertEqual(next_color(wolf.rule_dict, B, W, W), B)   
+        self.assertEqual(next_color(wolf.rule_dict, W, B, B), B)
+        self.assertEqual(next_color(wolf.rule_dict, W, B, W), B)
+        self.assertEqual(next_color(wolf.rule_dict, W, W, B), B)
+        self.assertEqual(next_color(wolf.rule_dict, W, W, W), W)
 
     # def test_wolfram_action(self):
 
