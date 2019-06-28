@@ -4,7 +4,7 @@ from indra.composite import Composite
 from indra.space import Space
 from indra.env import Env
 from models.gameoflife import create_agent, set_up
-from models.gameoflife import change_color, apply_live_rules, apply_dead_rules, gameoflife_action, agent_action, populate_board_random
+from models.gameoflife import change_color, apply_live_rules, apply_dead_rules, gameoflife_action, agent_action
 import models.gameoflife as g
 
 TEST_X = 1
