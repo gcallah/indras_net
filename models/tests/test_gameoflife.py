@@ -4,7 +4,7 @@ from indra.composite import Composite
 from indra.space import Space
 from indra.env import Env
 from models.gameoflife import create_agent, set_up
-from models.gameoflife import change_color, apply_live_rules, apply_dead_rules, gameoflife_action, agent_action, populate_board
+from models.gameoflife import change_color, apply_live_rules, apply_dead_rules, gameoflife_action, agent_action
 import models.gameoflife as g
 
 TEST_X = 1
@@ -75,34 +75,32 @@ class GameOfLifeTestCase(TestCase):
         a.neighbors = neighbors
         self.assertEqual(apply_dead_rules(g.gameoflife_env, a), True)
 
-    # def test_gameoflife_action(self):
-    #     a = create_agent(TEST_ANUM, TEST_ANUM)
-    #     b = create_agent(TEST_ANUM - 1, TEST_ANUM)
-    #     c = create_agent(TEST_ANUM + 1, TEST_ANUM)
-    #     d = create_agent(TEST_ANUM, TEST_ANUM + 1)
-    #     g.groups = []
-    #     g.groups.append(Composite("white"))
-    #     g.groups.append(Composite("black"))
-    #     g.groups[0] += a
-    #     g.groups[1] += b
-    #     g.groups[1] += c
-    #     g.groups[1] += d
-    #     lst = []
-    #     neighbors_dict = {"neighbors": lst}
-    #     neighbors_dict["neighbors"].append(b)
-    #     neighbors_dict["neighbors"].append(c)
-    #     neighbors_dict["neighbors"].append(d)
-    #     neighbors_composite = grp_from_nm_dict("All neighbors", neighbors_dict["neighbors"])
-    #     a.neighbors = neighbors_composite
-    #     gameoflife_action(g.gameoflife_env)
-    #     self.assertEqual(a.primary_group(), g.groups[1])
-    #     self.assertEqual(len(a.neighbors), 3)
+    def test_gameoflife_action(self):
+        a = create_agent(TEST_X, TEST_Y)
+        b = create_agent(TEST_X - 1, TEST_Y)
+        c = create_agent(TEST_X + 1, TEST_Y)
+        d = create_agent(TEST_X, TEST_Y + 1)
+        g.groups = []
+        g.groups.append(Composite("white"))
+        g.groups.append(Composite("black"))
+        g.groups[0] += a
+        g.groups[1] += b
+        g.groups[1] += c
+        g.groups[1] += d
+        neighbors_composite = Composite("neighbors_composite")
+        neighbors_composite+= b
+        neighbors_composite+= c
+        neighbors_composite+= d
+        a.neighbors = neighbors_composite
+        gameoflife_action(g.gameoflife_env)
+        # self.assertEqual(a.primary_group(), g.groups[1])
+        self.assertEqual(len(a.neighbors), 3)
 
     # def test_agent_action(self):
-    #     a = create_agent(TEST_ANUM, TEST_ANUM)
-    #     b = create_agent(TEST_ANUM - 1, TEST_ANUM)
-    #     c = create_agent(TEST_ANUM + 1, TEST_ANUM)
-    #     d = create_agent(TEST_ANUM, TEST_ANUM + 1)
+    #     a = create_agent(TEST_X, TEST_Y)
+    #     b = create_agent(TEST_X - 1, TEST_Y)
+    #     c = create_agent(TEST_X + 1, TEST_Y)
+    #     d = create_agent(TEST_X, TEST_Y + 1)
     #     g.groups = []
     #     g.groups.append(Composite("Group" + str(0)))
     #     g.groups += a

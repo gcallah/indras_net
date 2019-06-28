@@ -137,7 +137,7 @@ def set_up(props=None):
     for y in range(height):
         for x in range(width):
             groups[W] += create_agent(x, y)
-    wolfram_env = Env("Wolfram env",
+    wolfram_env = Env("Wolfram Model",
                       action=wolfram_action,
                       random_placing=False,
                       props=pa,

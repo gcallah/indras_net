@@ -92,7 +92,11 @@ def agent_action(agent):
         agent.neighbors = gameoflife_env.get_all_neighbors(agent)
 
 
-def populate_board(gameoflife_env, width, height):
+def populate_board_random(gameoflife_env, width, height):
+    """
+    Randomly populates the center of the board with agents.
+    Number of agents is at most 10% of the board's area.
+    """
     num_agent = int(0.1 * (width * height))
     upper_limit = int((width / 2) + (width / 4))
     lower_limit = int((width / 2) - (width / 4)) + 1
@@ -103,6 +107,148 @@ def populate_board(gameoflife_env, width, height):
             change_color(gameoflife_env, agent)
 
 
+def populate_board_glider(gameoflife_env, width, height):
+    center = [width // 2, height // 2]
+    agent = gameoflife_env.get_agent_at(center[0], center[1])
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] - 1, center[1] + 1)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] + 1, center[1] + 1)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] + 1, center[1])
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0], center[1] - 1)
+    change_color(gameoflife_env, agent)
+
+
+def populate_board_small_exploder(gameoflife_env, width, height):
+    center = [width // 2, height // 2]
+    agent = gameoflife_env.get_agent_at(center[0], center[1])
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0], center[1] + 1)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] - 1, center[1])
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] + 1, center[1])
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] - 1, center[1] - 1)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] + 1, center[1] - 1)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0], center[1] - 2)
+    change_color(gameoflife_env, agent)
+
+
+def populate_board_exploder(gameoflife_env, width, height):
+    center = [width // 2, height // 2]
+    agent = gameoflife_env.get_agent_at(center[0], center[1])
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0], center[1] - 4)
+    change_color(gameoflife_env, agent)
+    for i in range(0, 5):
+        agent_left = gameoflife_env.get_agent_at(center[0] - 2, center[1] - i)
+        agent_right = gameoflife_env.get_agent_at(center[0] + 2, center[1] - i)
+        change_color(gameoflife_env, agent_left)
+        change_color(gameoflife_env, agent_right)
+
+
+def populate_board_n_horizontal_row(gameoflife_env, width, height, n):
+    center = [width // 2, height // 2]
+    right = (n // 2) + (n % 2)
+    left = n // 2
+    for r in range(right):
+        agent = gameoflife_env.get_agent_at(center[0] + r, center[1])
+        change_color(gameoflife_env, agent)
+    for l in range(1, left):
+        agent = gameoflife_env.get_agent_at(center[0] - l, center[1])
+        change_color(gameoflife_env, agent)
+
+
+def populate_board_n_vertical_row(gameoflife_env, width, height, n):
+    center = [width // 2, height // 2]
+    top = (n // 2) + (n % 2)
+    bottom = n // 2
+    for t in range(top):
+        agent = gameoflife_env.get_agent_at(center[0], center[1] + t)
+        change_color(gameoflife_env, agent)
+    for b in range(1, bottom):
+        agent = gameoflife_env.get_agent_at(center[0], center[1] - b)
+        change_color(gameoflife_env, agent)
+
+
+def populate_board_lightweight_spaceship(gameoflife_env, width, height):
+    center = [width // 2, height // 2]
+    agent = gameoflife_env.get_agent_at(center[0], center[1])
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] - 1, center[1])
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] - 2, center[1])
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] - 3, center[1])
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0], center[1] - 1)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0], center[1] - 2)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] - 4, center[1] - 1)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] - 1, center[1] - 3)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] - 4, center[1] - 3)
+    change_color(gameoflife_env, agent)
+
+
+def populate_board_tumbler(gameoflife_env, width, height):
+    center = [width // 2, height // 2]
+    agent = gameoflife_env.get_agent_at(center[0], center[1])
+    agent = gameoflife_env.get_agent_at(center[0] - 1, center[1])
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] - 2, center[1])
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] + 1, center[1])
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] + 2, center[1])
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] - 1, center[1] - 1)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] - 2, center[1] - 1)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] + 1, center[1] - 1)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] + 2, center[1] - 1)
+    change_color(gameoflife_env, agent)
+
+    agent = gameoflife_env.get_agent_at(center[0] - 1, center[1] - 2)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] - 1, center[1] - 3)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] - 1, center[1] - 4)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] + 1, center[1] - 2)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] + 1, center[1] - 3)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] + 1, center[1] - 4)
+    change_color(gameoflife_env, agent)
+
+    agent = gameoflife_env.get_agent_at(center[0] - 3, center[1] - 3)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] - 3, center[1] - 4)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] - 3, center[1] - 5)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] - 2, center[1] - 5)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] + 3, center[1] - 3)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] + 3, center[1] - 4)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] + 3, center[1] - 5)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] + 2, center[1] - 5)
+    change_color(gameoflife_env, agent)
+
+
 def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
@@ -111,12 +257,13 @@ def set_up(props=None):
 
     ds_file = 'props/gameoflife.props.json'
     if props is None:
-        pa = PropArgs.create_props('forest_fire_props', ds_file=ds_file)
+        pa = PropArgs.create_props('gameoflife_props', ds_file=ds_file)
     else:
-        pa = PropArgs.create_props('forest_fire_props',
+        pa = PropArgs.create_props('gameoflife_props',
                                    prop_dict=props)
     width = pa.get('grid_width', DEF_WIDTH)
     height = pa.get('grid_height', DEF_HEIGHT)
+    simulation = pa.get('simulation', 0)
     black = Composite("black", {"color": BLACK, "marker": SQUARE})
     white = Composite("white", {"color": WHITE})
     groups = []
@@ -125,22 +272,29 @@ def set_up(props=None):
     for y in range(height):
         for x in range(width):
             groups[0] += create_agent(x, y)
-    gameoflife_env = Env("Game of Life env",
+    gameoflife_env = Env("Game of Life",
                          action=gameoflife_action,
                          height=height,
                          width=width,
                          members=groups,
                          random_placing=False)
     gameoflife_env.user.exclude_choices(["line_graph"])
-    # a = gameoflife_env.get_agent_at((width // 2), (height // 2))
-    # change_color(gameoflife_env, a)
-    # b = gameoflife_env.get_agent_at((width // 2) - 1, (height // 2))
-    # change_color(gameoflife_env, b)
-    # c = gameoflife_env.get_agent_at((width // 2) + 1, (height // 2))
-    # change_color(gameoflife_env, c)
-    # d = gameoflife_env.get_agent_at((width // 2), (height // 2) + 1)
-    # change_color(gameoflife_env, d)
-    populate_board(gameoflife_env, width, height)
+    if simulation == 0:
+        populate_board_random(gameoflife_env, width, height)
+    elif simulation == 1:
+        populate_board_glider(gameoflife_env, width, height)
+    elif simulation == 2:
+        populate_board_small_exploder(gameoflife_env, width, height)
+    elif simulation == 3:
+        populate_board_exploder(gameoflife_env, width, height)
+    elif simulation == 4:
+        populate_board_n_horizontal_row(gameoflife_env, width, height, 10)
+    elif simulation == 5:
+        populate_board_n_vertical_row(gameoflife_env, width, height, 10)
+    elif simulation == 6:
+        populate_board_lightweight_spaceship(gameoflife_env, width, height)
+    elif simulation == 7:
+        populate_board_tumbler(gameoflife_env, width, height)
     return (gameoflife_env, groups)
 
 
