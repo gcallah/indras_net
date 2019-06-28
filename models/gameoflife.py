@@ -198,6 +198,57 @@ def populate_board_lightweight_spaceship(gameoflife_env, width, height):
     change_color(gameoflife_env, agent)
 
 
+def populate_board_tumbler(gameoflife_env, width, height):
+    center = [width // 2, height // 2]
+    agent = gameoflife_env.get_agent_at(center[0], center[1])
+    agent = gameoflife_env.get_agent_at(center[0] - 1, center[1])
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] - 2, center[1])
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] + 1, center[1])
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] + 2, center[1])
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] - 1, center[1] - 1)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] - 2, center[1] - 1)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] + 1, center[1] - 1)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] + 2, center[1] - 1)
+    change_color(gameoflife_env, agent)
+
+    agent = gameoflife_env.get_agent_at(center[0] - 1, center[1] - 2)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] - 1, center[1] - 3)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] - 1, center[1] - 4)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] + 1, center[1] - 2)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] + 1, center[1] - 3)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] + 1, center[1] - 4)
+    change_color(gameoflife_env, agent)
+
+    agent = gameoflife_env.get_agent_at(center[0] - 3, center[1] - 3)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] - 3, center[1] - 4)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] - 3, center[1] - 5)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] - 2, center[1] - 5)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] + 3, center[1] - 3)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] + 3, center[1] - 4)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] + 3, center[1] - 5)
+    change_color(gameoflife_env, agent)
+    agent = gameoflife_env.get_agent_at(center[0] + 2, center[1] - 5)
+    change_color(gameoflife_env, agent)
+
+
 def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
@@ -242,6 +293,8 @@ def set_up(props=None):
         populate_board_n_vertical_row(gameoflife_env, width, height, 10)
     elif simulation == 6:
         populate_board_lightweight_spaceship(gameoflife_env, width, height)
+    elif simulation == 7:
+        populate_board_tumbler(gameoflife_env, width, height)
     return (gameoflife_env, groups)
 
 
