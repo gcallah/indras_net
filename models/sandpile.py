@@ -114,7 +114,7 @@ def set_up(props=None):
     for y in range(height):
         for x in range(width):
             groups[0] += create_agent(x, y)
-    sandpile_env = Env("A sandpile",
+    sandpile_env = Env("Sanpile",
                        action=sandpile_action,
                        members=groups,
                        height=height,
