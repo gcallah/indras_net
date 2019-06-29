@@ -94,7 +94,6 @@ def wolfram_action(wolfram_env):
         wolfram_env.user.exclude_choices(["run", "line_graph"])
         return False
     else:
-        # active_row = wolfram_env.get_row_hood(active_row_y)
         next_row = wolfram_env.get_row_hood(active_row_y - 1)
         first_agent_key = "(0," + str(active_row_y) + ")"
         left_color = get_color(curr_row[first_agent_key].primary_group())

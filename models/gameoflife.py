@@ -89,7 +89,9 @@ def gameoflife_action(gameoflife_env):
 
 def agent_action(agent):
     if agent.neighbors is None:
-        agent.neighbors = gameoflife_env.get_all_neighbors(agent)
+        gameoflife_env.get_hood(["get_x_hood", "get_y_hood",
+                                "get_top_lr_hood", "get_bottom_lr_hood"],
+                                agent, True)
 
 
 def populate_board_random(gameoflife_env, width, height):
