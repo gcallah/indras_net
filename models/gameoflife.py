@@ -152,7 +152,7 @@ def populate_board_exploder(gameoflife_env, width, height):
         change_color(gameoflife_env, agent_right)
 
 
-def populate_board_n_horizontal_row(gameoflife_env, width, height, n):
+def populate_board_n_horizontal_row(gameoflife_env, width, height, n=10):
     center = [width // 2, height // 2]
     right = (n // 2) + (n % 2)
     left = n // 2
@@ -164,7 +164,7 @@ def populate_board_n_horizontal_row(gameoflife_env, width, height, n):
         change_color(gameoflife_env, agent)
 
 
-def populate_board_n_vertical_row(gameoflife_env, width, height, n):
+def populate_board_n_vertical_row(gameoflife_env, width, height, n=10):
     center = [width // 2, height // 2]
     top = (n // 2) + (n % 2)
     bottom = n // 2
@@ -288,9 +288,9 @@ def set_up(props=None):
     elif simulation == 3:
         populate_board_exploder(gameoflife_env, width, height)
     elif simulation == 4:
-        populate_board_n_horizontal_row(gameoflife_env, width, height, 10)
+        populate_board_n_horizontal_row(gameoflife_env, width, height)
     elif simulation == 5:
-        populate_board_n_vertical_row(gameoflife_env, width, height, 10)
+        populate_board_n_vertical_row(gameoflife_env, width, height)
     elif simulation == 6:
         populate_board_lightweight_spaceship(gameoflife_env, width, height)
     elif simulation == 7:

@@ -38,7 +38,7 @@ class WolframTestCase(TestCase):
         wolf.groups.append(white)
         wolf.groups.append(black)
         wolf.groups[W] += agent
-        turn_black(wolf.wolfram_env, wolf.groups, agent)
+        turn_black(wolf.groups, agent)
         self.assertEqual(agent.primary_group(), wolf.groups[B])
 
     def test_get_color(self):

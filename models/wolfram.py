@@ -21,6 +21,7 @@ B = 1
 wolfram_env = None
 groups = None
 rule_dict = None
+curr_row = None
 
 
 def create_agent(x, y):
@@ -31,7 +32,7 @@ def create_agent(x, y):
     return Agent(name=name, action=None)
 
 
-def turn_black(wolfram_env, groups, agent):
+def turn_black(groups, agent):
     """
     Change the color of the agent from white to black
     by chaning the group that it is in.
@@ -80,6 +81,8 @@ def wolfram_action(wolfram_env):
     """
     The action that will be taken every period.
     """
+    global curr_row
+
     active_row_y = wolfram_env.height - wolfram_env.get_periods() - 1
     wolfram_env.user.tell("\nChecking agents in row " + str(active_row_y)
                           + " against the rule...")
@@ -91,25 +94,26 @@ def wolfram_action(wolfram_env):
         wolfram_env.user.exclude_choices(["run", "line_graph"])
         return False
     else:
-        active_row = wolfram_env.get_row_hood(active_row_y)
+        # active_row = wolfram_env.get_row_hood(active_row_y)
         next_row = wolfram_env.get_row_hood(active_row_y - 1)
         first_agent_key = "(0," + str(active_row_y) + ")"
-        left_color = get_color(active_row[first_agent_key].primary_group())
+        left_color = get_color(curr_row[first_agent_key].primary_group())
         x = 0
-        for agent in active_row:
+        for agent in curr_row:
             if (x > 0) and (x < wolfram_env.width - 1):
-                middle_color = get_color(active_row[agent].primary_group())
-                right_color = get_color(active_row["(" + str(x + 1) + ","
-                                                   + str(active_row_y)
-                                                   + ")"].primary_group())
+                middle_color = get_color(curr_row[agent].primary_group())
+                right_color = get_color(curr_row["(" + str(x + 1) + ","
+                                                 + str(active_row_y)
+                                                 + ")"].primary_group())
                 if next_color(rule_dict, left_color, middle_color,
                               right_color):
                     next_row_agent_key = ("(" + str(x) + ","
                                           + str(active_row_y - 1) + ")")
-                    turn_black(wolfram_env, groups,
+                    turn_black(groups,
                                next_row[next_row_agent_key])
                 left_color = middle_color
             x += 1
+        curr_row = next_row
         return True
 
 
@@ -118,6 +122,7 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     global groups
+    global curr_row
 
     if props is None:
         pa = PropArgs.create_props('wolfram_props',
@@ -146,7 +151,9 @@ def set_up(props=None):
                       members=groups)
     wolfram_env.user.exclude_choices(["line_graph"])
     first_agent = wolfram_env.get_agent_at(width // 2, height - 1)
-    turn_black(wolfram_env, groups, first_agent)
+    turn_black(groups, first_agent)
+    curr_row = wolfram_env.get_row_hood(wolfram_env.height
+                                        - wolfram_env.get_periods() - 1)
     return (wolfram_env, groups, rule_dict)
 
 
