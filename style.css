@@ -32,6 +32,10 @@ ol, ul, dl, li {
     margin: 20px 12px 8px 12px;
 }
 
+p.model {
+    text-align: center;
+}
+
 p.menu {
     text-align: center;
     margin: .4em 4em .8em 4em;
@@ -39,14 +43,12 @@ p.menu {
 }
 
 figure {
-    margin: .4em 4em .8em 12em;
+    text-align: center;
 }
 
-figcaption {
+figure figcaption {
     color: #69c;
     font-style: italic;
-    margin: .4em 4em .8em 12em;
-    margin: .8em 1em .6em 1em;
 }
 
 h1,h2,h3,h4,h5 {
@@ -80,8 +82,8 @@ h3 {
 
 h4 {
     font-size: 1.5em;
-    margin: 16px 40px 12px 40px;
     color: #aaf;
+	text-align: center
 }
 
 h5 {
