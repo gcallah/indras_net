@@ -264,15 +264,9 @@ class Space(Composite):
                 row_hood += (self.get_agent_at(x, row_num))
             return row_hood
 
-    def get_moore_hood(self, agent):
-        """
-        To be written!
-        """
-        pass
-
     def get_x_hood(self, agent):
         """
-        Takes in an agent and returns either a Composite or a dictionary
+        Takes in an agent and returns a Composite
         of its x neighbors.
         For example, if the agent is located at (0, 0),
         get_x_hood would return (-1, 0) and (1, 0)
@@ -290,7 +284,7 @@ class Space(Composite):
 
     def get_y_hood(self, agent):
         """
-        Takes in an agent and returns either a Composite or a dictionary
+        Takes in an agent and returns a Composite
         of its y neighbors.
         For example, if the agent is located at (0, 0),
         get_y_hood would return (0, -1) and (0, 1)
@@ -308,7 +302,7 @@ class Space(Composite):
 
     def get_top_lr_hood(self, agent):
         """
-        Takes in an agent and returns either a Composite or a dictionary
+        Takes in an agent and returns a Composite
         of its top left and right neighbors.
         For example, if the agent is located at (0, 0),
         get_top_lr_hood would return (-1, 1) and (1, 1)
@@ -326,7 +320,7 @@ class Space(Composite):
 
     def get_bottom_lr_hood(self, agent):
         """
-        Takes in an agent and returns either a Composite or a dictionary
+        Takes in an agent and returns a Composite
         of its bottom left and right neighbors.
         For example, if the agent is located at (0, 0),
         get_bottom_lr_hood would return (-1, -1) and (1, -1)
@@ -342,20 +336,45 @@ class Space(Composite):
                 bottom_lr_hood += (self.get_agent_at(neighbor_x, agent_y - 1))
         return bottom_lr_hood
 
-    def get_vonneumann_hood(self, agent):
-        """
-        Takes in an agent and returns a Composite of its vonneuman neighbors
-        """
-        x_neighbors = self.get_x_hood(agent)
-        y_neighbors = self.get_y_hood(agent)
-        return (x_neighbors + y_neighbors)
+    # def get_vonneumann_hood(self, agent):
+    #     """
+    #     Takes in an agent and returns a Composite of its
+    #     Von Neumann neighbors.
+    #     """
+    #     x_neighbors = self.get_x_hood(agent)
+    #     y_neighbors = self.get_y_hood(agent)
+    #     return (x_neighbors + y_neighbors)
 
-    def get_all_neighbors(self, agent):
+    # def get_moore_hood(self, agent):
+    #     """
+    #     Takes in an agent and returns a Composite of its Moore neighbors.
+    #     """
+    #     x_neighbors = self.get_x_hood(agent)
+    #     y_neighbors = self.get_y_hood(agent)
+    #     top_neighbors = self.get_top_lr_hood(agent)
+    #     bottom_neighbors = self.get_bottom_lr_hood(agent)
+    #     return (x_neighbors + y_neighbors + top_neighbors + bottom_neighbors)
+
+    def get_hood(self, filter_func, agent, save_hood=False):
         """
-        Takes in an agent and returns a Composite of all of its neighbors
+        Takes in filter_func, which is a list of strings of the names of
+        get neighbor methods, agent, and save_hood, which is a boolean
+        for either returning the Composite of neighbors or
+        storing the Composite in agent.neighbors,
+        and runs the corresponding get neighbor methods.
         """
-        x_neighbors = self.get_x_hood(agent)
-        y_neighbors = self.get_y_hood(agent)
-        top_neighbors = self.get_top_lr_hood(agent)
-        bottom_neighbors = self.get_bottom_lr_hood(agent)
-        return (x_neighbors + y_neighbors + top_neighbors + bottom_neighbors)
+        neighborhood = Composite("Neighborhood")
+        if "get_x_hood" in filter_func:
+            neighborhood += self.get_x_hood(agent)
+        if "get_y_hood" in filter_func:
+            neighborhood += self.get_y_hood(agent)
+        if "get_top_lr_hood" in filter_func:
+            neighborhood += self.get_top_lr_hood(agent)
+        if "get_bottom_lr_hood" in filter_func:
+            neighborhood += self.get_bottom_lr_hood(agent)
+        if "get_row_hood" in filter_func:
+            neighborhood += self.get_row_hood(agent)
+        if save_hood:
+            agent.neighbors = neighborhood
+        else:
+            return neighborhood

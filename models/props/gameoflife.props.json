@@ -15,7 +15,7 @@
   },
   "simulation": {
     "val": 0,
-    "question": "Which simulation would you like to load?\n0 (Default): Random \n1: Glider \n2: Small Exploder \n3: Exploder \n4: N Horizontal Row \n5: N Vertical Row \n6: Lightweight Spaceship\n7: Tumbler\n",
+    "question": "Which simulation would you like to load?\n0 (Default): Random \n1: Glider \n2: Small Exploder \n3: Exploder \n4: Horizontal Row of Length 10 \n5: Vertical Row of Height 10 \n6: Lightweight Spaceship\n7: Tumbler\n",
     "atype": "INT",
     "hival": 7,
     "lowval": 0
