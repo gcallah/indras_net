@@ -264,7 +264,7 @@ class Space(Composite):
                 row_hood += (self.get_agent_at(x, row_num))
             return row_hood
 
-    def get_x_hood(self, agent):
+    def get_x_hood(self, agent, width=1):
         """
         Takes in an agent and returns a Composite
         of its x neighbors.
@@ -274,7 +274,11 @@ class Space(Composite):
         x_hood = Composite("x neighbors")
         agent_x = agent.get_x()
         agent_y = agent.get_y()
-        neighbor_x_coords = [-1, 1]
+        neighbor_x_coords = []
+        for i in range(-width, 0):
+            neighbor_x_coords.append(i)
+        for i in range(1, width + 1):
+            neighbor_x_coords.append(i)
         for i in neighbor_x_coords:
             neighbor_x = agent_x + i
             if not out_of_bounds(neighbor_x, agent_y, 0, 0,
@@ -282,7 +286,7 @@ class Space(Composite):
                 x_hood += self.get_agent_at(neighbor_x, agent_y)
         return x_hood
 
-    def get_y_hood(self, agent):
+    def get_y_hood(self, agent, height=1):
         """
         Takes in an agent and returns a Composite
         of its y neighbors.
@@ -292,7 +296,11 @@ class Space(Composite):
         y_hood = Composite("y neighbors")
         agent_x = agent.get_x()
         agent_y = agent.get_y()
-        neighbor_y_coords = [-1, 1]
+        neighbor_y_coords = []
+        for i in range(-height, 0):
+            neighbor_y_coords.append(i)
+        for i in range(1, height + 1):
+            neighbor_y_coords.append(i)
         for i in neighbor_y_coords:
             neighbor_y = agent_y + i
             if not out_of_bounds(agent_x, neighbor_y, 0, 0,
@@ -345,15 +353,27 @@ class Space(Composite):
     #     y_neighbors = self.get_y_hood(agent)
     #     return (x_neighbors + y_neighbors)
 
-    # def get_moore_hood(self, agent):
-    #     """
-    #     Takes in an agent and returns a Composite of its Moore neighbors.
-    #     """
-    #     x_neighbors = self.get_x_hood(agent)
-    #     y_neighbors = self.get_y_hood(agent)
-    #     top_neighbors = self.get_top_lr_hood(agent)
-    #     bottom_neighbors = self.get_bottom_lr_hood(agent)
-    #     return (x_neighbors + y_neighbors + top_neighbors + bottom_neighbors)
+    def get_moore_hood(self, agent):
+        """
+        Takes in an agent and returns a Composite of its Moore neighbors.
+        """
+        moore_hood = Composite("Moore neighbors")
+        agent_x = agent.get_x()
+        agent_y = agent.get_y()
+        neighbor_x_coords = [-1, 0, 1]
+        neighbor_y_coords = [-1, 0, 1]
+        print("Moore hood for", agent)
+        for y in neighbor_y_coords:
+            neighbor_y = agent_y + y
+            for x in neighbor_x_coords:
+                neighbor_x = agent_x + x
+                if ((neighbor_x == agent_x) and (neighbor_y == agent_y)):
+                    pass
+                else:
+                    if not out_of_bounds(neighbor_x, neighbor_y, 0, 0,
+                                         self.width, self.height):
+                        moore_hood += self.get_agent_at(neighbor_x, neighbor_y)
+        return moore_hood
 
     def get_hood(self, filter_func, agent, save_hood=False):
         """
