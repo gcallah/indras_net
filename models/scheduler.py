@@ -53,7 +53,7 @@ def set_up(props=None):
               height=pa.get('grid_height', DEF_HEIGHT),
               width=pa.get('grid_width', DEF_WIDTH),
               members=[blue_group, red_group])
-    return (blue_group, red_group, env)
+    return (env, blue_group, red_group)
 
 
 def main():
@@ -61,7 +61,7 @@ def main():
     global blue_group
     global env
 
-    (blue_group, red_group, env) = set_up()
+    (env, blue_group, red_group) = set_up()
 
     if DEBUG2:
         print(env.__repr__())
