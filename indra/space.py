@@ -251,7 +251,7 @@ class Space(Composite):
         """
         del self.locations[(x, y)]
 
-    def get_row_hood(self, row_num):
+    def get_row_hood(self, row_num, pred=None):
         """
         Collects all agents in row `row_num` into a Composite
         and return that collection.
@@ -308,7 +308,7 @@ class Space(Composite):
                 y_hood += (self.get_agent_at(agent_x, neighbor_y))
         return y_hood
 
-    def get_top_lr_hood(self, agent):
+    def get_top_lr_hood(self, agent, pred=None):
         """
         Takes in an agent and returns a Composite
         of its top left and right neighbors.
@@ -326,7 +326,7 @@ class Space(Composite):
                 top_lr_hood += (self.get_agent_at(neighbor_x, agent_y + 1))
         return top_lr_hood
 
-    def get_bottom_lr_hood(self, agent):
+    def get_bottom_lr_hood(self, agent, pred=None):
         """
         Takes in an agent and returns a Composite
         of its bottom left and right neighbors.
@@ -344,7 +344,7 @@ class Space(Composite):
                 bottom_lr_hood += (self.get_agent_at(neighbor_x, agent_y - 1))
         return bottom_lr_hood
 
-    def get_vonneumann_hood(self, agent):
+    def get_vonneumann_hood(self, agent, pred=None):
         """
         Takes in an agent and returns a Composite of its
         Von Neumann neighbors.
@@ -356,7 +356,7 @@ class Space(Composite):
         vonneumann_hood += y_neighbors
         return vonneumann_hood
 
-    def get_moore_hood(self, agent):
+    def get_moore_hood(self, agent, pred=None):
         """
         Takes in an agent and returns a Composite of its Moore neighbors.
         """
