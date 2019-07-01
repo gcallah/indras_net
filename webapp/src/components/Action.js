@@ -26,8 +26,8 @@ class Action extends Component {
   return (
     <div>
       <br />
-      <h1 style={{ "textAlign": "center" }}>Welcome to the Indra ABM platform!
-      </h1>
+      <h2 style={{ "textAlign": "center" }}>Welcome to the Indra ABM platform!
+      </h2>
       <br /><br />
       
       <p>We are updating the model!</p>

@@ -19,6 +19,7 @@ async componentDidMount() {
   const menu = await axios.get(this.api_server);
   this.setState({menu_list:menu.data})
   const {id} = this.props.match.params;
+  this.setState({name:this.props.location.state.name})
   this.setState({model_id:id});
   console.log(this.state.menu_list)
   this.setState({ loadingData: false });
@@ -37,7 +38,7 @@ render() {
       <div>
 
         <br />
-        <h1 style={{ "textAlign": "center" }}>Pick one action!
+        <h1 style={{ "textAlign": "center" }}>{this.state.name}
         </h1>
 
         <br /><br />

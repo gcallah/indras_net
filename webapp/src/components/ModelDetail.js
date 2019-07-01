@@ -25,7 +25,6 @@ class ModelDetail extends Component {
     const {menu_id} = this.props.location.state;
     const properties = await axios.get(this.api_server + menu_id.id);
     this.setState({id:menu_id.id})
-    this.setState({model_id:menu_id.id})
     this.setState({ model_details: properties.data });
     this.states(properties.data);
     this.errors(properties.data);
@@ -119,7 +118,9 @@ class ModelDetail extends Component {
     },
 
     console.log(this.state.model_details))
-    this.props.history.replace( {pathname:`/models/menu/${this.state.id}`});
+    this.props.history.push({pathname:`/models/menu/${this.state.id}`,state: {
+                name: this.props.location.state.name
+               }});
   }
 
 
@@ -137,8 +138,8 @@ class ModelDetail extends Component {
       <div>
         <br />
         <br />
-        <h1 style={{ "textAlign": "center" }}>Just a few more steps before running your model!</h1>
-        <h3 style={{ "textAlign": "left" }}> List of properties </h3>
+        <h2 style={{ "textAlign": "center" }}>Just a few more steps before running your model!</h2>
+        <h3 style={{ "textAlign": "left" }}> {this.props.location.state.name} </h3>
         <br /><br />
         <form>
           {Object.keys(this.state.model_details).map((item,i)=> {
