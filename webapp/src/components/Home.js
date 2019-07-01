@@ -12,11 +12,15 @@ class Home extends Component {
   }
 
   async componentDidMount() {
-    this.setState({ loadingData: true });
-    document.title = "Indra | Home";
-    const res = await axios.get(this.api_server + 'models')
-    this.setState({ allItems: res.data });
-    this.setState({ loadingData: false });
+    try {
+      this.setState({ loadingData: true });
+      document.title = "Indra | Home";
+      const res = await axios.get(this.api_server + 'models')
+      this.setState({ allItems: res.data });
+      this.setState({ loadingData: false });
+    } catch (e) {
+      console.log(e.message);
+    } 
   }
 
   renderMenu = () => {
