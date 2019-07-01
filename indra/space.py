@@ -259,9 +259,9 @@ class Space(Composite):
         if row_num < 0 or row_num >= self.height:
             return None
         else:
+            agent = self.get_agent_at(self.width // 2, row_num)
             row_hood = Composite("Row neighbors")
-            for x in range(self.width):
-                row_hood += (self.get_agent_at(x, row_num))
+            row_hood = self.get_x_hood(agent, self.width - 1, "include center")
             return row_hood
 
     def get_x_hood(self, agent, width=1, pred=None):
@@ -277,6 +277,8 @@ class Space(Composite):
         neighbor_x_coords = []
         for i in range(-width, 0):
             neighbor_x_coords.append(i)
+        if (pred == "include center"):
+            neighbor_x_coords.append(0)
         for i in range(1, width + 1):
             neighbor_x_coords.append(i)
         for i in neighbor_x_coords:
@@ -307,42 +309,6 @@ class Space(Composite):
                                  self.width, self.height):
                 y_hood += (self.get_agent_at(agent_x, neighbor_y))
         return y_hood
-
-    def get_top_lr_hood(self, agent, pred=None):
-        """
-        Takes in an agent and returns a Composite
-        of its top left and right neighbors.
-        For example, if the agent is located at (0, 0),
-        get_top_lr_hood would return (-1, 1) and (1, 1)
-        """
-        top_lr_hood = Composite("bottom l and r neighbors")
-        agent_x = agent.get_x()
-        agent_y = agent.get_y()
-        neighbor_x_coords = [-1, 1]
-        for i in neighbor_x_coords:
-            neighbor_x = agent_x + i
-            if not out_of_bounds(neighbor_x, agent_y + 1, 0, 0,
-                                 self.width, self.height):
-                top_lr_hood += (self.get_agent_at(neighbor_x, agent_y + 1))
-        return top_lr_hood
-
-    def get_bottom_lr_hood(self, agent, pred=None):
-        """
-        Takes in an agent and returns a Composite
-        of its bottom left and right neighbors.
-        For example, if the agent is located at (0, 0),
-        get_bottom_lr_hood would return (-1, -1) and (1, -1)
-        """
-        bottom_lr_hood = Composite("top l and r neighbors")
-        agent_x = agent.get_x()
-        agent_y = agent.get_y()
-        neighbor_x_coords = [-1, 1]
-        for i in neighbor_x_coords:
-            neighbor_x = agent_x + i
-            if not out_of_bounds(neighbor_x, agent_y - 1, 0, 0,
-                                 self.width, self.height):
-                bottom_lr_hood += (self.get_agent_at(neighbor_x, agent_y - 1))
-        return bottom_lr_hood
 
     def get_vonneumann_hood(self, agent, pred=None):
         """

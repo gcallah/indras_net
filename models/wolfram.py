@@ -151,8 +151,7 @@ def set_up(props=None):
     wolfram_env.user.exclude_choices(["line_graph"])
     first_agent = wolfram_env.get_agent_at(width // 2, height - 1)
     turn_black(groups, first_agent)
-    curr_row = wolfram_env.get_row_hood(wolfram_env.height
-                                        - wolfram_env.get_periods() - 1)
+    curr_row = wolfram_env.get_row_hood(wolfram_env.height - 1)
     return (wolfram_env, groups, rule_dict)
 
 
