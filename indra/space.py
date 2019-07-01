@@ -264,7 +264,7 @@ class Space(Composite):
                 row_hood += (self.get_agent_at(x, row_num))
             return row_hood
 
-    def get_x_hood(self, agent, width=1, pred = None):
+    def get_x_hood(self, agent, width=1, pred=None):
         """
         Takes in an agent and returns a Composite
         of its x neighbors.
@@ -286,7 +286,7 @@ class Space(Composite):
                 x_hood += self.get_agent_at(neighbor_x, agent_y)
         return x_hood
 
-    def get_y_hood(self, agent, height=1, pred = None):
+    def get_y_hood(self, agent, height=1, pred=None):
         """
         Takes in an agent and returns a Composite
         of its y neighbors.
