@@ -5,17 +5,10 @@ import axios from 'axios';
 class ModelDetail extends Component {
   api_server = 'https://indrasnet.pythonanywhere.com/models/props/';
 
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      model_details: {},
-      loadingData: false,
-      disabled_button: false,
-    }
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.checkValidity = this.checkValidity.bind(this);
+  state = {
+    model_details: {},
+    loadingData: false,
+    disabled_button: false,
   }
 
 
@@ -32,7 +25,7 @@ class ModelDetail extends Component {
   }
 
 
-  states(data){
+  states = (data) => {
     //loop over objects in data and create object in this.state
     Object.keys(this.state.model_details).forEach(item => 
     this.setState({[item]: data[item]})
@@ -40,7 +33,7 @@ class ModelDetail extends Component {
   }
 
 
-  errors(data){
+  errors = (data) => {
     Object.keys(this.state.model_details).forEach(item => 
       this.setState(prevState => ({
         model_details: {
@@ -56,7 +49,7 @@ class ModelDetail extends Component {
   }
 
 
-  errorSubmit(){
+  errorSubmit = () =>{
     let ans = false
     Object.keys(this.state.model_details).forEach(item => 
     ans = ans || this.state.model_details[item]['disabledButton'])
@@ -74,14 +67,14 @@ class ModelDetail extends Component {
       model_detail[name]['disabledButton']=false
       this.setState({model_details:model_detail})
 
-    }else if(valid === -1){
+    } else if(valid === -1){
       model_detail[name]['errorMessage']="**Wrong Input Type"
       model_detail[name]['val']= this.state[name]['val']
       model_detail[name]['disabledButton']=true
       this.setState({model_details:model_detail})
       console.log(this.state.model_details[name])
 
-    }else{
+    } else {
       model_detail[name]['errorMessage']=`**Please input a number between ${this.state[name]['lowval']} and ${this.state[name]['hival']}.`
       model_detail[name]['val']= this.state[name]['val']
       model_detail[name]['disabledButton']=true
@@ -92,7 +85,7 @@ class ModelDetail extends Component {
   }
 
 
-  checkValidity(name,value){
+  checkValidity = (name,value) => {
     if (value<=this.state.model_details[name]['hival'] && value >=this.state.model_details[name]['lowval']){
       if (this.state.model_details[name]['atype'] === 'INT' && !!(value%1)=== false){
         return 1
