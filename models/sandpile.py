@@ -88,7 +88,8 @@ def sandpile_action(sandpile_env):
 
 def place_action(agent):
     if agent.neighbors is None:
-        sandpile_env.get_hood(["get_x_hood", "get_y_hood"], agent, True)
+        agent.neighbors = sandpile_env.get_x_hood(agent)
+        agent.neighbors += sandpile_env.get_y_hood(agent)
 
 
 def set_up(props=None):
