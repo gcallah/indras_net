@@ -18,6 +18,9 @@ async componentDidMount() {
   document.title = "Indra | Menu";
   const menu = await axios.get(this.api_server);
   this.setState({menu_list:menu.data})
+  const {id} = this.props.match.params;
+  this.setState({model_id:id});
+  console.log(this.state.menu_list)
   this.setState({ loadingData: false });
 }
 
@@ -41,7 +44,7 @@ render() {
 
         { Object.keys(this.state.menu_list).map((item,i)=>
         <li key={i} >
-          <Link to='/models/menu/'>
+          <Link to={{pathname:'/models/menu/', state: { menu_id: this.state.menu_list[item]['id'] }}}>
             {this.state.menu_list[item]['question']}
           </Link>
         </li>)}

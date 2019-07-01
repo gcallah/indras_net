@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Loader, Dimmer } from "semantic-ui-react";
 import axios from 'axios';
-import Menu from "./Menu"
 
 class ModelDetail extends Component {
   api_server = 'https://indrasnet.pythonanywhere.com/models/props/';
@@ -13,7 +12,6 @@ class ModelDetail extends Component {
       model_details: {},
       loadingData: false,
       disabled_button: false,
-      model_id: 0
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -121,7 +119,7 @@ class ModelDetail extends Component {
     },
 
     console.log(this.state.model_details))
-    this.props.history.replace( '/models/menu/' + this.state.id);
+    this.props.history.replace( {pathname:`/models/menu/${this.state.id}`});
   }
 
 
