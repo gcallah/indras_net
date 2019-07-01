@@ -4,7 +4,6 @@ from flask import Flask
 from flask_restplus import Resource, Api, fields
 from flask_cors import CORS
 import json
-# from propargs.propargs import PropArgs as pa
 from indra.user import APIUser
 from models.run_dict import setup_dict
 from models.run_dict import rdict
@@ -65,7 +64,6 @@ class Models(Resource):
 
 
 props = api.model("props", {
-    "model ID": fields.Integer,
     "props": fields.String("Enter propargs.")
 })
 
@@ -91,7 +89,12 @@ class Props(Resource):
         models_db = load_models()
         try:
             env = setup_dict[models_db[model_id]["run"]](props=props_dict)[0]
-            return env
+            print('WE GOT THE ENV')
+            # env = setup_dict[models_db[model_id]["run"]]()[0]
+            # print('WE GOT THE ENV')
+            json_data = env.to_json()
+            # we reached here if ()
+            return json_data
         except TypeError:
             return err_return("model failed to be accessed")
 
