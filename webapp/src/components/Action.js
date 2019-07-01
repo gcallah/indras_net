@@ -10,6 +10,7 @@ class Action extends Component {
   async componentDidMount() {
     this.setState({ loadingData: true });
     document.title = "Indra | Action";
+    const {menu_id} = this.props.location.state;
     this.setState({ loadingData: false });
   }
 
