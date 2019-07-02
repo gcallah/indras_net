@@ -69,8 +69,9 @@ def add_grain(sandpile_env, agent):
 def topple(sandpile_env, agent):
     if DEBUG:
         print("Sandpile in", agent.pos, "is toppling")
-    for neighbor in agent.neighbors:
-        add_grain(sandpile_env, agent.neighbors[neighbor])
+    neighbors = sandpile_env.get_vonneumann_hood(agent, save_neighbors=True)
+    for neighbor in neighbors:
+        add_grain(sandpile_env, neighbors[neighbor])
 
 
 def sandpile_action(sandpile_env):
@@ -87,8 +88,9 @@ def sandpile_action(sandpile_env):
 
 
 def place_action(agent):
-    if agent.neighbors is None:
-        sandpile_env.get_vonneumann_hood(agent, save_neighbors=True)
+    pass
+    # if agent.neighbors is None:
+    #     sandpile_env.get_vonneumann_hood(agent, save_neighbors=True)
 
 
 def set_up(props=None):

@@ -45,7 +45,7 @@ class SegregationTestCase(TestCase):
         self.assertGreater(DEF_TOLERANCE + .2, avg)
 
     def test_my_group_index(self):
-        red_agent = create_agent(TEST_ANUM, 
+        red_agent = create_agent(TEST_ANUM,
                                  DEF_TOLERANCE, DEF_SIGMA,
                                  color=RED_TEAM)
         self.assertEqual(RED_TEAM, my_group_index(red_agent))
