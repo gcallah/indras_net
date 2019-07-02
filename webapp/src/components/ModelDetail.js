@@ -13,15 +13,22 @@ class ModelDetail extends Component {
 
 
   async componentDidMount() {
-    this.setState({ loadingData: true });
-    document.title = "Indra | Property";
-    const {menu_id} = this.props.location.state;
-    const properties = await axios.get(this.api_server + menu_id.id);
-    this.setState({id:menu_id.id})
-    this.setState({ model_details: properties.data });
-    this.states(properties.data);
-    this.errors(properties.data);
-    this.setState({ loadingData: false });
+    try{
+      this.setState({ loadingData: true });
+      document.title = "Indra | Property";
+      const {menu_id} = this.props.location.state;
+      console.log(menu_id)
+      const properties = await axios.get(this.api_server + menu_id);
+      this.setState({id:menu_id})
+      this.setState({ model_details: properties.data });
+      this.states(properties.data);
+      this.errors(properties.data);
+      this.setState({ loadingData: false });
+      console.log(this.props.history.location)
+    }catch(e){
+      console.log(e.message);
+    }
+    
   }
 
 
@@ -116,6 +123,10 @@ class ModelDetail extends Component {
                }});
   }
 
+  goback=()=>{
+     this.props.history.goBack();
+  }
+
 
   render() {
     const { disabled_button } = this.state;
@@ -147,7 +158,10 @@ class ModelDetail extends Component {
           }
         </form>
         <br /><br />
-        <button disabled={disabled_button} onClick={!disabled_button ? this.handleSubmit.bind( this ) : null}>Submit</button>
+        <button onClick={this.goback}>Go Back</button>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <button disabled={disabled_button} onClick={!disabled_button ? this.handleSubmit : null}>Submit</button>
+        
       </div>
     );
   }

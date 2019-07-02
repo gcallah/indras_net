@@ -3,7 +3,12 @@
 
 Indra
 =====
-This is a project building an agent-based modeling system in Python. The ultimate goal is to build a GUI front-end that will allow non-coders to build models, while at the same time permitting coders to use Python for more flexibility in model creation.
+This is a project building an agent-based modeling system in Python. The
+ultimate goal is to build a GUI front-end that will allow non-coders to build
+models, while at the same time permitting coders to use Python for more
+flexibility in model creation.
 
 
-We are currently building **indra2**, a new version of the system. Updates of the readme to come.
+We are currently building **indra2**, a new version of the system. Our API
+Serever is moving along,  we have a react frontend in progress, and many models
+have been ported to version 2.

@@ -331,12 +331,13 @@ class Space(Composite):
         agent_y = agent.get_y()
         neighbor_x_coords = [-1, 0, 1]
         neighbor_y_coords = [-1, 0, 1]
-        print("Moore hood for", agent)
         for y in neighbor_y_coords:
             neighbor_y = agent_y + y
             for x in neighbor_x_coords:
                 neighbor_x = agent_x + x
-                if ((neighbor_x != agent_x) and (neighbor_y != agent_y)):
+                if ((neighbor_x == agent_x) and (neighbor_y == agent_y)):
+                    pass
+                else:
                     if not out_of_bounds(neighbor_x, neighbor_y, 0, 0,
                                          self.width, self.height):
                         moore_hood += self.get_agent_at(neighbor_x, neighbor_y)

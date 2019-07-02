@@ -24,6 +24,9 @@ test_seg:
 test_sand:
 	nosetests tests.test_sandpile --nocapture
 
+test_sched:
+	nosetests tests.test_scheduler --nocapture
+
 # for some reason the following test hangs:
 # test_fashion:
 # 	nosetests tests.test_fashion

@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import { Loader, Dimmer } from "semantic-ui-react";
+import { Loader, Dimmer, Menu } from "semantic-ui-react";
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
-class Menu extends Component {
+class MenuList extends Component {
   api_server = 'https://indrasnet.pythonanywhere.com/models/menu/';
   state = {
   msg: '',
@@ -21,9 +21,16 @@ async componentDidMount() {
   const {id} = this.props.match.params;
   this.setState({name:this.props.location.state.name})
   this.setState({model_id:id});
-  console.log(this.state.menu_list)
+  console.log(this.state.model_id);
   this.setState({ loadingData: false });
 }
+
+ goback=()=>{
+     this.props.history.replace({
+         pathname: `/models/props/${this.state.model_id}`,
+        state:{ menu_id: this.state.model_id, name:this.state.name}
+       });
+  }
 
 render() {
   if (this.state.loadingData) {
@@ -42,19 +49,26 @@ render() {
         </h1>
 
         <br /><br />
-
+        <Menu vertical style={{
+          maxHeight: '30em',
+          maxwidth: '40em',
+          overflowY: 'scroll',
+        }}>
         { Object.keys(this.state.menu_list).map((item,i)=>
-        <li key={i} >
-          <Link to={{pathname:'/models/menu/', state: { menu_id: this.state.menu_list[item]['id'] }}}>
+        <Menu.Item key={i} style={{fontSize:'1.3em'}}>
+          {this.state.menu_list[item]['id']===0?<Link to={{pathname:'/', state: { menu_id: this.state.menu_list[item]['id'] }}}>
             {this.state.menu_list[item]['question']}
-          </Link>
-        </li>)}
-
+          </Link>:<Link to={{pathname:'/models/menu/', state: { menu_id: this.state.menu_list[item]['id'] }}}>
+            {this.state.menu_list[item]['question']}
+          </Link>}
+        </Menu.Item>)}
+        </Menu>
         <br /><br />
+        <button onClick={this.goback}>Go Back</button>
 
       </div>
     );
   }
 }
 
-export default Menu;
+export default MenuList;
