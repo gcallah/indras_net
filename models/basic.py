@@ -2,8 +2,6 @@
     This is the fashion model re-written in indra.
 """
 
-import sys
-
 from propargs.propargs import PropArgs
 
 from indra.agent import Agent
@@ -11,7 +9,6 @@ from indra.composite import Composite
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.env import Env
 from indra.display_methods import RED, BLUE
-from indra.user import tell_debug
 
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
@@ -41,15 +38,12 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    tell_debug('We trying to load props')
-
     if props is None:
         pa = PropArgs.create_props('basic_props',
                                    ds_file='props/basic.props.json')
     else:
         pa = PropArgs.create_props('basic_props',
                                    prop_dict=props)
-        print('We loaded props', file=sys.stderr)
 
     blue_group = Composite("Blues", {"color": BLUE},
                            member_creator=create_agent,
