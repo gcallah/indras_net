@@ -30,7 +30,7 @@ class Home extends Component {
           <Link 
               to={{
                 pathname: '/models/props/'+id, 
-                state:{ menu_id: {id}, name:item.name}
+                state:{ menu_id: id, name:item.name}
               }}>
           {item.name}</Link>
         </Menu.Item>

@@ -21,9 +21,16 @@ async componentDidMount() {
   const {id} = this.props.match.params;
   this.setState({name:this.props.location.state.name})
   this.setState({model_id:id});
-  console.log(this.state.menu_list)
+  console.log(this.state.model_id);
   this.setState({ loadingData: false });
 }
+
+ goback=()=>{
+     this.props.history.replace({
+         pathname: `/models/props/${this.state.model_id}`,
+        state:{ menu_id: this.state.model_id, name:this.state.name}
+       });
+  }
 
 render() {
   if (this.state.loadingData) {
@@ -44,13 +51,16 @@ render() {
         <br /><br />
 
         { Object.keys(this.state.menu_list).map((item,i)=>
-        <li key={i} >
-          <Link to={{pathname:'/models/menu/', state: { menu_id: this.state.menu_list[item]['id'] }}}>
+        <li key={i} style={{fontSize:'1.3em'}}>
+          {this.state.menu_list[item]['id']===0?<Link to={{pathname:'/', state: { menu_id: this.state.menu_list[item]['id'] }}}>
             {this.state.menu_list[item]['question']}
-          </Link>
+          </Link>:<Link to={{pathname:'/models/menu/', state: { menu_id: this.state.menu_list[item]['id'] }}}>
+            {this.state.menu_list[item]['question']}
+          </Link>}
         </li>)}
 
         <br /><br />
+        <button onClick={this.goback}>Go Back</button>
 
       </div>
     );
