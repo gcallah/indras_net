@@ -36,6 +36,10 @@ def load_menu():
         return json.loads(file.read())["menu_database"]
 
 
+def JsonConverter(object):
+    return json.dumps(object)
+
+
 @api.route('/hello')
 class HelloWorld(Resource):
     def get(self):
@@ -88,13 +92,13 @@ class Props(Resource):
         props_dict = api.payload
         models_db = load_models()
         try:
-            env = setup_dict[models_db[model_id]["run"]](props=props_dict)[0]
+            env = setup_dict[models_db[model_id]["run"]](props=props_dict)[1]
             print('WE GOT THE ENV')
-            # env = setup_dict[models_db[model_id]["run"]]()[0]
-            # print('WE GOT THE ENV')
-            json_data = env.to_json()
-            # we reached here if ()
-            return json_data
+            return JsonConverter(env)
+            # try:
+            #     return JsonConverter(env)
+            # except:
+            #     return "failed to dump data"
         except TypeError:
             return err_return("model failed to be accessed")
 
