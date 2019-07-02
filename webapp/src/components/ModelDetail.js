@@ -142,7 +142,7 @@ class ModelDetail extends Component {
       <div>
         <br />
         <br />
-        <h2 style={{ "textAlign": "center" }}>Just a few more steps before running your model!</h2>
+        <h2 style={{ "textAlign": "center" }}>Please set the parameters for your model</h2>
         <h3 style={{ "textAlign": "left" }}> {this.props.location.state.name} </h3>
         <br /><br />
         <form>
