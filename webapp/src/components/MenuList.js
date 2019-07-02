@@ -50,12 +50,12 @@ render() {
 
         <br /><br />
         <Menu vertical style={{
-          maxHeight: '10em',
+          maxHeight: '30em',
           maxwidth: '40em',
           overflowY: 'scroll',
         }}>
         { Object.keys(this.state.menu_list).map((item,i)=>
-        <Menu.Item key={i}>
+        <Menu.Item key={i} style={{fontSize:'1.3em'}}>
           {this.state.menu_list[item]['id']===0?<Link to={{pathname:'/', state: { menu_id: this.state.menu_list[item]['id'] }}}>
             {this.state.menu_list[item]['question']}
           </Link>:<Link to={{pathname:'/models/menu/', state: { menu_id: this.state.menu_list[item]['id'] }}}>
