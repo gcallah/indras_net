@@ -40,7 +40,8 @@ def change_color(gameoflife_env, agent):
 def apply_live_rules(gameoflife_env, agent):
     """
     Apply the rules for live agents.
-    The agent passed in should be alive.
+    The agent passed in should be alive,
+    meaning its color should be black.
     """
     num_live_neighbors = 0
     for neighbor in agent.neighbors:
@@ -55,7 +56,8 @@ def apply_live_rules(gameoflife_env, agent):
 def apply_dead_rules(gameoflife_env, agent):
     """
     Apply the rules for dead agents.
-    The agent passed in should be dead.
+    The agent passed in should be dead,
+    meaning its color should be white.
     """
     num_live_neighbors = 0
     for neighbor in agent.neighbors:
@@ -76,12 +78,17 @@ def gameoflife_action(gameoflife_env):
     global min_x
     global min_y
 
+    if min_x > 0:
+        min_x -= 1
+    if min_y > 0:
+        min_y -= 1
+
     new_min_x = 0
     new_min_y = 0
     change_min = True
     to_be_changed = []
     for y in range(min_y, gameoflife_env.height):
-        for x in range(0, gameoflife_env.width):
+        for x in range(min_x, gameoflife_env.width):
             curr_agent = gameoflife_env.get_agent_at(x, y)
             if curr_agent.neighbors is not None:
                 if change_min:
@@ -102,7 +109,7 @@ def gameoflife_action(gameoflife_env):
 
 def agent_action(agent):
     if agent.neighbors is None:
-        agent.neighbors = gameoflife_env.get_moore_hood(agent)
+        gameoflife_env.get_moore_hood(agent, save_neighbors=True)
 
 
 def populate_board_random(gameoflife_env, width, height):
@@ -115,6 +122,7 @@ def populate_board_random(gameoflife_env, width, height):
     num_agent = int(0.1 * (width * height))
     upper_limit = int((width / 2) + (width / 4))
     lower_limit = int((width / 2) - (width / 4)) + 1
+    min_x = lower_limit
     min_y = lower_limit
     for i in range(num_agent):
         agent = gameoflife_env.get_agent_at(randint(lower_limit, upper_limit),
@@ -138,6 +146,7 @@ def populate_board_glider(gameoflife_env, width, height):
     change_color(gameoflife_env, agent)
     agent = gameoflife_env.get_agent_at(center[0], center[1] - 1)
     change_color(gameoflife_env, agent)
+    min_x = center[0] - 1
     min_y = center[1] - 1
 
 
@@ -160,6 +169,7 @@ def populate_board_small_exploder(gameoflife_env, width, height):
     change_color(gameoflife_env, agent)
     agent = gameoflife_env.get_agent_at(center[0], center[1] - 2)
     change_color(gameoflife_env, agent)
+    min_x = center[0] - 1
     min_y = center[1] - 2
 
 
@@ -177,6 +187,7 @@ def populate_board_exploder(gameoflife_env, width, height):
         agent_right = gameoflife_env.get_agent_at(center[0] + 2, center[1] - i)
         change_color(gameoflife_env, agent_left)
         change_color(gameoflife_env, agent_right)
+    min_x = center[0] - 4
     min_y = center[1] - 4
 
 
@@ -193,6 +204,7 @@ def populate_board_n_horizontal_row(gameoflife_env, width, height, n=10):
     for l in range(1, left):
         agent = gameoflife_env.get_agent_at(center[0] - l, center[1])
         change_color(gameoflife_env, agent)
+    min_x = center[0] - left - 1
     min_y = center[1]
 
 
@@ -209,7 +221,8 @@ def populate_board_n_vertical_row(gameoflife_env, width, height, n=10):
     for b in range(1, bottom):
         agent = gameoflife_env.get_agent_at(center[0], center[1] - b)
         change_color(gameoflife_env, agent)
-    min_y = center[1] - b - 1
+    min_x = center[0]
+    min_y = center[1] - bottom - 1
 
 
 def populate_board_lightweight_spaceship(gameoflife_env, width, height):
@@ -235,6 +248,7 @@ def populate_board_lightweight_spaceship(gameoflife_env, width, height):
     change_color(gameoflife_env, agent)
     agent = gameoflife_env.get_agent_at(center[0] - 4, center[1] - 3)
     change_color(gameoflife_env, agent)
+    min_x = center[0] - 4
     min_y = center[1] - 3
 
 
@@ -291,6 +305,7 @@ def populate_board_tumbler(gameoflife_env, width, height):
     agent = gameoflife_env.get_agent_at(center[0] + 2, center[1] - 5)
     change_color(gameoflife_env, agent)
 
+    min_x = center[0] - 3
     min_y = center[1] - 5
 
 
