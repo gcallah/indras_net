@@ -2,6 +2,7 @@
 This file defines Space, which is a collection
 of agents related spatially.
 """
+from functools import wraps
 from random import randint
 from math import sqrt
 from indra.agent import is_composite
@@ -251,10 +252,19 @@ class Space(Composite):
         """
         del self.locations[(x, y)]
 
+    def use_saved_hood(hood_func):
+        @wraps(hood_func)
+        def wrapper(*args, **kwargs):
+            agent = args[1]
+            if agent.neighbors:
+                return agent.neighbors
+            return hood_func(*args, **kwargs)
+        return wrapper
+
     def get_row_hood(self, row_num, pred=None):
         """
         Collects all agents in row `row_num` into a Composite
-        and return that collection.
+        and returns it.
         """
         if row_num < 0 or row_num >= self.height:
             return None
@@ -269,7 +279,7 @@ class Space(Composite):
         Takes in an agent and returns a Composite
         of its x neighbors.
         For example, if the agent is located at (0, 0),
-        get_x_hood would return (-1, 0) and (1, 0)
+        get_x_hood would return (-1, 0) and (1, 0).
         """
         x_hood = Composite("x neighbors")
         agent_x = agent.get_x()
@@ -293,7 +303,7 @@ class Space(Composite):
         Takes in an agent and returns a Composite
         of its y neighbors.
         For example, if the agent is located at (0, 0),
-        get_y_hood would return (0, -1) and (0, 1)
+        get_y_hood would return (0, -1) and (0, 1).
         """
         y_hood = Composite("y neighbors")
         agent_x = agent.get_x()
@@ -301,6 +311,8 @@ class Space(Composite):
         neighbor_y_coords = []
         for i in range(-height, 0):
             neighbor_y_coords.append(i)
+        if (pred == "include center"):
+            neighbor_y_coords.append(0)
         for i in range(1, height + 1):
             neighbor_y_coords.append(i)
         for i in neighbor_y_coords:
@@ -310,19 +322,24 @@ class Space(Composite):
                 y_hood += (self.get_agent_at(agent_x, neighbor_y))
         return y_hood
 
-    def get_vonneumann_hood(self, agent, pred=None):
+    @use_saved_hood
+    def get_vonneumann_hood(self, agent, pred=None, save_neighbors=False):
         """
         Takes in an agent and returns a Composite of its
         Von Neumann neighbors.
         """
-        vonneumann_hood = Composite("vonneumann_hood")
+        vonneumann_hood = Composite("Vonneumann hood")
         x_neighbors = self.get_x_hood(agent)
         y_neighbors = self.get_y_hood(agent)
         vonneumann_hood += x_neighbors
         vonneumann_hood += y_neighbors
-        return vonneumann_hood
+        if save_neighbors:
+            agent.neighbors = vonneumann_hood
+        else:
+            return vonneumann_hood
 
-    def get_moore_hood(self, agent, pred=None):
+    @use_saved_hood
+    def get_moore_hood(self, agent, pred=None, save_neighbors=False):
         """
         Takes in an agent and returns a Composite of its Moore neighbors.
         """
@@ -341,7 +358,10 @@ class Space(Composite):
                     if not out_of_bounds(neighbor_x, neighbor_y, 0, 0,
                                          self.width, self.height):
                         moore_hood += self.get_agent_at(neighbor_x, neighbor_y)
-        return moore_hood
+        if save_neighbors:
+            agent.neighbors = moore_hood
+        else:
+            return moore_hood
 
     def get_hood(self, filter_func, agent, save_hood=False):
         """

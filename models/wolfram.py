@@ -45,7 +45,7 @@ def get_color(group):
     """
     Returns W or B, W for white and B for black
     when passed in a group.
-    W and B are integer values, 0 and 1 respectively.
+    W and B are integer values - 0 and 1 respectively.
     """
     if group == groups[W]:
         return W
@@ -72,7 +72,7 @@ def next_color(rule_dict, left, middle, right):
     """
     Takes in a trio of colors
     and returns the color that the agent in the next row should be
-    based on the rule picked by the user.
+    based on the rule number picked by the user.
     """
     return rule_dict[str((left, middle, right))]
 
