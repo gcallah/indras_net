@@ -23,6 +23,8 @@ class Action extends Component {
     );
   }
 
+  var imageName = require('./images/forestfire.png')
+
   return (
     <div>
       <br />
@@ -30,7 +32,8 @@ class Action extends Component {
       </h2>
       <br /><br />
       
-      <p>We are updating the model!</p>
+      <p>We are updating the model! The figure like this will be displayed soon!</p>
+      <img src={imageName} />
 
       <br /><br />
     </div>
