@@ -6,6 +6,7 @@ import WIP from './components/WIP';
 import ModelDetail from './components/ModelDetail'
 import Menu from "./components/Menu"
 import Action from "./components/Action"
+import NotFoundPage from './components/NotFoundPage';
 
 class App extends Component {
   render() {
@@ -14,6 +15,7 @@ class App extends Component {
         <Layout>
           <Switch>
             <Route exact path="/" component={Home} />
+            <Route component={NotFoundPage} />
             <Route exact path="/wip" component={WIP} />
             <Route exact path="/models/props/:id" component={ModelDetail} />
             <Route exact path="/models/menu/:id" component={Menu} />
