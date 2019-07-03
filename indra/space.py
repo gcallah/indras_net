@@ -261,7 +261,7 @@ class Space(Composite):
             return hood_func(*args, **kwargs)
         return wrapper
 
-    def get_row_hood(self, row_num, pred=None):
+    def get_row_hood(self, row_num, pred=None, save_neighbors=False):
         """
         Collects all agents in row `row_num` into a Composite
         and returns it.
@@ -274,7 +274,9 @@ class Space(Composite):
             row_hood = self.get_x_hood(agent, self.width - 1, "include center")
             return row_hood
 
-    def get_x_hood(self, agent, width=1, pred=None, include_self=False):
+    @use_saved_hood
+    def get_x_hood(self, agent, width=1, pred=None, include_self=False,
+                   save_neighbors=False):
         """
         Takes in an agent and returns a Composite
         of its x neighbors.
@@ -296,9 +298,13 @@ class Space(Composite):
             if not out_of_bounds(neighbor_x, agent_y, 0, 0,
                                  self.width, self.height):
                 x_hood += self.get_agent_at(neighbor_x, agent_y)
+        if save_neighbors:
+            agent.neighbors = x_hood
         return x_hood
 
-    def get_y_hood(self, agent, height=1, pred=None, include_self=False):
+    @use_saved_hood
+    def get_y_hood(self, agent, height=1, pred=None, include_self=False,
+                   save_neighbors=False):
         """
         Takes in an agent and returns a Composite
         of its y neighbors.
@@ -320,6 +326,8 @@ class Space(Composite):
             if not out_of_bounds(agent_x, neighbor_y, 0, 0,
                                  self.width, self.height):
                 y_hood += (self.get_agent_at(agent_x, neighbor_y))
+        if save_neighbors:
+            agent.neighbors = y_hood
         return y_hood
 
     @use_saved_hood
