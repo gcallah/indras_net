@@ -279,7 +279,7 @@ class Space(Composite):
     def get_x_hood(self, agent, width=1, pred=None, include_self=False,
                    save_neighbors=False):
         """
-        Takes in an agent and returns a Composite
+        Takes in an agent  and returns a Composite
         of its x neighbors.
         For example, if the agent is located at (0, 0),
         get_x_hood would return (-1, 0) and (1, 0).
