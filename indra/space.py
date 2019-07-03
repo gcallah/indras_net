@@ -269,9 +269,10 @@ class Space(Composite):
         if row_num < 0 or row_num >= self.height:
             return None
         else:
-            agent = self.get_agent_at(self.width // 2, row_num)
             row_hood = Composite("Row neighbors")
-            row_hood = self.get_x_hood(agent, self.width - 1, "include center")
+            agent = self.get_agent_at(self.width // 2, row_num)
+            row_hood = self.get_x_hood(agent, self.width - 1,
+                                       include_self=True)
             return row_hood
 
     @use_saved_hood
