@@ -363,10 +363,9 @@ class Space(Composite):
                 if not out_of_bounds(neighbor_x, neighbor_y, 0, 0,
                                      self.width, self.height):
                     # += should be re-written to ignore adding None
-                    potential_neighbor = self.get_agent_at(neighbor_x,
-                                                           neighbor_y)
-                    if potential_neighbor is not None:
-                        moore_hood += potential_neighbor
+                    neighbor = self.get_agent_at(neighbor_x,
+                                                 neighbor_y)
+                    moore_hood += neighbor
         if save_neighbors:
             agent.neighbors = moore_hood
         else:
