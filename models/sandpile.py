@@ -7,6 +7,7 @@ from indra.agent import Agent, switch
 from indra.env import Env
 from indra.space import DEF_WIDTH, DEF_HEIGHT
 from indra.composite import Composite
+from indra.display_methods import CIRCLE
 
 DEBUG = False  # Turns debugging code on or off
 
@@ -41,37 +42,43 @@ def get_next_group_idx(curr_group_idx):
     return (curr_group_idx + 1) % NUM_GROUPS
 
 
-def change_group(agent, sandpile_env, curr_group_idx, next_group_idx):  # noqa F811
+def change_group(agent, curr_group_idx, next_group_idx):  # noqa F811
     """
     Change group from curr_group_idx passed in
     to the next_group_idx passed in.
     """
+    global sandpile_env
+
     switch(agent, groups[curr_group_idx], groups[next_group_idx])
 
 
-def add_grain(sandpile_env, agent):
+def add_grain(agent):
     """
     Addd a grain to the agent that is passed in
     by changing the group that it is in.
     """
+    global sandpile_env
+
     curr_group_idx = get_curr_group_idx(agent)
     next_group_idx = get_next_group_idx(curr_group_idx)
     if DEBUG:
         print("Agent at", agent.pos, "is changing group from",
               agent.primary_group(), "to", next_group_idx)
-    change_group(agent, sandpile_env, curr_group_idx, next_group_idx)
+    change_group(agent, curr_group_idx, next_group_idx)
     if DEBUG:
         print("Agent at", agent.pos, "has changed to", agent.primary_group())
     if next_group_idx == 0:
-        topple(sandpile_env, agent)
+        topple(agent)
 
 
-def topple(sandpile_env, agent):
+def topple(agent):
+    global sandpile_env
+
     if DEBUG:
         print("Sandpile in", agent.pos, "is toppling")
     neighbors = sandpile_env.get_vonneumann_hood(agent, save_neighbors=True)
     for neighbor in neighbors:
-        add_grain(sandpile_env, neighbors[neighbor])
+        add_grain(neighbors[neighbor])
 
 
 def sandpile_action(sandpile_env):
@@ -84,7 +91,7 @@ def sandpile_action(sandpile_env):
               sandpile_env.attrs["center_agent"].pos,
               "which is in the group",
               sandpile_env.attrs["center_agent"].primary_group())
-    add_grain(sandpile_env, sandpile_env.attrs["center_agent"])
+    add_grain(sandpile_env.attrs["center_agent"])
 
 
 def place_action(agent):
@@ -98,6 +105,7 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     global groups
+    global sandpile_env
 
     if props is None:
         pa = PropArgs.create_props('sandpile_props',
@@ -110,7 +118,7 @@ def set_up(props=None):
     groups = []
     group_indices = {}
     for i in range(NUM_GROUPS):
-        groups.append(Composite("Group" + str(i)))
+        groups.append(Composite(("Group" + str(i)), {"marker": CIRCLE}))
         group_indices[groups[i].name] = i
     for y in range(height):
         for x in range(width):

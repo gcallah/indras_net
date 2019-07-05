@@ -65,7 +65,7 @@ class SandpileTestCase(TestCase):
         sp.groups.append(Composite("Group" + str(0)))
         sp.groups.append(Composite("Group" + str(1)))
         sp.groups[0] += a
-        change_group(a, sp.sandpile, 0, 1)
+        change_group(a, 0, 1)
         self.assertEqual(get_curr_group_idx(a), 1)
 
     def test_add_grain(self):
@@ -78,7 +78,7 @@ class SandpileTestCase(TestCase):
         sp.groups.append(Composite("Group" + str(0)))
         sp.groups.append(Composite("Group" + str(1)))
         sp.groups[0] += a
-        add_grain(sp.sandpile, a)
+        add_grain(a)
         self.assertEqual(a.primary_group(), sp.groups[1])
 
     def test_topple(self):
@@ -101,7 +101,7 @@ class SandpileTestCase(TestCase):
         neighbors += b
         neighbors += c
         a.neighbors = neighbors
-        topple(sp.sandpile, a)
+        topple(a)
         self.assertEqual(a.primary_group(), sp.groups[1])
         self.assertEqual(b.primary_group(), sp.groups[1])
         self.assertEqual(c.primary_group(), sp.groups[1])
