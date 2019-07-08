@@ -1,9 +1,10 @@
 from unittest import TestCase, main
-from APIServer.flask_app import app, HelloWorld, Models, Props, ModelMenu, MenuItem, err_return, load_models, load_menu
+from APIServer.flask_app import app, HelloWorld, Models, Props, ModelMenu, Run, err_return, load_models, load_menu
 from flask_restplus import Resource, Api, fields
 import random
 from APIServer.flask_app import indra_dir
 import json
+import sys
 
 menu = [{"val": 0, "func": "run", "question": "Run for N periods"},
         {"val": 1, "func": "line_graph", "question": "Display a population graph."},
@@ -18,7 +19,7 @@ class Test(TestCase):
         self.Model = Models(Resource)
         self.Props = Props(Resource)
         self.ModelMenu = ModelMenu(Resource)
-        self.MenuItem = MenuItem(Resource)
+        self.Run = Run(Resource)
         self.LoadModels = load_models()
         self.LoadMenu = load_menu()
 
@@ -90,11 +91,10 @@ class Test(TestCase):
         """
         Test whether we are able to put props
         """
-        # model_id = random.randint(0, 6)
-        # with app.test_request_context():
-        #     rv = self.Props.put(model_id)
-        # self.assertEqual(rv, "not setting up the model")
-        return True
+        model_id = random.randint(0, 6)
+        with app.test_request_context():
+            rv = self.Props.put(model_id)
+        self.assertEqual(type(rv), str)
 
     def test_get_ModelMenu(self):
         """
@@ -106,15 +106,12 @@ class Test(TestCase):
             test_menu = json.loads(file.read())["menu_database"]
         self.assertEqual(rv, test_menu)
         
-    def test_put_MenuItem(self):
+    def test_run(self):
         """
         Testing whether we are able to put the menu in
         """
-        model_id = random.randint(0, 6)
-        menu_id = random.randint(0, 5)
-        with app.test_request_context():
-            rv = self.MenuItem.put(model_id, menu_id)
-        self.assertEqual(rv, "not running the model")
+        rv = self.Run.put(0, 10, {'hi': 1})
+        self.assertEqual(rv, "receive env_json, run_time and model_id, running the model")
 
     def test_err_return(self):
         """

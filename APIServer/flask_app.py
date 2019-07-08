@@ -6,7 +6,6 @@ from flask_cors import CORS
 import json
 from indra.user import APIUser
 from models.run_dict import setup_dict
-from models.run_dict import rdict
 from indra.agent import AgentEncoder
 
 
@@ -104,22 +103,15 @@ class ModelMenu(Resource):
         return user()
 
 
-@api.route("/models/menu/<int:model_id>/<int:menu_id>")
-class MenuItem(Resource):
+@api.route("/models/menu/run/<int:model_id>/<int:run_time>")
+class Run(Resource):
     global user
 
-    def put(self, model_id, menu_id):
-        models_db = load_models()
-        if 0 <= menu_id < 6 and (type(menu_id) is int):
-            try:
-                user.tell("execute menu item" + str(menu_id))
-                user.tell(str(load_menu()))
-                env = rdict[models_db[model_id]["run"]](menu_id)[0]
-                return json_converter(env)
-            except TypeError:
-                return 'not running the model'
-        else:
-            return err_return("Invalid menu id " + str(menu_id))
+    def put(self, model_id, run_time, env_json):
+        # use env_json to set up model
+        # env = ...
+        # env.runN(run_time)
+        return "receive env_json, run_time and model_id, running the model"
 
 
 if __name__ == "__main__":
