@@ -1,30 +1,9 @@
 import React, { Component } from "react";
 import { Loader, Dimmer } from "semantic-ui-react";
 
-class Action extends Component {
-  state = {
-    msg: '',
-    loadingData: false,
-  }
-
-  async componentDidMount() {
-    this.setState({ loadingData: true });
-    document.title = "Indra | Action";
-    const {menu_id} = this.props.location.state;
-    this.setState({ loadingData: false });
-  }
-
-  render() {
-    if (this.state.loadingData) {
-    return (
-    <Dimmer active inverted>
-    <Loader size='massive'>Loading...</Loader>
-    </Dimmer>
-    );
-  }
-
+function Action(props) {
   var imageName = require('./images/forestfire.png')
-
+  if (props.loadingData){
   return (
     <div>
       <br />
@@ -38,7 +17,9 @@ class Action extends Component {
       <br /><br />
     </div>
     );
-  }
-}
+  }else{
+    return(null)
+  }}
+
 
 export default Action;
