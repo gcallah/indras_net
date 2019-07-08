@@ -27,10 +27,9 @@ class Home extends Component {
     let items = this.state.allItems.map((item, id) => {
       return (
         <Menu.Item key={id} >
-          <Link 
-              to={{
-                pathname: '/models/props/'+id, 
-                state:{ menu_id: id, name:item.name}
+          <Link to={{
+                pathname: `/models/props/${id}`, 
+                state:{ menu_id:id, name:item.name}
               }}>
           {item.name}</Link>
         </Menu.Item>

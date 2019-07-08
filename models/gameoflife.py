@@ -78,7 +78,7 @@ def apply_dead_rules(agent):
         return False
 
 
-def gameoflife_action():
+def gameoflife_action(gameoflife_env):
     """
     The action that will be taken every period.
     Loops through every agent, determines whether it is alive or dead,
@@ -86,7 +86,6 @@ def gameoflife_action():
     """
     global min_x
     global min_y
-    global gameoflife_env
     global groups
 
     if min_x > 0:
@@ -107,13 +106,13 @@ def gameoflife_action():
                     new_min_y = curr_agent.get_y()
                     change_min = False
                 if curr_agent.primary_group() == groups[1]:
-                    if apply_live_rules(gameoflife_env, curr_agent):
+                    if apply_live_rules(curr_agent):
                         to_be_changed.append(curr_agent)
                 else:
-                    if apply_dead_rules(gameoflife_env, curr_agent):
+                    if apply_dead_rules(curr_agent):
                         to_be_changed.append(curr_agent)
     for to_change in to_be_changed:
-        change_color(gameoflife_env, to_change)
+        change_color(to_change)
     min_x = new_min_x
     min_y = new_min_y
 

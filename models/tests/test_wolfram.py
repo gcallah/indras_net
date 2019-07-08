@@ -19,8 +19,8 @@ class WolframTestCase(TestCase):
 
     def test_create_agent(self):
         """
-        Creates an agent at (0, 0) using create_agent method
-        and checks that the agent was stored in the right location.
+        Creates an agent and checks that it has the correct name,
+        which is its (x, y) corrdinates.
         """
         a = create_agent(0, 0)
         self.assertEqual(a.name, '(0,0)')
@@ -80,44 +80,3 @@ class WolframTestCase(TestCase):
         self.assertEqual(next_color(wolf.rule_dict, W, B, W), B)
         self.assertEqual(next_color(wolf.rule_dict, W, W, B), B)
         self.assertEqual(next_color(wolf.rule_dict, W, W, W), W)
-
-    # def test_wolfram_action(self):
-
-    #     rule30 = {
-    #     (B, B, B): W,
-    #     (B, B, W): W,
-    #     (B, W, B): W,
-    #     (B, W, W): B,
-    #     (W, B, B): B,
-    #     (W, B, W): B,
-    #     (W, W, B): B,
-    #     (W, W, W): W}
-
-    #     periods = wolf.wolfram_env.get_periods()
-        
-    #     wolfram_action(wolf.wolfram_env)
-    #     self.assertEqual(wolf.wolfram_env.height - 2, wolf.wolfram_env.height - periods - 2)
-
-    #     active_row = wolf.wolfram_env.get_row_hood(wolf.wolfram_env.height - periods - 1)
-    #     correct_row = wolf.wolfram_env.get_row_hood(wolf.wolfram_env.height - 2)
-    #     equal = True
-    #     for i in range(len(active_row)):
-    #         if active_row[i] != correct_row[i]:
-    #             equal = False
-    #     self.assertEqual(equal, True)
-
-    #     next_row = wolf.wolfram_env.get_row_hood(wolf.wolfram_env.height - periods - 2)
-    #     next_correct_row = wolf.wolfram_env.get_row_hood(wolf.wolfram_env.height - 3)
-    #     equal = True
-    #     for i in range(len(next_row)):
-    #         if next_row[i] != next_correct_row[i]:
-    #             equal = False
-    #     self.assertEqual(equal, True)
-
-    #     previous_row = wolf.wolfram_env.get_row_hood(wolf.wolfram_env.height - periods - 1)
-    #     previous_correct_row = wolf.wolfram_env.get_row_hood(wolf.wolfram_env.height - 1)
-    #     equal = True
-    #     for i in range(len(previous_row)):
-    #         if previous_row[i] != previous_correct_row[i]:
-    #             equal = False
-    #     self.assertEqual(equal, True)

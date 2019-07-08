@@ -1,44 +1,21 @@
-import React, { Component } from "react";
-import { Loader, Dimmer } from "semantic-ui-react";
+import React from "react";
 
-class Action extends Component {
-  state = {
-    msg: '',
-    loadingData: false,
-  }
-
-  async componentDidMount() {
-    this.setState({ loadingData: true });
-    document.title = "Indra | Action";
-    const {menu_id} = this.props.location.state;
-    this.setState({ loadingData: false });
-  }
-
-  render() {
-    if (this.state.loadingData) {
-    return (
-    <Dimmer active inverted>
-    <Loader size='massive'>Loading...</Loader>
-    </Dimmer>
-    );
-  }
-
+function Action(props) {
   var imageName = require('./images/forestfire.png')
-
+  if (props.loadingData){
   return (
     <div>
-      <br />
-      <h2 style={{ "textAlign": "center" }}>Welcome to the Indra ABM platform!
-      </h2>
       <br /><br />
       
-      <p>We are updating the model! The figure like this will be displayed soon!</p>
-      <img src={imageName} />
+      <p align='center'>We are updating the model! The figure like this will be displayed soon!</p>
+      <img alt="" style={{display:'block', marginLeft:'auto', marginRight:'auto'}}src={imageName} align="middle"/>
 
       <br /><br />
     </div>
     );
-  }
-}
+  }else{
+    return(null)
+  }}
+
 
 export default Action;

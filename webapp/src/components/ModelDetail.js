@@ -17,7 +17,8 @@ class ModelDetail extends Component {
       this.setState({ loadingData: true });
       document.title = "Indra | Property";
       const {menu_id} = this.props.location.state;
-      console.log(menu_id)
+      const name = this.props.location.state.name;
+      console.log(name)
       const properties = await axios.get(this.api_server + menu_id);
       this.setState({id:menu_id})
       this.setState({ model_details: properties.data });
@@ -119,6 +120,7 @@ class ModelDetail extends Component {
 
     console.log(this.state.model_details))
     this.props.history.push({pathname:`/models/menu/${this.state.id}`,state: {
+                menu_id: this.state.id,
                 name: this.props.location.state.name
                }});
   }
@@ -149,7 +151,7 @@ class ModelDetail extends Component {
           {Object.keys(this.state.model_details).map((item,i)=> {
           return(
             <label 
-              key={i}>{this.state.model_details[item]['question']} :
+              key={i}>{this.state.model_details[item]['question']} {" "}
               <input type={this.state.model_details[item]['atype']} defaultValue={this.state.model_details[item]['val']} onChange={this.handleChange} name={item} />
               <span style={{color:"red",fontSize: 12}}>{this.state.model_details[item]['errorMessage']}</span>
               <br/><br/>
