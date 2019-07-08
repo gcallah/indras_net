@@ -1,40 +1,21 @@
-import React, { Component } from "react";
-import { Loader, Dimmer } from "semantic-ui-react";
+import React from "react";
 
-class PopulationGraph extends Component {
-  state = {
-    msg: '',
-    loadingData: false,
-  }
+function PopulationGraph(props) {
+  var imageName = require('./images/wolfsheep_population_graph.png')
+  if (props.loadingData){
+    console.log("inside PopulationGraph")
+  return (
+    <div>
+      <br /><br />
+      
+      <p align='center'>We are updating the model! The figure like this will be displayed soon!</p>
+      <img alt="" style={{display:'block', marginLeft:'auto', marginRight:'auto', width:'50%'}} src={imageName} align="middle"/>
 
-  async componentDidMount() {
-    this.setState({ loadingData: true });
-    document.title = "Indra | Action";
-    this.setState({ loadingData: false });
-  }
-
-  render() {
-    if (this.state.loadingData) {
-      return (
-        <Dimmer active inverted>
-          <Loader size='massive'>Loading...</Loader>
-        </Dimmer>
-      );
-    }
-
-    return (
-      <div>
-        <br />
-        <h1 style={{ "textAlign": "center" }}>Welcome to the Indra ABM platform!
-        </h1>
-        <br /><br />
-
-        <p>We will have the population graph displaying soon!</p>
-
-        <br /><br />
-      </div>
+      <br /><br />
+    </div>
     );
-  }
-}
+  }else{
+    return(null)
+  }}
 
 export default PopulationGraph;

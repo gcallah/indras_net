@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for src/components/ModelDetail.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">All files</a> / <a href="index.html">src/components</a> ModelDetail.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">5.08% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>3/59</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">5% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>1/20</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">6.67% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>1/15</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">5.17% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>3/58</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React, { Component } from "react";
+import { Loader, Dimmer } from "semantic-ui-react";
+import axios from 'axios';
+import { Link } from 'react-router-dom'
+&nbsp;
+class ModelDetail extends Component {
+  api_server = 'https://indrasnet.pythonanywhere.com/models/props/';
+&nbsp;
+  state = {
+    model_details: {},
+    loadingData: false,
+    disabled_button: false,
+  }
+&nbsp;
+&nbsp;
+<span class="fstat-no" title="function not covered" >  as</span>ync componentDidMount() {
+<span class="cstat-no" title="statement not covered" >    try{</span>
+<span class="cstat-no" title="statement not covered" >      this.setState({ loadingData: true });</span>
+<span class="cstat-no" title="statement not covered" >      document.title = "Indra | Property";</span>
+      const {menu_id} = <span class="cstat-no" title="statement not covered" >this.props.location.state;</span>
+<span class="cstat-no" title="statement not covered" >      console.log(menu_id)</span>
+      const properties = <span class="cstat-no" title="statement not covered" >await axios.get(this.api_server + menu_id);</span>
+<span class="cstat-no" title="statement not covered" >      this.setState({id:menu_id})</span>
+<span class="cstat-no" title="statement not covered" >      this.setState({ model_details: properties.data });</span>
+<span class="cstat-no" title="statement not covered" >      this.states(properties.data);</span>
+<span class="cstat-no" title="statement not covered" >      this.errors(properties.data);</span>
+<span class="cstat-no" title="statement not covered" >      this.setState({ loadingData: false });</span>
+<span class="cstat-no" title="statement not covered" >      console.log(this.props.history.location)</span>
+    }catch(e){
+<span class="cstat-no" title="statement not covered" >      console.log(e.message);</span>
+    }
+    
+  }
+&nbsp;
+&nbsp;
+  states = <span class="fstat-no" title="function not covered" >(d</span>ata) =&gt; {
+    //loop over objects in data and create object in this.state
+<span class="cstat-no" title="statement not covered" >    Object.keys(this.state.model_details).forEach(<span class="fstat-no" title="function not covered" >it</span>em =&gt; </span>
+<span class="cstat-no" title="statement not covered" >    this.setState({[item]: data[item]})</span>
+    );
+  }
+&nbsp;
+&nbsp;
+  errors = <span class="fstat-no" title="function not covered" >(d</span>ata) =&gt; {
+<span class="cstat-no" title="statement not covered" >    Object.keys(this.state.model_details).forEach(<span class="fstat-no" title="function not covered" >it</span>em =&gt; </span>
+<span class="cstat-no" title="statement not covered" >      this.setState(<span class="fstat-no" title="function not covered" >pr</span>evState =&gt; (<span class="cstat-no" title="statement not covered" >{</span></span>
+        model_details: {
+          ...prevState.model_details,          
+          [item]:{                     
+          ...prevState.model_details[item],  
+          errorMessage: '' ,
+          disabledButton: false,       
+          } 
+        }
+      })
+    ))
+  }
+&nbsp;
+&nbsp;
+  errorSubmit = <span class="fstat-no" title="function not covered" >()</span> =&gt;{
+    let ans = <span class="cstat-no" title="statement not covered" >false</span>
+<span class="cstat-no" title="statement not covered" >    Object.keys(this.state.model_details).forEach(<span class="fstat-no" title="function not covered" >it</span>em =&gt; </span>
+<span class="cstat-no" title="statement not covered" >    ans = ans || this.state.model_details[item]['disabledButton'])</span>
+<span class="cstat-no" title="statement not covered" >    return ans</span>
+  }
+&nbsp;
+  handleChange = <span class="fstat-no" title="function not covered" >(e</span>) =&gt;{ 
+    let model_detail = <span class="cstat-no" title="statement not covered" >this.state.model_details;</span>
+    const {name,value} = <span class="cstat-no" title="statement not covered" >e.target</span>
+    let valid = <span class="cstat-no" title="statement not covered" >this.checkValidity(name,value)</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    if (valid === 1){</span>
+<span class="cstat-no" title="statement not covered" >      model_detail[name]['val']= value</span>
+<span class="cstat-no" title="statement not covered" >      model_detail[name]['errorMessage']=""</span>
+<span class="cstat-no" title="statement not covered" >      model_detail[name]['disabledButton']=false</span>
+<span class="cstat-no" title="statement not covered" >      this.setState({model_details:model_detail})</span>
+&nbsp;
+    } else <span class="cstat-no" title="statement not covered" >if(valid === -1){</span>
+<span class="cstat-no" title="statement not covered" >      model_detail[name]['errorMessage']="**Wrong Input Type"</span>
+<span class="cstat-no" title="statement not covered" >      model_detail[name]['val']= this.state[name]['val']</span>
+<span class="cstat-no" title="statement not covered" >      model_detail[name]['disabledButton']=true</span>
+<span class="cstat-no" title="statement not covered" >      this.setState({model_details:model_detail})</span>
+<span class="cstat-no" title="statement not covered" >      console.log(this.state.model_details[name])</span>
+&nbsp;
+    } else {
+<span class="cstat-no" title="statement not covered" >      model_detail[name]['errorMessage']=`**Please input a number between ${this.state[name]['lowval']} and ${this.state[name]['hival']}.`</span>
+<span class="cstat-no" title="statement not covered" >      model_detail[name]['val']= this.state[name]['val']</span>
+<span class="cstat-no" title="statement not covered" >      model_detail[name]['disabledButton']=true</span>
+<span class="cstat-no" title="statement not covered" >      this.setState({model_details:model_detail})</span>
+    }  
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    this.setState({disabled_button: this.errorSubmit()}) </span>
+  }
+&nbsp;
+&nbsp;
+  checkValidity = <span class="fstat-no" title="function not covered" >(n</span>ame,value) =&gt; {
+<span class="cstat-no" title="statement not covered" >    if (value&lt;=this.state.model_details[name]['hival'] &amp;&amp; value &gt;=this.state.model_details[name]['lowval']){</span>
+<span class="cstat-no" title="statement not covered" >      if (this.state.model_details[name]['atype'] === 'INT' &amp;&amp; !!(value%1)=== false){</span>
+<span class="cstat-no" title="statement not covered" >        return 1</span>
+      }
+      else <span class="cstat-no" title="statement not covered" >if(this.state.model_details[name]['atype'] === 'DBL'){</span>
+<span class="cstat-no" title="statement not covered" >        return 1</span>
+      }
+      else {
+<span class="cstat-no" title="statement not covered" >        return -1</span>
+      }
+    }
+    else <span class="cstat-no" title="statement not covered" >return 0</span>
+  }
+&nbsp;
+&nbsp;
+  handleSubmit = <span class="fstat-no" title="function not covered" >ev</span>ent =&gt; {
+<span class="cstat-no" title="statement not covered" >    event.preventDefault();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    axios.put(this.api_server + this.state.id,this.state.model_details)</span>
+    .then(<span class="fstat-no" title="function not covered" >re</span>s =&gt; {
+<span class="cstat-no" title="statement not covered" >      console.log(res);</span>
+<span class="cstat-no" title="statement not covered" >      console.log(res.data);</span>
+    },
+&nbsp;
+    console.log(this.state.model_details))
+<span class="cstat-no" title="statement not covered" >    this.props.history.push({pathname:`/models/menu/${this.state.id}`,state: {</span>
+                name: this.props.location.state.name
+               }});
+  }
+&nbsp;
+  goback=<span class="fstat-no" title="function not covered" >()</span>=&gt;{
+<span class="cstat-no" title="statement not covered" >     this.props.history.goBack();</span>
+  }
+&nbsp;
+&nbsp;
+  render() {
+    const { disabled_button } = this.state;
+&nbsp;
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (this.state.loadingData) {
+<span class="cstat-no" title="statement not covered" >      return (</span>
+      &lt;Dimmer active inverted&gt;
+      &lt;Loader size='massive'&gt;Loading...&lt;/Loader&gt;
+      &lt;/Dimmer&gt;
+      );
+    }
+    return (
+      &lt;div&gt;
+        &lt;br /&gt;
+        &lt;br /&gt;
+        &lt;h2 style={{ "textAlign": "center" }}&gt;Please set the parameters for your model&lt;/h2&gt;
+        &lt;h3 style={{ "textAlign": "left" }}&gt; {this.props.location.state.name} &lt;/h3&gt;
+        &lt;br /&gt;&lt;br /&gt;
+        &lt;form&gt;
+          {Object.keys(this.state.model_details).map(<span class="fstat-no" title="function not covered" >(i</span>tem,i)=&gt; {
+<span class="cstat-no" title="statement not covered" >          return(</span>
+            &lt;label 
+              key={i}&gt;{this.state.model_details[item]['question']} {" "}
+              &lt;input type={this.state.model_details[item]['atype']} defaultValue={this.state.model_details[item]['val']} onChange={this.handleChange} name={item} /&gt;
+              &lt;span style={{color:"red",fontSize: 12}}&gt;{this.state.model_details[item]['errorMessage']}&lt;/span&gt;
+              &lt;br/&gt;&lt;br/&gt;
+            &lt;/label&gt;
+          )})
+          }
+        &lt;/form&gt;
+        &lt;br /&gt;&lt;br /&gt;
+        &lt;button onClick={this.goback}&gt;Go Back&lt;/button&gt;
+        &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
+        &lt;button disabled={disabled_button} onClick={!disabled_button ? this.handleSubmit : null}&gt;Submit&lt;/button&gt;
+        
+      &lt;/div&gt;
+    );
+  }
+}
+&nbsp;
+export default ModelDetail;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Mon Jul 08 2019 11:47:04 GMT-0400 (Eastern Daylight Time)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

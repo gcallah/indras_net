@@ -7,10 +7,6 @@ import ModelDetail from './components/ModelDetail'
 import MenuList from "./components/MenuList"
 import Action from "./components/Action"
 import NotFoundPage from './components/NotFoundPage';
-import Run from './components/Run';
-import PopulationGraph from './components/PopulationGraph';
-import Debugger from './components/Debugger';
-import ScatterPlot from './components/ScatterPlot';
 
 class App extends Component {
   render() {
