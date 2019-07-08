@@ -110,8 +110,9 @@ class Test(TestCase):
         """
         Testing whether we are able to put the menu in
         """
-        rv = self.Run.put(0, 10, {'hi': 1})
-        self.assertEqual(rv, "receive env_json, run_time and model_id, running the model")
+        with app.test_request_context():
+            rv = self.Run.put(0, 10)
+        self.assertEqual(type(rv), str)
 
     def test_err_return(self):
         """

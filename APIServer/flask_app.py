@@ -107,11 +107,15 @@ class ModelMenu(Resource):
 class Run(Resource):
     global user
 
-    def put(self, model_id, run_time, env_json):
+    @api.expect(props)
+    def put(self, model_id, run_time):
+        env_json = api.payload
         # use env_json to set up model
         # env = ...
         # env.runN(run_time)
-        return "receive env_json, run_time and model_id, running the model"
+        return "receive env_json" \
+               + str(env_json) \
+               + "and run_time and model_id, running the model"
 
 
 if __name__ == "__main__":
