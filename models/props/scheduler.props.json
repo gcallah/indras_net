@@ -4,13 +4,13 @@
     "question": "How many consumers do you want?",
     "atype": "INT",
     "hival": 100,
-    "loval": 1
+    "lowval": 1
   },
   "num_producers": {
     "val": 20,
     "question": "How many producers do you want?",
     "atype": "INT",
     "hival": 100,
-    "loval": 1
+    "lowval": 1
   }
 }
