@@ -17,7 +17,7 @@ class ModelDetail extends Component {
       this.setState({ loadingData: true });
       document.title = "Indra | Property";
       const {menu_id} = this.props.location.state;
-      console.log(menu_id)
+      const name = this.props.location.state.name;
       const properties = await axios.get(this.api_server + menu_id);
       this.setState({id:menu_id})
       this.setState({ model_details: properties.data });
@@ -119,6 +119,7 @@ class ModelDetail extends Component {
 
     console.log(this.state.model_details))
     this.props.history.push({pathname:`/models/menu/${this.state.id}`,state: {
+                menu_id: this.state.id,
                 name: this.props.location.state.name
                }});
   }

@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import { Loader, Dimmer, Menu, Card} from "semantic-ui-react";
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import Run from "./Run.js"
+import Run from "./Run.js";
+import Action from "./Action.js"
 
 class MenuList extends Component {
   api_server = 'https://indrasnet.pythonanywhere.com/models/menu/';
@@ -16,6 +17,7 @@ class MenuList extends Component {
   period_num: 10,
   errorMessage: "",
   disabled_button: false,
+  loading:false,
 }
 
   async componentDidMount() {
@@ -23,8 +25,9 @@ class MenuList extends Component {
     document.title = "Indra | Menu";
     const menu = await axios.get(this.api_server);
     this.setState({menu_list:menu.data})
-    const {id} = this.props.match.params;
-    this.setState({name:this.props.location.state.name})
+    const id = this.props.location.state.menu_id;
+    const name = this.props.location.state.name;;
+    this.setState({name:name})
     this.setState({model_id:id});
     this.setState({ loadingData: false });
   }
@@ -68,6 +71,11 @@ class MenuList extends Component {
     else return 0
   }
 
+  handleClick=()=>{
+    this.setState({loading:true})
+    console.log(this.state.loading);
+  }
+
 
   render() {
     if (this.state.loadingData) {
@@ -102,7 +110,7 @@ class MenuList extends Component {
         { Object.keys(this.state.menu_list).map((item,i)=>
         <Menu.Item key={i}>
 
-          {this.state.menu_list[item]['id']===0?<Link to={{pathname:'/', state: { menu_id: this.state.menu_list[item]['id'] }}}>
+          {this.state.menu_list[item]['id']===0?<Link to={{pathname:'/', state: { action_id: this.state.menu_list[item]['id'] }}}>
             {this.state.menu_list[item]['question']}
           </Link>:null}
 
@@ -112,7 +120,7 @@ class MenuList extends Component {
             <button disabled={this.state.disabled_button} onClick={!this.state.disabled_button ? this.onClick : null}> Run </button>
           </div>:null}
 
-          {this.state.menu_list[item]['id']===2?<Link to={{pathname:'/models/menu', state: { menu_id: this.state.menu_list[item]['id'] }}}>
+          {this.state.menu_list[item]['id']===2?<Link onClick={this.handleClick}>
             {this.state.menu_list[item]['question']}
           </Link>:null}
 
@@ -127,7 +135,8 @@ class MenuList extends Component {
         </Menu>
         <br /><br />
         <button onClick={this.goback}>Go Back</button>
-
+        
+        <Action loadingData={this.state.loading}/>
       </div>
     );
   }
