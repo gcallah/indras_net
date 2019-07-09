@@ -344,7 +344,7 @@ class Space(Composite):
 
     @use_saved_hood
     def get_moore_hood(self, agent, pred=None, save_neighbors=False,
-                       include_self=False):
+                       include_self=False, same_group=False, opp_group=False):
         """
         Takes in an agent and returns a Composite of its Moore neighbors.
         """
@@ -365,7 +365,17 @@ class Space(Composite):
                     # += should be re-written to ignore adding None
                     neighbor = self.get_agent_at(neighbor_x,
                                                  neighbor_y)
-                    moore_hood += neighbor
+                    agent_group = agent.primary_group()
+                    if neighbor is not None:
+                        nbor = neighbor.primary_group()
+                    if same_group:
+                        if neighbor is not None and agent_group == nbor:
+                            moore_hood += neighbor
+                    elif opp_group:
+                        if neighbor is not None and agent_group != nbor:
+                            moore_hood += neighbor
+                    else:
+                        moore_hood += neighbor
         if save_neighbors:
             agent.neighbors = moore_hood
         else:
