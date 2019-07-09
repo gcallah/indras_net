@@ -37,7 +37,7 @@ def load_menu():
 
 
 def json_converter(object):
-    return json.dumps(object.to_json(), cls=AgentEncoder, indent=4)
+    return json.loads(json.dumps(object.to_json(), cls=AgentEncoder, indent=4))
 
 
 @api.route('/hello')
@@ -91,7 +91,8 @@ class Props(Resource):
     def put(self, model_id):
         props_dict = api.payload
         models_db = load_models()
-        env = setup_dict[models_db[model_id]["run"]](props=props_dict)[0]
+        con_env = 0
+        env = setup_dict[models_db[model_id]["run"]](props=props_dict)[con_env]
         return json_converter(env)
 
 

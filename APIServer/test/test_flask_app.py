@@ -4,7 +4,6 @@ from flask_restplus import Resource, Api, fields
 import random
 from APIServer.flask_app import indra_dir
 import json
-import sys
 
 menu = [{"val": 0, "func": "run", "question": "Run for N periods"},
         {"val": 1, "func": "line_graph", "question": "Display a population graph."},
@@ -94,7 +93,7 @@ class Test(TestCase):
         model_id = random.randint(0, 6)
         with app.test_request_context():
             rv = self.Props.put(model_id)
-        self.assertEqual(type(rv), str)
+        self.assertEqual(type(rv), dict)
 
     def test_get_ModelMenu(self):
         """
