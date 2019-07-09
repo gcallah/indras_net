@@ -91,7 +91,8 @@ class Props(Resource):
     def put(self, model_id):
         props_dict = api.payload
         models_db = load_models()
-        env = setup_dict[models_db[model_id]["run"]](props=props_dict)[0]
+        con_env = 0
+        env = setup_dict[models_db[model_id]["run"]](props=props_dict)[con_env]
         return json_converter(env)
 
 
