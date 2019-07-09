@@ -8,7 +8,8 @@ import getpass
 import indra.display_methods as disp
 from indra.agent import join, switch, Agent
 from indra.space import Space
-from indra.user import TermUser, TERMINAL, API, TEST, TestUser, USER_EXIT
+from indra.user import TermUser, TERMINAL, API
+from indra.user import TEST, TestUser, USER_EXIT, APIUser
 
 DEBUG = False
 DEBUG2 = False
@@ -80,6 +81,8 @@ class Env(Space):
             self.user.tell("Welcome to Indra, " + str(self.user) + "!")
         elif (self.user_type == TEST):
             self.user = TestUser(getpass.getuser(), self)
+        elif (self.user_type == API):
+            self.user = APIUser(getpass.getuser(), self)
 
     def get_periods(self):
         return self.pop_hist.periods
