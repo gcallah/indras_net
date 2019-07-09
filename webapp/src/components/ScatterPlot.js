@@ -1,41 +1,21 @@
-import React, { Component } from "react";
-import { Loader, Dimmer } from "semantic-ui-react";
+import React from "react";
 
-class ScatterPlot extends Component {
-  state = {
-    msg: '',
-    loadingData: false,
-  }
+function ScatterPlot(props) {
+  var imageName = require('./images/forestfire.png')
+  if (props.loadingData){
+  return (
+    <div>
+      <br /><br />
+      
+      <p align='center'>We are updating the model! The figure like this will be displayed soon!</p>
+      <img alt="" style={{display:'block', marginLeft:'auto', marginRight:'auto', width:'50%'}} src={imageName} align="middle"/>
 
-  async componentDidMount() {
-    this.setState({ loadingData: true });
-    document.title = "Indra | Action";
-    this.setState({ loadingData: false });
-  }
-
-  render() {
-    if (this.state.loadingData) {
-      return (
-        <Dimmer active inverted>
-          <Loader size='massive'>Loading...</Loader>
-        </Dimmer>
-      );
-    }
-    let imageName = require('./images/forestfire.png')
-    return (
-      <div>
-        <br />
-        <h1 style={{ "textAlign": "center" }}>Welcome to the Indra ABM platform!
-        </h1>
-        <br /><br />
-
-        <p>We are updating the model! The figure like this will be displayed soon!</p>
-      <img src={imageName} />
-
-        <br /><br />
-      </div>
+      <br /><br />
+    </div>
     );
-  }
-}
+  }else{
+    return(null)
+  }}
 
 export default ScatterPlot;
+

@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { Loader, Dimmer, Menu, Card} from "semantic-ui-react";
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import Run from "./Run.js";
-import Action from "./Action.js"
+import PopulationGraph from "./PopulationGraph.js"
+import ScatterPlot from "./ScatterPlot.js"
 
 class MenuList extends Component {
   api_server = 'https://indrasnet.pythonanywhere.com/models/menu/';
@@ -17,7 +17,8 @@ class MenuList extends Component {
   period_num: 10,
   errorMessage: "",
   disabled_button: false,
-  loading:false,
+  loading_population:false,
+  loading_scatter: false
 }
 
   async componentDidMount() {
@@ -71,9 +72,18 @@ class MenuList extends Component {
     else return 0
   }
 
-  handleClick=()=>{
-    this.setState({loading:true})
-    console.log(this.state.loading);
+  handleClick=(e)=>{
+    this.setState({loadingData: false})
+    this.setState({loading_population: false})
+    this.setState({loading_scatter:false})
+    if (e === 2){
+      this.setState({loading_population:true})
+      this.setState({action_id: 2})
+    }
+    else if (e === 3){
+      this.setState({loading_scatter:true})
+      this.setState({action_id: 3})
+    }
   }
 
 
@@ -120,23 +130,25 @@ class MenuList extends Component {
             <button disabled={this.state.disabled_button} onClick={!this.state.disabled_button ? this.onClick : null}> Run </button>
           </div>:null}
 
-          {this.state.menu_list[item]['id']===2?<Link onClick={this.handleClick}>
+          {this.state.menu_list[item]['id']===2?<Link onClick={() => this.handleClick(2)}>
             {this.state.menu_list[item]['question']}
           </Link>:null}
 
-          {this.state.menu_list[item]['id']===3?<Link to={{pathname:'/models/menu', state: { menu_id: this.state.menu_list[item]['id'] }}}>
+          {this.state.menu_list[item]['id']===3?<Link onClick={() => this.handleClick(3)}>
             {this.state.menu_list[item]['question']}
           </Link>:null}
 
-          {this.state.menu_list[item]['id']===4?<Link to={{pathname:'/models/menu', state: { menu_id: this.state.menu_list[item]['id'] }}}>
+          {this.state.menu_list[item]['id']===4?<Link onClick={() => this.handleClick(4)}>
             {this.state.menu_list[item]['question']}
           </Link>:null}
         </Menu.Item>)}
         </Menu>
         <br /><br />
         <button onClick={this.goback}>Go Back</button>
-        
-        <Action loadingData={this.state.loading}/>
+        <PopulationGraph loadingData={this.state.loading_population}/>
+        <ScatterPlot loadingData={this.state.loading_scatter}/>
+
+
       </div>
     );
   }

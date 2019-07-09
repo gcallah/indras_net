@@ -18,6 +18,7 @@ class ModelDetail extends Component {
       document.title = "Indra | Property";
       const {menu_id} = this.props.location.state;
       const name = this.props.location.state.name;
+      console.log(name)
       const properties = await axios.get(this.api_server + menu_id);
       this.setState({id:menu_id})
       this.setState({ model_details: properties.data });

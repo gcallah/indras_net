@@ -6,7 +6,6 @@ from flask_cors import CORS
 import json
 from indra.user import APIUser
 from models.run_dict import setup_dict
-from models.run_dict import rdict
 from indra.agent import AgentEncoder
 
 
@@ -38,7 +37,7 @@ def load_menu():
 
 
 def json_converter(object):
-    return json.dumps(object.to_json(), cls=AgentEncoder, indent=4)
+    return json.loads(json.dumps(object.to_json(), cls=AgentEncoder, indent=4))
 
 
 @api.route('/hello')
@@ -92,7 +91,8 @@ class Props(Resource):
     def put(self, model_id):
         props_dict = api.payload
         models_db = load_models()
-        env = setup_dict[models_db[model_id]["run"]](props=props_dict)[0]
+        con_env = 0
+        env = setup_dict[models_db[model_id]["run"]](props=props_dict)[con_env]
         return json_converter(env)
 
 
@@ -104,22 +104,19 @@ class ModelMenu(Resource):
         return user()
 
 
-@api.route("/models/menu/<int:model_id>/<int:menu_id>")
-class MenuItem(Resource):
+@api.route("/models/menu/run/<int:model_id>/<int:run_time>")
+class Run(Resource):
     global user
 
-    def put(self, model_id, menu_id):
-        models_db = load_models()
-        if 0 <= menu_id < 6 and (type(menu_id) is int):
-            try:
-                user.tell("execute menu item" + str(menu_id))
-                user.tell(str(load_menu()))
-                env = rdict[models_db[model_id]["run"]](menu_id)[0]
-                return json_converter(env)
-            except TypeError:
-                return 'not running the model'
-        else:
-            return err_return("Invalid menu id " + str(menu_id))
+    @api.expect(props)
+    def put(self, model_id, run_time):
+        env_json = api.payload
+        # use env_json to set up model
+        # env = ...
+        # env.runN(run_time)
+        return "receive env_json" \
+               + str(env_json) \
+               + "and run_time and model_id, running the model"
 
 
 if __name__ == "__main__":
