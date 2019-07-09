@@ -1,39 +1,25 @@
-import React, { Component } from "react";
-import { Loader, Dimmer } from "semantic-ui-react";
+import React from "react";
+import Tree from 'react-tree-graph';
+import { easeElastic } from 'd3-ease';
+import 'react-tree-graph/dist/style.css'
+import ReactJson from 'react-json-view'
 
-class Debugger extends Component {
-  state = {
-    msg: '',
-    loadingData: false,
+function onClick(event, nodeKey) {
+  alert(nodeKey);
+}
+
+
+function Debugger(props){
+  let data = props.env_file
+  console.log(data)
+  if (props.loadingData){
+    console.log("inside Debugger")
+    return(
+      <ReactJson src={data} />
+    )
   }
-
-  async componentDidMount() {
-    this.setState({ loadingData: true });
-    document.title = "Indra | Action";
-    this.setState({ loadingData: false });
-  }
-
-  render() {
-    if (this.state.loadingData) {
-      return (
-        <Dimmer active inverted>
-          <Loader size='massive'>Loading...</Loader>
-        </Dimmer>
-      );
-    }
-
-    return (
-      <div>
-        <br />
-        <h1 style={{ "textAlign": "center" }}>Welcome to the Indra ABM platform!
-        </h1>
-        <br /><br />
-
-        <p>Debugger will be displayed here</p>
-
-        <br /><br />
-      </div>
-    );
+  else {
+    return (null)
   }
 }
 
