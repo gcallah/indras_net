@@ -201,8 +201,8 @@ def populate_board_exploder(width, height):
     for i in range(0, 5):
         agent_left = gameoflife_env.get_agent_at(center[0] - 2, center[1] - i)
         agent_right = gameoflife_env.get_agent_at(center[0] + 2, center[1] - i)
-        change_color(gameoflife_env, agent_left)
-        change_color(gameoflife_env, agent_right)
+        change_color(agent_left)
+        change_color(agent_right)
     min_x = center[0] - 4
     min_y = center[1] - 4
 
