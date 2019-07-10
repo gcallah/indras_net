@@ -2,13 +2,14 @@
 Abelian sandpile model
 """
 from propargs.propargs import PropArgs
-
+from indra.utils import get_prop_path
 from indra.agent import Agent, switch
 from indra.env import Env
 from indra.space import DEF_WIDTH, DEF_HEIGHT
 from indra.composite import Composite
 from indra.display_methods import CIRCLE
 
+MODEL_NAME = "sandpile"
 DEBUG = False  # Turns debugging code on or off
 
 NUM_GROUPS = 4
@@ -106,12 +107,12 @@ def set_up(props=None):
     """
     global groups
     global sandpile_env
-
+    ds_file = get_prop_path(MODEL_NAME)
     if props is None:
-        pa = PropArgs.create_props('sandpile_props',
-                                   ds_file='props/sandpile.props.json')
+        pa = PropArgs.create_props(MODEL_NAME,
+                                   ds_file=ds_file)
     else:
-        pa = PropArgs.create_props('sandpile_props',
+        pa = PropArgs.create_props(MODEL_NAME,
                                    prop_dict=props)
     width = pa.get('grid_width', DEF_WIDTH)
     height = pa.get('grid_height', DEF_HEIGHT)

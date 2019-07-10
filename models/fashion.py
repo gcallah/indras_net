@@ -4,6 +4,7 @@
 
 import math
 from operator import gt, lt
+from indra.utils import get_prop_path
 from propargs.propargs import PropArgs
 from indra.agent import Agent, X_VEC, Y_VEC, NEUTRAL
 from indra.agent import ratio_to_sin
@@ -13,7 +14,7 @@ from indra.env import Env
 from indra.display_methods import NAVY, DARKRED, RED, BLUE
 
 import numpy as np
-
+MODEL_NAME = "fashion"
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
@@ -137,11 +138,12 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
+    ds_file = get_prop_path(MODEL_NAME)
     if props is None:
-        pa = PropArgs.create_props('fashion_props',
-                                   ds_file='props/fashion.props.json')
+        pa = PropArgs.create_props(MODEL_NAME,
+                                   ds_file=ds_file)
     else:
-        pa = PropArgs.create_props('fashion_props',
+        pa = PropArgs.create_props(MODEL_NAME,
                                    prop_dict=props)
 
     blue_tsetters = Composite(BLUE_TSETTERS, {"color": NAVY})

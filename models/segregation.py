@@ -2,7 +2,7 @@
     This is Schelling's segregation model re-written in Indra V2.
 """
 import random
-
+from indra.utils import get_prop_path
 from propargs.propargs import PropArgs
 from indra.agent import Agent
 from indra.composite import Composite
@@ -10,6 +10,7 @@ from indra.composite import Composite
 from indra.env import Env
 from indra.display_methods import RED, BLUE
 
+MODEL_NAME = "segregation"
 DEBUG = True  # Turns debugging code on or off
 DEBUG2 = False  # Turns deeper debugging code on or off
 
@@ -116,11 +117,12 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
+    ds_file = get_prop_path(MODEL_NAME)
     if props is None:
-        pa = PropArgs.create_props('segregation_props',
-                                   ds_file='props/segregation.props.json')
+        pa = PropArgs.create_props(MODEL_NAME,
+                                   ds_file=ds_file)
     else:
-        pa = PropArgs.create_props('segregation_props',
+        pa = PropArgs.create_props(MODEL_NAME,
                                    prop_dict=props)
     blue_agents = Composite(group_names[BLUE_TEAM] + " group", {"color": BLUE})
     red_agents = Composite(group_names[RED_TEAM] + " group", {"color": RED})

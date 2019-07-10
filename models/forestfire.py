@@ -3,13 +3,14 @@
 """
 
 from propargs.propargs import PropArgs
-
+from indra.utils import get_prop_path
 from indra.agent import prob_state_trans
 from indra.agent import Agent
 from indra.composite import Composite
 from indra.env import Env
 from indra.display_methods import RED, GREEN, BLACK, SPRINGGREEN, TOMATO, TREE
 
+MODEL_NAME = "forestfire"
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
@@ -116,11 +117,11 @@ def set_up(props=None):
     global on_fire
     global healthy
 
-    ds_file = 'props/forestfire.props.json'
+    ds_file = get_prop_path(MODEL_NAME)
     if props is None:
-        pa = PropArgs.create_props('forest_fire_props', ds_file=ds_file)
+        pa = PropArgs.create_props(MODEL_NAME, ds_file=ds_file)
     else:
-        pa = PropArgs.create_props('forest_fire_props',
+        pa = PropArgs.create_props(MODEL_NAME,
                                    prop_dict=props)
 
     forest_height = pa.get('grid_height', DEF_DIM)

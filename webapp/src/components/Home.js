@@ -58,7 +58,7 @@ class Home extends Component {
         <h1 style={{ "textAlign": "center" }}>Welcome to the Indra ABM platform!</h1>
         <br /><br />
 
-        We have several models:
+        <h1 style={{"fontSize": 16}}>We have several models: </h1>
         {this.state.allItems && this.renderMenu()}
 
         <br /><br />
