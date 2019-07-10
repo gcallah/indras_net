@@ -93,7 +93,7 @@ class Test(TestCase):
         model_id = random.randint(0, 6)
         with app.test_request_context():
             rv = self.Props.put(model_id)
-        self.assertEqual(type(rv), str)
+        self.assertEqual(type(rv), dict)
 
     def test_get_ModelMenu(self):
         """

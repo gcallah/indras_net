@@ -9,6 +9,7 @@ class ModelDetail extends Component {
     model_details: {},
     loadingData: false,
     disabled_button: false,
+    env_file:{},
   }
 
 
@@ -109,21 +110,18 @@ class ModelDetail extends Component {
   }
 
 
-  handleSubmit = event => {
+  handleSubmit = async() => {
     event.preventDefault();
-
-    axios.put(this.api_server + this.state.id,this.state.model_details)
-    .then(res => {
-      console.log(res);
-      console.log(res.data);
-    },
-
-    console.log(this.state.model_details))
+    console.log(typeof this.state.model_details)
+    const res = await axios.put(this.api_server + this.state.id,this.state.model_details)
+    this.setState({env_file: res.data})
     this.props.history.push({pathname:`/models/menu/${this.state.id}`,state: {
                 menu_id: this.state.id,
+                env_file: this.state.env_file,
                 name: this.props.location.state.name
                }});
   }
+
 
   goback=()=>{
      this.props.history.goBack();

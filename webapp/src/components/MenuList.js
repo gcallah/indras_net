@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import PopulationGraph from "./PopulationGraph.js"
 import ScatterPlot from "./ScatterPlot.js"
+import Debugger from "./Debugger.js"
 
 class MenuList extends Component {
   api_server = 'https://indrasnet.pythonanywhere.com/models/menu/';
@@ -11,6 +12,7 @@ class MenuList extends Component {
   msg: '',
   menu_list:{},
   loadingData: false,
+  env_file: {},
   model_id: 0,
   action_id: 0,
   show_component: false,
@@ -18,7 +20,8 @@ class MenuList extends Component {
   errorMessage: "",
   disabled_button: false,
   loading_population:false,
-  loading_scatter: false
+  loading_scatter: false,
+  loading_debugger: false
 }
 
   async componentDidMount() {
@@ -27,10 +30,11 @@ class MenuList extends Component {
     const menu = await axios.get(this.api_server);
     this.setState({menu_list:menu.data})
     const id = this.props.location.state.menu_id;
-    const name = this.props.location.state.name;;
+    const name = this.props.location.state.name;
     this.setState({name:name})
     this.setState({model_id:id});
     this.setState({ loadingData: false });
+    this.setState({env_file: this.props.location.state.env_file})
   }
 
   goback=()=>{
@@ -77,12 +81,22 @@ class MenuList extends Component {
     this.setState({loading_population: false})
     this.setState({loading_scatter:false})
     if (e === 2){
+      this.setState({loading_scatter: false})
+      this.setState({loading_debugger: false})
       this.setState({loading_population:true})
       this.setState({action_id: 2})
     }
     else if (e === 3){
+      this.setState({loading_debugger: false})
+      this.setState({loading_population: false})
       this.setState({loading_scatter:true})
       this.setState({action_id: 3})
+    }
+    else if (e === 4){
+      this.setState({loading_population: false})
+      this.setState({loading_scatter: false})
+      this.setState({loading_debugger:true})
+      this.setState({action_id: 4})
     }
   }
 
@@ -145,8 +159,10 @@ class MenuList extends Component {
         </Menu>
         <br /><br />
         <button onClick={this.goback}>Go Back</button>
+        <br/><br/>
         <PopulationGraph loadingData={this.state.loading_population}/>
         <ScatterPlot loadingData={this.state.loading_scatter}/>
+        <Debugger loadingData={this.state.loading_debugger} env_file={this.state.env_file}/>
 
 
       </div>
