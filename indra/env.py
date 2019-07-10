@@ -3,6 +3,7 @@ This file defines an Env, which is a collection
 of agents that share a timeline and a Space.
 """
 # import json
+import propargs as pa
 import os
 import getpass
 # import logging
@@ -31,9 +32,12 @@ class PopHist():
         Data structure to record the fluctuating numbers of various agent
         types.
     """
-    def __init__(self):
+    def __init__(self, serial_pops=None):
         self.pops = {}
         self.periods = 0
+        if serial_pops is not None:
+            pass
+            # from_json(serial_pops)
 
     def __str__(self):
         s = POP_HIST_HDR
@@ -52,6 +56,15 @@ class PopHist():
             self.pops[mbr] = []
         self.pops[mbr].append(count)
 
+    def from_json(self, pop_data):
+        pass
+
+    def to_json(self):
+        rep = {}
+        rep["periods"] = self.periods
+        rep["pops"] = self.pops
+        return rep
+
 
 class Env(Space):
     """
@@ -60,30 +73,45 @@ class Env(Space):
     That makes the inheritance work out as we want it to.
     """
     def __init__(self, name, action=None, random_placing=True,
-                 props=None, **kwargs):
+                 props=None, serial_env=None, **kwargs):
         super().__init__(name, action=action, random_placing=random_placing,
                          **kwargs)
-        self.props = props
-        self.pop_hist = PopHist()  # this will record pops across time
-        # Make sure varieties are present in the history
-        for mbr in self.members:
-            self.pop_hist.record_pop(mbr, self.pop_count(mbr))
+        if serial_env is not None:
+            self.restore_env(serial_env)
+        else:
+            self.props = props
+            self.pop_hist = PopHist()  # this will record pops across time
+            # Make sure varieties are present in the history
+            for mbr in self.members:
+                self.pop_hist.record_pop(mbr, self.pop_count(mbr))
 
-        self.womb = []  # for agents waiting to be born
-        self.switches = []  # for agents waiting to switch groups
+            self.womb = []  # for agents waiting to be born
+            self.switches = []  # for agents waiting to switch groups
 
-        # Attributes for plotting
-        self.plot_title = self.name
+            # Attributes for plotting
+            self.plot_title = self.name
 
-        self.user = None
-        self.user_type = os.getenv("user_type", TERMINAL)
-        if (self.user_type == TERMINAL):
-            self.user = TermUser(getpass.getuser(), self)
-            self.user.tell("Welcome to Indra, " + str(self.user) + "!")
-        elif (self.user_type == TEST):
-            self.user = TestUser(getpass.getuser(), self)
-        elif (self.user_type == API):
-            self.user = APIUser(getpass.getuser(), self)
+            self.user = None
+            self.user_type = os.getenv("user_type", TERMINAL)
+            if (self.user_type == TERMINAL):
+                self.user = TermUser(getpass.getuser(), self)
+                self.user.tell("Welcome to Indra, " + str(self.user) + "!")
+            elif (self.user_type == TEST):
+                self.user = TestUser(getpass.getuser(), self)
+            elif (self.user_type == API):
+                self.user = APIUser(getpass.getuser(), self)
+
+    def from_json(self, serial_env):
+        # for instance, delegate like this:
+        self.props = pa.create_props(prop_dict=serial_env["props"])
+        # self.pop_hist = PopHist(serial_pops=serial_env["pop_hist"])
+
+    def __init_unrestorables(self):
+        pass
+
+    def restore_env(self, serial_env):
+        self.from_json(serial_env)
+        self.__init_unrestorables()
 
     def get_periods(self):
         return self.pop_hist.periods
@@ -231,7 +259,12 @@ class Env(Space):
 
     def to_json(self):
         rep = super().to_json()
-        rep["user"] = self.user.to_json()
+        rep["user"] = self.user.to_json()  # user to_json() not done yet!
+        rep["plot_title"] = self.plot_title
+        rep["props"] = self.props.to_json()
+        rep["pop_hist"] = self.pop_hist.to_json()
+        # self.womb = []  # for agents waiting to be born
+        # self.switches = []  # for agents waiting to switch groups
         return rep
 
     def plot_data(self):
