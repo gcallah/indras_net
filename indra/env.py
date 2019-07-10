@@ -3,7 +3,7 @@ This file defines an Env, which is a collection
 of agents that share a timeline and a Space.
 """
 # import json
-import propargs as pa
+from propargs.propargs import PropArgs as pa
 import os
 import getpass
 # import logging
@@ -84,27 +84,25 @@ class Env(Space):
             # Make sure varieties are present in the history
             for mbr in self.members:
                 self.pop_hist.record_pop(mbr, self.pop_count(mbr))
-
-            self.womb = []  # for agents waiting to be born
-            self.switches = []  # for agents waiting to switch groups
-
             # Attributes for plotting
             self.plot_title = self.name
-
             self.user = None
-            self.user_type = os.getenv("user_type", TERMINAL)
-            if (self.user_type == TERMINAL):
-                self.user = TermUser(getpass.getuser(), self)
-                self.user.tell("Welcome to Indra, " + str(self.user) + "!")
-            elif (self.user_type == TEST):
-                self.user = TestUser(getpass.getuser(), self)
-            elif (self.user_type == API):
-                self.user = APIUser(getpass.getuser(), self)
+
+        self.womb = []  # for agents waiting to be born
+        self.switches = []  # for agents waiting to switch groups
+        self.user_type = os.getenv("user_type", TERMINAL)
+        if (self.user_type == TERMINAL):
+            self.user = TermUser(getpass.getuser(), self)
+            self.user.tell("Welcome to Indra, " + str(self.user) + "!")
+        elif (self.user_type == TEST):
+            self.user = TestUser(getpass.getuser(), self)
+        elif (self.user_type == API):
+            self.user = APIUser(getpass.getuser(), self)
 
     def from_json(self, serial_env):
-        # for instance, delegate like this:
-        self.props = pa.create_props(prop_dict=serial_env["props"])
+        self.props = pa.create_props("basic", prop_dict=serial_env["props"])
         self.pop_hist = PopHist(serial_pops=serial_env["pop_hist"])
+        self.plot_title = serial_env["pop_hist"]
 
     def __init_unrestorables(self):
         pass
