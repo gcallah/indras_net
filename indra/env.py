@@ -5,6 +5,7 @@ of agents that share a timeline and a Space.
 # import json
 import os
 import getpass
+# import logging
 import indra.display_methods as disp
 from indra.agent import join, switch, Agent
 from indra.space import Space
@@ -228,6 +229,11 @@ class Env(Space):
                 period = len(data[var]["data"])
         return (period, data)
 
+    def to_json(self):
+        rep = super().to_json()
+        rep["user"] = self.user.to_json()
+        return rep
+
     def plot_data(self):
         """
         This is the data for our scatter plot.
@@ -263,8 +269,3 @@ class Env(Space):
 
     def headless(self):
         return (self.user_type == API) or (self.user_type == TEST)
-
-    def to_json(self):
-        rep = super().to_json()
-        rep["user"] = self.user.to_json()
-        return rep
