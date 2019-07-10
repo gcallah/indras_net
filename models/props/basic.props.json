@@ -26,8 +26,5 @@
     "atype": "INT",
     "hival": 100,
     "lowval": 1
-  },
-  "user_type": {
-    "val": "terminal"
   }
 }
