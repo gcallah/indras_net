@@ -138,7 +138,7 @@ def set_up(props=None):
 
     forest = Env("Forest", height=forest_height, width=forest_width,
                  members=[healthy, new_fire, on_fire, burned_out,
-                          new_growth])
+                          new_growth], props=pa)
 
     global group_map
     group_map = {HE: healthy, NF: new_fire,

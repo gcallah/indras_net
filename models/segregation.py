@@ -145,7 +145,8 @@ def set_up(props=None):
         print(blue_agents.__repr__())
     city = Env("A city", members=[blue_agents, red_agents],
                height=pa.get('grid_height', DEF_CITY_DIM),
-               width=pa.get('grid_width', DEF_CITY_DIM))
+               width=pa.get('grid_width', DEF_CITY_DIM),
+               props=pa)
     city.user.exclude_choices(["line_graph"])
     return (city, blue_agents, red_agents)
 

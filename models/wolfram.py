@@ -145,10 +145,10 @@ def set_up(props=None):
     wolfram_env = Env("Wolfram Model",
                       action=wolfram_action,
                       random_placing=False,
-                      props=pa,
                       height=height,
                       width=width,
-                      members=groups)
+                      members=groups,
+                      props=pa)
     wolfram_env.user.exclude_choices(["line_graph"])
     first_agent = wolfram_env.get_agent_at(width // 2, height - 1)
     turn_black(groups, first_agent)
