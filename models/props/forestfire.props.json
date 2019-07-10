@@ -19,5 +19,8 @@
     "atype": "DBL",
     "hival": 1,
     "lowval": 0
+  },
+  "user_type": {
+    "val": "terminal"
   }
 }
