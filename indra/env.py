@@ -36,8 +36,7 @@ class PopHist():
         self.pops = {}
         self.periods = 0
         if serial_pops is not None:
-            pass
-            # from_json(serial_pops)
+            self.from_json(serial_pops)
 
     def __str__(self):
         s = POP_HIST_HDR
@@ -57,7 +56,8 @@ class PopHist():
         self.pops[mbr].append(count)
 
     def from_json(self, pop_data):
-        pass
+        self.periods = pop_data['periods']
+        self.pops = pop_data['pops']
 
     def to_json(self):
         rep = {}
@@ -104,7 +104,7 @@ class Env(Space):
     def from_json(self, serial_env):
         # for instance, delegate like this:
         self.props = pa.create_props(prop_dict=serial_env["props"])
-        # self.pop_hist = PopHist(serial_pops=serial_env["pop_hist"])
+        self.pop_hist = PopHist(serial_pops=serial_env["pop_hist"])
 
     def __init_unrestorables(self):
         pass
