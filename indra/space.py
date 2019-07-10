@@ -275,7 +275,7 @@ class Space(Composite):
                                        include_self=True)
             return row_hood
 
-    @use_saved_hood
+    # @use_saved_hood
     def get_x_hood(self, agent, width=1, pred=None, include_self=False,
                    save_neighbors=False):
         """
@@ -284,24 +284,25 @@ class Space(Composite):
         For example, if the agent is located at (0, 0),
         get_x_hood would return (-1, 0) and (1, 0).
         """
-        x_hood = Composite("x neighbors")
-        agent_x = agent.get_x()
-        agent_y = agent.get_y()
-        neighbor_x_coords = []
-        for i in range(-width, 0):
-            neighbor_x_coords.append(i)
-        if (include_self):
-            neighbor_x_coords.append(0)
-        for i in range(1, width + 1):
-            neighbor_x_coords.append(i)
-        for i in neighbor_x_coords:
-            neighbor_x = agent_x + i
-            if not out_of_bounds(neighbor_x, agent_y, 0, 0,
-                                 self.width, self.height):
-                x_hood += self.get_agent_at(neighbor_x, agent_y)
-        if save_neighbors:
-            agent.neighbors = x_hood
-        return x_hood
+        if agent is not None:
+            x_hood = Composite("x neighbors")
+            agent_x = agent.get_x()
+            agent_y = agent.get_y()
+            neighbor_x_coords = []
+            for i in range(-width, 0):
+                neighbor_x_coords.append(i)
+            if (include_self):
+                neighbor_x_coords.append(0)
+            for i in range(1, width + 1):
+                neighbor_x_coords.append(i)
+            for i in neighbor_x_coords:
+                neighbor_x = agent_x + i
+                if not out_of_bounds(neighbor_x, agent_y, 0, 0,
+                                     self.width, self.height):
+                    x_hood += self.get_agent_at(neighbor_x, agent_y)
+            if save_neighbors:
+                agent.neighbors = x_hood
+            return x_hood
 
     @use_saved_hood
     def get_y_hood(self, agent, height=1, pred=None, include_self=False,
@@ -351,35 +352,16 @@ class Space(Composite):
         moore_hood = Composite("Moore neighbors")
         agent_x = agent.get_x()
         agent_y = agent.get_y()
-        neighbor_x_coords = [-1, 0, 1]
-        neighbor_y_coords = [-1, 0, 1]
-        for y in neighbor_y_coords:
-            neighbor_y = agent_y + y
-            for x in neighbor_x_coords:
-                neighbor_x = agent_x + x
-                if ((neighbor_x == agent_x) and (neighbor_y == agent_y)
-                   and not include_self):
-                    continue
-                if not out_of_bounds(neighbor_x, neighbor_y, 0, 0,
-                                     self.width, self.height):
-                    # += should be re-written to ignore adding None
-                    neighbor = self.get_agent_at(neighbor_x,
-                                                 neighbor_y)
-                    agent_group = agent.primary_group()
-                    if neighbor is not None:
-                        nbor = neighbor.primary_group()
-                    if same_group:
-                        if neighbor is not None and agent_group == nbor:
-                            moore_hood += neighbor
-                    elif opp_group:
-                        if neighbor is not None and agent_group != nbor:
-                            moore_hood += neighbor
-                    else:
-                        moore_hood += neighbor
+        if agent_y < (self.height - 1):
+            above_agent = self.get_agent_at(agent_x, agent_y + 1)
+            moore_hood += self.get_x_hood(above_agent, include_self=True)
+        moore_hood += self.get_x_hood(agent)
+        if agent_y > 0:
+            below_agent = self.get_agent_at(agent_x, agent_y - 1)
+            moore_hood += self.get_x_hood(below_agent, include_self=True)
         if save_neighbors:
             agent.neighbors = moore_hood
-        else:
-            return moore_hood
+        return moore_hood
 
     def get_hood(self, filter_func, agent, save_hood=False):
         """
