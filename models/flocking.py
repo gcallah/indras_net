@@ -1,15 +1,16 @@
 """
-    This is the fashion model re-written in indra.
+    This is the flocking model written in indra.
 """
 
 from propargs.propargs import PropArgs
-
+from indra.utils import get_prop_path
 from indra.agent import Agent
 from indra.composite import Composite
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.env import Env
 from indra.display_methods import BLUE
 
+MODEL_NAME = "flocking"
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
@@ -36,11 +37,12 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
+    ds_file = get_prop_path(MODEL_NAME)
     if props is None:
-        pa = PropArgs.create_props('flocking_props',
-                                   ds_file='props/flocking.props.json')
+        pa = PropArgs.create_props(MODEL_NAME,
+                                   ds_file=ds_file)
     else:
-        pa = PropArgs.create_props('flocking_props',
+        pa = PropArgs.create_props(MODEL_NAME,
                                    prop_dict=props)
 
     bird_group = Composite("Birds", {"color": BLUE},

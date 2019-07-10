@@ -3,13 +3,14 @@
 """
 
 from propargs.propargs import PropArgs
-
+from indra.utils import get_prop_path
 from indra.agent import Agent
 from indra.composite import Composite
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.env import Env
 from indra.display_methods import RED, BLUE
 
+MODEL_NAME = "scheduler"
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
@@ -39,9 +40,10 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     pa = props
+    ds_file = get_prop_path(MODEL_NAME)
     if pa is None:
-        pa = PropArgs.create_props('scheduler_props',
-                                   ds_file='props/scheduler.props.json')
+        pa = PropArgs.create_props(MODEL_NAME,
+                                   ds_file=ds_file)
     blue_group = Composite("Blues", {"color": BLUE},
                            member_creator=create_agent,
                            num_members=pa.get('num_blue', DEF_NUM_BLUE))
