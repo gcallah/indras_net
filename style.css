@@ -5,6 +5,7 @@ body {
     color: #ddd;
     background: #444;
     line-height: 2.0;
+    font-family: Verdana, Geneva, sans-serif
 }
 
 a:link {
@@ -45,6 +46,7 @@ p.menu {
 }
 
 figure {
+    margin: 1.4em 1em 1.4em 1em;
     text-align: center;
 }
 
@@ -59,7 +61,7 @@ h1,h2,h3,h4,h5 {
 }
 
 h1 {
-    margin: 1.4em .6em 1.4em .6em;
+    margin: 1.4em 8em 1.4em 8em;
     text-align: center;
     font-size: 2em;
     color: #339;
