@@ -88,7 +88,7 @@ def agent_action(agent):
     # return env_favorable(hood_ratio, agent[TOLERANCE])
 
     agent_group = agent.primary_group()
-    if (agent_group == red_agents) or (agent_group == blue_agents):
+    if agent is not None:
         ratio_same = 0
         neighbors = city.get_moore_hood(agent)
         num_same = 0

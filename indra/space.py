@@ -350,15 +350,15 @@ class Space(Composite):
         Takes in an agent and returns a Composite of its Moore neighbors.
         """
         moore_hood = Composite("Moore neighbors")
-        agent_x = agent.get_x()
-        agent_y = agent.get_y()
-        if agent_y < (self.height - 1):
-            above_agent = self.get_agent_at(agent_x, agent_y + 1)
-            moore_hood += self.get_x_hood(above_agent, include_self=True)
+        x = agent.get_x()
+        y = agent.get_y()
+        if y < (self.height - 1):
+            moore_hood += self.get_x_hood(self.get_agent_at(x, y + 1),
+                                          include_self=True)
         moore_hood += self.get_x_hood(agent)
-        if agent_y > 0:
-            below_agent = self.get_agent_at(agent_x, agent_y - 1)
-            moore_hood += self.get_x_hood(below_agent, include_self=True)
+        if y > 0:
+            moore_hood += self.get_x_hood(self.get_agent_at(x, y - 1),
+                                          include_self=True)
         if save_neighbors:
             agent.neighbors = moore_hood
         return moore_hood

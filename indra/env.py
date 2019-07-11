@@ -153,7 +153,22 @@ class Env(Space):
 
             curr_acts = super().__call__()
             acts += curr_acts
+            self.get_census(acts)
         return acts
+
+    def get_census(self, num_acted_agent, tell_func=None):
+        """
+        Gets the census data for all the agents stored in the member.
+        If tell_func is None, returns how many agents are in which groups.
+        tell_func is for future expansion.
+        """
+        census_str = ""
+        for composite_str in self.members:
+            population = len(self.members[composite_str])
+            census_str += (composite_str + ": " + str(population) + "\n")
+        self.user.tell("Census for period " + str(self.get_periods()) + ":"
+                       + "\n" + census_str
+                       + "Total agents acted: " + str(num_acted_agent))
 
     def has_disp(self):
         if not disp.plt_present:

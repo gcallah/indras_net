@@ -167,7 +167,7 @@ def set_up(props=None):
     if DEBUG2:
         print(blue_followers.__repr__())
 
-    society = Env("society",
+    society = Env("Society",
                   members=[blue_tsetters, red_tsetters,
                            blue_followers, red_followers],
                   props=pa)
