@@ -8,15 +8,6 @@ body {
     font-family: Verdana, Geneva, sans-serif
 }
 
-a:link {
-    color: #acf;
-}
-
-a:visited {
-    color: #cbf;
-}
-
-
 table, th, td {
     border: 1px solid black;
     }
@@ -31,12 +22,40 @@ p {
     line-height: 140%;
 }
 
+hr {
+    margin: 2em 12em 2em 12em;
+}
+
 ol, ul, dl, li {
     margin: 1.6em 8em .6em 3em;
 }
 
+ul.centered {
+    list-style-position: inside;
+}
+.menu {
+    margin: 1.6em 12em 0em 12em;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: space-between;
+    background-color: #321;
+}
+
+a {
+    text-decoration: none;
+    color: #aaf;
+}
+a:link {
+    color: #caf;
+}
+a:visited {
+    color: #fac;
+}
+
 p.model {
-    text-align: center;
+/*    text-align: center; */
 }
 
 p.menu {
@@ -48,6 +67,9 @@ p.menu {
 figure {
     margin: 1.4em 1em 1.4em 1em;
     text-align: center;
+}
+figure.logo {
+    margin: 0em 0em .6em 0em;
 }
 
 figure figcaption {
@@ -61,7 +83,7 @@ h1,h2,h3,h4,h5 {
 }
 
 h1 {
-    margin: 1.4em 8em 1.4em 8em;
+    margin: 1em 8em 1.4em 8em;
     text-align: center;
     font-size: 2em;
     color: #339;
@@ -87,9 +109,9 @@ h3 {
 
 h4 {
     font-size: 1.5em;
-    margin: 1.4em .6em 1.2em .6em;
-    color: #aaf;
-	text-align: center
+    margin: 1.4em .6em 1.2em 4em;
+    color: #caf;
+/*	text-align: center */
 }
 
 h5 {

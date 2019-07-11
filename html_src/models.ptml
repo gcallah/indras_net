@@ -8,8 +8,8 @@
 </head>
 
 <body>
-<!--include logo.txt -->
 <!--include menu.txt -->
+<!--include logo.txt -->
   <h1>
     Indra's Models
   </h1>
@@ -31,6 +31,8 @@
     and spreading fire.
   </p>
 
+  <hr>
+
   <h4>
       Abelian Sandpile
   </h4>
@@ -46,6 +48,8 @@
   <a href="https://en.wikipedia.org/wiki/Abelian_sandpile_model">Described
       here</a>. 
   </p>
+
+  <hr>
 
   <h4>
       Wolfram's Automata
@@ -65,6 +69,8 @@
   </p>
 
 
+  <hr>
+
   <h4>
       Wolf-Sheep
   </h4>
@@ -73,6 +79,8 @@
     We model wolves chasing sheep and sheep avoiding wolves in a meadow. The
     animals may reproduce. Once a wolf is near a sheep, it eats him.
   </p>
+
+  <hr>
 
   <h4>
       Adam Smith's Fashion Model
@@ -85,6 +93,8 @@
     like followers, but
     followers <i>do</i> want to look like trend setters.
   </p>
+
+  <hr>
 
   <h4>
       Segregation Model

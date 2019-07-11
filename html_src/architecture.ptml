@@ -8,8 +8,8 @@
     </head>
 
     <body>
-<!--include logo.txt -->
 <!--include menu.txt -->
+<!--include logo.txt -->
         <h1>
             Indra Architecture
         </h1>
