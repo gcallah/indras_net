@@ -20,35 +20,8 @@
   </h2>
 
   <h3>
-    Agents and Environments
+    Agents and Composites
   </h3>
-  <p>
-    Indra&rsquo;s structure can be appreciated philosophically. We
-    start by considering the following question, What are the most
-    general features of all population dynamics?
-  </p>
-
-  <p>
-    In order to have a population we have to have members of that population,
-    and since these members must *do* something we call them "<a
-    href=https://github.com/gcallah/Indra/blob/master/indra/entity.py>agents.
-    </a>" So these agents act, and action always has a definite character,
-    designed to reach an end. For this reason, all agents are also assigned a
-    goal. For example, sheep are agents that run away from wolves because their
-    goal is to not be eaten. These agents all exist within some world defining
-    the ways they may interact with other agents. For example, wolves are
-    agents limited by distance. They have to reach the sheep before they can
-    eat them! This world in which interaction takes place we call the "<a
-                                                                           href=https://github.com/gcallah/Indra/blob/master/indra/env.py>environment</a>,"
-                                                                       env for
-                                                                       short.
-  </p> <p> All agents act, and while respose to the external env is not strictly
-  required, whenever an agent needs to know something about it's external
-  world, it has to peer into its env to see what&rsquo;s about. For this
-  reason, agents access information about other agents strictly through the env
-  object that it lives
-      in.
-  </p>
 
   <h3>
     The User, the Menu, and the Environment

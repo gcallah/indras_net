@@ -5,6 +5,7 @@ BOX_DIR = bigbox
 BOX_DATA = $(BOX_DIR)/data
 BOXPLOTS = $(shell ls $(BOX_DATA)/plot*.pdf)
 DOCKER_DIR = docker
+REQ_DIR = docker
 REPO = indras_net
 MODELS_DIR = models
 WEB_DIR = webapp
@@ -58,7 +59,7 @@ local: $(HTMLFILES) $(INCS)
 
 # run tests then commit all, then push
 prod: tests
-	- git commit -a -m "Building production."
+	- git commit -a
 	- git pull origin master
 	git push origin master
 
