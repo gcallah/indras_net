@@ -1,0 +1,79 @@
+<html>
+    <head>
+<!--include head.txt -->
+        <title>
+            About the Indra Project
+        </title>
+    </head>
+
+    <body>
+<!--include menu.txt -->
+<!--include logo.txt -->
+        <h1>
+            About the Indra Project
+        </h1>
+
+        <p>
+            Contributors:
+        </p>
+
+        <ul>
+            <li>
+                Eugene Callahan
+            </li>
+
+            <li>
+                Nathan Conroy
+            </li>
+
+            <li>
+                Dennis Fenchenko
+            </li>
+
+            <li>
+                Monjur Hasan
+            </li>
+
+            <li>
+                Brandon Logan
+            </li>
+
+            <li>
+                Simon Oh
+            </li>
+
+            <li>
+                Nhi Pham
+            </li>
+
+            <li>
+                Raymond Qu
+            </li>
+
+            <li>
+                Arnav Shah
+            </li>
+
+            <li>
+                Vutsal Singhal
+            </li>
+
+            <li>
+                Thomas Wang
+            </li>
+
+            <li>
+                Khaing su Yin
+            </li>
+
+            <li>
+                Yiyang Zeng
+            </li>
+
+            <li>
+                Karen Zhou
+            </li>
+        </ul>
+
+    </body>
+</html>

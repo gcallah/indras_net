@@ -4,16 +4,9 @@ body {
     font-size: 100%;
     color: #ddd;
     background: #444;
+    line-height: 2.0;
+    font-family: Verdana, Geneva, sans-serif
 }
-
-a:link {
-    color: #acf;
-}
-
-a:visited {
-    color: #cbf;
-}
-
 
 table, th, td {
     border: 1px solid black;
@@ -23,17 +16,46 @@ table, th, td {
     }
 
 p {
-    margin: 8px 40px 8px 40px;
+    font-size: 1.2em;
+    margin: .6em 6em .6em 5em;
     padding: 0;
     line-height: 140%;
 }
 
+hr {
+    margin: 2em 12em 2em 12em;
+}
+
 ol, ul, dl, li {
-    margin: 20px 12px 8px 12px;
+    margin: 1.6em 8em .6em 3em;
+}
+
+ul.centered {
+    list-style-position: inside;
+}
+.menu {
+    margin: 1.6em 12em 0em 12em;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: space-between;
+    background-color: #321;
+}
+
+a {
+    text-decoration: none;
+    color: #aaf;
+}
+a:link {
+    color: #caf;
+}
+a:visited {
+    color: #fac;
 }
 
 p.model {
-    text-align: center;
+/*    text-align: center; */
 }
 
 p.menu {
@@ -43,7 +65,11 @@ p.menu {
 }
 
 figure {
+    margin: 1.4em 1em 1.4em 1em;
     text-align: center;
+}
+figure.logo {
+    margin: 0em 0em .6em 0em;
 }
 
 figure figcaption {
@@ -57,16 +83,16 @@ h1,h2,h3,h4,h5 {
 }
 
 h1 {
-    margin: 28px 8px 24px 8px;
+    margin: 1em 8em 1.4em 8em;
     text-align: center;
     font-size: 2em;
     color: #339;
-    background-color: #cfc;
+    background-color: #cad;
 }
 
 h2 {
     font-size: 1.8em;
-    margin: 20px 24px 12px 24px;
+    margin: 1.4em .6em 1.3em .6em;
     color: #9cc;
 }
 
@@ -77,19 +103,20 @@ h2.subhead {
 
 h3 {
     font-size: 1.6em;
-    margin: 20px 32px 12px 32px;
+    margin: 1.4em .6em 1.3em .6em;
     color: #ecb;
 }
 
 h4 {
     font-size: 1.5em;
-    color: #aaf;
-	text-align: center
+    margin: 1.4em .6em 1.2em 4em;
+    color: #caf;
+/*	text-align: center */
 }
 
 h5 {
     font-size: 1.4em;
-    margin: 16px 48px 12px 48px;
+    margin: 1.4em .6em 1.2em .6em;
     color: #faa;
 }
 
