@@ -172,7 +172,8 @@ def set_up(props=None):
 
     meadow = Env("meadow", members=[wolves, sheep],
                  height=pa.get('meadow_height', MEADOW_HEIGHT),
-                 width=pa.get('meadow_width', MEADOW_WIDTH))
+                 width=pa.get('meadow_width', MEADOW_WIDTH),
+                 props=pa)
     return (meadow, wolves, sheep)
 
 

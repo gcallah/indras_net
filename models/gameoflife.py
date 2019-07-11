@@ -359,7 +359,8 @@ def set_up(props=None):
                          height=height,
                          width=width,
                          members=groups,
-                         random_placing=False)
+                         random_placing=False,
+                         props=pa)
     gameoflife_env.user.exclude_choices(["line_graph"])
     if simulation == 0:
         populate_board_random(width, height)

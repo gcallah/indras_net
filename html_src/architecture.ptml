@@ -1,0 +1,61 @@
+
+<html>
+    <head>
+<!--include head.txt -->
+        <title>
+            Indra Architecture
+        </title>
+    </head>
+
+    <body>
+<!--include menu.txt -->
+<!--include logo.txt -->
+        <h1>
+            Indra Architecture
+        </h1>
+
+
+  <h2>
+    Project Architecture
+  </h2>
+
+  <h3>
+    Agents and Composites
+  </h3>
+
+  <h3>
+    The User, the Menu, and the Environment
+  </h3>
+
+  <p>
+    The
+    <a href="https://github.com/gcallah/Indra/blob/master/indra/user.py">
+      user
+    </a>
+    is of course given control to run the program and to display its data.
+    But the key idea here is that the "user" appears as another node in
+    Indra's net, meaning the agents can conceivably "see" the user and
+    interact with him/her.
+    His primary method of interface is through the
+    <a href="https://github.com/gcallah/Indra/blob/master/indra/menu.py">
+      menu
+    </a>, but more complicated interactions are possible.
+  </p>
+
+  <h3>
+    Graphics Capabilities
+  </h3>
+  <p>
+    We currently have fairly extensive graphics capabilities built in
+    to the system through
+    <a href="https://en.wikipedia.org/wiki/Matplotlib">
+      matplotlib.
+    </a>
+    These include plotting changes in agent populations, tracing agent
+    movement (live) on a scatter plot, and examining the
+    object-hierarchy at play in a program at any point in time.
+  </p>
+
+
+    </body>
+</html>

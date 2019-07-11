@@ -22,6 +22,112 @@ GRP2 = "Group2"
 X = 0
 Y = 1
 
+serial_env = {
+    "name": "env",
+    "attrs": {},
+    "members": {
+        "Blues": {
+            "name": "Blues",
+            "attrs": {
+                "color": "blue"
+            },
+            "members": {
+                "Blues0": {
+                    "name": "Blues0",
+                    "duration": 9223372036854775807,
+                    "pos": [
+                        14,
+                        0
+                    ],
+                    "attrs": {},
+                    "groups": "Blues ",
+                    "active": True,
+                    "type_sig": 0
+                }
+            }
+        },
+        "Reds": {
+            "name": "Reds",
+            "attrs": {
+                "color": "red"
+            },
+            "members": {
+                "Reds0": {
+                    "name": "Reds0",
+                    "duration": 9223372036854775807,
+                    "pos": [
+                        4,
+                        8
+                    ],
+                    "attrs": {},
+                    "groups": "Reds ",
+                    "active": True,
+                    "type_sig": 0
+                }
+            }
+        }
+    },
+    "user": {
+        "name": "ziruizhou"
+    },
+    "plot_title": "env",
+    "props": {
+        "grid_height": {
+            "val": 20,
+            "question": "What is the grid height?",
+            "atype": "INT",
+            "lowval": 2,
+            "hival": 100
+        },
+        "grid_width": {
+            "val": 20,
+            "question": "What is the grid width?",
+            "atype": "INT",
+            "lowval": 2,
+            "hival": 100
+        },
+        "num_blue": {
+            "val": 1,
+            "question": "How many blue agents do you want?",
+            "atype": "INT",
+            "lowval": 1,
+            "hival": 100
+        },
+        "num_red": {
+            "val": 1,
+            "question": "How many red agents do you want?",
+            "atype": "INT",
+            "lowval": 1,
+            "hival": 100
+        },
+        "user_type": {
+            "val": "terminal",
+            "question": None,
+            "atype": None,
+            "lowval": None,
+            "hival": None
+        },
+        "OS": {
+            "val": "Darwin",
+            "question": None,
+            "atype": None,
+            "lowval": None,
+            "hival": None
+        }
+    },
+    "pop_hist": {
+        "periods": 0,
+        "pops": {
+            "Blues": [
+                1
+            ],
+            "Reds": [
+                1
+            ]
+        }
+    }
+}
+
 def env_action(env):
     print("Calling action for env")
     env.name = "Monjur"
@@ -103,7 +209,7 @@ class EnvTestCase(TestCase):
             ret = self.env.line_data()
             self.assertEqual(ret, (2,
                                    {GRP1: {"color": "navy", "data": [10, 20]},
-                                    GRP2: {"color": "b", "data": [10, 20]}}))
+                                    GRP2: {"color": "blue", "data": [10, 20]}}))
 
     def test_plot_data(self):
         """
@@ -127,8 +233,11 @@ class EnvTestCase(TestCase):
 
     def test_env_action(self):
         self.env()
-        # must debug this test!
         self.assertEqual(self.env.name, "Monjur")
+
+    def test_restore_env(self):
+        ret_env = Env("env", serial_env=serial_env)
+        self.assertEqual(str(type(ret_env)), "<class 'indra.env.Env'>")
 
 
 if __name__ == '__main__':

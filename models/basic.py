@@ -57,7 +57,8 @@ def set_up(props=None):
     env = Env("env",
               height=pa.get('grid_height', DEF_HEIGHT),
               width=pa.get('grid_width', DEF_WIDTH),
-              members=[blue_group, red_group])
+              members=[blue_group, red_group],
+              props=pa)
     return (env, blue_group, red_group)
 
 

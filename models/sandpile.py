@@ -129,7 +129,8 @@ def set_up(props=None):
                        members=groups,
                        height=height,
                        width=width,
-                       random_placing=False)
+                       random_placing=False,
+                       props=pa)
     sandpile_env.attrs["center_agent"] = sandpile_env.get_agent_at(height // 2,
                                                                    width // 2)
     return (sandpile_env, groups, group_indices)

@@ -88,18 +88,15 @@ def agent_action(agent):
     # return env_favorable(hood_ratio, agent[TOLERANCE])
 
     agent_group = agent.primary_group()
-    if (agent_group == red_agents) or (agent_group == blue_agents):
-        num_same = 0
-        num_opp = 0
+    if agent is not None:
         ratio_same = 0
-        same_neighbors = city.get_moore_hood(agent, same_group=True)
-        other_neighbors = city.get_moore_hood(agent, opp_group=True)
-        num_same = len(same_neighbors)
-        num_opp = len(other_neighbors)
-        total_neighbors = 0
-        total_neighbors = num_same + num_opp
-        if total_neighbors != 0:
-            ratio_same = num_same / total_neighbors
+        neighbors = city.get_moore_hood(agent)
+        num_same = 0
+        for neighbor in neighbors:
+            if neighbors[neighbor].primary_group() == agent_group:
+                num_same += 1
+        if len(neighbors) != 0:
+            ratio_same = num_same / len(neighbors)
         return env_favorable(ratio_same, agent[TOLERANCE])
     return False
 
@@ -145,7 +142,8 @@ def set_up(props=None):
         print(blue_agents.__repr__())
     city = Env("A city", members=[blue_agents, red_agents],
                height=pa.get('grid_height', DEF_CITY_DIM),
-               width=pa.get('grid_width', DEF_CITY_DIM))
+               width=pa.get('grid_width', DEF_CITY_DIM),
+               props=pa)
     city.user.exclude_choices(["line_graph"])
     return (city, blue_agents, red_agents)
 
