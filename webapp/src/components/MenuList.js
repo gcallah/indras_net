@@ -139,9 +139,9 @@ class MenuList extends Component {
           </Link>:null}
 
           {this.state.menu_list[item]['id']===1? <div>
-            Run for <input style={{width: 30}} type='INT' defaultValue='10' onChange={this.handleRunPeriod} /> periods
+          <button disabled={this.state.disabled_button} onClick={!this.state.disabled_button ? this.onClick : null}> Run </button>
+          for <input style={{width: 30}} type='INT' defaultValue='10' onChange={this.handleRunPeriod} /> periods.
             <span style={{color:"red",fontSize: 12}}>{this.state.errorMessage}</span>
-            <button disabled={this.state.disabled_button} onClick={!this.state.disabled_button ? this.onClick : null}> Run </button>
           </div>:null}
 
           {this.state.menu_list[item]['id']===2?<Link onClick={() => this.handleClick(2)}>
