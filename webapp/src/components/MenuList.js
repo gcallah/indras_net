@@ -140,7 +140,7 @@ class MenuList extends Component {
 
           {this.state.menu_list[item]['id']===1? <div>
           <button disabled={this.state.disabled_button} onClick={!this.state.disabled_button ? this.onClick : null}> Run </button>
-          for <input style={{width: 30}} type='INT' defaultValue='10' onChange={this.handleRunPeriod} /> periods.
+          {" "}for <input style={{width: 30}} type='INT' defaultValue='10' onChange={this.handleRunPeriod} /> periods.
             <span style={{color:"red",fontSize: 12}}>{this.state.errorMessage}</span>
           </div>:null}
 
@@ -161,7 +161,7 @@ class MenuList extends Component {
         <button onClick={this.goback}>Go Back</button>
         <br/><br/>
         <PopulationGraph loadingData={this.state.loading_population}/>
-        <ScatterPlot loadingData={this.state.loading_scatter}/>
+        <ScatterPlot loadingData={this.state.loading_scatter} env_file={this.state.env_file}/>
         <Debugger loadingData={this.state.loading_debugger} env_file={this.state.env_file}/>
 
 

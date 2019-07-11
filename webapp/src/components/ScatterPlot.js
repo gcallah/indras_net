@@ -1,21 +1,38 @@
 import React from "react";
+import { ScatterChart } from 'react-chartkick'
+import 'chart.js'
 
 function ScatterPlot(props) {
-  var imageName = require('./images/forestfire.png')
   if (props.loadingData){
-  return (
-    <div>
-      <br /><br />
-      
-      <p align='center'>We are updating the model! The figure like this will be displayed soon!</p>
-      <img alt="" style={{display:'block', marginLeft:'auto', marginRight:'auto', width:'50%'}} src={imageName} align="middle"/>
-
-      <br /><br />
-    </div>
+    let env=props.env_file['members']
+    let WIDTH=props.env_file['props']['grid_height']['val']
+    let HEIGHT=props.env_file['props']['grid_width']['val']
+    console.log(HEIGHT)
+    console.log(WIDTH)
+    console.log(env)
+    var data=[]
+    Object.keys(env).map((group,i_group)=> {
+      return(
+        data.push({name:env[group]['name'],color: env[group]['attrs']['color'], data: []}),
+        Object.keys(env[group]['members']).map((member, i_member)=>{
+          return(
+            data[i_group]['data'].push(env[group]['members'][member]['pos'])
+          )
+        })
+      )
+    });
+    console.log(data)
+    return (
+      <div>
+          <ScatterChart style={{flex:1, alignItems:'center', margin:'auto'}}
+            data={data} width='600px' height='600px'
+          />
+      </div>
     );
-  }else{
+  }
+  else{
     return(null)
-  }}
+  }};
+
 
 export default ScatterPlot;
-
