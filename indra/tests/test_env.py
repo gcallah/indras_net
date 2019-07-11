@@ -233,12 +233,12 @@ class EnvTestCase(TestCase):
 
     def test_env_action(self):
         self.env()
-        # must debug this test!
         self.assertEqual(self.env.name, "Monjur")
 
     def test_restore_env(self):
         ret_env = Env("env", serial_env=serial_env)
         self.assertEqual(str(type(ret_env)), "<class 'indra.env.Env'>")
+
 
 if __name__ == '__main__':
     main()
