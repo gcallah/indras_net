@@ -58,7 +58,7 @@ local: $(HTMLFILES) $(INCS)
 
 # run tests then commit all, then push
 prod: tests
-	- git commit -a -m "Building production."
+	- git commit -a
 	- git pull origin master
 	git push origin master
 
