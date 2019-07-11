@@ -76,17 +76,6 @@ def agent_action(agent):
     global red_agents
     global blue_agents
 
-    # num_red = max(len(red_agents.subset(in_hood, agent, HOOD_SIZE)),
-    #               NOT_ZERO)   # prevent div by zero!
-    # num_blue = max(len(blue_agents.subset(in_hood, agent, HOOD_SIZE)),
-    #                NOT_ZERO)   # prevent div by zero!
-    # total_neighbors = num_red + num_blue
-    # groups_count = [num_blue, num_red]
-    # if groups_count[other_group_index(agent)] <= 0:
-    #     return False
-    # hood_ratio = groups_count[my_group_index(agent)] / total_neighbors
-    # return env_favorable(hood_ratio, agent[TOLERANCE])
-
     agent_group = agent.primary_group()
     if agent is not None:
         ratio_same = 0
