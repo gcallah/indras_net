@@ -101,7 +101,9 @@ def gameoflife_action(gameoflife_env):
     for y in range(min_y, gameoflife_env.height):
         for x in range(min_x, gameoflife_env.width):
             curr_agent = gameoflife_env.get_agent_at(x, y)
-            if curr_agent.neighbors is not None:
+            if curr_agent.neighbors is None:
+                gameoflife_env.get_moore_hood(curr_agent, save_neighbors=True)
+            else:
                 if change_min:
                     new_min_x = curr_agent.get_x()
                     new_min_y = curr_agent.get_y()
@@ -119,8 +121,9 @@ def gameoflife_action(gameoflife_env):
 
 
 def agent_action(agent):
-    if agent.neighbors is None:
-        gameoflife_env.get_moore_hood(agent, save_neighbors=True)
+    pass
+    # if agent.neighbors is None:
+    #     gameoflife_env.get_moore_hood(agent, save_neighbors=True)
 
 
 def populate_board_random(width, height):
