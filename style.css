@@ -4,6 +4,7 @@ body {
     font-size: 100%;
     color: #ddd;
     background: #444;
+    line-height: 2.0;
 }
 
 a:link {
@@ -23,11 +24,11 @@ table, th, td {
     }
 
 p {
-    margin: 8px 40px 8px 40px;
+    margin: .6em 6em .6em 5em;
 }
 
 ol, ul, dl, li {
-    margin: 20px 12px 8px 12px;
+    margin: 1.6em 8em .6em 3em;
 }
 
 p {
@@ -40,7 +41,7 @@ h1,h2,h3,h4,h5 {
 }
 
 h1 {
-    margin: 28px 8px 24px 8px;
+    margin: 1.4em .6em 1.4em .6em;
     text-align: center;
     font-size: 2em;
     color: #339;
@@ -49,7 +50,7 @@ h1 {
 
 h2 {
     font-size: 1.8em;
-    margin: 20px 24px 12px 24px;
+    margin: 1.4em .6em 1.3em .6em;
     color: #9cc;
 }
 
@@ -60,19 +61,19 @@ h2.subhead {
 
 h3 {
     font-size: 1.6em;
-    margin: 20px 32px 12px 32px;
+    margin: 1.4em .6em 1.3em .6em;
     color: #ecb;
 }
 
 h4 {
     font-size: 1.5em;
-    margin: 16px 40px 12px 40px;
+    margin: 1.4em .6em 1.2em .6em;
     color: #aaf;
 }
 
 h5 {
     font-size: 1.4em;
-    margin: 16px 48px 12px 48px;
+    margin: 1.4em .6em 1.2em .6em;
     color: #faa;
 }
 
