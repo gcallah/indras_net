@@ -24,6 +24,7 @@ table, th, td {
     }
 
 p {
+    font-size: 1.2em;
     margin: .6em 6em .6em 5em;
     padding: 0;
     line-height: 140%;
