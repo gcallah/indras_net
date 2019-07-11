@@ -29,7 +29,7 @@ serial_env = {
         "Blues": {
             "name": "Blues",
             "attrs": {
-                "color": "b"
+                "color": "blue"
             },
             "members": {
                 "Blues0": {
@@ -49,7 +49,7 @@ serial_env = {
         "Reds": {
             "name": "Reds",
             "attrs": {
-                "color": "r"
+                "color": "red"
             },
             "members": {
                 "Reds0": {
@@ -209,7 +209,7 @@ class EnvTestCase(TestCase):
             ret = self.env.line_data()
             self.assertEqual(ret, (2,
                                    {GRP1: {"color": "navy", "data": [10, 20]},
-                                    GRP2: {"color": "b", "data": [10, 20]}}))
+                                    GRP2: {"color": "blue", "data": [10, 20]}}))
 
     def test_plot_data(self):
         """
