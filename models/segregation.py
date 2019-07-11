@@ -1,17 +1,18 @@
 """
-    This is Schelling's segregation model re-written in indra V2.
+    This is Schelling's segregation model re-written in Indra V2.
 """
 import random
-
+from indra.utils import get_prop_path
 from propargs.propargs import PropArgs
 from indra.agent import Agent
 from indra.composite import Composite
-from indra.space import in_hood
+# from indra.space import in_hood
 from indra.env import Env
 from indra.display_methods import RED, BLUE
 
-DEBUG = True  # turns debugging code on or off
-DEBUG2 = False  # turns deeper debugging code on or off
+MODEL_NAME = "segregation"
+DEBUG = True  # Turns debugging code on or off
+DEBUG2 = False  # Turns deeper debugging code on or off
 
 NUM_RED = 250
 NUM_BLUE = 250
@@ -71,20 +72,33 @@ def agent_action(agent):
     If the agent is surrounded by more "others" than it is comfortable
     with, the agent will move.
     """
-    num_red = max(len(red_agents.subset(in_hood, agent, HOOD_SIZE)),
-                  NOT_ZERO)   # prevent div by zero!
+    global city
+    global red_agents
+    global blue_agents
 
-    num_blue = max(len(blue_agents.subset(in_hood, agent, HOOD_SIZE)),
-                   NOT_ZERO)   # prevent div by zero!
-    total_neighbors = num_red + num_blue
+    # num_red = max(len(red_agents.subset(in_hood, agent, HOOD_SIZE)),
+    #               NOT_ZERO)   # prevent div by zero!
+    # num_blue = max(len(blue_agents.subset(in_hood, agent, HOOD_SIZE)),
+    #                NOT_ZERO)   # prevent div by zero!
+    # total_neighbors = num_red + num_blue
+    # groups_count = [num_blue, num_red]
+    # if groups_count[other_group_index(agent)] <= 0:
+    #     return False
+    # hood_ratio = groups_count[my_group_index(agent)] / total_neighbors
+    # return env_favorable(hood_ratio, agent[TOLERANCE])
 
-    groups_count = [num_blue, num_red]
-
-    if groups_count[other_group_index(agent)] <= 0:
-        return False
-
-    hood_ratio = groups_count[my_group_index(agent)] / total_neighbors
-    return env_favorable(hood_ratio, agent[TOLERANCE])
+    agent_group = agent.primary_group()
+    if (agent_group == red_agents) or (agent_group == blue_agents):
+        ratio_same = 0
+        neighbors = city.get_moore_hood(agent)
+        num_same = 0
+        for neighbor in neighbors:
+            if neighbors[neighbor].primary_group() == agent_group:
+                num_same += 1
+        if len(neighbors) != 0:
+            ratio_same = num_same / len(neighbors)
+        return env_favorable(ratio_same, agent[TOLERANCE])
+    return False
 
 
 def create_agent(i, mean_tol, dev, color):
@@ -103,10 +117,13 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    pa = props
-    if pa is None:
-        pa = PropArgs.create_props('basic_props',
-                                   ds_file='props/segregation.props.json')
+    ds_file = get_prop_path(MODEL_NAME)
+    if props is None:
+        pa = PropArgs.create_props(MODEL_NAME,
+                                   ds_file=ds_file)
+    else:
+        pa = PropArgs.create_props(MODEL_NAME,
+                                   prop_dict=props)
     blue_agents = Composite(group_names[BLUE_TEAM] + " group", {"color": BLUE})
     red_agents = Composite(group_names[RED_TEAM] + " group", {"color": RED})
     for i in range(pa.get('num_red', NUM_RED)):
@@ -114,10 +131,8 @@ def set_up(props=None):
                                    pa.get('mean_tol', DEF_TOLERANCE),
                                    pa.get('deviation', DEF_SIGMA),
                                    color=RED_TEAM)
-
     if DEBUG2:
         print(red_agents.__repr__())
-
     for i in range(pa.get('num_blue', NUM_BLUE)):
         blue_agents += create_agent(i,
                                     pa.get('mean_tol', DEF_TOLERANCE),
@@ -125,18 +140,19 @@ def set_up(props=None):
                                     color=BLUE_TEAM)
     if DEBUG2:
         print(blue_agents.__repr__())
-
     city = Env("A city", members=[blue_agents, red_agents],
                height=pa.get('grid_height', DEF_CITY_DIM),
-               width=pa.get('grid_width', DEF_CITY_DIM))
-    return (blue_agents, red_agents, city)
+               width=pa.get('grid_width', DEF_CITY_DIM),
+               props=pa)
+    city.user.exclude_choices(["line_graph"])
+    return (city, blue_agents, red_agents)
 
 
 def main():
     global blue_agents
     global red_agents
     global city
-    (blue_agents, red_agents, city) = set_up()
+    (city, blue_agents, red_agents) = set_up()
 
     if DEBUG2:
         print(city.__repr__())

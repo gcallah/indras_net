@@ -26,7 +26,7 @@ def print_sep():
 
 class SegregationTestCase(TestCase):
     def setUp(self):
-        (seg.blue_agents, seg.red_agents, seg.city) = set_up()
+        (seg.city, seg.blue_agents, seg.red_agents) = set_up()
 
     def tearDown(self):
         seg.blue_agents = None
@@ -45,7 +45,7 @@ class SegregationTestCase(TestCase):
         self.assertGreater(DEF_TOLERANCE + .2, avg)
 
     def test_my_group_index(self):
-        red_agent = create_agent(TEST_ANUM, 
+        red_agent = create_agent(TEST_ANUM,
                                  DEF_TOLERANCE, DEF_SIGMA,
                                  color=RED_TEAM)
         self.assertEqual(RED_TEAM, my_group_index(red_agent))

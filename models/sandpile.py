@@ -1,30 +1,22 @@
 """
-This is an abelian sandpile model.
-Starting life of sandpile as segregation clone.
+Abelian sandpile model
 """
-
 from propargs.propargs import PropArgs
-
+from indra.utils import get_prop_path
 from indra.agent import Agent, switch
-from indra.composite import Composite
 from indra.env import Env
+from indra.space import DEF_WIDTH, DEF_HEIGHT
+from indra.composite import Composite
+from indra.display_methods import CIRCLE
 
-
-DEBUG = False  # turns debugging code on or off
-
-DEF_HEIGHT = 10
-DEF_WIDTH = 10
-
-SAND_PREFIX = "sand_location "
-
-NEARBY = 1
+MODEL_NAME = "sandpile"
+DEBUG = False  # Turns debugging code on or off
 
 NUM_GROUPS = 4
 
-sandpile = None
-
-groups = []
-group_indices = {}
+sandpile_env = None
+groups = None
+group_indices = None
 
 
 def create_agent(x, y):
@@ -37,100 +29,119 @@ def create_agent(x, y):
 
 def get_curr_group_idx(agent):
     """
-    Returns the int index of the current group
-    Ex) returns 0 if group is Group 0
+    Returns the int index of the current group.
+    Ex) Returns 0 if group is Group 0
     """
     return group_indices[agent.primary_group().name]
 
 
 def get_next_group_idx(curr_group_idx):
     """
-    Returns the int index of the next group
-    Ex) returns 1 if curr_group_idx group is Group 0
+    Returns the int index of the next group.
+    Ex) Returns 1 if curr_group_idx group is Group 0
     """
     return (curr_group_idx + 1) % NUM_GROUPS
 
 
-def change_group(agent, sandpile, curr_group_idx, next_group_idx):  # noqa F811
+def change_group(agent, curr_group_idx, next_group_idx):  # noqa F811
     """
-    Change group from current group index passed in
-    to the next group index passed in
+    Change group from curr_group_idx passed in
+    to the next_group_idx passed in.
     """
+    global sandpile_env
+
     switch(agent, groups[curr_group_idx], groups[next_group_idx])
 
 
-def add_grain(sandpile, agent):
+def add_grain(agent):
     """
-    Addd a grain to whichever agent is passed in
+    Addd a grain to the agent that is passed in
+    by changing the group that it is in.
     """
+    global sandpile_env
+
     curr_group_idx = get_curr_group_idx(agent)
     next_group_idx = get_next_group_idx(curr_group_idx)
     if DEBUG:
         print("Agent at", agent.pos, "is changing group from",
               agent.primary_group(), "to", next_group_idx)
-    change_group(agent, sandpile, curr_group_idx, next_group_idx)
+    change_group(agent, curr_group_idx, next_group_idx)
     if DEBUG:
         print("Agent at", agent.pos, "has changed to", agent.primary_group())
     if next_group_idx == 0:
-        topple(sandpile, agent)
+        topple(agent)
 
 
-def topple(sandpile, agent):
+def topple(agent):
+    global sandpile_env
+
     if DEBUG:
         print("Sandpile in", agent.pos, "is toppling")
-    for neighbor in agent.neighbors:
-        add_grain(sandpile, neighbor)
+    neighbors = sandpile_env.get_vonneumann_hood(agent, save_neighbors=True)
+    for neighbor in neighbors:
+        add_grain(neighbors[neighbor])
 
 
-def sandpile_action(sandpile):
+def sandpile_action(sandpile_env):
     """
-    Drop a grain on the center agent.
+    The action that will be taken avery period.
+    Adds a grain to the center agent.
     """
     if DEBUG:
         print("Adding a grain to sandpile in position",
-              sandpile.attrs["center_agent"].pos,
+              sandpile_env.attrs["center_agent"].pos,
               "which is in the group",
-              sandpile.attrs["center_agent"].primary_group())
-    add_grain(sandpile, sandpile.attrs["center_agent"])
+              sandpile_env.attrs["center_agent"].primary_group())
+    add_grain(sandpile_env.attrs["center_agent"])
 
 
 def place_action(agent):
-    if agent.neighbors is None:
-        neighbors = sandpile.get_vonneumann_hood(agent)
-        agent.neighbors = neighbors
+    pass
+    # if agent.neighbors is None:
+    #     sandpile_env.get_vonneumann_hood(agent, save_neighbors=True)
 
 
-def set_up():
+def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    pa = PropArgs.create_props('sandpile_props',
-                               ds_file='props/sandpile.props.json')
+    global groups
+    global sandpile_env
+    ds_file = get_prop_path(MODEL_NAME)
+    if props is None:
+        pa = PropArgs.create_props(MODEL_NAME,
+                                   ds_file=ds_file)
+    else:
+        pa = PropArgs.create_props(MODEL_NAME,
+                                   prop_dict=props)
     width = pa.get('grid_width', DEF_WIDTH)
     height = pa.get('grid_height', DEF_HEIGHT)
+    groups = []
+    group_indices = {}
     for i in range(NUM_GROUPS):
-        groups.append(Composite("Group" + str(i)))
+        groups.append(Composite(("Group" + str(i)), {"marker": CIRCLE}))
         group_indices[groups[i].name] = i
     for y in range(height):
         for x in range(width):
             groups[0] += create_agent(x, y)
-    sandpile = Env("A sandpile",
-                   action=sandpile_action,
-                   members=groups,
-                   height=height,
-                   width=width,
-                   random_placing=False)
-    sandpile.attrs["center_agent"] = sandpile.get_agent_at(height // 2,
-                                                           width // 2)
-
-    return (groups, group_indices, sandpile)
+    sandpile_env = Env("Sanpile",
+                       action=sandpile_action,
+                       members=groups,
+                       height=height,
+                       width=width,
+                       random_placing=False,
+                       props=pa)
+    sandpile_env.attrs["center_agent"] = sandpile_env.get_agent_at(height // 2,
+                                                                   width // 2)
+    return (sandpile_env, groups, group_indices)
 
 
 def main():
-    global sandpile
+    global sandpile_env
     global groups
-    (groups, group_indices, sandpile) = set_up()
-    sandpile()
+    global group_indices
+    (sandpile_env, groups, group_indices) = set_up()
+    sandpile_env()
     return 0
 
 

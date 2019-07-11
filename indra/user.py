@@ -3,7 +3,8 @@ This file defines User, which represents a user in our system.
 """
 import os
 import json
-from indra.agent import Agent  # , DEBUG2  # DEBUG,
+import sys
+from indra.agent import Agent
 from IPython import embed
 
 TERMINAL = "terminal"
@@ -62,9 +63,13 @@ def line_graph(user):
     return user.env.line_graph()
 
 
-def ipython(user):
+def debug(user):
     embed()
     return 0
+
+
+def tell_debug(msg, end='\n'):
+    print("DEBUG: " + msg, file=sys.stderr, end=end)
 
 
 menu_functions = {
@@ -72,7 +77,7 @@ menu_functions = {
     "leave": leave,
     "scatter_plot": scatter_plot,
     "line_graph": line_graph,
-    "ipython": ipython,
+    "debug": debug,
 }
 
 
@@ -96,9 +101,32 @@ class User(Agent):
     def __init__(self, name, env, **kwargs):
         super().__init__(name, **kwargs)
         self.env = env  # this class needs this all the time, we think
+        self.menu = get_menu_json()
+        self.to_exclude = []
 
-    def error(user, error_type):
-        user.tell(error_type)
+    def to_json(self):
+        return {"name": self.name}
+
+    def exclude_menu_item(self, to_exclude):
+        self.to_exclude = to_exclude
+
+    def tell(self, msg, end='\n'):
+        """
+        How to tell the user something.
+        """
+        pass
+
+    def ask(self, msg, default=None):
+        """
+        How to ask the user something.
+        """
+        pass
+
+    def tell_err(self, msg, end='\n'):
+        self.tell("ERROR: " + msg, end)
+
+    def tell_warn(self, msg, end='\n'):
+        self.tell("WARNING: " + msg, end)
 
 
 class TermUser(User):
@@ -107,11 +135,9 @@ class TermUser(User):
     """
     def __init__(self, name, env, **kwargs):
         super().__init__(name, env, **kwargs)
-        self.menu = get_menu_json()
         self.menu_title = "Menu of Actions"
         self.stars = "*" * len(self.menu_title)
-        self.all_menu = True
-        self.to_exclude = []
+        self.not_to_exclude_id = []
 
     def tell(self, msg, end='\n'):
         """
@@ -138,9 +164,6 @@ class TermUser(User):
         """
         return self.user.tell(msg, end)
 
-    # def exclude_choices(self, excluded_choices):
-    #     for i in excluded_choices:
-
     def is_number(self, c):
         try:
             int(c)
@@ -149,7 +172,6 @@ class TermUser(User):
             return False
 
     def exclude_choices(self, to_exclude):
-        self.all_menu = False
         self.to_exclude = to_exclude
 
     def __call__(self):
@@ -159,13 +181,10 @@ class TermUser(User):
               + self.menu_title
               + '\n'
               + self.stars)
-        if self.all_menu:
-            for item in self.menu:
+        for item in self.menu:
+            if item["func"] not in self.to_exclude:
                 print(str(item["id"]) + ". ", item["question"])
-        else:
-            for item in self.menu:
-                if item["func"] not in self.to_exclude:
-                    print(str(item["id"]) + ". ", item["question"])
+                self.not_to_exclude_id.append(item["id"])
         self.tell("Please choose a number from the menu above:")
         c = input()
         if not c or c.isspace():
@@ -174,8 +193,9 @@ class TermUser(User):
             choice = int(c)
             if choice >= 0:
                 for item in self.menu:
-                    if item["id"] == choice:
-                        return menu_functions[item["func"]](self)
+                    if choice in self.not_to_exclude_id:
+                        if item["id"] == choice:
+                            return menu_functions[item["func"]](self)
             self.tell("ERROR: " + str(c)
                       + " is an invalid option. "
                       + "Please enter a valid option.")
@@ -203,17 +223,21 @@ class TestUser(TermUser):
         run(self)  # noqa: W391
 
 
-class APIUser(TermUser):
+class APIUser(User):
     """
     This is our web user, who is expected to communicate with a web page
     frontend.
     """
+    def __init__(self, name, env, **kwargs):
+        super().__init__(name, env, **kwargs)
+        self.user_msgs = ''
+
     def tell(self, msg, end='\n'):
         """
         Tell the user something by showing it on the web page
         The below code is just a possible way to implement this!
         """
-        return {"msg_to_user": '"' + msg + '"'}
+        self.user_msgs += (msg + end)
 
     def ask(self, msg, default=None):
         """
@@ -229,3 +253,7 @@ class APIUser(TermUser):
             return menu
         else:
             return menu_functions[menu[menu_id]["func"]](self)
+
+    def to_json(self):
+        return {"user_msgs": self.user_msgs,
+                "name": self.name}

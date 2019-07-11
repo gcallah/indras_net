@@ -1,0 +1,37 @@
+{
+  "grid_height": {
+    "val": 20,
+    "question": "What is the grid height?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 2
+  },
+  "grid_width": {
+    "val": 20,
+    "question": "What is the grid width?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 2
+  },
+  "num_birds": {
+    "val": 20,
+    "question": "How many birds do you want?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 2
+  },
+  "turn_angle": {
+    "val": 45,
+    "question": "What is a bird's maximum turn angle, in degrees?",
+    "atype": "INT",
+    "hival": 90,
+    "lowval": 1
+  },
+  "sight_range": {
+    "val": 5,
+    "question": "What is a bird's sight range?",
+    "atype": "INT",
+    "hival": 50,
+    "lowval": 1
+  }
+}

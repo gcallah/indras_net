@@ -3,14 +3,14 @@
 """
 
 from propargs.propargs import PropArgs
-
+from indra.utils import get_prop_path
 from indra.agent import prob_state_trans
 from indra.agent import Agent
 from indra.composite import Composite
 from indra.env import Env
-from indra.space import in_hood
 from indra.display_methods import RED, GREEN, BLACK, SPRINGGREEN, TOMATO, TREE
 
+MODEL_NAME = "forestfire"
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
@@ -65,6 +65,13 @@ def is_healthy(agent, *args):
     return agent["state"] == HE
 
 
+def is_on_fire(agent, *args):
+    """
+    Checking whether the state is healthy or not
+    """
+    return agent["state"] == OF
+
+
 def tree_action(agent):
     """
     This is what trees do each turn in the forest.
@@ -73,7 +80,11 @@ def tree_action(agent):
 
     old_state = agent["state"]
     if is_healthy(agent):
-        nearby_fires = on_fire.subset(in_hood, agent, NEARBY)
+        nearby_fires = Composite(agent.name + "'s nearby fires")
+        neighbors = agent.locator.get_moore_hood(agent,
+                                                 save_neighbors=True)
+        if neighbors is not None:
+            nearby_fires = neighbors.subset(is_on_fire, agent)
         if len(nearby_fires) > 0:
             if DEBUG2:
                 print("Setting nearby tree on fire!")
@@ -105,10 +116,14 @@ def set_up(props=None):
     """
     global on_fire
     global healthy
-    ds_file = 'props/forestfire.props.json'
-    pa = props
-    if pa is None:
-        pa = PropArgs.create_props('forest_fire_props', ds_file=ds_file)
+
+    ds_file = get_prop_path(MODEL_NAME)
+    if props is None:
+        pa = PropArgs.create_props(MODEL_NAME, ds_file=ds_file)
+    else:
+        pa = PropArgs.create_props(MODEL_NAME,
+                                   prop_dict=props)
+
     forest_height = pa.get('grid_height', DEF_DIM)
     forest_width = pa.get('grid_width', DEF_DIM)
     forest_density = pa.get('density', DEF_DENSITY)
@@ -123,7 +138,7 @@ def set_up(props=None):
 
     forest = Env("Forest", height=forest_height, width=forest_width,
                  members=[healthy, new_fire, on_fire, burned_out,
-                          new_growth])
+                          new_growth], props=pa)
 
     global group_map
     group_map = {HE: healthy, NF: new_fire,

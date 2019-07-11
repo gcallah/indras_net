@@ -22,7 +22,7 @@ class WolfsheepTestCase(TestCase):
     def setUp(self):
         self.pa = PropArgs.create_props('wolfsheep_props',
                                         ds_file='props/wolfsheep.props.json')
-        (ws.wolves, ws.sheep, ws.meadow) = set_up()
+        (ws.meadow, ws.wolves, ws.sheep) = set_up()
         self.wolf = create_wolf(TEST_WNUM, self.pa)
         self.sheep = create_sheep(TEST_SNUM, self.pa)
 

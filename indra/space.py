@@ -2,10 +2,11 @@
 This file defines Space, which is a collection
 of agents related spatially.
 """
+from functools import wraps
 from random import randint
 from math import sqrt
 from indra.agent import is_composite
-from indra.composite import Composite, grp_from_nm_dict
+from indra.composite import Composite
 
 DEF_WIDTH = 10
 DEF_HEIGHT = 10
@@ -251,70 +252,137 @@ class Space(Composite):
         """
         del self.locations[(x, y)]
 
-    def get_row_hood(self, row_num):
+    def use_saved_hood(hood_func):
+        @wraps(hood_func)
+        def wrapper(*args, **kwargs):
+            agent = args[1]
+            if agent.neighbors:
+                return agent.neighbors
+            return hood_func(*args, **kwargs)
+        return wrapper
+
+    def get_row_hood(self, row_num, pred=None, save_neighbors=False):
         """
         Collects all agents in row `row_num` into a Composite
-        and return that collection.
+        and returns it.
         """
         if row_num < 0 or row_num >= self.height:
             return None
         else:
-            lst = []
-            agent_dict = {"neighbors": lst}
-            for x in range(self.width):
-                agent_dict["neighbors"].append(self.get_agent_at(x, row_num))
-            return grp_from_nm_dict("Row neighbors", agent_dict["neighbors"])
+            row_hood = Composite("Row neighbors")
+            agent = self.get_agent_at(self.width // 2, row_num)
+            row_hood = self.get_x_hood(agent, self.width - 1,
+                                       include_self=True)
+            return row_hood
 
-    def get_moore_hood(self, agent):
+    # @use_saved_hood
+    def get_x_hood(self, agent, width=1, pred=None, include_self=False,
+                   save_neighbors=False):
         """
-        To be written!
+        Takes in an agent  and returns a Composite
+        of its x neighbors.
+        For example, if the agent is located at (0, 0),
+        get_x_hood would return (-1, 0) and (1, 0).
         """
-        pass
+        if agent is not None:
+            x_hood = Composite("x neighbors")
+            agent_x = agent.get_x()
+            agent_y = agent.get_y()
+            neighbor_x_coords = []
+            for i in range(-width, 0):
+                neighbor_x_coords.append(i)
+            if (include_self):
+                neighbor_x_coords.append(0)
+            for i in range(1, width + 1):
+                neighbor_x_coords.append(i)
+            for i in neighbor_x_coords:
+                neighbor_x = agent_x + i
+                if not out_of_bounds(neighbor_x, agent_y, 0, 0,
+                                     self.width, self.height):
+                    x_hood += self.get_agent_at(neighbor_x, agent_y)
+            if save_neighbors:
+                agent.neighbors = x_hood
+            return x_hood
 
-    def get_x_hood(self, agent, composite=False):
-        lst = []
-        agent_dict = {"x neighbors": lst}
+    @use_saved_hood
+    def get_y_hood(self, agent, height=1, pred=None, include_self=False,
+                   save_neighbors=False):
+        """
+        Takes in an agent and returns a Composite
+        of its y neighbors.
+        For example, if the agent is located at (0, 0),
+        get_y_hood would return (0, -1) and (0, 1).
+        """
+        y_hood = Composite("y neighbors")
         agent_x = agent.get_x()
         agent_y = agent.get_y()
-        neighbor_x_coords = [-1, 1]
-        for i in neighbor_x_coords:
-            neighbor_x = agent_x + i
-            if not out_of_bounds(neighbor_x, agent_y, 0, 0,
-                                 self.width, self.height):
-                agent_dict["x neighbors"].append(
-                    self.get_agent_at(neighbor_x, agent_y))
-        if (composite):
-            return grp_from_nm_dict("x neighbors", agent_dict["x neighbors"])
-        else:
-            return agent_dict
-
-    def get_y_hood(self, agent, composite=False):
-        lst = []
-        agent_dict = {"y neighbors": lst}
-        agent_x = agent.get_x()
-        agent_y = agent.get_y()
-        neighbor_y_coords = [-1, 1]
+        neighbor_y_coords = []
+        for i in range(-height, 0):
+            neighbor_y_coords.append(i)
+        if (include_self):
+            neighbor_y_coords.append(0)
+        for i in range(1, height + 1):
+            neighbor_y_coords.append(i)
         for i in neighbor_y_coords:
             neighbor_y = agent_y + i
             if not out_of_bounds(agent_x, neighbor_y, 0, 0,
                                  self.width, self.height):
-                agent_dict["y neighbors"].append(
-                    self.get_agent_at(agent_x, neighbor_y))
-        if (composite):
-            return grp_from_nm_dict("y neighbors", agent_dict["y neighbors"])
-        else:
-            return agent_dict
+                y_hood += (self.get_agent_at(agent_x, neighbor_y))
+        if save_neighbors:
+            agent.neighbors = y_hood
+        return y_hood
 
-    def get_vonneumann_hood(self, agent):
+    @use_saved_hood
+    def get_vonneumann_hood(self, agent, pred=None, save_neighbors=False):
         """
-        Takes in an agent and returns a Composite of its vonneuman neighbors
+        Takes in an agent and returns a Composite of its
+        Von Neumann neighbors.
         """
-        x_neighbors = self.get_x_hood(agent)
-        y_neighbors = self.get_y_hood(agent)
-        lst = []
-        agent_dict = {"neighbors": lst}
-        for y in y_neighbors["y neighbors"]:
-            agent_dict["neighbors"].append(y)
-        for x in x_neighbors["x neighbors"]:
-            agent_dict["neighbors"].append(x)
-        return grp_from_nm_dict("Vonneuman neighbors", agent_dict["neighbors"])
+        vonneumann_hood = self.get_x_hood(agent) + self.get_y_hood(agent)
+        if save_neighbors:
+            agent.neighbors = vonneumann_hood
+        return vonneumann_hood
+
+    @use_saved_hood
+    def get_moore_hood(self, agent, pred=None, save_neighbors=False,
+                       include_self=False, same_group=False, opp_group=False):
+        """
+        Takes in an agent and returns a Composite of its Moore neighbors.
+        """
+        moore_hood = Composite("Moore neighbors")
+        agent_x = agent.get_x()
+        agent_y = agent.get_y()
+        if agent_y < (self.height - 1):
+            above_agent = self.get_agent_at(agent_x, agent_y + 1)
+            moore_hood += self.get_x_hood(above_agent, include_self=True)
+        moore_hood += self.get_x_hood(agent)
+        if agent_y > 0:
+            below_agent = self.get_agent_at(agent_x, agent_y - 1)
+            moore_hood += self.get_x_hood(below_agent, include_self=True)
+        if save_neighbors:
+            agent.neighbors = moore_hood
+        return moore_hood
+
+    def get_hood(self, filter_func, agent, save_hood=False):
+        """
+        Takes in filter_func, which is a list of strings of the names of
+        get neighbor methods, agent, and save_hood, which is a boolean
+        for either returning the Composite of neighbors or
+        storing the Composite in agent.neighbors,
+        and runs the corresponding get neighbor methods.
+        """
+        neighborhood = Composite("Neighborhood")
+        if "get_x_hood" in filter_func:
+            neighborhood += self.get_x_hood(agent)
+        if "get_y_hood" in filter_func:
+            neighborhood += self.get_y_hood(agent)
+        if "get_top_lr_hood" in filter_func:
+            neighborhood += self.get_top_lr_hood(agent)
+        if "get_bottom_lr_hood" in filter_func:
+            neighborhood += self.get_bottom_lr_hood(agent)
+        if "get_row_hood" in filter_func:
+            neighborhood += self.get_row_hood(agent)
+        if save_hood:
+            agent.neighbors = neighborhood
+        else:
+            return neighborhood

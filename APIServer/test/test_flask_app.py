@@ -1,5 +1,5 @@
 from unittest import TestCase, main
-from APIServer.flask_app import app, HelloWorld, Models, Props, ModelMenu, MenuItem, err_return, load_models, load_menu
+from APIServer.flask_app import app, HelloWorld, Models, Props, ModelMenu, Run, err_return, load_models, load_menu
 from flask_restplus import Resource, Api, fields
 import random
 from APIServer.flask_app import indra_dir
@@ -18,7 +18,7 @@ class Test(TestCase):
         self.Model = Models(Resource)
         self.Props = Props(Resource)
         self.ModelMenu = ModelMenu(Resource)
-        self.MenuItem = MenuItem(Resource)
+        self.Run = Run(Resource)
         self.LoadModels = load_models()
         self.LoadMenu = load_menu()
 
@@ -74,7 +74,7 @@ class Test(TestCase):
         """
         See if we can get props.
         """
-        model_id = random.randint(0, 5)
+        model_id = random.randint(0, 6)
         rv = self.Props.get(model_id)
 
         test_model_file = indra_dir + "/models/models.json"
@@ -90,32 +90,28 @@ class Test(TestCase):
         """
         Test whether we are able to put props
         """
-        model_id = random.randint(0, 5)
+        model_id = random.randint(0, 6)
         with app.test_request_context():
             rv = self.Props.put(model_id)
-        # self.assertEqual(rv, {"Menu": menu})
-        self.assertEqual(rv, "this is for testing")
+        self.assertEqual(type(rv), dict)
 
     def test_get_ModelMenu(self):
         """
         Testing whether we are getting the menu.
         """
-        model_id = random.randint(0, 5)
-        rv = self.ModelMenu.get(model_id)
+        rv = self.ModelMenu.get()
         test_menu_file = indra_dir + "/indra/menu.json"
         with open(test_menu_file) as file:
             test_menu = json.loads(file.read())["menu_database"]
         self.assertEqual(rv, test_menu)
         
-    def test_put_MenuItem(self):
+    def test_run(self):
         """
         Testing whether we are able to put the menu in
         """
-        # menuitem_id = random.randint(0, 4)
-        # model_id = random.randint(0,5)
-        # rv = self.MenuItem.put(model_id, menuitem_id)
-        # self.assertEqual(rv, {"execute menu item": menuitem_id, "Menu": menu})
-        return True
+        with app.test_request_context():
+            rv = self.Run.put(0, 10)
+        self.assertEqual(type(rv), str)
 
     def test_err_return(self):
         """

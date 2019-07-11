@@ -133,6 +133,9 @@ class Composite(Agent):
         If other is an atomic agent, just add it to
         this group.
         """
+        if other is None:
+            return self
+
         new_dict = copy(self.members)
         if is_composite(other):
             new_dict.update(other.members)
@@ -149,6 +152,9 @@ class Composite(Agent):
         If other is a composite, add all its members.
         If other is an atom, add it.
         """
+        if other is None:
+            return self
+
         if is_composite(other):
             for key in other:
                 join(self, other[key])

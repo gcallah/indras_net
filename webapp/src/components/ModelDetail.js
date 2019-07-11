@@ -1,81 +1,167 @@
 import React, { Component } from "react";
 import { Loader, Dimmer } from "semantic-ui-react";
 import axios from 'axios';
-import { Link } from 'react-router-dom';
 
 class ModelDetail extends Component {
   api_server = 'https://indrasnet.pythonanywhere.com/models/props/';
-  constructor(props) {
-    super(props);
-    this.state = {
-      msg: '',
-      model_detail: {},
-      loadingData: false,
-    }
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+
+  state = {
+    model_details: {},
+    loadingData: false,
+    disabled_button: false,
+    env_file:{},
   }
+
+
   async componentDidMount() {
-    this.setState({ loadingData: true });
-    document.title = "Indra | Property";
-    const {menu_id} = this.props.location.state
-    const res = await axios.get(this.api_server + menu_id.id)
-    this.setState({ model_detail: res.data });
-    console.log(this.state.model_detail)
-    this.states(res.data);
-    this.setState({ loadingData: false });
+    try{
+      this.setState({ loadingData: true });
+      document.title = "Indra | Property";
+      const {menu_id} = this.props.location.state;
+      const name = this.props.location.state.name;
+      console.log(name)
+      const properties = await axios.get(this.api_server + menu_id);
+      this.setState({id:menu_id})
+      this.setState({ model_details: properties.data });
+      this.states(properties.data);
+      this.errors(properties.data);
+      this.setState({ loadingData: false });
+      console.log(this.props.history.location)
+    }catch(e){
+      console.log(e.message);
+    }
+    
   }
-  
-  states(data){
+
+
+  states = (data) => {
     //loop over objects in data and create object in this.state
-    Object.keys(this.state.model_detail).forEach(item => 
-         this.setState({[item]: data[item]})
-                                       );
+    Object.keys(this.state.model_details).forEach(item => 
+    this.setState({[item]: data[item]})
+    );
   }
 
- renderData(data){
-  Object.keys(this.state).forEach(item => console.log(1))}
 
-
-  handleChange = (event) => {
-   //this.setState({ [target['val']]: target.value });
-   let newVar = JSON.parse(JSON.stringify(this.state[event.target.name]))
-   //make changes to ingredients
-    newVar['val'] = event.target.value 
-    this.setState({
-      [event.target.name] : newVar
-    }) 
-   console.log(this.state[event.target.name])
+  errors = (data) => {
+    Object.keys(this.state.model_details).forEach(item => 
+      this.setState(prevState => ({
+        model_details: {
+          ...prevState.model_details,          
+          [item]:{                     
+          ...prevState.model_details[item],  
+          errorMessage: '' ,
+          disabledButton: false,       
+          } 
+        }
+      })
+    ))
   }
 
-  handleSubmit(event) {
-    alert('grid_height: ' + this.state.grid_height);
+
+  errorSubmit = () =>{
+    let ans = false
+    Object.keys(this.state.model_details).forEach(item => 
+    ans = ans || this.state.model_details[item]['disabledButton'])
+    return ans
+  }
+
+  handleChange = (e) =>{ 
+    let model_detail = this.state.model_details;
+    const {name,value} = e.target
+    let valid = this.checkValidity(name,value)
+
+    if (valid === 1){
+      model_detail[name]['val']= value
+      model_detail[name]['errorMessage']=""
+      model_detail[name]['disabledButton']=false
+      this.setState({model_details:model_detail})
+
+    } else if(valid === -1){
+      model_detail[name]['errorMessage']="**Wrong Input Type"
+      model_detail[name]['val']= this.state[name]['val']
+      model_detail[name]['disabledButton']=true
+      this.setState({model_details:model_detail})
+      console.log(this.state.model_details[name])
+
+    } else {
+      model_detail[name]['errorMessage']=`**Please input a number between ${this.state[name]['lowval']} and ${this.state[name]['hival']}.`
+      model_detail[name]['val']= this.state[name]['val']
+      model_detail[name]['disabledButton']=true
+      this.setState({model_details:model_detail})
+    }  
+
+    this.setState({disabled_button: this.errorSubmit()}) 
+  }
+
+
+  checkValidity = (name,value) => {
+    if (value<=this.state.model_details[name]['hival'] && value >=this.state.model_details[name]['lowval']){
+      if (this.state.model_details[name]['atype'] === 'INT' && !!(value%1)=== false){
+        return 1
+      }
+      else if(this.state.model_details[name]['atype'] === 'DBL'){
+        return 1
+      }
+      else {
+        return -1
+      }
+    }
+    else return 0
+  }
+
+
+  handleSubmit = async() => {
     event.preventDefault();
+    console.log(typeof this.state.model_details)
+    const res = await axios.put(this.api_server + this.state.id,this.state.model_details)
+    this.setState({env_file: res.data})
+    this.props.history.push({pathname:`/models/menu/${this.state.id}`,state: {
+                menu_id: this.state.id,
+                env_file: this.state.env_file,
+                name: this.props.location.state.name
+               }});
   }
+
+
+  goback=()=>{
+     this.props.history.goBack();
+  }
+
 
   render() {
+    const { disabled_button } = this.state;
+
     if (this.state.loadingData) {
       return (
-        <Dimmer active inverted>
-          <Loader size='massive'>Loading...</Loader>
-        </Dimmer>
+      <Dimmer active inverted>
+      <Loader size='massive'>Loading...</Loader>
+      </Dimmer>
       );
     }
     return (
       <div>
         <br />
         <br />
-        <h1 style={{ "textAlign": "center" }}>Welcome to the Indra ABM platform!</h1>
-        <h1 style={{ "textAlign": "left" }}> List of properties </h1>
+        <h2 style={{ "textAlign": "center" }}>Please set the parameters for your model</h2>
+        <h3 style={{ "textAlign": "left" }}> {this.props.location.state.name} </h3>
         <br /><br />
         <form>
-            {this.state.grid_height ?<label> {this.state.grid_height['question']} : <input type="int" defaultValue={this.state.grid_height['val']} onChange={this.handleChange} minValue ={this.state.grid_height['loval']} maxValue={this.state.grid_height['hival']} name='grid_height' /><br /><br /></label>: null}
-            {this.state.grid_width ? <label> {this.state.grid_width['question']} : <input type="int" defaultValue={this.state.grid_width['val']} name='grid_width' minValue ={this.state.grid_width['loval']} maxValue={this.state.grid_width['hival']} onChange={this.handleChange}/> <br /><br/></label> : null}
-
-         {this.state.num_blue ? <label> {this.state.num_blue['question']} : <input type="int"      defaultValue={this.state.num_blue['val']} onChange={this.handleChange} minValue ={this.state.num_blue['loval']} maxValue={this.state.num_blue['hival']} name='num_blue' /><br /><br /></label>: null}
-         {this.state.num_red ? <label> {this.state.num_red['question']} : <input type="int"      defaultValue={this.state.num_red['val']} minValue ={this.state.num_red['loval']} maxValue={this.state.num_red['hival']}  onChange={this.handleChange} name='num_red' /></label>: null}
+          {Object.keys(this.state.model_details).map((item,i)=> {
+          return(
+            <label 
+              key={i}>{this.state.model_details[item]['question']} {" "}
+              <input type={this.state.model_details[item]['atype']} defaultValue={this.state.model_details[item]['val']} onChange={this.handleChange} name={item} />
+              <span style={{color:"red",fontSize: 12}}>{this.state.model_details[item]['errorMessage']}</span>
+              <br/><br/>
+            </label>
+          )})
+          }
         </form>
         <br /><br />
+        <button onClick={this.goback}>Go Back</button>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <button disabled={disabled_button} onClick={!disabled_button ? this.handleSubmit : null}>Submit</button>
+        
       </div>
     );
   }

@@ -1,11 +1,12 @@
 # Indra API server
 import os
-from indra.user import APIUser
 from flask import Flask
 from flask_restplus import Resource, Api, fields
 from flask_cors import CORS
 import json
+from indra.user import APIUser
 from models.run_dict import setup_dict
+from indra.agent import AgentEncoder
 
 
 ERROR = "Error:"
@@ -33,6 +34,10 @@ def load_menu():
     menu_file = indra_dir + "/indra/menu.json"
     with open(menu_file) as file:
         return json.loads(file.read())["menu_database"]
+
+
+def json_converter(object):
+    return json.loads(json.dumps(object.to_json(), cls=AgentEncoder, indent=4))
 
 
 @api.route('/hello')
@@ -63,7 +68,6 @@ class Models(Resource):
 
 
 props = api.model("props", {
-    "model ID": fields.Integer,
     "props": fields.String("Enter propargs.")
 })
 
@@ -76,8 +80,8 @@ class Props(Resource):
         try:
             models_db = load_models()
             with open(indra_dir + "/" + models_db[model_id]["props"]) as file:
-                props = json.loads(file.read())
-                return props
+                model_prop = json.loads(file.read())
+                return model_prop
         except (IndexError, KeyError, ValueError):
             return err_return("Invalid model id " + str(model_id))
         except FileNotFoundError:
@@ -85,37 +89,31 @@ class Props(Resource):
 
     @api.expect(props)
     def put(self, model_id):
-        try:
-            ret = api.payload
-            try:
-                props = ret["props"]  # noqa F841
-                setup_dict[model_id["run"]](props)
-            except TypeError:
-                return ('this is for testing')
-            return {"Menu": load_menu()}
-        except ValueError:
-            return err_return("Invalid model answer " + str(model_id))
+        props_dict = api.payload
+        models_db = load_models()
+        con_env = 0
+        env = setup_dict[models_db[model_id]["run"]](props=props_dict)[con_env]
+        return json_converter(env)
 
 
-@api.route("/models/menu/<int:model_id>/")
+@api.route("/models/menu/")
 class ModelMenu(Resource):
     global user
 
-    def get(self, model_id):
+    def get(self):
         return user()
 
 
-@api.route("/models/menu/<int:model_id>/<int:menu_id>")
-class MenuItem(Resource):
+@api.route("/models/menu/run/<int:model_id>/<int:run_time>")
+class Run(Resource):
     global user
 
-    def put(self, menu_id):
-        if 0 <= menu_id < 6 and (type(menu_id) is int):
-            user.tell("execute menu item" + menu_id + "Menu" + load_menu())
-            return user(menu_id)
-        else:
-            return err_return("Invalid menu id " + str(menu_id))
-        # return {"execute menu item": menuitem_id, "Menu": load_menu()}  # noqa E501
+    @api.expect(props)
+    def put(self, model_id, run_time):
+        env_json = api.payload
+        return "receive env_json" \
+               + str(env_json) \
+               + "and run_time and model_id, running the model"
 
 
 if __name__ == "__main__":

@@ -4,6 +4,7 @@
 
 import math
 from operator import gt, lt
+from indra.utils import get_prop_path
 from propargs.propargs import PropArgs
 from indra.agent import Agent, X_VEC, Y_VEC, NEUTRAL
 from indra.agent import ratio_to_sin
@@ -13,7 +14,7 @@ from indra.env import Env
 from indra.display_methods import NAVY, DARKRED, RED, BLUE
 
 import numpy as np
-
+MODEL_NAME = "fashion"
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
@@ -137,10 +138,14 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    pa = props
-    if pa is None:
-        pa = PropArgs.create_props('basic_props',
-                                   ds_file='props/fashion.props.json')
+    ds_file = get_prop_path(MODEL_NAME)
+    if props is None:
+        pa = PropArgs.create_props(MODEL_NAME,
+                                   ds_file=ds_file)
+    else:
+        pa = PropArgs.create_props(MODEL_NAME,
+                                   prop_dict=props)
+
     blue_tsetters = Composite(BLUE_TSETTERS, {"color": NAVY})
     red_tsetters = Composite(RED_TSETTERS, {"color": DARKRED})
     for i in range(pa.get('num_tsetters', NUM_TSETTERS)):
@@ -162,10 +167,12 @@ def set_up(props=None):
     if DEBUG2:
         print(blue_followers.__repr__())
 
-    society = Env("society", members=[blue_tsetters, red_tsetters,
-                                      blue_followers, red_followers])
-    return (blue_tsetters, red_tsetters, blue_followers, red_followers,
-            opp_group, society)
+    society = Env("society",
+                  members=[blue_tsetters, red_tsetters,
+                           blue_followers, red_followers],
+                  props=pa)
+    return (society, blue_tsetters, red_tsetters, blue_followers,
+            red_followers, opp_group)
 
 
 def main():
@@ -176,8 +183,8 @@ def main():
     global society
     global opp_group
 
-    (blue_tsetters, red_tsetters, blue_followers, red_followers, opp_group,
-     society) = set_up()
+    (society, blue_tsetters, red_tsetters, blue_followers, red_followers,
+     opp_group) = set_up()
 
     if DEBUG2:
         print(society.__repr__())

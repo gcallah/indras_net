@@ -2,12 +2,8 @@ import React, { Component } from "react";
 import { Loader, Dimmer, Menu } from "semantic-ui-react";
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import ModelDetail from './ModelDetail';
-class Home extends Component {
-  constructor(props) {
-        super(props);
-  }
 
+class Home extends Component {
   api_server = 'https://indrasnet.pythonanywhere.com/';
   state = {
     msg: '',
@@ -16,18 +12,26 @@ class Home extends Component {
   }
 
   async componentDidMount() {
-    this.setState({ loadingData: true });
-    document.title = "Indra | Home";
-    const res = await axios.get(this.api_server + 'models')
-    this.setState({ allItems: res.data });
-    this.setState({ loadingData: false });
+    try {
+      this.setState({ loadingData: true });
+      document.title = "Indra | Home";
+      const res = await axios.get(this.api_server + 'models')
+      this.setState({ allItems: res.data });
+      this.setState({ loadingData: false });
+    } catch (e) {
+      console.log(e.message);
+    } 
   }
 
   renderMenu = () => {
     let items = this.state.allItems.map((item, id) => {
       return (
         <Menu.Item key={id} >
-          <Link to={{ pathname:'/models/props/' + id, state: { menu_id: {id} }}} key={id}>{item.name}</Link>
+          <Link to={{
+                pathname: `/models/props/${id}`, 
+                state:{ menu_id:id, name:item.name}
+              }}>
+          {item.name}</Link>
         </Menu.Item>
       );
     });
@@ -54,7 +58,7 @@ class Home extends Component {
         <h1 style={{ "textAlign": "center" }}>Welcome to the Indra ABM platform!</h1>
         <br /><br />
 
-        We have several models:
+        <h1 style={{"fontSize": 16}}>We have several models: </h1>
         {this.state.allItems && this.renderMenu()}
 
         <br /><br />

@@ -2,12 +2,14 @@
     This is wolf-sheep re-written in indra.
 """
 from propargs.propargs import PropArgs
+from indra.utils import get_prop_path
 from indra.agent import Agent
 from indra.composite import Composite
 from indra.space import in_hood
 from indra.env import Env
 from indra.display_methods import TAN, GRAY
 
+MODEL_NAME = "wolfsheep"
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 NUM_WOLVES = 8
@@ -145,10 +147,15 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     global pa
-    pa = props
-    if pa is None:
-        pa = PropArgs.create_props('wolfsheep_props',
-                                   ds_file='props/wolfsheep.props.json')
+    ds_file = get_prop_path(MODEL_NAME)
+
+    if props is None:
+        pa = PropArgs.create_props('MODEL_NAME',
+                                   ds_file=ds_file)
+    else:
+        pa = PropArgs.create_props('MODEL_NAME',
+                                   prop_dict=props)
+
     wolves = Composite(COMP_WOLF_NAME, {"color": TAN})
     for i in range(pa.get('num_wolves', NUM_WOLVES)):
         wolves += create_wolf(i, pa)
@@ -165,8 +172,9 @@ def set_up(props=None):
 
     meadow = Env("meadow", members=[wolves, sheep],
                  height=pa.get('meadow_height', MEADOW_HEIGHT),
-                 width=pa.get('meadow_width', MEADOW_WIDTH))
-    return (wolves, sheep, meadow)
+                 width=pa.get('meadow_width', MEADOW_WIDTH),
+                 props=pa)
+    return (meadow, wolves, sheep)
 
 
 def main():
@@ -174,7 +182,7 @@ def main():
     global sheep
     global meadow
 
-    (wolves, sheep, meadow) = set_up()
+    (meadow, wolves, sheep) = set_up()
 
     if DEBUG2:
         print(meadow.__repr__())

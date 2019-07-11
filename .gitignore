@@ -42,7 +42,7 @@ indras_net.egg-info/*
 /indra2/.idea/modules.xml
 /indra2/.idea/vcs.xml
 /indra2/.idea/workspace.xml
-/models/.coverage.py
+/models/.coverage
 .ds_store
 !/APIServer/data/*.json
 !/webapp/*json

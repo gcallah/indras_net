@@ -1,38 +1,28 @@
 """
 Wolfram's cellular automata model
 """
+import ast
 
 from propargs.propargs import PropArgs
-
+from indra.utils import get_prop_path
 from indra.agent import Agent, switch
 from indra.env import Env
 from indra.space import DEF_WIDTH
 from indra.composite import Composite
 from indra.display_methods import BLACK, WHITE, SQUARE
-import ast
 
+MODEL_NAME = "wolfram"
 DEBUG = False  # Turns debugging code on or off
+DEF_RULE = 30
 
-# States
-B = 1
+# Group codes:
 W = 0
+B = 1
 
-# The default dictionary of rules
-RULE30 = {
-    (B, B, B): W,
-    (B, B, W): W,
-    (B, W, B): W,
-    (B, W, W): B,
-    (W, B, B): B,
-    (W, B, W): B,
-    (W, W, B): B,
-    (W, W, W): W
-}
-
-groups = []
-
-pa = PropArgs.create_props('basic_props',
-                           ds_file='props/wolfram.props.json')
+wolfram_env = None
+groups = None
+rule_dict = None
+curr_row = None
 
 
 def create_agent(x, y):
@@ -40,49 +30,35 @@ def create_agent(x, y):
     Create an agent with the passed x, y value as its name.
     """
     name = "(" + str(x) + "," + str(y) + ")"
-    return Agent(name=name, action=agent_action)
+    return Agent(name=name, action=None)
 
 
-def change_color(wolfram_env, agent):
+def turn_black(groups, agent):
     """
-    Automatically change color from one to the other.
+    Change the color of the agent from white to black
+    by chaning the group that it is in.
     """
-    curr_group = agent.primary_group()
-    next_group = groups[0]
-    if curr_group == next_group:
-        next_group = groups[1]
-    switch(agent, curr_group, next_group)
-
-
-def get_active_row(wolfram_env):
-    """
-    Returns an int of the current row, which is the bottom most row with
-    an alive agent.
-    """
-    for y in range(0, wolfram_env.height):
-        row_to_check = wolfram_env.get_row_hood(y)
-        for x in row_to_check:
-            if x.primary_group() == groups[1]:
-                return y
-    return -1
+    if agent.primary_group() == groups[W]:
+        switch(agent, groups[W], groups[B])
 
 
 def get_color(group):
     """
-    Returns 0 or 1, 0 for white and 1 for black
+    Returns W or B, W for white and B for black
     when passed in a group.
+    W and B are integer values - 0 and 1 respectively.
     """
-    if group == groups[0]:
-        return 0
+    if group == groups[W]:
+        return W
     else:
-        return 1
+        return B
 
 
 def get_rule(rule_num):
     """
     Takes in an int for the rule_num
     and returns a dictionary that contains those rules
-    read from a master texte file that contains all 256 rules.
+    read from a master text file that contains all 256 rules.
     """
     rule_str = ""
     with open("wolfram_rules.txt") as rule_line:
@@ -93,94 +69,98 @@ def get_rule(rule_num):
     return ast.literal_eval(rule_str)
 
 
-def check_rule(left, middle, right):
+def next_color(rule_dict, left, middle, right):
     """
-    Takes in the current agent, the agent to its left and right,
-    and returns the color that the current agent needs to change to
-    in the next row based on the rule picked by the user.
-    Default rule is rule 30.
+    Takes in a trio of colors
+    and returns the color that the agent in the next row should be
+    based on the rule number picked by the user.
     """
-    left_color = get_color(left.primary_group())
-    middle_color = get_color(middle.primary_group())
-    right_color = get_color(right.primary_group())
-    color_tuple = (left_color, middle_color, right_color)
-    rule_num = pa.get('rule_number', RULE30[color_tuple])
-    rule_dict = get_rule(rule_num)
-    new_color = rule_dict[str(color_tuple)]
-    if new_color == 0:
-        return False
-    else:
-        return True
+    return rule_dict[str((left, middle, right))]
 
 
 def wolfram_action(wolfram_env):
     """
     The action that will be taken every period.
     """
-    active_row_y = get_active_row(wolfram_env)
-    if DEBUG:
-        print("The current active row is at y =", active_row_y)
-    active_row = wolfram_env.get_row_hood(active_row_y)
-    next_row = wolfram_env.get_row_hood(active_row_y - 1)
-    if active_row_y == 0:
-        wolfram_env.user.tell("ERROR: You have exceeded the maximum height"
-                              + " and cannot run the model for more periods."
-                              + "\nYou can still ask for scatter plot.")
+    global curr_row
+
+    active_row_y = wolfram_env.height - wolfram_env.get_periods() - 1
+    wolfram_env.user.tell("\nChecking agents in row " + str(active_row_y)
+                          + " against the rule...")
+    if active_row_y < 1:
+        wolfram_env.user.tell_warn("You have exceeded the maximum height"
+                                   + " and cannot run the model"
+                                   + " for more periods."
+                                   + "\nYou can still ask for a scatter plot.")
         wolfram_env.user.exclude_choices(["run", "line_graph"])
+        return False
     else:
-        for i in range(1, len(active_row) - 1):
-            curr_agent = active_row[i]
-            left_agent = active_row[i - 1]
-            right_agent = active_row[i + 1]
-            if DEBUG:
-                print("curr_agent is at", curr_agent.get_pos(),
-                      ", left_agent is at", left_agent.get_pos(),
-                      ", and right_agent is at", right_agent.get_pos())
-            changing_color = check_rule(left_agent, curr_agent, right_agent)
-            next_curr_agent = next_row[i]
-            if changing_color:
-                change_color(wolfram_env, next_curr_agent)
+        next_row = wolfram_env.get_row_hood(active_row_y - 1)
+        first_agent_key = "(0," + str(active_row_y) + ")"
+        left_color = get_color(curr_row[first_agent_key].primary_group())
+        x = 0
+        for agent in curr_row:
+            if (x > 0) and (x < wolfram_env.width - 1):
+                middle_color = get_color(curr_row[agent].primary_group())
+                right_color = get_color(curr_row["(" + str(x + 1) + ","
+                                                 + str(active_row_y)
+                                                 + ")"].primary_group())
+                if next_color(rule_dict, left_color, middle_color,
+                              right_color):
+                    next_row_agent_key = ("(" + str(x) + ","
+                                          + str(active_row_y - 1) + ")")
+                    turn_black(groups,
+                               next_row[next_row_agent_key])
+                left_color = middle_color
+            x += 1
+        curr_row = next_row
+        return True
 
 
-def agent_action(agent):
-    if DEBUG:
-        print("Agent located at " + agent.name + " is acting")
-
-
-def set_up():
+def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-
-    width = pa.get('grid_width', DEF_WIDTH)
-    height = 0
-    if (width % 2 == 1):
-        height = (width // 2) + 1
+    global groups
+    global curr_row
+    ds_file = get_prop_path(MODEL_NAME)
+    if props is None:
+        pa = PropArgs.create_props(MODEL_NAME,
+                                   ds_file=ds_file)
     else:
-        height = (width // 2)
-        black = Composite("black", {"color": BLACK, "marker": SQUARE})
-        white = Composite("white", {"color": WHITE})
+        pa = PropArgs.create_props(MODEL_NAME,
+                                   prop_dict=props)
+    width = pa.get('grid_width', DEF_WIDTH)
+    rule_dict = get_rule(pa.get('rule_number', DEF_RULE))
+    height = 0
+    height = (width // 2) + (width % 2)
+    white = Composite("white", {"color": WHITE})
+    black = Composite("black", {"color": BLACK, "marker": SQUARE})
+    groups = []
     groups.append(white)
     groups.append(black)
     for y in range(height):
         for x in range(width):
-            groups[0] += create_agent(x, y)
-    wolfram_env = Env("wolfram env",
+            groups[W] += create_agent(x, y)
+    wolfram_env = Env("Wolfram Model",
                       action=wolfram_action,
+                      random_placing=False,
                       height=height,
                       width=width,
                       members=groups,
-                      random_placing=False)
+                      props=pa)
     wolfram_env.user.exclude_choices(["line_graph"])
     first_agent = wolfram_env.get_agent_at(width // 2, height - 1)
-    change_color(wolfram_env, first_agent)
-    return (groups, wolfram_env)
+    turn_black(groups, first_agent)
+    curr_row = wolfram_env.get_row_hood(wolfram_env.height - 1)
+    return (wolfram_env, groups, rule_dict)
 
 
 def main():
-    global groups
     global wolfram_env
-    (groups, wolfram_env) = set_up()
+    global groups
+    global rule_dict
+    (wolfram_env, groups, rule_dict) = set_up()
     wolfram_env()
     return 0
 

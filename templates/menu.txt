@@ -1,0 +1,13 @@
+<p class="menu">
+	<a href="index.html">Home</a>
+	&nbsp;|&nbsp;
+	<a href="models.html">Models</a>
+	&nbsp;|&nbsp;
+	<a href="https://github.com/gcallah/indras_net">Code</a>
+	<!--
+	&nbsp;|&nbsp;
+	<a href="resources.html">Resources</a>
+	-->
+	&nbsp;|&nbsp;
+	<a href="about.html">About</a>
+</p>
