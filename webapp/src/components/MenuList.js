@@ -161,7 +161,7 @@ class MenuList extends Component {
         <button onClick={this.goback}>Go Back</button>
         <br/><br/>
         <PopulationGraph loadingData={this.state.loading_population}/>
-        <ScatterPlot loadingData={this.state.loading_scatter}/>
+        <ScatterPlot loadingData={this.state.loading_scatter} env_file={this.state.env_file}/>
         <Debugger loadingData={this.state.loading_debugger} env_file={this.state.env_file}/>
 
 

@@ -112,7 +112,7 @@ class ModelDetail extends Component {
 
   handleSubmit = async() => {
     event.preventDefault();
-    console.log(typeof this.state.model_details)
+    console.log(this.state.model_details)
     const res = await axios.put(this.api_server + this.state.id,this.state.model_details)
     this.setState({env_file: res.data})
     this.props.history.push({pathname:`/models/menu/${this.state.id}`,state: {
@@ -147,14 +147,16 @@ class ModelDetail extends Component {
         <br /><br />
         <form>
           {Object.keys(this.state.model_details).map((item,i)=> {
-          return(
-            <label 
-              key={i}>{this.state.model_details[item]['question']} {" "}
-              <input type={this.state.model_details[item]['atype']} defaultValue={this.state.model_details[item]['val']} onChange={this.handleChange} name={item} />
-              <span style={{color:"red",fontSize: 12}}>{this.state.model_details[item]['errorMessage']}</span>
-              <br/><br/>
-            </label>
-          )})
+            if ('question' in this.state.model_details[item]){
+              return(
+                <label 
+                  key={i}>{this.state.model_details[item]['question']} {" "}
+                  <input type={this.state.model_details[item]['atype']} defaultValue={this.state.model_details[item]['val']} onChange={this.handleChange} name={item} />
+                  <span style={{color:"red",fontSize: 12}}>{this.state.model_details[item]['errorMessage']}</span>
+                  <br/><br/>
+                </label>
+              )}
+            })
           }
         </form>
         <br /><br />
