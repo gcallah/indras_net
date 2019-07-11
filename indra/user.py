@@ -103,9 +103,13 @@ class User(Agent):
         self.env = env  # this class needs this all the time, we think
         self.menu = get_menu_json()
         self.to_exclude = []
+        self.user_msgs = ''
 
     def to_json(self):
-        return {"name": self.name}
+        rep = {}
+        rep["name"] = self.name
+        rep["user_msgs"] = self.user_msgs
+        return rep
 
     def exclude_menu_item(self, to_exclude):
         self.to_exclude = to_exclude
@@ -230,7 +234,6 @@ class APIUser(User):
     """
     def __init__(self, name, env, **kwargs):
         super().__init__(name, env, **kwargs)
-        self.user_msgs = ''
 
     def tell(self, msg, end='\n'):
         """
