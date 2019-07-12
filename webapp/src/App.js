@@ -16,8 +16,8 @@ class App extends Component {
           <Switch>
             <Route exact path="/" component={Home} />
             <Route exact path="/wip" component={WIP} />
-            <Route exact path="/models/props/:id" component={ModelDetail} />
-            <Route exact path="/models/menu/:id" component={MenuList} />
+            <Route exact path="/models/props/" component={ModelDetail} />
+            <Route exact path="/models/menu/" component={MenuList} />
             <Route exact path="/models/menu/" component={Action} />
             <Route component={NotFoundPage} />
           </Switch>

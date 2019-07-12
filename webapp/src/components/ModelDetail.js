@@ -15,18 +15,15 @@ class ModelDetail extends Component {
 
   async componentDidMount() {
     try{
-      this.setState({ loadingData: true });
       document.title = "Indra | Property";
-      const {menu_id} = this.props.location.state;
-      const name = this.props.location.state.name;
-      console.log(name)
-      const properties = await axios.get(this.api_server + menu_id);
-      this.setState({id:menu_id})
+      this.setState({ loadingData: true });
+      console.log(this.api_server + `${localStorage.getItem("menu_id")}`)
+      const properties = await axios.get(this.api_server + `${localStorage.getItem("menu_id")}`);
       this.setState({ model_details: properties.data });
+      console.log(this.state.model_details)
       this.states(properties.data);
       this.errors(properties.data);
       this.setState({ loadingData: false });
-      console.log(this.props.history.location)
     }catch(e){
       console.log(e.message);
     }
@@ -113,12 +110,10 @@ class ModelDetail extends Component {
   handleSubmit = async() => {
     event.preventDefault();
     console.log(this.state.model_details)
-    const res = await axios.put(this.api_server + this.state.id,this.state.model_details)
+    const res = await axios.put(this.api_server + localStorage.getItem("menu_id"), this.state.model_details)
     this.setState({env_file: res.data})
-    this.props.history.push({pathname:`/models/menu/${this.state.id}`,state: {
-                menu_id: this.state.id,
+    this.props.history.push({pathname:"/models/menu/",state: {
                 env_file: this.state.env_file,
-                name: this.props.location.state.name
                }});
   }
 
@@ -143,7 +138,7 @@ class ModelDetail extends Component {
         <br />
         <br />
         <h2 style={{ "textAlign": "center" }}>Please set the parameters for your model</h2>
-        <h3 style={{ "textAlign": "left" }}> {this.props.location.state.name} </h3>
+        <h3 style={{ "textAlign": "left" }}> {localStorage.getItem("name")} </h3>
         <br /><br />
         <form>
           {Object.keys(this.state.model_details).map((item,i)=> {

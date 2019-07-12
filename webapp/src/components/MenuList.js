@@ -29,8 +29,8 @@ class MenuList extends Component {
     document.title = "Indra | Menu";
     const menu = await axios.get(this.api_server);
     this.setState({menu_list:menu.data})
-    const id = this.props.location.state.menu_id;
-    const name = this.props.location.state.name;
+    const id = localStorage.getItem("menu_id");
+    const name = localStorage.getItem("name");
     this.setState({name:name})
     this.setState({model_id:id});
     this.setState({ loadingData: false });
@@ -39,8 +39,8 @@ class MenuList extends Component {
 
   goback=()=>{
     this.props.history.replace({
-      pathname: `/models/props/${this.state.model_id}`,
-      state:{ menu_id: this.state.model_id, name:this.state.name}
+      pathname: "/models/props/",
+      state:{ menu_id: localStorage.getItem("menu_id"), name:localStorage.getItem("name")}
     });
   }
 
@@ -133,7 +133,6 @@ class MenuList extends Component {
 
         { Object.keys(this.state.menu_list).map((item,i)=>
         <Menu.Item key={i}>
-
           {this.state.menu_list[item]['id']===0?<Link to={{pathname:'/', state: { action_id: this.state.menu_list[item]['id'] }}}>
             {this.state.menu_list[item]['question']}
           </Link>:null}
