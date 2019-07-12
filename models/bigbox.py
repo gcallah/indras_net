@@ -10,8 +10,7 @@ from indra.composite import Composite
 from indra.display_methods import RED, BLUE
 
 MODEL_NAME = "Big Box"
-DEBUG = True  # turns debugging code on or off
-DEBUG2 = False  # turns deeper debugging code on or off
+DEBUG = True
 
 DEF_WIDTH = 20
 DEF_HEIGHT = 20
