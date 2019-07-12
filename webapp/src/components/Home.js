@@ -3,6 +3,8 @@ import { Loader, Dimmer, Menu } from "semantic-ui-react";
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
+var model_image = require('./images/model_images.png')
+
 class Home extends Component {
   api_server = 'https://indrasnet.pythonanywhere.com/';
   state = {
@@ -60,7 +62,7 @@ class Home extends Component {
 
         <h1 style={{"fontSize": 16}}>We have several models: </h1>
         {this.state.allItems && this.renderMenu()}
-
+        <img alt="" style={{display:'block', marginLeft:'auto', marginRight:'auto', width:'50%'}} src={model_image} align="middle"/>
         <br /><br />
       </div>
     );
