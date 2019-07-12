@@ -160,6 +160,7 @@ def main():
     global wolfram_env
     global groups
     global rule_dict
+
     (wolfram_env, groups, rule_dict) = set_up()
     wolfram_env()
     return 0
