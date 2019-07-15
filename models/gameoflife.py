@@ -101,9 +101,7 @@ def gameoflife_action(gameoflife_env):
     for y in range(min_y, gameoflife_env.height):
         for x in range(min_x, gameoflife_env.width):
             curr_agent = gameoflife_env.get_agent_at(x, y)
-            if curr_agent.neighbors is None:
-                gameoflife_env.get_moore_hood(curr_agent, save_neighbors=True)
-            else:
+            if curr_agent.neighbors is not None:
                 if change_min:
                     new_min_x = curr_agent.get_x()
                     new_min_y = curr_agent.get_y()
@@ -115,15 +113,15 @@ def gameoflife_action(gameoflife_env):
                     if apply_dead_rules(curr_agent):
                         to_be_changed.append(curr_agent)
     for to_change in to_be_changed:
+        to_change.has_acted = True
         change_color(to_change)
     min_x = new_min_x
     min_y = new_min_y
 
 
 def agent_action(agent):
-    pass
-    # if agent.neighbors is None:
-    #     gameoflife_env.get_moore_hood(agent, save_neighbors=True)
+    if agent.neighbors is None:
+        gameoflife_env.get_moore_hood(agent, save_neighbors=True)
 
 
 def populate_board_random(width, height):
@@ -348,7 +346,7 @@ def set_up(props=None):
                                    prop_dict=props)
     width = pa.get('grid_width', DEF_WIDTH)
     height = pa.get('grid_height', DEF_HEIGHT)
-    simulation = pa.get('simulation', 0)
+    simulation = pa.get('simulation', 1)
     white = Composite("white", {"color": WHITE})
     black = Composite("black", {"color": BLACK, "marker": SQUARE})
     groups = []
