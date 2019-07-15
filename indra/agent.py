@@ -132,7 +132,11 @@ class Agent(object):
     def __init__(self, name, attrs=None, action=None, duration=INF,
                  prim_group=None):
         self.name = name
+        self.action_key = None
         self.action = action
+        if action is not None:
+            self.action_key = action.__name__
+
         self.duration = duration
         self.attrs = OrderedDict()
         self.neighbors = None
@@ -312,4 +316,5 @@ class Agent(object):
                 "groups": grp_nms,
                 "active": self.active,
                 "type_sig": self.type_sig,
+                "action": self.action_key
                 }
