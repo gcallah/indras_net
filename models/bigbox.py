@@ -1,6 +1,7 @@
 """
 Big box model for simulating the behaviors of consumers.
 """
+import random
 
 from propargs.propargs import PropArgs
 from indra.utils import get_prop_path
@@ -19,6 +20,10 @@ CONSUMER_NUM = 150
 MP_NUM = 3
 BB_NUM = 2
 
+MIN_ADJ = 0.01
+ADJ_SCALING_FACTOR = 0.2
+UTIL = 0.3
+
 town = None
 groups = None
 mp_shops = {"Coffee shop": [30, 20, 700, 20],
@@ -32,17 +37,20 @@ shops_lst = ["Coffee shop",
              "Restaurant"]
 
 
-def create_consumer(name, expense, store_pref=None):
+def create_consumer(name):
     """
     Creates a consumer agent.
     Expense is the amount of money that the agent will spend
     in a store during a single period.
     """
-    balance = {"expense": expense}
-    return Agent(name=name, attrs=balance, action=consumer_action)
+    spending_power = random.randint(10, 50)
+    item_needed = random.randint(0, 2)
+    characteristics = {"spending power": spending_power, "last util": 0.0,
+                       "item needed": item_needed}
+    return Agent(name=name, attrs=characteristics, action=consumer_action)
 
 
-def create_mp(name, store_type, expense):
+def create_mp(adj=MIN_ADJ):
     """
     Creates a mom and pop store agent.
     Expense is a list of ints that contain the corresponding values.
@@ -52,23 +60,48 @@ def create_mp(name, store_type, expense):
     Inventory is the amount of customers that the store can serve
     in a single period.
     """
+    store_type = random.randint(0, 2)
+    store_name = shops_lst[store_type]
+    expense = mp_shops[store_name]
     store_books = {"fixed expense": expense[0],
                    "variable expense": expense[1],
                    "capital": expense[2],
-                   "inventory": [expense[3], expense[3]]}
-    return Agent(name=(store_type + ": " + name),
+                   "inventory": [expense[3], expense[3]],
+                   "util_adj": UTIL}
+    return Agent(name=store_name,
                  attrs=store_books,
                  action=mp_action)
 
 
-def create_bb(name, store_type, expense):
+def create_bb(adj=MIN_ADJ):
+    expense = [160, 60, 2000, 60]
     store_books = {"fixed expense": expense[0],
                    "variable expense": expense[1],
                    "capital": expense[2],
-                   "inventory": [expense[3], expense[3]]}
-    return Agent(name=(store_type + ": " + name),
+                   "inventory": [expense[3], expense[3]],
+                   "util_adj": UTIL}
+    return Agent(name="Big box",
                  attrs=store_books,
                  action=mp_action)
+
+
+def calc_util(stores):
+    return (random.random() + stores.attrs["util_adj"]) * ADJ_SCALING_FACTOR
+
+
+def transaction(store, customer):
+    store.attrs["capital"] += customer.attrs["spending power"]
+    store.attrs["inventory"][1] -= 1
+    store.attrs["capital"] -= store.attrs["fixed expense"]
+    if store.attrs["inventory"][1] == 1:
+        store.attrs["capital"] = (
+            store.attrs["capital"]
+            - store.attrs["variable expense"])
+        store.attrs["inventory"][1] = (
+            store.attrs["inventory"][1]
+            + store.attrs["inventory"][0])
+    if store.attrs["capital"] <= 0:
+        print("     ", store, "is out of buisness")
 
 
 def town_action(town):
@@ -82,46 +115,30 @@ def town_action(town):
 
     for y in range(town.height):
         for x in range(town.width):
-            curr_store = town.get_agent_at(x, y)
-            if (curr_store is not None
-                    and curr_store.primary_group() != groups[0]):
-                curr_store.has_acted = True
-                nearby_customers = town.get_moore_hood(curr_store, radius=2)
-                if DEBUG:
-                    print(curr_store)
-                    print("     Location:", curr_store.get_pos())
-                    print("     Capital:", curr_store.attrs["capital"])
-                    print("     Inventory size before:",
-                          curr_store.attrs["inventory"][1])
-                num_nearby_customers = 0
-                for customer in nearby_customers:
-                    if nearby_customers[customer].primary_group() == groups[0]:
-                        nearby_customers[customer].has_acted = True
-                        num_nearby_customers += 1
-                        curr_store.attrs["capital"] += (
-                            (nearby_customers[customer]).attrs["expense"])
-                        curr_store.attrs["inventory"][1] -= 1
-                curr_store.attrs["capital"] = (
-                    curr_store.attrs["capital"]
-                    - curr_store.attrs["fixed expense"])
-                if DEBUG:
-                    print("     Num of customers:", num_nearby_customers)
-                    print("     Inventory size after:",
-                          curr_store.attrs["inventory"][1])
-                    print("     Fixed expense:",
-                          curr_store.attrs["fixed expense"])
-                    print("     Capital after:", curr_store.attrs["capital"])
-                if (curr_store.attrs["inventory"][1] - num_nearby_customers
-                   <= 0):
-                    curr_store.attrs["capital"] = (
-                        curr_store.attrs["capital"]
-                        - curr_store.attrs["variable expense"])
-                    curr_store.attrs["inventory"][1] = (
-                        curr_store.attrs["inventory"][1]
-                        + curr_store.attrs["inventory"][0])
-                if curr_store.attrs["capital"] <= 0:
-                    print("     ", curr_store, "is out of buisness")
-                    # curr_store.die()
+            curr_customer = town.get_agent_at(x, y)
+            if (curr_customer is not None
+                    and curr_customer.primary_group() == groups[0]):
+                nearby_neighbors = town.get_moore_hood(curr_customer, radius=2)
+                store_to_go = None
+                max_util = 0.0
+                for neighbor in nearby_neighbors:
+                    if nearby_neighbors[neighbor].primary_group() == groups[2]:
+                        util = calc_util(nearby_neighbors[neighbor])
+                        if util > max_util:
+                            max_util = util
+                            store_to_go = nearby_neighbors[neighbor]
+                    elif (nearby_neighbors[neighbor].primary_group()
+                            == groups[1]):
+                        for i in range(len(shops_lst)):
+                            if (shops_lst[curr_customer.attrs["item needed"]]
+                                    == nearby_neighbors[neighbor].name):
+                                util = calc_util(nearby_neighbors[neighbor])
+                                if util > max_util:
+                                    max_util = util
+                                    store_to_go = nearby_neighbors[neighbor]
+                curr_customer.attrs["last utils"] = max_util
+                if store_to_go is not None:
+                    transaction(store_to_go, curr_customer)
 
 
 def consumer_action(agent):
@@ -142,9 +159,7 @@ def set_up(props=None):
     """
     global town
     global groups
-    global mp_shops
-    global bb_shops
-    global shops_lst
+    global shops
 
     ds_file = get_prop_path(MODEL_NAME)
     if props is None:
@@ -163,21 +178,11 @@ def set_up(props=None):
     groups.append(mp_group)
     groups.append(bb_group)
     for c in range(0, CONSUMER_NUM):
-        groups[0] += create_consumer("Consumer " + str(c), 50)
+        groups[0] += create_consumer("Consumer " + str(c))
     for m in range(0, MP_NUM):
-        groups[1] += create_mp("Mom and pop " + str(m),
-                               shops_lst[0], mp_shops[shops_lst[0]])
-        groups[1] += create_mp("Mom and pop " + str(m),
-                               shops_lst[1], mp_shops[shops_lst[1]])
-        groups[1] += create_mp("Mom and pop " + str(m),
-                               shops_lst[2], mp_shops[shops_lst[2]])
+        groups[1] += create_mp()
     for b in range(0, BB_NUM):
-        groups[2] += create_mp("Big box " + str(b),
-                               shops_lst[0], bb_shops[shops_lst[0]])
-        groups[2] += create_mp("Big box " + str(b),
-                               shops_lst[1], bb_shops[shops_lst[1]])
-        groups[2] += create_mp("Big box " + str(b),
-                               shops_lst[2], bb_shops[shops_lst[2]])
+        groups[2] += create_mp()
     town = Env("Town",
                action=town_action,
                members=groups,
