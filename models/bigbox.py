@@ -7,7 +7,7 @@ from indra.utils import get_prop_path
 from indra.agent import Agent
 from indra.env import Env
 from indra.composite import Composite
-from indra.display_methods import RED, GRAY
+from indra.display_methods import GRAY, RED, BLUE
 
 MODEL_NAME = "Big Box"
 DEBUG = True
@@ -15,16 +15,28 @@ DEBUG = True
 DEF_WIDTH = 30
 DEF_HEIGHT = 30
 
-CONSUMER = 150
-MP = 3
+CONSUMER_NUM = 150
+MP_NUM = 3
+BB_NUM = 2
 
 town = None
 groups = None
+mp_shops = {"Coffee shop": [30, 20, 700, 20],
+            "Grocery store": [80, 30, 1000, 30],
+            "Restaurant": [50, 25, 800, 25]}
+bb_shops = {"Coffee shop": [60, 40, 1400, 40],
+            "Grocery store": [160, 60, 2000, 60],
+            "Restaurant": [100, 50, 1600, 50]}
+shops_lst = ["Coffee shop",
+             "Grocery store",
+             "Restaurant"]
 
 
-def create_consumer(name, expense):
+def create_consumer(name, expense, store_pref=None):
     """
-    Create a consumer agent.
+    Creates a consumer agent.
+    Expense is the amount of money that the agent will spend
+    in a store during a single period.
     """
     balance = {"expense": expense}
     return Agent(name=name, attrs=balance, action=consumer_action)
@@ -32,18 +44,28 @@ def create_consumer(name, expense):
 
 def create_mp(name, store_type, expense):
     """
-    Create a mom and pop store agent.
+    Creates a mom and pop store agent.
+    Expense is a list of ints that contain the corresponding values.
     Fixed expense is things like rent, electricity bills, etc.
     Variable expense is the cost of buying new inventory of goods.
     Capital is the money that is in the bank.
-    Inventory size is the amounf of customers that the store can serve
+    Inventory is the amount of customers that the store can serve
     in a single period.
     """
     store_books = {"fixed expense": expense[0],
                    "variable expense": expense[1],
                    "capital": expense[2],
-                   "inventory": [expense[3], expense[3]],
-                   "income": expense[4]}
+                   "inventory": [expense[3], expense[3]]}
+    return Agent(name=(store_type + ": " + name),
+                 attrs=store_books,
+                 action=mp_action)
+
+
+def create_bb(name, store_type, expense):
+    store_books = {"fixed expense": expense[0],
+                   "variable expense": expense[1],
+                   "capital": expense[2],
+                   "inventory": [expense[3], expense[3]]}
     return Agent(name=(store_type + ": " + name),
                  attrs=store_books,
                  action=mp_action)
@@ -53,7 +75,7 @@ def town_action(town):
     """
     The action that will be taken every turn.
     Loops through the town env, finds the store agents and
-    how many customer agents are in its moore hood,
+    how many customer agents are in its Moore neighborhood,
     and calculates the transaction.
     """
     global groups
@@ -62,7 +84,7 @@ def town_action(town):
         for x in range(town.width):
             curr_store = town.get_agent_at(x, y)
             if (curr_store is not None
-                    and curr_store.primary_group() == groups[1]):
+                    and curr_store.primary_group() != groups[0]):
                 nearby_customers = town.get_moore_hood(curr_store, radius=2)
                 if DEBUG:
                     print(curr_store)
@@ -96,7 +118,7 @@ def town_action(town):
                         curr_store.attrs["inventory"][1]
                         + curr_store.attrs["inventory"][0])
                 if curr_store.attrs["capital"] <= 0:
-                    print(curr_store, "is out of buisness")
+                    print("     ", curr_store, "is out of buisness")
                     # curr_store.die()
 
 
@@ -118,6 +140,7 @@ def set_up(props=None):
     """
     global town
     global groups
+    global shops
 
     ds_file = get_prop_path(MODEL_NAME)
     if props is None:
@@ -130,21 +153,27 @@ def set_up(props=None):
     height = pa.get('grid_height', DEF_HEIGHT)
     consumer_group = Composite("Consumer", {"color": GRAY})
     mp_group = Composite("Mom and pop", {"color": RED})
+    bb_group = Composite("Big box", {"color": BLUE})
     groups = []
     groups.append(consumer_group)
     groups.append(mp_group)
-    for i in range(0, CONSUMER):
-        groups[0] += create_consumer("Consumer " + str(i), 50)
-    shops = {"Grocery store": [80, 30, 1000, 30, 40],
-             "Coffee shop": [30, 20, 700, 20, 15],
-             "Restaurant": [50, 25, 800, 25, 25]}
-    for j in range(0, MP):
-        groups[1] += create_mp("Mom and pop " + str(j),
-                               "Grocery store", shops["Grocery store"])
-        groups[1] += create_mp("Mom and pop " + str(j),
-                               "Coffee shop", shops["Coffee shop"])
-        groups[1] += create_mp("Mom and pop " + str(j),
-                               "Restaurant", shops["Restaurant"])
+    groups.append(bb_group)
+    for c in range(0, CONSUMER_NUM):
+        groups[0] += create_consumer("Consumer " + str(c), 50)
+    for m in range(0, MP_NUM):
+        groups[1] += create_mp("Mom and pop " + str(m),
+                               shops_lst[0], mp_shops[shops_lst[0]])
+        groups[1] += create_mp("Mom and pop " + str(m),
+                               shops_lst[1], mp_shops[shops_lst[1]])
+        groups[1] += create_mp("Mom and pop " + str(m),
+                               shops_lst[2], mp_shops[shops_lst[2]])
+    for b in range(0, BB_NUM):
+        groups[2] += create_mp("Big box " + str(b),
+                               shops_lst[0], bb_shops[shops_lst[0]])
+        groups[2] += create_mp("Big box " + str(b),
+                               shops_lst[1], bb_shops[shops_lst[1]])
+        groups[2] += create_mp("Big box " + str(b),
+                               shops_lst[2], bb_shops[shops_lst[2]])
     town = Env("Town",
                action=town_action,
                members=groups,
