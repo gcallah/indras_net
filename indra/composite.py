@@ -271,9 +271,10 @@ class Composite(Agent):
         pass
 
     def to_json(self):
-        return {"name": self.name,
-                "attrs": self.attrs_to_dict(),
-                "members": self.members}
+        rep = super().to_json()
+        rep["is_composite"] = 1
+        rep["members"] = self.members
+        return rep
 
     def attrs_to_dict(self):
         if self.attrs is not None:
