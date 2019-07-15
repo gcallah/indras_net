@@ -65,7 +65,7 @@ class Home extends Component {
         </Menu.Item>)}
         </Menu>
         <br /><br />
-        <img alt="" style={{display:'block', marginLeft:'auto', marginRight:'auto', width:'50%'}} src={model_image} align="middle"/>
+        <img alt="" style={{display:'block', float:'right', width:'40%', alignItems: "center"}} src={model_image}/>
         <br /><br />
       </div>
     );

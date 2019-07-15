@@ -51,7 +51,7 @@ class MenuList extends Component {
   }
 
 
-  handleRunPeriod=(e)=>{
+  handleRunPeriod= e =>{
     this.setState({
       period_num: e.target.value
     })
@@ -68,7 +68,7 @@ class MenuList extends Component {
   }
 
 
-  checkValidity = (data) => {
+  checkValidity = data => {
     let remainder = data%1
     if (remainder === 0){
       return 1
@@ -76,7 +76,7 @@ class MenuList extends Component {
     else return 0
   }
 
-  handleClick=(e)=>{
+  handleClick= e =>{
     this.setState({loadingData: false})
     this.setState({loading_population: false})
     this.setState({loading_scatter:false})
