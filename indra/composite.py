@@ -271,10 +271,10 @@ class Composite(Agent):
         pass
 
     def to_json(self):
-        return {"name": self.name,
-                "attrs": self.attrs_to_dict(),
-                "members": self.members,
-                "actions": self.action}
+        rep = super().to_json()
+        rep["is_composite"] = 1
+        rep["members"] = self.members
+        return rep
 
     def from_json(self, serial_composite):
         self.name = serial_composite["name"]
