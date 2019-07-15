@@ -29,8 +29,8 @@ class MenuList extends Component {
     document.title = "Indra | Menu";
     const menu = await axios.get(this.api_server);
     this.setState({menu_list:menu.data})
-    const id = this.props.location.state.menu_id;
-    const name = this.props.location.state.name;
+    const id = localStorage.getItem("menu_id");
+    const name = localStorage.getItem("name");
     this.setState({name:name})
     this.setState({model_id:id});
     this.setState({ loadingData: false });
@@ -39,8 +39,8 @@ class MenuList extends Component {
 
   goback=()=>{
     this.props.history.replace({
-      pathname: `/models/props/${this.state.model_id}`,
-      state:{ menu_id: this.state.model_id, name:this.state.name}
+      pathname: "/models/props/",
+      state:{ menu_id: localStorage.getItem("menu_id"), name:localStorage.getItem("name")}
     });
   }
 
@@ -51,7 +51,7 @@ class MenuList extends Component {
   }
 
 
-  handleRunPeriod=(e)=>{
+  handleRunPeriod= e =>{
     this.setState({
       period_num: e.target.value
     })
@@ -68,7 +68,7 @@ class MenuList extends Component {
   }
 
 
-  checkValidity = (data) => {
+  checkValidity = data => {
     let remainder = data%1
     if (remainder === 0){
       return 1
@@ -76,7 +76,7 @@ class MenuList extends Component {
     else return 0
   }
 
-  handleClick=(e)=>{
+  handleClick= e =>{
     this.setState({loadingData: false})
     this.setState({loading_population: false})
     this.setState({loading_scatter:false})
@@ -133,14 +133,13 @@ class MenuList extends Component {
 
         { Object.keys(this.state.menu_list).map((item,i)=>
         <Menu.Item key={i}>
-
           {this.state.menu_list[item]['id']===0?<Link to={{pathname:'/', state: { action_id: this.state.menu_list[item]['id'] }}}>
             {this.state.menu_list[item]['question']}
           </Link>:null}
 
           {this.state.menu_list[item]['id']===1? <div>
           <button disabled={this.state.disabled_button} onClick={!this.state.disabled_button ? this.onClick : null}> Run </button>
-          for <input style={{width: 30}} type='INT' defaultValue='10' onChange={this.handleRunPeriod} /> periods.
+          {" "}for <input style={{width: 30}} type='INT' defaultValue='10' onChange={this.handleRunPeriod} /> periods.
             <span style={{color:"red",fontSize: 12}}>{this.state.errorMessage}</span>
           </div>:null}
 
@@ -160,8 +159,8 @@ class MenuList extends Component {
         <br /><br />
         <button onClick={this.goback}>Go Back</button>
         <br/><br/>
-        <PopulationGraph loadingData={this.state.loading_population}/>
-        <ScatterPlot loadingData={this.state.loading_scatter}/>
+        <PopulationGraph loadingData={this.state.loading_population} env_file={this.state.env_file}/>
+        <ScatterPlot loadingData={this.state.loading_scatter} env_file={this.state.env_file}/>
         <Debugger loadingData={this.state.loading_debugger} env_file={this.state.env_file}/>
 
 

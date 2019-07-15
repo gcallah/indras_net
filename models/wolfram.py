@@ -107,6 +107,7 @@ def wolfram_action(wolfram_env):
                                                  + ")"].primary_group())
                 if next_color(rule_dict, left_color, middle_color,
                               right_color):
+                    agent.has_acted = True
                     next_row_agent_key = ("(" + str(x) + ","
                                           + str(active_row_y - 1) + ")")
                     turn_black(groups,
@@ -160,6 +161,7 @@ def main():
     global wolfram_env
     global groups
     global rule_dict
+
     (wolfram_env, groups, rule_dict) = set_up()
     wolfram_env()
     return 0

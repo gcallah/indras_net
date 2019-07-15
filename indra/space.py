@@ -70,6 +70,7 @@ class Space(Composite):
                          action=action)
         self.width = width
         self.height = height
+        self.stay = False
 
         # the location of members in the space
         self.locations = {}
@@ -191,6 +192,9 @@ class Space(Composite):
             return None
         return self.locations[(x, y)]
 
+    def stay_in_place(self, stay):
+        self.stay = stay
+
     def place_member(self, mbr, max_move=None, xy=None):
         """
         By default, locate a member at a random x, y spot in our grid.
@@ -198,33 +202,36 @@ class Space(Composite):
         Setting `xy` picks a particular spot to place member.
         `xy` must be a tuple!
         """
+
         if self.is_full():
+            print("     is_full")
             self.user.log("Can't fit no more folks in this space!")
             return None
-
-        if not is_composite(mbr):
-            if xy is not None:
-                (x, y) = xy  # it had better be a tuple!
-            else:
-                (x, y) = self.gen_new_pos(mbr, max_move)
-            if self.is_empty(x, y):
-                if mbr.islocated():
-                    self.move_location(x, y, mbr.get_x(), mbr.get_y())
+        if not self.stay:
+            if not is_composite(mbr):
+                if xy is not None:
+                    (x, y) = xy  # it had better be a tuple!
                 else:
-                    self.add_location(x, y, mbr)
-                # if I am setting pos, I am agent's locator!
-                mbr.set_pos(self, x, y)
-                return (x, y)
-            elif (max_move is None) and (xy is None):
-                # if the random position is already taken,
-                # find the member a new position
-                # but if max_move is not None, the hood might be filled!
-                # so we need something to detect a full neighborhood as well.
-                # and if xy is not None, the user asked for a particular
-                # spot: don't give them another, but return None.
-                return self.place_member(mbr, max_move)
-        else:
-            return self.rand_place_members(mbr.members, max_move)
+                    (x, y) = self.gen_new_pos(mbr, max_move)
+                if self.is_empty(x, y):
+                    if mbr.islocated():
+                        self.move_location(x, y, mbr.get_x(), mbr.get_y())
+                    else:
+                        self.add_location(x, y, mbr)
+                    # if I am setting pos, I am agent's locator!
+                    mbr.set_pos(self, x, y)
+                    return (x, y)
+                elif (max_move is None) and (xy is None):
+                    # if the random position is already taken,
+                    # find the member a new position
+                    # but if max_move is not None, the hood might be filled!
+                    # so we need something to detect
+                    # a full neighborhood as well.
+                    # and if xy is not None, the user asked for a particular
+                    # spot: don't give them another, but return None.
+                    return self.place_member(mbr, max_move)
+            else:
+                return self.rand_place_members(mbr.members, max_move)
 
     def __iadd__(self, other):
         super().__iadd__(other)
@@ -345,20 +352,28 @@ class Space(Composite):
 
     @use_saved_hood
     def get_moore_hood(self, agent, pred=None, save_neighbors=False,
-                       include_self=False, same_group=False, opp_group=False):
+                       include_self=False, radius=1):
         """
         Takes in an agent and returns a Composite of its Moore neighbors.
         """
         moore_hood = Composite("Moore neighbors")
         x = agent.get_x()
         y = agent.get_y()
-        if y < (self.height - 1):
-            moore_hood += self.get_x_hood(self.get_agent_at(x, y + 1),
-                                          include_self=True)
-        moore_hood += self.get_x_hood(agent)
-        if y > 0:
-            moore_hood += self.get_x_hood(self.get_agent_at(x, y - 1),
-                                          include_self=True)
+        for upper_range in range(radius):
+            if (y < self.height - 1) and (y + upper_range < self.height - 1):
+                moore_hood += self.get_x_hood(self.get_agent_at(
+                                              x, y + upper_range + 1),
+                                              width=radius,
+                                              include_self=True)
+        moore_hood += self.get_x_hood(agent,
+                                      width=radius,
+                                      include_self=include_self)
+        for lower_range in range(radius):
+            if (y > 0) and (y - lower_range > 0):
+                moore_hood += self.get_x_hood(self.get_agent_at(
+                                              x, y - lower_range - 1),
+                                              width=radius,
+                                              include_self=True)
         if save_neighbors:
             agent.neighbors = moore_hood
         return moore_hood

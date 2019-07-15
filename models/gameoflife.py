@@ -113,6 +113,7 @@ def gameoflife_action(gameoflife_env):
                     if apply_dead_rules(curr_agent):
                         to_be_changed.append(curr_agent)
     for to_change in to_be_changed:
+        to_change.has_acted = True
         change_color(to_change)
     min_x = new_min_x
     min_y = new_min_y
@@ -345,7 +346,7 @@ def set_up(props=None):
                                    prop_dict=props)
     width = pa.get('grid_width', DEF_WIDTH)
     height = pa.get('grid_height', DEF_HEIGHT)
-    simulation = pa.get('simulation', 0)
+    simulation = pa.get('simulation', 1)
     white = Composite("white", {"color": WHITE})
     black = Composite("black", {"color": BLACK, "marker": SQUARE})
     groups = []
