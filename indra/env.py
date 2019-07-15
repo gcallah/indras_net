@@ -179,10 +179,10 @@ class Env(Space):
 
             curr_acts = super().__call__()
             acts += curr_acts
-            self.get_census(acts)
+            self.get_census()
         return acts
 
-    def get_census(self, num_acted_agent, tell_func=None):
+    def get_census(self, tell_func=None):
         """
         Gets the census data for all the agents stored
         in the member dictionary.
@@ -191,9 +191,16 @@ class Env(Space):
         tell_func is for future expansion.
         """
         census_str = ""
+        num_acted_agent = 0
         for composite_str in self.members:
             population = len(self.members[composite_str])
             census_str += (composite_str + ": " + str(population) + "\n")
+        for composite in self.members:
+            for agent in self.members[composite]:
+                if not isinstance(self.members[composite][agent], float):
+                    if (self.members[composite][agent]).has_acted:
+                        num_acted_agent += 1
+                        (self.members[composite][agent]).has_acted = False
         self.user.tell("\nCensus for period " + str(self.get_periods()) + ":"
                        + "\n" + census_str
                        + "Total agents acted: " + str(num_acted_agent))

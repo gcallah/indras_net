@@ -85,6 +85,7 @@ def town_action(town):
             curr_store = town.get_agent_at(x, y)
             if (curr_store is not None
                     and curr_store.primary_group() != groups[0]):
+                curr_store.has_acted = True
                 nearby_customers = town.get_moore_hood(curr_store, radius=2)
                 if DEBUG:
                     print(curr_store)
@@ -95,6 +96,7 @@ def town_action(town):
                 num_nearby_customers = 0
                 for customer in nearby_customers:
                     if nearby_customers[customer].primary_group() == groups[0]:
+                        nearby_customers[customer].has_acted = True
                         num_nearby_customers += 1
                         curr_store.attrs["capital"] += (
                             (nearby_customers[customer]).attrs["expense"])
@@ -140,7 +142,9 @@ def set_up(props=None):
     """
     global town
     global groups
-    global shops
+    global mp_shops
+    global bb_shops
+    global shops_lst
 
     ds_file = get_prop_path(MODEL_NAME)
     if props is None:

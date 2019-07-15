@@ -55,11 +55,12 @@ def change_group(agent, curr_group_idx, next_group_idx):  # noqa F811
 
 def add_grain(agent):
     """
-    Addd a grain to the agent that is passed in
+    Add a grain to the agent that is passed in
     by changing the group that it is in.
     """
     global sandpile_env
 
+    agent.has_acted = True
     curr_group_idx = get_curr_group_idx(agent)
     next_group_idx = get_next_group_idx(curr_group_idx)
     if DEBUG:

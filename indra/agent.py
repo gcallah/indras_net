@@ -144,6 +144,7 @@ class Agent(object):
         self.pos = None
         self.locator = None
         self.prim_group = prim_group
+        self.has_acted = False
         if self.prim_group is not None:
             self.groups[str(self.prim_group)] = self.prim_group
             if is_space(self.prim_group):

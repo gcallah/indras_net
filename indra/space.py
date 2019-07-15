@@ -362,14 +362,16 @@ class Space(Composite):
         for upper_range in range(radius):
             if (y < self.height - 1) and (y + upper_range < self.height - 1):
                 moore_hood += self.get_x_hood(self.get_agent_at(
-                                              x, y + upper_range),
+                                              x, y + upper_range + 1),
                                               width=radius,
                                               include_self=True)
-        moore_hood += self.get_x_hood(agent, include_self=include_self)
+        moore_hood += self.get_x_hood(agent,
+                                      width=radius,
+                                      include_self=include_self)
         for lower_range in range(radius):
             if (y > 0) and (y - lower_range > 0):
                 moore_hood += self.get_x_hood(self.get_agent_at(
-                                              x, y - lower_range),
+                                              x, y - lower_range - 1),
                                               width=radius,
                                               include_self=True)
         if save_neighbors:
