@@ -8,6 +8,7 @@ import json
 from random import random
 from collections import OrderedDict
 
+
 DEBUG = False  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
@@ -317,5 +318,10 @@ class Agent(object):
                 "groups": grp_nms,
                 "active": self.active,
                 "type_sig": self.type_sig,
-                "action": self.action_key
+                "action_key": self.action_key
                 }
+
+    def from_json(self, serial_agent):
+        from models.rdict import action_dict
+        self.action = action_dict[serial_agent["action_key"]]
+        self.action_key = serial_agent["action_key"]

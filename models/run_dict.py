@@ -1,5 +1,6 @@
 from models.basic import main as bamain
 from models.basic import set_up as baset_up
+from models.basic import agent_action
 from models.fashion import main as famain
 from models.fashion import set_up as faset_up
 from models.forestfire import main as ffmain
@@ -32,4 +33,8 @@ setup_dict = {
     "scheduler": scset_up,
     "segregation": seset_up,
     "wolfsheep": wsset_up,
+}
+
+action_dict = {
+    "agent_action": agent_action,
 }
