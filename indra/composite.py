@@ -273,7 +273,14 @@ class Composite(Agent):
     def to_json(self):
         return {"name": self.name,
                 "attrs": self.attrs_to_dict(),
-                "members": self.members}
+                "members": self.members,
+                "actions": self.action}
+
+    def from_json(self, serial_composite):
+        self.name = serial_composite["name"]
+        self.attrs = serial_composite["attrs"]
+        self.members = serial_composite["members"]
+        self.action = serial_composite["actions"]
 
     def attrs_to_dict(self):
         if self.attrs is not None:

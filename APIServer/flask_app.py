@@ -7,6 +7,7 @@ import json
 from indra.user import APIUser
 from models.run_dict import setup_dict
 from indra.agent import AgentEncoder
+from indra.env import Env
 
 
 ERROR = "Error:"
@@ -104,16 +105,15 @@ class ModelMenu(Resource):
         return user()
 
 
-@api.route("/models/menu/run/<int:model_id>/<int:run_time>")
+@api.route("/models/menu/run/<int:run_time>")
 class Run(Resource):
     global user
 
     @api.expect(props)
-    def put(self, model_id, run_time):
+    def put(self, run_time):
         env_json = api.payload
-        return "receive env_json" \
-               + str(env_json) \
-               + "and run_time and model_id, running the model"
+        v = Env(env_json)
+        return v.runN(run_time)
 
 
 if __name__ == "__main__":

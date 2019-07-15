@@ -110,8 +110,8 @@ class Test(TestCase):
         Testing whether we are able to put the menu in
         """
         with app.test_request_context():
-            rv = self.Run.put(0, 10)
-        self.assertEqual(type(rv), str)
+            rv = self.Run.put(10)
+        self.assertEqual(type(rv), int)
 
     def test_err_return(self):
         """
