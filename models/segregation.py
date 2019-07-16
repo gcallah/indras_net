@@ -67,7 +67,7 @@ def env_favorable(hood_ratio, my_tolerance):
     return hood_ratio >= my_tolerance
 
 
-def agent_action(agent):
+def seg_agent_action(agent):
     """
     If the agent is surrounded by more "others" than it is comfortable
     with, the agent will move.
@@ -97,7 +97,7 @@ def create_agent(i, mean_tol, dev, color):
     this_tolerance = get_tolerance(mean_tol,
                                    dev)
     return Agent(group_names[color] + str(i),
-                 action=agent_action,
+                 action=seg_agent_action,
                  attrs={TOLERANCE: this_tolerance,
                         COLOR: color})
 
