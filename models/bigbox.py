@@ -16,26 +16,24 @@ DEBUG = True
 DEF_WIDTH = 30
 DEF_HEIGHT = 30
 
-CONSUMER_NUM = 150
-MP_NUM = 3
-BB_NUM = 2
+NUM_OF_CONSUMERS = 150
+NUM_OF_BB = 3
+NUM_OF_MP = 10
 
 MIN_ADJ = 0.01
 ADJ_SCALING_FACTOR = 0.2
 UTIL = 0.3
+MP_PREF = 0.2
 
 town = None
 groups = None
 
-mp_stores = {"Coffee shop": [30, 20, 700, 20],
-             "Grocery store": [80, 30, 1000, 30],
-             "Restaurant": [50, 25, 800, 25]}
-bb_stores = {"Coffee shop": [60, 40, 1400, 40],
-             "Grocery store": [160, 60, 2000, 60],
-             "Restaurant": [100, 50, 1600, 50]}
-stores_lst = ["Coffee shop",
-              "Grocery store",
-              "Restaurant"]
+mp_stores = {"coffee": [30, 20, 700, 20],
+             "groceries": [80, 30, 1000, 30],
+             "hardware": [50, 25, 800, 25]}
+stores_lst = ["coffee",
+              "groceries",
+              "hardware"]
 
 
 def create_consumer(name):
@@ -44,14 +42,38 @@ def create_consumer(name):
     Expense is the amount of money that the agent will spend
     in a store during a single period.
     """
-    spending_power = random.randint(10, 50)
+    spending_power = random.randint(50, 100)
     item_needed = random.randint(0, 2)
-    characteristics = {"spending power": spending_power, "last util": 0.0,
+    characteristics = {"spending power": spending_power,
+                       "last util": 0.0,
                        "item needed": item_needed}
     return Agent(name=name, attrs=characteristics, action=consumer_action)
 
 
-def create_mp(adj=MIN_ADJ):
+def create_bb(name, adj=MIN_ADJ):
+    """
+    Creates a big box store agent.
+    Does not have a way to randomly determine what it sells
+    because big box stores will sell everything.
+    Expense is a list of ints that contain the corresponding values.
+    Fixed expense is things like rent, electricity bills, etc.
+    Variable expense is the cost of buying new inventory of goods.
+    Capital is the money that is in the bank.
+    Inventory is the amount of customers that the store can serve
+    in a single period.
+    """
+    expense = [160, 60, 2000, 60]
+    store_books = {"fixed expense": expense[0],
+                   "variable expense": expense[1],
+                   "capital": expense[2],
+                   "inventory": [expense[3], expense[3]],
+                   "util adj": UTIL}
+    return Agent(name=name,
+                 attrs=store_books,
+                 action=bb_action)
+
+
+def create_mp(name, adj=MIN_ADJ):
     """
     Creates a mom and pop store agent.
     Store name is determined randomly and assigned as a name.
@@ -66,39 +88,19 @@ def create_mp(adj=MIN_ADJ):
     store_type = random.randint(0, 2)
     store_name = stores_lst[store_type]
     expense = mp_stores[store_name]
+    store_name = name + " " + store_name
     store_books = {"fixed expense": expense[0],
                    "variable expense": expense[1],
                    "capital": expense[2],
                    "inventory": [expense[3], expense[3]],
-                   "util_adj": UTIL}
+                   "util adj": UTIL}
     return Agent(name=store_name,
                  attrs=store_books,
                  action=mp_action)
 
 
-def create_bb(adj=MIN_ADJ):
-    """
-    Creates a big box store agent.
-    Expense is a list of ints that contain the corresponding values.
-    Fixed expense is things like rent, electricity bills, etc.
-    Variable expense is the cost of buying new inventory of goods.
-    Capital is the money that is in the bank.
-    Inventory is the amount of customers that the store can serve
-    in a single period.
-    """
-    expense = [160, 60, 2000, 60]
-    store_books = {"fixed expense": expense[0],
-                   "variable expense": expense[1],
-                   "capital": expense[2],
-                   "inventory": [expense[3], expense[3]],
-                   "util_adj": UTIL}
-    return Agent(name="Big box",
-                 attrs=store_books,
-                 action=mp_action)
-
-
 def calc_util(stores):
-    return (random.random() + stores.attrs["util_adj"]) * ADJ_SCALING_FACTOR
+    return (random.random() + stores.attrs["util adj"]) * ADJ_SCALING_FACTOR
 
 
 def transaction(store, customer):
@@ -118,6 +120,9 @@ def transaction(store, customer):
             + store.attrs["inventory"][0])
     if store.attrs["capital"] <= 0:
         print("     ", store, "is out of buisness")
+    if DEBUG:
+        print("     ", store, "has a capital of", store.attrs["capital"],
+              "and inventory of", store.attrs["inventory"][1])
 
 
 def town_action(town):
@@ -134,34 +139,35 @@ def town_action(town):
             curr_customer = town.get_agent_at(x, y)
             if (curr_customer is not None
                     and curr_customer.primary_group() == groups[0]):
-                if DEBUG:
-                    print("Customer", curr_customer.get_pos())
-                nearby_neighbors = town.get_moore_hood(curr_customer, radius=2)
+                nearby_neighbors = town.get_moore_hood(curr_customer, radius=3)
                 store_to_go = None
                 max_util = 0.0
                 for neighbor in nearby_neighbors:
                     if (nearby_neighbors[neighbor].primary_group()
                             == groups[1]):
                         if DEBUG:
-                            print("     Checking if mom and pop at",
+                            print("Customer", curr_customer.get_pos())
+                            print("   Checking if mom and pop at",
                                   nearby_neighbors[neighbor].get_pos(),
-                                  "as item needed")
-                        if (stores_lst[curr_customer.attrs["item needed"]]
-                                == nearby_neighbors[neighbor].name):
-                            util = calc_util(nearby_neighbors[neighbor])
+                                  "has item needed")
+                        if (stores_lst[curr_customer.attrs["item needed"]] in
+                                nearby_neighbors[neighbor].name):
+                            util = (calc_util(nearby_neighbors[neighbor])
+                                    + MP_PREF)
                             if DEBUG:
-                                print("         ", neighbor, "has item needed")
-                                print("         utility:", util)
-                            if util >= max_util:
+                                print("     ", neighbor, "has item needed")
+                                print("      Utility:", util)
+                            if util > max_util:
                                 max_util = util
                                 store_to_go = nearby_neighbors[neighbor]
                     elif (nearby_neighbors[neighbor].primary_group()
                           == groups[2]):
                         util = calc_util(nearby_neighbors[neighbor])
                         if DEBUG:
-                            print("     Shopping at big box store at",
+                            print("Customer", curr_customer.get_pos())
+                            print("   Shopping at big box store at",
                                   nearby_neighbors[neighbor].get_pos())
-                            print("         utility:", util)
+                            print("      Utility:", util)
                         if util > max_util:
                             max_util = util
                             store_to_go = nearby_neighbors[neighbor]
@@ -170,15 +176,19 @@ def town_action(town):
                     transaction(store_to_go, curr_customer)
 
 
-def consumer_action(agent):
+def consumer_action(consumer):
     global town
 
     town.stay = False
-    town.place_member(agent)
+    town.place_member(consumer)
     town.stay = True
 
 
-def mp_action(agent):
+def bb_action(bb):
+    pass
+
+
+def mp_action(mp):
     pass
 
 
@@ -205,12 +215,12 @@ def set_up(props=None):
     groups.append(consumer_group)
     groups.append(mp_group)
     groups.append(bb_group)
-    for c in range(0, CONSUMER_NUM):
+    for c in range(0, NUM_OF_CONSUMERS):
         groups[0] += create_consumer("Consumer " + str(c))
-    for m in range(0, MP_NUM):
-        groups[1] += create_mp()
-    for b in range(0, BB_NUM):
-        groups[2] += create_mp()
+    for m in range(0, NUM_OF_MP):
+        groups[1] += create_mp("Mom and pop " + str(m))
+    for b in range(0, NUM_OF_BB):
+        groups[2] += create_bb("Big box " + str(b))
     town = Env("Town",
                action=town_action,
                members=groups,
