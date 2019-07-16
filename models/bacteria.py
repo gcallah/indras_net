@@ -17,12 +17,28 @@ DEBUG2 = False  # turns deeper debugging code on or off
 DEF_NUM_BACT = 1
 DEF_NUM_TOXINS = 1
 
-bact_group = None
-toxin_group = None
-env = None
+bacteria = None
+toxins = None
+petri_dish = None
+
+
+def calc_strength(group, agent):
+    """
+    Calculate the strength of a toxin / nutrient field for an agent.
+    """
+    pass
 
 
 def bacterium_action(agent, **kwargs):
+    """
+    Algorithm:
+        1) sense env
+            (toxin_level = calc_strength(toxins, agent))
+        2) see if it is worse or better than previous env
+        3) if worse, change direction
+            (agent["angle"] = new_angle)
+        4) move (done automatically by returning False)
+    """
     print("I'm " + agent.name + " and I'm hungry.")
     # return False means to move
     return False
@@ -45,7 +61,9 @@ def create_toxin(name, i):
     """
     Create an agent.
     """
-    return Agent(name + str(i), action=toxin_action)
+    toxin = Agent(name + str(i), action=toxin_action)
+    toxin["max_move"] = 1
+    return toxin
 
 
 def set_up(props=None):
@@ -60,34 +78,34 @@ def set_up(props=None):
         pa = PropArgs.create_props(MODEL_NAME,
                                    prop_dict=props)
 
-    toxin_group = Composite("Toxins", {"color": RED},
-                            member_creator=create_toxin,
-                            num_members=pa.get('num_toxins',
-                                               DEF_NUM_TOXINS))
-    bact_group = Composite("Bacteria", {"color": GREEN},
-                           member_creator=create_bacterium,
-                           num_members=pa.get('num_bacteria',
-                                              DEF_NUM_BACT))
+    toxins = Composite("Toxins", {"color": RED},
+                       member_creator=create_toxin,
+                       num_members=pa.get('num_toxins',
+                                          DEF_NUM_TOXINS))
+    bacteria = Composite("Bacteria", {"color": GREEN},
+                         member_creator=create_bacterium,
+                         num_members=pa.get('num_bacteria',
+                                            DEF_NUM_BACT))
 
-    env = Env("env",
-              height=pa.get('grid_height', DEF_HEIGHT),
-              width=pa.get('grid_width', DEF_WIDTH),
-              members=[toxin_group, bact_group],
-              props=pa)
-    return (env, toxin_group, bact_group)
+    petri_dish = Env("Petrie dish",
+                     height=pa.get('grid_height', DEF_HEIGHT),
+                     width=pa.get('grid_width', DEF_WIDTH),
+                     members=[toxins, bacteria],
+                     props=pa)
+    return (petri_dish, toxins, bacteria)
 
 
 def main():
-    global bact_group
-    global toxin_group
+    global bacteria
+    global toxins
     global env
 
-    (env, toxin_group, bact_group) = set_up()
+    (petri_dish, toxins, bacteria) = set_up()
 
     if DEBUG2:
-        print(env.__repr__())
+        print(petri_dish.__repr__())
 
-    env()
+    petri_dish()
     return 0
 
 
