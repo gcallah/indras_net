@@ -46,6 +46,18 @@ class Composite(Agent):
             for i in range(num_members):
                 self += member_creator(name, i)
 
+    def to_json(self):
+        rep = super().to_json()
+        rep["is_composite"] = 1
+        rep["members"] = self.members
+        return rep
+
+    def from_json(self, serial_composite):
+        self.name = serial_composite["name"]
+        self.attrs = serial_composite["attrs"]
+        self.members = serial_composite["members"]
+        self.action = serial_composite["actions"]
+
     def __repr__(self):
         return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
 
@@ -269,18 +281,6 @@ class Composite(Agent):
 
     def magnitude(self):
         pass
-
-    def to_json(self):
-        rep = super().to_json()
-        rep["is_composite"] = 1
-        rep["members"] = self.members
-        return rep
-
-    def from_json(self, serial_composite):
-        self.name = serial_composite["name"]
-        self.attrs = serial_composite["attrs"]
-        self.members = serial_composite["members"]
-        self.action = serial_composite["actions"]
 
     def attrs_to_dict(self):
         if self.attrs is not None:

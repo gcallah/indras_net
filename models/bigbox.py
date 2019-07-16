@@ -120,6 +120,7 @@ def transaction(store, customer):
             + store.attrs["inventory"][0])
     if store.attrs["capital"] <= 0:
         print("     ", store, "is out of buisness")
+        store.die()
     if DEBUG:
         print("     ", store, "has a capital of", store.attrs["capital"],
               "and inventory of", store.attrs["inventory"][1])
@@ -179,17 +180,19 @@ def town_action(town):
 def consumer_action(consumer):
     global town
 
-    town.stay = False
-    town.place_member(consumer)
-    town.stay = True
+    return False
+
+    # town.stay = False
+    # town.place_member(consumer)
+    # town.stay = True
 
 
 def bb_action(bb):
-    pass
+    return True
 
 
 def mp_action(mp):
-    pass
+    return True
 
 
 def set_up(props=None):
@@ -227,7 +230,6 @@ def set_up(props=None):
                height=height,
                width=width,
                props=pa)
-    town.stay_in_place(True)
     return (town, groups)
 
 
