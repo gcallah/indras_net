@@ -70,7 +70,6 @@ class Space(Composite):
                          action=action)
         self.width = width
         self.height = height
-        self.stay = False
 
         # the location of members in the space
         self.locations = {}
@@ -208,9 +207,6 @@ class Space(Composite):
             return None
         return self.locations[(x, y)]
 
-    def stay_in_place(self, stay):
-        self.stay = stay
-
     def place_member(self, mbr, max_move=None, xy=None):
         """
         By default, locate a member at a random x, y spot in our grid.
@@ -223,31 +219,30 @@ class Space(Composite):
             print("     is_full")
             self.user.log("Can't fit no more folks in this space!")
             return None
-        if not self.stay:
-            if not is_composite(mbr):
-                if xy is not None:
-                    (x, y) = xy  # it had better be a tuple!
-                else:
-                    (x, y) = self.gen_new_pos(mbr, max_move)
-                if self.is_empty(x, y):
-                    if mbr.islocated():
-                        self.move_location(x, y, mbr.get_x(), mbr.get_y())
-                    else:
-                        self.add_location(x, y, mbr)
-                    # if I am setting pos, I am agent's locator!
-                    mbr.set_pos(self, x, y)
-                    return (x, y)
-                elif (max_move is None) and (xy is None):
-                    # if the random position is already taken,
-                    # find the member a new position
-                    # but if max_move is not None, the hood might be filled!
-                    # so we need something to detect
-                    # a full neighborhood as well.
-                    # and if xy is not None, the user asked for a particular
-                    # spot: don't give them another, but return None.
-                    return self.place_member(mbr, max_move)
+        if not is_composite(mbr):
+            if xy is not None:
+                (x, y) = xy  # it had better be a tuple!
             else:
-                return self.rand_place_members(mbr.members, max_move)
+                (x, y) = self.gen_new_pos(mbr, max_move)
+            if self.is_empty(x, y):
+                if mbr.islocated():
+                    self.move_location(x, y, mbr.get_x(), mbr.get_y())
+                else:
+                    self.add_location(x, y, mbr)
+                # if I am setting pos, I am agent's locator!
+                mbr.set_pos(self, x, y)
+                return (x, y)
+            elif (max_move is None) and (xy is None):
+                # if the random position is already taken,
+                # find the member a new position
+                # but if max_move is not None, the hood might be filled!
+                # so we need something to detect
+                # a full neighborhood as well.
+                # and if xy is not None, the user asked for a particular
+                # spot: don't give them another, but return None.
+                return self.place_member(mbr, max_move)
+        else:
+            return self.rand_place_members(mbr.members, max_move)
 
     def __iadd__(self, other):
         super().__iadd__(other)
