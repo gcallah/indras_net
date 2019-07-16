@@ -98,10 +98,10 @@ class Composite(Agent):
     def __reversed__(self):
         return reversed(self.members)
 
-    def __call__(self):
+    def __call__(self, **kwargs):
         """
-        Call the members' functions.
-        Later, this will just call agents' funcs.
+        Call the members' functions, and the composite's
+        action func if it has one.
         This should return the total of all
         agents who acted in a particular call.
         """
@@ -111,11 +111,11 @@ class Composite(Agent):
         if self.duration > 0:
             if self.action is not None:
                 # the action was defined outside this class, so pass self:
-                self.action(self)
+                self.action(self, **kwargs)
 
             for (key, member) in self.members.items():
                 if member.isactive():
-                    total_acts += member()
+                    total_acts += member(**kwargs)
                 else:
                     # delete agents but not composites:
                     if not is_composite(member):

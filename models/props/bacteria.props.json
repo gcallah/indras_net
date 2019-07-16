@@ -1,0 +1,30 @@
+{
+  "grid_height": {
+    "val": 20,
+    "question": "What is the grid height?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 2
+  },
+  "grid_width": {
+    "val": 20,
+    "question": "What is the grid width?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 2
+  },
+  "num_toxins": {
+    "val": 1,
+    "question": "How many toxins do you want?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 1
+  },
+  "num_bacteria": {
+    "val": 1,
+    "question": "How many bacteria do you want?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 1
+  }
+}
