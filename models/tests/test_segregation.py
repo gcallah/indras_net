@@ -7,8 +7,8 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.env import Env
 from models.segregation import set_up, create_agent, RED_TEAM, BLUE_TEAM
-from models.segregation import env_favorable, agent_action
-from models.segregation import group_names, agent_action, my_group_index
+from models.segregation import env_favorable, seg_agent_action
+from models.segregation import group_names, seg_agent_action, my_group_index
 from models.segregation import other_group_index, get_tolerance
 from models.segregation import DEF_TOLERANCE, DEF_SIGMA
 import models.segregation as seg
@@ -92,16 +92,16 @@ class SegregationTestCase(TestCase):
                            members=[red_agents, blue_agents])
         return (test_agent, my_city)
 
-    def test_agent_action(self):
+    def test_seg_agent_action(self):
         """
         We are going to test two cases: one where agent should
         be satisfied with neighborhood, and one not.
         """
         (test_agent, city) = self.agent_in_little_city()
-        # self.assertEqual(agent_action(test_agent), True)
+        # self.assertEqual(seg_agent_action(test_agent), True)
         (test_agent, city) = self.agent_in_little_city(with_blue=True)
         # the following test is mysteriously failing: must debug!
-        # self.assertEqual(agent_action(test_agent), False)
+        # self.assertEqual(seg_agent_action(test_agent), False)
 
     def test_env_favorable(self):
         env_fav = env_favorable(0.4, 0.5)
