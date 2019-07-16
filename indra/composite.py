@@ -57,6 +57,7 @@ class Composite(Agent):
         self.attrs = serial_composite["attrs"]
         self.members = serial_composite["members"]
         self.action = serial_composite["actions"]
+        self.duration = serial_composite["duration"]
 
     def __repr__(self):
         return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
