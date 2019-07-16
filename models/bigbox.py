@@ -26,15 +26,16 @@ UTIL = 0.3
 
 town = None
 groups = None
-mp_shops = {"Coffee shop": [30, 20, 700, 20],
-            "Grocery store": [80, 30, 1000, 30],
-            "Restaurant": [50, 25, 800, 25]}
-bb_shops = {"Coffee shop": [60, 40, 1400, 40],
-            "Grocery store": [160, 60, 2000, 60],
-            "Restaurant": [100, 50, 1600, 50]}
-shops_lst = ["Coffee shop",
-             "Grocery store",
-             "Restaurant"]
+
+mp_stores = {"Coffee shop": [30, 20, 700, 20],
+             "Grocery store": [80, 30, 1000, 30],
+             "Restaurant": [50, 25, 800, 25]}
+bb_stores = {"Coffee shop": [60, 40, 1400, 40],
+             "Grocery store": [160, 60, 2000, 60],
+             "Restaurant": [100, 50, 1600, 50]}
+stores_lst = ["Coffee shop",
+              "Grocery store",
+              "Restaurant"]
 
 
 def create_consumer(name):
@@ -53,6 +54,8 @@ def create_consumer(name):
 def create_mp(adj=MIN_ADJ):
     """
     Creates a mom and pop store agent.
+    Store name is determined randomly and assigned as a name.
+    It is also the item that the store will sell.
     Expense is a list of ints that contain the corresponding values.
     Fixed expense is things like rent, electricity bills, etc.
     Variable expense is the cost of buying new inventory of goods.
@@ -61,8 +64,8 @@ def create_mp(adj=MIN_ADJ):
     in a single period.
     """
     store_type = random.randint(0, 2)
-    store_name = shops_lst[store_type]
-    expense = mp_shops[store_name]
+    store_name = stores_lst[store_type]
+    expense = mp_stores[store_name]
     store_books = {"fixed expense": expense[0],
                    "variable expense": expense[1],
                    "capital": expense[2],
@@ -74,6 +77,15 @@ def create_mp(adj=MIN_ADJ):
 
 
 def create_bb(adj=MIN_ADJ):
+    """
+    Creates a big box store agent.
+    Expense is a list of ints that contain the corresponding values.
+    Fixed expense is things like rent, electricity bills, etc.
+    Variable expense is the cost of buying new inventory of goods.
+    Capital is the money that is in the bank.
+    Inventory is the amount of customers that the store can serve
+    in a single period.
+    """
     expense = [160, 60, 2000, 60]
     store_books = {"fixed expense": expense[0],
                    "variable expense": expense[1],
@@ -90,6 +102,10 @@ def calc_util(stores):
 
 
 def transaction(store, customer):
+    """
+    Calcuates the expense and the revenue of the store passed in
+    after a transaction with the customer passed in.
+    """
     store.attrs["capital"] += customer.attrs["spending power"]
     store.attrs["inventory"][1] -= 1
     store.attrs["capital"] -= store.attrs["fixed expense"]
@@ -118,24 +134,37 @@ def town_action(town):
             curr_customer = town.get_agent_at(x, y)
             if (curr_customer is not None
                     and curr_customer.primary_group() == groups[0]):
+                if DEBUG:
+                    print("Customer", curr_customer.get_pos())
                 nearby_neighbors = town.get_moore_hood(curr_customer, radius=2)
                 store_to_go = None
                 max_util = 0.0
                 for neighbor in nearby_neighbors:
-                    if nearby_neighbors[neighbor].primary_group() == groups[2]:
+                    if (nearby_neighbors[neighbor].primary_group()
+                            == groups[1]):
+                        if DEBUG:
+                            print("     Checking if mom and pop at",
+                                  nearby_neighbors[neighbor].get_pos(),
+                                  "as item needed")
+                        if (stores_lst[curr_customer.attrs["item needed"]]
+                                == nearby_neighbors[neighbor].name):
+                            util = calc_util(nearby_neighbors[neighbor])
+                            if DEBUG:
+                                print("         ", neighbor, "has item needed")
+                                print("         utility:", util)
+                            if util >= max_util:
+                                max_util = util
+                                store_to_go = nearby_neighbors[neighbor]
+                    elif (nearby_neighbors[neighbor].primary_group()
+                          == groups[2]):
                         util = calc_util(nearby_neighbors[neighbor])
+                        if DEBUG:
+                            print("     Shopping at big box store at",
+                                  nearby_neighbors[neighbor].get_pos())
+                            print("         utility:", util)
                         if util > max_util:
                             max_util = util
                             store_to_go = nearby_neighbors[neighbor]
-                    elif (nearby_neighbors[neighbor].primary_group()
-                            == groups[1]):
-                        for i in range(len(shops_lst)):
-                            if (shops_lst[curr_customer.attrs["item needed"]]
-                                    == nearby_neighbors[neighbor].name):
-                                util = calc_util(nearby_neighbors[neighbor])
-                                if util > max_util:
-                                    max_util = util
-                                    store_to_go = nearby_neighbors[neighbor]
                 curr_customer.attrs["last utils"] = max_util
                 if store_to_go is not None:
                     transaction(store_to_go, curr_customer)
@@ -159,7 +188,6 @@ def set_up(props=None):
     """
     global town
     global groups
-    global shops
 
     ds_file = get_prop_path(MODEL_NAME)
     if props is None:
