@@ -386,9 +386,3 @@ class Space(Composite):
         if save_neighbors:
             agent.neighbors = moore_hood
         return moore_hood
-
-    def to_json(self):
-        pass
-
-    def from_json(self):
-        pass
