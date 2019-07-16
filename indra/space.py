@@ -387,26 +387,8 @@ class Space(Composite):
             agent.neighbors = moore_hood
         return moore_hood
 
-    def get_hood(self, filter_func, agent, save_hood=False):
-        """
-        Takes in filter_func, which is a list of strings of the names of
-        get neighbor methods, agent, and save_hood, which is a boolean
-        for either returning the Composite of neighbors or
-        storing the Composite in agent.neighbors,
-        and runs the corresponding get neighbor methods.
-        """
-        neighborhood = Composite("Neighborhood")
-        if "get_x_hood" in filter_func:
-            neighborhood += self.get_x_hood(agent)
-        if "get_y_hood" in filter_func:
-            neighborhood += self.get_y_hood(agent)
-        if "get_top_lr_hood" in filter_func:
-            neighborhood += self.get_top_lr_hood(agent)
-        if "get_bottom_lr_hood" in filter_func:
-            neighborhood += self.get_bottom_lr_hood(agent)
-        if "get_row_hood" in filter_func:
-            neighborhood += self.get_row_hood(agent)
-        if save_hood:
-            agent.neighbors = neighborhood
-        else:
-            return neighborhood
+    def to_json(self):
+        pass
+
+    def from_json(self):
+        pass
