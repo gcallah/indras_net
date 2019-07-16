@@ -220,7 +220,13 @@ class Agent(object):
                 if not self.action(self, **kwargs):
                     # False return means agent is "unhappy" and
                     # so agent will move (if located).
-                    self.move()
+                    max_move = DEF_MAX_MOVE
+                    if "max_move" in self:
+                        max_move = self["max_move"]
+                    angle = None
+                    if "angle" in self:
+                        angle = self["angle"]
+                    self.move(max_move=max_move, angle=angle)
                 return True
             elif DEBUG:
                 print("I'm " + self.name
@@ -259,7 +265,7 @@ class Agent(object):
         else:
             return None
 
-    def move(self, max_move=DEF_MAX_MOVE):
+    def move(self, max_move=DEF_MAX_MOVE, angle=None):
         """
         Move this agent to a random pos within max_move
         of its current pos.
