@@ -207,7 +207,7 @@ class Agent(object):
     def __iter__(self):
         return iter(self.attrs)
 
-    def __call__(self):
+    def __call__(self, **kwargs):
         """
         Agents will 'act' by being called as a function.
         If the agent has no `action()` function, do nothing.
@@ -217,7 +217,7 @@ class Agent(object):
         if self.duration > 0:
             if self.action is not None:
                 # the action was defined outside this class, so pass self:
-                if not self.action(self):
+                if not self.action(self, **kwargs):
                     # False return means agent is "unhappy" and
                     # so agent will move (if located).
                     self.move()
