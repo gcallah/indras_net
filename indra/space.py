@@ -220,6 +220,19 @@ class Space(Composite):
         if not is_composite(mbr):
             if xy is not None:
                 (x, y) = xy  # it had better be a tuple!
+                cur_x = x
+                cur_y = y
+                if out_of_bounds(x, y, 0, 0, self.width, self.height):
+                    while (cur_x < 0):
+                        cur_x = self.width + cur_x
+                    while (cur_x >= self.width):
+                        cur_x = cur_x - self.width
+
+                    while (cur_y < 0):
+                        cur_y = self.height + cur_y
+                    while (cur_y >= self.height):
+                        cur_y = cur_y - self.height
+                    (x, y) = (cur_x, cur_y)
             else:
                 (x, y) = self.gen_new_pos(mbr, max_move)
             if self.is_empty(x, y):

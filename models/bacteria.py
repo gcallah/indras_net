@@ -6,9 +6,10 @@ from propargs.propargs import PropArgs
 from indra.utils import get_prop_path
 from indra.agent import Agent
 from indra.composite import Composite
-from indra.space import DEF_HEIGHT, DEF_WIDTH
+from indra.space import DEF_HEIGHT, DEF_WIDTH, distance
 from indra.env import Env
 from indra.display_methods import RED, GREEN
+from random import randint
 
 MODEL_NAME = "bacteria"
 DEBUG = True  # turns debugging code on or off
@@ -26,7 +27,10 @@ def calc_strength(group, agent):
     """
     Calculate the strength of a toxin / nutrient field for an agent.
     """
-    pass
+    print("This is group: ", group.members["Toxins0"])
+    strength = 1 / float(distance(group["Toxins0"], agent))
+    print("This is strength: ", strength)
+    return strength
 
 
 def bacterium_action(agent, **kwargs):
@@ -40,6 +44,14 @@ def bacterium_action(agent, **kwargs):
         4) move (done automatically by returning False)
     """
     print("I'm " + agent.name + " and I'm hungry.")
+    toxin_level = calc_strength(toxins, agent)
+    if (agent["prev_toxicity"] is None
+       or agent["prev_toxicity"] > toxin_level):
+        new_angle = randint(0, 360)
+        print("This is angle: ", new_angle)
+        agent["angle"] = new_angle
+        agent["prev_toxicity"] = toxin_level
+        print("Get to the bottom of the if: ", agent["prev_toxicity"])
     # return False means to move
     return False
 
@@ -54,7 +66,10 @@ def create_bacterium(name, i):
     """
     Create an agent.
     """
-    return Agent(name + str(i), action=bacterium_action)
+    bacterium = Agent(name + str(i), action=bacterium_action)
+    bacterium["prev_toxicity"] = None
+    bacterium["max_move"] = 4
+    return bacterium
 
 
 def create_toxin(name, i):

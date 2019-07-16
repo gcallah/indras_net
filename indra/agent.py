@@ -7,6 +7,7 @@ from math import pi, sin
 import json
 from random import random
 from collections import OrderedDict
+import math
 
 
 DEBUG = False  # turns debugging code on or off
@@ -305,7 +306,20 @@ class Agent(object):
         Move this agent to a random pos within max_move
         of its current pos.
         """
-        if (self.islocated() and self.locator is not None
+        if angle is not None:
+            cur_x = self.get_x()
+            cur_y = self.get_y()
+            print("cos", math.cos(angle))
+            print(type(cur_x))
+            if math.cos(angle) < 0:
+                cur_x = cur_x * (-1)
+            if math.sin(angle) < 0:
+                cur_y = cur_y * (-1)
+            x = math.cos(angle) * max_move + cur_x
+            y = math.sin(angle) * max_move + cur_y
+            self.locator.place_member(self, max_move, xy=(x, y))
+
+        elif (self.islocated() and self.locator is not None
                 and not self.locator.is_full()):
             self.locator.place_member(self, max_move)
 
