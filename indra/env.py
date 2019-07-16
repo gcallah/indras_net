@@ -104,6 +104,16 @@ class Env(Space):
         self.pop_hist = PopHist(serial_pops=serial_env["pop_hist"])
         self.plot_title = serial_env["pop_hist"]
 
+    def to_json(self):
+        rep = super().to_json()
+        rep["user"] = self.user.to_json()  # user to_json() not done yet!
+        rep["plot_title"] = self.plot_title
+        rep["props"] = self.props.to_json()
+        rep["pop_hist"] = self.pop_hist.to_json()
+        rep["womb"] = self.womb
+        rep["switches"] = self.switches
+        return rep
+
     def __init_unrestorables(self):
         pass
 
@@ -278,16 +288,6 @@ class Env(Space):
             if not period:
                 period = len(data[var]["data"])
         return (period, data)
-
-    def to_json(self):
-        rep = super().to_json()
-        rep["user"] = self.user.to_json()  # user to_json() not done yet!
-        rep["plot_title"] = self.plot_title
-        rep["props"] = self.props.to_json()
-        rep["pop_hist"] = self.pop_hist.to_json()
-        # self.womb = []  # for agents waiting to be born
-        # self.switches = []  # for agents waiting to switch groups
-        return rep
 
     def plot_data(self):
         """
