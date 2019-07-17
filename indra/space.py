@@ -29,7 +29,7 @@ def out_of_bounds(x, y, x1, y1, x2, y2):
 
 
 def bound(point, lower, upper):
-    return min(max(point, lower), upper - 1)
+    return min(max(point, lower), upper)
 
 
 def distance(a1, a2):
@@ -150,7 +150,7 @@ class Space(Composite):
         With constraints, narrow to that range.
         """
         high = self.width if high is None else high
-        return randint(low, high - 1)
+        return randint(low, high)
 
     def rand_y(self, low=0, high=None):
         """
@@ -159,19 +159,19 @@ class Space(Composite):
         With constraints, narrow to that range.
         """
         high = self.height if high is None else high
-        return randint(low, high - 1)
+        return randint(low, high)
 
     def constrain_x(self, x):
         """
         Pull x in bounds if it ain't.
         """
-        return bound(x, 0, self.width)
+        return bound(x, 0, self.width - 1)
 
     def constrain_y(self, y):
         """
         Pull y in bounds if it ain't.
         """
-        return bound(y, 0, self.height)
+        return bound(y, 0, self.height - 1)
 
     def gen_new_pos(self, mbr, max_move):
         """
