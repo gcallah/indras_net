@@ -127,7 +127,7 @@ class SpaceTestCase(TestCase):
         """
         x = self.space.rand_x()
         self.assertTrue(x >= 0)
-        self.assertTrue(x < self.space.width)
+        self.assertTrue(x <= self.space.width)
         x2 = self.space.rand_x(low=4, high=8)
         self.assertTrue(x2 >= 4)
         self.assertTrue(x2 <= 8)
@@ -138,7 +138,7 @@ class SpaceTestCase(TestCase):
         """
         y = self.space.rand_y()
         self.assertTrue(y >= 0)
-        self.assertTrue(y < self.space.height)
+        self.assertTrue(y <= self.space.height)
         y2 = self.space.rand_y(low=4, high=8)
         self.assertTrue(y2 >= 4)
         self.assertTrue(y2 <= 8)

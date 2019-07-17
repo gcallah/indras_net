@@ -85,6 +85,7 @@ class Space(Composite):
         rep = super().to_json()
         rep["width"] = self.width
         rep["height"] = self.height
+        rep["locations"] = self.locations
         return rep
 
     def from_json(self, serial_space):
@@ -94,6 +95,7 @@ class Space(Composite):
         self.attrs = serial_space["attrs"]
         self.members = serial_space["members"]
         self.action = serial_space["action"]
+        self.locations = serial_space["locations"]
 
     def grid_size(self):
         """
