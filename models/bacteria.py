@@ -10,6 +10,7 @@ from indra.space import DEF_HEIGHT, DEF_WIDTH, distance
 from indra.env import Env
 from indra.display_methods import RED, GREEN, YELLOW
 from random import randint
+import sys
 
 MODEL_NAME = "bacteria"
 DEBUG = True  # turns debugging code on or off
@@ -30,27 +31,13 @@ def calc_toxin(group, agent):
     """
     Calculate the strength of a toxin / nutrient field for an agent.
     """
-    print("This is group: ", group.members["Toxins0"])
-    toxin_strength = 1 / float(distance(group["Toxins0"], agent))
-    print("This is toxin strength: ", toxin_strength)
+    toxin_strength = float(distance(group["Toxins0"], agent)) * (-1)
     return toxin_strength
 
 
 def calc_nutrient(group, agent):
-    nutrient_strength = 1 / float(distance(group["Nutrients0"], agent))
-    print("This is nutrient strength: ", nutrient_strength)
+    nutrient_strength = float(distance(group["Nutrients0"], agent))
     return nutrient_strength
-
-
-def change_direction(toxins, nutrients, agent):
-    toxin_level = calc_toxin(toxins, agent)
-    nutrient_level = calc_nutrient(nutrients, agent)
-    threshold = DEF_THRESHOLD
-    if (toxin_level > threshold or toxin_level > nutrient_level):
-        agent["prev_toxicity"] = toxin_level
-        agent["prev_nutricity"] = nutrient_level
-        return True
-    return False
 
 
 def bacterium_action(agent, **kwargs):
@@ -64,12 +51,28 @@ def bacterium_action(agent, **kwargs):
         4) move (done automatically by returning False)
     """
     print("I'm " + agent.name + " and I'm hungry.")
-    if agent["prev_toxicity"] is None or change_direction(toxins,
-                                                          nutrients, agent):
+
+    toxin_level = calc_toxin(toxins, agent)
+    nutrient_level = calc_nutrient(nutrients, agent)
+
+    if agent["prev_toxicity"] is not None:
+        toxin_change = calc_toxin(toxins, agent) - agent["prev_toxicity"]
+    else:
+        toxin_change = sys.maxsize * (-1)
+
+    if agent["prev_nutricity"] is not None:
+        nutrient_change = calc_nutrient(nutrients,
+                                        agent) - agent["prev_nutricity"]
+    else:
+        nutrient_change = sys.maxsize * (-1)
+
+    threshold = DEF_THRESHOLD
+    agent["prev_toxicity"] = toxin_level
+    agent["prev_nutricity"] = nutrient_level
+
+    if toxin_change < 0 or nutrient_change < 0 or toxin_change >= threshold:
         new_angle = randint(0, 360)
-        print("This is angle: ", new_angle)
         agent["angle"] = new_angle
-        print("Get to the bottom of the if: ", agent["prev_toxicity"])
     # return False means to move
     return False
 
@@ -81,7 +84,7 @@ def toxin_action(agent, **kwargs):
 
 
 def nutrient_action(agent, **kwargs):
-    print("I'm" + agent.name + "and I'm nutrious.")
+    print("I'm " + agent.name + " and I'm nutrious.")
     # return False means to move
     return False
 
@@ -151,6 +154,7 @@ def set_up(props=None):
 def main():
     global bacteria
     global toxins
+    global nutrients
     global env
 
     (petri_dish, toxins, nutrients, bacteria) = set_up()
