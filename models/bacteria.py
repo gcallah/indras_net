@@ -8,7 +8,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.space import DEF_HEIGHT, DEF_WIDTH, distance
 from indra.env import Env
-from indra.display_methods import RED, GREEN
+from indra.display_methods import RED, GREEN, YELLOW
 from random import randint
 
 MODEL_NAME = "bacteria"
@@ -17,40 +17,58 @@ DEBUG2 = False  # turns deeper debugging code on or off
 
 DEF_NUM_BACT = 1
 DEF_NUM_TOXINS = 1
+DEF_NUM_NUTRIENTS = 1
+DEF_THRESHOLD = 0.2
 
 bacteria = None
 toxins = None
+nutrients = None
 petri_dish = None
 
 
-def calc_strength(group, agent):
+def calc_toxin(group, agent):
     """
     Calculate the strength of a toxin / nutrient field for an agent.
     """
     print("This is group: ", group.members["Toxins0"])
-    strength = 1 / float(distance(group["Toxins0"], agent))
-    print("This is strength: ", strength)
-    return strength
+    toxin_strength = 1 / float(distance(group["Toxins0"], agent))
+    print("This is toxin strength: ", toxin_strength)
+    return toxin_strength
+
+
+def calc_nutrient(group, agent):
+    nutrient_strength = 1 / float(distance(group["Nutrients0"], agent))
+    print("This is nutrient strength: ", nutrient_strength)
+    return nutrient_strength
+
+
+def change_direction(toxins, nutrients, agent):
+    toxin_level = calc_toxin(toxins, agent)
+    nutrient_level = calc_nutrient(nutrients, agent)
+    threshold = DEF_THRESHOLD
+    if (toxin_level > threshold or toxin_level > nutrient_level):
+        agent["prev_toxicity"] = toxin_level
+        agent["prev_nutricity"] = nutrient_level
+        return True
+    return False
 
 
 def bacterium_action(agent, **kwargs):
     """
     Algorithm:
         1) sense env
-            (toxin_level = calc_strength(toxins, agent))
+            (toxin_level = calc_toxin(toxins, agent))
         2) see if it is worse or better than previous env
         3) if worse, change direction
             (agent["angle"] = new_angle)
         4) move (done automatically by returning False)
     """
     print("I'm " + agent.name + " and I'm hungry.")
-    toxin_level = calc_strength(toxins, agent)
-    if (agent["prev_toxicity"] is None
-       or agent["prev_toxicity"] > toxin_level):
+    if agent["prev_toxicity"] is None or change_direction(toxins,
+                                                          nutrients, agent):
         new_angle = randint(0, 360)
         print("This is angle: ", new_angle)
         agent["angle"] = new_angle
-        agent["prev_toxicity"] = toxin_level
         print("Get to the bottom of the if: ", agent["prev_toxicity"])
     # return False means to move
     return False
@@ -62,23 +80,39 @@ def toxin_action(agent, **kwargs):
     return False
 
 
+def nutrient_action(agent, **kwargs):
+    print("I'm" + agent.name + "and I'm nutrious.")
+    # return False means to move
+    return False
+
+
 def create_bacterium(name, i):
     """
-    Create an agent.
+    Create a baterium.
     """
     bacterium = Agent(name + str(i), action=bacterium_action)
     bacterium["prev_toxicity"] = None
+    bacterium["prev_nutricity"] = None
     bacterium["max_move"] = 4
     return bacterium
 
 
 def create_toxin(name, i):
     """
-    Create an agent.
+    Create a toxin.
     """
     toxin = Agent(name + str(i), action=toxin_action)
     toxin["max_move"] = 1
     return toxin
+
+
+def create_nutrient(name, i):
+    """
+    Create a nutrient.
+    """
+    nutrient = Agent(name + str(i), action=nutrient_action)
+    nutrient["max_move"] = 3
+    return nutrient
 
 
 def set_up(props=None):
@@ -97,6 +131,10 @@ def set_up(props=None):
                        member_creator=create_toxin,
                        num_members=pa.get('num_toxins',
                                           DEF_NUM_TOXINS))
+    nutrients = Composite("Nutrients", {"color": YELLOW},
+                          member_creator=create_nutrient,
+                          num_members=pa.get('num_nutrients',
+                                             DEF_NUM_NUTRIENTS))
     bacteria = Composite("Bacteria", {"color": GREEN},
                          member_creator=create_bacterium,
                          num_members=pa.get('num_bacteria',
@@ -105,9 +143,9 @@ def set_up(props=None):
     petri_dish = Env("Petrie dish",
                      height=pa.get('grid_height', DEF_HEIGHT),
                      width=pa.get('grid_width', DEF_WIDTH),
-                     members=[toxins, bacteria],
+                     members=[toxins, nutrients, bacteria],
                      props=pa)
-    return (petri_dish, toxins, bacteria)
+    return (petri_dish, toxins, nutrients, bacteria)
 
 
 def main():
@@ -115,7 +153,7 @@ def main():
     global toxins
     global env
 
-    (petri_dish, toxins, bacteria) = set_up()
+    (petri_dish, toxins, nutrients, bacteria) = set_up()
 
     if DEBUG2:
         print(petri_dish.__repr__())

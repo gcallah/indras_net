@@ -20,6 +20,13 @@
     "hival": 100,
     "lowval": 1
   },
+  "num_nutrients": {
+    "val": 1,
+    "question": "How many nutrients do you want?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 1
+  },
   "num_bacteria": {
     "val": 1,
     "question": "How many bacteria do you want?",
