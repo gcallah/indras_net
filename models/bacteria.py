@@ -19,7 +19,7 @@ DEBUG2 = False  # turns deeper debugging code on or off
 DEF_NUM_BACT = 1
 DEF_NUM_TOXINS = 1
 DEF_NUM_NUTRIENTS = 1
-DEF_THRESHOLD = 0.2
+DEF_THRESHOLD = -0.2
 
 bacteria = None
 toxins = None
@@ -70,7 +70,10 @@ def bacterium_action(agent, **kwargs):
     agent["prev_toxicity"] = toxin_level
     agent["prev_nutricity"] = nutrient_level
 
-    if toxin_change < 0 or nutrient_change < 0 or toxin_change >= threshold:
+    if (toxin_change + nutrient_change <= 0) or (threshold - toxin_level >= 0):
+        print("this is the default threshold: ", threshold,
+              " and this is the toxin_level ", toxin_level)
+        print("this is the net change:", toxin_change + nutrient_change)
         new_angle = randint(0, 360)
         agent["angle"] = new_angle
     # return False means to move
