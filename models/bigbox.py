@@ -19,9 +19,7 @@ NUM_OF_CONSUMERS = 150
 NUM_OF_BB = 3
 NUM_OF_MP = 6
 
-UTIL = 0.15
 MP_PREF = 0.1
-ADJ_SCALING_FACTOR = 0.2
 RADIUS = 2
 
 CONSUMER_INDX = 0
@@ -56,7 +54,7 @@ def create_consumer(name):
     return Agent(name=name, attrs=characteristics, action=consumer_action)
 
 
-def create_bb(name, util):
+def create_bb(name):
     """
     Creates a big box store agent.
     Does not have to randomly determine the store type
@@ -77,14 +75,13 @@ def create_bb(name, util):
     store_books = {"fixed expense": expense[0],
                    "variable expense": expense[1],
                    "capital": expense[2],
-                   "inventory": [expense[3], expense[3]],
-                   "util adj": util}
+                   "inventory": [expense[3], expense[3]]}
     return Agent(name=name,
                  attrs=store_books,
                  action=bb_action)
 
 
-def create_mp(name, util):
+def create_mp(name):
     """
     Creates a mom and pop store agent.
     Store type (what the store will sell) is determined randomly
@@ -108,8 +105,7 @@ def create_mp(name, util):
     store_books = {"fixed expense": expense[0],
                    "variable expense": expense[1],
                    "capital": expense[2],
-                   "inventory": [expense[3], expense[3]],
-                   "util adj": util}
+                   "inventory": [expense[3], expense[3]]}
     return Agent(name=store_name,
                  attrs=store_books,
                  action=mp_action)
@@ -118,7 +114,7 @@ def create_mp(name, util):
 def calc_util(stores):
     global adj_scaling_factor
 
-    return (random.random() + stores.attrs["util adj"]) * adj_scaling_factor
+    return random.random()
 
 
 def transaction(store, customer=None):
@@ -264,9 +260,7 @@ def set_up(props=None):
     num_consumers = pa.get("consumer_num", NUM_OF_CONSUMERS)
     num_bb = pa.get("bb_num", NUM_OF_BB)
     num_mp = pa.get("mp_num", NUM_OF_MP)
-    util = pa.get("util", UTIL)
     mp_pref = pa.get("mp_pref", MP_PREF)
-    adj_scaling_factor = pa.get("adj_scaling_factor", ADJ_SCALING_FACTOR)
     radius = pa.get("radius", RADIUS)
 
     consumer_group = Composite("Consumer", {"color": GRAY})
@@ -279,9 +273,9 @@ def set_up(props=None):
     for c in range(0, num_consumers):
         groups[CONSUMER_INDX] += create_consumer("Consumer " + str(c))
     for b in range(0, num_bb):
-        groups[BB_INDX] += create_bb("Big box " + str(b), util)
+        groups[BB_INDX] += create_bb("Big box " + str(b))
     for m in range(0, num_mp):
-        groups[MP_INDX] += create_mp("Mom and pop " + str(m), util)
+        groups[MP_INDX] += create_mp("Mom and pop " + str(m))
     town = Env("Town",
                action=town_action,
                members=groups,
