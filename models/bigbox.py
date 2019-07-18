@@ -19,10 +19,9 @@ NUM_OF_CONSUMERS = 150
 NUM_OF_BB = 3
 NUM_OF_MP = 10
 
-MIN_ADJ = 0.01
-ADJ_SCALING_FACTOR = 0.2
 UTIL = 0.3
 MP_PREF = 0.2
+ADJ_SCALING_FACTOR = 0.2
 
 CONSUMER_INDX = 0
 BB_INDX = 1
@@ -30,6 +29,8 @@ MP_INDX = 2
 
 town = None
 groups = None
+mp_pref = None
+adj_scaling_factor = None
 
 mp_stores = {"coffee": [30, 20, 700, 20],
              "groceries": [80, 30, 1000, 30],
@@ -50,7 +51,7 @@ def create_consumer(name):
     return Agent(name=name, attrs=characteristics, action=consumer_action)
 
 
-def create_bb(name, adj=MIN_ADJ):
+def create_bb(name, util):
     """
     Creates a big box store agent.
     Does not have to randomly determine the store type
@@ -72,13 +73,13 @@ def create_bb(name, adj=MIN_ADJ):
                    "variable expense": expense[1],
                    "capital": expense[2],
                    "inventory": [expense[3], expense[3]],
-                   "util adj": UTIL}
+                   "util adj": util}
     return Agent(name=name,
                  attrs=store_books,
                  action=bb_action)
 
 
-def create_mp(name, adj=MIN_ADJ):
+def create_mp(name, util):
     """
     Creates a mom and pop store agent.
     Store type (what the store will sell) is determined randomly
@@ -103,14 +104,16 @@ def create_mp(name, adj=MIN_ADJ):
                    "variable expense": expense[1],
                    "capital": expense[2],
                    "inventory": [expense[3], expense[3]],
-                   "util adj": UTIL}
+                   "util adj": util}
     return Agent(name=store_name,
                  attrs=store_books,
                  action=mp_action)
 
 
 def calc_util(stores):
-    return (random.random() + stores.attrs["util adj"]) * ADJ_SCALING_FACTOR
+    global adj_scaling_factor
+
+    return (random.random() + stores.attrs["util adj"]) * adj_scaling_factor
 
 
 def transaction(store, customer):
@@ -145,6 +148,7 @@ def town_action(town):
     and carries out the transaction.
     """
     global groups
+    global mp_pref
 
     for y in range(town.height):
         for x in range(town.width):
@@ -177,7 +181,7 @@ def town_action(town):
                         if (curr_customer.attrs["item needed"] in
                                 nearby_neighbors[neighbor].name):
                             util = (calc_util(nearby_neighbors[neighbor])
-                                    + MP_PREF)
+                                    + mp_pref)
                             if DEBUG:
                                 print("     ", neighbor, "has",
                                       curr_customer.attrs["item needed"])
@@ -208,6 +212,8 @@ def set_up(props=None):
     """
     global town
     global groups
+    global mp_pref
+    global adj_scaling_factor
 
     ds_file = get_prop_path(MODEL_NAME)
     if props is None:
@@ -215,11 +221,16 @@ def set_up(props=None):
     else:
         pa = PropArgs.create_props(MODEL_NAME,
                                    prop_dict=props)
+
     width = pa.get("grid_width", DEF_WIDTH)
     height = pa.get("grid_height", DEF_HEIGHT)
     num_consumers = pa.get("consumer_num", NUM_OF_CONSUMERS)
     num_bb = pa.get("bb_num", NUM_OF_BB)
     num_mp = pa.get("mp_num", NUM_OF_MP)
+    util = pa.get("util", UTIL)
+    mp_pref = pa.get("mp_pref", MP_PREF)
+    adj_scaling_factor = pa.get("adj_scaling_factor", ADJ_SCALING_FACTOR)
+
     consumer_group = Composite("Consumer", {"color": GRAY})
     mp_group = Composite("Mom and pop", {"color": RED})
     bb_group = Composite("Big box", {"color": BLUE})
@@ -230,9 +241,9 @@ def set_up(props=None):
     for c in range(0, num_consumers):
         groups[CONSUMER_INDX] += create_consumer("Consumer " + str(c))
     for b in range(0, num_bb):
-        groups[BB_INDX] += create_bb("Big box " + str(b))
+        groups[BB_INDX] += create_bb("Big box " + str(b), util)
     for m in range(0, num_mp):
-        groups[MP_INDX] += create_mp("Mom and pop " + str(m))
+        groups[MP_INDX] += create_mp("Mom and pop " + str(m), util)
     town = Env("Town",
                action=town_action,
                members=groups,
