@@ -7,7 +7,7 @@ import os
 import getpass
 # import logging
 import indra.display_methods as disp
-from indra.agent import join, switch, Agent
+from indra.agent import join, switch, Agent, AgentEncoder
 from indra.space import Space
 from indra.user import TermUser, TERMINAL, API
 from indra.user import TEST, TestUser, USER_EXIT, APIUser
@@ -100,19 +100,18 @@ class Env(Space):
             self.user = APIUser(getpass.getuser(), self)
 
     def from_json(self, serial_env):
-        # super().from_json()
+        super().from_json(serial_env)
         self.props = pa.create_props("basic", prop_dict=serial_env["props"])
         self.pop_hist = PopHist(serial_pops=serial_env["pop_hist"])
         self.plot_title = serial_env["pop_hist"]
-        self.name = serial_env["name"]
-        self.user = serial_env["user"]["name"]  # not sure about this
+        self.user = serial_env["user"]["name"]
+        # self.name = serial_env["name"]
         # self.womb = serial_env["womb"]
         # self.switches = serial_env["switches"]
 
     def to_json(self):
         rep = super().to_json()
-        rep["user"] = self.user.to_json()["name"]  # not sure about this
-        rep["restore_env"] = self.restore_env
+        rep["user"] = self.user.to_json()["name"]
         rep["plot_title"] = self.plot_title
         rep["props"] = self.props.to_json()
         rep["pop_hist"] = self.pop_hist.to_json()
@@ -121,7 +120,7 @@ class Env(Space):
         return rep
 
     def __repr__(self):
-        return json.dumps(self.to_json(), indent=4)
+        return json.dumps(self.to_json(), csl=AgentEncoder, indent=4)
 
     def __init_unrestorables(self):
         pass

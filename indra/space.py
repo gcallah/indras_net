@@ -5,7 +5,7 @@ of agents related spatially.
 from functools import wraps
 from random import randint
 from math import sqrt
-from indra.agent import is_composite
+from indra.agent import is_composite, AgentEncoder
 from indra.composite import Composite
 import json
 
@@ -96,7 +96,7 @@ class Space(Composite):
         self.locations = serial_space["locations"]
 
     def __repr__(self):
-        return json.dumps(self.to_json(), indent=4)
+        return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
 
     def grid_size(self):
         """
