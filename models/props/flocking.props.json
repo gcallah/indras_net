@@ -33,5 +33,13 @@
     "atype": "INT",
     "hival": 50,
     "lowval": 1
+  },
+
+  "bird_range": {
+    "val": 5,
+    "question": "What is distance between birds?",
+    "atype": "INT",
+    "hival": 50,
+    "lowval": 1
   }
 }
