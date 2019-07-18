@@ -168,8 +168,8 @@ class Agent(object):
                 "groups": grp_nms,
                 "active": self.active,
                 "type_sig": self.type_sig,
-                "locator": self.locator,
-                "prim_group": self.prim_group,
+                # "locator": self.locator,
+                # "prim_group": self.prim_group,
                 "neighbors": self.neighbors,
                 "has_acted": self.has_acted,
                 "action_key": self.action_key
@@ -181,8 +181,8 @@ class Agent(object):
         self.action_key = serial_agent["action_key"]
         self.has_acted = serial_agent["has_acted"]
         self.neighbors = serial_agent["neighbors"]
-        self.prim_group = serial_agent["prim_group"]
-        self.locator = serial_agent["locator"]
+        # self.prim_group = serial_agent["prim_group"]
+        # self.locator = serial_agent["locator"]
         self.type_sig = serial_agent["type_sig"]
         self.active = serial_agent["active"]
         self.groups = serial_agent["groups"]

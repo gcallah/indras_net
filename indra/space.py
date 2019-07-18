@@ -86,14 +86,14 @@ class Space(Composite):
         rep = super().to_json()
         rep["width"] = self.width
         rep["height"] = self.height
-        rep["locations"] = self.locations
+        # rep["locations"] = self.locations
         return rep
 
     def from_json(self, serial_space):
         super().from_json(serial_space)
         self.width = serial_space["width"]
         self.height = serial_space["height"]
-        self.locations = serial_space["locations"]
+        # self.locations = serial_space["locations"]
 
     def __repr__(self):
         return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
