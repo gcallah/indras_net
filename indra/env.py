@@ -2,7 +2,6 @@
 This file defines an Env, which is a collection
 of agents that share a timeline and a Space.
 """
-# import json
 from propargs.propargs import PropArgs as pa
 import os
 import getpass
@@ -12,6 +11,7 @@ from indra.agent import join, switch, Agent
 from indra.space import Space
 from indra.user import TermUser, TERMINAL, API
 from indra.user import TEST, TestUser, USER_EXIT, APIUser
+import json
 
 DEBUG = False
 DEBUG2 = False
@@ -74,8 +74,8 @@ class Env(Space):
     """
     def __init__(self, name, action=None, random_placing=True,
                  props=None, serial_env=None, **kwargs):
-        super().__init__(name, action=action, random_placing=random_placing,
-                         **kwargs)
+        super().__init__(name, action=action,
+                         random_placing=random_placing, **kwargs)
         if serial_env is not None:
             self.restore_env(serial_env)
         else:
@@ -100,8 +100,7 @@ class Env(Space):
             self.user = APIUser(getpass.getuser(), self)
 
     def from_json(self, serial_env):
-        # we'll need to call super().from_json!
-        # super.from_json()
+        # super().from_json()
         self.props = pa.create_props("basic", prop_dict=serial_env["props"])
         self.pop_hist = PopHist(serial_pops=serial_env["pop_hist"])
         self.plot_title = serial_env["pop_hist"]
@@ -112,14 +111,17 @@ class Env(Space):
 
     def to_json(self):
         rep = super().to_json()
-        rep["name"] = self.name
         rep["user"] = self.user.to_json()["name"]  # not sure about this
+        rep["restore_env"] = self.restore_env
         rep["plot_title"] = self.plot_title
         rep["props"] = self.props.to_json()
         rep["pop_hist"] = self.pop_hist.to_json()
         # rep["womb"] = self.womb
         # rep["switches"] = self.switches
         return rep
+
+    def __repr__(self):
+        return json.dumps(self.to_json(), indent=4)
 
     def __init_unrestorables(self):
         pass

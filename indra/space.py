@@ -7,6 +7,7 @@ from random import randint
 from math import sqrt
 from indra.agent import is_composite
 from indra.composite import Composite
+import json
 
 DEF_WIDTH = 10
 DEF_HEIGHT = 10
@@ -96,6 +97,9 @@ class Space(Composite):
         self.members = serial_space["members"]
         self.action = serial_space["action"]
         self.locations = serial_space["locations"]
+
+    def __repr__(self):
+        return json.dumps(self.to_json(), indent=4)
 
     def grid_size(self):
         """

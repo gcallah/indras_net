@@ -176,7 +176,7 @@ class Agent(object):
                 }
 
     def from_json(self, serial_agent):
-        from models.rdict import action_dict
+        from models.run_dict import action_dict
         self.action = action_dict[serial_agent["action_key"]]
         self.action_key = serial_agent["action_key"]
         self.has_acted = serial_agent["has_acted"]
@@ -190,6 +190,9 @@ class Agent(object):
         self.pos = serial_agent["pos"]
         self.duration = serial_agent["duration"]
         self.name = serial_agent["name"]
+
+    def __repr__(self):
+        return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
 
     def primary_group(self):
         # print("We are at primary_group FUNCTION: ", self.prim_group)
@@ -224,9 +227,6 @@ class Agent(object):
 
     def __str__(self):
         return self.name
-
-    def __repr__(self):
-        return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
 
     def __len__(self):
         return len(self.attrs)
