@@ -49,9 +49,9 @@ class Home extends Component {
     return (
       <div>
         <br />
-        <h1 style={{ "textAlign": "center" }}>Welcome to the Indra ABM platform!</h1>
+        <h1 style={{ "textAlign": "center", "fontWeight": '200'}}>Welcome to the Indra ABM platform!</h1>
         <br /><br />
-        <h1 style={{"fontSize": 16}}>We have several models: </h1>
+        <h1 style={{"fontSize": 16, "fontWeight": '400'}}>We have several models: </h1>
         <img alt="" style={{display:'block', float:'right', width:'40%', alignItems: "center"}} src={model_image}/>
         <Menu vertical style={{
             maxHeight: '30em',
@@ -66,7 +66,7 @@ class Home extends Component {
           </Link>
         </Menu.Item>)}
         </Menu>
-        <h1 style={{"fontSize": 18, "fontWeight": '400'}}>To see the
+        <h1 style={{"fontSize": 16, "fontWeight": '400'}}>To see the
         <button onClick={this.showSource}
         className="btn btn-outline-primary m-2"> discription </button> 
         of the project.</h1>
