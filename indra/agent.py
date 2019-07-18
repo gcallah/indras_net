@@ -168,8 +168,8 @@ class Agent(object):
                 "groups": grp_nms,
                 "active": self.active,
                 "type_sig": self.type_sig,
-                # "locator": self.locator,
-                # "prim_group": self.prim_group,
+                "locator": str(self.locator),
+                "prim_group": str(self.prim_group),
                 "neighbors": self.neighbors,
                 "has_acted": self.has_acted,
                 "action_key": self.action_key

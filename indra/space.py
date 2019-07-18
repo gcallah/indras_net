@@ -86,7 +86,7 @@ class Space(Composite):
         rep = super().to_json()
         rep["width"] = self.width
         rep["height"] = self.height
-        # rep["locations"] = self.locations
+        rep["locations_dict"] = self.LocDict()
         return rep
 
     def from_json(self, serial_space):
@@ -97,6 +97,12 @@ class Space(Composite):
 
     def __repr__(self):
         return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
+
+    def LocDict(self):
+        dic = {}
+        for key in self.locations:
+            dic[self.locations[key].name] = key
+        return dic
 
     def grid_size(self):
         """
