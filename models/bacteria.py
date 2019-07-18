@@ -99,7 +99,7 @@ def create_bacterium(name, i):
     bacterium = Agent(name + str(i), action=bacterium_action)
     bacterium["prev_toxicity"] = None
     bacterium["prev_nutricity"] = None
-    bacterium["max_move"] = 4
+    bacterium["max_move"] = 1
     return bacterium
 
 
@@ -117,7 +117,7 @@ def create_nutrient(name, i):
     Create a nutrient.
     """
     nutrient = Agent(name + str(i), action=nutrient_action)
-    nutrient["max_move"] = 3
+    nutrient["max_move"] = 1
     return nutrient
 
 
