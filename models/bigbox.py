@@ -168,6 +168,7 @@ def town_action(town):
                     if (nearby_neighbors[neighbor].isactive()):
                         if (nearby_neighbors[neighbor].primary_group()
                            == groups[BB_INDX]):
+                            curr_customer.has_acted = True
                             util = calc_util(nearby_neighbors[neighbor])
                             if DEBUG:
                                 print("Customer", curr_customer.get_pos())
@@ -187,6 +188,7 @@ def town_action(town):
                                       curr_customer.attrs["item needed"])
                             if (curr_customer.attrs["item needed"] in
                                     nearby_neighbors[neighbor].name):
+                                curr_customer.has_acted = True
                                 util = (calc_util(nearby_neighbors[neighbor])
                                         + mp_pref)
                                 if DEBUG:
