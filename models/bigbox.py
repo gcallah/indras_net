@@ -22,6 +22,7 @@ NUM_OF_MP = 10
 UTIL = 0.3
 MP_PREF = 0.2
 ADJ_SCALING_FACTOR = 0.2
+RADIUS = 2
 
 CONSUMER_INDX = 0
 BB_INDX = 1
@@ -31,10 +32,12 @@ town = None
 groups = None
 mp_pref = None
 adj_scaling_factor = None
+radius = None
 
 mp_stores = {"coffee": [30, 20, 700, 20],
              "groceries": [80, 30, 1000, 30],
              "hardware": [50, 25, 800, 25]}
+bb_store = [160, 60, 2000, 60]
 
 
 def create_consumer(name):
@@ -68,7 +71,7 @@ def create_bb(name, util):
     Inventory is the amount of customers that the store can serve
     before it needs to restock and pay the variable expense.
     """
-    expense = [160, 60, 2000, 60]
+    expense = bb_store
     store_books = {"fixed expense": expense[0],
                    "variable expense": expense[1],
                    "capital": expense[2],
@@ -132,7 +135,7 @@ def transaction(store, customer):
             store.attrs["inventory"][1]
             + store.attrs["inventory"][0])
     if store.attrs["capital"] <= 0:
-        print("     ", store, "is out of buisness")
+        print("     ", store, "is going out of buisness")
         store.die()
     if DEBUG:
         print("     ", store, "has a capital of", store.attrs["capital"],
@@ -149,6 +152,7 @@ def town_action(town):
     """
     global groups
     global mp_pref
+    global radius
 
     for y in range(town.height):
         for x in range(town.width):
@@ -156,39 +160,45 @@ def town_action(town):
             if (curr_customer is not None
                     and (curr_customer.primary_group()
                          == groups[CONSUMER_INDX])):
-                nearby_neighbors = town.get_moore_hood(curr_customer, radius=3)
+                nearby_neighbors = town.get_moore_hood(curr_customer,
+                                                       radius=radius)
                 store_to_go = None
                 max_util = 0.0
                 for neighbor in nearby_neighbors:
-                    if (nearby_neighbors[neighbor].primary_group()
-                       == groups[BB_INDX]):
-                        util = calc_util(nearby_neighbors[neighbor])
-                        if DEBUG:
-                            print("Customer", curr_customer.get_pos())
-                            print("   Shopping at big box store at",
-                                  nearby_neighbors[neighbor].get_pos())
-                            print("      Utility:", util)
-                        if util > max_util:
-                            max_util = util
-                            store_to_go = nearby_neighbors[neighbor]
-                    elif (nearby_neighbors[neighbor].primary_group()
-                            == groups[MP_INDX]):
-                        if DEBUG:
-                            print("Customer", curr_customer.get_pos())
-                            print("   Checking if mom and pop at",
-                                  nearby_neighbors[neighbor].get_pos(),
-                                  "has", curr_customer.attrs["item needed"])
-                        if (curr_customer.attrs["item needed"] in
-                                nearby_neighbors[neighbor].name):
-                            util = (calc_util(nearby_neighbors[neighbor])
-                                    + mp_pref)
+                    if (nearby_neighbors[neighbor].isactive()):
+                        if (nearby_neighbors[neighbor].primary_group()
+                           == groups[BB_INDX]):
+                            util = calc_util(nearby_neighbors[neighbor])
                             if DEBUG:
-                                print("     ", neighbor, "has",
-                                      curr_customer.attrs["item needed"])
+                                print("Customer", curr_customer.get_pos())
+                                print("   Shopping at big box store at",
+                                      nearby_neighbors[neighbor].get_pos())
                                 print("      Utility:", util)
                             if util > max_util:
                                 max_util = util
                                 store_to_go = nearby_neighbors[neighbor]
+                        elif (nearby_neighbors[neighbor].primary_group()
+                                == groups[MP_INDX]):
+                            if DEBUG:
+                                print("Customer", curr_customer.get_pos())
+                                print("   Checking if mom and pop at",
+                                      nearby_neighbors[neighbor].get_pos(),
+                                      "has",
+                                      curr_customer.attrs["item needed"])
+                            if (curr_customer.attrs["item needed"] in
+                                    nearby_neighbors[neighbor].name):
+                                util = (calc_util(nearby_neighbors[neighbor])
+                                        + mp_pref)
+                                if DEBUG:
+                                    print("     ", neighbor, "has",
+                                          curr_customer.attrs["item needed"])
+                                    print("      Utility:", util)
+                                if util > max_util:
+                                    max_util = util
+                                    store_to_go = nearby_neighbors[neighbor]
+                    else:
+                        print("   ", nearby_neighbors[neighbor],
+                              "is out of buisness")
                 curr_customer.attrs["last utils"] = max_util
                 if store_to_go is not None:
                     transaction(store_to_go, curr_customer)
@@ -214,6 +224,7 @@ def set_up(props=None):
     global groups
     global mp_pref
     global adj_scaling_factor
+    global radius
 
     ds_file = get_prop_path(MODEL_NAME)
     if props is None:
@@ -230,6 +241,7 @@ def set_up(props=None):
     util = pa.get("util", UTIL)
     mp_pref = pa.get("mp_pref", MP_PREF)
     adj_scaling_factor = pa.get("adj_scaling_factor", ADJ_SCALING_FACTOR)
+    radius = pa.get("radius", RADIUS)
 
     consumer_group = Composite("Consumer", {"color": GRAY})
     mp_group = Composite("Mom and pop", {"color": RED})
