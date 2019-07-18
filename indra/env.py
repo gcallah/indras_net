@@ -7,7 +7,7 @@ import os
 import getpass
 # import logging
 import indra.display_methods as disp
-from indra.agent import join, switch, Agent
+from indra.agent import join, switch, Agent, AgentEncoder
 from indra.space import Space
 from indra.user import TermUser, TERMINAL, API
 from indra.user import TEST, TestUser, USER_EXIT, APIUser
@@ -121,7 +121,7 @@ class Env(Space):
         return rep
 
     def __repr__(self):
-        return json.dumps(self.to_json(), indent=4)
+        return json.dumps(self.to_json(), csl=AgentEncoder, indent=4)
 
     def __init_unrestorables(self):
         pass
