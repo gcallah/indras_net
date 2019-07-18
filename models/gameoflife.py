@@ -344,9 +344,9 @@ def set_up(props=None):
     else:
         pa = PropArgs.create_props(MODEL_NAME,
                                    prop_dict=props)
-    width = pa.get('grid_width', DEF_WIDTH)
-    height = pa.get('grid_height', DEF_HEIGHT)
-    simulation = pa.get('simulation', 1)
+    width = pa.get("grid_width", DEF_WIDTH)
+    height = pa.get("grid_heigh", DEF_HEIGHT)
+    simulation = pa.get("simulation", 1)
     white = Composite("white", {"color": WHITE})
     black = Composite("black", {"color": BLACK, "marker": SQUARE})
     groups = []

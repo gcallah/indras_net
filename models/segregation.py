@@ -86,7 +86,10 @@ def seg_agent_action(agent):
                 num_same += 1
         if len(neighbors) != 0:
             ratio_same = num_same / len(neighbors)
-        return env_favorable(ratio_same, agent[TOLERANCE])
+        switch_location = env_favorable(ratio_same, agent[TOLERANCE])
+        if not switch_location:
+            agent.has_acted = True
+        return switch_location
     return False
 
 

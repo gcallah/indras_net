@@ -7,6 +7,7 @@ from random import randint
 from math import sqrt
 from indra.agent import is_composite
 from indra.composite import Composite
+import json
 
 DEF_WIDTH = 10
 DEF_HEIGHT = 10
@@ -29,7 +30,7 @@ def out_of_bounds(x, y, x1, y1, x2, y2):
 
 
 def bound(point, lower, upper):
-    return min(max(point, lower), upper - 1)
+    return min(max(point, lower), upper)
 
 
 def distance(a1, a2):
@@ -70,7 +71,6 @@ class Space(Composite):
                          action=action)
         self.width = width
         self.height = height
-        self.stay = False
 
         # the location of members in the space
         self.locations = {}
@@ -81,6 +81,22 @@ class Space(Composite):
             self.rand_place_members(self.members)
         else:
             self.consec_place_members(self.members)
+
+    def to_json(self):
+        rep = super().to_json()
+        rep["width"] = self.width
+        rep["height"] = self.height
+        rep["locations"] = self.locations
+        return rep
+
+    def from_json(self, serial_space):
+        super().from_json(serial_space)
+        self.width = serial_space["width"]
+        self.height = serial_space["height"]
+        self.locations = serial_space["locations"]
+
+    def __repr__(self):
+        return json.dumps(self.to_json(), indent=4)
 
     def grid_size(self):
         """
@@ -137,7 +153,7 @@ class Space(Composite):
         With constraints, narrow to that range.
         """
         high = self.width if high is None else high
-        return randint(low, high - 1)
+        return randint(low, high)
 
     def rand_y(self, low=0, high=None):
         """
@@ -146,19 +162,19 @@ class Space(Composite):
         With constraints, narrow to that range.
         """
         high = self.height if high is None else high
-        return randint(low, high - 1)
+        return randint(low, high)
 
     def constrain_x(self, x):
         """
         Pull x in bounds if it ain't.
         """
-        return bound(x, 0, self.width)
+        return bound(x, 0, self.width - 1)
 
     def constrain_y(self, y):
         """
         Pull y in bounds if it ain't.
         """
-        return bound(y, 0, self.height)
+        return bound(y, 0, self.height - 1)
 
     def gen_new_pos(self, mbr, max_move):
         """
@@ -192,9 +208,6 @@ class Space(Composite):
             return None
         return self.locations[(x, y)]
 
-    def stay_in_place(self, stay):
-        self.stay = stay
-
     def place_member(self, mbr, max_move=None, xy=None):
         """
         By default, locate a member at a random x, y spot in our grid.
@@ -207,31 +220,43 @@ class Space(Composite):
             print("     is_full")
             self.user.log("Can't fit no more folks in this space!")
             return None
-        if not self.stay:
-            if not is_composite(mbr):
-                if xy is not None:
-                    (x, y) = xy  # it had better be a tuple!
-                else:
-                    (x, y) = self.gen_new_pos(mbr, max_move)
-                if self.is_empty(x, y):
-                    if mbr.islocated():
-                        self.move_location(x, y, mbr.get_x(), mbr.get_y())
-                    else:
-                        self.add_location(x, y, mbr)
-                    # if I am setting pos, I am agent's locator!
-                    mbr.set_pos(self, x, y)
-                    return (x, y)
-                elif (max_move is None) and (xy is None):
-                    # if the random position is already taken,
-                    # find the member a new position
-                    # but if max_move is not None, the hood might be filled!
-                    # so we need something to detect
-                    # a full neighborhood as well.
-                    # and if xy is not None, the user asked for a particular
-                    # spot: don't give them another, but return None.
-                    return self.place_member(mbr, max_move)
+        if not is_composite(mbr):
+            if xy is not None:
+                (x, y) = xy  # it had better be a tuple!
+                cur_x = x
+                cur_y = y
+                if out_of_bounds(x, y, 0, 0, self.width, self.height):
+                    while (cur_x < 0):
+                        cur_x = self.width + cur_x
+                    while (cur_x >= self.width):
+                        cur_x = cur_x - self.width
+
+                    while (cur_y < 0):
+                        cur_y = self.height + cur_y
+                    while (cur_y >= self.height):
+                        cur_y = cur_y - self.height
+                    (x, y) = (cur_x, cur_y)
             else:
-                return self.rand_place_members(mbr.members, max_move)
+                (x, y) = self.gen_new_pos(mbr, max_move)
+            if self.is_empty(x, y):
+                if mbr.islocated():
+                    self.move_location(x, y, mbr.get_x(), mbr.get_y())
+                else:
+                    self.add_location(x, y, mbr)
+                # if I am setting pos, I am agent's locator!
+                mbr.set_pos(self, x, y)
+                return (x, y)
+            elif (max_move is None) and (xy is None):
+                # if the random position is already taken,
+                # find the member a new position
+                # but if max_move is not None, the hood might be filled!
+                # so we need something to detect
+                # a full neighborhood as well.
+                # and if xy is not None, the user asked for a particular
+                # spot: don't give them another, but return None.
+                return self.place_member(mbr, max_move)
+        else:
+            return self.rand_place_members(mbr.members, max_move)
 
     def __iadd__(self, other):
         super().__iadd__(other)
@@ -377,27 +402,3 @@ class Space(Composite):
         if save_neighbors:
             agent.neighbors = moore_hood
         return moore_hood
-
-    def get_hood(self, filter_func, agent, save_hood=False):
-        """
-        Takes in filter_func, which is a list of strings of the names of
-        get neighbor methods, agent, and save_hood, which is a boolean
-        for either returning the Composite of neighbors or
-        storing the Composite in agent.neighbors,
-        and runs the corresponding get neighbor methods.
-        """
-        neighborhood = Composite("Neighborhood")
-        if "get_x_hood" in filter_func:
-            neighborhood += self.get_x_hood(agent)
-        if "get_y_hood" in filter_func:
-            neighborhood += self.get_y_hood(agent)
-        if "get_top_lr_hood" in filter_func:
-            neighborhood += self.get_top_lr_hood(agent)
-        if "get_bottom_lr_hood" in filter_func:
-            neighborhood += self.get_bottom_lr_hood(agent)
-        if "get_row_hood" in filter_func:
-            neighborhood += self.get_row_hood(agent)
-        if save_hood:
-            agent.neighbors = neighborhood
-        else:
-            return neighborhood

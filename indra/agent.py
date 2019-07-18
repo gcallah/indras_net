@@ -7,6 +7,7 @@ from math import pi, sin
 import json
 from random import random
 from collections import OrderedDict
+import math
 
 
 DEBUG = False  # turns debugging code on or off
@@ -155,6 +156,44 @@ class Agent(object):
             if is_space(self.prim_group):
                 self.locator = self.prim_group
 
+    def to_json(self):
+        grp_nms = ""
+        for grp in self.groups:
+            grp_nms += grp + " "
+        return {"name": self.name,
+                "is_composite": 0,
+                "duration": self.duration,
+                "pos": self.pos,
+                "attrs": self.attrs_to_dict(),
+                "groups": grp_nms,
+                "active": self.active,
+                "type_sig": self.type_sig,
+                "locator": self.locator,
+                "prim_group": self.prim_group,
+                "neighbors": self.neighbors,
+                "has_acted": self.has_acted,
+                "action_key": self.action_key
+                }
+
+    def from_json(self, serial_agent):
+        from models.run_dict import action_dict
+        self.action = action_dict[serial_agent["action_key"]]
+        self.action_key = serial_agent["action_key"]
+        self.has_acted = serial_agent["has_acted"]
+        self.neighbors = serial_agent["neighbors"]
+        self.prim_group = serial_agent["prim_group"]
+        self.locator = serial_agent["locator"]
+        self.type_sig = serial_agent["type_sig"]
+        self.active = serial_agent["active"]
+        self.groups = serial_agent["groups"]
+        self.attrs = serial_agent["attrs"]
+        self.pos = serial_agent["pos"]
+        self.duration = serial_agent["duration"]
+        self.name = serial_agent["name"]
+
+    def __repr__(self):
+        return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
+
     def primary_group(self):
         # print("We are at primary_group FUNCTION: ", self.prim_group)
         return self.prim_group
@@ -189,9 +228,6 @@ class Agent(object):
     def __str__(self):
         return self.name
 
-    def __repr__(self):
-        return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
-
     def __len__(self):
         return len(self.attrs)
 
@@ -220,7 +256,13 @@ class Agent(object):
                 if not self.action(self, **kwargs):
                     # False return means agent is "unhappy" and
                     # so agent will move (if located).
-                    self.move()
+                    max_move = DEF_MAX_MOVE
+                    if "max_move" in self:
+                        max_move = self["max_move"]
+                    angle = None
+                    if "angle" in self:
+                        angle = self["angle"]
+                    self.move(max_move=max_move, angle=angle)
                 return True
             elif DEBUG:
                 print("I'm " + self.name
@@ -259,14 +301,25 @@ class Agent(object):
         else:
             return None
 
-    def move(self, max_move=DEF_MAX_MOVE):
+    def move(self, max_move=DEF_MAX_MOVE, angle=None):
         """
         Move this agent to a random pos within max_move
         of its current pos.
         """
         if (self.islocated() and self.locator is not None
                 and not self.locator.is_full()):
-            self.locator.place_member(self, max_move)
+            if angle is not None:
+                cur_x = self.get_x()
+                cur_y = self.get_y()
+                if math.cos(angle) < 0:
+                    cur_x = cur_x * (-1)
+                if math.sin(angle) < 0:
+                    cur_y = cur_y * (-1)
+                x = math.cos(angle) * max_move + cur_x
+                y = math.sin(angle) * max_move + cur_y
+                self.locator.place_member(self, max_move, xy=(x, y))
+            else:
+                self.locator.place_member(self, max_move)
 
     def isactive(self):
         return self.active
@@ -306,23 +359,3 @@ class Agent(object):
     def switch_groups(self, g1, g2):
         self.del_group(g1)
         self.add_group(g2)
-
-    def to_json(self):
-        grp_nms = ""
-        for grp in self.groups:
-            grp_nms += grp + " "
-        return {"name": self.name,
-                "is_composite": 0,
-                "duration": self.duration,
-                "pos": self.pos,
-                "attrs": self.attrs_to_dict(),
-                "groups": grp_nms,
-                "active": self.active,
-                "type_sig": self.type_sig,
-                "action_key": self.action_key
-                }
-
-    def from_json(self, serial_agent):
-        from models.rdict import action_dict
-        self.action = action_dict[serial_agent["action_key"]]
-        self.action_key = serial_agent["action_key"]

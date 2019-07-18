@@ -8,7 +8,7 @@ from collections import OrderedDict
 from random import choice
 from copy import copy
 
-from indra.agent import Agent, join, INF, AgentEncoder, is_composite
+from indra.agent import Agent, join, INF, is_composite
 
 DEBUG = False
 
@@ -46,8 +46,18 @@ class Composite(Agent):
             for i in range(num_members):
                 self += member_creator(name, i)
 
+    def to_json(self):
+        rep = super().to_json()
+        rep["is_composite"] = 1
+        rep["members"] = self.members
+        return rep
+
+    def from_json(self, serial_composite):
+        super().from_json(serial_composite)
+        self.members = serial_composite["members"]
+
     def __repr__(self):
-        return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
+        return json.dumps(self.to_json(), indent=4)
 
     def __eq__(self, other):
         if not super().__eq__(other):
@@ -269,18 +279,6 @@ class Composite(Agent):
 
     def magnitude(self):
         pass
-
-    def to_json(self):
-        rep = super().to_json()
-        rep["is_composite"] = 1
-        rep["members"] = self.members
-        return rep
-
-    def from_json(self, serial_composite):
-        self.name = serial_composite["name"]
-        self.attrs = serial_composite["attrs"]
-        self.members = serial_composite["members"]
-        self.action = serial_composite["actions"]
 
     def attrs_to_dict(self):
         if self.attrs is not None:

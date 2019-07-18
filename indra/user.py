@@ -106,10 +106,8 @@ class User(Agent):
         self.user_msgs = ''
 
     def to_json(self):
-        rep = {}
-        rep["name"] = self.name
-        rep["user_msgs"] = self.user_msgs
-        return rep
+        return {"user_msgs": self.user_msgs,
+                "name": self.name}
 
     def exclude_menu_item(self, to_exclude):
         self.to_exclude = to_exclude
@@ -177,6 +175,9 @@ class TermUser(User):
 
     def exclude_choices(self, to_exclude):
         self.to_exclude = to_exclude
+
+    def to_json(self):
+        return {"name": self.name}
 
     def __call__(self):
         print('\n'
