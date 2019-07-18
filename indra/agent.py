@@ -191,7 +191,8 @@ class Agent(object):
         # for elem in grp_nm:
         #     self.groups[elem] = # Agent!!
         # self.prim_group = serial_agent["prim_group"] Agent
-        # prob we want to create a dict with "Agent Name" as key and the Agent as val
+        # prob we want to create a dict with
+        # "Agent Name" as key and the Agent as val
         self.locator = self.prim_group
         self.attrs = serial_agent["attrs"]
         self.pos = serial_agent["pos"]
