@@ -93,6 +93,7 @@ class Space(Composite):
         super().from_json(serial_space)
         self.width = serial_space["width"]
         self.height = serial_space["height"]
+        # find the agents and put them into the specific locations
         # self.locations = serial_space["locations"]
 
     def __repr__(self):
