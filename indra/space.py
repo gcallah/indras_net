@@ -90,12 +90,9 @@ class Space(Composite):
         return rep
 
     def from_json(self, serial_space):
+        super().from_json(serial_space)
         self.width = serial_space["width"]
         self.height = serial_space["height"]
-        self.name = serial_space["name"]
-        self.attrs = serial_space["attrs"]
-        self.members = serial_space["members"]
-        self.action = serial_space["action"]
         self.locations = serial_space["locations"]
 
     def __repr__(self):

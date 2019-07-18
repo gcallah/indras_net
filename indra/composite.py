@@ -53,10 +53,7 @@ class Composite(Agent):
         return rep
 
     def from_json(self, serial_composite):
-        super().__init__(serial_composite["name"],
-                         attrs=serial_composite["attrs"],
-                         duration=serial_composite["duration"],
-                         action=serial_composite["actions"])
+        super().from_json(serial_composite)
         self.members = serial_composite["members"]
 
     def __repr__(self):

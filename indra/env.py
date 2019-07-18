@@ -100,11 +100,10 @@ class Env(Space):
             self.user = APIUser(getpass.getuser(), self)
 
     def from_json(self, serial_env):
-        # super().from_json()
+        super().from_json(serial_env)
         self.props = pa.create_props("basic", prop_dict=serial_env["props"])
         self.pop_hist = PopHist(serial_pops=serial_env["pop_hist"])
         self.plot_title = serial_env["pop_hist"]
-        self.name = serial_env["name"]
         self.user = serial_env["user"]["name"]  # not sure about this
         # self.womb = serial_env["womb"]
         # self.switches = serial_env["switches"]
@@ -112,7 +111,6 @@ class Env(Space):
     def to_json(self):
         rep = super().to_json()
         rep["user"] = self.user.to_json()["name"]  # not sure about this
-        rep["restore_env"] = self.restore_env
         rep["plot_title"] = self.plot_title
         rep["props"] = self.props.to_json()
         rep["pop_hist"] = self.pop_hist.to_json()
