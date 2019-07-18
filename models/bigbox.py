@@ -34,13 +34,12 @@ mp_pref = None
 adj_scaling_factor = None
 radius = None
 
-mp_stores = {"books": [60, 30, 360, 60],
-             "coffee": [30, 15, 180, 30],
-             "groceries": [90, 45, 540, 90],
-             "hardware": [80, 40, 480, 80],
-             "meals": [45, 23, 270, 45]
-             }
-bb_store = [60, 25, 1000, 38]
+mp_stores = {"books": [45, 30, 360, 60],
+             "coffee": [23, 15, 180, 30],
+             "groceries": [67, 45, 540, 90],
+             "hardware": [60, 40, 480, 80],
+             "meals": [40, 23, 270, 45]}
+bb_store = [60, 25, 480, 90]
 
 
 def create_consumer(name):
@@ -49,7 +48,7 @@ def create_consumer(name):
     Expense is the amount of money that the agent will spend
     in a store during a single period.
     """
-    spending_power = random.randint(50, 80)
+    spending_power = random.randint(70, 100)
     item_needed = random.choice(list(mp_stores.keys()))
     characteristics = {"spending power": spending_power,
                        "last util": 0.0,
