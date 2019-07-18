@@ -8,7 +8,7 @@ from indra.utils import get_prop_path
 from indra.agent import Agent
 from indra.env import Env
 from indra.composite import Composite
-from indra.display_methods import BLUE, GRAY, RED
+from indra.display_methods import BLACK, BLUE, GRAY, GREEN, RED, TAN, YELLOW
 
 MODEL_NAME = "bigbox"
 DEBUG = True
@@ -32,11 +32,11 @@ mp_pref = None
 adj_scaling_factor = None
 radius = None
 
-mp_stores = {"books": [45, 30, 360, 60],
-             "coffee": [23, 15, 180, 30],
-             "groceries": [67, 45, 540, 90],
-             "hardware": [60, 40, 480, 80],
-             "meals": [40, 23, 270, 45]}
+mp_stores = {"books": [45, 30, 360, 60, TAN],
+             "coffee": [23, 15, 180, 30, BLACK],
+             "groceries": [67, 45, 540, 90, GREEN],
+             "hardware": [60, 40, 480, 80, RED],
+             "meals": [40, 23, 270, 45, YELLOW]}
 bb_store = [60, 25, 480, 90]
 
 
@@ -81,7 +81,7 @@ def create_bb(name):
                  action=bb_action)
 
 
-def create_mp(name):
+def create_mp(name, i):
     """
     Creates a mom and pop store agent.
     Store type (what the store will sell) is determined randomly
@@ -99,9 +99,8 @@ def create_mp(name):
     Inventory is the amount of customers that the store can serve
     before it needs to restock and pay the variable expense.
     """
-    store_name = random.choice(list(mp_stores.keys()))
-    expense = mp_stores[store_name]
-    store_name = name + ": " + store_name
+    expense = mp_stores[name]
+    store_name = "Mom and pop " + name + " " + str(i)
     store_books = {"fixed expense": expense[0],
                    "variable expense": expense[1],
                    "capital": expense[2],
@@ -178,39 +177,41 @@ def town_action(town):
                 for neighbor in nearby_neighbors:
                     if (nearby_neighbors[neighbor].isactive()):
                         if (nearby_neighbors[neighbor].primary_group()
-                           == groups[BB_INDX]):
-                            curr_customer.has_acted = True
-                            util = calc_util(nearby_neighbors[neighbor])
-                            transaction(nearby_neighbors[neighbor])
-                            if DEBUG:
-                                print("Customer", curr_customer.get_pos())
-                                print("   Shopping at big box store at",
-                                      nearby_neighbors[neighbor].get_pos())
-                                print("      Utility:", util)
-                            if util > max_util:
-                                max_util = util
-                                store_to_go = nearby_neighbors[neighbor]
-                        elif (nearby_neighbors[neighbor].primary_group()
-                                == groups[MP_INDX]):
-                            transaction(nearby_neighbors[neighbor])
-                            if DEBUG:
-                                print("Customer", curr_customer.get_pos())
-                                print("   Checking if mom and pop at",
-                                      nearby_neighbors[neighbor].get_pos(),
-                                      "has",
-                                      curr_customer.attrs["item needed"])
-                            if (curr_customer.attrs["item needed"] in
-                                    nearby_neighbors[neighbor].name):
+                           != groups[CONSUMER_INDX]):
+                            if (nearby_neighbors[neighbor].primary_group()
+                               == groups[BB_INDX]):
                                 curr_customer.has_acted = True
-                                util = (calc_util(nearby_neighbors[neighbor])
-                                        + mp_pref)
+                                util = calc_util(nearby_neighbors[neighbor])
+                                transaction(nearby_neighbors[neighbor])
                                 if DEBUG:
-                                    print("     ", neighbor, "has",
-                                          curr_customer.attrs["item needed"])
+                                    print("Customer", curr_customer.get_pos())
+                                    print("   Shopping at big box store at",
+                                          nearby_neighbors[neighbor].get_pos())
                                     print("      Utility:", util)
                                 if util > max_util:
                                     max_util = util
                                     store_to_go = nearby_neighbors[neighbor]
+                            else:
+                                transaction(nearby_neighbors[neighbor])
+                                if DEBUG:
+                                    print("Customer", curr_customer.get_pos())
+                                    print("   Checking if mom and pop at",
+                                          nearby_neighbors[neighbor].get_pos(),
+                                          "has",
+                                          curr_customer.attrs["item needed"])
+                                if (curr_customer.attrs["item needed"] in
+                                        nearby_neighbors[neighbor].name):
+                                    curr_customer.has_acted = True
+                                    util = (calc_util(
+                                            nearby_neighbors[neighbor])
+                                            + mp_pref)
+                                    if DEBUG:
+                                        print("     ", neighbor, "has item")
+                                        print("      Utility:", util)
+                                    if util > max_util:
+                                        max_util = util
+                                        store_to_go = (
+                                            nearby_neighbors[neighbor])
                     else:
                         print("   ", nearby_neighbors[neighbor],
                               "is out of buisness")
@@ -264,18 +265,25 @@ def set_up(props=None):
     radius = pa.get("radius", RADIUS)
 
     consumer_group = Composite("Consumer", {"color": GRAY})
-    mp_group = Composite("Mom and pop", {"color": RED})
     bb_group = Composite("Big box", {"color": BLUE})
     groups = []
     groups.append(consumer_group)
     groups.append(bb_group)
-    groups.append(mp_group)
+    for stores in range(0, len(mp_stores)):
+        store_name = list(mp_stores.keys())[stores]
+        groups.append(Composite(store_name,
+                                {"color": mp_stores[store_name][4]}))
     for c in range(0, num_consumers):
         groups[CONSUMER_INDX] += create_consumer("Consumer " + str(c))
     for b in range(0, num_bb):
         groups[BB_INDX] += create_bb("Big box " + str(b))
     for m in range(0, num_mp):
-        groups[MP_INDX] += create_mp("Mom and pop " + str(m))
+        rand = random.randint(2, len(mp_stores) + 1)
+        groups[rand] += create_mp(str(groups[rand]), m)
+    for comp in groups:
+        print(comp)
+        for agents in comp:
+            print("    ", comp[agents])
     town = Env("Town",
                action=town_action,
                members=groups,
