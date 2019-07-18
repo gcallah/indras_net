@@ -221,6 +221,11 @@ def town_action(town):
                               "is out of buisness")
                 curr_customer.attrs["last utils"] = max_util
                 if store_to_go is not None:
+                    if DEBUG:
+                        print("   Max utility was", max_util)
+                        print("   Spending $"
+                              + str(curr_customer.attrs["spending power"])
+                              + " at " + str(store_to_go))
                     transaction(store_to_go, curr_customer)
     if DEBUG:
         get_store_census(town)
