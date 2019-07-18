@@ -26,6 +26,9 @@ class Home extends Component {
     } 
   }
 
+  showSource = () => {
+    window.open('https://gcallah.github.io/indras_net/index.html')
+  }
 
   handleClick(id, name){
     console.log(id)
@@ -48,14 +51,13 @@ class Home extends Component {
         <br />
         <h1 style={{ "textAlign": "center" }}>Welcome to the Indra ABM platform!</h1>
         <br /><br />
-
         <h1 style={{"fontSize": 16}}>We have several models: </h1>
+        <img alt="" style={{display:'block', float:'right', width:'40%', alignItems: "center"}} src={model_image}/>
         <Menu vertical style={{
             maxHeight: '30em',
             maxwidth: '40em',
             overflowY: 'scroll',
           }}>
-
         {Object.keys(this.state.allItems).map((item,i)=>
         <Menu.Item key={i}>
           {console.log(this.state.allItems[item]['model ID'])}
@@ -64,8 +66,11 @@ class Home extends Component {
           </Link>
         </Menu.Item>)}
         </Menu>
+        <h1 style={{"fontSize": 18, "fontWeight": '400'}}>To see the
+        <button onClick={this.showSource}
+        className="btn btn-outline-primary m-2"> discription </button> 
+        of the project.</h1>
         <br /><br />
-        <img alt="" style={{display:'block', float:'right', width:'40%', alignItems: "center"}} src={model_image}/>
         <br /><br />
       </div>
     );
