@@ -71,11 +71,16 @@ def bacterium_action(agent, **kwargs):
     agent["prev_nutricity"] = nutrient_level
 
     if (toxin_change + nutrient_change <= 0) or (threshold - toxin_level >= 0):
-        print("this is the default threshold: ", threshold,
-              " and this is the toxin_level ", toxin_level)
-        print("this is the net change:", toxin_change + nutrient_change)
-        new_angle = randint(0, 360)
+        if agent["angle"] is None:
+            new_angle = randint(0, 360)
+        else:
+            angle_shift = randint(45, 315)
+            new_angle = agent["angle"] + angle_shift
+        if (new_angle > 360):
+            new_angle = new_angle % 360
         agent["angle"] = new_angle
+        print("The new angle is:", agent["angle"])
+
     # return False means to move
     return False
 
@@ -99,7 +104,8 @@ def create_bacterium(name, i):
     bacterium = Agent(name + str(i), action=bacterium_action)
     bacterium["prev_toxicity"] = None
     bacterium["prev_nutricity"] = None
-    bacterium["max_move"] = 1
+    bacterium["angle"] = None
+    bacterium["max_move"] = 3
     return bacterium
 
 

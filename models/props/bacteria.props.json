@@ -27,6 +27,13 @@
     "hival": 100,
     "lowval": 1
   },
+  "threshold": {
+    "val": -0.22,
+    "question": "What toxin concentration threshold do you want?",
+    "atype": "DBL",
+    "hival": -1,
+    "lowval": -0.01
+  },
   "num_bacteria": {
     "val": 1,
     "question": "How many bacteria do you want?",
