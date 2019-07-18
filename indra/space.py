@@ -72,7 +72,7 @@ class Space(Composite):
         self.width = width
         self.height = height
 
-        # the location of members in the space
+        # the location of members in the space {(tuple):Agent}
         self.locations = {}
 
         # by making two class methods for rand_place_members and
@@ -86,7 +86,7 @@ class Space(Composite):
         rep = super().to_json()
         rep["width"] = self.width
         rep["height"] = self.height
-        rep["locations_dict"] = self.LocDict()
+        rep["locations_dict"] = self.loc_dict()
         return rep
 
     def from_json(self, serial_space):
@@ -98,7 +98,7 @@ class Space(Composite):
     def __repr__(self):
         return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
 
-    def LocDict(self):
+    def loc_dict(self):
         dic = {}
         for key in self.locations:
             dic[self.locations[key].name] = key
