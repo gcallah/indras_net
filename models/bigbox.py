@@ -149,9 +149,13 @@ def transaction(store, customer=None):
 
 def get_store_census(town):
     for bb in groups[1]:
-        print(groups[1][bb], "has a capital of", groups[1][bb].attrs["capital"], "and inventory of", (groups[1][bb]).attrs["inventory"][1])
+        print(groups[1][bb], "has a capital of",
+              groups[1][bb].attrs["capital"],
+              "and inventory of", (groups[1][bb]).attrs["inventory"][1])
     for mp in groups[2]:
-        print(groups[2][mp], "has a capital of", groups[2][mp].attrs["capital"], "and inventory of", (groups[2][mp]).attrs["inventory"][1])
+        print(groups[2][mp], "has a capital of",
+              groups[2][mp].attrs["capital"],
+              "and inventory of", (groups[2][mp]).attrs["inventory"][1])
 
 
 def town_action(town):
