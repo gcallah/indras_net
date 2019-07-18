@@ -17,10 +17,10 @@ DEF_HEIGHT = 30
 DEF_WIDTH = 30
 NUM_OF_CONSUMERS = 150
 NUM_OF_BB = 3
-NUM_OF_MP = 10
+NUM_OF_MP = 6
 
-UTIL = 0.3
-MP_PREF = 0.2
+UTIL = 0.15
+MP_PREF = 0.1
 ADJ_SCALING_FACTOR = 0.2
 RADIUS = 2
 
@@ -34,10 +34,13 @@ mp_pref = None
 adj_scaling_factor = None
 radius = None
 
-mp_stores = {"coffee": [30, 20, 700, 20],
-             "groceries": [80, 30, 1000, 30],
-             "hardware": [50, 25, 800, 25]}
-bb_store = [160, 60, 2000, 60]
+mp_stores = {"books": [60, 30, 360, 60],
+             "coffee": [30, 15, 180, 30],
+             "groceries": [90, 45, 540, 90],
+             "hardware": [80, 40, 480, 80],
+             "meals": [45, 23, 270, 45]
+             }
+bb_store = [60, 25, 1000, 38]
 
 
 def create_consumer(name):
@@ -46,7 +49,7 @@ def create_consumer(name):
     Expense is the amount of money that the agent will spend
     in a store during a single period.
     """
-    spending_power = random.randint(50, 100)
+    spending_power = random.randint(50, 80)
     item_needed = random.choice(list(mp_stores.keys()))
     characteristics = {"spending power": spending_power,
                        "last util": 0.0,
@@ -119,27 +122,36 @@ def calc_util(stores):
     return (random.random() + stores.attrs["util adj"]) * adj_scaling_factor
 
 
-def transaction(store, customer):
+def transaction(store, customer=None):
     """
     Calcuates the expense and the revenue of the store passed in
     after a transaction with the customer passed in.
     """
-    store.attrs["capital"] += customer.attrs["spending power"]
-    store.attrs["inventory"][1] -= 1
-    store.attrs["capital"] -= store.attrs["fixed expense"]
-    if store.attrs["inventory"][1] == 1:
-        store.attrs["capital"] = (
-            store.attrs["capital"]
-            - store.attrs["variable expense"])
-        store.attrs["inventory"][1] = (
-            store.attrs["inventory"][1]
-            + store.attrs["inventory"][0])
-    if store.attrs["capital"] <= 0:
-        print("     ", store, "is going out of buisness")
-        store.die()
-    if DEBUG:
-        print("     ", store, "has a capital of", store.attrs["capital"],
-              "and inventory of", store.attrs["inventory"][1])
+    if customer is not None:
+        store.attrs["capital"] += customer.attrs["spending power"]
+        store.attrs["inventory"][1] -= 1
+        if store.attrs["inventory"][1] == 1:
+            store.attrs["capital"] = (
+                store.attrs["capital"]
+                - store.attrs["variable expense"])
+            store.attrs["inventory"][1] = (
+                store.attrs["inventory"][1]
+                + store.attrs["inventory"][0])
+        if store.attrs["capital"] <= 0:
+            print("     ", store, "is going out of buisness")
+            store.die()
+        if DEBUG:
+            print("     ", store, "has a capital of", store.attrs["capital"],
+                  "and inventory of", store.attrs["inventory"][1])
+    else:
+        store.attrs["capital"] -= store.attrs["fixed expense"]
+
+
+def get_store_census(town):
+    for bb in groups[1]:
+        print(groups[1][bb], "has a capital of", groups[1][bb].attrs["capital"], "and inventory of", (groups[1][bb]).attrs["inventory"][1])
+    for mp in groups[2]:
+        print(groups[2][mp], "has a capital of", groups[2][mp].attrs["capital"], "and inventory of", (groups[2][mp]).attrs["inventory"][1])
 
 
 def town_action(town):
@@ -170,6 +182,7 @@ def town_action(town):
                            == groups[BB_INDX]):
                             curr_customer.has_acted = True
                             util = calc_util(nearby_neighbors[neighbor])
+                            transaction(nearby_neighbors[neighbor])
                             if DEBUG:
                                 print("Customer", curr_customer.get_pos())
                                 print("   Shopping at big box store at",
@@ -180,6 +193,7 @@ def town_action(town):
                                 store_to_go = nearby_neighbors[neighbor]
                         elif (nearby_neighbors[neighbor].primary_group()
                                 == groups[MP_INDX]):
+                            transaction(nearby_neighbors[neighbor])
                             if DEBUG:
                                 print("Customer", curr_customer.get_pos())
                                 print("   Checking if mom and pop at",
@@ -204,6 +218,8 @@ def town_action(town):
                 curr_customer.attrs["last utils"] = max_util
                 if store_to_go is not None:
                     transaction(store_to_go, curr_customer)
+    if DEBUG:
+        get_store_census(town)
 
 
 def consumer_action(consumer):
