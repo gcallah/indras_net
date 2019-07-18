@@ -34,30 +34,16 @@
     "hival": 30,
     "lowval": 5
   },
-  "util": {
-    "val": 0.15,
-    "question": "What utility would you like for both stores?",
-    "atype": "INT",
-    "hival": 0.5,
-    "lowval": 0.01
-  },
   "mp_pref": {
     "val": 0.1,
-    "question": "What utility preference would you like for mom and pop stores?",
-    "atype": "INT",
+    "question": "How much percentage preference should customers have to mom and pop stores?",
+    "atype": "DBL",
     "hival": 0.4,
-    "lowval": 0.01
-  },
-  "adj_scaling_factor": {
-    "val": 0.2,
-    "question": "What adjusting scaling factor would you like for both stores?",
-    "atype": "INT",
-    "hival": 0.4,
-    "lowval": 0.01
+    "lowval": 0.0
   },
   "radius": {
     "val": 2,
-    "question": "What radius would you like for the stores?",
+    "question": "How close should the costumers be to the stores to shop there?",
     "atype": "INT",
     "hival": 5,
     "lowval": 1
