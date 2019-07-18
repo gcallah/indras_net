@@ -105,9 +105,9 @@ class Env(Space):
         self.pop_hist = PopHist(serial_pops=serial_env["pop_hist"])
         self.plot_title = serial_env["pop_hist"]
         self.user = serial_env["user"]["name"]
-        # self.name = serial_env["name"]
-        # self.womb = serial_env["womb"]
-        # self.switches = serial_env["switches"]
+        self.name = serial_env["name"]
+        self.womb = serial_env["womb"]
+        self.switches = serial_env["switches"]
 
     def to_json(self):
         rep = super().to_json()
@@ -115,12 +115,13 @@ class Env(Space):
         rep["plot_title"] = self.plot_title
         rep["props"] = self.props.to_json()
         rep["pop_hist"] = self.pop_hist.to_json()
-        # rep["womb"] = self.womb
-        # rep["switches"] = self.switches
+        rep["womb"] = self.womb
+        rep["switches"] = self.switches
+        print("rep", rep)
         return rep
 
     def __repr__(self):
-        return json.dumps(self.to_json(), csl=AgentEncoder, indent=4)
+        return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
 
     def __init_unrestorables(self):
         pass
