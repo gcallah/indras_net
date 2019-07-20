@@ -43,7 +43,7 @@
   },
   "radius": {
     "val": 2,
-    "question": "How close should the costumers be to the stores to shop there?",
+    "question": "How close should the consumers be to the stores to shop there?",
     "atype": "INT",
     "hival": 5,
     "lowval": 1
