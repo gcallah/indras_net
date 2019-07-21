@@ -21,12 +21,12 @@ env = None
 
 
 def agent_action(agent):
-    # print("I'm " + agent.name + " and I'm acting.")
-    # # return False means to move
+    print("I'm " + agent.name + " and I'm acting.")
+    # return False means to move
 
-    # return False
-    if agent.neighbors is None:
-        bird_group.get_moore_hood(agent, save_neighbors=False)
+    return False
+    # if agent.neighbors is None:
+    #     bird_group.get_moore_hood(agent, save_neighbors=False)
 
 
 
