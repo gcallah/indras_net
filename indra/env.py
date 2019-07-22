@@ -76,6 +76,7 @@ class Env(Space):
                  props=None, serial_env=None, census=None, **kwargs):
         super().__init__(name, action=action,
                          random_placing=random_placing, **kwargs)
+
         if serial_env is not None:
             self.restore_env(serial_env)
         else:
@@ -148,6 +149,16 @@ class Env(Space):
                 # run until user exit!
                 if self.user() == USER_EXIT:
                     break
+
+    def add_member(self, member):
+        super().add_member(member)
+        self.add_to_registry(member)
+
+    def add_to_registry(self, member):
+        if str(type(member)) == "composite":
+            for mbr in self.members:
+                self.add_to_registry(mbr)
+        self.registry[member.name] = member
 
     def add_child(self, agent, group):
         """

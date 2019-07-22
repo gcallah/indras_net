@@ -132,6 +132,8 @@ class Agent(object):
     """
     def __init__(self, name, attrs=None, action=None, duration=INF,
                  prim_group=None):
+
+        self.registry = {}
         self.name = name
         self.action_key = None
         self.action = action
