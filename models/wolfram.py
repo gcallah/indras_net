@@ -6,9 +6,9 @@ import ast
 from propargs.propargs import PropArgs
 from indra.utils import get_prop_path
 from indra.agent import Agent, switch
-from indra.env import Env
-from indra.space import DEF_WIDTH
 from indra.composite import Composite
+from indra.space import DEF_WIDTH
+from indra.env import Env
 from indra.display_methods import BLACK, WHITE, SQUARE
 
 MODEL_NAME = "wolfram"
@@ -88,10 +88,12 @@ def wolfram_action(wolfram_env):
     wolfram_env.user.tell("\nChecking agents in row " + str(active_row_y)
                           + " against the rule...")
     if active_row_y < 1:
-        wolfram_env.user.tell_warn("You have exceeded the maximum height"
-                                   + " and cannot run the model"
-                                   + " for more periods."
-                                   + "\nYou can still ask for a scatter plot.")
+        wolfram_env.user.error_message["run"] = ("You have exceeded the"
+                                                 + "maximum height"
+                                                 + " and cannot run the model"
+                                                 + " for more periods."
+                                                 + "\nYou can still ask for"
+                                                 + "a scatter plot.")
         wolfram_env.user.exclude_choices(["run", "line_graph"])
         return False
     else:

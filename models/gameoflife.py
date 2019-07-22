@@ -6,19 +6,19 @@ from random import randint
 from propargs.propargs import PropArgs
 from indra.utils import get_prop_path
 from indra.agent import Agent, switch
-from indra.env import Env
 from indra.composite import Composite
+from indra.env import Env
 from indra.display_methods import BLACK, WHITE, SQUARE
 
 MODEL_NAME = "gameoflife"
 DEBUG = False  # Turns debugging code on or off
 
+DEF_HEIGHT = 30
+DEF_WIDTH = 30
+
 gameoflife_env = None
 groups = None
 min_y = None
-
-DEF_HEIGHT = 30
-DEF_WIDTH = 30
 
 
 def create_agent(x, y):
