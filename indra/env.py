@@ -193,6 +193,8 @@ class Env(Space):
             # self.user.tell("In period ", i)
             if self.womb is not None:
                 for (agent, group) in self.womb:
+                    # add  the agent into the registry
+                    self.registry[agent.name] = agent
                     join(group, agent)
                 del self.womb[:]
             if self.switches is not None:
