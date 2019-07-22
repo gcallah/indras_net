@@ -31,7 +31,7 @@ class ModelDetail extends Component {
   }
 
 
-  states = data => {
+  states = (data) => {
     //loop over objects in data and create object in this.state
     Object.keys(this.state.model_details).forEach(item => 
     this.setState({[item]: data[item]})
@@ -39,7 +39,7 @@ class ModelDetail extends Component {
   }
 
 
-  errors = data => {
+  errors = (data) => {
     Object.keys(this.state.model_details).forEach(item => 
       this.setState(prevState => ({
         model_details: {
@@ -62,7 +62,7 @@ class ModelDetail extends Component {
     return ans
   }
 
-  handleChange = e =>{ 
+  handleChange = (e) =>{ 
     let model_detail = this.state.model_details;
     const {name,value} = e.target
     let valid = this.checkValidity(name,value)
@@ -110,11 +110,17 @@ class ModelDetail extends Component {
   handleSubmit = async() => {
     event.preventDefault();
     console.log(this.state.model_details)
-    const res = await axios.put(this.api_server + localStorage.getItem("menu_id"), this.state.model_details)
-    this.setState({env_file: res.data})
-    this.props.history.push({pathname:"/models/menu/",state: {
-                env_file: this.state.env_file,
-               }});
+    try{
+      const res = await axios.put(this.api_server + localStorage.getItem("menu_id"), this.state.model_details)
+      this.setState({env_file: res.data})
+      this.props.history.push({pathname:"/models/menu/",state: {
+                  env_file: this.state.env_file,
+                 }});
+    }
+    catch(e){
+      console.log(e.message)
+      this.props.history.push('/errorCatching')
+    }
   }
 
 
@@ -144,12 +150,14 @@ class ModelDetail extends Component {
           {Object.keys(this.state.model_details).map((item,i)=> {
             if ('question' in this.state.model_details[item]){
               return(
+                <div>
                 <label 
                   key={i}>{this.state.model_details[item]['question']} {" "}
-                  <input type={this.state.model_details[item]['atype']} defaultValue={this.state.model_details[item]['val']} onChange={this.handleChange} name={item} />
+                  <input type={this.state.model_details[item]['atype']} defaultValue={this.state.model_details[item]['val']} onChange={this.handleChange} name={item}/>
                   <span style={{color:"red",fontSize: 12}}>{this.state.model_details[item]['errorMessage']}</span>
-                  <br/><br/>
                 </label>
+                <br/>
+                </div>
               )}
             })
           }

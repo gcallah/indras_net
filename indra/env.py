@@ -118,7 +118,6 @@ class Env(Space):
         rep["pop_hist"] = self.pop_hist.to_json()
         rep["womb"] = self.womb
         rep["switches"] = self.switches
-        print("rep", rep)
         return rep
 
     def __repr__(self):

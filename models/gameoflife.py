@@ -6,13 +6,15 @@ from random import randint
 from propargs.propargs import PropArgs
 from indra.utils import get_prop_path
 from indra.agent import Agent, switch
-from indra.env import Env
-from indra.space import DEF_WIDTH, DEF_HEIGHT
 from indra.composite import Composite
+from indra.env import Env
 from indra.display_methods import BLACK, WHITE, SQUARE
 
 MODEL_NAME = "gameoflife"
 DEBUG = False  # Turns debugging code on or off
+
+DEF_HEIGHT = 30
+DEF_WIDTH = 30
 
 gameoflife_env = None
 groups = None
@@ -142,7 +144,9 @@ def populate_board_random(width, height):
     for i in range(num_agent):
         agent = gameoflife_env.get_agent_at(randint(lower_limit, upper_limit),
                                             randint(lower_limit, upper_limit))
-        if agent.primary_group() != groups[1]:
+        print(agent)
+        print(type(agent))
+        if agent is not None and agent.primary_group() != groups[1]:
             change_color(agent)
 
 
@@ -344,9 +348,9 @@ def set_up(props=None):
     else:
         pa = PropArgs.create_props(MODEL_NAME,
                                    prop_dict=props)
-    width = pa.get("grid_width", DEF_WIDTH)
     height = pa.get("grid_heigh", DEF_HEIGHT)
-    simulation = pa.get("simulation", 1)
+    width = pa.get("grid_width", DEF_WIDTH)
+    simulation = pa.get("simulation", 0)
     white = Composite("white", {"color": WHITE})
     black = Composite("black", {"color": BLACK, "marker": SQUARE})
     groups = []

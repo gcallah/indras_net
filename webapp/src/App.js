@@ -7,6 +7,7 @@ import ModelDetail from './components/ModelDetail'
 import MenuList from "./components/MenuList"
 import Action from "./components/Action"
 import NotFoundPage from './components/NotFoundPage';
+import ErrorCatching from './components/ErrorCatching';
 
 class App extends Component {
   render() {
@@ -19,6 +20,7 @@ class App extends Component {
             <Route exact path="/models/props/" component={ModelDetail} />
             <Route exact path="/models/menu/" component={MenuList} />
             <Route exact path="/models/menu/" component={Action} />
+            <Route exact path='/errorCatching' component={ErrorCatching} />
             <Route component={NotFoundPage} />
           </Switch>
         </Layout>
