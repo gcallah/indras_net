@@ -6,7 +6,7 @@ from flask_cors import CORS
 import json
 from indra.user import APIUser
 from models.run_dict import setup_dict
-# from indra.agent import AgentEncoder
+from indra.agent import AgentEncoder
 from indra.env import Env
 
 
@@ -38,9 +38,8 @@ def load_menu():
 
 
 def json_converter(object):
-    return object.to_json()
-    # return json.loads(json.dumps(object.to_json(),
-    # cls=AgentEncoder, indent=4))
+    return json.loads(json.dumps(object.to_json(),
+    cls=AgentEncoder, indent=4))
 
 
 @api.route('/hello')

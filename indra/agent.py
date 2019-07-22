@@ -158,7 +158,6 @@ class Agent(object):
     def to_json(self):
         # self.groups = {"name": Agent}
         # self.prim_group = Agent
-        print("hiii", str(type(self.groups)))
         grp_nms = ""
         for grp in self.groups:
             grp_nms += grp + " "
@@ -192,7 +191,7 @@ class Agent(object):
         # self.prim_group = serial_agent["prim_group"] Agent
         # prob we want to create a dict with
         # "Agent Name" as key and the Agent as val
-        self.locator = self.prim_group
+        # self.locator = self.prim_group
         self.attrs = serial_agent["attrs"]
         self.pos = serial_agent["pos"]
         self.duration = serial_agent["duration"]
