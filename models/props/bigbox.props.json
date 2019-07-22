@@ -21,7 +21,7 @@
     "lowval": 50
   },
   "bb_num": {
-    "val": 3,
+    "val": 1,
     "question": "How many big box stores woud you like?",
     "atype": "INT",
     "hival": 20,
@@ -37,21 +37,21 @@
   "util": {
     "val": 0.15,
     "question": "What utility would you like for both stores?",
-    "atype": "INT",
+    "atype": "DBL",
     "hival": 0.5,
     "lowval": 0.01
   },
   "mp_pref": {
     "val": 0.1,
     "question": "What utility preference would you like for mom and pop stores?",
-    "atype": "INT",
+    "atype": "DBL",
     "hival": 0.4,
     "lowval": 0.01
   },
   "adj_scaling_factor": {
     "val": 0.2,
     "question": "What adjusting scaling factor would you like for both stores?",
-    "atype": "INT",
+    "atype": "DBL",
     "hival": 0.4,
     "lowval": 0.01
   },

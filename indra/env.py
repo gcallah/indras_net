@@ -73,13 +73,14 @@ class Env(Space):
     That makes the inheritance work out as we want it to.
     """
     def __init__(self, name, action=None, random_placing=True,
-                 props=None, serial_env=None, **kwargs):
+                 props=None, serial_env=None, census=None, **kwargs):
         super().__init__(name, action=action,
                          random_placing=random_placing, **kwargs)
         if serial_env is not None:
             self.restore_env(serial_env)
         else:
             self.props = props
+            self.census_func = census
             self.pop_hist = PopHist()  # this will record pops across time
             # Make sure varieties are present in the history
             for mbr in self.members:
@@ -198,36 +199,40 @@ class Env(Space):
 
             curr_acts = super().__call__()
             acts += curr_acts
-            self.get_census()
+            census_rpt = self.get_census()
+            self.user.tell(census_rpt)
         return acts
 
-    def get_census(self, tell_func=None):
+    def get_census(self):
         """
         Gets the census data for all the agents stored
         in the member dictionary.
-        If tell_func is None, returns how many agents
-        are in each of the groups.
+        If self.census_func is None, returns how many agents
+        are in each of the groups, and how many acted.
 
         Checks which agents have the member variable has_acted as True
         and counts how many of them there are
         then changes it back to False.
 
-        tell_func is for future expansion.
+        census_func overrides the default behavior.
         """
-        census_str = ""
-        num_acted_agent = 0
-        for composite_str in self.members:
-            population = len(self.members[composite_str])
-            census_str += (composite_str + ": " + str(population) + "\n")
-        for composite in self.members:
-            for agent in self.members[composite]:
-                if not isinstance(self.members[composite][agent], float):
-                    if (self.members[composite][agent]).has_acted:
-                        num_acted_agent += 1
-                        (self.members[composite][agent]).has_acted = False
-        self.user.tell("\nCensus for period " + str(self.get_periods()) + ":"
-                       + "\n" + census_str
-                       + "Total agents acted: " + str(num_acted_agent))
+        if self.census_func:
+            return self.census_func()
+        else:
+            census_str = ""
+            num_acted_agent = 0
+            for composite_str in self.members:
+                population = len(self.members[composite_str])
+                census_str += (composite_str + ": " + str(population) + "\n")
+            for composite in self.members:
+                for agent in self.members[composite]:
+                    if not isinstance(self.members[composite][agent], float):
+                        if (self.members[composite][agent]).has_acted:
+                            num_acted_agent += 1
+                            (self.members[composite][agent]).has_acted = False
+            return("\nCensus for period " + str(self.get_periods()) + ":"
+                   + "\n" + census_str
+                   + "Total agents acted: " + str(num_acted_agent))
 
     def has_disp(self):
         if not disp.plt_present:
