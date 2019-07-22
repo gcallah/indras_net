@@ -216,7 +216,7 @@ class Env(Space):
         census_func overrides the default behavior.
         """
         if self.census_func:
-            return self.census_func()
+            return self.census_func(self)
         else:
             census_str = ""
             num_acted_agent = 0
