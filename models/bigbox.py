@@ -29,7 +29,6 @@ MP_INDX = 2
 town = None
 groups = None
 mp_pref = None
-adj_scaling_factor = None
 radius = None
 
 mp_stores = {"books": [45, 30, 360, 60, TAN],
@@ -68,7 +67,7 @@ def create_bb(name):
 
     Capital is the money that is in the bank.
 
-    Inventory is the amount of customers that the store can serve
+    Inventory is the amount of consumer that the store can serve
     before it needs to restock and pay the variable expense.
     """
     expense = bb_store
@@ -96,7 +95,7 @@ def create_mp(name, i):
 
     Capital is the money that is in the bank.
 
-    Inventory is the amount of customers that the store can serve
+    Inventory is the amount of consumers that the store can serve
     before it needs to restock and pay the variable expense.
     """
     expense = mp_stores[name]
@@ -111,18 +110,16 @@ def create_mp(name, i):
 
 
 def calc_util(stores):
-    global adj_scaling_factor
-
     return random.random()
 
 
-def transaction(store, customer=None):
+def transaction(store, consumer=None):
     """
     Calcuates the expense and the revenue of the store passed in
-    after a transaction with the customer passed in.
+    after a transaction with the consumer passed in.
     """
-    if customer is not None:
-        store.attrs["capital"] += customer.attrs["spending power"]
+    if consumer is not None:
+        store.attrs["capital"] += consumer.attrs["spending power"]
         store.attrs["inventory"][1] -= 1
         if store.attrs["inventory"][1] == 1:
             store.attrs["capital"] = (
@@ -142,6 +139,7 @@ def transaction(store, customer=None):
 
 
 def get_store_census(town):
+    print()
     for bb in groups[1]:
         print(groups[1][bb], "has a capital of",
               groups[1][bb].attrs["capital"],
@@ -155,8 +153,8 @@ def get_store_census(town):
 def town_action(town):
     """
     The action that will be taken every turn.
-    Loops through the town env and finds the customer agents.
-    The customer agents are assigned their neighbors,
+    Loops through the town env and finds the consumer agents.
+    The consumer agents are assigned their neighbors,
     and loop through the neighbors to determine which is a store
     and carries out the transaction.
     """
@@ -166,63 +164,58 @@ def town_action(town):
 
     for y in range(town.height):
         for x in range(town.width):
-            curr_customer = town.get_agent_at(x, y)
-            if (curr_customer is not None
-                    and (curr_customer.primary_group()
+            curr_consumer = town.get_agent_at(x, y)
+            if (curr_consumer is not None
+                    and (curr_consumer.primary_group()
                          == groups[CONSUMER_INDX])):
-                nearby_neighbors = town.get_moore_hood(curr_customer,
+                nearby_neighbors = town.get_moore_hood(curr_consumer,
                                                        radius=radius)
                 store_to_go = None
                 max_util = 0.0
-                for neighbor in nearby_neighbors:
-                    if (nearby_neighbors[neighbor].isactive()):
-                        if (nearby_neighbors[neighbor].primary_group()
-                           != groups[CONSUMER_INDX]):
-                            if (nearby_neighbors[neighbor].primary_group()
-                               == groups[BB_INDX]):
-                                curr_customer.has_acted = True
-                                util = calc_util(nearby_neighbors[neighbor])
-                                transaction(nearby_neighbors[neighbor])
+                for neighbors in nearby_neighbors:
+                    neighbor = nearby_neighbors[neighbors]
+                    if (neighbor.isactive() and neighbor.primary_group()
+                            != groups[CONSUMER_INDX]):
+                        transaction(neighbor)
+                        util = 0.0
+                        if (neighbor.primary_group()
+                           == groups[BB_INDX]):
+                            curr_consumer.has_acted = True
+                            util = calc_util(neighbor)
+                            if DEBUG:
+                                print("Consumer", curr_consumer.get_pos())
+                                print("   Shopping at big box store at",
+                                      neighbor.get_pos())
+                                print("      Utility:", util)
+                        else:
+                            if DEBUG:
+                                print("Consumer", curr_consumer.get_pos())
+                                print("   Checking if mom and pop at",
+                                      neighbor.get_pos(),
+                                      "has",
+                                      curr_consumer.attrs["item needed"])
+                            if (curr_consumer.attrs["item needed"] in
+                                    neighbor.name):
+                                curr_consumer.has_acted = True
+                                util = (calc_util(neighbor)
+                                        + mp_pref)
                                 if DEBUG:
-                                    print("Customer", curr_customer.get_pos())
-                                    print("   Shopping at big box store at",
-                                          nearby_neighbors[neighbor].get_pos())
+                                    print("     ", neighbor, "has item")
                                     print("      Utility:", util)
-                                if util > max_util:
-                                    max_util = util
-                                    store_to_go = nearby_neighbors[neighbor]
-                            else:
-                                transaction(nearby_neighbors[neighbor])
-                                if DEBUG:
-                                    print("Customer", curr_customer.get_pos())
-                                    print("   Checking if mom and pop at",
-                                          nearby_neighbors[neighbor].get_pos(),
-                                          "has",
-                                          curr_customer.attrs["item needed"])
-                                if (curr_customer.attrs["item needed"] in
-                                        nearby_neighbors[neighbor].name):
-                                    curr_customer.has_acted = True
-                                    util = (calc_util(
-                                            nearby_neighbors[neighbor])
-                                            + mp_pref)
-                                    if DEBUG:
-                                        print("     ", neighbor, "has item")
-                                        print("      Utility:", util)
-                                    if util > max_util:
-                                        max_util = util
-                                        store_to_go = (
-                                            nearby_neighbors[neighbor])
-                    else:
-                        print("   ", nearby_neighbors[neighbor],
+                        if util > max_util:
+                            max_util = util
+                            store_to_go = neighbor
+                    if neighbor.primary_group() != groups[CONSUMER_INDX]:
+                        print("   ", neighbor,
                               "is out of buisness")
-                curr_customer.attrs["last utils"] = max_util
+                curr_consumer.attrs["last utils"] = max_util
                 if store_to_go is not None:
                     if DEBUG:
                         print("   Max utility was", max_util)
                         print("   Spending $"
-                              + str(curr_customer.attrs["spending power"])
+                              + str(curr_consumer.attrs["spending power"])
                               + " at " + str(store_to_go))
-                    transaction(store_to_go, curr_customer)
+                    transaction(store_to_go, curr_consumer)
     if DEBUG:
         get_store_census(town)
 
@@ -246,7 +239,6 @@ def set_up(props=None):
     global town
     global groups
     global mp_pref
-    global adj_scaling_factor
     global radius
 
     ds_file = get_prop_path(MODEL_NAME)
