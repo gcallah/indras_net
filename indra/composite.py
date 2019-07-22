@@ -8,7 +8,7 @@ from collections import OrderedDict
 from random import choice
 from copy import copy
 
-from indra.agent import Agent, join, INF, is_composite
+from indra.agent import Agent, join, INF, is_composite, AgentEncoder
 
 DEBUG = False
 
@@ -57,7 +57,7 @@ class Composite(Agent):
         self.members = serial_composite["members"]
 
     def __repr__(self):
-        return json.dumps(self.to_json(), indent=4)
+        return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
 
     def __eq__(self, other):
         if not super().__eq__(other):

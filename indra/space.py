@@ -5,9 +5,10 @@ of agents related spatially.
 from functools import wraps
 from random import randint
 from math import sqrt
-from indra.agent import is_composite
+from indra.agent import is_composite, AgentEncoder
 from indra.composite import Composite
 import json
+import math
 
 DEF_WIDTH = 10
 DEF_HEIGHT = 10
@@ -72,7 +73,7 @@ class Space(Composite):
         self.width = width
         self.height = height
 
-        # the location of members in the space
+        # the location of members in the space {(tuple):Agent}
         self.locations = {}
 
         # by making two class methods for rand_place_members and
@@ -86,17 +87,24 @@ class Space(Composite):
         rep = super().to_json()
         rep["width"] = self.width
         rep["height"] = self.height
-        rep["locations"] = self.locations
+        rep["locations_dict"] = self.loc_dict()
         return rep
 
     def from_json(self, serial_space):
         super().from_json(serial_space)
         self.width = serial_space["width"]
         self.height = serial_space["height"]
-        self.locations = serial_space["locations"]
+        # find the agents and put them into the specific locations
+        # self.locations = serial_space["locations"]
 
     def __repr__(self):
-        return json.dumps(self.to_json(), indent=4)
+        return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
+
+    def loc_dict(self):
+        dic = {}
+        for key in self.locations:
+            dic[self.locations[key].name] = key
+        return dic
 
     def grid_size(self):
         """
@@ -222,20 +230,8 @@ class Space(Composite):
             return None
         if not is_composite(mbr):
             if xy is not None:
-                (x, y) = xy  # it had better be a tuple!
-                cur_x = x
-                cur_y = y
-                if out_of_bounds(x, y, 0, 0, self.width, self.height):
-                    while (cur_x < 0):
-                        cur_x = self.width + cur_x
-                    while (cur_x >= self.width):
-                        cur_x = cur_x - self.width
-
-                    while (cur_y < 0):
-                        cur_y = self.height + cur_y
-                    while (cur_y >= self.height):
-                        cur_y = cur_y - self.height
-                    (x, y) = (cur_x, cur_y)
+                print("when xy is not none, getting xy:", xy)
+                (x, y) = xy
             else:
                 (x, y) = self.gen_new_pos(mbr, max_move)
             if self.is_empty(x, y):
@@ -247,7 +243,7 @@ class Space(Composite):
                 mbr.set_pos(self, x, y)
                 return (x, y)
             elif (max_move is None) and (xy is None):
-                # if the random position is already taken,
+                # if the random position is already taken,x
                 # find the member a new position
                 # but if max_move is not None, the hood might be filled!
                 # so we need something to detect
@@ -402,3 +398,91 @@ class Space(Composite):
         if save_neighbors:
             agent.neighbors = moore_hood
         return moore_hood
+
+    def point_from_vector(self, angle, max_move, xy):
+
+        (prev_x, prev_y) = xy
+        (cur_x, cur_y) = xy
+        #  Calculate the coordinates
+        if math.cos(angle) < 0:
+            cur_x = prev_x * (-1)
+        if math.sin(angle) < 0:
+            cur_y = prev_y * (-1)
+        cur_x = math.cos(angle) * max_move + cur_x
+        cur_y = math.sin(angle) * max_move + cur_y
+
+        #  Adjust if the cur_x and cur_y are out of range
+        if out_of_bounds(cur_x, cur_y, 0, 0, self.width, self.height):
+
+            if (cur_x == prev_x):
+                if (cur_y < 0):
+                    return (cur_x, 0)
+                else:
+                    return (cur_x, self.height - 1)
+
+            if (cur_y == prev_y):
+                if (cur_x < 0):
+                    return (0, cur_y)
+                else:
+                    return (self.width - 1, cur_y)
+
+            if (cur_x != prev_x and cur_y != prev_y):
+                slope = float((cur_y - prev_y) / (cur_x - prev_x))
+
+                '''
+                Calculate the intersection of the vector and Ox and Oy axes
+                '''
+                y_intercept = float(cur_y - slope * cur_x)
+                x_intercept = float(y_intercept / slope) * (-1)
+
+                '''
+                Calculate the intersection of the vector and grid axes
+                '''
+                x_vertical = self.width - 1
+                y_vertical = float(slope * x_vertical) + y_intercept
+                y_horizontal = self.height - 1
+                x_horizontal = float((y_horizontal - y_intercept) / slope)
+                print("This is the current slope:", slope)
+                print("This is the current x and y intercept:",
+                      x_intercept, y_intercept)
+
+            #  Adjust the out of bound coordinates
+            #  1. If both coordinates < 0
+            #  2. If both coordinates > grid size
+            #  3. If only one coordinate < 0
+            #  4. If only one coordinate > grid size
+
+            if (cur_y < 0 and cur_x < 0):
+                if x_intercept > 0:
+                    return (x_intercept, 0)
+                else:
+                    return (0, y_intercept)
+
+            elif (cur_y >= self.height and cur_x >= self.width):
+                if x_horizontal < self.width:
+                    cur_x = x_horizontal
+                    cur_y = y_horizontal
+                else:
+                    cur_x = x_vertical
+                    cur_y = y_vertical
+                return (cur_x, cur_y)
+
+            elif (cur_y * cur_x < 0):
+                if cur_x < 0:
+                    cur_x = 0
+                    cur_y = y_intercept
+                else:
+                    cur_y = 0
+                    cur_x = x_intercept
+                return (cur_x, cur_y)
+
+            elif (cur_x >= self.width or cur_y >= self.height):
+                if cur_x >= self.width:
+                    cur_x = x_vertical
+                    cur_y = y_vertical
+                else:
+                    cur_x = x_horizontal
+                    cur_y = y_horizontal
+                return (cur_x, cur_y)
+        else:
+            return (cur_x, cur_y)

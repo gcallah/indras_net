@@ -7,7 +7,6 @@ from math import pi, sin
 import json
 from random import random
 from collections import OrderedDict
-import math
 
 
 DEBUG = False  # turns debugging code on or off
@@ -157,6 +156,9 @@ class Agent(object):
                 self.locator = self.prim_group
 
     def to_json(self):
+        # self.groups = {"name": Agent}
+        # self.prim_group = Agent
+        print("hiii", str(type(self.groups)))
         grp_nms = ""
         for grp in self.groups:
             grp_nms += grp + " "
@@ -168,8 +170,8 @@ class Agent(object):
                 "groups": grp_nms,
                 "active": self.active,
                 "type_sig": self.type_sig,
-                "locator": self.locator,
-                "prim_group": self.prim_group,
+                "prim_group": str(self.prim_group),
+                "locator": str(self.locator),
                 "neighbors": self.neighbors,
                 "has_acted": self.has_acted,
                 "action_key": self.action_key
@@ -181,11 +183,16 @@ class Agent(object):
         self.action_key = serial_agent["action_key"]
         self.has_acted = serial_agent["has_acted"]
         self.neighbors = serial_agent["neighbors"]
-        self.prim_group = serial_agent["prim_group"]
-        self.locator = serial_agent["locator"]
         self.type_sig = serial_agent["type_sig"]
         self.active = serial_agent["active"]
-        self.groups = serial_agent["groups"]
+        # ret_group = serial_agent["groups"]
+        # grp_nm = ret_group.split(" ")
+        # for elem in grp_nm:
+        #     self.groups[elem] = # Agent!!
+        # self.prim_group = serial_agent["prim_group"] Agent
+        # prob we want to create a dict with
+        # "Agent Name" as key and the Agent as val
+        self.locator = self.prim_group
         self.attrs = serial_agent["attrs"]
         self.pos = serial_agent["pos"]
         self.duration = serial_agent["duration"]
@@ -309,15 +316,12 @@ class Agent(object):
         if (self.islocated() and self.locator is not None
                 and not self.locator.is_full()):
             if angle is not None:
-                cur_x = self.get_x()
-                cur_y = self.get_y()
-                if math.cos(angle) < 0:
-                    cur_x = cur_x * (-1)
-                if math.sin(angle) < 0:
-                    cur_y = cur_y * (-1)
-                x = math.cos(angle) * max_move + cur_x
-                y = math.sin(angle) * max_move + cur_y
-                self.locator.place_member(self, max_move, xy=(x, y))
+                print("This is the pos:", self.pos)
+                new_xy = self.locator.point_from_vector(angle,
+                                                        max_move, self.pos)
+                print("This is the max_move:", max_move)
+                print("This is the new_xy:", new_xy)
+                self.locator.place_member(self, max_move, new_xy)
             else:
                 self.locator.place_member(self, max_move)
 

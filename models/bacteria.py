@@ -20,6 +20,9 @@ DEF_NUM_BACT = 1
 DEF_NUM_TOXINS = 1
 DEF_NUM_NUTRIENTS = 1
 DEF_THRESHOLD = -0.2
+DEF_TOXIN_MOVE = 1
+DEF_BACTERIUM_MOVE = 3
+DEF_NUTRIENT_MOVE = 2
 
 bacteria = None
 toxins = None
@@ -71,11 +74,16 @@ def bacterium_action(agent, **kwargs):
     agent["prev_nutricity"] = nutrient_level
 
     if (toxin_change + nutrient_change <= 0) or (threshold - toxin_level >= 0):
-        print("this is the default threshold: ", threshold,
-              " and this is the toxin_level ", toxin_level)
-        print("this is the net change:", toxin_change + nutrient_change)
-        new_angle = randint(0, 360)
+        if agent["angle"] is None:
+            new_angle = randint(0, 360)
+        else:
+            angle_shift = randint(45, 315)
+            new_angle = agent["angle"] + angle_shift
+        if (new_angle > 360):
+            new_angle = new_angle % 360
         agent["angle"] = new_angle
+        print("The new angle is:", agent["angle"])
+
     # return False means to move
     return False
 
@@ -92,32 +100,36 @@ def nutrient_action(agent, **kwargs):
     return False
 
 
-def create_bacterium(name, i):
+def create_bacterium(name, i, pa):
     """
     Create a baterium.
     """
     bacterium = Agent(name + str(i), action=bacterium_action)
     bacterium["prev_toxicity"] = None
     bacterium["prev_nutricity"] = None
-    bacterium["max_move"] = 1
+    bacterium["angle"] = None
+    bacterium["max_move"] = pa.get("bacterium_move", DEF_BACTERIUM_MOVE)
+    print("the user input for bacterium_move:", bacterium["max_move"])
     return bacterium
 
 
-def create_toxin(name, i):
+def create_toxin(name, i, pa):
     """
     Create a toxin.
     """
     toxin = Agent(name + str(i), action=toxin_action)
-    toxin["max_move"] = 1
+    toxin["max_move"] = pa.get("toxin_move", DEF_TOXIN_MOVE)
+    print("the user input for toxin_move:", toxin["max_move"])
     return toxin
 
 
-def create_nutrient(name, i):
+def create_nutrient(name, i, pa):
     """
     Create a nutrient.
     """
     nutrient = Agent(name + str(i), action=nutrient_action)
-    nutrient["max_move"] = 1
+    nutrient["max_move"] = pa.get("nutrient_move", DEF_NUTRIENT_MOVE)
+    print("the user input for nutrient_move:", nutrient["max_move"])
     return nutrient
 
 
@@ -133,18 +145,17 @@ def set_up(props=None):
         pa = PropArgs.create_props(MODEL_NAME,
                                    prop_dict=props)
 
-    toxins = Composite("Toxins", {"color": RED},
-                       member_creator=create_toxin,
-                       num_members=pa.get('num_toxins',
-                                          DEF_NUM_TOXINS))
-    nutrients = Composite("Nutrients", {"color": YELLOW},
-                          member_creator=create_nutrient,
-                          num_members=pa.get('num_nutrients',
-                                             DEF_NUM_NUTRIENTS))
-    bacteria = Composite("Bacteria", {"color": GREEN},
-                         member_creator=create_bacterium,
-                         num_members=pa.get('num_bacteria',
-                                            DEF_NUM_BACT))
+    toxins = Composite("Toxins", {"color": RED})
+    for i in range(pa.get('num_toxins', DEF_NUM_TOXINS)):
+        toxins += create_toxin("Toxins", i, pa)
+
+    nutrients = Composite("Nutrients", {"color": YELLOW})
+    for i in range(pa.get('num_nutrients', DEF_NUM_TOXINS)):
+        nutrients += create_nutrient("Nutrients", i, pa)
+
+    bacteria = Composite("Bacteria", {"color": GREEN})
+    for i in range(pa.get('num_bacteria', DEF_NUM_BACT)):
+        bacteria += create_bacterium("Bacteria", i, pa)
 
     petri_dish = Env("Petrie dish",
                      height=pa.get('grid_height', DEF_HEIGHT),

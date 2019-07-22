@@ -8,7 +8,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.env import Env
-from indra.display_methods import BLUE
+from indra.display_methods import BLUE, TREE
 
 MODEL_NAME = "flocking"
 DEBUG = True  # turns debugging code on or off
@@ -24,6 +24,8 @@ def agent_action(agent):
     print("I'm " + agent.name + " and I'm acting.")
     # return False means to move
     return False
+    # if agent.neighbors is None:
+    #     bird_group.get_moore_hood(agent, save_neighbors=False)
 
 
 def create_agent(color, i):
@@ -45,7 +47,7 @@ def set_up(props=None):
         pa = PropArgs.create_props(MODEL_NAME,
                                    prop_dict=props)
 
-    bird_group = Composite("Birds", {"color": BLUE},
+    bird_group = Composite("Birds", {"color": BLUE, "marker": TREE},
                            member_creator=create_agent,
                            num_members=pa.get('num_birds', DEF_NUM_BIRDS))
 

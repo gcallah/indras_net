@@ -7,7 +7,7 @@ import os
 import getpass
 # import logging
 import indra.display_methods as disp
-from indra.agent import join, switch, Agent
+from indra.agent import join, switch, Agent, AgentEncoder
 from indra.space import Space
 from indra.user import TermUser, TERMINAL, API
 from indra.user import TEST, TestUser, USER_EXIT, APIUser
@@ -104,22 +104,23 @@ class Env(Space):
         self.props = pa.create_props("basic", prop_dict=serial_env["props"])
         self.pop_hist = PopHist(serial_pops=serial_env["pop_hist"])
         self.plot_title = serial_env["pop_hist"]
-        self.user = serial_env["user"]["name"]  # not sure about this
-        # self.womb = serial_env["womb"]
-        # self.switches = serial_env["switches"]
+        self.user = serial_env["user"]["name"]
+        self.name = serial_env["name"]
+        self.womb = serial_env["womb"]
+        self.switches = serial_env["switches"]
 
     def to_json(self):
         rep = super().to_json()
-        rep["user"] = self.user.to_json()["name"]  # not sure about this
+        rep["user"] = self.user.to_json()["name"]
         rep["plot_title"] = self.plot_title
         rep["props"] = self.props.to_json()
         rep["pop_hist"] = self.pop_hist.to_json()
-        # rep["womb"] = self.womb
-        # rep["switches"] = self.switches
+        rep["womb"] = self.womb
+        rep["switches"] = self.switches
         return rep
 
     def __repr__(self):
-        return json.dumps(self.to_json(), indent=4)
+        return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
 
     def __init_unrestorables(self):
         pass
@@ -205,6 +206,11 @@ class Env(Space):
         in the member dictionary.
         If tell_func is None, returns how many agents
         are in each of the groups.
+
+        Checks which agents have the member variable has_acted as True
+        and counts how many of them there are
+        then changes it back to False.
+
         tell_func is for future expansion.
         """
         census_str = ""
