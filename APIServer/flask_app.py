@@ -39,7 +39,7 @@ def load_menu():
 
 def json_converter(object):
     return json.loads(json.dumps(object.to_json(),
-    cls=AgentEncoder, indent=4))
+                      cls=AgentEncoder, indent=4))
 
 
 @api.route('/hello')
