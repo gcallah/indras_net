@@ -32,12 +32,15 @@ def run(user, test_run=False):
     acts = 0
     try:
         if not test_run:
-            steps = user.ask("How many periods?")
-            if steps is None or steps == "" or steps.isspace():
-                steps = DEF_STEPS
+            if "run" not in user.to_exclude:
+                steps = user.ask("How many periods?")
+                if steps is None or steps == "" or steps.isspace():
+                    steps = DEF_STEPS
+                else:
+                    steps = int(steps)
+                    user.tell("Steps = " + str(steps))
             else:
-                steps = int(steps)
-            user.tell("Steps = " + str(steps))
+                user.tell_warn(user.error_message["run"])
         else:
             steps = DEF_STEPS
 
@@ -104,6 +107,7 @@ class User(Agent):
         self.menu = get_menu_json()
         self.to_exclude = []
         self.user_msgs = ''
+        self.error_message = {}
 
     def to_json(self):
         return {"user_msgs": self.user_msgs,

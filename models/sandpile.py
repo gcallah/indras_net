@@ -4,9 +4,9 @@ Abelian sandpile model
 from propargs.propargs import PropArgs
 from indra.utils import get_prop_path
 from indra.agent import Agent, switch
-from indra.env import Env
-from indra.space import DEF_WIDTH, DEF_HEIGHT
 from indra.composite import Composite
+from indra.space import DEF_HEIGHT, DEF_WIDTH
+from indra.env import Env
 from indra.display_methods import CIRCLE
 
 MODEL_NAME = "sandpile"

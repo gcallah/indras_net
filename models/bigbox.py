@@ -6,15 +6,14 @@ import random
 from propargs.propargs import PropArgs
 from indra.utils import get_prop_path
 from indra.agent import Agent
-from indra.env import Env
 from indra.composite import Composite
+from indra.space import DEF_HEIGHT, DEF_WIDTH
+from indra.env import Env
 from indra.display_methods import BLACK, BLUE, GRAY, GREEN, RED, TAN, YELLOW
 
 MODEL_NAME = "bigbox"
 DEBUG = True
 
-DEF_HEIGHT = 30
-DEF_WIDTH = 30
 NUM_OF_CONSUMERS = 150
 NUM_OF_BB = 3
 NUM_OF_MP = 6
