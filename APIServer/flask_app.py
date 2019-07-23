@@ -65,7 +65,8 @@ class Models(Resource):
                 doc = model["doc"]
             models_response.append({"model ID": model["model ID"],
                                     "name": model["name"],
-                                    "doc": doc})
+                                    "doc": doc,
+                                    "source": model["source"]})
         return models_response
 
 

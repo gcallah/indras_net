@@ -62,7 +62,7 @@ class ModelDetail extends Component {
     return ans
   }
 
-  handleChange = (e) =>{ 
+  handleChange = e =>{ 
     let model_detail = this.state.model_details;
     const {name,value} = e.target
     let valid = this.checkValidity(name,value)
@@ -143,7 +143,7 @@ class ModelDetail extends Component {
       <div>
         <br />
         <br />
-        <h2 style={{ "textAlign": "center" }}>Please set the parameters for your model</h2>
+        <h2 style={{ "textAlign": "center", "fontWeight": '200' }}>Please set the parameters for your model</h2>
         <h3 style={{ "textAlign": "left" }}> {localStorage.getItem("name")} </h3>
         <br /><br />
         <form>
@@ -163,9 +163,11 @@ class ModelDetail extends Component {
           }
         </form>
         <br /><br />
-        <button onClick={this.goback}>Go Back</button>
+        <button onClick={this.goback}
+        className="btn btn-outline-danger m-2"> Go Back </button> 
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <button disabled={disabled_button} onClick={!disabled_button ? this.handleSubmit : null}>Submit</button>
+        <button disabled={disabled_button} onClick={!disabled_button ? this.handleSubmit : null}
+        className="btn btn-outline-success m-2">Submit</button>
         
       </div>
     );
