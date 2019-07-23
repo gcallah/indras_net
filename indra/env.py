@@ -155,9 +155,9 @@ class Env(Space):
         self.add_to_registry(member)
 
     def add_to_registry(self, member):
-        if str(type(member)) == "composite":
-            for mbr in self.members:
-                self.add_to_registry(mbr)
+        if str(type(member)) == "<class 'indra.composite.Composite'>":
+            for mbr in member.members:
+                self.add_to_registry(member.members[mbr])
         self.registry[member.name] = member
 
     def add_child(self, agent, group):
@@ -193,7 +193,7 @@ class Env(Space):
             # self.user.tell("In period ", i)
             if self.womb is not None:
                 for (agent, group) in self.womb:
-                    # add  the agent into the registry
+                    # add the agent into the registry
                     self.registry[agent.name] = agent
                     join(group, agent)
                 del self.womb[:]
