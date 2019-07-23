@@ -176,7 +176,7 @@ class CompositeTestCase(TestCase):
         self.assertEqual(create_mem_str(maths), R + LR)
 
     def test_call(self):
-        acts = self.mathgrp()
+        (acts, moves) = self.mathgrp()
         self.assertEqual(acts, 3)  # hardy is passive!
 
     def test_subset(self):

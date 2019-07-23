@@ -116,6 +116,7 @@ class Composite(Agent):
         agents who acted in a particular call.
         """
         total_acts = 0
+        total_moves = 0
         del_list = []
         self.duration -= 1
         if self.duration > 0:
@@ -125,7 +126,9 @@ class Composite(Agent):
 
             for (key, member) in self.members.items():
                 if member.isactive():
-                    total_acts += member(**kwargs)
+                    (acted, moved) = member(**kwargs)
+                    total_acts += acted
+                    total_moves += moved
                 else:
                     # delete agents but not composites:
                     if not is_composite(member):
@@ -134,7 +137,7 @@ class Composite(Agent):
                         del_list.append(key)
         for key in del_list:
             del self.members[key]
-        return total_acts
+        return (total_acts, total_moves)
 
     def __add__(self, other):
         """

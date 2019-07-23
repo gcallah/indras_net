@@ -186,6 +186,8 @@ class Env(Space):
             Return the total number of actions taken.
         """
         acts = 0
+        moves = 0
+        switches = 0
         for i in range(periods):
             # before members act, give birth to new agents
             # we will have tuple of agent and group
@@ -200,6 +202,7 @@ class Env(Space):
             if self.switches is not None:
                 for (agent, grp1, grp2) in self.switches:
                     switch(agent, grp1, grp2)
+                    switches += 1
                 del self.switches[:]
 
             self.pop_hist.add_period()
@@ -209,13 +212,14 @@ class Env(Space):
                 else:
                     self.pop_hist.record_pop(mbr, 0)
 
-            curr_acts = super().__call__()
-            acts += curr_acts
-            census_rpt = self.get_census()
+            (a, m) = super().__call__()
+            acts += a
+            moves += m
+            census_rpt = self.get_census(moves, switches)
             self.user.tell(census_rpt)
         return acts
 
-    def get_census(self, return_census_dict=False):
+    def get_census(self, moves, switches):
         """
         Gets the census data for all the agents stored
         in the member dictionary.
@@ -232,23 +236,14 @@ class Env(Space):
             return self.census_func(self)
         else:
             census_str = ""
-            num_acted_agent = 0
             for composite_str in self.members:
                 population = len(self.members[composite_str])
                 census_str += (composite_str + ": " + str(population) + "\n")
-            for composite in self.members:
-                for agent in self.members[composite]:
-                    if not isinstance(self.members[composite][agent], float):
-                        if (self.members[composite][agent]).has_acted:
-                            num_acted_agent += 1
-                            (self.members[composite][agent]).has_acted = False
-            if return_census_dict:
-                return({"period": self.get_periods, "group census": census_str,
-                        "agents acted": num_acted_agent})
-            else:
-                return("\nCensus for period " + str(self.get_periods()) + ":"
-                       + "\n" + census_str
-                       + "Total agents acted: " + str(num_acted_agent))
+            return("\nCensus for period " + str(self.get_periods()) + ":"
+                   + "\n" + census_str
+                   + "\tTotal agents moved: " + str(moves)
+                   + "\n" + "\tTotal agents who switched groups: "
+                   + str(switches))
 
     def has_disp(self):
         if not disp.plt_present:

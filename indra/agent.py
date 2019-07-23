@@ -258,8 +258,11 @@ class Agent(object):
         If returns False, by default agent will move.
         """
         self.duration -= 1
+        acted = False
+        moved = False
         if self.duration > 0:
             if self.action is not None:
+                acted = True
                 # the action was defined outside this class, so pass self:
                 if not self.action(self, **kwargs):
                     # False return means agent is "unhappy" and
@@ -271,13 +274,13 @@ class Agent(object):
                     if "angle" in self:
                         angle = self["angle"]
                     self.move(max_move=max_move, angle=angle)
-                return True
+                    moved = True
             elif DEBUG:
                 print("I'm " + self.name
                       + " and I ain't got no action to do!")
         else:
             self.active = False
-        return False
+        return (acted, moved)
 
     def __iadd__(self, scalar):
         """

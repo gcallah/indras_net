@@ -30,24 +30,20 @@ def not_impl(user):
 def run(user, test_run=False):
     steps = 0
     acts = 0
-    try:
-        if not test_run:
-            if "run" not in user.to_exclude:
-                steps = user.ask("How many periods?")
-                if steps is None or steps == "" or steps.isspace():
-                    steps = DEF_STEPS
-                else:
-                    steps = int(steps)
-                    user.tell("Steps = " + str(steps))
+    if not test_run:
+        if "run" not in user.to_exclude:
+            steps = user.ask("How many periods?")
+            if steps is None or steps == "" or steps.isspace():
+                steps = DEF_STEPS
             else:
-                user.tell_warn(user.error_message["run"])
+                steps = int(steps)
+                user.tell("Steps = " + str(steps))
         else:
-            steps = DEF_STEPS
+            user.tell_warn(user.error_message["run"])
+    else:
+        steps = DEF_STEPS
 
-        acts = user.env.runN(periods=steps)
-    except (ValueError, TypeError) as e:
-        user.tell("You must enter an integer value for # of steps: "
-                  + str(e))
+    acts = user.env.runN(periods=steps)
     return acts
 
 
