@@ -48,13 +48,14 @@ class Composite(Agent):
 
     def to_json(self):
         rep = super().to_json()
-        rep["is_composite"] = 1
+        rep["type"] = "composite"
         rep["members"] = self.members
         return rep
 
     def from_json(self, serial_composite):
         super().from_json(serial_composite)
-        self.members = serial_composite["members"]
+        if serial_composite["type"] == "composite":
+            self.members = serial_composite["members"]
 
     def __repr__(self):
         return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
