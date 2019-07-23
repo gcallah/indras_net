@@ -82,7 +82,6 @@ def bacterium_action(agent, **kwargs):
         if (new_angle > 360):
             new_angle = new_angle % 360
         agent["angle"] = new_angle
-        print("The new angle is:", agent["angle"])
 
     # return False means to move
     return False
@@ -109,7 +108,6 @@ def create_bacterium(name, i, pa):
     bacterium["prev_nutricity"] = None
     bacterium["angle"] = None
     bacterium["max_move"] = pa.get("bacterium_move", DEF_BACTERIUM_MOVE)
-    print("the user input for bacterium_move:", bacterium["max_move"])
     return bacterium
 
 
@@ -119,7 +117,6 @@ def create_toxin(name, i, pa):
     """
     toxin = Agent(name + str(i), action=toxin_action)
     toxin["max_move"] = pa.get("toxin_move", DEF_TOXIN_MOVE)
-    print("the user input for toxin_move:", toxin["max_move"])
     return toxin
 
 
@@ -129,7 +126,6 @@ def create_nutrient(name, i, pa):
     """
     nutrient = Agent(name + str(i), action=nutrient_action)
     nutrient["max_move"] = pa.get("nutrient_move", DEF_NUTRIENT_MOVE)
-    print("the user input for nutrient_move:", nutrient["max_move"])
     return nutrient
 
 
