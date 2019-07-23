@@ -103,16 +103,19 @@ class Env(Space):
 
     def from_json(self, serial_env):
         super().from_json(serial_env)
-        self.props = pa.create_props("basic", prop_dict=serial_env["props"])
-        self.pop_hist = PopHist(serial_pops=serial_env["pop_hist"])
-        self.plot_title = serial_env["pop_hist"]
-        self.user = serial_env["user"]["name"]
-        self.name = serial_env["name"]
-        self.womb = serial_env["womb"]
-        self.switches = serial_env["switches"]
+        if serial_env["type"] == "env":
+            self.props = pa.create_props("basic",
+                                         prop_dict=serial_env["props"])
+            self.pop_hist = PopHist(serial_pops=serial_env["pop_hist"])
+            self.plot_title = serial_env["pop_hist"]
+            self.user = APIUser(serial_env["user"]["name"])
+            self.name = serial_env["name"]
+            self.womb = serial_env["womb"]
+            self.switches = serial_env["switches"]
 
     def to_json(self):
         rep = super().to_json()
+        rep["type"] = "env"
         rep["user"] = self.user.to_json()["name"]
         rep["plot_title"] = self.plot_title
         rep["props"] = self.props.to_json()

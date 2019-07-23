@@ -164,7 +164,7 @@ class Agent(object):
         for grp in self.groups:
             grp_nms += grp + " "
         return {"name": self.name,
-                "is_composite": 0,
+                "type": "agent",
                 "duration": self.duration,
                 "pos": self.pos,
                 "attrs": self.attrs_to_dict(),

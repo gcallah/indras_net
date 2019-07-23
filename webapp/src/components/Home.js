@@ -31,9 +31,7 @@ class Home extends Component {
   }
 
   handleClick(id, name, source){
-    console.log(id)
-    
-    .setItem("menu_id", id)
+    localStorage.setItem("menu_id", id)
     localStorage.setItem("name", name)
     localStorage.setItem("source", source)
     console.log(localStorage.getItem("menu_id"))
