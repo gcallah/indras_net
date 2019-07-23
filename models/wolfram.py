@@ -89,7 +89,7 @@ def wolfram_action(wolfram_env):
                           + " against the rule...")
     if active_row_y < 1:
         wolfram_env.user.error_message["run"] = ("You have exceeded the"
-                                                 + "maximum height"
+                                                 + " maximum height"
                                                  + " and cannot run the model"
                                                  + " for more periods."
                                                  + "\nYou can still ask for"

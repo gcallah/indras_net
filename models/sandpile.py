@@ -108,6 +108,7 @@ def set_up(props=None):
     """
     global groups
     global sandpile_env
+
     ds_file = get_prop_path(MODEL_NAME)
     if props is None:
         pa = PropArgs.create_props(MODEL_NAME,

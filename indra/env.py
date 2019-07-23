@@ -215,7 +215,7 @@ class Env(Space):
             self.user.tell(census_rpt)
         return acts
 
-    def get_census(self):
+    def get_census(self, return_census_dict=False):
         """
         Gets the census data for all the agents stored
         in the member dictionary.
@@ -242,9 +242,13 @@ class Env(Space):
                         if (self.members[composite][agent]).has_acted:
                             num_acted_agent += 1
                             (self.members[composite][agent]).has_acted = False
-            return("\nCensus for period " + str(self.get_periods()) + ":"
-                   + "\n" + census_str
-                   + "Total agents acted: " + str(num_acted_agent))
+            if return_census_dict:
+                return({"period": self.get_periods, "group census": census_str,
+                        "agents acted": num_acted_agent})
+            else:
+                return("\nCensus for period " + str(self.get_periods()) + ":"
+                       + "\n" + census_str
+                       + "Total agents acted: " + str(num_acted_agent))
 
     def has_disp(self):
         if not disp.plt_present:

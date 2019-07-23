@@ -121,12 +121,10 @@ def transaction(store, consumer=None):
         store.attrs["capital"] += consumer.attrs["spending power"]
         store.attrs["inventory"][1] -= 1
         if store.attrs["inventory"][1] == 1:
-            store.attrs["capital"] = (
-                store.attrs["capital"]
-                - store.attrs["variable expense"])
-            store.attrs["inventory"][1] = (
-                store.attrs["inventory"][1]
-                + store.attrs["inventory"][0])
+            store.attrs["capital"] -= (
+                store.attrs["variable expense"])
+            store.attrs["inventory"][1] += (
+                store.attrs["inventory"][0])
         if store.attrs["capital"] <= 0:
             print("     ", store, "is going out of buisness")
             store.die()
@@ -205,8 +203,8 @@ def town_action(town):
                             max_util = util
                             store_to_go = neighbor
                     if neighbor.primary_group() != groups[CONSUMER_INDX]:
-                        print("   ", neighbor,
-                              "is out of buisness")
+                        town.user.tell(("   " + str(neighbor)
+                                       + " is out of buisness"))
                 curr_consumer.attrs["last utils"] = max_util
                 if store_to_go is not None:
                     if DEBUG:
