@@ -116,7 +116,7 @@ def pay_fixed_expenses(store):
     store.attrs["capital"] -= store.attrs["fixed expense"]
 
 
-def transaction(store, consumer=None):
+def transaction(store, consumer):
     """
     Calcuates the expense and the revenue of the store passed in
     after a transaction with the consumer passed in.
