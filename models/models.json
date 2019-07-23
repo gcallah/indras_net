@@ -5,49 +5,56 @@
       "name": "A Basic Model",
       "run": "basic",
       "props": "models/props/basic.props.json",
-      "doc": "A model just for testing and cloning."
+      "doc": "A model just for testing and cloning.",
+      "source": "https://github.com/gcallah/indras_net/blob/master/models/basic.py"
     },
     {
       "model ID": 1,
       "name": "Adam Smith's Fashion Model",
       "run": "fashion",
       "props": "models/props/fashion.props.json",
-      "doc": "A model of trendsetters and followers in the world of fashion."
+      "doc": "A model of trendsetters and followers in the world of fashion.",
+      "source": "https://github.com/gcallah/indras_net/blob/master/models/fashion.py"
     },
     {
       "model ID": 2,
       "name": "Forest Fire",
       "run": "forestfire",
       "props": "models/props/forestfire.props.json",
-      "doc": "A model forest with trees that randomly catch fire."
+      "doc": "A model forest with trees that randomly catch fire.",
+      "source": "https://github.com/gcallah/indras_net/blob/master/models/forestfire.py"
     },
     {
       "model ID": 3,
       "name": "Abelian Sandpile",
       "run": "sandpile",
       "props": "models/props/sandpile.props.json",
-      "doc": "A sandpile that makes colorful patterns as the sand tumbles down."
+      "doc": "A sandpile that makes colorful patterns as the sand tumbles down.",
+      "source": "https://github.com/gcallah/indras_net/blob/master/models/sandpile.py"
     },
     {
       "model ID": 4,
       "name": "Schelling's Segregation Model",
       "run": "segregation",
       "props": "models/props/segregation.props.json",
-      "doc": "Thomas Schelling's famous model of segregated neighborhoods."
+      "doc": "Thomas Schelling's famous model of segregated neighborhoods.",
+      "source": "https://github.com/gcallah/indras_net/blob/master/models/segregation.py"
     },
     {
       "model ID": 5,
       "name": "Predator-Prey Model",
       "run": "wolfsheep",
       "props": "models/props/wolfsheep.props.json",
-      "doc": "Wolves eat sheep in a meadow and their populations' cycle."
+      "doc": "Wolves eat sheep in a meadow and their populations' cycle.",
+      "source": "https://github.com/gcallah/indras_net/blob/master/models/wolfsheep.py"
     },
     {
       "model ID": 6,
       "name": "Scheduler Model",
       "run": "scheduler",
       "props": "models/props/scheduler.props.json",
-      "doc": "Schedule scarce resources among consumers."
+      "doc": "Schedule scarce resources among consumers.",
+      "source": "https://github.com/gcallah/indras_net/blob/master/models/scheduler.py"
     }
   ]
 }

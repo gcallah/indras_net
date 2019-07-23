@@ -30,10 +30,12 @@ class Home extends Component {
     window.open('https://gcallah.github.io/indras_net/index.html')
   }
 
-  handleClick(id, name){
+  handleClick(id, name, source){
     console.log(id)
-    localStorage.setItem("menu_id", id)
+    
+    .setItem("menu_id", id)
     localStorage.setItem("name", name)
+    localStorage.setItem("source", source)
     console.log(localStorage.getItem("menu_id"))
   }
 
@@ -61,7 +63,7 @@ class Home extends Component {
         {Object.keys(this.state.allItems).map((item,i)=>
         <Menu.Item key={i}>
           {console.log(this.state.allItems[item]['model ID'])}
-          <Link to="/models/props/" onClick={() => this.handleClick(this.state.allItems[item]['model ID'], this.state.allItems[item]['name'])}>
+          <Link to="/models/props/" onClick={() => this.handleClick(this.state.allItems[item]['model ID'], this.state.allItems[item]['name'], this.state.allItems[item]['source'])}>
             {this.state.allItems[item]['name']}
           </Link>
         </Menu.Item>)}

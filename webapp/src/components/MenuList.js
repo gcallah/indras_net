@@ -31,6 +31,8 @@ class MenuList extends Component {
     this.setState({menu_list:menu.data})
     const id = localStorage.getItem("menu_id");
     const name = localStorage.getItem("name");
+    const source = localStorage.getItem("source")
+    console.log(source)
     this.setState({name:name})
     this.setState({model_id:id});
     this.setState({ loadingData: false });
@@ -138,7 +140,7 @@ class MenuList extends Component {
           </Link>:null}
 
           {this.state.menu_list[item]['id']===1? <div>
-          <button disabled={this.state.disabled_button} onClick={!this.state.disabled_button ? this.onClick : null}> Run </button>
+          <button disabled={this.state.disabled_button} onClick={!this.state.disabled_button ? this.onClick : null} className="btn btn-outline-success m-2"> Run </button>
           {" "}for <input style={{width: 30}} type='INT' defaultValue='10' onChange={this.handleRunPeriod} /> periods.
             <span style={{color:"red",fontSize: 12}}>{this.state.errorMessage}</span>
           </div>:null}
@@ -157,7 +159,8 @@ class MenuList extends Component {
         </Menu.Item>)}
         </Menu>
         <br /><br />
-        <button onClick={this.goback}>Go Back</button>
+        <button onClick={this.goback}
+        className="btn btn-outline-danger m-2"> Go Back </button> 
         <br/><br/>
         <PopulationGraph loadingData={this.state.loading_population} env_file={this.state.env_file}/>
         <ScatterPlot loadingData={this.state.loading_scatter} env_file={this.state.env_file}/>
