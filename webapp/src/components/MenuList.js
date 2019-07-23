@@ -40,6 +40,11 @@ class MenuList extends Component {
     this.setState({env_file: this.props.location.state.env_file});
   }
 
+  viewSource = () => {
+    var source = localStorage.getItem("source");
+    window.open(source);
+  }
+
   goback=()=>{
     this.props.history.replace({
       pathname: "/models/props/",
@@ -101,11 +106,13 @@ class MenuList extends Component {
       this.setState({loading_debugger:true})
       this.setState({action_id: 4})
     }
-    else if(e === 5){
+
+    else if (e === 5){
       this.setState({loading_population: false})
       this.setState({loading_scatter: false})
       this.setState({loading_debugger:false})
       this.setState({action_id: 5})
+      this.viewSource()
     }
   }
 
@@ -166,8 +173,8 @@ class MenuList extends Component {
 
           {this.state.menu_list[item]['id']===5?<Link onClick={() => this.handleClick(5)}>
             {this.state.menu_list[item]['question']}
+            </Link>:null}
 
-          </Link>:null}
         </Menu.Item>)}
         </Menu>
         <br /><br />
