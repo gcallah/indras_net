@@ -31,12 +31,13 @@ class MenuList extends Component {
     this.setState({menu_list:menu.data})
     const id = localStorage.getItem("menu_id");
     const name = localStorage.getItem("name");
-    const source = localStorage.getItem("source")
+    const source = localStorage.getItem("source");
     console.log(source)
-    this.setState({name:name})
+    this.setState({name:name});
     this.setState({model_id:id});
+    this.setState({source:source});
     this.setState({ loadingData: false });
-    this.setState({env_file: this.props.location.state.env_file})
+    this.setState({env_file: this.props.location.state.env_file});
   }
 
   goback=()=>{
@@ -100,6 +101,12 @@ class MenuList extends Component {
       this.setState({loading_debugger:true})
       this.setState({action_id: 4})
     }
+    else if(e === 5){
+      this.setState({loading_population: false})
+      this.setState({loading_scatter: false})
+      this.setState({loading_debugger:false})
+      this.setState({action_id: 5})
+    }
   }
 
 
@@ -155,6 +162,11 @@ class MenuList extends Component {
 
           {this.state.menu_list[item]['id']===4?<Link onClick={() => this.handleClick(4)}>
             {this.state.menu_list[item]['question']}
+            </Link>:null}
+
+          {this.state.menu_list[item]['id']===5?<Link onClick={() => this.handleClick(5)}>
+            {this.state.menu_list[item]['question']}
+
           </Link>:null}
         </Menu.Item>)}
         </Menu>

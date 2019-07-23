@@ -21,6 +21,11 @@
             "question": "Enter debugger."
         },
         {
+            "id": 5,
+            "func": "source"
+            "question": "View the source code."
+        },
+        {
             "id": 0,
             "func": "leave",
             "question": "Quit."

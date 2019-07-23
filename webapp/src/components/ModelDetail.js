@@ -31,7 +31,7 @@ class ModelDetail extends Component {
   }
 
 
-  states = (data) => {
+  states = data => {
     //loop over objects in data and create object in this.state
     Object.keys(this.state.model_details).forEach(item => 
     this.setState({[item]: data[item]})
@@ -39,7 +39,7 @@ class ModelDetail extends Component {
   }
 
 
-  errors = (data) => {
+  errors = data => {
     Object.keys(this.state.model_details).forEach(item => 
       this.setState(prevState => ({
         model_details: {
