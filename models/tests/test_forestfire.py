@@ -1,5 +1,5 @@
 """
-This is the test suite for space.py.
+This is the test suite for forestfire.py.
 """
 
 from unittest import TestCase, main

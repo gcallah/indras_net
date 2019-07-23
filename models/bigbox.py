@@ -112,27 +112,28 @@ def calc_util(stores):
     return random.random()
 
 
-def transaction(store, consumer=None):
+def pay_fixed_expenses(store):
+    store.attrs["capital"] -= store.attrs["fixed expense"]
+
+
+def transaction(store, consumer):
     """
     Calcuates the expense and the revenue of the store passed in
     after a transaction with the consumer passed in.
     """
-    if consumer is not None:
-        store.attrs["capital"] += consumer.attrs["spending power"]
-        store.attrs["inventory"][1] -= 1
-        if store.attrs["inventory"][1] == 1:
-            store.attrs["capital"] -= (
-                store.attrs["variable expense"])
-            store.attrs["inventory"][1] += (
-                store.attrs["inventory"][0])
-        if store.attrs["capital"] <= 0:
-            print("     ", store, "is going out of buisness")
-            store.die()
-        if DEBUG:
-            print("     ", store, "has a capital of", store.attrs["capital"],
-                  "and inventory of", store.attrs["inventory"][1])
-    else:
-        store.attrs["capital"] -= store.attrs["fixed expense"]
+    store.attrs["capital"] += consumer.attrs["spending power"]
+    store.attrs["inventory"][1] -= 1
+    if store.attrs["inventory"][1] == 1:
+        store.attrs["capital"] -= (
+            store.attrs["variable expense"])
+        store.attrs["inventory"][1] += (
+            store.attrs["inventory"][0])
+    if store.attrs["capital"] <= 0:
+        print("     ", store, "is going out of buisness")
+        store.die()
+    if DEBUG:
+        print("     ", store, "has a capital of", store.attrs["capital"],
+              "and inventory of", store.attrs["inventory"][1])
 
 
 def get_store_census(town):
@@ -173,7 +174,7 @@ def town_action(town):
                     neighbor = nearby_neighbors[neighbors]
                     if (neighbor.isactive() and neighbor.primary_group()
                             != groups[CONSUMER_INDX]):
-                        transaction(neighbor)
+                        pay_fixed_expenses(neighbor)
                         util = 0.0
                         if (neighbor.primary_group()
                            == groups[BB_INDX]):

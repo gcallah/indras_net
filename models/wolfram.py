@@ -30,7 +30,7 @@ def create_agent(x, y):
     Create an agent with the passed x, y value as its name.
     """
     name = "(" + str(x) + "," + str(y) + ")"
-    return Agent(name=name, action=None)
+    return Agent(name=name, action=agent_action)
 
 
 def turn_black(groups, agent):
@@ -78,6 +78,10 @@ def next_color(rule_dict, left, middle, right):
     return rule_dict[str((left, middle, right))]
 
 
+def agent_action(agent):
+    return False
+
+
 def wolfram_action(wolfram_env):
     """
     The action that will be taken every period.
@@ -85,8 +89,14 @@ def wolfram_action(wolfram_env):
     global curr_row
 
     active_row_y = wolfram_env.height - wolfram_env.get_periods() - 1
+    if curr_row == wolfram_env.get_row_hood(wolfram_env.height - 1):
+        curr_row = wolfram_env.get_row_hood(active_row_y)
     wolfram_env.user.tell("\nChecking agents in row " + str(active_row_y)
                           + " against the rule...")
+    if DEBUG:
+        print("Curr row")
+        for agent in curr_row:
+            print("   ", curr_row[agent])
     if active_row_y < 1:
         wolfram_env.user.error_message["run"] = ("You have exceeded the"
                                                  + " maximum height"
@@ -95,7 +105,6 @@ def wolfram_action(wolfram_env):
                                                  + "\nYou can still ask for"
                                                  + "a scatter plot.")
         wolfram_env.user.exclude_choices(["run", "line_graph"])
-        return False
     else:
         next_row = wolfram_env.get_row_hood(active_row_y - 1)
         first_agent_key = "(0," + str(active_row_y) + ")"
@@ -117,7 +126,6 @@ def wolfram_action(wolfram_env):
                 left_color = middle_color
             x += 1
         curr_row = next_row
-        return True
 
 
 def set_up(props=None):
