@@ -301,7 +301,7 @@ class Agent(object):
         """
         Adds agent and group to make new group.
         """
-        import composite
+        from indra import composite
         if isinstance(other, Agent):
             return composite.Composite(
                 self.name + other.name,
