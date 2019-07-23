@@ -15,7 +15,7 @@ from models.segregation import set_up as seset_up
 from models.segregation import seg_agent_action
 from models.scheduler import main as scmain
 from models.scheduler import set_up as scset_up
-from models.scheduler import sche_agent_action
+from models.scheduler import sched_agent_action
 from models.wolfsheep import main as wsmain
 from models.wolfsheep import set_up as wsset_up
 from models.wolfsheep import sheep_action, wolf_action
@@ -50,7 +50,7 @@ action_dict = {
     "sandpile_action": sandpile_action,
     "place_action": place_action,
     "seg_agent_action": seg_agent_action,
-    "sche_agent_action": sche_agent_action,
+    "sched_agent_action": sched_agent_action,
     "sheep_action": sheep_action,
     "wolf_action": wolf_action
 }
