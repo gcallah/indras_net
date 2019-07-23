@@ -87,6 +87,10 @@ def wolfram_action(wolfram_env):
     active_row_y = wolfram_env.height - wolfram_env.get_periods() - 1
     wolfram_env.user.tell("\nChecking agents in row " + str(active_row_y)
                           + " against the rule...")
+    if DEBUG:
+        print("Curr row")
+        for agent in curr_row:
+            print("   ", curr_row[agent])
     if active_row_y < 1:
         wolfram_env.user.error_message["run"] = ("You have exceeded the"
                                                  + " maximum height"
@@ -99,6 +103,12 @@ def wolfram_action(wolfram_env):
     else:
         next_row = wolfram_env.get_row_hood(active_row_y - 1)
         first_agent_key = "(0," + str(active_row_y) + ")"
+        print("curr_row")
+        for agent in curr_row:
+            print(curr_row[agent])
+        print("next_row")
+        for agent in next_row:
+            print(next_row[agent])
         left_color = get_color(curr_row[first_agent_key].primary_group())
         x = 0
         for agent in curr_row:

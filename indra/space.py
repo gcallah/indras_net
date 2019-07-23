@@ -230,7 +230,6 @@ class Space(Composite):
             return None
         if not is_composite(mbr):
             if xy is not None:
-                print("when xy is not none, getting xy:", xy)
                 (x, y) = xy
             else:
                 (x, y) = self.gen_new_pos(mbr, max_move)
