@@ -347,9 +347,9 @@ class EnvTestCase(TestCase):
         return True
 
     def test_from_json(self):
+        self.maxDiff = None
         self.env = Env(name='Test env', serial_obj=tests_env)
-        j = self.env.to_json()
-        self.assertEqual(str(type(j)), "<class 'dict'>")
+        self.assertEqual(str(type(self.env)), "<class 'indra.env.Env'>")
         # managed to contruct an env!!!
 
 

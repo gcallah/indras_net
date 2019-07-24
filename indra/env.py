@@ -104,7 +104,6 @@ class Env(Space):
 
     def from_json(self, serial_obj):
         super().from_json(serial_obj)
-        print(serial_obj["props"])
         model_prop = json.loads(json.dumps(serial_obj["props"],
                                 indent=4))
         self.props = pa.create_props("basic",
