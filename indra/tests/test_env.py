@@ -22,7 +22,7 @@ GRP2 = "Group2"
 X = 0
 Y = 1
 
-test_env = {
+tests_env = {
     "name": "env",
     "type": "env",
     "duration": 9223372036854775805,
@@ -59,8 +59,8 @@ test_env = {
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        17,
-                        4
+                        2,
+                        11
                     ],
                     "attrs": {},
                     "groups": "Blues ",
@@ -77,8 +77,8 @@ test_env = {
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        19,
-                        16
+                        10,
+                        8
                     ],
                     "attrs": {},
                     "groups": "Blues ",
@@ -114,8 +114,8 @@ test_env = {
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        1,
-                        19
+                        11,
+                        0
                     ],
                     "attrs": {},
                     "groups": "Reds ",
@@ -132,8 +132,8 @@ test_env = {
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        13,
-                        20
+                        18,
+                        16
                     ],
                     "attrs": {},
                     "groups": "Reds ",
@@ -152,20 +152,20 @@ test_env = {
     "height": 20,
     "locations_dict": {
         "Blues0": [
-            17,
-            4
+            2,
+            11
         ],
         "Blues1": [
-            19,
-            16
+            10,
+            8
         ],
         "Reds0": [
-            1,
-            19
+            11,
+            0
         ],
         "Reds1": [
-            13,
-            20
+            18,
+            16
         ]
     },
     "user": "ziruizhou",
@@ -232,6 +232,7 @@ test_env = {
     "womb": [],
     "switches": []
 }
+
 
 def env_action(env):
     print("Calling action for env")
@@ -347,11 +348,9 @@ class EnvTestCase(TestCase):
 
     def test_from_json(self):
         # self.env()
-        # for elem in test_env:
-        #     self.env.from_json(test_env[elem])
+        # self.env.from_json(tests_env["members"])
         # j = self.env.to_json()
-        # print(j)
-        # self.assertEqual(j, test_env)
+        # self.assertEqual(j, tests_env)
         return True
 
 
