@@ -326,11 +326,8 @@ class Agent(object):
         if (self.islocated() and self.locator is not None
                 and not self.locator.is_full()):
             if angle is not None:
-                print("This is the pos:", self.pos)
                 new_xy = self.locator.point_from_vector(angle,
                                                         max_move, self.pos)
-                print("This is the max_move:", max_move)
-                print("This is the new_xy:", new_xy)
                 self.locator.place_member(self, max_move, new_xy)
             else:
                 self.locator.place_member(self, max_move)

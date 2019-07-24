@@ -35,27 +35,16 @@ def calc_toxin(group, agent):
     Calculate the strength of a toxin / nutrient field for an agent.
     """
     toxin_strength = 0
-    count_toxin = 0
     for toxin in group:
-        toxin_strength += float(distance(group[toxin], agent)) * (-1)
-        count_toxin += 1
-    if count_toxin > 0:
-        toxin_strength = toxin_strength / count_toxin
-    else:
-        toxin_strength = 0
+        toxin_strength += 1 / (distance(group[toxin], agent) ** 2)
+    toxin_strength *= -1
     return toxin_strength
 
 
 def calc_nutrient(group, agent):
     nutrient_strength = 0
-    count_nutrient = 0
     for nutrient in group:
-        nutrient_strength += float(distance(group[nutrient], agent)) * (-1)
-        count_nutrient += 1
-    if count_nutrient > 0:
-        nutrient_strength = nutrient_strength / count_nutrient
-    else:
-        nutrient_strength = 0
+        nutrient_strength += 1 / (distance(group[nutrient], agent) ** 2)
     return nutrient_strength
 
 
@@ -78,18 +67,21 @@ def bacterium_action(agent, **kwargs):
         toxin_change = calc_toxin(toxins, agent) - agent["prev_toxicity"]
     else:
         toxin_change = sys.maxsize * (-1)
+    print("This is the toxin_change: ", toxin_change)
 
     if agent["prev_nutricity"] is not None:
         nutrient_change = calc_nutrient(nutrients,
                                         agent) - agent["prev_nutricity"]
     else:
         nutrient_change = sys.maxsize * (-1)
+    print("This is the nutrient_change: ", nutrient_change)
 
     threshold = DEF_THRESHOLD
     agent["prev_toxicity"] = toxin_level
     agent["prev_nutricity"] = nutrient_level
 
-    if (toxin_change + nutrient_change <= 0) or (threshold - toxin_level >= 0):
+    if (toxin_change > nutrient_change) or (threshold >= toxin_level):
+        print("Inside the if to change the condition")
         if agent["angle"] is None:
             new_angle = randint(0, 360)
         else:
