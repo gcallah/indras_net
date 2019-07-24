@@ -194,9 +194,10 @@ class MenuList extends Component {
                     for
                     {' '}
                     <input
-                      style={{width: 30}}
+                      style={{width: 30, height: 30}}
                       type="INT"
-                      defaultValue="10"
+                      class="from-control"
+                      placeholder="10"
                       onChange={this.handleRunPeriod}
                     />
                     {' '}
