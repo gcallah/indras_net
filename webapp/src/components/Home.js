@@ -53,16 +53,19 @@ class Home extends Component {
         <br /><br />
         <h1 style={{"fontSize": 16, "fontWeight": '400'}}>We have several models: </h1>
         <img src={model_image} class="img-fluid" alt="Responsive image" style={{display:'block', float:'right', width:'45%', alignItems: "center"}}/>
-        <div class="row">
-          <div class="col">
-        {Object.keys(this.state.allItems).map((item,i)=> 
-        <a class="list-group-item" style={{width:220}} data-toggle="list" href="#list-home" role="tab">
+        <Menu vertical style={{
+            maxHeight: '30em',
+            maxwidth: '40em',
+            overflowY: 'scroll',
+          }}>
+        {Object.keys(this.state.allItems).map((item,i)=>
+        <Menu.Item key={i}>
           {console.log(this.state.allItems[item]['model ID'])}
-          <Link to="/models/props/" href="#" class="text-primary"  onClick={() => this.handleClick(this.state.allItems[item]['model ID'], this.state.allItems[item]['name'], this.state.allItems[item]['source'])}>
+          <Link to="/models/props/" onClick={() => this.handleClick(this.state.allItems[item]['model ID'], this.state.allItems[item]['name'], this.state.allItems[item]['source'])}>
             {this.state.allItems[item]['name']}
           </Link>
-        </a> )} </div> </div>
-        
+        </Menu.Item>)}
+        </Menu>
         <h1 style={{"fontSize": 16, "fontWeight": '400'}}>To see the
         <a href="#" class="text-primary m-2" onClick={this.showSource}>
         description </a> 

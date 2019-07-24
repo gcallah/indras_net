@@ -226,14 +226,12 @@ class Env(Space):
         """
         Gets the census data for all the agents stored
         in the member dictionary.
-        If self.census_func is None, returns how many agents
-        are in each of the groups, and how many acted.
 
-        Checks which agents have the member variable has_acted as True
-        and counts how many of them there are
-        then changes it back to False.
+        Takes in how many agent has moved from one place to another
+        and how many agent has switched groups and returns
+        a string of these census data.
 
-        census_func overrides the default behavior.
+        census_func (to be added) overrides the default behavior.
         """
         if self.census_func:
             return self.census_func(self)
