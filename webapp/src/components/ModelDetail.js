@@ -31,7 +31,7 @@ class ModelDetail extends Component {
   }
 
 
-  states = (data) => {
+  states = data => {
     //loop over objects in data and create object in this.state
     Object.keys(this.state.model_details).forEach(item => 
     this.setState({[item]: data[item]})
@@ -39,7 +39,7 @@ class ModelDetail extends Component {
   }
 
 
-  errors = (data) => {
+  errors = data => {
     Object.keys(this.state.model_details).forEach(item => 
       this.setState(prevState => ({
         model_details: {
@@ -150,12 +150,12 @@ class ModelDetail extends Component {
           {Object.keys(this.state.model_details).map((item,i)=> {
             if ('question' in this.state.model_details[item]){
               return(
-                <div>
-                <label 
-                  key={i}>{this.state.model_details[item]['question']} {" "}
-                  <input type={this.state.model_details[item]['atype']} defaultValue={this.state.model_details[item]['val']} onChange={this.handleChange} name={item}/>
+                <div class="form-group">
+                <label
+                  key={i}>{this.state.model_details[item]['question']} {" "} </label>
+                  <input type={this.state.model_details[item]['atype']} class="form-control" placeholder={this.state.model_details[item]['val']} onChange={this.handleChange} name={item}/>
                   <span style={{color:"red",fontSize: 12}}>{this.state.model_details[item]['errorMessage']}</span>
-                </label>
+
                 <br/>
                 </div>
               )}

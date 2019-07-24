@@ -48,13 +48,17 @@ class Composite(Agent):
 
     def to_json(self):
         rep = super().to_json()
-        rep["is_composite"] = 1
+        rep["type"] = "composite"
         rep["members"] = self.members
         return rep
 
     def from_json(self, serial_composite):
         super().from_json(serial_composite)
-        self.members = serial_composite["members"]
+        # check keys in members:
+        # if the agent is within self.registry
+        # link it to the composite, else create the agent first
+        if serial_composite["type"] == "composite":
+            self.members = serial_composite["members"]
 
     def __repr__(self):
         return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
@@ -116,6 +120,7 @@ class Composite(Agent):
         agents who acted in a particular call.
         """
         total_acts = 0
+        total_moves = 0
         del_list = []
         self.duration -= 1
         if self.duration > 0:
@@ -125,7 +130,9 @@ class Composite(Agent):
 
             for (key, member) in self.members.items():
                 if member.isactive():
-                    total_acts += member(**kwargs)
+                    (acted, moved) = member(**kwargs)
+                    total_acts += acted
+                    total_moves += moved
                 else:
                     # delete agents but not composites:
                     if not is_composite(member):
@@ -134,7 +141,7 @@ class Composite(Agent):
                         del_list.append(key)
         for key in del_list:
             del self.members[key]
-        return total_acts
+        return (total_acts, total_moves)
 
     def __add__(self, other):
         """

@@ -31,9 +31,7 @@ class Home extends Component {
   }
 
   handleClick(id, name, source){
-    console.log(id)
-    
-    .setItem("menu_id", id)
+    localStorage.setItem("menu_id", id)
     localStorage.setItem("name", name)
     localStorage.setItem("source", source)
     console.log(localStorage.getItem("menu_id"))
@@ -54,7 +52,7 @@ class Home extends Component {
         <h1 style={{ "textAlign": "center", "fontWeight": '200'}}>Welcome to the Indra ABM platform!</h1>
         <br /><br />
         <h1 style={{"fontSize": 16, "fontWeight": '400'}}>We have several models: </h1>
-        <img alt="" style={{display:'block', float:'right', width:'40%', alignItems: "center"}} src={model_image}/>
+        <img src={model_image} class="img-fluid" alt="Responsive image" style={{display:'block', float:'right', width:'45%', alignItems: "center"}}/>
         <Menu vertical style={{
             maxHeight: '30em',
             maxwidth: '40em',

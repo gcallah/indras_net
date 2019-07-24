@@ -27,5 +27,5 @@ class TestAllModels(TestCase):
 
     def test_runN(self):
         self.assertEqual(sandpile.sandpile_env.runN() > 0, True)
-        # self.assertEqual(wolfram.wolfram_env.runN() > 0, True)
+        self.assertEqual(wolfram.wolfram_env.runN() > 0, True)
         self.assertEqual(gameoflife.gameoflife_env.runN() > 0, True)

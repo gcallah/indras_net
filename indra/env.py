@@ -103,16 +103,19 @@ class Env(Space):
 
     def from_json(self, serial_env):
         super().from_json(serial_env)
-        self.props = pa.create_props("basic", prop_dict=serial_env["props"])
-        self.pop_hist = PopHist(serial_pops=serial_env["pop_hist"])
-        self.plot_title = serial_env["pop_hist"]
-        self.user = serial_env["user"]["name"]
-        self.name = serial_env["name"]
-        self.womb = serial_env["womb"]
-        self.switches = serial_env["switches"]
+        if serial_env["type"] == "env":
+            self.props = pa.create_props("basic",
+                                         prop_dict=serial_env["props"])
+            self.pop_hist = PopHist(serial_pops=serial_env["pop_hist"])
+            self.plot_title = serial_env["pop_hist"]
+            self.user = APIUser(serial_env["user"]["name"])
+            self.name = serial_env["name"]
+            self.womb = serial_env["womb"]
+            self.switches = serial_env["switches"]
 
     def to_json(self):
         rep = super().to_json()
+        rep["type"] = "env"
         rep["user"] = self.user.to_json()["name"]
         rep["plot_title"] = self.plot_title
         rep["props"] = self.props.to_json()
@@ -155,9 +158,9 @@ class Env(Space):
         self.add_to_registry(member)
 
     def add_to_registry(self, member):
-        if str(type(member)) == "composite":
-            for mbr in self.members:
-                self.add_to_registry(mbr)
+        if str(type(member)) == "<class 'indra.composite.Composite'>":
+            for mbr in member.members:
+                self.add_to_registry(member.members[mbr])
         self.registry[member.name] = member
 
     def add_child(self, agent, group):
@@ -186,6 +189,8 @@ class Env(Space):
             Return the total number of actions taken.
         """
         acts = 0
+        moves = 0
+        switches = 0
         for i in range(periods):
             # before members act, give birth to new agents
             # we will have tuple of agent and group
@@ -193,13 +198,14 @@ class Env(Space):
             # self.user.tell("In period ", i)
             if self.womb is not None:
                 for (agent, group) in self.womb:
-                    # add  the agent into the registry
+                    # add the agent into the registry
                     self.registry[agent.name] = agent
                     join(group, agent)
                 del self.womb[:]
             if self.switches is not None:
                 for (agent, grp1, grp2) in self.switches:
                     switch(agent, grp1, grp2)
+                    switches += 1
                 del self.switches[:]
 
             self.pop_hist.add_period()
@@ -209,13 +215,14 @@ class Env(Space):
                 else:
                     self.pop_hist.record_pop(mbr, 0)
 
-            curr_acts = super().__call__()
-            acts += curr_acts
-            census_rpt = self.get_census()
+            (a, m) = super().__call__()
+            acts += a
+            moves += m
+            census_rpt = self.get_census(moves, switches)
             self.user.tell(census_rpt)
         return acts
 
-    def get_census(self, return_census_dict=False):
+    def get_census(self, moves, switches):
         """
         Gets the census data for all the agents stored
         in the member dictionary.
@@ -232,23 +239,14 @@ class Env(Space):
             return self.census_func(self)
         else:
             census_str = ""
-            num_acted_agent = 0
             for composite_str in self.members:
                 population = len(self.members[composite_str])
                 census_str += (composite_str + ": " + str(population) + "\n")
-            for composite in self.members:
-                for agent in self.members[composite]:
-                    if not isinstance(self.members[composite][agent], float):
-                        if (self.members[composite][agent]).has_acted:
-                            num_acted_agent += 1
-                            (self.members[composite][agent]).has_acted = False
-            if return_census_dict:
-                return({"period": self.get_periods, "group census": census_str,
-                        "agents acted": num_acted_agent})
-            else:
-                return("\nCensus for period " + str(self.get_periods()) + ":"
-                       + "\n" + census_str
-                       + "Total agents acted: " + str(num_acted_agent))
+            return("\nCensus for period " + str(self.get_periods()) + ":"
+                   + "\n" + census_str
+                   + "\tTotal agents moved: " + str(moves)
+                   + "\n" + "\tTotal agents who switched groups: "
+                   + str(switches))
 
     def has_disp(self):
         if not disp.plt_present:
