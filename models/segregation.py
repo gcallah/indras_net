@@ -109,6 +109,10 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
+    global blue_agents
+    global red_agents
+    global city
+
     ds_file = get_prop_path(MODEL_NAME)
     if props is None:
         pa = PropArgs.create_props(MODEL_NAME,

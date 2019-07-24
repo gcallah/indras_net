@@ -87,6 +87,7 @@ def wolfram_action(wolfram_env):
     The action that will be taken every period.
     """
     global curr_row
+    global rule_dict
 
     active_row_y = wolfram_env.height - wolfram_env.get_periods() - 1
     if curr_row == wolfram_env.get_row_hood(wolfram_env.height - 1):
@@ -135,6 +136,8 @@ def set_up(props=None):
     """
     global groups
     global curr_row
+    global rule_dict
+
     ds_file = get_prop_path(MODEL_NAME)
     if props is None:
         pa = PropArgs.create_props(MODEL_NAME,

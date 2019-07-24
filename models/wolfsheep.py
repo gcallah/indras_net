@@ -146,7 +146,11 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
+    global wolves
+    global sheep
+    global meadow
     global pa
+
     ds_file = get_prop_path(MODEL_NAME)
 
     if props is None:

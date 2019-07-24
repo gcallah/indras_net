@@ -11,13 +11,10 @@ class TestAllModels(TestCase):
         with open ("models.json") as json_file:
             data = json.load(json_file)
             for mdl_json in data["models_database"]:
-                if (mdl_json["run"] != "fashion" and mdl_json["run"] !=
-                    "segregation" and mdl_json["run"] != "wolfsheep"
-                    and mdl_json["run"] != "wolfram"):
-                    model = locate("models." + mdl_json["run"])
-                    env_tup = model.set_up()
-                    # env is 0th element of tuple:
-                    self.models[mdl_json["name"]] = env_tup[0]
+                model = locate("models." + mdl_json["run"])
+                env_tup = model.set_up()
+                # env is 0th element of tuple:
+                self.models[mdl_json["name"]] = env_tup[0]
 
     def tearDown(self):
         self.models = []
