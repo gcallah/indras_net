@@ -99,7 +99,6 @@ def gameoflife_action(gameoflife_env):
     new_min_x = 0
     new_min_y = 0
     change_min = True
-    to_be_changed = []
     for y in range(min_y, gameoflife_env.height):
         for x in range(min_x, gameoflife_env.width):
             curr_agent = gameoflife_env.get_agent_at(x, y)
@@ -110,20 +109,23 @@ def gameoflife_action(gameoflife_env):
                     change_min = False
                 if curr_agent.primary_group() == groups[1]:
                     if apply_live_rules(curr_agent):
-                        to_be_changed.append(curr_agent)
+                        curr_agent.has_acted = True
+                        curr_agent.locator.add_switch(curr_agent, groups[1],
+                                                      groups[0])
                 else:
                     if apply_dead_rules(curr_agent):
-                        to_be_changed.append(curr_agent)
-    for to_change in to_be_changed:
-        to_change.has_acted = True
-        change_color(to_change)
+                        curr_agent.has_acted = True
+                        curr_agent.locator.add_switch(curr_agent, groups[0],
+                                                      groups[1])
     min_x = new_min_x
     min_y = new_min_y
+    return True
 
 
 def agent_action(agent):
     if agent.neighbors is None:
         gameoflife_env.get_moore_hood(agent, save_neighbors=True)
+    return True
 
 
 def populate_board_random(width, height):
