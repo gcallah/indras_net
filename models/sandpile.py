@@ -94,10 +94,11 @@ def sandpile_action(sandpile_env):
               "which is in the group",
               sandpile_env.attrs["center_agent"].primary_group())
     add_grain(sandpile_env.attrs["center_agent"])
+    return True
 
 
 def place_action(agent):
-    pass
+    return True
     # if agent.neighbors is None:
     #     sandpile_env.get_vonneumann_hood(agent, save_neighbors=True)
 
@@ -106,8 +107,9 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    global groups
     global sandpile_env
+    global groups
+    global group_indices
 
     ds_file = get_prop_path(MODEL_NAME)
     if props is None:
