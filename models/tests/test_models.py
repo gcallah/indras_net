@@ -1,26 +1,28 @@
+import sys
 from unittest import TestCase, main
 from pydoc import locate
 
 import json
 
-models_lst = []
 
 class TestAllModels(TestCase):
-
     def setUp(self):
+        self.models = {}
         with open ("models.json") as json_file:
             data = json.load(json_file)
-            for l in data["models_database"]:
-                if l["run"] != "fashion" and l["run"] != "segregation" and l["run"] != "wolfsheep":
-                    model = locate("models." + l["run"])
+            for mdl_json in data["models_database"]:
+                if (mdl_json["run"] != "fashion" and mdl_json["run"] !=
+                    "segregation" and mdl_json["run"] != "wolfsheep"
+                    and mdl_json["run"] != "wolfram"):
+                    model = locate("models." + mdl_json["run"])
                     env_tup = model.set_up()
-                    models_lst.append(env_tup)
+                    # env is 0th element of tuple:
+                    self.models[mdl_json["name"]] = env_tup[0]
 
     def tearDown(self):
-        for i in models_lst:
-            for j in i:
-                j = None
+        self.models = []
 
     def test_models(self):
-        for i in models_lst:
-            self.assertEqual(i[0].runN() > 0, True)
+        for name, env in self.models.items():
+            print("Testing " + name, file=sys.stderr)
+            self.assertTrue(env.runN() > 0)

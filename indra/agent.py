@@ -131,31 +131,38 @@ class Agent(object):
     here.
     """
     def __init__(self, name, attrs=None, action=None, duration=INF,
-                 prim_group=None):
+                 prim_group=None, serial_obj=None):
 
-        self.registry = {}
-        self.name = name
-        self.action_key = None
-        self.action = action
-        if action is not None:
-            self.action_key = action.__name__
+        if serial_obj is not None:
+            self.restore_agent(serial_obj)
+        else:
+            self.registry = {}
+            self.name = name
+            self.action_key = None
+            self.action = action
+            if action is not None:
+                self.action_key = action.__name__
 
-        self.duration = duration
-        self.attrs = OrderedDict()
-        self.neighbors = None
-        if attrs is not None:
-            self.attrs = attrs
-        self.type_sig = type_hash(self)
-        self.active = True
-        self.groups = {}
-        self.pos = None
-        self.locator = None
-        self.prim_group = prim_group
-        self.has_acted = False
-        if self.prim_group is not None:
-            self.groups[str(self.prim_group)] = self.prim_group
-            if is_space(self.prim_group):
-                self.locator = self.prim_group
+            self.duration = duration
+            self.attrs = OrderedDict()
+            self.neighbors = None
+            if attrs is not None:
+                self.attrs = attrs
+            self.type_sig = type_hash(self)
+            self.active = True
+            self.groups = {}
+            self.pos = None
+            self.locator = None
+            self.prim_group = prim_group
+            self.has_acted = False
+            if self.prim_group is not None:
+                self.groups[str(self.prim_group)] = self.prim_group
+                if is_space(self.prim_group):
+                    self.locator = self.prim_group
+
+    def restore_agent(self, serial_obj):
+        self.from_json(serial_obj)
+        # self.__init_unrestorables()
 
     def to_json(self):
         # self.groups = {"name": Agent}
@@ -186,13 +193,12 @@ class Agent(object):
         self.neighbors = serial_agent["neighbors"]
         self.type_sig = serial_agent["type_sig"]
         self.active = serial_agent["active"]
+        # we'll have to use registry here:
         # ret_group = serial_agent["groups"]
         # grp_nm = ret_group.split(" ")
         # for elem in grp_nm:
         #     self.groups[elem] = # Agent!!
         # self.prim_group = serial_agent["prim_group"] Agent
-        # prob we want to create a dict with
-        # "Agent Name" as key and the Agent as val
         # self.locator = self.prim_group
         self.attrs = serial_agent["attrs"]
         self.pos = serial_agent["pos"]

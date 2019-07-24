@@ -35,16 +35,23 @@ class Composite(Agent):
 
     def __init__(self, name, attrs=None, members=None,
                  duration=INF, action=None, member_creator=None,
-                 num_members=None):
+                 num_members=None, serial_obj=None):
         self.members = OrderedDict()
         super().__init__(name, attrs=attrs, duration=duration,
-                         action=action)
-        if members is not None:
-            for member in members:
-                join(self, member)
-        if member_creator is not None:
-            for i in range(num_members):
-                self += member_creator(name, i)
+                         action=action, serial_obj=serial_obj)
+        if serial_obj is not None:
+            self.restore_composite(serial_obj)
+        else:
+            if members is not None:
+                for member in members:
+                    join(self, member)
+            if member_creator is not None:
+                for i in range(num_members):
+                    self += member_creator(name, i)
+
+    def restore_composite(self, serial_obj):
+        self.from_json(serial_obj)
+        # self.__init_unrestorables()
 
     def to_json(self):
         rep = super().to_json()
@@ -52,13 +59,16 @@ class Composite(Agent):
         rep["members"] = self.members
         return rep
 
-    def from_json(self, serial_composite):
-        super().from_json(serial_composite)
+    def from_json(self, serial_obj):
+        super().from_json(serial_obj)
         # check keys in members:
         # if the agent is within self.registry
         # link it to the composite, else create the agent first
-        if serial_composite["type"] == "composite":
-            self.members = serial_composite["members"]
+        for nm in serial_obj["members"]:
+            if serial_obj["members"][nm]["type"] == "agent":
+                self.members[nm] = Agent(serial_obj["members"][nm])
+            else:
+                self.members[nm] = Composite(serial_obj["members"][nm])
 
     def __repr__(self):
         return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
