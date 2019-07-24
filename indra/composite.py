@@ -49,7 +49,9 @@ class Composite(Agent):
     def to_json(self):
         rep = super().to_json()
         rep["type"] = "composite"
-        rep["members"] = self.members
+        rep["members"] = []
+        for key in self.members:
+            rep["members"].append(key)
         return rep
 
     def from_json(self, serial_composite):

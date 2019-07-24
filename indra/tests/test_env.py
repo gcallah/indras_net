@@ -22,7 +22,7 @@ GRP2 = "Group2"
 X = 0
 Y = 1
 
-test_env = {
+tests_env = {
     "name": "env",
     "type": "env",
     "duration": 9223372036854775805,
@@ -347,11 +347,9 @@ class EnvTestCase(TestCase):
 
     def test_from_json(self):
         # self.env()
-        # for elem in test_env:
-        #     self.env.from_json(test_env[elem])
+        # self.env.from_json(tests_env["members"])
         # j = self.env.to_json()
-        # print(j)
-        # self.assertEqual(j, test_env)
+        # self.assertEqual(j, tests_env)
         return True
 
 
