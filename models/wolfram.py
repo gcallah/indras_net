@@ -126,6 +126,7 @@ def wolfram_action(wolfram_env):
                 left_color = middle_color
             x += 1
         curr_row = next_row
+    return True
 
 
 def set_up(props=None):

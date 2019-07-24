@@ -95,6 +95,7 @@ def tree_action(agent):
         agent["state"] = prob_state_trans(old_state, STATE_TRANS)
 
     if old_state != agent["state"]:
+        agent.has_acted = True
         agent.locator.add_switch(agent, group_map[old_state],
                                  group_map[agent["state"]])
     return True
