@@ -135,7 +135,7 @@ class MenuList extends Component {
       <div>
 
         <br />
-        <h1 style={{textAlign: 'center'}}>
+        <h1 style={{textAlign: 'center', fontWeight: '200'}}>
           {this.state.name}
         </h1>
 
@@ -188,7 +188,7 @@ class MenuList extends Component {
                       }
                       className="btn btn-outline-success m-2"
                     >
-                      {' '}Run{' '}
+                      {'  '}Run{'  '}
                     </button>
                     {' '}
                     for
@@ -196,7 +196,7 @@ class MenuList extends Component {
                     <input
                       style={{width: 30, height: 30}}
                       type="INT"
-                      class="from-control"
+                      class="from-control m-2"
                       placeholder="10"
                       onChange={this.handleRunPeriod}
                     />
@@ -236,9 +236,6 @@ class MenuList extends Component {
           ))}
         </Menu>
         <br /><br />
-        <button onClick={this.goback} className="btn btn-outline-danger m-2">
-          {' '}Go Back{' '}
-        </button>
         <br /><br />
         <PopulationGraph
           loadingData={this.state.loading_population}

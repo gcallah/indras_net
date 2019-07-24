@@ -67,8 +67,8 @@ class Home extends Component {
         </Menu.Item>)}
         </Menu>
         <h1 style={{"fontSize": 16, "fontWeight": '400'}}>To see the
-        <button onClick={this.showSource}
-        className="btn btn-outline-primary m-2"> description </button> 
+        <a href="#" class="text-primary m-2" onClick={this.showSource}>
+        description </a> 
         of the project.</h1>
         <br /><br />
         <br /><br />
