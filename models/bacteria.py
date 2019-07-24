@@ -34,12 +34,28 @@ def calc_toxin(group, agent):
     """
     Calculate the strength of a toxin / nutrient field for an agent.
     """
-    toxin_strength = float(distance(group["Toxins0"], agent)) * (-1)
+    toxin_strength = 0
+    count_toxin = 0
+    for toxin in group:
+        toxin_strength += float(distance(group[toxin], agent)) * (-1)
+        count_toxin += 1
+    if count_toxin > 0:
+        toxin_strength = toxin_strength / count_toxin
+    else:
+        toxin_strength = 0
     return toxin_strength
 
 
 def calc_nutrient(group, agent):
-    nutrient_strength = float(distance(group["Nutrients0"], agent))
+    nutrient_strength = 0
+    count_nutrient = 0
+    for nutrient in group:
+        nutrient_strength += float(distance(group[nutrient], agent)) * (-1)
+        count_nutrient += 1
+    if count_nutrient > 0:
+        nutrient_strength = nutrient_strength / count_nutrient
+    else:
+        nutrient_strength = 0
     return nutrient_strength
 
 

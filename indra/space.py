@@ -450,9 +450,6 @@ class Space(Composite):
                 y_vertical = float(slope * x_vertical) + y_intercept
                 y_horizontal = self.height - 1
                 x_horizontal = float((y_horizontal - y_intercept) / slope)
-                print("This is the current slope:", slope)
-                print("This is the current x and y intercept:",
-                      x_intercept, y_intercept)
 
             #  Adjust the out of bound coordinates
             #  1. If both coordinates < 0
