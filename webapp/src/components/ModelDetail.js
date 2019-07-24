@@ -143,8 +143,7 @@ class ModelDetail extends Component {
       <div>
         <br />
         <br />
-        <h2 style={{ "textAlign": "center", "fontWeight": '200' }}>Please set the parameters for your model</h2>
-        <h3 style={{ "textAlign": "left" }}> {localStorage.getItem("name")} </h3>
+        <h1 style={{ "textAlign": "center", "fontWeight": '200' }}>Please set the parameters for the {localStorage.getItem("name")} model</h1>
         <br /><br />
         <form>
           {Object.keys(this.state.model_details).map((item,i)=> {
@@ -153,7 +152,7 @@ class ModelDetail extends Component {
                 <div class="form-group">
                 <label
                   key={i}>{this.state.model_details[item]['question']} {" "} </label>
-                  <input type={this.state.model_details[item]['atype']} class="form-control" placeholder={this.state.model_details[item]['val']} onChange={this.handleChange} name={item}/>
+                  <input type={this.state.model_details[item]['atype']} class="col-sm-2 col-form-label m-4 mb-3" placeholder={this.state.model_details[item]['val']} onChange={this.handleChange} style={{width: 60}} name={item}/>
                   <span style={{color:"red",fontSize: 12}}>{this.state.model_details[item]['errorMessage']}</span>
 
                 <br/>
@@ -163,11 +162,8 @@ class ModelDetail extends Component {
           }
         </form>
         <br /><br />
-        <button onClick={this.goback}
-        className="btn btn-outline-danger m-2"> Go Back </button> 
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <button disabled={disabled_button} onClick={!disabled_button ? this.handleSubmit : null}
-        className="btn btn-outline-success m-2">Submit</button>
+        className="btn btn-primary m-2">Submit</button>
         
       </div>
     );
