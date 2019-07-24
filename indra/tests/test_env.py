@@ -26,41 +26,146 @@ tests_env = {
     "name": "env",
     "type": "env",
     "duration": 9223372036854775805,
-    "pos": None
-    ,
+    "pos": None,
     "attrs": {},
     "groups": "",
     "active": True,
     "type_sig": 0,
     "prim_group": "None",
     "locator": "None",
-    "neighbors": None
-    ,
+    "neighbors": None,
     "has_acted": False,
-    "action_key": None
-    ,
-    "members": [
-        "Blues",
-        "Reds"
-    ],
+    "action_key": None,
+    "members": {
+        "Blues": {
+            "name": "Blues",
+            "type": "composite",
+            "duration": 9223372036854775805,
+            "pos": None,
+            "attrs": {
+                "color": "blue"
+            },
+            "groups": "env ",
+            "active": True,
+            "type_sig": 0,
+            "prim_group": "env",
+            "locator": "None",
+            "neighbors": None,
+            "has_acted": False,
+            "action_key": None,
+            "members": {
+                "Blues0": {
+                    "name": "Blues0",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        2,
+                        11
+                    ],
+                    "attrs": {},
+                    "groups": "Blues ",
+                    "active": True,
+                    "type_sig": 0,
+                    "prim_group": "Blues",
+                    "locator": "env",
+                    "neighbors": None,
+                    "has_acted": False,
+                    "action_key": "agent_action"
+                },
+                "Blues1": {
+                    "name": "Blues1",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        10,
+                        8
+                    ],
+                    "attrs": {},
+                    "groups": "Blues ",
+                    "active": True,
+                    "type_sig": 0,
+                    "prim_group": "Blues",
+                    "locator": "env",
+                    "neighbors": None,
+                    "has_acted": False,
+                    "action_key": "agent_action"
+                }
+            }
+        },
+        "Reds": {
+            "name": "Reds",
+            "type": "composite",
+            "duration": 9223372036854775805,
+            "pos": None,
+            "attrs": {
+                "color": "red"
+            },
+            "groups": "env ",
+            "active": True,
+            "type_sig": 0,
+            "prim_group": "env",
+            "locator": "None",
+            "neighbors": None,
+            "has_acted": False,
+            "action_key": None,
+            "members": {
+                "Reds0": {
+                    "name": "Reds0",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        11,
+                        0
+                    ],
+                    "attrs": {},
+                    "groups": "Reds ",
+                    "active": True,
+                    "type_sig": 0,
+                    "prim_group": "Reds",
+                    "locator": "env",
+                    "neighbors": None,
+                    "has_acted": False,
+                    "action_key": "agent_action"
+                },
+                "Reds1": {
+                    "name": "Reds1",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        18,
+                        16
+                    ],
+                    "attrs": {},
+                    "groups": "Reds ",
+                    "active": True,
+                    "type_sig": 0,
+                    "prim_group": "Reds",
+                    "locator": "env",
+                    "neighbors": None,
+                    "has_acted": False,
+                    "action_key": "agent_action"
+                }
+            }
+        }
+    },
     "width": 20,
     "height": 20,
     "locations_dict": {
         "Blues0": [
-            6,
-            14
+            2,
+            11
         ],
         "Blues1": [
-            11,
-            18
+            10,
+            8
         ],
         "Reds0": [
-            14,
-            10
+            11,
+            0
         ],
         "Reds1": [
-            20,
-            4
+            18,
+            16
         ]
     },
     "user": "ziruizhou",
@@ -96,25 +201,17 @@ tests_env = {
         },
         "user_type": {
             "val": "terminal",
-            "question": None
-            ,
-            "atype": None
-            ,
-            "lowval": None
-            ,
+            "question": None,
+            "atype": None,
+            "lowval": None,
             "hival": None
-
         },
         "OS": {
             "val": "Darwin",
-            "question": None
-            ,
-            "atype": None
-            ,
-            "lowval": None
-            ,
+            "question": None,
+            "atype": None,
+            "lowval": None,
             "hival": None
-
         }
     },
     "pop_hist": {
