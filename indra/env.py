@@ -73,12 +73,13 @@ class Env(Space):
     That makes the inheritance work out as we want it to.
     """
     def __init__(self, name, action=None, random_placing=True,
-                 props=None, serial_env=None, census=None, **kwargs):
+                 props=None, serial_obj=None, census=None, **kwargs):
         super().__init__(name, action=action,
-                         random_placing=random_placing, **kwargs)
+                         random_placing=random_placing, serial_obj=serial_obj,
+                         **kwargs)
 
-        if serial_env is not None:
-            self.restore_env(serial_env)
+        if serial_obj is not None:
+            self.restore_env(serial_obj)
         else:
             self.props = props
             self.census_func = census
@@ -101,17 +102,17 @@ class Env(Space):
         elif (self.user_type == API):
             self.user = APIUser(getpass.getuser(), self)
 
-    def from_json(self, serial_env):
-        super().from_json(serial_env)
-        if serial_env["type"] == "env":
+    def from_json(self, serial_obj):
+        super().from_json(serial_obj)
+        if serial_obj["type"] == "env":
             self.props = pa.create_props("basic",
-                                         prop_dict=serial_env["props"])
-            self.pop_hist = PopHist(serial_pops=serial_env["pop_hist"])
-            self.plot_title = serial_env["pop_hist"]
-            self.user = APIUser(serial_env["user"]["name"])
-            self.name = serial_env["name"]
-            self.womb = serial_env["womb"]
-            self.switches = serial_env["switches"]
+                                         prop_dict=serial_obj["props"])
+            self.pop_hist = PopHist(serial_pops=serial_obj["pop_hist"])
+            self.plot_title = serial_obj["pop_hist"]
+            self.user = APIUser(serial_obj["user"]["name"])
+            self.name = serial_obj["name"]
+            self.womb = serial_obj["womb"]
+            self.switches = serial_obj["switches"]
 
     def to_json(self):
         rep = super().to_json()
@@ -130,8 +131,8 @@ class Env(Space):
     def __init_unrestorables(self):
         pass
 
-    def restore_env(self, serial_env):
-        self.from_json(serial_env)
+    def restore_env(self, serial_obj):
+        self.from_json(serial_obj)
         self.__init_unrestorables()
 
     def get_periods(self):

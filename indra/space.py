@@ -67,21 +67,28 @@ class Space(Composite):
 
     def __init__(self, name, width=DEF_WIDTH, height=DEF_HEIGHT,
                  attrs=None, members=None, action=None,
-                 random_placing=True):
+                 random_placing=True, serial_obj=None):
         super().__init__(name, attrs=attrs, members=members,
-                         action=action)
-        self.width = width
-        self.height = height
-
-        # the location of members in the space {(tuple):Agent}
-        self.locations = {}
-
-        # by making two class methods for rand_place_members and
-        # place_member, we allow two places to override
-        if random_placing:
-            self.rand_place_members(self.members)
+                         action=action, serial_obj=None)
+        if serial_obj is not None:
+            self.restore_space(serial_obj)
         else:
-            self.consec_place_members(self.members)
+            self.width = width
+            self.height = height
+
+            # the location of members in the space {(tuple):Agent}
+            self.locations = {}
+
+            # by making two class methods for rand_place_members and
+            # place_member, we allow two places to override
+            if random_placing:
+                self.rand_place_members(self.members)
+            else:
+                self.consec_place_members(self.members)
+
+    def restore_space(self, serial_obj):
+        self.from_json(serial_obj)
+        # self.__init_unrestorables()
 
     def to_json(self):
         rep = super().to_json()
