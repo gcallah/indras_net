@@ -49,12 +49,12 @@
       "source": "https://github.com/gcallah/indras_net/blob/master/models/wolfsheep.py"
     },
     {
-      "model ID": 6,
-      "name": "Scheduler Model",
-      "run": "scheduler",
-      "props": "models/props/scheduler.props.json",
-      "doc": "Schedule scarce resources among consumers.",
-      "source": "https://github.com/gcallah/indras_net/blob/master/models/scheduler.py"
+      "model ID": 7,
+      "name": "Wolfram's Automata",
+      "run": "wolfram",
+      "props": "models/props/wolfram.props.json",
+      "doc": "Test out Stephen Wolfram's automata.",
+      "source": "https://github.com/gcallah/indras_net/blob/master/models/wolfram.py"
     }
   ]
 }

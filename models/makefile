@@ -3,6 +3,7 @@ PYLINT = flake8
 PYLINTFLAGS = --ignore=E741,W503 --exclude=interactive.py,__main__.py
 PYTHONFILES = $(shell ls *.py)
 TEST_FILES = $(shell ls $(TESTDIR)/test_*.py)
+export user_type = test
 
 prod: tests
 	-git commit -a
@@ -18,6 +19,9 @@ tests: pytests lint
 %.pylint:
 	$(PYLINT) $(PYLINTFLAGS) $*.py
 
+test_models:
+	nosetests tests.test_models
+
 test_seg:
 	nosetests tests.test_segregation --nocapture
 
@@ -28,8 +32,8 @@ test_sched:
 	nosetests tests.test_scheduler --nocapture
 
 # for some reason the following test hangs:
-# test_fashion:
-# 	nosetests tests.test_fashion
+test_fashion:
+	nosetests tests.test_fashion
 
 test_wolfram:
 	nosetests tests.test_wolfram --nocapture
