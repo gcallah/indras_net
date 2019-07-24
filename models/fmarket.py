@@ -1,7 +1,9 @@
 """
     This is financial market model re-written in indra.
 """
+from math import isclose
 from propargs.propargs import PropArgs
+
 from indra.utils import get_prop_path
 from indra.agent import Agent
 from indra.composite import Composite
@@ -16,8 +18,12 @@ DEF_NUM_VALUE_INVESTOR = 10
 DEF_CAPITAL = 1000
 DEF_REAL_VALUE = 10
 DEF_PRICE = 8  # a starting point
-DEF_PERIOD = 3
+DEF_MOVING_PERIODS = 3
+DEF_STAGNANT_PERIODS = 8
 DEF_NUM_ASSET = 100
+DEF_MIN_PRICE_MOVE = .01
+DEF_MAX_PRICE_MOVE = .20
+INF_RATIO = 1000000000  # just some very big num!
 
 trend_followers = None
 value_investors = None
@@ -30,14 +36,14 @@ def trend_direction(agent):
     If the price is increasing,return True
     Else return false.
     """
-    if agent["price_asset"] > agent["prev_price_asset"]:
+    if agent["asset_price"] > agent["prev_asset_price"]:
         return True
     else:
         return False
 
 
 def buy(agent):
-    price = float(market_maker["price_asset"] * DEF_NUM_ASSET)
+    price = float(market_maker["asset_price"] * DEF_NUM_ASSET)
     if agent["capital"] >= price:
         agent["capital"] -= price
         agent["num_stock"] += DEF_NUM_ASSET
@@ -45,7 +51,7 @@ def buy(agent):
 
 
 def sell(agent):
-    price = float(market_maker["price_asset"] * DEF_NUM_ASSET)
+    price = float(market_maker["asset_price"] * DEF_NUM_ASSET)
     if agent["num_stock"] >= DEF_NUM_ASSET:
         market_maker["sell"] += 1
         agent["capital"] += price
@@ -61,7 +67,7 @@ def num_increasing_period(agent):
 
 def market_report(env):
     return ("Asset price on the market: "
-            + str(market_maker["price_asset"]) + "\n")
+            + str(market_maker["asset_price"]) + "\n")
 
 
 def calculate_low_price(agent):
@@ -70,7 +76,7 @@ def calculate_low_price(agent):
     the real value: value_investors start buying, return True.
     Else return False
     """
-    if agent["price_asset"] <= float(DEF_REAL_VALUE * 0.9):
+    if agent["asset_price"] <= float(DEF_REAL_VALUE * 0.9):
         return True
     else:
         return False
@@ -82,7 +88,7 @@ def calculate_high_price(agent):
     the real value: value_investors start buying, return True.
     Else return False
     """
-    if agent["price_asset"] >= float(DEF_REAL_VALUE * 1.1):
+    if agent["asset_price"] >= float(DEF_REAL_VALUE * 1.1):
         return True
     else:
         return False
@@ -98,8 +104,8 @@ def create_market_maker(name):
     market_maker = Agent(name, action=market_maker_action)
     market_maker["buy"] = 0
     market_maker["sell"] = 0
-    market_maker["price_asset"] = DEF_PRICE
-    market_maker["prev_price_asset"] = DEF_PRICE
+    market_maker["asset_price"] = DEF_PRICE
+    market_maker["prev_asset_price"] = DEF_PRICE
     market_maker["num_period"] = 0
     market_maker["price_hist"] = [DEF_PRICE]
     return market_maker
@@ -124,6 +130,23 @@ def create_value_investor(name, i):
     return value_investor
 
 
+def calc_price_change(ratio, min_price_move=DEF_MIN_PRICE_MOVE,
+                      max_price_move=DEF_MAX_PRICE_MOVE):
+    """
+    Make the price move in proportion to the ratio, up to a ceiling
+    of max_price_move.
+    """
+    direction = 1
+    if isclose(ratio, 1.0):
+        return 0
+
+    if ratio < 1:
+        ratio = 1 / ratio
+        direction = -1
+
+    return direction * min(max_price_move, min_price_move * ratio)
+
+
 # ======================================================================================================
 # ======================================================================================================
 # ======================================================================================================
@@ -131,25 +154,20 @@ def market_maker_action(agent):
     print("I'm" + agent.name + "and I'm manipulating the market.")
 
     # Determine the current price asset
-    market_maker["prev_price_asset"] = market_maker["price_asset"]
+    market_maker["prev_asset_price"] = market_maker["asset_price"]
     print("This is the buy: ", agent["buy"])
     print("This is the sell: ", agent["sell"])
+    ratio = 1
     if agent["sell"] == 0:
         if agent["buy"] != 0:
-            agent["price_asset"] = float(agent["price_asset"] * 1.01)
-            print("This is the ratio: ", 0)
-        else:
-            agent["price_asset"] = float(agent["price_asset"] * 0.99)
+            ratio = INF_RATIO
     else:
-        ratio = float(agent["buy"] / agent["sell"])
-        print("This is the ratio: ", ratio)
-        if ratio >= 1:
-            agent["price_asset"] = float(agent["price_asset"] * 1.01)
-        else:
-            agent["price_asset"] = float(agent["price_asset"] * 0.99)
+        ratio = agent["buy"] / agent["sell"]
+
+    agent["asset_price"] += calc_price_change(ratio)
 
     num_increasing_period(agent)
-    agent["price_hist"].append(agent["price_asset"])
+    agent["price_hist"].append(agent["asset_price"])
     print("This is price hist:", agent["price_hist"])
     agent["buy"] = 0
     agent["sell"] = 0
@@ -162,7 +180,7 @@ def trend_follower_action(agent):
     agent["capital"] = DEF_CAPITAL
 
     # Determine if trend followers should buy or sell the stock
-    if market_maker["num_period"] >= DEF_PERIOD:
+    if market_maker["num_period"] >= DEF_MOVING_PERIODS:
         agent["buy"] = True
         agent["sell"] = False
         buy(agent)
