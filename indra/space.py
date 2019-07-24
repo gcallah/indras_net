@@ -95,7 +95,7 @@ class Space(Composite):
         rep["type"] = "space"
         rep["width"] = self.width
         rep["height"] = self.height
-        rep["locations_dict"] = self.loc_dict()
+        # rep["locations_dict"] = self.loc_dict()
         return rep
 
     def from_json(self, serial_space):

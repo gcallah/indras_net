@@ -347,10 +347,10 @@ class EnvTestCase(TestCase):
         return True
 
     def test_from_json(self):
-        # env = Env(tests_env)
-        # j = env.to_json()
-        # self.assertEqual(j, tests_env)
-        return True
+        self.env = Env(name='Test env', serial_obj=tests_env)
+        j = self.env.to_json()
+        self.assertEqual(str(type(j)), "<class 'dict'>")
+        # managed to contruct an env!!!
 
 
 if __name__ == '__main__':
