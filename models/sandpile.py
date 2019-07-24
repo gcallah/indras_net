@@ -60,7 +60,6 @@ def add_grain(agent):
     """
     global sandpile_env
 
-    agent.has_acted = True
     curr_group_idx = get_curr_group_idx(agent)
     next_group_idx = get_next_group_idx(curr_group_idx)
     if DEBUG:

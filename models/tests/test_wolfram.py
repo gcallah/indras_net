@@ -3,7 +3,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.env import Env
 from models.wolfram import set_up, W, B
-from models.wolfram import create_agent, turn_black, get_color, get_rule, next_color, wolfram_action
+from models.wolfram import create_agent, get_color, get_rule, next_color, wolfram_action
 import models.wolfram as wolf
 
 TEST_ANUM = 999999
@@ -24,22 +24,6 @@ class WolframTestCase(TestCase):
         """
         a = create_agent(0, 0)
         self.assertEqual(a.name, '(0,0)')
-
-    def test_turn_black(self):
-        """
-        Creates an agent and assign it to group white
-        then change the color of this agent to black using turn_black
-        then checks that the color was correctly switched.
-        """
-        agent = create_agent(0, 0)
-        white = Composite("white")
-        black = Composite("black")
-        wolf.groups = []
-        wolf.groups.append(white)
-        wolf.groups.append(black)
-        wolf.groups[W] += agent
-        turn_black(wolf.groups, agent)
-        self.assertEqual(agent.primary_group(), wolf.groups[B])
 
     def test_get_color(self):
         """
