@@ -99,10 +99,10 @@ class Space(Composite):
         return rep
 
     def from_json(self, serial_space):
-        super().from_json(serial_space)
-        if serial_space["type"] == "space":
-            self.width = serial_space["width"]
-            self.height = serial_space["height"]
+        for cnm in serial_space["members"]:
+            super().from_json(serial_space["members"][cnm])
+        self.width = serial_space["width"]
+        self.height = serial_space["height"]
         # find the agents and put them into the specific locations
         # self.locations = serial_space["locations"]
 

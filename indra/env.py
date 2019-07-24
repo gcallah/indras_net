@@ -104,20 +104,19 @@ class Env(Space):
 
     def from_json(self, serial_obj):
         super().from_json(serial_obj)
-        if serial_obj["type"] == "env":
-            self.props = pa.create_props("basic",
-                                         prop_dict=serial_obj["props"])
-            self.pop_hist = PopHist(serial_pops=serial_obj["pop_hist"])
-            self.plot_title = serial_obj["pop_hist"]
-            self.user = APIUser(serial_obj["user"]["name"])
-            self.name = serial_obj["name"]
-            self.womb = serial_obj["womb"]
-            self.switches = serial_obj["switches"]
+        self.props = pa.create_props("basic",
+                                     prop_dict=serial_obj["props"])
+        self.pop_hist = PopHist(serial_pops=serial_obj["pop_hist"])
+        self.plot_title = serial_obj["pop_hist"]
+        # self.user = APIUser(serial_obj["user"])
+        self.name = serial_obj["name"]
+        self.womb = serial_obj["womb"]
+        self.switches = serial_obj["switches"]
 
     def to_json(self):
         rep = super().to_json()
         rep["type"] = "env"
-        rep["user"] = self.user.to_json()["name"]
+        # rep["user"] = self.user.to_json()["name"]
         rep["plot_title"] = self.plot_title
         rep["props"] = self.props.to_json()
         rep["pop_hist"] = self.pop_hist.to_json()
@@ -227,14 +226,12 @@ class Env(Space):
         """
         Gets the census data for all the agents stored
         in the member dictionary.
-        If self.census_func is None, returns how many agents
-        are in each of the groups, and how many acted.
 
-        Checks which agents have the member variable has_acted as True
-        and counts how many of them there are
-        then changes it back to False.
+        Takes in how many agent has moved from one place to another
+        and how many agent has switched groups and returns
+        a string of these census data.
 
-        census_func overrides the default behavior.
+        census_func (to be added) overrides the default behavior.
         """
         if self.census_func:
             return self.census_func(self)

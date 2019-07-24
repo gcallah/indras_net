@@ -33,15 +33,6 @@ def create_agent(x, y):
     return Agent(name=name, action=agent_action)
 
 
-def turn_black(groups, agent):
-    """
-    Change the color of the agent from white to black
-    by chaning the group that it is in.
-    """
-    if agent.primary_group() == groups[W]:
-        switch(agent, groups[W], groups[B])
-
-
 def get_color(group):
     """
     Returns W or B, W for white and B for black
@@ -79,7 +70,7 @@ def next_color(rule_dict, left, middle, right):
 
 
 def agent_action(agent):
-    return False
+    return True
 
 
 def wolfram_action(wolfram_env):
@@ -119,11 +110,10 @@ def wolfram_action(wolfram_env):
                                                  + ")"].primary_group())
                 if next_color(rule_dict, left_color, middle_color,
                               right_color):
-                    curr_row[agent].has_acted = True
                     next_row_agent_key = ("(" + str(x) + ","
                                           + str(active_row_y - 1) + ")")
-                    turn_black(groups,
-                               next_row[next_row_agent_key])
+                    wolfram_env.add_switch(next_row[next_row_agent_key],
+                                           groups[W], groups[B])
                 left_color = middle_color
             x += 1
         curr_row = next_row
@@ -166,7 +156,7 @@ def set_up(props=None):
                       props=pa)
     wolfram_env.user.exclude_choices(["line_graph"])
     first_agent = wolfram_env.get_agent_at(width // 2, height - 1)
-    turn_black(groups, first_agent)
+    switch(first_agent, groups[W], groups[B])
     curr_row = wolfram_env.get_row_hood(wolfram_env.height - 1)
     return (wolfram_env, groups, rule_dict)
 

@@ -154,7 +154,6 @@ class Agent(object):
             self.pos = None
             self.locator = None
             self.prim_group = prim_group
-            self.has_acted = False
             if self.prim_group is not None:
                 self.groups[str(self.prim_group)] = self.prim_group
                 if is_space(self.prim_group):
@@ -181,15 +180,14 @@ class Agent(object):
                 "prim_group": str(self.prim_group),
                 "locator": str(self.locator),
                 "neighbors": self.neighbors,
-                "has_acted": self.has_acted,
                 "action_key": self.action_key
                 }
 
     def from_json(self, serial_agent):
         from models.run_dict import action_dict
-        self.action = action_dict[serial_agent["action_key"]]
+        if serial_agent["action_key"] is not None:
+            self.action = action_dict[serial_agent["action_key"]]
         self.action_key = serial_agent["action_key"]
-        self.has_acted = serial_agent["has_acted"]
         self.neighbors = serial_agent["neighbors"]
         self.type_sig = serial_agent["type_sig"]
         self.active = serial_agent["active"]

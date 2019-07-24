@@ -347,9 +347,8 @@ class EnvTestCase(TestCase):
         return True
 
     def test_from_json(self):
-        # self.env()
-        # self.env.from_json(tests_env["members"])
-        # j = self.env.to_json()
+        # env = Env(tests_env)
+        # j = env.to_json()
         # self.assertEqual(j, tests_env)
         return True
 

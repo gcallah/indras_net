@@ -61,14 +61,13 @@ class Composite(Agent):
 
     def from_json(self, serial_obj):
         super().from_json(serial_obj)
-        # check keys in members:
-        # if the agent is within self.registry
-        # link it to the composite, else create the agent first
         for nm in serial_obj["members"]:
             if serial_obj["members"][nm]["type"] == "agent":
-                self.members[nm] = Agent(serial_obj["members"][nm])
+                ret = Agent(serial_obj["members"][nm])
             else:
-                self.members[nm] = Composite(serial_obj["members"][nm])
+                ret = Composite(serial_obj["members"][nm])
+            self.members[nm] = ret
+            self.registry[nm] = ret
 
     def __repr__(self):
         return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
