@@ -102,8 +102,6 @@ class Space(Composite):
         return rep
 
     def from_json(self, serial_space):
-        # for cnm in serial_space["members"]:
-        #     super().from_json(serial_space["members"][cnm])
         super().from_json(serial_space)
         self.width = serial_space["width"]
         self.height = serial_space["height"]
