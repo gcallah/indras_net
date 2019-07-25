@@ -103,11 +103,11 @@ def gameoflife_action(gameoflife_env):
         for x in range(min_x, gameoflife_env.width):
             curr_agent = gameoflife_env.get_agent_at(x, y)
             if curr_agent.neighbors is not None:
-                if change_min:
-                    new_min_x = curr_agent.get_x()
-                    new_min_y = curr_agent.get_y()
-                    change_min = False
                 if curr_agent.primary_group() == groups[1]:
+                    if change_min:
+                        new_min_x = curr_agent.get_x()
+                        new_min_y = curr_agent.get_y()
+                        change_min = False
                     if apply_live_rules(curr_agent):
                         curr_agent.locator.add_switch(curr_agent, groups[1],
                                                       groups[0])

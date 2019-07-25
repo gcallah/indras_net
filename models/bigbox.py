@@ -112,10 +112,6 @@ def calc_util(stores):
     return random.random()
 
 
-def pay_fixed_expenses(store):
-    store.attrs["capital"] -= store.attrs["fixed expense"]
-
-
 def transaction(store, consumer):
     """
     Calcuates the expense and the revenue of the store passed in
@@ -174,7 +170,8 @@ def town_action(town):
                     neighbor = nearby_neighbors[neighbors]
                     if (neighbor.isactive() and neighbor.primary_group()
                             != groups[CONSUMER_INDX]):
-                        pay_fixed_expenses(neighbor)
+                        neighbor.attrs["capital"] -= (
+                            neighbor.attrs["fixed expense"])
                         util = 0.0
                         if (neighbor.primary_group()
                            == groups[BB_INDX]):

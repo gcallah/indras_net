@@ -4,7 +4,7 @@ from indra.composite import Composite
 from indra.space import Space
 from indra.env import Env
 from models.bigbox import create_consumer, create_bb, create_mp, set_up
-from models.bigbox import calc_util, transaction, town_action, pay_fixed_expenses
+from models.bigbox import calc_util, transaction, town_action
 from models.bigbox import bb_store, consumer_action, mp_action, bb_action
 from models.bigbox import MP_PREF, RADIUS, CONSUMER_INDX, get_store_census
 from models.bigbox import BB_INDX, MP_INDX, mp_stores, town_action
@@ -35,7 +35,7 @@ class BigBoxTestCase(TestCase):
 		Calculate the utility of the big box
 		Test if the utility is bounded between 0.0 and 1.0
 		"""
-		a= bb.create_bb("Big box"+str(0))
+		a = bb.create_bb("Big box"+str(0))
 		util = bb.calc_util(a)
 		self.assertLess(util, 1.0)
 		self.assertGreater(util, 0.0)
@@ -83,18 +83,18 @@ class BigBoxTestCase(TestCase):
 		Transact the money from consumer to big box
 		Check if big box dies when its capital is below 0
 		"""
-		a = bb.create_bb("Big box"+str(0))
-		b = bb.create_consumer("Consumer"+str(0))
+		a = bb.create_bb("Big box" + str(0))
+		b = bb.create_consumer("Consumer" + str(0))
 		spending_power = b.attrs["spending power"]
 		bb.transaction(a,b)
-		self.assertEqual(a.attrs["capital"],480+spending_power)
+		self.assertEqual(a.attrs["capital"],480 + spending_power)
 		self.assertEqual(a.attrs["inventory"][1], 89)
-		a.attrs["inventory"][1]-=87
+		a.attrs["inventory"][1] -= 87
 		bb.transaction(a,b)
 		self.assertEqual(a.attrs["inventory"][1], 91)
-		self.assertEqual(a.attrs["capital"], 480+2*spending_power-25)
-		while a.attrs["capital"] > -1*spending_power:
-			bb.pay_fixed_expenses(a)
+		self.assertEqual(a.attrs["capital"], 480 + (2 * spending_power) - 25)
+		while a.attrs["capital"] > -1 * spending_power:
+			a.attrs["capital"] -= (a.attrs["fixed expense"])
 		bb.transaction(a,b)
 		self.assertEqual(a.active, False)
 
@@ -103,7 +103,7 @@ class BigBoxTestCase(TestCase):
 		"""
 		Create a consumer agent
 		"""
-		bob= bb.create_consumer("Consumer"+str(0))
+		bob = bb.create_consumer("Consumer"+str(0))
 		self.assertEqual(len(bob.attrs), 3)
 
 
@@ -111,7 +111,7 @@ class BigBoxTestCase(TestCase):
 		"""
 		Create a mom and pop agent
 		"""
-		mp= bb.create_mp("books", 0)
+		mp = bb.create_mp("books", 0)
 		self.assertEqual(len(mp.attrs), 4)
 
 
@@ -123,21 +123,11 @@ class BigBoxTestCase(TestCase):
 		self.assertEqual(len(bigBox.attrs), 4)
 
 	
-	def test_pay_fixed_expenses(self):
-		"""
-		Create a big box agent
-		Test if the fiexed expenses are deducted from the capital
-		"""
-		a = bb.create_bb("Big box"+str(0))
-		bb.pay_fixed_expenses(a)
-		self.assertEqual(a.attrs["capital"], 420)
-
-	
 	def test_mp_action(self):
 		"""
 		Test if the action of mom and pop returns True
 		"""
-		mp= bb.create_mp("books", 0)
+		mp = bb.create_mp("books", 0)
 		self.assertEqual(True, bb.mp_action(mp))
 
 
@@ -145,7 +135,7 @@ class BigBoxTestCase(TestCase):
 		"""
 		Test if the action of big box returns True
 		"""
-		bigBox= bb.create_bb("Big Box"+str(0))
+		bigBox = bb.create_bb("Big Box" + str(0))
 		self.assertEqual(True, bb.bb_action(bigBox))
 
 
@@ -153,12 +143,5 @@ class BigBoxTestCase(TestCase):
 		"""
 		Test of the action of consumer returns False
 		"""
-		bob= bb.create_consumer("Consumer"+str(0))
+		bob = bb.create_consumer("Consumer" + str(0))
 		self.assertEqual(False, bb.consumer_action(bob))
-
-
-
-
-
-			
-
