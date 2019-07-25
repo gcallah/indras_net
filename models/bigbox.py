@@ -133,15 +133,14 @@ def transaction(store, consumer):
 
 
 def get_store_census(town):
-    print()
-    for bb in groups[1]:
-        print(groups[1][bb], "has a capital of",
-              groups[1][bb].attrs["capital"],
-              "and inventory of", (groups[1][bb]).attrs["inventory"][1])
-    for mp in groups[2]:
-        print(groups[2][mp], "has a capital of",
-              groups[2][mp].attrs["capital"],
-              "and inventory of", (groups[2][mp]).attrs["inventory"][1])
+    print("\nStore census")
+    for i in range(1, 6):
+        for store in groups[i]:
+            if groups[i][store].attrs["capital"] > -1:
+                print(groups[i][store], "has a capital of",
+                      groups[i][store].attrs["capital"],
+                      "and inventory of",
+                      (groups[i][store]).attrs["inventory"][1])
 
 
 def town_action(town):
@@ -182,7 +181,8 @@ def town_action(town):
                                 print("Consumer", curr_consumer.get_pos())
                                 print("   Shopping at big box store at",
                                       neighbor.get_pos())
-                                print("      Utility:", util)
+                                print("      Big box has:",
+                                      neighbor.attrs["capital"])
                         else:
                             if DEBUG:
                                 print("Consumer", curr_consumer.get_pos())
@@ -197,12 +197,13 @@ def town_action(town):
                                 if DEBUG:
                                     print("     ", neighbor, "has item")
                                     print("      Utility:", util)
+                            else:
+                                if DEBUG:
+                                    print("     ", neighbor,
+                                          "does not have item")
                         if util > max_util:
                             max_util = util
                             store_to_go = neighbor
-                    if neighbor.primary_group() != groups[CONSUMER_INDX]:
-                        town.user.tell(("   " + str(neighbor)
-                                       + " is out of buisness"))
                 curr_consumer.attrs["last utils"] = max_util
                 if store_to_go is not None:
                     if DEBUG:
@@ -272,6 +273,7 @@ def set_up(props=None):
             print(comp)
             for agents in comp:
                 print("    ", comp[agents])
+        print(get_store_census(town))
     town = Env("Town",
                action=town_action,
                members=groups,
