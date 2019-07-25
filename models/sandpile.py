@@ -3,7 +3,7 @@ Abelian sandpile model
 """
 from propargs.propargs import PropArgs
 from indra.utils import get_prop_path
-from indra.agent import Agent, switch
+from indra.agent import Agent
 from indra.composite import Composite
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.env import Env
@@ -27,32 +27,6 @@ def create_agent(x, y):
     return Agent(name=name, action=place_action)
 
 
-def get_curr_group_idx(agent):
-    """
-    Returns the int index of the current group.
-    Ex) Returns 0 if group is Group 0
-    """
-    return group_indices[agent.primary_group().name]
-
-
-def get_next_group_idx(curr_group_idx):
-    """
-    Returns the int index of the next group.
-    Ex) Returns 1 if curr_group_idx group is Group 0
-    """
-    return (curr_group_idx + 1) % NUM_GROUPS
-
-
-def change_group(agent, curr_group_idx, next_group_idx):  # noqa F811
-    """
-    Change group from curr_group_idx passed in
-    to the next_group_idx passed in.
-    """
-    global sandpile_env
-
-    switch(agent, groups[curr_group_idx], groups[next_group_idx])
-
-
 def add_grain(agent):
     """
     Add a grain to the agent that is passed in
@@ -60,12 +34,13 @@ def add_grain(agent):
     """
     global sandpile_env
 
-    curr_group_idx = get_curr_group_idx(agent)
-    next_group_idx = get_next_group_idx(curr_group_idx)
+    curr_group_idx = group_indices[agent.primary_group().name]
+    next_group_idx = (curr_group_idx + 1) % NUM_GROUPS
     if DEBUG:
-        print("Agent at", agent.pos, "is changing group from",
+        print("Agent at", agent.pos, "is changing from",
               agent.primary_group(), "to", next_group_idx)
-    change_group(agent, curr_group_idx, next_group_idx)
+    sandpile_env.now_switch(agent, groups[curr_group_idx],
+                            groups[next_group_idx])
     if DEBUG:
         print("Agent at", agent.pos, "has changed to", agent.primary_group())
     if next_group_idx == 0:

@@ -3,8 +3,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.space import Space
 from indra.env import Env
-from models.sandpile import set_up, create_agent, get_next_group_idx
-from models.sandpile import get_curr_group_idx, change_group, add_grain, topple, sandpile_action, place_action
+from models.sandpile import set_up, create_agent, add_grain, topple, sandpile_action, place_action
 from models.sandpile import NUM_GROUPS
 import models.sandpile as sp
 
@@ -35,38 +34,6 @@ class SandpileTestCase(TestCase):
         agent = create_agent(TEST_X, TEST_Y)
         test_name = "(" + str(TEST_X) + "," + str(TEST_Y) + ")"
         self.assertEqual(agent.name, test_name)
-
-    def test_get_curr_group_idx(self):
-        """
-        Creates an agent, assign it to Group0,
-        and checks if get_curr_group_idx returns 0.
-        """
-        a = create_agent(TEST_X, TEST_Y)
-        sp.groups = []
-        sp.groups.append(Composite("Group" + str(0)))
-        sp.groups[0]+= a
-        self.assertEqual(get_curr_group_idx(a), 0)
-
-    def test_get_next_group_idx(self):
-        """
-        Creates an agent, assign it to Group0,
-        and checks if get_next_group_idx returns 1.
-        """
-        a = create_agent(TEST_X, TEST_Y)
-        self.assertEqual(get_next_group_idx(0), 1)
-
-    def test_change_group(self):
-        """
-        Creates an agent, assign it to Group0,
-        and checks if change_group changed the agent to Group1.
-        """
-        a = create_agent(TEST_X, TEST_Y)
-        sp.groups = []
-        sp.groups.append(Composite("Group" + str(0)))
-        sp.groups.append(Composite("Group" + str(1)))
-        sp.groups[0] += a
-        change_group(a, 0, 1)
-        self.assertEqual(get_curr_group_idx(a), 1)
 
     def test_add_grain(self):
         """

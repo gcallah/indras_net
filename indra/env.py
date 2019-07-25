@@ -94,6 +94,9 @@ class Env(Space):
         self.womb = []  # for agents waiting to be born
         self.switches = []  # for agents waiting to switch groups
         self.user_type = os.getenv("user_type", TERMINAL)
+        self.num_acts = 0
+        self.num_moves = 0
+        self.num_switches = 0
         if (self.user_type == TERMINAL):
             self.user = TermUser(getpass.getuser(), self)
             self.user.tell("Welcome to Indra, " + str(self.user) + "!")
@@ -188,14 +191,16 @@ class Env(Space):
         self.switches.append((agent, grp1, grp2))
         # do we need to connect agent to env (self)?
 
+    def now_switch(self, agent, grp1, grp2):
+        switch(agent, grp1, grp2)
+        self.num_switches += 1
+
     def runN(self, periods=DEF_TIME):
         """
             Run our model for N periods.
             Return the total number of actions taken.
         """
-        acts = 0
-        moves = 0
-        switches = 0
+        num_acts = 0
         for i in range(periods):
             # before members act, give birth to new agents
             # we will have tuple of agent and group
@@ -210,7 +215,7 @@ class Env(Space):
             if self.switches is not None:
                 for (agent, grp1, grp2) in self.switches:
                     switch(agent, grp1, grp2)
-                    switches += 1
+                    self.num_switches += 1
                 del self.switches[:]
 
             self.pop_hist.add_period()
@@ -221,13 +226,13 @@ class Env(Space):
                     self.pop_hist.record_pop(mbr, 0)
 
             (a, m) = super().__call__()
-            acts += a
-            moves += m
-            census_rpt = self.get_census(moves, switches)
+            num_acts += a
+            self.num_moves += m
+            census_rpt = self.get_census()
             self.user.tell(census_rpt)
-        return acts
+        return num_acts
 
-    def get_census(self, moves, switches):
+    def get_census(self):
         """
         Gets the census data for all the agents stored
         in the member dictionary.
@@ -241,15 +246,18 @@ class Env(Space):
         if self.census_func:
             return self.census_func(self)
         else:
-            census_str = ""
+            census_str = ("\nCensus for period " + str(self.get_periods())
+                          + ":\n")
             for composite_str in self.members:
                 population = len(self.members[composite_str])
                 census_str += (composite_str + ": " + str(population) + "\n")
-            return("\nCensus for period " + str(self.get_periods()) + ":"
-                   + "\n" + census_str
-                   + "\tTotal agents moved: " + str(moves)
-                   + "\n" + "\tTotal agents who switched groups: "
-                   + str(switches))
+            census_str += ("\tTotal agents moved: " + str(self.num_moves)
+                           + "\n" + "\tTotal agents who switched groups: "
+                           + str(self.num_switches))
+        self.num_acts = 0
+        self.num_moves = 0
+        self.num_switches = 0
+        return census_str
 
     def has_disp(self):
         if not disp.plt_present:
