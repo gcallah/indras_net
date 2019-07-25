@@ -5,7 +5,7 @@ from random import randint
 
 from propargs.propargs import PropArgs
 from indra.utils import get_prop_path
-from indra.agent import Agent, switch
+from indra.agent import Agent
 from indra.composite import Composite
 from indra.env import Env
 from indra.display_methods import BLACK, WHITE, SQUARE
@@ -40,7 +40,7 @@ def change_color(agent):
     next_group = groups[0]
     if curr_group == next_group:
         next_group = groups[1]
-    switch(agent, curr_group, next_group)
+    gameoflife_env.now_switch(agent, curr_group, next_group)
 
 
 def apply_live_rules(agent):
