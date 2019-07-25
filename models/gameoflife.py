@@ -348,7 +348,7 @@ def set_up(props=None):
     else:
         pa = PropArgs.create_props(MODEL_NAME,
                                    prop_dict=props)
-    height = pa.get("grid_heigh", DEF_HEIGHT)
+    height = pa.get("grid_height", DEF_HEIGHT)
     width = pa.get("grid_width", DEF_WIDTH)
     simulation = pa.get("simulation", 1)
     white = Composite("white", {"color": WHITE})

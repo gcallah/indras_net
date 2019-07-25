@@ -19,7 +19,7 @@ NUM_OF_BB = 3
 NUM_OF_MP = 6
 
 MP_PREF = 0.1
-RADIUS = 3
+RADIUS = 2
 
 CONSUMER_INDX = 0
 BB_INDX = 1
@@ -30,11 +30,11 @@ groups = None
 mp_pref = None
 radius = None
 
-mp_stores = {"books": [45, 30, 360, 60, TAN],
-             "coffee": [23, 15, 180, 30, BLACK],
-             "groceries": [67, 45, 540, 90, GREEN],
-             "hardware": [60, 40, 480, 80, RED],
-             "meals": [40, 23, 270, 45, YELLOW]}
+mp_stores = {"Mom and pop: books": [45, 30, 360, 60, TAN],
+             "Mom and pop: coffee": [23, 15, 180, 30, BLACK],
+             "Mom and pop: groceries": [67, 45, 540, 90, GREEN],
+             "Mom and pop: hardware": [60, 40, 480, 80, RED],
+             "Mom and pop: meals": [40, 23, 270, 45, YELLOW]}
 bb_store = [60, 25, 480, 90]
 
 
@@ -98,7 +98,7 @@ def create_mp(name, i):
     before it needs to restock and pay the variable expense.
     """
     expense = mp_stores[name]
-    store_name = "Mom and pop " + name + " " + str(i)
+    store_name = name + " " + str(i)
     store_books = {"fixed expense": expense[0],
                    "variable expense": expense[1],
                    "capital": expense[2],
@@ -125,7 +125,7 @@ def transaction(store, consumer):
         store.attrs["inventory"][1] += (
             store.attrs["inventory"][0])
     if store.attrs["capital"] <= 0:
-        print("     ", store, "is going out of buisness")
+        print("     ", store, "is out of buisness")
         store.die()
     if DEBUG:
         print("     ", store, "has a capital of", store.attrs["capital"],
@@ -168,8 +168,10 @@ def town_action(town):
                 max_util = 0.0
                 for neighbors in nearby_neighbors:
                     neighbor = nearby_neighbors[neighbors]
-                    if (neighbor.isactive() and neighbor.primary_group()
-                            != groups[CONSUMER_INDX]):
+                    if (neighbor.isactive()
+                            and neighbor.primary_group()
+                        != groups[CONSUMER_INDX]
+                            and neighbor.attrs["capital"] > -1):
                         neighbor.attrs["capital"] -= (
                             neighbor.attrs["fixed expense"])
                         util = 0.0
@@ -265,10 +267,11 @@ def set_up(props=None):
     for m in range(0, num_mp):
         rand = random.randint(2, len(mp_stores) + 1)
         groups[rand] += create_mp(str(groups[rand]), m)
-    for comp in groups:
-        print(comp)
-        for agents in comp:
-            print("    ", comp[agents])
+    if DEBUG:
+        for comp in groups:
+            print(comp)
+            for agents in comp:
+                print("    ", comp[agents])
     town = Env("Town",
                action=town_action,
                members=groups,

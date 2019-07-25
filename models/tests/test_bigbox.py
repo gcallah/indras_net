@@ -111,7 +111,7 @@ class BigBoxTestCase(TestCase):
 		"""
 		Create a mom and pop agent
 		"""
-		mp = bb.create_mp("books", 0)
+		mp = bb.create_mp("Mom and pop: books", 0)
 		self.assertEqual(len(mp.attrs), 4)
 
 
@@ -127,7 +127,7 @@ class BigBoxTestCase(TestCase):
 		"""
 		Test if the action of mom and pop returns True
 		"""
-		mp = bb.create_mp("books", 0)
+		mp = bb.create_mp("Mom and pop: books", 0)
 		self.assertEqual(True, bb.mp_action(mp))
 
 
