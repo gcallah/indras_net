@@ -1,6 +1,7 @@
 """
     This is financial market model re-written in indra.
 """
+
 from math import isclose
 from propargs.propargs import PropArgs
 
@@ -20,7 +21,7 @@ DEF_REAL_VALUE = 10
 DEF_PRICE = 8  # a starting point
 DEF_MOVING_PERIODS = 3
 DEF_STAGNANT_PERIODS = 8
-DEF_NUM_ASSET = 100
+DEF_NUM_ASSET = 10
 DEF_MIN_PRICE_MOVE = .01
 DEF_MAX_PRICE_MOVE = .20
 INF_RATIO = 1000000000  # just some very big num!
@@ -36,10 +37,13 @@ def trend_direction(agent):
     If the price is increasing,return True
     Else return false.
     """
+
     if agent["asset_price"] > agent["prev_asset_price"]:
-        return True
+        return "up"
+    elif agent["asset_price"] < agent["prev_asset_price"]:
+        return "down"
     else:
-        return False
+        return "stagnant"
 
 
 def buy(agent):
@@ -59,15 +63,20 @@ def sell(agent):
 
 
 def num_increasing_period(agent):
-    if trend_direction(agent):
+    if trend_direction(agent) == "up":
         agent["num_period"] += 1
-    else:
+    elif trend_direction(agent) == "down":
         agent["num_period"] = 0
+    else:
+        if agent["num_period"] <= -1:
+            agent["num_period"] -= 1
+        else:
+            agent["num_period"] = -1
 
 
 def market_report(env):
-    return ("Asset price on the market: "
-            + str(market_maker["asset_price"]) + "\n")
+    return "Asset price on the market: " \
+        + str(market_maker["asset_price"]) + "\n"
 
 
 def calculate_low_price(agent):
@@ -76,6 +85,7 @@ def calculate_low_price(agent):
     the real value: value_investors start buying, return True.
     Else return False
     """
+
     if agent["asset_price"] <= float(DEF_REAL_VALUE * 0.9):
         return True
     else:
@@ -88,19 +98,38 @@ def calculate_high_price(agent):
     the real value: value_investors start buying, return True.
     Else return False
     """
+
     if agent["asset_price"] >= float(DEF_REAL_VALUE * 1.1):
         return True
     else:
         return False
 
 
-# ======================================================================================================
-# ======================================================================================================
-# ======================================================================================================
+def calc_price_change(ratio, min_price_move=DEF_MIN_PRICE_MOVE,
+                      max_price_move=DEF_MAX_PRICE_MOVE):
+    """
+    Make the price move in proportion to the ratio, up to a ceiling
+    of max_price_move.
+    """
+    direction = 1
+    if isclose(ratio, 1.0):
+        return 0
+
+    if ratio < 1:
+        if ratio == 0:
+            ratio = INF_RATIO
+        else:
+            ratio = 1 / ratio
+        direction = -1
+
+    return direction * min(max_price_move, min_price_move * ratio)
+
+
 def create_market_maker(name):
     """
     Create a market maker.
     """
+
     market_maker = Agent(name, action=market_maker_action)
     market_maker["buy"] = 0
     market_maker["sell"] = 0
@@ -115,6 +144,7 @@ def create_trend_follower(name, i):
     """
     Create a trend follower.
     """
+
     trend_follower = Agent(name + str(i), action=trend_follower_action)
     trend_follower["capital"] = DEF_CAPITAL
     trend_follower["num_stock"] = 0
@@ -125,38 +155,19 @@ def create_value_investor(name, i):
     """
     Create a value investor.
     """
+
     value_investor = Agent(name + str(i), action=value_investor_action)
+    value_investor["capital"] = DEF_CAPITAL
     value_investor["num_stock"] = 0
     return value_investor
 
 
-def calc_price_change(ratio, min_price_move=DEF_MIN_PRICE_MOVE,
-                      max_price_move=DEF_MAX_PRICE_MOVE):
-    """
-    Make the price move in proportion to the ratio, up to a ceiling
-    of max_price_move.
-    """
-    direction = 1
-    if isclose(ratio, 1.0):
-        return 0
-
-    if ratio < 1:
-        ratio = 1 / ratio
-        direction = -1
-
-    return direction * min(max_price_move, min_price_move * ratio)
-
-
-# ======================================================================================================
-# ======================================================================================================
-# ======================================================================================================
 def market_maker_action(agent):
-    print("I'm" + agent.name + "and I'm manipulating the market.")
+    print("I'm" + agent.name + " and I'm manipulating the market.")
 
     # Determine the current price asset
+
     market_maker["prev_asset_price"] = market_maker["asset_price"]
-    print("This is the buy: ", agent["buy"])
-    print("This is the sell: ", agent["sell"])
     ratio = 1
     if agent["sell"] == 0:
         if agent["buy"] != 0:
@@ -177,28 +188,32 @@ def market_maker_action(agent):
 
 def trend_follower_action(agent):
     print("I'm " + agent.name + " and I'm following the trend.")
-    agent["capital"] = DEF_CAPITAL
 
     # Determine if trend followers should buy or sell the stock
-    if market_maker["num_period"] >= DEF_MOVING_PERIODS:
-        agent["buy"] = True
-        agent["sell"] = False
-        buy(agent)
-    elif (market_maker["num_period"] == 0
-          and trend_direction(market_maker) is False
-          and agent["capital"] < DEF_CAPITAL):
-        agent["buy"] = False
-        agent["sell"] = True
-        sell(agent)
 
+    if trend_direction(market_maker) == "up":
+        if market_maker["num_period"] >= DEF_MOVING_PERIODS:
+            agent["buy"] = True
+            agent["sell"] = False
+            buy(agent)
+    elif trend_direction(market_maker) == "down":
+        if market_maker["num_period"] == 0:
+            agent["buy"] = False
+            agent["sell"] = True
+            sell(agent)
+    else:
+        if market_maker["num_period"] == DEF_STAGNANT_PERIODS * -1:
+            agent["buy"] = False
+            agent["sell"] = True
+            sell(agent)
     return False
 
 
 def value_investor_action(agent):
     print("I'm " + agent.name + " and I'm investing.")
-    agent["capital"] = DEF_CAPITAL
 
     # Determine if value investors should buy or sell the stock
+
     low_price = calculate_low_price(market_maker)
     high_price = calculate_high_price(market_maker)
 
@@ -221,29 +236,29 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
+
     global market_maker
     ds_file = get_prop_path(MODEL_NAME)
     if props is None:
-        pa = PropArgs.create_props(MODEL_NAME,
-                                   ds_file=ds_file)
+        pa = PropArgs.create_props(MODEL_NAME, ds_file=ds_file)
     else:
-        pa = PropArgs.create_props(MODEL_NAME,
-                                   prop_dict=props)
+        pa = PropArgs.create_props(MODEL_NAME, prop_dict=props)
 
     value_investors = Composite("value_investors", {"color": BLUE},
                                 member_creator=create_value_investor,
-                                num_members=pa.get('value_investors',
-                                                   DEF_NUM_VALUE_INVESTOR))
+                                num_members=pa.get("value_investors",
+                                DEF_NUM_VALUE_INVESTOR))
     trend_followers = Composite("trend_followers", {"color": RED},
                                 member_creator=create_trend_follower,
-                                num_members=pa.get('trend_followers',
-                                                   DEF_NUM_TREND_FOLLOWER))
+                                num_members=pa.get("trend_followers",
+                                DEF_NUM_TREND_FOLLOWER))
     market_maker = create_market_maker("market_maker")
     market = Env("env",
-                 height=pa.get('grid_height', DEF_HEIGHT),
-                 width=pa.get('grid_width', DEF_WIDTH),
+                 height=pa.get("grid_height", DEF_HEIGHT),
+                 width=pa.get("grid_width", DEF_WIDTH),
                  members=[value_investors, trend_followers, market_maker],
-                 props=pa, census=market_report)
+                 props=pa,
+                 census=market_report)
     return (market, value_investors, trend_followers, market_maker)
 
 
