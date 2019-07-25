@@ -180,12 +180,8 @@ class TermUser(User):
         return {"name": self.name}
 
     def __call__(self):
-        print('\n'
-              + self.stars
-              + '\n'
-              + self.menu_title
-              + '\n'
-              + self.stars)
+        self.tell('\n' + self.stars + '\n' + self.menu_title + '\n'
+                  + self.stars)
         for item in self.menu:
             if item["func"] not in self.to_exclude:
                 print(str(item["id"]) + ". ", item["question"])
@@ -201,13 +197,11 @@ class TermUser(User):
                     if choice in self.not_to_exclude_id:
                         if item["id"] == choice:
                             return menu_functions[item["func"]](self)
-            self.tell("ERROR: " + str(c)
-                      + " is an invalid option. "
-                      + "Please enter a valid option.")
+            self.tell_err(str(c) + " is an invalid option. "
+                          + "Please enter a valid option.")
         else:
-            self.tell("ERROR: " + str(c)
-                      + " is an invalid option. "
-                      + "Please enter a valid option.")
+            self.tell_err(str(c) + " is an invalid option. "
+                          + "Please enter a valid option.")
 
 
 class TestUser(TermUser):
