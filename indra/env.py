@@ -192,6 +192,11 @@ class Env(Space):
         # do we need to connect agent to env (self)?
 
     def now_switch(self, agent, grp1, grp2):
+        """
+        Switches the groups of the agent now
+        instead of at the end of period
+        unlike add_switch.
+        """
         switch(agent, grp1, grp2)
         self.num_switches += 1
 

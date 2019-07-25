@@ -48,13 +48,19 @@ def add_grain(agent):
 
 
 def topple(agent):
+    """
+    Called when height of an agent is greater than NUM_GROUPS.
+    Calls add_grain for its Von Neumann neighbors
+    and if those agents need to topple, recursively calls topple.
+    """
     global sandpile_env
 
     if DEBUG:
         print("Sandpile in", agent.pos, "is toppling")
-    neighbors = sandpile_env.get_vonneumann_hood(agent, save_neighbors=True)
-    for neighbor in neighbors:
-        add_grain(neighbors[neighbor])
+    if agent.neighbors is None:
+        sandpile_env.get_vonneumann_hood(agent, save_neighbors=True)
+    for neighbor in agent.neighbors:
+        add_grain(agent.neighbors[neighbor])
 
 
 def sandpile_action(sandpile_env):
@@ -73,8 +79,6 @@ def sandpile_action(sandpile_env):
 
 def place_action(agent):
     return True
-    # if agent.neighbors is None:
-    #     sandpile_env.get_vonneumann_hood(agent, save_neighbors=True)
 
 
 def set_up(props=None):

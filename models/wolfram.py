@@ -5,7 +5,7 @@ import ast
 
 from propargs.propargs import PropArgs
 from indra.utils import get_prop_path
-from indra.agent import Agent, switch
+from indra.agent import Agent
 from indra.composite import Composite
 from indra.space import DEF_WIDTH
 from indra.env import Env
@@ -37,7 +37,7 @@ def get_color(group):
     """
     Returns W or B, W for white and B for black
     when passed in a group.
-    W and B are integer values - 0 and 1 respectively.
+    W and B are integer values -0 and 1, respectively.
     """
     if group == groups[W]:
         return W
@@ -69,6 +69,10 @@ def next_color(rule_dict, left, middle, right):
     return rule_dict[str((left, middle, right))]
 
 
+def get_str_key(x, y):
+    return "(" + str(x) + "," + str(y) + ")"
+
+
 def agent_action(agent):
     return True
 
@@ -86,34 +90,32 @@ def wolfram_action(wolfram_env):
     wolfram_env.user.tell("\nChecking agents in row " + str(active_row_y)
                           + " against the rule...")
     if DEBUG:
-        print("Curr row")
+        print("Current row")
         for agent in curr_row:
             print("   ", curr_row[agent])
     if active_row_y < 1:
         wolfram_env.user.error_message["run"] = ("You have exceeded the"
                                                  + " maximum height"
                                                  + " and cannot run the model"
-                                                 + " for more periods."
-                                                 + "\nYou can still ask for"
-                                                 + "a scatter plot.")
+                                                 + " for more periods.\n"
+                                                 + "You can still ask"
+                                                 + " for a scatter plot.")
         wolfram_env.user.exclude_choices(["run", "line_graph"])
     else:
         next_row = wolfram_env.get_row_hood(active_row_y - 1)
-        first_agent_key = "(0," + str(active_row_y) + ")"
-        left_color = get_color(curr_row[first_agent_key].primary_group())
+        left_color = get_color(
+            curr_row[get_str_key(0, active_row_y)].primary_group())
         x = 0
         for agent in curr_row:
             if (x > 0) and (x < wolfram_env.width - 1):
                 middle_color = get_color(curr_row[agent].primary_group())
-                right_color = get_color(curr_row["(" + str(x + 1) + ","
-                                                 + str(active_row_y)
-                                                 + ")"].primary_group())
+                right_color = get_color(curr_row[get_str_key(x + 1,
+                                        active_row_y)].primary_group())
                 if next_color(rule_dict, left_color, middle_color,
                               right_color):
-                    next_row_agent_key = ("(" + str(x) + ","
-                                          + str(active_row_y - 1) + ")")
-                    wolfram_env.add_switch(next_row[next_row_agent_key],
-                                           groups[W], groups[B])
+                    wolfram_env.add_switch(next_row[
+                        get_str_key(x, active_row_y - 1)],
+                        groups[W], groups[B])
                 left_color = middle_color
             x += 1
         curr_row = next_row
@@ -156,7 +158,7 @@ def set_up(props=None):
                       props=pa)
     wolfram_env.user.exclude_choices(["line_graph"])
     first_agent = wolfram_env.get_agent_at(width // 2, height - 1)
-    switch(first_agent, groups[W], groups[B])
+    wolfram_env.now_switch(first_agent, groups[W], groups[B])
     curr_row = wolfram_env.get_row_hood(wolfram_env.height - 1)
     return (wolfram_env, groups, rule_dict)
 
