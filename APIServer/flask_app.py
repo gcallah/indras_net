@@ -114,7 +114,7 @@ class Run(Resource):
     @api.expect(props)
     def put(self, run_time):
         env_json = api.payload
-        v = Env(env_json)
+        v = Env(name='API env', serial_obj=env_json)
         return v.runN(run_time)
 
 

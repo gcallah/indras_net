@@ -9,7 +9,7 @@ from models.forestfire import set_up as ffset_up
 from models.forestfire import tree_action
 from models.sandpile import main as spmain
 from models.sandpile import set_up as spset_up
-from models.sandpile import sandpile_action, place_action
+from models.sandpile import sandpile_action, spagent_action
 from models.segregation import main as semain
 from models.segregation import set_up as seset_up
 from models.segregation import seg_agent_action
@@ -48,7 +48,7 @@ action_dict = {
     "tsetter_action": tsetter_action,
     "tree_action": tree_action,
     "sandpile_action": sandpile_action,
-    "place_action": place_action,
+    "spagent_action": spagent_action,
     "seg_agent_action": seg_agent_action,
     "sched_agent_action": sched_agent_action,
     "sheep_action": sheep_action,

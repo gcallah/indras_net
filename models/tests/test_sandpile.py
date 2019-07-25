@@ -3,7 +3,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.space import Space
 from indra.env import Env
-from models.sandpile import set_up, create_agent, add_grain, topple, sandpile_action, place_action
+from models.sandpile import set_up, create_agent, add_grain, topple, sandpile_action, spagent_action
 from models.sandpile import NUM_GROUPS
 import models.sandpile as sp
 

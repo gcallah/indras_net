@@ -24,7 +24,7 @@ def create_agent(x, y):
     Create an agent with the passed x, y value as its name.
     """
     name = "(" + str(x) + "," + str(y) + ")"
-    return Agent(name=name, action=place_action)
+    return Agent(name=name, action=spagent_action)
 
 
 def add_grain(agent):
@@ -77,7 +77,7 @@ def sandpile_action(sandpile_env):
     return True
 
 
-def place_action(agent):
+def spagent_action(agent):
     return True
 
 
