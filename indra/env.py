@@ -118,12 +118,15 @@ class Env(Space):
     def to_json(self):
         rep = super().to_json()
         rep["type"] = "env"
-        # rep["user"] = self.user.to_json()["name"]
         rep["plot_title"] = self.plot_title
         rep["props"] = self.props.to_json()
         rep["pop_hist"] = self.pop_hist.to_json()
         rep["womb"] = self.womb
         rep["switches"] = self.switches
+        ret_mbrs = {}
+        for mnm in rep["members"]:
+            ret_mbrs[mnm] = rep["members"][mnm]
+        rep["members"] = ret_mbrs
         return rep
 
     def __repr__(self):

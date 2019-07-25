@@ -88,7 +88,10 @@ class Space(Composite):
 
     def restore_space(self, serial_obj):
         self.from_json(serial_obj)
-        # self.__init_unrestorables()
+        self.__init_unrestorables()
+
+    def __init_unrestorables(self):
+        pass
 
     def to_json(self):
         rep = super().to_json()
@@ -99,8 +102,9 @@ class Space(Composite):
         return rep
 
     def from_json(self, serial_space):
-        for cnm in serial_space["members"]:
-            super().from_json(serial_space["members"][cnm])
+        # for cnm in serial_space["members"]:
+        #     super().from_json(serial_space["members"][cnm])
+        super().from_json(serial_space)
         self.width = serial_space["width"]
         self.height = serial_space["height"]
         # find the agents and put them into the specific locations

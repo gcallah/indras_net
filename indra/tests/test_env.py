@@ -34,7 +34,6 @@ tests_env = {
     "prim_group": "None",
     "locator": "None",
     "neighbors": None,
-    "has_acted": False,
     "action_key": None,
     "members": {
         "Blues": {
@@ -51,7 +50,6 @@ tests_env = {
             "prim_group": "env",
             "locator": "None",
             "neighbors": None,
-            "has_acted": False,
             "action_key": None,
             "members": {
                 "Blues0": {
@@ -59,8 +57,8 @@ tests_env = {
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        2,
-                        11
+                        3,
+                        3
                     ],
                     "attrs": {},
                     "groups": "Blues ",
@@ -69,7 +67,6 @@ tests_env = {
                     "prim_group": "Blues",
                     "locator": "env",
                     "neighbors": None,
-                    "has_acted": False,
                     "action_key": "agent_action"
                 },
                 "Blues1": {
@@ -77,8 +74,8 @@ tests_env = {
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        10,
-                        8
+                        20,
+                        14
                     ],
                     "attrs": {},
                     "groups": "Blues ",
@@ -87,7 +84,6 @@ tests_env = {
                     "prim_group": "Blues",
                     "locator": "env",
                     "neighbors": None,
-                    "has_acted": False,
                     "action_key": "agent_action"
                 }
             }
@@ -106,7 +102,6 @@ tests_env = {
             "prim_group": "env",
             "locator": "None",
             "neighbors": None,
-            "has_acted": False,
             "action_key": None,
             "members": {
                 "Reds0": {
@@ -114,8 +109,8 @@ tests_env = {
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        11,
-                        0
+                        9,
+                        6
                     ],
                     "attrs": {},
                     "groups": "Reds ",
@@ -124,7 +119,6 @@ tests_env = {
                     "prim_group": "Reds",
                     "locator": "env",
                     "neighbors": None,
-                    "has_acted": False,
                     "action_key": "agent_action"
                 },
                 "Reds1": {
@@ -132,8 +126,8 @@ tests_env = {
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        18,
-                        16
+                        17,
+                        14
                     ],
                     "attrs": {},
                     "groups": "Reds ",
@@ -142,7 +136,6 @@ tests_env = {
                     "prim_group": "Reds",
                     "locator": "env",
                     "neighbors": None,
-                    "has_acted": False,
                     "action_key": "agent_action"
                 }
             }
@@ -150,25 +143,6 @@ tests_env = {
     },
     "width": 20,
     "height": 20,
-    "locations_dict": {
-        "Blues0": [
-            2,
-            11
-        ],
-        "Blues1": [
-            10,
-            8
-        ],
-        "Reds0": [
-            11,
-            0
-        ],
-        "Reds1": [
-            18,
-            16
-        ]
-    },
-    "user": "ziruizhou",
     "plot_title": "env",
     "props": {
         "grid_height": {
@@ -349,8 +323,9 @@ class EnvTestCase(TestCase):
     def test_from_json(self):
         self.maxDiff = None
         self.env = Env(name='Test env', serial_obj=tests_env)
+        # self.assertEqual(self.env, tests_env, msg=self.env.to_json())
         self.assertEqual(str(type(self.env)), "<class 'indra.env.Env'>")
-        # managed to contruct an env!!!
+        # managed to construct an env!!!
 
 
 if __name__ == '__main__':

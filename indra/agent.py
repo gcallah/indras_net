@@ -161,11 +161,12 @@ class Agent(object):
 
     def restore_agent(self, serial_obj):
         self.from_json(serial_obj)
-        # self.__init_unrestorables()
+        self.__init_unrestorables()
+
+    def __init_unrestorables(self):
+        pass
 
     def to_json(self):
-        # self.groups = {"name": Agent}
-        # self.prim_group = Agent
         grp_nms = ""
         for grp in self.groups:
             grp_nms += grp + " "
@@ -188,20 +189,15 @@ class Agent(object):
         if serial_agent["action_key"] is not None:
             self.action = action_dict[serial_agent["action_key"]]
         self.action_key = serial_agent["action_key"]
-        self.neighbors = serial_agent["neighbors"]
         self.type_sig = serial_agent["type_sig"]
         self.active = serial_agent["active"]
-        # we'll have to use registry here:
-        # ret_group = serial_agent["groups"]
-        # grp_nm = ret_group.split(" ")
-        # for elem in grp_nm:
-        #     self.groups[elem] = # Agent!!
-        # self.prim_group = serial_agent["prim_group"] Agent
-        # self.locator = self.prim_group
         self.attrs = serial_agent["attrs"]
         self.pos = serial_agent["pos"]
         self.duration = serial_agent["duration"]
         self.name = serial_agent["name"]
+        # self.neighbors = serial_agent["neighbors"]
+        # self.prim_group = serial_agent["prim_group"]
+        # self.locator = self.prim_group
 
     def __repr__(self):
         return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)

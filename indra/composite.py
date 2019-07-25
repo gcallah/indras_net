@@ -51,7 +51,10 @@ class Composite(Agent):
 
     def restore_composite(self, serial_obj):
         self.from_json(serial_obj)
-        # self.__init_unrestorables()
+        self.__init_unrestorables()
+
+    def __init_unrestorables(self):
+        pass
 
     def to_json(self):
         rep = super().to_json()
@@ -64,10 +67,12 @@ class Composite(Agent):
         for nm in serial_obj["members"]:
             if serial_obj["members"][nm]["type"] == "agent":
                 ret = Agent(serial_obj["members"][nm])
+                self.members[nm] = ret
+                self.registry[nm] = ret
             else:
                 ret = Composite(serial_obj["members"][nm])
-            self.members[nm] = ret
-            self.registry[nm] = ret
+                self.members[nm] = ret
+                self.registry[nm] = ret
 
     def __repr__(self):
         return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
