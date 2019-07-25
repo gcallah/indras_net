@@ -4,7 +4,7 @@
     "question": "What is the grid width?",
     "atype": "INT",
     "hival": 100,
-    "lowval": 2
+    "lowval": 20
   },
   "rule_number": {
      "val": 30,

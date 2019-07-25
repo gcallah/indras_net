@@ -23,6 +23,7 @@ wolfram_env = None
 groups = None
 rule_dict = None
 curr_row = None
+rule_num = None
 
 
 def create_agent(x, y):
@@ -83,6 +84,7 @@ def wolfram_action(wolfram_env):
     """
     global curr_row
     global rule_dict
+    global rule_num
 
     active_row_y = wolfram_env.height - wolfram_env.get_periods() - 1
     if curr_row == wolfram_env.get_row_hood(wolfram_env.height - 1):
@@ -98,8 +100,8 @@ def wolfram_action(wolfram_env):
                                                  + " maximum height"
                                                  + " and cannot run the model"
                                                  + " for more periods.\n"
-                                                 + "You can still ask"
-                                                 + " for a scatter plot.")
+                                                 + "Please pick one of the"
+                                                 + " other options.")
         wolfram_env.user.exclude_choices(["run", "line_graph"])
     else:
         next_row = wolfram_env.get_row_hood(active_row_y - 1)
@@ -129,6 +131,7 @@ def set_up(props=None):
     global groups
     global curr_row
     global rule_dict
+    global rule_num
 
     ds_file = get_prop_path(MODEL_NAME)
     if props is None:
@@ -138,7 +141,8 @@ def set_up(props=None):
         pa = PropArgs.create_props(MODEL_NAME,
                                    prop_dict=props)
     width = pa.get('grid_width', DEF_WIDTH)
-    rule_dict = get_rule(pa.get('rule_number', DEF_RULE))
+    rule_num = pa.get('rule_number', DEF_RULE)
+    rule_dict = get_rule(rule_num)
     height = 0
     height = (width // 2) + (width % 2)
     white = Composite("white", {"color": WHITE})
@@ -151,14 +155,14 @@ def set_up(props=None):
             groups[W] += create_agent(x, y)
     wolfram_env = Env("Wolfram Model",
                       action=wolfram_action,
-                      random_placing=False,
                       height=height,
                       width=width,
                       members=groups,
+                      random_placing=False,
                       props=pa)
     wolfram_env.user.exclude_choices(["line_graph"])
-    first_agent = wolfram_env.get_agent_at(width // 2, height - 1)
-    wolfram_env.now_switch(first_agent, groups[W], groups[B])
+    wolfram_env.now_switch(wolfram_env.get_agent_at(width // 2, height - 1),
+                           groups[W], groups[B])
     curr_row = wolfram_env.get_row_hood(wolfram_env.height - 1)
     return (wolfram_env, groups, rule_dict)
 

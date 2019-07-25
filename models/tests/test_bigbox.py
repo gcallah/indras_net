@@ -25,9 +25,9 @@ class BigBoxTestCase(TestCase):
 		pass
 
 	def tearDown(self):
-        		bb.town = None
-        		bb.groups = None
-        		pass
+		bb.town = None
+		bb.groups = None
+		pass
 
 	def test_calc_util(self):
 		"""
