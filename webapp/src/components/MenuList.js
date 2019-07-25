@@ -89,26 +89,14 @@ class MenuList extends Component {
     this.setState ({loadingData: false});
     this.setState ({loading_population: false});
     this.setState ({loading_scatter: false});
+    this.setState ({action_id: e});
     if (e === 2) {
-      this.setState ({loading_scatter: false});
-      this.setState ({loading_debugger: false});
       this.setState ({loading_population: true});
-      this.setState ({action_id: 2});
     } else if (e === 3) {
-      this.setState ({loading_debugger: false});
-      this.setState ({loading_population: false});
       this.setState ({loading_scatter: true});
-      this.setState ({action_id: 3});
     } else if (e === 4) {
-      this.setState ({loading_population: false});
-      this.setState ({loading_scatter: false});
       this.setState ({loading_debugger: true});
-      this.setState ({action_id: 4});
     } else if (e === 5) {
-      this.setState ({loading_population: false});
-      this.setState ({loading_scatter: false});
-      this.setState ({loading_debugger: false});
-      this.setState ({action_id: 5});
       this.viewSource ();
     }
   };

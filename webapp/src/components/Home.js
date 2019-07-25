@@ -51,7 +51,7 @@ class Home extends Component {
         <br />
         <h1 style={{ "textAlign": "center", "fontWeight": '200'}}>Welcome to the Indra ABM platform!</h1>
         <br /><br />
-        <h1 style={{"fontSize": 16, "fontWeight": '400'}}>We have several models: </h1>
+        <h1 style={{"fontSize": 16, "fontWeight": '400'}}>Please choose a model: </h1>
         <img src={model_image} class="img-fluid" alt="Responsive image" style={{display:'block', float:'right', width:'45%', alignItems: "center"}}/>
         <ul class="list-group">
           <div class="row">
