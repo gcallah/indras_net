@@ -138,29 +138,13 @@ class MenuList extends Component {
         <h1 style={{textAlign: 'center', fontWeight: '200'}}>
           {this.state.name}
         </h1>
-
         <br /><br />
-        <Card
-          style={{
-            width: '30rem',
-            height: '15rem',
-            padding: '1rem',
-            alignItems: 'center',
-            float: 'right',
-            margin: 'auto',
-            overflowY: 'scroll',
-          }}
-        >
-          <Card.Content>
-            <Card.Header>Update Status</Card.Header>
-            {this.state.msg}
-          </Card.Content>
-        </Card>
+
           <ul class="list-group">
             <div class="row">
               <div class="col">
           {Object.keys (this.state.menu_list).map ((item, i) => (
-            <a class="w-50 p-3 list-group-item" key={i}>
+            <a class="w-25 p-3 list-group-item" key={i}>
               {this.state.menu_list[item]['id'] === 0
                 ? <Link class="text-danger"
                     to={{
