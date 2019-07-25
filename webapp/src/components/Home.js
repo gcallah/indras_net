@@ -57,7 +57,7 @@ class Home extends Component {
           <div class="row">
             <div class="col">
         {Object.keys(this.state.allItems).map((item,i)=>
-        <a href="#" style={{width:230}} class="list-group-item"key={i}>
+        <a href="#" class=" w-50 list-group-item"key={i}>
           {console.log(this.state.allItems[item]['model ID'])}
           <Link to="/models/props/" class="text-primary" onClick={() => this.handleClick(this.state.allItems[item]['model ID'], this.state.allItems[item]['name'], this.state.allItems[item]['source'])}>
             {this.state.allItems[item]['name']}
