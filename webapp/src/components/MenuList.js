@@ -156,20 +156,13 @@ class MenuList extends Component {
             {this.state.msg}
           </Card.Content>
         </Card>
-
-        <Menu
-          vertical
-          style={{
-            width: '30rem',
-            height: '15rem',
-            overflowY: 'scroll',
-          }}
-        >
-
+          <ul class="list-group">
+            <div class="row">
+              <div class="col">
           {Object.keys (this.state.menu_list).map ((item, i) => (
-            <Menu.Item key={i}>
+            <a class="w-50 p-3 list-group-item" key={i}>
               {this.state.menu_list[item]['id'] === 0
-                ? <Link
+                ? <Link class="text-danger"
                     to={{
                       pathname: '/',
                       state: {action_id: this.state.menu_list[item]['id']},
@@ -181,7 +174,7 @@ class MenuList extends Component {
 
               {this.state.menu_list[item]['id'] === 1
                 ? <div>
-                    <button
+                    <button 
                       disabled={this.state.disabled_button}
                       onClick={
                         !this.state.disabled_button ? this.sendNumPeriods : null
@@ -191,7 +184,7 @@ class MenuList extends Component {
                       {'  '}Run{'  '}
                     </button>
                     {' '}
-                    for
+                    <span>for</span>
                     {' '}
                     <input
                       style={{width: 30, height: 30}}
@@ -209,32 +202,32 @@ class MenuList extends Component {
                 : null}
 
               {this.state.menu_list[item]['id'] === 2
-                ? <Link onClick={() => this.handleClick (2)}>
+                ? <Link class="text-primary" onClick={() => this.handleClick (2)}>
                     {this.state.menu_list[item]['question']}
                   </Link>
                 : null}
 
               {this.state.menu_list[item]['id'] === 3
-                ? <Link onClick={() => this.handleClick (3)}>
+                ? <Link class="text-primary" onClick={() => this.handleClick (3)}>
                     {this.state.menu_list[item]['question']}
                   </Link>
                 : null}
 
               {this.state.menu_list[item]['id'] === 4
-                ? <Link onClick={() => this.handleClick (4)}>
+                ? <Link class="text-primary" onClick={() => this.handleClick (4)}>
                     {this.state.menu_list[item]['question']}
                   </Link>
                 : null}
 
               {this.state.menu_list[item]['id'] === 5
-                ? <Link onClick={() => this.handleClick (5)}>
+                ? <Link class="text-primary" onClick={() => this.handleClick (5)}>
                     {this.state.menu_list[item]['question']}
                   </Link>
                 : null}
-
-            </Menu.Item>
+              
+            </a>
           ))}
-        </Menu>
+            </div></div> </ul>
         <br /><br />
         <br /><br />
         <PopulationGraph
