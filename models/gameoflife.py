@@ -12,7 +12,6 @@ from indra.display_methods import BLACK, WHITE, SQUARE
 
 MODEL_NAME = "gameoflife"
 DEBUG = False  # Turns debugging code on or off
-
 DEF_HEIGHT = 30
 DEF_WIDTH = 30
 
@@ -46,8 +45,7 @@ def change_color(agent):
 def apply_live_rules(agent):
     """
     Apply the rules for live agents.
-    The agent passed in should be alive,
-    meaning its color should be black.
+    The agent passed in should be alive, meaning its color should be black.
     """
     global gameoflife_env
     global groups
@@ -65,8 +63,7 @@ def apply_live_rules(agent):
 def apply_dead_rules(agent):
     """
     Apply the rules for dead agents.
-    The agent passed in should be dead,
-    meaning its color should be white.
+    The agent passed in should be dead, meaning its color should be white.
     """
     global gameoflife_env
     global groups
@@ -85,7 +82,7 @@ def gameoflife_action(gameoflife_env):
     """
     The action that will be taken every period.
     Loops through every agent, determines whether it is alive or dead,
-    and passes it to the corresponding rule function.
+        and passes it to the corresponding rule function.
     """
     global min_x
     global min_y
@@ -99,7 +96,6 @@ def gameoflife_action(gameoflife_env):
     new_min_x = min_x
     new_min_y = min_y
     change_min = True
-    print("Mins:", min_x, min_y)
     for y in range(min_y, gameoflife_env.height):
         for x in range(min_x, gameoflife_env.width):
             curr_agent = gameoflife_env.get_agent_at(x, y)
@@ -144,8 +140,6 @@ def populate_board_random(width, height):
     for i in range(num_agent):
         agent = gameoflife_env.get_agent_at(randint(lower_limit, upper_limit),
                                             randint(lower_limit, upper_limit))
-        print(agent)
-        print(type(agent))
         if agent is not None and agent.primary_group() != groups[1]:
             change_color(agent)
 
@@ -364,6 +358,8 @@ def set_up(props=None):
                          height=height,
                          width=width,
                          members=groups,
+                         change_grid_spacing=0.5,
+                         hide_xy_labels=True,
                          random_placing=False,
                          props=pa)
     gameoflife_env.user.exclude_choices(["line_graph"])

@@ -35,14 +35,17 @@ mp_stores = {"Mom and pop: Books": [45, 30, 360, 60, TAN],
              "Mom and pop: Groceries": [67, 45, 540, 90, GREEN],
              "Mom and pop: Hardware": [60, 40, 480, 80, RED],
              "Mom and pop: Meals": [40, 23, 270, 45, YELLOW]}
+# "Store type": [fixed expense, variable expense, capital, inventory, color]
+
 bb_store = [60, 25, 480, 90]
+# [Fixed expense, variable expense, capital, inventory]
 
 
 def create_consumer(name):
     """
     Creates a consumer agent.
     Expense is the amount of money that the agent will spend
-    in a store during a single period.
+        in a store during a single period.
     """
     spending_power = random.randint(70, 100)
     item_needed = random.choice(list(mp_stores.keys()))
@@ -56,18 +59,19 @@ def create_bb(name):
     """
     Creates a big box store agent.
     Does not have to randomly determine the store type
-    because big box stores will sell everything.
+        because big box stores will sell everything.
 
     Expense is a list of ints that contain the corresponding values.
 
-    Fixed expense is things like rent, electricity bills, etc.
+    Fixed expense is things like rent, electricity bills, etc
+        that will be taken out every period.
 
     Variable expense is the cost of buying new inventory of goods.
 
     Capital is the money that is in the bank.
 
     Inventory is the amount of consumer that the store can serve
-    before it needs to restock and pay the variable expense.
+        before it needs to restock and pay the variable expense.
     """
     expense = bb_store
     store_books = {"fixed expense": expense[0],
@@ -86,14 +90,14 @@ def create_mp(store_type, i):
     Expense is a list of ints that contain the corresponding values.
 
     Fixed expense is things like rent, electricity bills, etc
-    that will be taken out every period.
+        that will be taken out every period.
 
     Variable expense is the cost of buying new inventory of goods.
 
     Capital is the money that is in the bank.
 
     Inventory is the amount of consumers that the store can serve
-    before it needs to restock and pay the variable expense.
+        before it needs to restock and pay the variable expense.
     """
     expense = mp_stores[str(store_type)]
     name = str(store_type) + " " + str(i)
@@ -111,7 +115,7 @@ def calc_util(stores):
 def transaction(store, consumer):
     """
     Calcuates the expense and the revenue of the store passed in
-    after a transaction with the consumer passed in.
+        after a transaction with the consumer passed in.
     """
     store.attrs["capital"] += consumer.attrs["spending power"]
     store.attrs["inventory"][1] -= 1
@@ -144,8 +148,8 @@ def town_action(town):
     The action that will be taken every turn.
     Loops through the town env and finds the consumer agents.
     The consumer agents are assigned their neighbors,
-    and loop through the neighbors to determine which is a store
-    and carries out the transaction.
+        and loop through the neighbors to determine which is a store
+        and carries out the transaction.
     """
     global groups
     global mp_pref
