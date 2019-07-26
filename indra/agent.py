@@ -136,7 +136,7 @@ class Agent(object):
         if serial_obj is not None:
             self.restore_agent(serial_obj)
         else:
-            self.registry = {}
+            self.type = "agent"
             self.name = name
             self.action_key = None
             self.action = action
@@ -171,7 +171,7 @@ class Agent(object):
         for grp in self.groups:
             grp_nms += grp + " "
         return {"name": self.name,
-                "type": "agent",
+                "type": self.type,
                 "duration": self.duration,
                 "pos": self.pos,
                 "attrs": self.attrs_to_dict(),
@@ -195,9 +195,11 @@ class Agent(object):
         self.pos = serial_agent["pos"]
         self.duration = serial_agent["duration"]
         self.name = serial_agent["name"]
-        # self.neighbors = serial_agent["neighbors"]
-        # self.prim_group = serial_agent["prim_group"]
-        # self.locator = self.prim_group
+        self.groups = serial_agent["groups"]
+        self.prim_group = serial_agent["prim_group"]
+        self.neighbors = serial_agent["neighbors"]
+        self.locator = self.prim_group
+        self.type = serial_agent["type"]
 
     def __repr__(self):
         return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)

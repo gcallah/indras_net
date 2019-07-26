@@ -91,6 +91,8 @@ class Env(Space):
             self.plot_title = self.name
             self.user = None
 
+        self.type = "env"
+        self.registry = {}
         self.womb = []  # for agents waiting to be born
         self.switches = []  # for agents waiting to switch groups
         self.user_type = os.getenv("user_type", TERMINAL)
@@ -117,10 +119,13 @@ class Env(Space):
         self.name = serial_obj["name"]
         self.womb = serial_obj["womb"]
         self.switches = serial_obj["switches"]
+        # construct self.registry
+        self.registry = {}
+        self.add_mbr_to_regis(self.members)
 
     def to_json(self):
         rep = super().to_json()
-        rep["type"] = "env"
+        rep["type"] = self.type
         rep["plot_title"] = self.plot_title
         rep["props"] = self.props.to_json()
         rep["pop_hist"] = self.pop_hist.to_json()
@@ -130,6 +135,7 @@ class Env(Space):
         for mnm in rep["members"]:
             ret_mbrs[mnm] = rep["members"][mnm]
         rep["members"] = ret_mbrs
+        rep["registry"] = self.registry
         return rep
 
     def __repr__(self):
@@ -141,6 +147,14 @@ class Env(Space):
     def restore_env(self, serial_obj):
         self.from_json(serial_obj)
         self.__init_unrestorables()
+
+    def add_mbr_to_regis(self, members):
+        for nm in members:
+            if members[nm].type == "agent":
+                self.registry[nm] = members[nm]
+            else:
+                self.registry[nm] = members[nm]
+                self.add_mbr_to_regis(members[nm].members)
 
     def get_periods(self):
         return self.pop_hist.periods
@@ -163,13 +177,12 @@ class Env(Space):
 
     def add_member(self, member):
         super().add_member(member)
-        self.add_to_registry(member)
 
-    def add_to_registry(self, member):
-        if str(type(member)) == "<class 'indra.composite.Composite'>":
-            for mbr in member.members:
-                self.add_to_registry(member.members[mbr])
-        self.registry[member.name] = member
+    # def add_to_registry(self, member):
+    #     if str(type(member)) == "<class 'indra.composite.Composite'>":
+    #         for mbr in member.members:
+    #             self.add_to_registry(member.members[mbr])
+    #     self.registry[member.name] = member
 
     def add_child(self, agent, group):
         """

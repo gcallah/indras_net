@@ -69,7 +69,10 @@ class Space(Composite):
                  attrs=None, members=None, action=None,
                  random_placing=True, serial_obj=None):
         super().__init__(name, attrs=attrs, members=members,
-                         action=action, serial_obj=None)
+                         action=action, serial_obj=serial_obj)
+
+        self.type = "space"
+
         if serial_obj is not None:
             self.restore_space(serial_obj)
         else:
@@ -95,7 +98,7 @@ class Space(Composite):
 
     def to_json(self):
         rep = super().to_json()
-        rep["type"] = "space"
+        rep["type"] = self.type
         rep["width"] = self.width
         rep["height"] = self.height
         # rep["locations_dict"] = self.loc_dict()
