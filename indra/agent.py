@@ -186,6 +186,7 @@ class Agent(object):
 
     def from_json(self, serial_agent):
         from models.run_dict import action_dict
+        self.action = None
         if serial_agent["action_key"] is not None:
             self.action = action_dict[serial_agent["action_key"]]
         self.action_key = serial_agent["action_key"]
