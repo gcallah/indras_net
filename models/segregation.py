@@ -44,6 +44,7 @@ opp_group = None
 red_agents = None
 blue_agents = None
 
+fetched_moore_hood = 0
 
 def get_tolerance(default_tolerance, sigma):
     tol = random.gauss(default_tolerance, sigma)
@@ -75,24 +76,26 @@ def seg_agent_action(agent):
     global city
     global red_agents
     global blue_agents
+    global fetched_moore_hood
 
     agent_group = agent.primary_group()
     if agent["hood_changed"]:
         ratio_same = 0
         neighbors = city.get_moore_hood(agent)
+        fetched_moore_hood += 1
         num_same = 0
         for neighbor in neighbors:
             if neighbors[neighbor].primary_group() == agent_group:
                 num_same += 1
         if len(neighbors) != 0:
             ratio_same = num_same / len(neighbors)
-        switch_location = env_favorable(ratio_same, agent[TOLERANCE])
-        if not switch_location:
+        stay_put = env_favorable(ratio_same, agent[TOLERANCE])
+        if stay_put:
             agent["hood_changed"] = False
         else:
              for neighbor in neighbors:
                 neighbors[neighbor]["hood_changed"] = True
-        return switch_location
+        return stay_put
     return False
 
 
@@ -115,6 +118,7 @@ def set_up(props=None):
     global blue_agents
     global red_agents
     global city
+    global fetched_moore_hood
 
     ds_file = get_prop_path(MODEL_NAME)
     if props is None:
@@ -151,12 +155,14 @@ def main():
     global blue_agents
     global red_agents
     global city
+    global fetched_moore_hood
     (city, blue_agents, red_agents) = set_up()
 
     if DEBUG2:
         print(city.__repr__())
 
     city()
+    print("We fetched moore hoods ", fetched_moore_hood, " times")
     return 0
 
 
