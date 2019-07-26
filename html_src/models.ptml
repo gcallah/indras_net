@@ -69,6 +69,21 @@
   </p>
 
 
+  <h4>
+      Segregation Model
+  </h4>
+  <figure>
+      <img src="graphics/segregation.png" width="14%">
+      <figcaption>
+          The city is splitting up.
+      </figcaption>
+  </figure>
+  <p class="model">
+    Schelling's famous model of how extreme 
+    neighborhood segrgegation can occur,
+    even if no one has a preference for such segregation.
+  </p>
+
   <hr>
 
   <h4>
@@ -95,15 +110,6 @@
   </p>
 
   <hr>
-
-  <h4>
-      Segregation Model
-  </h4>
-  <p class="model">
-    Schelling's famous model of how extreme 
-    neighborhood segrgegation can occur,
-    even if no one has a preference for such segregation.
-  </p>
 </body>
 
 </html>
