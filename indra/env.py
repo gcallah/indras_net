@@ -73,7 +73,9 @@ class Env(Space):
     That makes the inheritance work out as we want it to.
     """
     def __init__(self, name, action=None, random_placing=True,
-                 props=None, serial_obj=None, census=None, **kwargs):
+                 props=None, serial_obj=None, census=None,
+                 change_grid_spacing=0, hide_xy_labels=False,
+                 **kwargs):
         super().__init__(name, action=action,
                          random_placing=random_placing, serial_obj=serial_obj,
                          **kwargs)
@@ -94,6 +96,8 @@ class Env(Space):
         self.womb = []  # for agents waiting to be born
         self.switches = []  # for agents waiting to switch groups
         self.user_type = os.getenv("user_type", TERMINAL)
+        self.change_grid_spacing = change_grid_spacing
+        self.hide_xy_labels = hide_xy_labels
         self.num_acts = 0
         self.num_moves = 0
         self.num_switches = 0
@@ -305,7 +309,9 @@ class Env(Space):
                     self.plot_title, data,
                     int(self.width), int(self.height),
                     anim=True, data_func=self.plot_data,
-                    is_headless=self.headless())
+                    is_headless=self.headless(),
+                    change_grid_spacing=self.change_grid_spacing,
+                    hide_xy_labels=self.hide_xy_labels)
                 scatter_plot.show()
                 return scatter_plot
             except Exception as e:

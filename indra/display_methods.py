@@ -275,7 +275,8 @@ class ScatterPlot():
 
     @expects_plt
     def __init__(self, title, varieties, width, height,
-                 anim=True, data_func=None, is_headless=False, legend_pos=4):
+                 anim=True, data_func=None, is_headless=False,
+                 legend_pos=4, change_grid_spacing=0, hide_xy_labels=False):
         """
         Setup a scatter plot.
         varieties contains the different types of
@@ -293,6 +294,16 @@ class ScatterPlot():
         fig, ax = plt.subplots()
         ax.set_xlim(0, width)
         ax.set_ylim(0, height)
+        if change_grid_spacing > 0:
+            ax.set_axisbelow(True)
+            major_ticks = np.arange(change_grid_spacing, width, 1)
+            ax.set_xticks(major_ticks)
+            ax.set_yticks(major_ticks)
+            ax.set_yticklabels([])
+            ax.set_xticklabels([])
+        if hide_xy_labels:
+            ax.tick_params(axis='both', bottom=False, left=False,
+                           labelbottom=False)
         self.create_scats(varieties)
         ax.legend(loc=legend_pos)
         ax.set_title(title)
