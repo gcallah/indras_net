@@ -113,7 +113,7 @@ def calc_util(stores):
 
 
 def pay_fixed_expenses(store):
-    store.attrs["capital"] -= store.attrs["fixed expense"]
+    store.attrs["capital"] -= store["fixed expense"]
 
 
 def transaction(store, consumer):
@@ -121,31 +121,31 @@ def transaction(store, consumer):
     Calcuates the expense and the revenue of the store passed in
     after a transaction with the consumer passed in.
     """
-    store.attrs["capital"] += consumer.attrs["spending power"]
-    store.attrs["inventory"][1] -= 1
-    if store.attrs["inventory"][1] == 1:
-        store.attrs["capital"] -= (
-            store.attrs["variable expense"])
-        store.attrs["inventory"][1] += (
-            store.attrs["inventory"][0])
-    if store.attrs["capital"] <= 0:
+    store["capital"] += consumer["spending power"]
+    store["inventory"][1] -= 1
+    if store["inventory"][1] == 1:
+        store["capital"] -= (
+            store["variable expense"])
+        store["inventory"][1] += (
+            store["inventory"][0])
+    if store["capital"] <= 0:
         print("     ", store, "is going out of buisness")
         store.die()
     if DEBUG:
-        print("     ", store, "has a capital of", store.attrs["capital"],
-              "and inventory of", store.attrs["inventory"][1])
+        print("     ", store, "has a capital of", store["capital"],
+              "and inventory of", store["inventory"][1])
 
 
 def get_store_census(town):
     print()
     for bb in groups[1]:
         print(groups[1][bb], "has a capital of",
-              groups[1][bb].attrs["capital"],
-              "and inventory of", (groups[1][bb]).attrs["inventory"][1])
+              groups[1][bb]["capital"],
+              "and inventory of", (groups[1][bb])["inventory"][1])
     for mp in groups[2]:
         print(groups[2][mp], "has a capital of",
-              groups[2][mp].attrs["capital"],
-              "and inventory of", (groups[2][mp]).attrs["inventory"][1])
+              groups[2][mp]["capital"],
+              "and inventory of", (groups[2][mp])["inventory"][1])
 
 
 def town_action(town):
@@ -190,8 +190,8 @@ def town_action(town):
                                 print("   Checking if mom and pop at",
                                       neighbor.get_pos(),
                                       "has",
-                                      curr_consumer.attrs["item needed"])
-                            if (curr_consumer.attrs["item needed"] in
+                                      curr_consumer["item needed"])
+                            if (curr_consumer["item needed"] in
                                     neighbor.name):
                                 util = (calc_util(neighbor)
                                         + mp_pref)
@@ -204,12 +204,12 @@ def town_action(town):
                     if neighbor.primary_group() != groups[CONSUMER_INDX]:
                         town.user.tell(("   " + str(neighbor)
                                        + " is out of buisness"))
-                curr_consumer.attrs["last utils"] = max_util
+                curr_consumer["last utils"] = max_util
                 if store_to_go is not None:
                     if DEBUG:
                         print("   Max utility was", max_util)
                         print("   Spending $"
-                              + str(curr_consumer.attrs["spending power"])
+                              + str(curr_consumer["spending power"])
                               + " at " + str(store_to_go))
                     transaction(store_to_go, curr_consumer)
     if DEBUG:

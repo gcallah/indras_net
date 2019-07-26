@@ -111,8 +111,8 @@ def gameoflife_action(gameoflife_env):
                     if apply_live_rules(curr_agent):
                         curr_agent.locator.add_switch(curr_agent, groups[1],
                                                       groups[0])
-                else:
-                    if apply_dead_rules(curr_agent):
+                elif:
+                    apply_dead_rules(curr_agent):
                         curr_agent.locator.add_switch(curr_agent, groups[0],
                                                       groups[1])
     min_x = new_min_x

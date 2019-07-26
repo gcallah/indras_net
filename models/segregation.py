@@ -78,6 +78,7 @@ def seg_agent_action(agent):
     global blue_agents
     global fetched_moore_hood
 
+    stay_put = True
     agent_group = agent.primary_group()
     if agent["hood_changed"]:
         ratio_same = 0
@@ -87,16 +88,19 @@ def seg_agent_action(agent):
         for neighbor in neighbors:
             if neighbors[neighbor].primary_group() == agent_group:
                 num_same += 1
+            if agent["just_moved"] is True:
+                neighbors[neighbor]["hood_changed"] = True
+        agent["just_moved"] = False
         if len(neighbors) != 0:
             ratio_same = num_same / len(neighbors)
         stay_put = env_favorable(ratio_same, agent[TOLERANCE])
         if stay_put:
             agent["hood_changed"] = False
         else:
-             for neighbor in neighbors:
+            agent["just_moved"] = True
+            for neighbor in neighbors:
                 neighbors[neighbor]["hood_changed"] = True
-        return stay_put
-    return False
+    return stay_put
 
 
 def create_agent(i, mean_tol, dev, color):
@@ -108,7 +112,8 @@ def create_agent(i, mean_tol, dev, color):
     return Agent(group_names[color] + str(i),
                  action=seg_agent_action,
                  attrs={TOLERANCE: this_tolerance,
-                        COLOR: color, "hood_changed": True})
+                        COLOR: color, "hood_changed": True,
+                        "just_moved": False})
 
 
 def set_up(props=None):
