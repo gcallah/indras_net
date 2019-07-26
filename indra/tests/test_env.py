@@ -22,6 +22,192 @@ GRP2 = "Group2"
 X = 0
 Y = 1
 
+tests_env = {
+    "name": "env",
+    "type": "env",
+    "duration": 9223372036854775805,
+    "pos": None,
+    "attrs": {},
+    "groups": "",
+    "active": True,
+    "type_sig": 0,
+    "prim_group": "None",
+    "locator": "None",
+    "neighbors": None,
+    "action_key": None,
+    "members": {
+        "Blues": {
+            "name": "Blues",
+            "type": "composite",
+            "duration": 9223372036854775805,
+            "pos": None,
+            "attrs": {
+                "color": "blue"
+            },
+            "groups": "env ",
+            "active": True,
+            "type_sig": 0,
+            "prim_group": "env",
+            "locator": "None",
+            "neighbors": None,
+            "action_key": None,
+            "members": {
+                "Blues0": {
+                    "name": "Blues0",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        3,
+                        3
+                    ],
+                    "attrs": {},
+                    "groups": "Blues ",
+                    "active": True,
+                    "type_sig": 0,
+                    "prim_group": "Blues",
+                    "locator": "env",
+                    "neighbors": None,
+                    "action_key": "agent_action"
+                },
+                "Blues1": {
+                    "name": "Blues1",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        20,
+                        14
+                    ],
+                    "attrs": {},
+                    "groups": "Blues ",
+                    "active": True,
+                    "type_sig": 0,
+                    "prim_group": "Blues",
+                    "locator": "env",
+                    "neighbors": None,
+                    "action_key": "agent_action"
+                }
+            }
+        },
+        "Reds": {
+            "name": "Reds",
+            "type": "composite",
+            "duration": 9223372036854775805,
+            "pos": None,
+            "attrs": {
+                "color": "red"
+            },
+            "groups": "env ",
+            "active": True,
+            "type_sig": 0,
+            "prim_group": "env",
+            "locator": "None",
+            "neighbors": None,
+            "action_key": None,
+            "members": {
+                "Reds0": {
+                    "name": "Reds0",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        9,
+                        6
+                    ],
+                    "attrs": {},
+                    "groups": "Reds ",
+                    "active": True,
+                    "type_sig": 0,
+                    "prim_group": "Reds",
+                    "locator": "env",
+                    "neighbors": None,
+                    "action_key": "agent_action"
+                },
+                "Reds1": {
+                    "name": "Reds1",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        17,
+                        14
+                    ],
+                    "attrs": {},
+                    "groups": "Reds ",
+                    "active": True,
+                    "type_sig": 0,
+                    "prim_group": "Reds",
+                    "locator": "env",
+                    "neighbors": None,
+                    "action_key": "agent_action"
+                }
+            }
+        }
+    },
+    "width": 20,
+    "height": 20,
+    "plot_title": "env",
+    "props": {
+        "grid_height": {
+            "val": 20,
+            "question": "What is the grid height?",
+            "atype": "INT",
+            "lowval": 2,
+            "hival": 100
+        },
+        "grid_width": {
+            "val": 20,
+            "question": "What is the grid width?",
+            "atype": "INT",
+            "lowval": 2,
+            "hival": 100
+        },
+        "num_blue": {
+            "val": 2,
+            "question": "How many blue agents do you want?",
+            "atype": "INT",
+            "lowval": 1,
+            "hival": 100
+        },
+        "num_red": {
+            "val": 2,
+            "question": "How many red agents do you want?",
+            "atype": "INT",
+            "lowval": 1,
+            "hival": 100
+        },
+        "user_type": {
+            "val": "terminal",
+            "question": None,
+            "atype": None,
+            "lowval": None,
+            "hival": None
+        },
+        "OS": {
+            "val": "Darwin",
+            "question": None,
+            "atype": None,
+            "lowval": None,
+            "hival": None
+        }
+    },
+    "pop_hist": {
+        "periods": 2,
+        "pops": {
+            "Blues": [
+                2,
+                2,
+                2
+            ],
+            "Reds": [
+                2,
+                2,
+                2
+            ]
+        }
+    },
+    "womb": [],
+    "switches": []
+}
+
+
 def env_action(env):
     print("Calling action for env")
     env.name = "Monjur"
@@ -133,6 +319,13 @@ class EnvTestCase(TestCase):
         # ret_env = Env("env", serial_env=serial_env)
         # self.assertEqual(str(type(ret_env)), "<class 'indra.env.Env'>")
         return True
+
+    def test_from_json(self):
+        self.maxDiff = None
+        self.env = Env(name='Test env', serial_obj=tests_env)
+        # self.assertEqual(self.env, tests_env, msg=self.env.to_json())
+        self.assertEqual(str(type(self.env)), "<class 'indra.env.Env'>")
+        # managed to construct an env!!!
 
 
 if __name__ == '__main__':

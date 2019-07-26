@@ -22,7 +22,7 @@ blue_group = None
 env = None
 
 
-def sche_agent_action(agent):
+def sched_agent_action(agent):
     print("I'm " + agent.name + " and I'm acting.")
     # return False means to move
     return False
@@ -32,7 +32,7 @@ def create_agent(color, i):
     """
     Create an agent.
     """
-    return Agent(color + str(i), action=sche_agent_action)
+    return Agent(color + str(i), action=sched_agent_action)
 
 
 def set_up(props=None):

@@ -1,11 +1,14 @@
 from unittest import TestCase, main
+from propargs.propargs import PropArgs
 from indra.agent import Agent
 from indra.composite import Composite
 from indra.space import Space
 from indra.env import Env
-from models.gameoflife import create_agent, set_up
+from models.gameoflife import create_agent, set_up, populate_board_small_exploder
 from models.gameoflife import change_color, apply_live_rules, apply_dead_rules, gameoflife_action, agent_action
-from models.gameoflife import populate_board_glider
+from models.gameoflife import populate_board_glider, DEF_WIDTH, DEF_HEIGHT
+from models.gameoflife import populate_board_exploder, populate_board_n_horizontal_row, populate_board_n_vertical_row
+from models.gameoflife import populate_board_lightweight_spaceship, populate_board_tumbler
 import models.gameoflife as g
 
 TEST_X = 1
@@ -13,7 +16,10 @@ TEST_Y = 1
 
 class GameOfLifeTestCase(TestCase):
     def setUp(self):
+        self.pa = PropArgs.create_props('gameoflife_props',
+                                        ds_file='props/gameoflife.props.json')
         (g.gameoflife_env, g.groups) = set_up()
+        print()
         pass
 
     def tearDown(self):
@@ -41,6 +47,133 @@ class GameOfLifeTestCase(TestCase):
         g.change_color(g.gameoflife_env.get_agent_at(0, 0))
         self.assertEqual((g.gameoflife_env.get_agent_at(0, 0)).primary_group(), g.groups[0])
 
+    def test_populate_board_glider(self):
+        white = Composite("white")
+        black = Composite("black")
+        g.groups = []
+        g.groups.append(white)
+        g.groups.append(black)
+        for y in range(DEF_HEIGHT):
+                for x in range(DEF_WIDTH):
+                        g.groups[0] += create_agent(x, y)
+        g.gameoflife_env=Env("Game of Life",
+                         action=g.gameoflife_action,
+                         height=DEF_HEIGHT,
+                         width=DEF_WIDTH,
+                         members=g.groups,
+                         random_placing=False)
+        g.populate_board_glider(DEF_WIDTH, DEF_HEIGHT)
+        self.assertEqual(len(g.gameoflife_env.members["black"]),5)
+
+
+    def test_populate_board_small_exploder(self):
+        white = Composite("white")
+        black = Composite("black")
+        g.groups = []
+        g.groups.append(white)
+        g.groups.append(black)
+        for y in range(DEF_HEIGHT):
+                for x in range(DEF_WIDTH):
+                        g.groups[0] += create_agent(x, y)
+        g.gameoflife_env=Env("Game of Life",
+                         action=g.gameoflife_action,
+                         height=DEF_HEIGHT,
+                         width=DEF_WIDTH,
+                         members=g.groups,
+                         random_placing=False)
+        g.populate_board_small_exploder(DEF_WIDTH, DEF_HEIGHT)
+        self.assertEqual(len(g.gameoflife_env.members["black"]),7)
+
+    def test_populate_board_exploder (self):
+        white = Composite("white")
+        black = Composite("black")
+        g.groups = []
+        g.groups.append(white)
+        g.groups.append(black)
+        for y in range(DEF_HEIGHT):
+                for x in range(DEF_WIDTH):
+                        g.groups[0] += create_agent(x, y)
+        g.gameoflife_env=Env("Game of Life",
+                         action=g.gameoflife_action,
+                         height=DEF_HEIGHT,
+                         width=DEF_WIDTH,
+                         members=g.groups,
+                         random_placing=False)
+        g.populate_board_exploder(DEF_WIDTH, DEF_HEIGHT)
+        self.assertEqual(len(g.gameoflife_env.members["black"]),12)
+
+    def test_populate_board_n_horizontal_row(self):
+        white = Composite("white")
+        black = Composite("black")
+        g.groups = []
+        g.groups.append(white)
+        g.groups.append(black)
+        for y in range(DEF_HEIGHT):
+                for x in range(DEF_WIDTH):
+                        g.groups[0] += create_agent(x, y)
+        g.gameoflife_env=Env("Game of Life",
+                         action=g.gameoflife_action,
+                         height=DEF_HEIGHT,
+                         width=DEF_WIDTH,
+                         members=g.groups,
+                         random_placing=False)
+        g.populate_board_n_horizontal_row(DEF_WIDTH, DEF_HEIGHT)
+        self.assertEqual(len(g.gameoflife_env.members["black"]),9)
+
+    def test_populate_board_n_vertical_row(self):
+        white = Composite("white")
+        black = Composite("black")
+        g.groups = []
+        g.groups.append(white)
+        g.groups.append(black)
+        for y in range(DEF_HEIGHT):
+                for x in range(DEF_WIDTH):
+                        g.groups[0] += create_agent(x, y)
+        g.gameoflife_env=Env("Game of Life",
+                         action=g.gameoflife_action,
+                         height=DEF_HEIGHT,
+                         width=DEF_WIDTH,
+                         members=g.groups,
+                         random_placing=False)
+        g.populate_board_n_vertical_row(DEF_WIDTH, DEF_HEIGHT)
+        self.assertEqual(len(g.gameoflife_env.members["black"]),9)
+
+    def test_populate_board_lightweight_spaceship(self):
+        white = Composite("white")
+        black = Composite("black")
+        g.groups = []
+        g.groups.append(white)
+        g.groups.append(black)
+        for y in range(DEF_HEIGHT):
+                for x in range(DEF_WIDTH):
+                        g.groups[0] += create_agent(x, y)
+        g.gameoflife_env=Env("Game of Life",
+                         action=g.gameoflife_action,
+                         height=DEF_HEIGHT,
+                         width=DEF_WIDTH,
+                         members=g.groups,
+                         random_placing=False)
+        g.populate_board_lightweight_spaceship(DEF_WIDTH, DEF_HEIGHT)
+        self.assertEqual(len(g.gameoflife_env.members["black"]),9)
+
+    def test_populate_board_tumbler(self):
+        white = Composite("white")
+        black = Composite("black")
+        g.groups = []
+        g.groups.append(white)
+        g.groups.append(black)
+        for y in range(DEF_HEIGHT):
+                for x in range(DEF_WIDTH):
+                        g.groups[0] += create_agent(x, y)
+        g.gameoflife_env=Env("Game of Life",
+                         action=g.gameoflife_action,
+                         height=DEF_HEIGHT,
+                         width=DEF_WIDTH,
+                         members=g.groups,
+                         random_placing=False)
+        g.populate_board_tumbler(DEF_WIDTH, DEF_HEIGHT)
+        self.assertEqual(len(g.gameoflife_env.members["black"]),22)
+         
     def test_apply_live_rules(self):
         """
         Creates three agents.

@@ -65,7 +65,8 @@ class Models(Resource):
                 doc = model["doc"]
             models_response.append({"model ID": model["model ID"],
                                     "name": model["name"],
-                                    "doc": doc})
+                                    "doc": doc,
+                                    "source": model["source"]})
         return models_response
 
 
@@ -113,7 +114,7 @@ class Run(Resource):
     @api.expect(props)
     def put(self, run_time):
         env_json = api.payload
-        v = Env(env_json)
+        v = Env(name='API env', serial_obj=env_json)
         return v.runN(run_time)
 
 

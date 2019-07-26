@@ -131,40 +131,47 @@ class Agent(object):
     here.
     """
     def __init__(self, name, attrs=None, action=None, duration=INF,
-                 prim_group=None):
+                 prim_group=None, serial_obj=None):
 
-        self.registry = {}
-        self.name = name
-        self.action_key = None
-        self.action = action
-        if action is not None:
-            self.action_key = action.__name__
+        if serial_obj is not None:
+            self.restore_agent(serial_obj)
+        else:
+            self.registry = {}
+            self.name = name
+            self.action_key = None
+            self.action = action
+            if action is not None:
+                self.action_key = action.__name__
 
-        self.duration = duration
-        self.attrs = OrderedDict()
-        self.neighbors = None
-        if attrs is not None:
-            self.attrs = attrs
-        self.type_sig = type_hash(self)
-        self.active = True
-        self.groups = {}
-        self.pos = None
-        self.locator = None
-        self.prim_group = prim_group
-        self.has_acted = False
-        if self.prim_group is not None:
-            self.groups[str(self.prim_group)] = self.prim_group
-            if is_space(self.prim_group):
-                self.locator = self.prim_group
+            self.duration = duration
+            self.attrs = OrderedDict()
+            self.neighbors = None
+            if attrs is not None:
+                self.attrs = attrs
+            self.type_sig = type_hash(self)
+            self.active = True
+            self.groups = {}
+            self.pos = None
+            self.locator = None
+            self.prim_group = prim_group
+            if self.prim_group is not None:
+                self.groups[str(self.prim_group)] = self.prim_group
+                if is_space(self.prim_group):
+                    self.locator = self.prim_group
+
+    def restore_agent(self, serial_obj):
+        self.from_json(serial_obj)
+        self.__init_unrestorables()
+
+    def __init_unrestorables(self):
+        pass
 
     def to_json(self):
-        # self.groups = {"name": Agent}
-        # self.prim_group = Agent
         grp_nms = ""
         for grp in self.groups:
             grp_nms += grp + " "
         return {"name": self.name,
-                "is_composite": 0,
+                "type": "agent",
                 "duration": self.duration,
                 "pos": self.pos,
                 "attrs": self.attrs_to_dict(),
@@ -174,30 +181,23 @@ class Agent(object):
                 "prim_group": str(self.prim_group),
                 "locator": str(self.locator),
                 "neighbors": self.neighbors,
-                "has_acted": self.has_acted,
                 "action_key": self.action_key
                 }
 
     def from_json(self, serial_agent):
         from models.run_dict import action_dict
-        self.action = action_dict[serial_agent["action_key"]]
+        if serial_agent["action_key"] is not None:
+            self.action = action_dict[serial_agent["action_key"]]
         self.action_key = serial_agent["action_key"]
-        self.has_acted = serial_agent["has_acted"]
-        self.neighbors = serial_agent["neighbors"]
         self.type_sig = serial_agent["type_sig"]
         self.active = serial_agent["active"]
-        # ret_group = serial_agent["groups"]
-        # grp_nm = ret_group.split(" ")
-        # for elem in grp_nm:
-        #     self.groups[elem] = # Agent!!
-        # self.prim_group = serial_agent["prim_group"] Agent
-        # prob we want to create a dict with
-        # "Agent Name" as key and the Agent as val
-        # self.locator = self.prim_group
         self.attrs = serial_agent["attrs"]
         self.pos = serial_agent["pos"]
         self.duration = serial_agent["duration"]
         self.name = serial_agent["name"]
+        # self.neighbors = serial_agent["neighbors"]
+        # self.prim_group = serial_agent["prim_group"]
+        # self.locator = self.prim_group
 
     def __repr__(self):
         return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
@@ -258,8 +258,11 @@ class Agent(object):
         If returns False, by default agent will move.
         """
         self.duration -= 1
+        acted = False
+        moved = False
         if self.duration > 0:
             if self.action is not None:
+                acted = True
                 # the action was defined outside this class, so pass self:
                 if not self.action(self, **kwargs):
                     # False return means agent is "unhappy" and
@@ -271,13 +274,13 @@ class Agent(object):
                     if "angle" in self:
                         angle = self["angle"]
                     self.move(max_move=max_move, angle=angle)
-                return True
+                    moved = True
             elif DEBUG:
                 print("I'm " + self.name
                       + " and I ain't got no action to do!")
         else:
             self.active = False
-        return False
+        return (acted, moved)
 
     def __iadd__(self, scalar):
         """
@@ -317,11 +320,8 @@ class Agent(object):
         if (self.islocated() and self.locator is not None
                 and not self.locator.is_full()):
             if angle is not None:
-                print("This is the pos:", self.pos)
                 new_xy = self.locator.point_from_vector(angle,
                                                         max_move, self.pos)
-                print("This is the max_move:", max_move)
-                print("This is the new_xy:", new_xy)
                 self.locator.place_member(self, max_move, new_xy)
             else:
                 self.locator.place_member(self, max_move)

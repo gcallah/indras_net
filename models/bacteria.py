@@ -34,12 +34,23 @@ def calc_toxin(group, agent):
     """
     Calculate the strength of a toxin / nutrient field for an agent.
     """
-    toxin_strength = float(distance(group["Toxins0"], agent)) * (-1)
+    toxin_strength = 0
+    for toxin in group:
+        if distance(group[toxin], agent) != 0:
+            toxin_strength += 1 / (distance(group[toxin], agent) ** 2)
+        else:
+            toxin_strength += sys.maxsize
+    toxin_strength *= -1
     return toxin_strength
 
 
 def calc_nutrient(group, agent):
-    nutrient_strength = float(distance(group["Nutrients0"], agent))
+    nutrient_strength = 0
+    for nutrient in group:
+        if distance(group[nutrient], agent) != 0:
+            nutrient_strength += 1 / (distance(group[nutrient], agent) ** 2)
+        else:
+            nutrient_strength += sys.maxsize
     return nutrient_strength
 
 
@@ -73,7 +84,7 @@ def bacterium_action(agent, **kwargs):
     agent["prev_toxicity"] = toxin_level
     agent["prev_nutricity"] = nutrient_level
 
-    if (toxin_change + nutrient_change <= 0) or (threshold - toxin_level >= 0):
+    if (toxin_change > nutrient_change) or (threshold >= toxin_level):
         if agent["angle"] is None:
             new_angle = randint(0, 360)
         else:
@@ -82,7 +93,6 @@ def bacterium_action(agent, **kwargs):
         if (new_angle > 360):
             new_angle = new_angle % 360
         agent["angle"] = new_angle
-        print("The new angle is:", agent["angle"])
 
     # return False means to move
     return False
@@ -109,7 +119,6 @@ def create_bacterium(name, i, pa):
     bacterium["prev_nutricity"] = None
     bacterium["angle"] = None
     bacterium["max_move"] = pa.get("bacterium_move", DEF_BACTERIUM_MOVE)
-    print("the user input for bacterium_move:", bacterium["max_move"])
     return bacterium
 
 
@@ -119,7 +128,6 @@ def create_toxin(name, i, pa):
     """
     toxin = Agent(name + str(i), action=toxin_action)
     toxin["max_move"] = pa.get("toxin_move", DEF_TOXIN_MOVE)
-    print("the user input for toxin_move:", toxin["max_move"])
     return toxin
 
 
@@ -129,7 +137,6 @@ def create_nutrient(name, i, pa):
     """
     nutrient = Agent(name + str(i), action=nutrient_action)
     nutrient["max_move"] = pa.get("nutrient_move", DEF_NUTRIENT_MOVE)
-    print("the user input for nutrient_move:", nutrient["max_move"])
     return nutrient
 
 

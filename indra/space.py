@@ -67,27 +67,38 @@ class Space(Composite):
 
     def __init__(self, name, width=DEF_WIDTH, height=DEF_HEIGHT,
                  attrs=None, members=None, action=None,
-                 random_placing=True):
+                 random_placing=True, serial_obj=None):
         super().__init__(name, attrs=attrs, members=members,
-                         action=action)
-        self.width = width
-        self.height = height
-
-        # the location of members in the space {(tuple):Agent}
-        self.locations = {}
-
-        # by making two class methods for rand_place_members and
-        # place_member, we allow two places to override
-        if random_placing:
-            self.rand_place_members(self.members)
+                         action=action, serial_obj=None)
+        if serial_obj is not None:
+            self.restore_space(serial_obj)
         else:
-            self.consec_place_members(self.members)
+            self.width = width
+            self.height = height
+
+            # the location of members in the space {(tuple):Agent}
+            self.locations = {}
+
+            # by making two class methods for rand_place_members and
+            # place_member, we allow two places to override
+            if random_placing:
+                self.rand_place_members(self.members)
+            else:
+                self.consec_place_members(self.members)
+
+    def restore_space(self, serial_obj):
+        self.from_json(serial_obj)
+        self.__init_unrestorables()
+
+    def __init_unrestorables(self):
+        pass
 
     def to_json(self):
         rep = super().to_json()
+        rep["type"] = "space"
         rep["width"] = self.width
         rep["height"] = self.height
-        rep["locations_dict"] = self.loc_dict()
+        # rep["locations_dict"] = self.loc_dict()
         return rep
 
     def from_json(self, serial_space):
@@ -230,7 +241,6 @@ class Space(Composite):
             return None
         if not is_composite(mbr):
             if xy is not None:
-                print("when xy is not none, getting xy:", xy)
                 (x, y) = xy
             else:
                 (x, y) = self.gen_new_pos(mbr, max_move)
@@ -442,9 +452,6 @@ class Space(Composite):
                 y_vertical = float(slope * x_vertical) + y_intercept
                 y_horizontal = self.height - 1
                 x_horizontal = float((y_horizontal - y_intercept) / slope)
-                print("This is the current slope:", slope)
-                print("This is the current x and y intercept:",
-                      x_intercept, y_intercept)
 
             #  Adjust the out of bound coordinates
             #  1. If both coordinates < 0

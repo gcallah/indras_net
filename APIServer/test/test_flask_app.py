@@ -66,7 +66,8 @@ class Test(TestCase):
                 doc = model["doc"]
             test_models_response.append({"model ID": model["model ID"],
                                     "name": model["name"],
-                                    "doc": doc})
+                                    "doc": doc,
+                                    "source": model["source"]})
 
         self.assertEqual(rv, test_models_response)
 

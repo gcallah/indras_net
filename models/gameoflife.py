@@ -5,7 +5,7 @@ from random import randint
 
 from propargs.propargs import PropArgs
 from indra.utils import get_prop_path
-from indra.agent import Agent, switch
+from indra.agent import Agent
 from indra.composite import Composite
 from indra.env import Env
 from indra.display_methods import BLACK, WHITE, SQUARE
@@ -40,7 +40,7 @@ def change_color(agent):
     next_group = groups[0]
     if curr_group == next_group:
         next_group = groups[1]
-    switch(agent, curr_group, next_group)
+    gameoflife_env.now_switch(agent, curr_group, next_group)
 
 
 def apply_live_rules(agent):
@@ -96,34 +96,34 @@ def gameoflife_action(gameoflife_env):
     if min_y > 0:
         min_y -= 1
 
-    new_min_x = 0
-    new_min_y = 0
+    new_min_x = min_x
+    new_min_y = min_y
     change_min = True
-    to_be_changed = []
+    print("Mins:", min_x, min_y)
     for y in range(min_y, gameoflife_env.height):
         for x in range(min_x, gameoflife_env.width):
             curr_agent = gameoflife_env.get_agent_at(x, y)
-            if curr_agent.neighbors is not None:
+            if curr_agent.neighbors is None:
+                gameoflife_env.get_moore_hood(curr_agent, save_neighbors=True)
+            if curr_agent.primary_group() == groups[1]:
                 if change_min:
                     new_min_x = curr_agent.get_x()
                     new_min_y = curr_agent.get_y()
                     change_min = False
-                if curr_agent.primary_group() == groups[1]:
-                    if apply_live_rules(curr_agent):
-                        to_be_changed.append(curr_agent)
-                else:
-                    if apply_dead_rules(curr_agent):
-                        to_be_changed.append(curr_agent)
-    for to_change in to_be_changed:
-        to_change.has_acted = True
-        change_color(to_change)
+                if apply_live_rules(curr_agent):
+                    curr_agent.locator.add_switch(curr_agent, groups[1],
+                                                  groups[0])
+            else:
+                if apply_dead_rules(curr_agent):
+                    curr_agent.locator.add_switch(curr_agent, groups[0],
+                                                  groups[1])
     min_x = new_min_x
     min_y = new_min_y
+    return True
 
 
 def agent_action(agent):
-    if agent.neighbors is None:
-        gameoflife_env.get_moore_hood(agent, save_neighbors=True)
+    return True
 
 
 def populate_board_random(width, height):
@@ -348,9 +348,9 @@ def set_up(props=None):
     else:
         pa = PropArgs.create_props(MODEL_NAME,
                                    prop_dict=props)
-    height = pa.get("grid_heigh", DEF_HEIGHT)
+    height = pa.get("grid_height", DEF_HEIGHT)
     width = pa.get("grid_width", DEF_WIDTH)
-    simulation = pa.get("simulation", 0)
+    simulation = pa.get("simulation", 1)
     white = Composite("white", {"color": WHITE})
     black = Composite("black", {"color": BLACK, "marker": SQUARE})
     groups = []

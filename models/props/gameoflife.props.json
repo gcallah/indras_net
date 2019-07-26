@@ -4,18 +4,18 @@
     "question": "What height would you like for the grid?",
     "atype": "INT",
     "hival": 100,
-    "lowval": 2
+    "lowval": 20
   },
   "grid_width": {
     "val": 30,
     "question": "What width would you like for the grid?",
     "atype": "INT",
     "hival": 100,
-    "lowval": 2
+    "lowval": 20
   },
   "simulation": {
-    "val": 0,
-    "question": "Which simulation would you like to load?\n0: Random (Default) \n1: Glider \n2: Small Exploder \n3: Exploder \n4: Horizontal Row of Length 10 \n5: Vertical Row of Height 10 \n6: Lightweight Spaceship\n7: Tumbler\n",
+    "val": 1,
+    "question": "Which simulation would you like to load?\n0: Random \n1: Glider (Default) \n2: Small Exploder \n3: Exploder \n4: Horizontal Row of Length 10 \n5: Vertical Row of Height 10 \n6: Lightweight Spaceship\n7: Tumbler\n",
     "atype": "INT",
     "hival": 7,
     "lowval": 0

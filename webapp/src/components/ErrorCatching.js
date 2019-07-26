@@ -29,7 +29,8 @@ class ErrorCatching extends Component {
         </h1>
         <br /><br />
 
-        <p>We are encountering some problems with the API server. We will have this model running soon!</p>
+        <p>We are encountering some problems with the API server.
+        We will have this model running soon!</p>
 
         <br /><br />
       </div>

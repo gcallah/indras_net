@@ -19,7 +19,7 @@ NUM_OF_BB = 3
 NUM_OF_MP = 6
 
 MP_PREF = 0.1
-RADIUS = 3
+RADIUS = 2
 
 CONSUMER_INDX = 0
 BB_INDX = 1
@@ -30,11 +30,11 @@ groups = None
 mp_pref = None
 radius = None
 
-mp_stores = {"books": [45, 30, 360, 60, TAN],
-             "coffee": [23, 15, 180, 30, BLACK],
-             "groceries": [67, 45, 540, 90, GREEN],
-             "hardware": [60, 40, 480, 80, RED],
-             "meals": [40, 23, 270, 45, YELLOW]}
+mp_stores = {"Mom and pop: books": [45, 30, 360, 60, TAN],
+             "Mom and pop: coffee": [23, 15, 180, 30, BLACK],
+             "Mom and pop: groceries": [67, 45, 540, 90, GREEN],
+             "Mom and pop: hardware": [60, 40, 480, 80, RED],
+             "Mom and pop: meals": [40, 23, 270, 45, YELLOW]}
 bb_store = [60, 25, 480, 90]
 
 
@@ -98,7 +98,7 @@ def create_mp(name, i):
     before it needs to restock and pay the variable expense.
     """
     expense = mp_stores[name]
-    store_name = "Mom and pop " + name + " " + str(i)
+    store_name = name + " " + str(i)
     store_books = {"fixed expense": expense[0],
                    "variable expense": expense[1],
                    "capital": expense[2],
@@ -112,41 +112,35 @@ def calc_util(stores):
     return random.random()
 
 
-def transaction(store, consumer=None):
+def transaction(store, consumer):
     """
     Calcuates the expense and the revenue of the store passed in
     after a transaction with the consumer passed in.
     """
-    if consumer is not None:
-        store.attrs["capital"] += consumer.attrs["spending power"]
-        store.attrs["inventory"][1] -= 1
-        if store.attrs["inventory"][1] == 1:
-            store.attrs["capital"] = (
-                store.attrs["capital"]
-                - store.attrs["variable expense"])
-            store.attrs["inventory"][1] = (
-                store.attrs["inventory"][1]
-                + store.attrs["inventory"][0])
-        if store.attrs["capital"] <= 0:
-            print("     ", store, "is going out of buisness")
-            store.die()
-        if DEBUG:
-            print("     ", store, "has a capital of", store.attrs["capital"],
-                  "and inventory of", store.attrs["inventory"][1])
-    else:
-        store.attrs["capital"] -= store.attrs["fixed expense"]
+    store.attrs["capital"] += consumer.attrs["spending power"]
+    store.attrs["inventory"][1] -= 1
+    if store.attrs["inventory"][1] == 1:
+        store.attrs["capital"] -= (
+            store.attrs["variable expense"])
+        store.attrs["inventory"][1] += (
+            store.attrs["inventory"][0])
+    if store.attrs["capital"] <= 0:
+        print("     ", store, "is out of buisness")
+        store.die()
+    if DEBUG:
+        print("     ", store, "has a capital of", store.attrs["capital"],
+              "and inventory of", store.attrs["inventory"][1])
 
 
 def get_store_census(town):
-    print()
-    for bb in groups[1]:
-        print(groups[1][bb], "has a capital of",
-              groups[1][bb].attrs["capital"],
-              "and inventory of", (groups[1][bb]).attrs["inventory"][1])
-    for mp in groups[2]:
-        print(groups[2][mp], "has a capital of",
-              groups[2][mp].attrs["capital"],
-              "and inventory of", (groups[2][mp]).attrs["inventory"][1])
+    print("\nStore census")
+    for i in range(1, 6):
+        for store in groups[i]:
+            if groups[i][store].attrs["capital"] > -1:
+                print(groups[i][store], "has a capital of",
+                      groups[i][store].attrs["capital"],
+                      "and inventory of",
+                      (groups[i][store]).attrs["inventory"][1])
 
 
 def town_action(town):
@@ -173,19 +167,22 @@ def town_action(town):
                 max_util = 0.0
                 for neighbors in nearby_neighbors:
                     neighbor = nearby_neighbors[neighbors]
-                    if (neighbor.isactive() and neighbor.primary_group()
-                            != groups[CONSUMER_INDX]):
-                        transaction(neighbor)
+                    if (neighbor.isactive()
+                            and neighbor.primary_group()
+                        != groups[CONSUMER_INDX]
+                            and neighbor.attrs["capital"] > -1):
+                        neighbor.attrs["capital"] -= (
+                            neighbor.attrs["fixed expense"])
                         util = 0.0
                         if (neighbor.primary_group()
                            == groups[BB_INDX]):
-                            curr_consumer.has_acted = True
                             util = calc_util(neighbor)
                             if DEBUG:
                                 print("Consumer", curr_consumer.get_pos())
                                 print("   Shopping at big box store at",
                                       neighbor.get_pos())
-                                print("      Utility:", util)
+                                print("      Big box has:",
+                                      neighbor.attrs["capital"])
                         else:
                             if DEBUG:
                                 print("Consumer", curr_consumer.get_pos())
@@ -195,18 +192,18 @@ def town_action(town):
                                       curr_consumer.attrs["item needed"])
                             if (curr_consumer.attrs["item needed"] in
                                     neighbor.name):
-                                curr_consumer.has_acted = True
                                 util = (calc_util(neighbor)
                                         + mp_pref)
                                 if DEBUG:
                                     print("     ", neighbor, "has item")
                                     print("      Utility:", util)
+                            else:
+                                if DEBUG:
+                                    print("     ", neighbor,
+                                          "does not have item")
                         if util > max_util:
                             max_util = util
                             store_to_go = neighbor
-                    if neighbor.primary_group() != groups[CONSUMER_INDX]:
-                        print("   ", neighbor,
-                              "is out of buisness")
                 curr_consumer.attrs["last utils"] = max_util
                 if store_to_go is not None:
                     if DEBUG:
@@ -271,10 +268,12 @@ def set_up(props=None):
     for m in range(0, num_mp):
         rand = random.randint(2, len(mp_stores) + 1)
         groups[rand] += create_mp(str(groups[rand]), m)
-    for comp in groups:
-        print(comp)
-        for agents in comp:
-            print("    ", comp[agents])
+    if DEBUG:
+        for comp in groups:
+            print(comp)
+            for agents in comp:
+                print("    ", comp[agents])
+        print(get_store_census(town))
     town = Env("Town",
                action=town_action,
                members=groups,

@@ -2,7 +2,7 @@ import React from "react";
 
 function Action(props) {
   var imageName = require('./images/forestfire.png')
-  if (props.loadingData){
+  if (props.loadingData) {
   return (
     <div>
       <br /><br />
@@ -13,7 +13,7 @@ function Action(props) {
       <br /><br />
     </div>
     );
-  }else{
+  } else {
     return(null)
   }}
 

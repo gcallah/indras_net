@@ -3,7 +3,7 @@ Abelian sandpile model
 """
 from propargs.propargs import PropArgs
 from indra.utils import get_prop_path
-from indra.agent import Agent, switch
+from indra.agent import Agent
 from indra.composite import Composite
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.env import Env
@@ -24,33 +24,7 @@ def create_agent(x, y):
     Create an agent with the passed x, y value as its name.
     """
     name = "(" + str(x) + "," + str(y) + ")"
-    return Agent(name=name, action=place_action)
-
-
-def get_curr_group_idx(agent):
-    """
-    Returns the int index of the current group.
-    Ex) Returns 0 if group is Group 0
-    """
-    return group_indices[agent.primary_group().name]
-
-
-def get_next_group_idx(curr_group_idx):
-    """
-    Returns the int index of the next group.
-    Ex) Returns 1 if curr_group_idx group is Group 0
-    """
-    return (curr_group_idx + 1) % NUM_GROUPS
-
-
-def change_group(agent, curr_group_idx, next_group_idx):  # noqa F811
-    """
-    Change group from curr_group_idx passed in
-    to the next_group_idx passed in.
-    """
-    global sandpile_env
-
-    switch(agent, groups[curr_group_idx], groups[next_group_idx])
+    return Agent(name=name, action=spagent_action)
 
 
 def add_grain(agent):
@@ -60,13 +34,13 @@ def add_grain(agent):
     """
     global sandpile_env
 
-    agent.has_acted = True
-    curr_group_idx = get_curr_group_idx(agent)
-    next_group_idx = get_next_group_idx(curr_group_idx)
+    curr_group_idx = group_indices[agent.primary_group().name]
+    next_group_idx = (curr_group_idx + 1) % NUM_GROUPS
     if DEBUG:
-        print("Agent at", agent.pos, "is changing group from",
+        print("Agent at", agent.pos, "is changing from",
               agent.primary_group(), "to", next_group_idx)
-    change_group(agent, curr_group_idx, next_group_idx)
+    sandpile_env.now_switch(agent, groups[curr_group_idx],
+                            groups[next_group_idx])
     if DEBUG:
         print("Agent at", agent.pos, "has changed to", agent.primary_group())
     if next_group_idx == 0:
@@ -74,13 +48,19 @@ def add_grain(agent):
 
 
 def topple(agent):
+    """
+    Called when height of an agent is greater than NUM_GROUPS.
+    Calls add_grain for its Von Neumann neighbors
+    and if those agents need to topple, recursively calls topple.
+    """
     global sandpile_env
 
     if DEBUG:
         print("Sandpile in", agent.pos, "is toppling")
-    neighbors = sandpile_env.get_vonneumann_hood(agent, save_neighbors=True)
-    for neighbor in neighbors:
-        add_grain(neighbors[neighbor])
+    if agent.neighbors is None:
+        sandpile_env.get_vonneumann_hood(agent, save_neighbors=True)
+    for neighbor in agent.neighbors:
+        add_grain(agent.neighbors[neighbor])
 
 
 def sandpile_action(sandpile_env):
@@ -94,20 +74,21 @@ def sandpile_action(sandpile_env):
               "which is in the group",
               sandpile_env.attrs["center_agent"].primary_group())
     add_grain(sandpile_env.attrs["center_agent"])
+    return True
 
 
-def place_action(agent):
-    pass
-    # if agent.neighbors is None:
-    #     sandpile_env.get_vonneumann_hood(agent, save_neighbors=True)
+def spagent_action(agent):
+    return True
 
 
 def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    global groups
     global sandpile_env
+    global groups
+    global group_indices
+
     ds_file = get_prop_path(MODEL_NAME)
     if props is None:
         pa = PropArgs.create_props(MODEL_NAME,
@@ -127,9 +108,9 @@ def set_up(props=None):
             groups[0] += create_agent(x, y)
     sandpile_env = Env("Sanpile",
                        action=sandpile_action,
-                       members=groups,
                        height=height,
                        width=width,
+                       members=groups,
                        random_placing=False,
                        props=pa)
     sandpile_env.attrs["center_agent"] = sandpile_env.get_agent_at(height // 2,

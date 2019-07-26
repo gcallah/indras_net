@@ -138,6 +138,13 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
+    global red_tsetters
+    global blue_tsetters
+    global red_followers
+    global blue_followers
+    global society
+    global opp_group
+
     ds_file = get_prop_path(MODEL_NAME)
     if props is None:
         pa = PropArgs.create_props(MODEL_NAME,

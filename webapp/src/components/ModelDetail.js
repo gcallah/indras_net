@@ -31,7 +31,7 @@ class ModelDetail extends Component {
   }
 
 
-  states = (data) => {
+  states = data => {
     //loop over objects in data and create object in this.state
     Object.keys(this.state.model_details).forEach(item => 
     this.setState({[item]: data[item]})
@@ -39,7 +39,7 @@ class ModelDetail extends Component {
   }
 
 
-  errors = (data) => {
+  errors = data => {
     Object.keys(this.state.model_details).forEach(item => 
       this.setState(prevState => ({
         model_details: {
@@ -62,7 +62,7 @@ class ModelDetail extends Component {
     return ans
   }
 
-  handleChange = (e) =>{ 
+  handleChange = e =>{ 
     let model_detail = this.state.model_details;
     const {name,value} = e.target
     let valid = this.checkValidity(name,value)
@@ -112,8 +112,9 @@ class ModelDetail extends Component {
     console.log(this.state.model_details)
     try{
       const res = await axios.put(this.api_server + localStorage.getItem("menu_id"), this.state.model_details)
+      var item_id = localStorage.getItem("menu_id")
       this.setState({env_file: res.data})
-      this.props.history.push({pathname:"/models/menu/",state: {
+      this.props.history.push({pathname:"/models/menu/" + (item_id.toString(10)) ,state: {
                   env_file: this.state.env_file,
                  }});
     }
@@ -143,19 +144,18 @@ class ModelDetail extends Component {
       <div>
         <br />
         <br />
-        <h2 style={{ "textAlign": "center" }}>Please set the parameters for your model</h2>
-        <h3 style={{ "textAlign": "left" }}> {localStorage.getItem("name")} </h3>
+        <h1 style={{ "textAlign": "center", "fontWeight": '200' }}>Please set the parameters for the {localStorage.getItem("name")} model</h1>
         <br /><br />
         <form>
           {Object.keys(this.state.model_details).map((item,i)=> {
             if ('question' in this.state.model_details[item]){
               return(
-                <div>
-                <label 
-                  key={i}>{this.state.model_details[item]['question']} {" "}
-                  <input type={this.state.model_details[item]['atype']} defaultValue={this.state.model_details[item]['val']} onChange={this.handleChange} name={item}/>
+                <div class="form-group">
+                <label
+                  key={i}>{this.state.model_details[item]['question']} {" "} </label>
+                  <input type={this.state.model_details[item]['atype']} class="col-sm-2 col-form-label m-4 mb-3" placeholder={this.state.model_details[item]['val']} onChange={this.handleChange} style={{width: 60}} name={item}/>
                   <span style={{color:"red",fontSize: 12}}>{this.state.model_details[item]['errorMessage']}</span>
-                </label>
+
                 <br/>
                 </div>
               )}
@@ -163,9 +163,8 @@ class ModelDetail extends Component {
           }
         </form>
         <br /><br />
-        <button onClick={this.goback}>Go Back</button>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <button disabled={disabled_button} onClick={!disabled_button ? this.handleSubmit : null}>Submit</button>
+        <button disabled={disabled_button} onClick={!disabled_button ? this.handleSubmit : null}
+        className="btn btn-primary m-2">Submit</button>
         
       </div>
     );

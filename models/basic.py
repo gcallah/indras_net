@@ -1,5 +1,7 @@
 """
-    This is the fashion model re-written in indra.
+A basic model.
+Places two groups of agents in the enviornment randomly
+and moves them around randomly.
 """
 
 from propargs.propargs import PropArgs
