@@ -30,11 +30,11 @@ groups = None
 mp_pref = None
 radius = None
 
-mp_stores = {"Mom and pop: books": [45, 30, 360, 60, TAN],
-             "Mom and pop: coffee": [23, 15, 180, 30, BLACK],
-             "Mom and pop: groceries": [67, 45, 540, 90, GREEN],
-             "Mom and pop: hardware": [60, 40, 480, 80, RED],
-             "Mom and pop: meals": [40, 23, 270, 45, YELLOW]}
+mp_stores = {"Mom and pop: Books": [45, 30, 360, 60, TAN],
+             "Mom and pop: Coffee": [23, 15, 180, 30, BLACK],
+             "Mom and pop: Groceries": [67, 45, 540, 90, GREEN],
+             "Mom and pop: Hardware": [60, 40, 480, 80, RED],
+             "Mom and pop: Meals": [40, 23, 270, 45, YELLOW]}
 bb_store = [60, 25, 480, 90]
 
 
@@ -46,10 +46,10 @@ def create_consumer(name):
     """
     spending_power = random.randint(70, 100)
     item_needed = random.choice(list(mp_stores.keys()))
-    characteristics = {"spending power": spending_power,
-                       "last util": 0.0,
-                       "item needed": item_needed}
-    return Agent(name=name, attrs=characteristics, action=consumer_action)
+    consumer_books = {"spending power": spending_power,
+                      "last util": 0.0,
+                      "item needed": item_needed}
+    return Agent(name=name, attrs=consumer_books, action=consumer_action)
 
 
 def create_bb(name):
@@ -74,12 +74,10 @@ def create_bb(name):
                    "variable expense": expense[1],
                    "capital": expense[2],
                    "inventory": [expense[3], expense[3]]}
-    return Agent(name=name,
-                 attrs=store_books,
-                 action=bb_action)
+    return Agent(name=name, attrs=store_books, action=bb_action)
 
 
-def create_mp(name, i):
+def create_mp(store_type, i):
     """
     Creates a mom and pop store agent.
     Store type (what the store will sell) is determined randomly
@@ -97,15 +95,13 @@ def create_mp(name, i):
     Inventory is the amount of consumers that the store can serve
     before it needs to restock and pay the variable expense.
     """
-    expense = mp_stores[name]
-    store_name = name + " " + str(i)
+    expense = mp_stores[str(store_type)]
+    name = str(store_type) + " " + str(i)
     store_books = {"fixed expense": expense[0],
                    "variable expense": expense[1],
                    "capital": expense[2],
                    "inventory": [expense[3], expense[3]]}
-    return Agent(name=store_name,
-                 attrs=store_books,
-                 action=mp_action)
+    return Agent(name=name, attrs=store_books, action=mp_action)
 
 
 def calc_util(stores):
@@ -133,7 +129,7 @@ def transaction(store, consumer):
 
 
 def get_store_census(town):
-    print("\nStore census")
+    print("\nStore census:")
     for i in range(1, 6):
         for store in groups[i]:
             if groups[i][store].attrs["capital"] > -1:
@@ -161,6 +157,9 @@ def town_action(town):
             if (curr_consumer is not None
                     and (curr_consumer.primary_group()
                          == groups[CONSUMER_INDX])):
+                if DEBUG:
+                    print("Checking around consumer "
+                          + str(curr_consumer.get_pos()) + "...")
                 nearby_neighbors = town.get_moore_hood(curr_consumer,
                                                        radius=radius)
                 store_to_go = None
@@ -171,38 +170,39 @@ def town_action(town):
                             and neighbor.primary_group()
                         != groups[CONSUMER_INDX]
                             and neighbor.attrs["capital"] > -1):
+                        curr_store_util = 0.0
                         neighbor.attrs["capital"] -= (
                             neighbor.attrs["fixed expense"])
-                        util = 0.0
                         if (neighbor.primary_group()
                            == groups[BB_INDX]):
-                            util = calc_util(neighbor)
+                            curr_store_util = calc_util(neighbor)
                             if DEBUG:
-                                print("Consumer", curr_consumer.get_pos())
-                                print("   Shopping at big box store at",
-                                      neighbor.get_pos())
-                                print("      Big box has:",
-                                      neighbor.attrs["capital"])
+                                print("   Getting util from big box "
+                                      + str(neighbor.get_pos()) + "...")
+                                print("      Utility from big box:",
+                                      curr_store_util)
                         else:
                             if DEBUG:
-                                print("Consumer", curr_consumer.get_pos())
-                                print("   Checking if mom and pop at",
-                                      neighbor.get_pos(),
-                                      "has",
-                                      curr_consumer.attrs["item needed"])
+                                print("   Checking if mom and pop at "
+                                      + str(neighbor.get_pos()) + " has "
+                                      + curr_consumer.attrs["item needed"]
+                                      + "...")
                             if (curr_consumer.attrs["item needed"] in
                                     neighbor.name):
-                                util = (calc_util(neighbor)
-                                        + mp_pref)
+                                curr_store_util = (calc_util(neighbor)
+                                                   + mp_pref)
                                 if DEBUG:
                                     print("     ", neighbor, "has item")
-                                    print("      Utility:", util)
+                                    print("      Getting util from mp"
+                                          + str(neighbor.get_pos()) + "...")
+                                    print("      Utility from mom and pop:",
+                                          curr_store_util)
                             else:
                                 if DEBUG:
                                     print("     ", neighbor,
                                           "does not have item")
-                        if util > max_util:
-                            max_util = util
+                        if curr_store_util > max_util:
+                            max_util = curr_store_util
                             store_to_go = neighbor
                 curr_consumer.attrs["last utils"] = max_util
                 if store_to_go is not None:
@@ -210,7 +210,7 @@ def town_action(town):
                         print("   Max utility was", max_util)
                         print("   Spending $"
                               + str(curr_consumer.attrs["spending power"])
-                              + " at " + str(store_to_go))
+                              + " at " + str(store_to_go) + "...")
                     transaction(store_to_go, curr_consumer)
     if DEBUG:
         get_store_census(town)
@@ -266,8 +266,8 @@ def set_up(props=None):
     for b in range(0, num_bb):
         groups[BB_INDX] += create_bb("Big box " + str(b))
     for m in range(0, num_mp):
-        rand = random.randint(2, len(mp_stores) + 1)
-        groups[rand] += create_mp(str(groups[rand]), m)
+        rand = random.randint(2, len(groups) - 1)
+        groups[rand] += create_mp(groups[rand], m)
     if DEBUG:
         for comp in groups:
             print(comp)
