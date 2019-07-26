@@ -121,7 +121,9 @@ class Env(Space):
         self.switches = serial_obj["switches"]
         # construct self.registry
         self.registry = {}
-        self.add_mbr_to_regis(self.members)
+
+        for nm in self.members:
+            self.add_mbr_to_regis(self.members[nm])
 
     def to_json(self):
         rep = super().to_json()
@@ -148,13 +150,12 @@ class Env(Space):
         self.from_json(serial_obj)
         self.__init_unrestorables()
 
-    def add_mbr_to_regis(self, members):
-        for nm in members:
-            if members[nm].type == "agent":
-                self.registry[nm] = members[nm]
-            else:
-                self.registry[nm] = members[nm]
-                self.add_mbr_to_regis(members[nm].members)
+    def add_mbr_to_regis(self, member):
+        if member.type == "agent":
+            self.registry[member.name] = member
+        else:
+            for mbrnm in member.members:
+                self.add_mbr_to_regis(member.members[mbrnm])
 
     def get_periods(self):
         return self.pop_hist.periods
@@ -177,12 +178,7 @@ class Env(Space):
 
     def add_member(self, member):
         super().add_member(member)
-
-    # def add_to_registry(self, member):
-    #     if str(type(member)) == "<class 'indra.composite.Composite'>":
-    #         for mbr in member.members:
-    #             self.add_to_registry(member.members[mbr])
-    #     self.registry[member.name] = member
+        # self.registry[member.name] = member
 
     def add_child(self, agent, group):
         """
