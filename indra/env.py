@@ -92,6 +92,7 @@ class Env(Space):
             # Attributes for plotting
             self.plot_title = self.name
             self.user = None
+            self.registry = {}
 
         self.type = "env"
         self.womb = []  # for agents waiting to be born
@@ -226,7 +227,7 @@ class Env(Space):
             if self.womb is not None:
                 for (agent, group) in self.womb:
                     # add the agent into the registry
-                    # self.registry[agent.name] = agent
+                    self.registry[agent.name] = agent
                     join(group, agent)
                 del self.womb[:]
             if self.switches is not None:
