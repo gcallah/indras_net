@@ -5,13 +5,14 @@ from random import randint
 
 from propargs.propargs import PropArgs
 from indra.utils import get_prop_path
-from indra.agent import Agent
+from indra.agent import Agent, switch
 from indra.composite import Composite
 from indra.env import Env
 from indra.display_methods import BLACK, WHITE, SQUARE
 
 MODEL_NAME = "gameoflife"
 DEBUG = False  # Turns debugging code on or off
+
 DEF_HEIGHT = 30
 DEF_WIDTH = 30
 
@@ -39,13 +40,14 @@ def change_color(agent):
     next_group = groups[0]
     if curr_group == next_group:
         next_group = groups[1]
-    gameoflife_env.now_switch(agent, curr_group, next_group)
+    switch(agent, curr_group, next_group)
 
 
 def apply_live_rules(agent):
     """
     Apply the rules for live agents.
-    The agent passed in should be alive, meaning its color should be black.
+    The agent passed in should be alive,
+    meaning its color should be black.
     """
     global gameoflife_env
     global groups
@@ -63,7 +65,8 @@ def apply_live_rules(agent):
 def apply_dead_rules(agent):
     """
     Apply the rules for dead agents.
-    The agent passed in should be dead, meaning its color should be white.
+    The agent passed in should be dead,
+    meaning its color should be white.
     """
     global gameoflife_env
     global groups
@@ -82,7 +85,7 @@ def gameoflife_action(gameoflife_env):
     """
     The action that will be taken every period.
     Loops through every agent, determines whether it is alive or dead,
-        and passes it to the corresponding rule function.
+    and passes it to the corresponding rule function.
     """
     global min_x
     global min_y
@@ -93,32 +96,33 @@ def gameoflife_action(gameoflife_env):
     if min_y > 0:
         min_y -= 1
 
-    new_min_x = min_x
-    new_min_y = min_y
+    new_min_x = 0
+    new_min_y = 0
     change_min = True
     for y in range(min_y, gameoflife_env.height):
         for x in range(min_x, gameoflife_env.width):
             curr_agent = gameoflife_env.get_agent_at(x, y)
-            if curr_agent.neighbors is None:
-                gameoflife_env.get_moore_hood(curr_agent, save_neighbors=True)
-            if curr_agent.primary_group() == groups[1]:
+            if curr_agent.neighbors is not None:
                 if change_min:
                     new_min_x = curr_agent.get_x()
                     new_min_y = curr_agent.get_y()
                     change_min = False
-                if apply_live_rules(curr_agent):
-                    curr_agent.locator.add_switch(curr_agent, groups[1],
-                                                  groups[0])
-            else:
-                if apply_dead_rules(curr_agent):
-                    curr_agent.locator.add_switch(curr_agent, groups[0],
-                                                  groups[1])
+                if curr_agent.primary_group() == groups[1]:
+                    if apply_live_rules(curr_agent):
+                        curr_agent.locator.add_switch(curr_agent, groups[1],
+                                                      groups[0])
+                elif:
+                    apply_dead_rules(curr_agent):
+                        curr_agent.locator.add_switch(curr_agent, groups[0],
+                                                      groups[1])
     min_x = new_min_x
     min_y = new_min_y
     return True
 
 
 def agent_action(agent):
+    if agent.neighbors is None:
+        gameoflife_env.get_moore_hood(agent, save_neighbors=True)
     return True
 
 
@@ -140,6 +144,8 @@ def populate_board_random(width, height):
     for i in range(num_agent):
         agent = gameoflife_env.get_agent_at(randint(lower_limit, upper_limit),
                                             randint(lower_limit, upper_limit))
+        print(agent)
+        print(type(agent))
         if agent is not None and agent.primary_group() != groups[1]:
             change_color(agent)
 
@@ -342,7 +348,7 @@ def set_up(props=None):
     else:
         pa = PropArgs.create_props(MODEL_NAME,
                                    prop_dict=props)
-    height = pa.get("grid_height", DEF_HEIGHT)
+    height = pa.get("grid_heigh", DEF_HEIGHT)
     width = pa.get("grid_width", DEF_WIDTH)
     simulation = pa.get("simulation", 1)
     white = Composite("white", {"color": WHITE})
@@ -358,8 +364,6 @@ def set_up(props=None):
                          height=height,
                          width=width,
                          members=groups,
-                         change_grid_spacing=0.5,
-                         hide_xy_labels=True,
                          random_placing=False,
                          props=pa)
     gameoflife_env.user.exclude_choices(["line_graph"])
