@@ -77,7 +77,7 @@ def seg_agent_action(agent):
     global blue_agents
 
     agent_group = agent.primary_group()
-    if agent is not None:
+    if agent["hood_changed"]:
         ratio_same = 0
         neighbors = city.get_moore_hood(agent)
         num_same = 0
@@ -88,7 +88,10 @@ def seg_agent_action(agent):
             ratio_same = num_same / len(neighbors)
         switch_location = env_favorable(ratio_same, agent[TOLERANCE])
         if not switch_location:
-            agent.has_acted = True
+            agent["hood_changed"] = False
+        else:
+             for neighbor in neighbors:
+                neighbors[neighbor]["hood_changed"] = True
         return switch_location
     return False
 
@@ -102,7 +105,7 @@ def create_agent(i, mean_tol, dev, color):
     return Agent(group_names[color] + str(i),
                  action=seg_agent_action,
                  attrs={TOLERANCE: this_tolerance,
-                        COLOR: color})
+                        COLOR: color, "hood_changed": True})
 
 
 def set_up(props=None):
@@ -123,7 +126,7 @@ def set_up(props=None):
     blue_agents = Composite(group_names[BLUE_TEAM] + " group", {"color": BLUE})
     red_agents = Composite(group_names[RED_TEAM] + " group", {"color": RED})
     for i in range(pa.get('num_red', NUM_RED)):
-        red_agents += create_agent(i,
+        red_agents += create_agent(i,-
                                    pa.get('mean_tol', DEF_TOLERANCE),
                                    pa.get('deviation', DEF_SIGMA),
                                    color=RED_TEAM)
