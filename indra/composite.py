@@ -39,6 +39,8 @@ class Composite(Agent):
         self.members = OrderedDict()
         super().__init__(name, attrs=attrs, duration=duration,
                          action=action, serial_obj=serial_obj)
+
+        self.type = "composite"
         if serial_obj is not None:
             self.restore_composite(serial_obj)
         else:
@@ -58,7 +60,7 @@ class Composite(Agent):
 
     def to_json(self):
         rep = super().to_json()
-        rep["type"] = "composite"
+        rep["type"] = self.type
         rep["members"] = self.members
         return rep
 
@@ -66,13 +68,13 @@ class Composite(Agent):
         super().from_json(serial_obj)
         for nm in serial_obj["members"]:
             if serial_obj["members"][nm]["type"] == "agent":
-                ret = Agent(serial_obj["members"][nm])
+                ret = Agent(name=nm, serial_obj=serial_obj["members"][nm])
                 self.members[nm] = ret
-                self.registry[nm] = ret
+                # self.registry[nm] = ret
             else:
-                ret = Composite(serial_obj["members"][nm])
+                ret = Composite(name=nm, serial_obj=serial_obj["members"][nm])
                 self.members[nm] = ret
-                self.registry[nm] = ret
+                # self.registry[nm] = ret
 
     def __repr__(self):
         return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)

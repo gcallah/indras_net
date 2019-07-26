@@ -20,6 +20,8 @@ class Home extends Component {
       const res = await axios.get(this.api_server + 'models')
       this.setState({ allItems: res.data });
       this.setState({ loadingData: false });
+      const doc = localStorage.getItem("doc");
+      this.setState({doc:doc});
       console.log(this.state.allItems)
     } catch (e) {
       console.log(e.message);
@@ -56,10 +58,10 @@ class Home extends Component {
           <div class="row">
             <div class="col">
         {Object.keys(this.state.allItems).map((item,i)=>
-        <a class=" w-50 p-3 list-group-item"key={i}>
+        <a class=" w-50 p-3 list-group-item"  key={i}>
           {console.log(this.state.allItems[item]['model ID'])}
           <Link to= {{pathname: `/models/props/${i}`}}
-            class="text-primary" onClick={() => this.handleClick(this.state.allItems[item]['model ID'], this.state.allItems[item]['name'], this.state.allItems[item]['source'])}>
+            class="text-primary" data-toggle="tooltip"  data-placement="top" title={this.state.allItems[item]['doc']}  onClick={() => this.handleClick(this.state.allItems[item]['model ID'], this.state.allItems[item]['name'], this.state.allItems[item]['source'])}>
             {this.state.allItems[item]['name']}
           </Link>
         </a>)}

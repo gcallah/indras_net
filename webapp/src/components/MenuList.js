@@ -34,7 +34,6 @@ class MenuList extends Component {
     const id = localStorage.getItem ('menu_id');
     const name = localStorage.getItem ('name');
     const source = localStorage.getItem ('source');
-    console.log (source);
     this.setState ({name: name});
     this.setState ({model_id: id});
     this.setState ({source: source});
@@ -132,7 +131,7 @@ class MenuList extends Component {
             <div class="row">
               <div class="col">
           {Object.keys (this.state.menu_list).map ((item, i) => (
-            <a class="w-25 p-3 list-group-item" key={i}>
+            <a class="w-25 p-3 list-group-item list-group-item-action" key={i}>
               {this.state.menu_list[item]['id'] === 0
                 ? <Link class="text-danger"
                     to={{
