@@ -46,6 +46,7 @@ blue_agents = None
 
 fetched_moore_hood = 0
 
+
 def get_tolerance(default_tolerance, sigma):
     tol = random.gauss(default_tolerance, sigma)
     tol = max(tol, 0.0)
@@ -135,8 +136,8 @@ def set_up(props=None):
     blue_agents = Composite(group_names[BLUE_TEAM] + " group", {"color": BLUE})
     red_agents = Composite(group_names[RED_TEAM] + " group", {"color": RED})
     for i in range(pa.get('num_red', NUM_RED)):
-        red_agents += create_agent(i,-
-                                   pa.get('mean_tol', DEF_TOLERANCE),
+        red_agents += create_agent(i,
+                                   -pa.get('mean_tol', DEF_TOLERANCE),
                                    pa.get('deviation', DEF_SIGMA),
                                    color=RED_TEAM)
     if DEBUG2:
