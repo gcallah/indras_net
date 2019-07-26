@@ -28,7 +28,7 @@ tests_env = {
     "duration": 9223372036854775805,
     "pos": None,
     "attrs": {},
-    "groups": "",
+    "groups": {},
     "active": True,
     "type_sig": 0,
     "prim_group": "None",
@@ -44,7 +44,9 @@ tests_env = {
             "attrs": {
                 "color": "blue"
             },
-            "groups": "env ",
+            "groups": {
+                "env": None
+            },
             "active": True,
             "type_sig": 0,
             "prim_group": "env",
@@ -57,11 +59,13 @@ tests_env = {
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        3,
-                        1
+                        20,
+                        20
                     ],
                     "attrs": {},
-                    "groups": "Blues ",
+                    "groups": {
+                        "Blues": None
+                    },
                     "active": True,
                     "type_sig": 0,
                     "prim_group": "Blues",
@@ -74,11 +78,13 @@ tests_env = {
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        4,
-                        7
+                        11,
+                        4
                     ],
                     "attrs": {},
-                    "groups": "Blues ",
+                    "groups": {
+                        "Blues": None
+                    },
                     "active": True,
                     "type_sig": 0,
                     "prim_group": "Blues",
@@ -96,7 +102,9 @@ tests_env = {
             "attrs": {
                 "color": "red"
             },
-            "groups": "env ",
+            "groups": {
+                "env": None
+            },
             "active": True,
             "type_sig": 0,
             "prim_group": "env",
@@ -113,7 +121,9 @@ tests_env = {
                         8
                     ],
                     "attrs": {},
-                    "groups": "Reds ",
+                    "groups": {
+                        "Reds": None
+                    },
                     "active": True,
                     "type_sig": 0,
                     "prim_group": "Reds",
@@ -126,11 +136,13 @@ tests_env = {
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        4,
-                        4
+                        20,
+                        8
                     ],
                     "attrs": {},
-                    "groups": "Reds ",
+                    "groups": {
+                        "Reds": None
+                    },
                     "active": True,
                     "type_sig": 0,
                     "prim_group": "Reds",
