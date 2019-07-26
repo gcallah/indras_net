@@ -34,24 +34,39 @@ ul.centered {
     list-style-position: inside;
 }
 .menu {
+    color: #312;
     margin: 1.6em 12em 0em 12em;
     list-style: none;
     padding: 0;
     margin: 0;
     display: flex;
     justify-content: space-between;
-    background-color: #321;
+    background-image: url("https://upload.wikimedia.org/wikipedia/commons/2/21/Dewy_spider_web.jpg");
 }
 
 a {
     text-decoration: none;
     color: #aaf;
 }
+a.menu  {
+    font-size: 1.3em;
+    font-weight: 600;
+    background: transparent;
+    color: #312;
+}
 a:link {
     color: #caf;
 }
+a.menu:link {
+    background: transparent;
+    color: #312;
+}
 a:visited {
     color: #fac;
+}
+a.menu:visited {
+    background: transparent;
+    color: #312;
 }
 
 p.model {
