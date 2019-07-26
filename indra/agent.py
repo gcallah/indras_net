@@ -167,9 +167,9 @@ class Agent(object):
         pass
 
     def to_json(self):
-        grp_nms = ""
+        grp_nms = {}
         for grp in self.groups:
-            grp_nms += grp + " "
+            grp_nms[grp] = None
         return {"name": self.name,
                 "type": self.type,
                 "duration": self.duration,
