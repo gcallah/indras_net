@@ -26,7 +26,7 @@ def create_agent(x, y):
     Create an agent with the passed x, y value as its name.
     """
     name = "(" + str(x) + "," + str(y) + ")"
-    return Agent(name=name, action=agent_action)
+    return Agent(name=name, action=game_agent_action)
 
 
 def change_color(agent):
@@ -119,7 +119,7 @@ def gameoflife_action(gameoflife_env):
     return True
 
 
-def agent_action(agent):
+def game_agent_action(agent):
     if agent.neighbors is None:
         gameoflife_env.get_moore_hood(agent, save_neighbors=True)
     return True

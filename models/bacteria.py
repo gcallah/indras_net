@@ -1,5 +1,6 @@
 """
-    This is the fashion model re-written in indra.
+This is the model that stimulate the behavior
+of bacterias according to toxin and nutrients level.
 """
 
 from propargs.propargs import PropArgs

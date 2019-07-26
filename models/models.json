@@ -2,11 +2,11 @@
   "models_database": [
     {
       "model ID": 0,
-      "name": "A Basic Model",
-      "run": "basic",
-      "props": "models/props/basic.props.json",
-      "doc": "A model just for testing and cloning.",
-      "source": "https://github.com/gcallah/indras_net/blob/master/models/basic.py"
+      "name": "Bacteria",
+      "run": "bacteria",
+      "props": "models/props/bacteria.props.json",
+      "doc": "A model of bacteria with toxin and nutrient levels",
+      "source": "https://github.com/gcallah/indras_net/blob/master/models/bacteria.py"
     },
     {
       "model ID": 1,

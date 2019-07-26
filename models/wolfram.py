@@ -31,7 +31,7 @@ def create_agent(x, y):
     Create an agent with the passed x, y value as its name.
     """
     name = "(" + str(x) + "," + str(y) + ")"
-    return Agent(name=name, action=agent_action)
+    return Agent(name=name, action=wfagent_action)
 
 
 def get_color(group):
@@ -74,7 +74,7 @@ def get_str_key(x, y):
     return "(" + str(x) + "," + str(y) + ")"
 
 
-def agent_action(agent):
+def wfagent_action(agent):
     return True
 
 
