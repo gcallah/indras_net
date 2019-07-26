@@ -58,7 +58,7 @@ tests_env = {
                     "duration": 9223372036854775805,
                     "pos": [
                         3,
-                        3
+                        1
                     ],
                     "attrs": {},
                     "groups": "Blues ",
@@ -74,8 +74,8 @@ tests_env = {
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        20,
-                        14
+                        4,
+                        7
                     ],
                     "attrs": {},
                     "groups": "Blues ",
@@ -109,8 +109,8 @@ tests_env = {
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        9,
-                        6
+                        13,
+                        8
                     ],
                     "attrs": {},
                     "groups": "Reds ",
@@ -126,8 +126,8 @@ tests_env = {
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        17,
-                        14
+                        4,
+                        4
                     ],
                     "attrs": {},
                     "groups": "Reds ",
@@ -204,7 +204,8 @@ tests_env = {
         }
     },
     "womb": [],
-    "switches": []
+    "switches": [],
+    "registry": {}
 }
 
 
