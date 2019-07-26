@@ -1,24 +1,24 @@
 {
-  "grid_height": {
-    "val": 20,
-    "question": "What is the grid height?",
-    "atype": "INT",
-    "hival": 100,
-    "lowval": 2
-  },
-  "grid_width": {
-    "val": 20,
-    "question": "What is the grid width?",
-    "atype": "INT",
-    "hival": 100,
-    "lowval": 2
-  },
   "value_investors": {
     "val": 2,
     "question": "How many value investors do you want?",
     "atype": "INT",
     "hival": 100,
     "lowval": 1
+  },
+  "mean_price":{
+    "val": 0.01,
+    "question": "What mean target price should the value investors have?",
+    "atype": "DBL",
+    "hival": 0.5,
+    "lowval": 0.01
+  },
+  "deviation":{
+    "val": 0.001,
+    "question": "What deviation should the value investors have?",
+    "atype": "DBL",
+    "hival": 1,
+    "lowval": 0.001
   },
   "trend_followers": {
     "val": 2,
