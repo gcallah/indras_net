@@ -92,7 +92,6 @@ class Env(Space):
             self.user = None
 
         self.type = "env"
-        self.registry = {}
         self.womb = []  # for agents waiting to be born
         self.switches = []  # for agents waiting to switch groups
         self.user_type = os.getenv("user_type", TERMINAL)
@@ -121,7 +120,6 @@ class Env(Space):
         self.switches = serial_obj["switches"]
         # construct self.registry
         self.registry = {}
-
         for nm in self.members:
             self.add_mbr_to_regis(self.members[nm])
 
@@ -154,6 +152,7 @@ class Env(Space):
         if member.type == "agent":
             self.registry[member.name] = member
         else:
+            self.registry[member.name] = member
             for mbrnm in member.members:
                 self.add_mbr_to_regis(member.members[mbrnm])
 
