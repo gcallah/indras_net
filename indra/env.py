@@ -18,6 +18,8 @@ DEBUG2 = False
 DEF_USER = "User"
 DEF_TIME = 10
 
+UNLIMITED = 1000
+
 X = 0
 Y = 1
 

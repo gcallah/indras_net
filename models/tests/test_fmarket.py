@@ -6,7 +6,11 @@ from propargs.propargs import PropArgs
 from unittest import TestCase, main
 from indra.env import Env
 from indra.composite import Composite
-from models.fmarket import set_up, create_market_maker, create_trend_follower, create_value_investor, DEF_PRICE, trend_direction, trend_follower_action, DEF_REAL_VALUE, value_investor_action, DEF_MIN_PRICE_MOVE, DEF_MAX_PRICE_MOVE, market_maker_action, calc_price_change, num_increasing_period, buy, sell, DEF_NUM_ASSET, market_report, DEF_PRICE_TARGET, DEF_SIGMA, get_price_target
+from models.fmarket import set_up, create_market_maker, create_trend_follower
+from models.fmarket import create_value_investor, DEF_PRICE, trend_direction
+from models.fmarket import trend_follower_action, DEF_REAL_VALUE, value_investor_action, DEF_MIN_PRICE_MOVE, DEF_MAX_PRICE_MOVE
+from models.fmarket import market_maker_action, calc_price_change, num_increasing_period, buy, sell
+from models.fmarket import DEF_NUM_ASSET, market_report, DEF_DISCOUNT, DEF_SIGMA, get_price_target
 import models.fmarket as fm
 
 TEST_INVESTOR_NUM = 3
@@ -17,7 +21,11 @@ class FMarketTestCase(TestCase):
         self.pa = PropArgs.create_props('fmarket_props',
                                         ds_file='props/fmarket.props.json')
         (fm.market,fm.value_investors, fm.trend_followers, fm.market_maker) = set_up()
-        self.value_investor = create_value_investor("value_investors", TEST_INVESTOR_NUM, self.pa.get("mean_price", DEF_PRICE_TARGET), self.pa.get("deviation", DEF_SIGMA))
+        self.value_investor = create_value_investor("value_investors",
+                                                    TEST_INVESTOR_NUM,
+                                                    self.pa.get("mean_price",
+                                                                DEF_DISCOUNT),
+                                                    self.pa.get("deviation", DEF_SIGMA))
         self.trend_follower = create_trend_follower("trend_followers", TEST_FOLLOWER_NUM)
         self.market_maker = create_market_maker("market_maker")
 
@@ -38,7 +46,8 @@ class FMarketTestCase(TestCase):
         """
          Test to see if value_investor is created
         """
-        new_value_investor = create_value_investor("value_investors", 0, DEF_PRICE_TARGET, DEF_SIGMA)
+        new_value_investor = create_value_investor("value_investors", 0,
+                                                   DEF_DISCOUNT, DEF_SIGMA)
         self.assertTrue(new_value_investor["capital"] >= 0)
         self.assertTrue(new_value_investor["num_stock"] == 0)
 
@@ -56,7 +65,7 @@ class FMarketTestCase(TestCase):
 
     def test_buy(self):
         new_market_maker = create_market_maker("market_maker")
-        new_value_investor = create_value_investor("value_investors", 0, DEF_PRICE_TARGET, DEF_SIGMA)
+        new_value_investor = create_value_investor("value_investors", 0, DEF_DISCOUNT, DEF_SIGMA)
         new_market_maker["asset_price"] = DEF_PRICE
         new_value_investor["capital"] = DEF_PRICE * DEF_NUM_ASSET + 1
         price = new_market_maker["asset_price"] * DEF_NUM_ASSET
@@ -65,7 +74,8 @@ class FMarketTestCase(TestCase):
 
     def test_sell(self):
         new_market_maker = create_market_maker("market_maker")
-        new_value_investor = create_value_investor("value_investors", 0, DEF_PRICE_TARGET, DEF_SIGMA)
+        new_value_investor = create_value_investor("value_investors", 0,
+                                                   DEF_DISCOUNT, DEF_SIGMA)
         new_market_maker["asset_price"] = DEF_PRICE
         new_value_investor["capital"] = 0
         new_value_investor["num_stock"] = DEF_NUM_ASSET + 1
@@ -95,7 +105,7 @@ class FMarketTestCase(TestCase):
         + str(DEF_PRICE) + "\n")
 
     def test_get_price_target(self):
-        (low_price, high_price) = get_price_target(DEF_PRICE_TARGET, DEF_SIGMA)
+        (low_price, high_price) = get_price_target(DEF_DISCOUNT, DEF_SIGMA)
         self.assertTrue(low_price < DEF_REAL_VALUE)
         self.assertTrue(high_price > DEF_REAL_VALUE)
 
@@ -109,7 +119,8 @@ class FMarketTestCase(TestCase):
     def test_value_investor_action(self):
         new_market_maker = create_market_maker("market_maker")
         new_market_maker["asset_price"] = DEF_REAL_VALUE * 0.8
-        new_value_investor = create_value_investor("value_investors", 0, DEF_PRICE_TARGET, DEF_SIGMA)
+        new_value_investor = create_value_investor("value_investors", 0,
+                                                   DEF_DISCOUNT, DEF_SIGMA)
         new_value_investor["low_price"] = DEF_REAL_VALUE * 0.9
         new_value_investor["high_price"] = DEF_REAL_VALUE * 1.1
         value_investor_action(new_value_investor)

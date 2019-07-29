@@ -6,18 +6,18 @@
     "hival": 100,
     "lowval": 1
   },
-  "mean_price":{
+  "discount":{
     "val": 0.01,
-    "question": "What mean target price should the value investors have?",
+    "question": "What % discount from 'true value' do the value investors want?",
     "atype": "DBL",
     "hival": 0.5,
     "lowval": 0.01
   },
   "deviation":{
-    "val": 0.001,
-    "question": "What deviation should the value investors have?",
+    "val": 0.05,
+    "question": "What is the std deviation of that discount?",
     "atype": "DBL",
-    "hival": 1,
+    "hival": 0.5,
     "lowval": 0.001
   },
   "trend_followers": {

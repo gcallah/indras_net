@@ -9,7 +9,7 @@ from propargs.propargs import PropArgs
 from indra.utils import get_prop_path
 from indra.agent import Agent
 from indra.composite import Composite
-from indra.env import Env
+from indra.env import Env, UNLIMITED
 from indra.display_methods import BLUE, RED
 
 MODEL_NAME = "fmarket"
@@ -25,7 +25,7 @@ DEF_MIN_PRICE_MOVE = .2
 DEF_MAX_PRICE_MOVE = .4
 INF_RATIO = 1000000000  # just some very big num!
 DEF_REAL_VALUE = 10
-DEF_PRICE_TARGET = .002
+DEF_DISCOUNT = .002
 DEF_SIGMA = .8
 
 trend_followers = None
@@ -250,14 +250,16 @@ def set_up(props=None):
                                 DEF_NUM_TREND_FOLLOWER))
     for i in range(pa.get("value_investors", DEF_NUM_VALUE_INVESTOR)):
         value_investors += create_value_investor("value_investors", i,
-                                                 pa.get("mean_price",
-                                                        DEF_PRICE_TARGET),
+                                                 pa.get("discount",
+                                                        DEF_DISCOUNT),
                                                  pa.get("deviation", DEF_SIGMA)
                                                  )
     market_maker = create_market_maker("market_maker")
     market = Env("env",
                  members=[value_investors, trend_followers, market_maker],
                  props=pa,
+                 width=UNLIMITED,
+                 height=UNLIMITED,
                  census=market_report)
     market.user.exclude_choices(["scatter_plot", "line_graph"])
     return (market, value_investors, trend_followers, market_maker)
