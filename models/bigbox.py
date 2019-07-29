@@ -12,7 +12,7 @@ from indra.env import Env
 from indra.display_methods import BLACK, BLUE, GRAY, GREEN, RED, TAN, YELLOW
 
 MODEL_NAME = "bigbox"
-DEBUG = True
+DEBUG = False
 
 NUM_OF_CONSUMERS = 150
 NUM_OF_BB = 3
