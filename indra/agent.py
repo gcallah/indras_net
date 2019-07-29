@@ -167,9 +167,9 @@ class Agent(object):
         pass
 
     def to_json(self):
-        grp_nms = {}
+        grp_nms = []
         for grp in self.groups:
-            grp_nms[grp] = None
+            grp_nms.append(grp)
         return {"name": self.name,
                 "type": self.type,
                 "duration": self.duration,
@@ -196,7 +196,9 @@ class Agent(object):
         self.pos = serial_agent["pos"]
         self.duration = serial_agent["duration"]
         self.name = serial_agent["name"]
-        self.groups = serial_agent["groups"]
+        self.groups = {}
+        for gnm in serial_agent["groups"]:
+            self.groups[gnm] = None
         self.prim_group = serial_agent["prim_group"]
         self.neighbors = serial_agent["neighbors"]
         self.locator = self.prim_group
@@ -353,7 +355,7 @@ class Agent(object):
             self.prim_group = None
 
     def add_group(self, group):
-        if str(group) not in self.groups:
+        if str(group) not in self.groups or self.groups[str(group)] is None:
             if DEBUG2:
                 print("Join group being called on " + str(self.pos)
                       + " to join group: " + group.name)

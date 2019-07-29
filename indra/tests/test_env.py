@@ -44,9 +44,9 @@ tests_env = {
             "attrs": {
                 "color": "blue"
             },
-            "groups": {
-                "env": None
-            },
+            "groups": [
+                "env"
+            ],
             "active": True,
             "type_sig": 0,
             "prim_group": "env",
@@ -63,9 +63,9 @@ tests_env = {
                         20
                     ],
                     "attrs": {},
-                    "groups": {
-                        "Blues": None
-                    },
+                    "groups": [
+                        "Blues"
+                    ],
                     "active": True,
                     "type_sig": 0,
                     "prim_group": "Blues",
@@ -82,9 +82,9 @@ tests_env = {
                         4
                     ],
                     "attrs": {},
-                    "groups": {
-                        "Blues": None
-                    },
+                    "groups": [
+                        "Blues"
+                    ],
                     "active": True,
                     "type_sig": 0,
                     "prim_group": "Blues",
@@ -102,9 +102,9 @@ tests_env = {
             "attrs": {
                 "color": "red"
             },
-            "groups": {
-                "env": None
-            },
+            "groups": [
+                "env"
+            ],
             "active": True,
             "type_sig": 0,
             "prim_group": "env",
@@ -121,9 +121,9 @@ tests_env = {
                         8
                     ],
                     "attrs": {},
-                    "groups": {
-                        "Reds": None
-                    },
+                    "groups": [
+                        "Reds"
+                    ],
                     "active": True,
                     "type_sig": 0,
                     "prim_group": "Reds",
@@ -140,9 +140,9 @@ tests_env = {
                         8
                     ],
                     "attrs": {},
-                    "groups": {
-                        "Reds": None
-                    },
+                    "groups": [
+                        "Reds"
+                    ],
                     "active": True,
                     "type_sig": 0,
                     "prim_group": "Reds",
@@ -336,9 +336,10 @@ class EnvTestCase(TestCase):
     def test_from_json(self):
         self.maxDiff = None
         self.env = Env(name='Test env', serial_obj=tests_env)
+        # print(self.env.registry["Reds0"].groups)
+        # print()
         # self.assertEqual(self.env, tests_env, msg=self.env.to_json())
         self.assertEqual(str(type(self.env)), "<class 'indra.env.Env'>")
-        # managed to construct an env!!!
 
 
 if __name__ == '__main__':

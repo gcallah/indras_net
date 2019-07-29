@@ -129,14 +129,12 @@ class Env(Space):
         self.registry = {}
         for nm in self.members:
             self.add_mbr_to_regis(self.members[nm])
-        print(self.registry)
-        # construct self.groups
-        # for nm in self.registry:
-        #     if self.registry[nm].groups != {}:
-        #         for gnm in self.registry[nm].groups:
-        #             if gnm != "env":
-        #                 self.registry[nm].add_group(self.registry[gnm])
-        #                 self.registry[nm].groups[gnm] = self.registry[gnm]
+        # construct self.groups and self.prim_group and self.locator
+        for nm in self.registry:
+            if len(self.registry[nm].groups) != 0:
+                for gnm in self.registry[nm].groups:
+                    if gnm != "env":
+                        self.registry[nm].add_group(self.registry[gnm])
 
     def to_json(self):
         rep = super().to_json()
