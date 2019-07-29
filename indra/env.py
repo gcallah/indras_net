@@ -142,6 +142,8 @@ class Env(Space):
     def to_json(self):
         rep = super().to_json()
         rep["type"] = self.type
+        # rep["census_func"] = self.census_func
+        # rep["line_data_func"] = self.line_data_func
         rep["plot_title"] = self.plot_title
         rep["props"] = self.props.to_json()
         rep["pop_hist"] = self.pop_hist.to_json()

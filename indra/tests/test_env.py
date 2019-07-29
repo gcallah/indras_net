@@ -28,11 +28,11 @@ tests_env = {
     "duration": 9223372036854775805,
     "pos": None,
     "attrs": {},
-    "groups": {},
+    "groups": [],
     "active": True,
     "type_sig": 0,
     "prim_group": "None",
-    "locator": "None",
+    "locator": None,
     "neighbors": None,
     "action_key": None,
     "members": {
@@ -50,7 +50,7 @@ tests_env = {
             "active": True,
             "type_sig": 0,
             "prim_group": "env",
-            "locator": "None",
+            "locator": None,
             "neighbors": None,
             "action_key": None,
             "members": {
@@ -59,8 +59,8 @@ tests_env = {
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        20,
-                        20
+                        6,
+                        16
                     ],
                     "attrs": {},
                     "groups": [
@@ -78,8 +78,8 @@ tests_env = {
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        11,
-                        4
+                        5,
+                        5
                     ],
                     "attrs": {},
                     "groups": [
@@ -108,7 +108,7 @@ tests_env = {
             "active": True,
             "type_sig": 0,
             "prim_group": "env",
-            "locator": "None",
+            "locator": None,
             "neighbors": None,
             "action_key": None,
             "members": {
@@ -117,8 +117,8 @@ tests_env = {
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        13,
-                        8
+                        1,
+                        0
                     ],
                     "attrs": {},
                     "groups": [
@@ -136,8 +136,8 @@ tests_env = {
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        20,
-                        8
+                        17,
+                        0
                     ],
                     "attrs": {},
                     "groups": [

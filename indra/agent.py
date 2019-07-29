@@ -170,6 +170,10 @@ class Agent(object):
         grp_nms = []
         for grp in self.groups:
             grp_nms.append(grp)
+        if not self.locator:
+            loc = self.locator
+        else:
+            loc = str(self.locator)
         return {"name": self.name,
                 "type": self.type,
                 "duration": self.duration,
@@ -179,7 +183,7 @@ class Agent(object):
                 "active": self.active,
                 "type_sig": self.type_sig,
                 "prim_group": str(self.prim_group),
-                "locator": str(self.locator),
+                "locator": loc,
                 "neighbors": self.neighbors,
                 "action_key": self.action_key
                 }
