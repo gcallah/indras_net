@@ -30,7 +30,7 @@ def create_agent(x, y):
 def add_grain(agent):
     """
     Add a grain to the agent that is passed in
-    by changing the group that it is in.
+        by changing the group that it is in.
     """
     global sandpile_env
 
@@ -51,7 +51,7 @@ def topple(agent):
     """
     Called when height of an agent is greater than NUM_GROUPS.
     Calls add_grain for its Von Neumann neighbors
-    and if those agents need to topple, recursively calls topple.
+        and if those agents need to topple, recursively calls topple.
     """
     global sandpile_env
 

@@ -31,13 +31,13 @@ def create_agent(x, y):
     Create an agent with the passed x, y value as its name.
     """
     name = "(" + str(x) + "," + str(y) + ")"
-    return Agent(name=name, action=agent_action)
+    return Agent(name=name, action=wfagent_action)
 
 
 def get_color(group):
     """
     Returns W or B, W for white and B for black
-    when passed in a group.
+        when passed in a group.
     W and B are integer values -0 and 1, respectively.
     """
     if group == groups[W]:
@@ -49,8 +49,8 @@ def get_color(group):
 def get_rule(rule_num):
     """
     Takes in an int for the rule_num
-    and returns a dictionary that contains those rules
-    read from a master text file that contains all 256 rules.
+        and returns the corresponding rule dictionary.
+    Read from a text file that contains all 256 rules.
     """
     rule_str = ""
     with open("wolfram_rules.txt") as rule_line:
@@ -64,8 +64,8 @@ def get_rule(rule_num):
 def next_color(rule_dict, left, middle, right):
     """
     Takes in a trio of colors
-    and returns the color that the agent in the next row should be
-    based on the rule number picked by the user.
+        and returns the color that the agent in the next row should be
+        based on the rule number picked by the user.
     """
     return rule_dict[str((left, middle, right))]
 
@@ -74,7 +74,7 @@ def get_str_key(x, y):
     return "(" + str(x) + "," + str(y) + ")"
 
 
-def agent_action(agent):
+def wfagent_action(agent):
     return True
 
 

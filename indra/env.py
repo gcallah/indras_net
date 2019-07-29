@@ -73,7 +73,9 @@ class Env(Space):
     That makes the inheritance work out as we want it to.
     """
     def __init__(self, name, action=None, random_placing=True,
-                 props=None, serial_obj=None, census=None, **kwargs):
+                 props=None, serial_obj=None, census=None,
+                 change_grid_spacing=0, hide_xy_labels=False,
+                 **kwargs):
         super().__init__(name, action=action,
                          random_placing=random_placing, serial_obj=serial_obj,
                          **kwargs)
@@ -90,10 +92,14 @@ class Env(Space):
             # Attributes for plotting
             self.plot_title = self.name
             self.user = None
+            self.registry = {}
 
+        self.type = "env"
         self.womb = []  # for agents waiting to be born
         self.switches = []  # for agents waiting to switch groups
         self.user_type = os.getenv("user_type", TERMINAL)
+        self.change_grid_spacing = change_grid_spacing
+        self.hide_xy_labels = hide_xy_labels
         self.num_acts = 0
         self.num_moves = 0
         self.num_switches = 0
@@ -117,10 +123,22 @@ class Env(Space):
         self.name = serial_obj["name"]
         self.womb = serial_obj["womb"]
         self.switches = serial_obj["switches"]
+        # construct self.registry
+        self.registry = {}
+        for nm in self.members:
+            self.add_mbr_to_regis(self.members[nm])
+        print(self.registry)
+        # construct self.groups
+        # for nm in self.registry:
+        #     if self.registry[nm].groups != {}:
+        #         for gnm in self.registry[nm].groups:
+        #             if gnm != "env":
+        #                 self.registry[nm].add_group(self.registry[gnm])
+        #                 self.registry[nm].groups[gnm] = self.registry[gnm]
 
     def to_json(self):
         rep = super().to_json()
-        rep["type"] = "env"
+        rep["type"] = self.type
         rep["plot_title"] = self.plot_title
         rep["props"] = self.props.to_json()
         rep["pop_hist"] = self.pop_hist.to_json()
@@ -130,6 +148,7 @@ class Env(Space):
         for mnm in rep["members"]:
             ret_mbrs[mnm] = rep["members"][mnm]
         rep["members"] = ret_mbrs
+        rep["registry"] = self.registry
         return rep
 
     def __repr__(self):
@@ -141,6 +160,14 @@ class Env(Space):
     def restore_env(self, serial_obj):
         self.from_json(serial_obj)
         self.__init_unrestorables()
+
+    def add_mbr_to_regis(self, member):
+        if member.type == "agent":
+            self.registry[member.name] = member
+        else:
+            self.registry[member.name] = member
+            for mbrnm in member.members:
+                self.add_mbr_to_regis(member.members[mbrnm])
 
     def get_periods(self):
         return self.pop_hist.periods
@@ -163,13 +190,7 @@ class Env(Space):
 
     def add_member(self, member):
         super().add_member(member)
-        self.add_to_registry(member)
-
-    def add_to_registry(self, member):
-        if str(type(member)) == "<class 'indra.composite.Composite'>":
-            for mbr in member.members:
-                self.add_to_registry(member.members[mbr])
-        self.registry[member.name] = member
+        # self.registry[member.name] = member
 
     def add_child(self, agent, group):
         """
@@ -305,7 +326,9 @@ class Env(Space):
                     self.plot_title, data,
                     int(self.width), int(self.height),
                     anim=True, data_func=self.plot_data,
-                    is_headless=self.headless())
+                    is_headless=self.headless(),
+                    change_grid_spacing=self.change_grid_spacing,
+                    hide_xy_labels=self.hide_xy_labels)
                 scatter_plot.show()
                 return scatter_plot
             except Exception as e:
