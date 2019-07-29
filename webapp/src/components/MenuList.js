@@ -120,13 +120,11 @@ class MenuList extends Component {
     }
     return (
       <div>
-
         <br />
         <h1 style={{textAlign: 'center', fontWeight: '200'}}>
           {this.state.name}
         </h1>
         <br /><br />
-
           <ul class="list-group">
             <div class="row">
               <div class="col">
