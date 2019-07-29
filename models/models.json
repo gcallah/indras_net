@@ -54,7 +54,7 @@
       "run": "gameoflife",
       "props": "models/props/gameoflife.props.json",
       "doc": "Simulate John Conway's Game of Life model.",
-      "source": "https://github.com/gcallah/indras_net/blob/master/models/wolfram.py"
+      "source": "https://github.com/gcallah/indras_net/blob/master/models/gameoflife.py"
     },
     {
       "model ID": 7,
@@ -63,6 +63,14 @@
       "props": "models/props/wolfram.props.json",
       "doc": "Test out Stephen Wolfram's automata.",
       "source": "https://github.com/gcallah/indras_net/blob/master/models/wolfram.py"
+    },
+    {
+      "model ID": 8,
+      "name": "Bigbox",
+      "run": "bigbox",
+      "props": "models/props/bigbox.props.json",
+      "doc": "Stimulate mom and pop and bigbox stores.",
+      "source": "https://github.com/gcallah/indras_net/blob/master/models/bigbox.py"
     }
   ]
 }
