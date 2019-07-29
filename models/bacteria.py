@@ -14,7 +14,7 @@ from random import randint
 import sys
 
 MODEL_NAME = "bacteria"
-DEBUG = True  # turns debugging code on or off
+DEBUG = False  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
 DEF_NUM_BACT = 1
@@ -65,7 +65,8 @@ def bacterium_action(agent, **kwargs):
             (agent["angle"] = new_angle)
         4) move (done automatically by returning False)
     """
-    print("I'm " + agent.name + " and I'm hungry.")
+    if DEBUG:
+        print("I'm " + agent.name + " and I'm hungry.")
 
     toxin_level = calc_toxin(toxins, agent)
     nutrient_level = calc_nutrient(nutrients, agent)
@@ -100,13 +101,15 @@ def bacterium_action(agent, **kwargs):
 
 
 def toxin_action(agent, **kwargs):
-    print("I'm " + agent.name + " and I'm poisonous.")
+    if DEBUG:
+        print("I'm " + agent.name + " and I'm poisonous.")
     # return False means to move
     return False
 
 
 def nutrient_action(agent, **kwargs):
-    print("I'm " + agent.name + " and I'm nutrious.")
+    if DEBUG:
+        print("I'm " + agent.name + " and I'm nutrious.")
     # return False means to move
     return False
 

@@ -21,11 +21,39 @@ env = None
 
 
 def agent_action(agent):
-    print("I'm " + agent.name + " and I'm acting.")
-    # return False means to move
+    # print("I'm " + agent.name + " and I'm acting.")
+    # # return False means to move
+    # return False
+    if agent.neighbors is None:
+        neighbors = agent.locator.get_moore_hood(agent, save_neighbors=False)
+
+    if neighbors is not None:
+        print("Creating Birds in a group")
     return False
-    # if agent.neighbors is None:
-    #     bird_group.get_moore_hood(agent, save_neighbors=False)
+
+    #  global on_fire
+
+    # old_state = agent["state"]
+    # if is_healthy(agent):
+    #     nearby_fires = Composite(agent.name + "'s nearby fires")
+    #     neighbors = agent.locator.get_moore_hood(agent,
+    #                                              save_neighbors=True)
+    #     if neighbors is not None:
+    #         nearby_fires = neighbors.subset(is_on_fire, agent)
+    #     if len(nearby_fires) > 0:
+    #         if DEBUG2:
+    #             print("Setting nearby tree on fire!")
+    #         agent["state"] = NF
+
+    # # if we didn't catch on fire above, do probabilistic transition:
+    # if old_state == agent["state"]:
+    #     agent["state"] = prob_state_trans(old_state, STATE_TRANS)
+
+    # if old_state != agent["state"]:
+    #     agent.has_acted = True
+    #     agent.locator.add_switch(agent, group_map[old_state],
+    #                              group_map[agent["state"]])
+    # return True
 
 
 def create_agent(color, i):
@@ -51,6 +79,9 @@ def set_up(props=None):
                            member_creator=create_agent,
                            num_members=pa.get('num_birds', DEF_NUM_BIRDS))
 
+# class Space(name, width=DEF_WIDTH, height=DEF_HEIGHT,
+# attrs=None, members=None, action=None, random_placing=True, serial_obj=None)
+
     env = Env("env",
               height=pa.get('grid_height', DEF_HEIGHT),
               width=pa.get('grid_width', DEF_WIDTH),
@@ -63,11 +94,7 @@ def main():
     global env
 
     (bird_group, env) = set_up()
-
-    if DEBUG2:
-        print(env.__repr__())
-
-    env()
+    bird_group()
     return 0
 
 
