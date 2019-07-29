@@ -336,7 +336,7 @@ class EnvTestCase(TestCase):
     def test_from_json(self):
         self.maxDiff = None
         self.env = Env(name='Test env', serial_obj=tests_env)
-        # print(self.env.registry["Reds0"].groups)
+        # print(str(type(self.env.registry["Reds0"].locator)))
         # print()
         # self.assertEqual(self.env, tests_env, msg=self.env.to_json())
         self.assertEqual(str(type(self.env)), "<class 'indra.env.Env'>")

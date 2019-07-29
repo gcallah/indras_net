@@ -118,7 +118,8 @@ class Env(Space):
         model_prop = json.loads(json.dumps(serial_obj["props"],
                                 indent=4))
         self.props = pa.create_props("basic",
-                                     prop_dict=model_prop)
+                                     prop_dict=model_prop,
+                                     skip_user_questions=True)
         self.pop_hist = PopHist(serial_pops=serial_obj["pop_hist"])
         self.plot_title = serial_obj["pop_hist"]
         # self.user = APIUser(serial_obj["user"])

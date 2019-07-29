@@ -201,7 +201,7 @@ class Agent(object):
             self.groups[gnm] = None
         self.prim_group = serial_agent["prim_group"]
         self.neighbors = serial_agent["neighbors"]
-        self.locator = self.prim_group
+        self.locator = None
         self.type = serial_agent["type"]
 
     def __repr__(self):
@@ -360,10 +360,12 @@ class Agent(object):
                 print("Join group being called on " + str(self.pos)
                       + " to join group: " + group.name)
             self.groups[group.name] = group
+
             if is_space(group):
                 self.locator = group
 
-            if self.prim_group is None:
+            pg = self.prim_group
+            if (not pg) or str(type(pg)) == "<class 'str'>":
                 self.prim_group = group
 
     def switch_groups(self, g1, g2):
