@@ -77,6 +77,7 @@ class Env(Space):
     def __init__(self, name, action=None, random_placing=True,
                  props=None, serial_obj=None, census=None,
                  change_grid_spacing=0, hide_xy_labels=False,
+                 line_data_func=None,
                  **kwargs):
         super().__init__(name, action=action,
                          random_placing=random_placing, serial_obj=serial_obj,
@@ -95,6 +96,7 @@ class Env(Space):
             self.plot_title = self.name
             self.user = None
             self.registry = {}
+            self.line_data_func = line_data_func
 
         self.type = "env"
         self.womb = []  # for agents waiting to be born
@@ -353,14 +355,18 @@ class Env(Space):
             return None
 
     def line_data(self):
-        data = {}
         period = None
-        for var in self.pop_hist.pops:
-            data[var] = {}
-            data[var]["data"] = self.pop_hist.pops[var]
-            data[var]["color"] = self.get_color(var)
-            if not period:
-                period = len(data[var]["data"])
+        data = None
+        if self.line_data_func is None:
+            data = {}
+            for var in self.pop_hist.pops:
+                data[var] = {}
+                data[var]["data"] = self.pop_hist.pops[var]
+                data[var]["color"] = self.get_color(var)
+                if not period:
+                    period = len(data[var]["data"])
+        else:
+            (period, data) = self.line_data_func(self)
         return (period, data)
 
     def plot_data(self):
