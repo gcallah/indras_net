@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 
-class ModelMenu extends Component {
+export default class ModelMenu extends Component {
     state = {  }
     render() { 
         return (  
-            <div>
-                console.log("Testing ModelMenu Component")
+        <ul class="list-group">
+          <div class="row">
+            <div class="col">
             </div>
+                </div>
+                    </ul>
         );
     }
 }
- 
-export default ModelMenu;

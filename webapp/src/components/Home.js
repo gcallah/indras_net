@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Loader, Dimmer, Menu } from "semantic-ui-react";
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import ModelMenu from "./ModelMenu"
 
 var model_image = require('./images/model_images.png')
 
@@ -66,6 +67,7 @@ class Home extends Component {
           </Link>
         </a>)}
         </div></div> </ul>
+
         <h1 style={{"fontSize": 16, "fontWeight": '400'}}>To see the
         <a href="#" class="text-primary m-2" onClick={this.showSource}>
         description </a> 
