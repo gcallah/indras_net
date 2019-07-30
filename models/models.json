@@ -2,16 +2,20 @@
   "models_database": [
     {
       "model ID": 0,
-      "name": "A Basic Model",
-      "run": "basic",
-      "props": "models/props/basic.props.json",
-      "doc": "A model just for testing and cloning.",
-      "source": "https://github.com/gcallah/indras_net/blob/master/models/basic.py"
+      "name": "Bacteria",
+      "run": "bacteria",
+      "props": "models/props/bacteria.props.json",
+      "scatter": "True",
+      "linear": "False",
+      "doc": "A model of bacteria with toxin and nutrient levels",
+      "source": "https://github.com/gcallah/indras_net/blob/master/models/bacteria.py"
     },
     {
       "model ID": 1,
       "name": "Adam Smith's Fashion Model",
       "run": "fashion",
+      "scatter": "True",
+      "linear": "False",
       "props": "models/props/fashion.props.json",
       "doc": "A model of trendsetters and followers in the world of fashion.",
       "source": "https://github.com/gcallah/indras_net/blob/master/models/fashion.py"
@@ -20,6 +24,8 @@
       "model ID": 2,
       "name": "Forest Fire",
       "run": "forestfire",
+      "scatter": "True",
+      "linear": "False",
       "props": "models/props/forestfire.props.json",
       "doc": "A model forest with trees that randomly catch fire.",
       "source": "https://github.com/gcallah/indras_net/blob/master/models/forestfire.py"
@@ -28,6 +34,8 @@
       "model ID": 3,
       "name": "Abelian Sandpile",
       "run": "sandpile",
+      "scatter": "True",
+      "linear": "False",
       "props": "models/props/sandpile.props.json",
       "doc": "A sandpile that makes colorful patterns as the sand tumbles down.",
       "source": "https://github.com/gcallah/indras_net/blob/master/models/sandpile.py"
@@ -36,6 +44,8 @@
       "model ID": 4,
       "name": "Schelling's Segregation Model",
       "run": "segregation",
+      "scatter": "True",
+      "linear": "False",
       "props": "models/props/segregation.props.json",
       "doc": "Thomas Schelling's famous model of segregated neighborhoods.",
       "source": "https://github.com/gcallah/indras_net/blob/master/models/segregation.py"
@@ -44,6 +54,8 @@
       "model ID": 5,
       "name": "Predator-Prey Model",
       "run": "wolfsheep",
+      "scatter": "True",
+      "linear": "False",
       "props": "models/props/wolfsheep.props.json",
       "doc": "Wolves eat sheep in a meadow and their populations' cycle.",
       "source": "https://github.com/gcallah/indras_net/blob/master/models/wolfsheep.py"
@@ -52,17 +64,31 @@
       "model ID": 6,
       "name": "Conway's Game of Life",
       "run": "gameoflife",
+      "scatter": "True",
+      "linear": "False",
       "props": "models/props/gameoflife.props.json",
       "doc": "Simulate John Conway's Game of Life model.",
-      "source": "https://github.com/gcallah/indras_net/blob/master/models/wolfram.py"
+      "source": "https://github.com/gcallah/indras_net/blob/master/models/gameoflife.py"
     },
     {
       "model ID": 7,
       "name": "Wolfram's Automata",
       "run": "wolfram",
+      "scatter": "True",
+      "linear": "False",
       "props": "models/props/wolfram.props.json",
       "doc": "Test out Stephen Wolfram's automata.",
       "source": "https://github.com/gcallah/indras_net/blob/master/models/wolfram.py"
+    },
+    {
+      "model ID": 8,
+      "name": "Bigbox",
+      "run": "bigbox",
+      "scatter": "True",
+      "linear": "False",
+      "props": "models/props/bigbox.props.json",
+      "doc": "Stimulate mom and pop and bigbox stores.",
+      "source": "https://github.com/gcallah/indras_net/blob/master/models/bigbox.py"
     }
   ]
 }

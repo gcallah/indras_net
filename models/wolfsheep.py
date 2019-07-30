@@ -10,7 +10,7 @@ from indra.env import Env
 from indra.display_methods import TAN, GRAY
 
 MODEL_NAME = "wolfsheep"
-DEBUG = True  # turns debugging code on or off
+DEBUG = False  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 NUM_WOLVES = 8
 NUM_SHEEP = 20

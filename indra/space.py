@@ -430,8 +430,27 @@ class Space(Composite):
             agent.neighbors = moore_hood
         return moore_hood
 
-    def point_from_vector(self, angle, max_move, xy):
+    def get_closest_agent(self, agent):
+        """
+        Get the agent' closest to agent on grid.
+        """
+        closest = None
+        min_distance_seen = MAX_WIDTH * MAX_HEIGHT
+        for key, other in self.locations:
+            if other is agent:
+                continue
+            d = distance(agent, other)
+            if d < min_distance_seen:
+                min_distance_seen = d
+                closest = other
+        return closest
 
+    def point_from_vector(self, angle, max_move, xy):
+        """
+        Given a vector with one end at the origin, find
+        the other end -- if off grid, pull it back onto the
+        grid.
+        """
         (prev_x, prev_y) = xy
         (cur_x, cur_y) = xy
         #  Calculate the coordinates

@@ -18,6 +18,8 @@ DEBUG2 = False
 DEF_USER = "User"
 DEF_TIME = 10
 
+UNLIMITED = 1000
+
 X = 0
 Y = 1
 
@@ -75,6 +77,7 @@ class Env(Space):
     def __init__(self, name, action=None, random_placing=True,
                  props=None, serial_obj=None, census=None,
                  change_grid_spacing=0, hide_xy_labels=False,
+                 line_data_func=None,
                  **kwargs):
         super().__init__(name, action=action,
                          random_placing=random_placing, serial_obj=serial_obj,
@@ -92,9 +95,10 @@ class Env(Space):
             # Attributes for plotting
             self.plot_title = self.name
             self.user = None
+            self.registry = {}
+            self.line_data_func = line_data_func
 
         self.type = "env"
-        self.registry = {}
         self.womb = []  # for agents waiting to be born
         self.switches = []  # for agents waiting to switch groups
         self.user_type = os.getenv("user_type", TERMINAL)
@@ -116,7 +120,8 @@ class Env(Space):
         model_prop = json.loads(json.dumps(serial_obj["props"],
                                 indent=4))
         self.props = pa.create_props("basic",
-                                     prop_dict=model_prop)
+                                     prop_dict=model_prop,
+                                     skip_user_questions=True)
         self.pop_hist = PopHist(serial_pops=serial_obj["pop_hist"])
         self.plot_title = serial_obj["pop_hist"]
         # self.user = APIUser(serial_obj["user"])
@@ -125,13 +130,20 @@ class Env(Space):
         self.switches = serial_obj["switches"]
         # construct self.registry
         self.registry = {}
-
         for nm in self.members:
             self.add_mbr_to_regis(self.members[nm])
+        # construct self.groups and self.prim_group and self.locator
+        for nm in self.registry:
+            if len(self.registry[nm].groups) != 0:
+                for gnm in self.registry[nm].groups:
+                    if gnm != "env":
+                        self.registry[nm].add_group(self.registry[gnm])
 
     def to_json(self):
         rep = super().to_json()
         rep["type"] = self.type
+        # rep["census_func"] = self.census_func
+        # rep["line_data_func"] = self.line_data_func
         rep["plot_title"] = self.plot_title
         rep["props"] = self.props.to_json()
         rep["pop_hist"] = self.pop_hist.to_json()
@@ -158,8 +170,15 @@ class Env(Space):
         if member.type == "agent":
             self.registry[member.name] = member
         else:
+            self.registry[member.name] = member
             for mbrnm in member.members:
                 self.add_mbr_to_regis(member.members[mbrnm])
+
+    def exclude_menu_item(self, to_exclude):
+        """
+        Just a pass-through call to our user object.
+        """
+        self.user.exclude_menu_item(to_exclude)
 
     def get_periods(self):
         return self.pop_hist.periods
@@ -343,14 +362,18 @@ class Env(Space):
             return None
 
     def line_data(self):
-        data = {}
         period = None
-        for var in self.pop_hist.pops:
-            data[var] = {}
-            data[var]["data"] = self.pop_hist.pops[var]
-            data[var]["color"] = self.get_color(var)
-            if not period:
-                period = len(data[var]["data"])
+        data = None
+        if self.line_data_func is None:
+            data = {}
+            for var in self.pop_hist.pops:
+                data[var] = {}
+                data[var]["data"] = self.pop_hist.pops[var]
+                data[var]["color"] = self.get_color(var)
+                if not period:
+                    period = len(data[var]["data"])
+        else:
+            (period, data) = self.line_data_func(self)
         return (period, data)
 
     def plot_data(self):

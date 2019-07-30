@@ -28,11 +28,11 @@ tests_env = {
     "duration": 9223372036854775805,
     "pos": None,
     "attrs": {},
-    "groups": "",
+    "groups": [],
     "active": True,
     "type_sig": 0,
     "prim_group": "None",
-    "locator": "None",
+    "locator": None,
     "neighbors": None,
     "action_key": None,
     "members": {
@@ -44,11 +44,13 @@ tests_env = {
             "attrs": {
                 "color": "blue"
             },
-            "groups": "env ",
+            "groups": [
+                "env"
+            ],
             "active": True,
             "type_sig": 0,
             "prim_group": "env",
-            "locator": "None",
+            "locator": None,
             "neighbors": None,
             "action_key": None,
             "members": {
@@ -57,11 +59,13 @@ tests_env = {
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        3,
-                        3
+                        6,
+                        16
                     ],
                     "attrs": {},
-                    "groups": "Blues ",
+                    "groups": [
+                        "Blues"
+                    ],
                     "active": True,
                     "type_sig": 0,
                     "prim_group": "Blues",
@@ -74,11 +78,13 @@ tests_env = {
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        20,
-                        14
+                        5,
+                        5
                     ],
                     "attrs": {},
-                    "groups": "Blues ",
+                    "groups": [
+                        "Blues"
+                    ],
                     "active": True,
                     "type_sig": 0,
                     "prim_group": "Blues",
@@ -96,11 +102,13 @@ tests_env = {
             "attrs": {
                 "color": "red"
             },
-            "groups": "env ",
+            "groups": [
+                "env"
+            ],
             "active": True,
             "type_sig": 0,
             "prim_group": "env",
-            "locator": "None",
+            "locator": None,
             "neighbors": None,
             "action_key": None,
             "members": {
@@ -109,11 +117,13 @@ tests_env = {
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        9,
-                        6
+                        1,
+                        0
                     ],
                     "attrs": {},
-                    "groups": "Reds ",
+                    "groups": [
+                        "Reds"
+                    ],
                     "active": True,
                     "type_sig": 0,
                     "prim_group": "Reds",
@@ -127,10 +137,12 @@ tests_env = {
                     "duration": 9223372036854775805,
                     "pos": [
                         17,
-                        14
+                        0
                     ],
                     "attrs": {},
-                    "groups": "Reds ",
+                    "groups": [
+                        "Reds"
+                    ],
                     "active": True,
                     "type_sig": 0,
                     "prim_group": "Reds",
@@ -204,7 +216,8 @@ tests_env = {
         }
     },
     "womb": [],
-    "switches": []
+    "switches": [],
+    "registry": {}
 }
 
 
@@ -323,9 +336,10 @@ class EnvTestCase(TestCase):
     def test_from_json(self):
         self.maxDiff = None
         self.env = Env(name='Test env', serial_obj=tests_env)
+        # print(str(type(self.env.registry["Reds0"].locator)))
+        # print()
         # self.assertEqual(self.env, tests_env, msg=self.env.to_json())
         self.assertEqual(str(type(self.env)), "<class 'indra.env.Env'>")
-        # managed to construct an env!!!
 
 
 if __name__ == '__main__':

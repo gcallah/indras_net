@@ -66,6 +66,7 @@ class ModelDetail extends Component {
     let model_detail = this.state.model_details;
     const {name,value} = e.target
     let valid = this.checkValidity(name,value)
+    model_detail[name]['disabledButton']=true
 
     if (valid === 1){
       model_detail[name]['val']= value
@@ -76,14 +77,12 @@ class ModelDetail extends Component {
     } else if(valid === -1){
       model_detail[name]['errorMessage']="**Wrong Input Type"
       model_detail[name]['val']= this.state[name]['val']
-      model_detail[name]['disabledButton']=true
       this.setState({model_details:model_detail})
       console.log(this.state.model_details[name])
 
     } else {
       model_detail[name]['errorMessage']=`**Please input a number between ${this.state[name]['lowval']} and ${this.state[name]['hival']}.`
       model_detail[name]['val']= this.state[name]['val']
-      model_detail[name]['disabledButton']=true
       this.setState({model_details:model_detail})
     }  
 
@@ -155,7 +154,6 @@ class ModelDetail extends Component {
                   key={i}>{this.state.model_details[item]['question']} {" "} </label>
                   <input type={this.state.model_details[item]['atype']} class="col-sm-2 col-form-label m-4 mb-3" placeholder={this.state.model_details[item]['val']} onChange={this.handleChange} style={{width: 60}} name={item}/>
                   <span style={{color:"red",fontSize: 12}}>{this.state.model_details[item]['errorMessage']}</span>
-
                 <br/>
                 </div>
               )}

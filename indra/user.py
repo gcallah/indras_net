@@ -31,15 +31,12 @@ def run(user, test_run=False):
     steps = 0
     acts = 0
     if not test_run:
-        if "run" not in user.to_exclude:
-            steps = user.ask("How many periods?")
-            if steps is None or steps == "" or steps.isspace():
-                steps = DEF_STEPS
-            else:
-                steps = int(steps)
-                user.tell("Steps = " + str(steps))
+        steps = user.ask("How many periods?")
+        if steps is None or steps == "" or steps.isspace():
+            steps = DEF_STEPS
         else:
-            user.tell_warn(user.error_message["run"])
+            steps = int(steps)
+            user.tell("Steps = " + str(steps))
     else:
         steps = DEF_STEPS
 
@@ -101,7 +98,6 @@ class User(Agent):
         super().__init__(name, **kwargs)
         self.env = env  # this class needs this all the time, we think
         self.menu = get_menu_json()
-        self.to_exclude = []
         self.user_msgs = ''
         self.error_message = {}
 
@@ -110,7 +106,15 @@ class User(Agent):
                 "name": self.name}
 
     def exclude_menu_item(self, to_exclude):
-        self.to_exclude = to_exclude
+        """
+        This will immediately remove an item from the menu.
+        """
+        to_del = -1  # just some invalid index!
+        for index, item in enumerate(self.menu):
+            if item["func"] == to_exclude:
+                to_del = index
+        if to_del >= 0:
+            del self.menu[to_del]
 
     def tell(self, msg, end='\n'):
         """
@@ -139,7 +143,7 @@ class TermUser(User):
         super().__init__(name, env, **kwargs)
         self.menu_title = "Menu of Actions"
         self.stars = "*" * len(self.menu_title)
-        self.not_to_exclude_id = []
+        self.exclude_menu_item("source")
 
     def tell(self, msg, end='\n'):
         """
@@ -173,9 +177,6 @@ class TermUser(User):
         except ValueError:
             return False
 
-    def exclude_choices(self, to_exclude):
-        self.to_exclude = to_exclude
-
     def to_json(self):
         return {"name": self.name}
 
@@ -183,9 +184,7 @@ class TermUser(User):
         self.tell('\n' + self.stars + '\n' + self.menu_title + '\n'
                   + self.stars)
         for item in self.menu:
-            if item["func"] not in self.to_exclude:
-                print(str(item["id"]) + ". ", item["question"])
-                self.not_to_exclude_id.append(item["id"])
+            print(str(item["id"]) + ". ", item["question"])
         self.tell("Please choose a number from the menu above:")
         c = input()
         if not c or c.isspace():
@@ -194,9 +193,8 @@ class TermUser(User):
             choice = int(c)
             if choice >= 0:
                 for item in self.menu:
-                    if choice in self.not_to_exclude_id:
-                        if item["id"] == choice:
-                            return menu_functions[item["func"]](self)
+                    if item["id"] == choice:
+                        return menu_functions[item["func"]](self)
             self.tell_err(str(c) + " is an invalid option. "
                           + "Please enter a valid option.")
         else:

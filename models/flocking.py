@@ -16,16 +16,20 @@ DEBUG2 = False  # turns deeper debugging code on or off
 
 DEF_NUM_BIRDS = 10
 
-bird_group = None
-env = None
+flock = None
+the_sky = None
 
 
 def agent_action(agent):
-    print("I'm " + agent.name + " and I'm acting.")
-    # return False means to move
+    # print("I'm " + agent.name + " and I'm acting.")
+    # # return False means to move
+    # return False
+    if agent.neighbors is None:
+        neighbors = agent.locator.get_moore_hood(agent, save_neighbors=False)
+
+    if neighbors is not None:
+        print("Creating Birds in a group")
     return False
-    # if agent.neighbors is None:
-    #     bird_group.get_moore_hood(agent, save_neighbors=False)
 
 
 def create_agent(color, i):
@@ -47,27 +51,23 @@ def set_up(props=None):
         pa = PropArgs.create_props(MODEL_NAME,
                                    prop_dict=props)
 
-    bird_group = Composite("Birds", {"color": BLUE, "marker": TREE},
-                           member_creator=create_agent,
-                           num_members=pa.get('num_birds', DEF_NUM_BIRDS))
+    flock = Composite("Birds", {"color": BLUE, "marker": TREE},
+                      member_creator=create_agent,
+                      num_members=pa.get('num_flock', DEF_NUM_BIRDS))
 
-    env = Env("env",
-              height=pa.get('grid_height', DEF_HEIGHT),
-              width=pa.get('grid_width', DEF_WIDTH),
-              members=[bird_group])
-    return (bird_group, env)
+    the_sky = Env("the_sky",
+                  height=pa.get('grid_height', DEF_HEIGHT),
+                  width=pa.get('grid_width', DEF_WIDTH),
+                  members=[flock])
+    return (the_sky, flock)
 
 
 def main():
-    global bird_group
-    global env
+    global flock
+    global the_sky
 
-    (bird_group, env) = set_up()
-
-    if DEBUG2:
-        print(env.__repr__())
-
-    env()
+    (the_sky, flock) = set_up()
+    the_sky()
     return 0
 
 

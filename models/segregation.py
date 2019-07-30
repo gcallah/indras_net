@@ -44,6 +44,8 @@ opp_group = None
 red_agents = None
 blue_agents = None
 
+fetched_moore_hood = 0
+
 
 def get_tolerance(default_tolerance, sigma):
     tol = random.gauss(default_tolerance, sigma)
@@ -75,22 +77,31 @@ def seg_agent_action(agent):
     global city
     global red_agents
     global blue_agents
+    global fetched_moore_hood
 
+    stay_put = True
     agent_group = agent.primary_group()
-    if agent is not None:
+    if agent["hood_changed"]:
         ratio_same = 0
         neighbors = city.get_moore_hood(agent)
+        fetched_moore_hood += 1
         num_same = 0
         for neighbor in neighbors:
             if neighbors[neighbor].primary_group() == agent_group:
                 num_same += 1
+            if agent["just_moved"] is True:
+                neighbors[neighbor]["hood_changed"] = True
+        agent["just_moved"] = False
         if len(neighbors) != 0:
             ratio_same = num_same / len(neighbors)
-        switch_location = env_favorable(ratio_same, agent[TOLERANCE])
-        if not switch_location:
-            agent.has_acted = True
-        return switch_location
-    return False
+        stay_put = env_favorable(ratio_same, agent[TOLERANCE])
+        if stay_put:
+            agent["hood_changed"] = False
+        else:
+            agent["just_moved"] = True
+            for neighbor in neighbors:
+                neighbors[neighbor]["hood_changed"] = True
+    return stay_put
 
 
 def create_agent(i, mean_tol, dev, color):
@@ -102,7 +113,8 @@ def create_agent(i, mean_tol, dev, color):
     return Agent(group_names[color] + str(i),
                  action=seg_agent_action,
                  attrs={TOLERANCE: this_tolerance,
-                        COLOR: color})
+                        COLOR: color, "hood_changed": True,
+                        "just_moved": False})
 
 
 def set_up(props=None):
@@ -112,6 +124,7 @@ def set_up(props=None):
     global blue_agents
     global red_agents
     global city
+    global fetched_moore_hood
 
     ds_file = get_prop_path(MODEL_NAME)
     if props is None:
@@ -124,7 +137,7 @@ def set_up(props=None):
     red_agents = Composite(group_names[RED_TEAM] + " group", {"color": RED})
     for i in range(pa.get('num_red', NUM_RED)):
         red_agents += create_agent(i,
-                                   pa.get('mean_tol', DEF_TOLERANCE),
+                                   -pa.get('mean_tol', DEF_TOLERANCE),
                                    pa.get('deviation', DEF_SIGMA),
                                    color=RED_TEAM)
     if DEBUG2:
@@ -140,7 +153,7 @@ def set_up(props=None):
                height=pa.get('grid_height', DEF_CITY_DIM),
                width=pa.get('grid_width', DEF_CITY_DIM),
                props=pa)
-    city.user.exclude_choices(["line_graph"])
+    city.exclude_menu_item("line_graph")
     return (city, blue_agents, red_agents)
 
 
@@ -148,12 +161,14 @@ def main():
     global blue_agents
     global red_agents
     global city
+    global fetched_moore_hood
     (city, blue_agents, red_agents) = set_up()
 
     if DEBUG2:
         print(city.__repr__())
 
     city()
+    print("We fetched moore hoods ", fetched_moore_hood, " times")
     return 0
 
 

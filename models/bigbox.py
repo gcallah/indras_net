@@ -12,7 +12,7 @@ from indra.env import Env
 from indra.display_methods import BLACK, BLUE, GRAY, GREEN, RED, TAN, YELLOW
 
 MODEL_NAME = "bigbox"
-DEBUG = True
+DEBUG = False
 
 NUM_OF_CONSUMERS = 150
 NUM_OF_BB = 3
@@ -60,16 +60,11 @@ def create_bb(name):
     Creates a big box store agent.
     Does not have to randomly determine the store type
         because big box stores will sell everything.
-
     Expense is a list of ints that contain the corresponding values.
-
     Fixed expense is things like rent, electricity bills, etc
         that will be taken out every period.
-
     Variable expense is the cost of buying new inventory of goods.
-
     Capital is the money that is in the bank.
-
     Inventory is the amount of consumer that the store can serve
         before it needs to restock and pay the variable expense.
     """
@@ -86,16 +81,11 @@ def create_mp(store_type, i):
     Creates a mom and pop store agent.
     Store type (what the store will sell) is determined randomly
     and assigned as a name.
-
     Expense is a list of ints that contain the corresponding values.
-
     Fixed expense is things like rent, electricity bills, etc
         that will be taken out every period.
-
     Variable expense is the cost of buying new inventory of goods.
-
     Capital is the money that is in the bank.
-
     Inventory is the amount of consumers that the store can serve
         before it needs to restock and pay the variable expense.
     """

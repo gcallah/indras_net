@@ -36,9 +36,9 @@ class Home extends Component {
     localStorage.setItem("menu_id", id)
     localStorage.setItem("name", name)
     localStorage.setItem("source", source)
-    console.log(localStorage.getItem("menu_id"))
   }
 
+  
   render() {
     if (this.state.loadingData) {
       return (
@@ -58,7 +58,7 @@ class Home extends Component {
           <div class="row">
             <div class="col">
         {Object.keys(this.state.allItems).map((item,i)=>
-        <a class=" w-50 p-3 list-group-item"  key={i}>
+        <a class=" w-50 p-3 list-group-item list-group-item-action"  key={i}>
           {console.log(this.state.allItems[item]['model ID'])}
           <Link to= {{pathname: `/models/props/${i}`}}
             class="text-primary" data-toggle="tooltip"  data-placement="top" title={this.state.allItems[item]['doc']}  onClick={() => this.handleClick(this.state.allItems[item]['model ID'], this.state.allItems[item]['name'], this.state.allItems[item]['source'])}>
