@@ -31,15 +31,12 @@ def run(user, test_run=False):
     steps = 0
     acts = 0
     if not test_run:
-        if "run" not in user.to_exclude:
-            steps = user.ask("How many periods?")
-            if steps is None or steps == "" or steps.isspace():
-                steps = DEF_STEPS
-            else:
-                steps = int(steps)
-                user.tell("Steps = " + str(steps))
+        steps = user.ask("How many periods?")
+        if steps is None or steps == "" or steps.isspace():
+            steps = DEF_STEPS
         else:
-            user.tell_warn(user.error_message["run"])
+            steps = int(steps)
+            user.tell("Steps = " + str(steps))
     else:
         steps = DEF_STEPS
 
