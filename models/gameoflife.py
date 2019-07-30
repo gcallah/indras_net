@@ -292,8 +292,8 @@ def set_up(props=None):
                          height=height,
                          width=width,
                          members=groups,
-                         change_grid_spacing=0.5,
-                         hide_xy_labels=True,
+                         attrs={"change_grid_spacing": 0.5,
+                                "hide_xy_labels": True},
                          random_placing=False,
                          props=pa)
     if simulation == 0:
