@@ -258,7 +258,7 @@ def set_up(props=None):
                  height=UNLIMITED,
                  census=market_report,
                  line_data_func=plot_asset_price)
-    market.user.exclude_choices(["scatter_plot"])
+    market.exclude_menu_item("scatter_plot")
     return (market, value_investors, trend_followers, market_maker)
 
 

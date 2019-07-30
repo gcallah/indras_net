@@ -102,7 +102,7 @@ def wolfram_action(wolfram_env):
                                                  + " for more periods.\n"
                                                  + "Please pick one of the"
                                                  + " other options.")
-        wolfram_env.user.exclude_choices(["run", "line_graph"])
+        wolfram_env.exclude_menu_item("run", "line_graph")
     else:
         next_row = wolfram_env.get_row_hood(active_row_y - 1)
         left_color = get_color(
@@ -160,7 +160,7 @@ def set_up(props=None):
                       members=groups,
                       random_placing=False,
                       props=pa)
-    wolfram_env.user.exclude_choices(["line_graph"])
+    wolfram_env.exclude_menu_item("line_graph")
     wolfram_env.now_switch(wolfram_env.get_agent_at(width // 2, height - 1),
                            groups[W], groups[B])
     curr_row = wolfram_env.get_row_hood(wolfram_env.height - 1)

@@ -174,6 +174,12 @@ class Env(Space):
             for mbrnm in member.members:
                 self.add_mbr_to_regis(member.members[mbrnm])
 
+    def exclude_menu_item(self, to_exclude):
+        """
+        Just a pass-through call to our user object.
+        """
+        self.user.exclude_menu_item(to_exclude)
+
     def get_periods(self):
         return self.pop_hist.periods
 

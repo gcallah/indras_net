@@ -153,7 +153,7 @@ def set_up(props=None):
                height=pa.get('grid_height', DEF_CITY_DIM),
                width=pa.get('grid_width', DEF_CITY_DIM),
                props=pa)
-    city.user.exclude_choices(["line_graph"])
+    city.exclude_menu_item("line_graph")
     return (city, blue_agents, red_agents)
 
 
