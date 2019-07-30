@@ -276,7 +276,8 @@ class ScatterPlot():
     @expects_plt
     def __init__(self, title, varieties, width, height,
                  anim=True, data_func=None, is_headless=False,
-                 legend_pos=4, change_grid_spacing=0, hide_xy_labels=False):
+                 legend_pos=4, change_grid_spacing=0, hide_xy_labels=False,
+                 show_legend=True):
         """
         Setup a scatter plot.
         varieties contains the different types of
@@ -305,7 +306,8 @@ class ScatterPlot():
             ax.tick_params(axis='both', bottom=False, left=False,
                            labelbottom=False)
         self.create_scats(varieties)
-        ax.legend(loc=legend_pos)
+        if show_legend:
+            ax.legend(loc=legend_pos)
         ax.set_title(title)
         plt.grid(True)
 
