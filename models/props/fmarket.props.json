@@ -40,5 +40,9 @@
     "atype": "DBL",
     "hival": 0.5,
     "lowval": 0.001
+  },
+  "use_scatter":{
+    "val": 0,
+    "atype": "BOOL"
   }
 }

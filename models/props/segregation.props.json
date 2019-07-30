@@ -40,5 +40,9 @@
       "atype": "DBL",
       "hival": 0.3,
       "lowval": 0.01
+  },
+  "use_line":{
+    "val": 0,
+    "atype": "BOOL"
   }
 }

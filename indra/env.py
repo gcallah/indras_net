@@ -114,6 +114,8 @@ class Env(Space):
         if self.props is not None:
             if not self.props.get('use_line', True):
                 self.exclude_menu_item("line_graph")
+            if not self.props.get('use_scatter', True):
+                self.exclude_menu_item("scatter_plot")
 
     def from_json(self, serial_obj):
         super().from_json(serial_obj)
