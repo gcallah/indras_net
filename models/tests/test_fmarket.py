@@ -8,10 +8,11 @@ from indra.env import Env
 from indra.composite import Composite
 from models.fmarket import set_up, create_market_maker, create_trend_follower
 from models.fmarket import create_value_investor, DEF_PRICE, trend_direction
-from models.fmarket import trend_follower_action, DEF_REAL_VALUE, value_investor_action, DEF_MIN_PRICE_MOVE, DEF_MAX_PRICE_MOVE
-from models.fmarket import market_maker_action, calc_price_change, num_increasing_period, buy, sell
-from models.fmarket import DEF_NUM_ASSET, market_report, DEF_DISCOUNT, DEF_SIGMA, get_price_target
+from models.fmarket import trend_follower_action, DEF_REAL_VALUE, DEF_PERIODS, value_investor_action, DEF_MIN_PRICE_MOVE, DEF_MAX_PRICE_MOVE
+from models.fmarket import market_maker_action, calc_price_change, buy, sell
+from models.fmarket import DEF_NUM_ASSET, market_report, DEF_DISCOUNT, DEF_SIGMA, Gaussian_distribution
 import models.fmarket as fm
+import random
 
 TEST_INVESTOR_NUM = 3
 TEST_FOLLOWER_NUM = 3
@@ -23,10 +24,16 @@ class FMarketTestCase(TestCase):
         (fm.market,fm.value_investors, fm.trend_followers, fm.market_maker) = set_up()
         self.value_investor = create_value_investor("value_investors",
                                                     TEST_INVESTOR_NUM,
-                                                    self.pa.get("mean_price",
+                                                    self.pa.get("discount",
                                                                 DEF_DISCOUNT),
-                                                    self.pa.get("deviation", DEF_SIGMA))
-        self.trend_follower = create_trend_follower("trend_followers", TEST_FOLLOWER_NUM)
+                                                    self.pa.get("deviation_investor",
+                                                                DEF_SIGMA))
+        self.trend_follower = create_trend_follower("trend_followers",
+                                                    TEST_FOLLOWER_NUM,
+                                                    self.pa.get("average_period",
+                                                                DEF_PERIODS),
+                                                    self.pa.get("deviation_follower",
+                                                                DEF_SIGMA))
         self.market_maker = create_market_maker("market_maker")
 
     def tearDown(self):
@@ -38,7 +45,8 @@ class FMarketTestCase(TestCase):
         """
          Test to see if trend_follower is created
         """
-        new_trend_follower = create_trend_follower("trend_followers", 0)
+        new_trend_follower = create_trend_follower("trend_followers", 0,
+                                                   DEF_PERIODS, DEF_SIGMA)
         self.assertTrue(new_trend_follower["capital"] >= 0)
         self.assertTrue(new_trend_follower["num_stock"] == 0)
 
@@ -58,7 +66,6 @@ class FMarketTestCase(TestCase):
         new_market_maker = create_market_maker("market_maker")
         self.assertTrue(new_market_maker["buy"] == 0)
         self.assertTrue(new_market_maker["sell"] == 0)
-        self.assertTrue(new_market_maker["num_period"] == 0)
         self.assertTrue(new_market_maker["asset_price"] == DEF_PRICE)
         self.assertTrue(new_market_maker["prev_asset_price"] == DEF_PRICE)
         self.assertTrue(new_market_maker["price_hist"] == [DEF_PRICE])
@@ -104,16 +111,19 @@ class FMarketTestCase(TestCase):
         self.assertEqual(market_report(market), "Asset price on the market: " \
         + str(DEF_PRICE) + "\n")
 
-    def test_get_price_target(self):
-        (low_price, high_price) = get_price_target(DEF_DISCOUNT, DEF_SIGMA)
-        self.assertTrue(low_price < DEF_REAL_VALUE)
-        self.assertTrue(high_price > DEF_REAL_VALUE)
+    def test_Gaussian_distribution(self):
+        new_target = Gaussian_distribution(DEF_PERIODS, DEF_SIGMA)
+        self.assertTrue(new_target >= 0)
 
     def test_trend_follower_action(self):
         new_market_maker = create_market_maker("market_maker")
-        new_trend_follower = create_trend_follower("trend_follower", 0)
+        new_market_maker["price_hist"] = [DEF_PRICE]
+        new_market_maker["asset_price"] = DEF_PRICE
+        new_trend_follower = create_trend_follower("trend_follower", 0,
+                                                   DEF_PERIODS, DEF_SIGMA)
         trend_follower_action(new_trend_follower)
-        trend = trend_direction(new_market_maker)
+        trend = trend_direction(new_trend_follower, new_market_maker["asset_price"],
+                                new_market_maker["price_hist"])
         self.assertEqual(trend, 0)
 
     def test_value_investor_action(self):
@@ -139,17 +149,13 @@ class FMarketTestCase(TestCase):
 
     def test_trend_direction(self):
         new_market_maker = create_market_maker("market_maker")
+        new_trend_follower = create_trend_follower("trend_follower", 0,
+                                                   DEF_PERIODS, DEF_SIGMA)
+        new_trend_follower["change_period"] = DEF_PERIODS
         new_market_maker["asset_price"] = DEF_REAL_VALUE
-        new_market_maker["prev_asset_price"] = DEF_REAL_VALUE * 1.1
-        self.assertEqual(trend_direction(new_market_maker), -1)
-
-    def test_num_increasing_period(self):
-        new_market_maker = create_market_maker("market_maker")
-        new_market_maker["asset_price"] = DEF_REAL_VALUE
-        new_market_maker["prev_asset_price"] = DEF_REAL_VALUE * 1.1
-        num_increasing_period(new_market_maker)
-        self.assertTrue(new_market_maker["num_period"] == 0)
-
+        new_market_maker["price_hist"] = [DEF_REAL_VALUE]
+        self.assertEqual(trend_direction(new_trend_follower, new_market_maker["asset_price"],
+                                         new_market_maker["price_hist"]), 0)
 
 
     if __name__ == '__main__':
