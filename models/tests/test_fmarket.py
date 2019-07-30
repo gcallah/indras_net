@@ -71,6 +71,9 @@ class FMarketTestCase(TestCase):
         self.assertTrue(new_market_maker["price_hist"] == [DEF_PRICE])
 
     def test_buy(self):
+        '''
+        Test the buy action of the investors
+        '''
         new_market_maker = create_market_maker("market_maker")
         new_value_investor = create_value_investor("value_investors", 0, DEF_DISCOUNT, DEF_SIGMA)
         new_market_maker["asset_price"] = DEF_PRICE
@@ -80,6 +83,9 @@ class FMarketTestCase(TestCase):
         self.assertTrue(new_value_investor["capital"] == 1)
 
     def test_sell(self):
+        '''
+        Test the sell action of the investors
+        '''
         new_market_maker = create_market_maker("market_maker")
         new_value_investor = create_value_investor("value_investors", 0,
                                                    DEF_DISCOUNT, DEF_SIGMA)
@@ -92,6 +98,9 @@ class FMarketTestCase(TestCase):
 
 
     def test_calc_price_change(self):
+        '''
+        Test if the function calculate the price change correctly.
+        '''
         new_market_maker = create_market_maker("market_maker")
         new_market_maker["sell"] = 2
         new_market_maker["buy"]  = 4
@@ -112,10 +121,16 @@ class FMarketTestCase(TestCase):
         + str(DEF_PRICE) + "\n")
 
     def test_Gaussian_distribution(self):
+        '''
+        Test the Gaussian distribution
+        '''
         new_target = Gaussian_distribution(DEF_PERIODS, DEF_SIGMA)
         self.assertTrue(new_target >= 0)
 
     def test_trend_follower_action(self):
+        '''
+        Test the trend follower action
+        '''
         new_market_maker = create_market_maker("market_maker")
         new_market_maker["price_hist"] = [DEF_PRICE]
         new_market_maker["asset_price"] = DEF_PRICE
@@ -127,6 +142,9 @@ class FMarketTestCase(TestCase):
         self.assertEqual(trend, 0)
 
     def test_value_investor_action(self):
+        '''
+        Test the value investor action
+        '''
         new_market_maker = create_market_maker("market_maker")
         new_market_maker["asset_price"] = DEF_REAL_VALUE * 0.8
         new_value_investor = create_value_investor("value_investors", 0,
@@ -138,6 +156,9 @@ class FMarketTestCase(TestCase):
         self.assertEqual(new_value_investor["sell"], False)
 
     def test_market_maker_action(self):
+        '''
+        Test the market maker action
+        '''
         new_market_maker = create_market_maker("market_maker")
         new_market_maker["sell"] = 2
         new_market_maker["buy"]  = 4
@@ -148,6 +169,9 @@ class FMarketTestCase(TestCase):
         self.assertTrue(new_market_maker["asset_price"] == DEF_REAL_VALUE + price_change)
 
     def test_trend_direction(self):
+        '''
+        Test the trend direction of the market
+        '''
         new_market_maker = create_market_maker("market_maker")
         new_trend_follower = create_trend_follower("trend_follower", 0,
                                                    DEF_PERIODS, DEF_SIGMA)

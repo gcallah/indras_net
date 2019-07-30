@@ -13,7 +13,6 @@ from indra.env import Env, UNLIMITED
 from indra.display_methods import BLUE, RED
 
 MODEL_NAME = "fmarket"
-DEBUG = False  # turns deeper debugging code on or off
 DEF_NUM_TREND_FOLLOWER = 10
 DEF_NUM_VALUE_INVESTOR = 10
 DEF_CAPITAL = 1000
@@ -52,8 +51,6 @@ def trend_direction(agent, cur_price, price_hist):
 
 def buy(agent):
     price = float(market_maker["asset_price"] * DEF_NUM_ASSET)
-    print("This is", agent.name, " buying with", agent["capital"],
-          "and the current asset price is", round(price, 4))
     if agent["capital"] >= price:
         agent["capital"] -= price
         agent["num_stock"] += DEF_NUM_ASSET
@@ -62,14 +59,10 @@ def buy(agent):
 
 def sell(agent):
     price = float(market_maker["asset_price"] * DEF_NUM_ASSET)
-    print("This is", agent.name, " selling with", agent["num_stock"],
-          " and having the amount of capital of ",
-          agent["capital"], "and the current asset price is", round(price, 4))
     if agent["num_stock"] >= DEF_NUM_ASSET:
         market_maker["sell"] += 1
         agent["capital"] += price
         agent["num_stock"] -= DEF_NUM_ASSET
-    print("This is", agent.name, " with ", agent["capital"], "after selling")
 
 
 def market_report(env):
@@ -134,7 +127,6 @@ def create_trend_follower(name, i, average_period, dev):
     """
 
     trend_follower = Agent(name + str(i), action=trend_follower_action)
-
     trend_follower["change_period"] = Gaussian_distribution(average_period,
                                                             dev)
     if trend_follower["change_period"] < 0:
@@ -177,9 +169,6 @@ def market_maker_action(agent):
     agent["asset_price"] += calc_price_change(ratio)
 
     agent["price_hist"].append(round(agent["asset_price"], 4))
-    print("This is price hist:", agent["price_hist"])
-    print("buy", agent["buy"])
-    print("sell", agent["sell"])
     agent["buy"] = 0
     agent["sell"] = 0
 
@@ -189,8 +178,6 @@ def market_maker_action(agent):
 def trend_follower_action(agent):
     # Determine if trend followers should buy
     # or sell the stock
-    print("I am a trend follower with change period ",
-          round(agent["change_period"], 4))
     if trend_direction(agent, market_maker["asset_price"],
                        market_maker["price_hist"]) == 1:
         agent["buy"] = True
@@ -206,17 +193,11 @@ def trend_follower_action(agent):
 
 def value_investor_action(agent):
     # Determine if value investors should buy or sell the stock
-    print("This is the high_price of value_investor",
-          round(agent["high_price"], 4))
-    print("This is the low_price of value_investor",
-          round(agent["low_price"], 4))
     if market_maker["asset_price"] >= agent["high_price"]:
-        print("value investor starts selling")
         agent["sell"] = True
         agent["buy"] = False
         sell(agent)
     elif market_maker["asset_price"] <= agent["low_price"]:
-        print("value investor starts buying")
         agent["sell"] = False
         agent["buy"] = True
         buy(agent)
@@ -269,9 +250,6 @@ def main():
     global market
 
     (market, trend_followers, value_investors, market_maker) = set_up()
-
-    if DEBUG:
-        print(market.__repr__())
 
     market()
     return 0
