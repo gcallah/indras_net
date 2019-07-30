@@ -76,7 +76,6 @@ class Env(Space):
     """
     def __init__(self, name, action=None, random_placing=True,
                  props=None, serial_obj=None, census=None,
-                 change_grid_spacing=0, hide_xy_labels=False,
                  line_data_func=None,
                  **kwargs):
         super().__init__(name, action=action,
@@ -102,8 +101,6 @@ class Env(Space):
         self.womb = []  # for agents waiting to be born
         self.switches = []  # for agents waiting to switch groups
         self.user_type = os.getenv("user_type", TERMINAL)
-        self.change_grid_spacing = change_grid_spacing
-        self.hide_xy_labels = hide_xy_labels
         self.num_acts = 0
         self.num_moves = 0
         self.num_switches = 0
@@ -333,13 +330,19 @@ class Env(Space):
         if self.has_disp():
             try:
                 data = self.plot_data()
+                change_grid_spacing = 0
+                hide_xy_labels = False
+                if "change_grid_spacing" in self.attrs:
+                    change_grid_spacing = self.attrs["change_grid_spacing"]
+                if "hide_xy_labels" in self.attrs:
+                    hide_xy_labels = True
                 scatter_plot = disp.ScatterPlot(
                     self.plot_title, data,
                     int(self.width), int(self.height),
                     anim=True, data_func=self.plot_data,
                     is_headless=self.headless(),
-                    change_grid_spacing=self.change_grid_spacing,
-                    hide_xy_labels=self.hide_xy_labels)
+                    change_grid_spacing=change_grid_spacing,
+                    hide_xy_labels=hide_xy_labels)
                 scatter_plot.show()
                 return scatter_plot
             except Exception as e:
