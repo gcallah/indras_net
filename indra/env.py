@@ -120,7 +120,8 @@ class Env(Space):
         model_prop = json.loads(json.dumps(serial_obj["props"],
                                 indent=4))
         self.props = pa.create_props("basic",
-                                     prop_dict=model_prop)
+                                     prop_dict=model_prop,
+                                     skip_user_questions=True)
         self.pop_hist = PopHist(serial_pops=serial_obj["pop_hist"])
         self.plot_title = serial_obj["pop_hist"]
         # self.user = APIUser(serial_obj["user"])
@@ -141,6 +142,8 @@ class Env(Space):
     def to_json(self):
         rep = super().to_json()
         rep["type"] = self.type
+        # rep["census_func"] = self.census_func
+        # rep["line_data_func"] = self.line_data_func
         rep["plot_title"] = self.plot_title
         rep["props"] = self.props.to_json()
         rep["pop_hist"] = self.pop_hist.to_json()

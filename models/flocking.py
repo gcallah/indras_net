@@ -16,8 +16,8 @@ DEBUG2 = False  # turns deeper debugging code on or off
 
 DEF_NUM_BIRDS = 10
 
-bird_group = None
-env = None
+flock = None
+the_sky = None
 
 
 def agent_action(agent):
@@ -30,30 +30,6 @@ def agent_action(agent):
     if neighbors is not None:
         print("Creating Birds in a group")
     return False
-
-    #  global on_fire
-
-    # old_state = agent["state"]
-    # if is_healthy(agent):
-    #     nearby_fires = Composite(agent.name + "'s nearby fires")
-    #     neighbors = agent.locator.get_moore_hood(agent,
-    #                                              save_neighbors=True)
-    #     if neighbors is not None:
-    #         nearby_fires = neighbors.subset(is_on_fire, agent)
-    #     if len(nearby_fires) > 0:
-    #         if DEBUG2:
-    #             print("Setting nearby tree on fire!")
-    #         agent["state"] = NF
-
-    # # if we didn't catch on fire above, do probabilistic transition:
-    # if old_state == agent["state"]:
-    #     agent["state"] = prob_state_trans(old_state, STATE_TRANS)
-
-    # if old_state != agent["state"]:
-    #     agent.has_acted = True
-    #     agent.locator.add_switch(agent, group_map[old_state],
-    #                              group_map[agent["state"]])
-    # return True
 
 
 def create_agent(color, i):
@@ -75,26 +51,23 @@ def set_up(props=None):
         pa = PropArgs.create_props(MODEL_NAME,
                                    prop_dict=props)
 
-    bird_group = Composite("Birds", {"color": BLUE, "marker": TREE},
-                           member_creator=create_agent,
-                           num_members=pa.get('num_birds', DEF_NUM_BIRDS))
+    flock = Composite("Birds", {"color": BLUE, "marker": TREE},
+                      member_creator=create_agent,
+                      num_members=pa.get('num_flock', DEF_NUM_BIRDS))
 
-# class Space(name, width=DEF_WIDTH, height=DEF_HEIGHT,
-# attrs=None, members=None, action=None, random_placing=True, serial_obj=None)
-
-    env = Env("env",
-              height=pa.get('grid_height', DEF_HEIGHT),
-              width=pa.get('grid_width', DEF_WIDTH),
-              members=[bird_group])
-    return (bird_group, env)
+    the_sky = Env("the_sky",
+                  height=pa.get('grid_height', DEF_HEIGHT),
+                  width=pa.get('grid_width', DEF_WIDTH),
+                  members=[flock])
+    return (the_sky, flock)
 
 
 def main():
-    global bird_group
-    global env
+    global flock
+    global the_sky
 
-    (bird_group, env) = set_up()
-    bird_group()
+    (the_sky, flock) = set_up()
+    the_sky()
     return 0
 
 
