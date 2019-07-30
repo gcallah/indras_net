@@ -61,6 +61,7 @@ def set_up(props=None):
               width=pa.get('grid_width', DEF_WIDTH),
               members=[blue_group, red_group],
               props=pa)
+
     return (env, blue_group, red_group)
 
 

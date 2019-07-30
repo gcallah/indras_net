@@ -26,5 +26,9 @@
     "atype": "INT",
     "hival": 100,
     "lowval": 1
+  },
+  "use_line": {
+    "val": 0,
+    "atype": "BOOL"
   }
 }

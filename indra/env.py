@@ -114,6 +114,9 @@ class Env(Space):
             self.user = TestUser(getpass.getuser(), self)
         elif (self.user_type == API):
             self.user = APIUser(getpass.getuser(), self)
+        if self.props is not None:
+            if not self.props.get('use_line', True):
+                self.exclude_menu_item("line_graph")
 
     def from_json(self, serial_obj):
         super().from_json(serial_obj)
