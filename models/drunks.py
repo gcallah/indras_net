@@ -6,9 +6,24 @@ occupied by 60% of the population every time
 
 import random
 
+from propargs.propargs import PropArgs
+from indra.utils import get_prop_path
+from indra.agent import Agent
+from indra.composite import Composite
+from indra.space import DEF_HEIGHT, DEF_WIDTH
+from indra.env import Env
+from indra.display_methods import BLUE
+
+MODEL_NAME = "drunks"
+
+DEF_NUM_DRINKERS = 10
+
 POPULATION = 10
 OPTIMAL_OCCUPANCY = 0.6 * POPULATION
 MOTIVATION = [0.6] * POPULATION
+
+drinkers = None
+bar = None
 
 
 def get_decision(actor):
@@ -64,22 +79,54 @@ def get_average_attendance(record):
     return sum_attendance / len(record)
 
 
-def main():
-    # global red_group
-    # global blue_group
-    # global env
-    #
-    # (env, blue_group, red_group) = set_up()
-    #
-    # if DEBUG2:
-    #     print(env.__repr__())
-    #
-    # env()
+def drinker_action(agent):
+    print("I'm " + agent.name + " and I need a drink.")
+    # return False means to move
+    return False
 
-    x = 45
-    record = random_drunks(x)
-    print(record)
-    print(get_average_attendance(record))
+
+def create_drinker(color, i):
+    """
+    Create an agent.
+    """
+    return Agent("drunk" + str(i), action=drinker_action,
+                 attrs={"going_to_bar": False})
+
+
+def set_up(props=None):
+    """
+    A func to set up run that can also be used by test code.
+    """
+    ds_file = get_prop_path(MODEL_NAME)
+    if props is None:
+        pa = PropArgs.create_props(MODEL_NAME,
+                                   ds_file=ds_file)
+    else:
+        pa = PropArgs.create_props(MODEL_NAME,
+                                   prop_dict=props)
+
+    drinkers = Composite("Drinkers", {"color": BLUE},
+                         member_creator=create_drinker,
+                         num_members=pa.get('num_drinkers',
+                                            DEF_NUM_DRINKERS))
+
+    bar = Env("env",
+              height=pa.get('grid_height', DEF_HEIGHT),
+              width=pa.get('grid_width', DEF_WIDTH),
+              members=[drinkers],
+              props=pa)
+
+    return (bar, drinkers)
+
+
+def main():
+    global drinkers
+    global bar
+
+    (bar, drinkers) = set_up()
+
+    bar()
+
     return 0
 
 
