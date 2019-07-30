@@ -27,7 +27,7 @@ def create_agent(x, y):
     Create an agent with the passed x, y value as its name.
     """
     name = "(" + str(x) + "," + str(y) + ")"
-    return Agent(name=name, action=agent_action)
+    return Agent(name=name, action=game_agent_action)
 
 
 def apply_live_rules(agent):
@@ -104,7 +104,7 @@ def gameoflife_action(gameoflife_env):
     return True
 
 
-def agent_action(agent):
+def game_agent_action(agent):
     """
     The action that will be taken every period for the agents.
     Checks its Moore neighborhood and checks the number of neighbors to
@@ -283,7 +283,7 @@ def set_up(props=None):
                                    prop_dict=props)
     height = pa.get("grid_height", DEF_HEIGHT)
     width = pa.get("grid_width", DEF_WIDTH)
-    simulation = pa.get("simulation", 1)
+    simulation = pa.get("simulation", 0)
     black = Composite("black", {"color": BLACK, "marker": SQUARE})
     groups = []
     groups.append(black)

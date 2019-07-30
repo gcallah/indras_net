@@ -5,7 +5,7 @@ from indra.composite import Composite
 from indra.space import Space
 from indra.env import Env
 from models.gameoflife import set_up, create_agent, apply_live_rules, apply_dead_rules_composite
-from models.gameoflife import check_for_new_agents, gameoflife_action, agent_action
+from models.gameoflife import check_for_new_agents, gameoflife_action, game_agent_action
 from models.gameoflife import populate_board_glider, populate_board_exploder, populate_board_small_exploder
 from models.gameoflife import populate_board_n_horizontal_row, populate_board_n_vertical_row
 from models.gameoflife import populate_board_lightweight_spaceship, populate_board_tumbler
