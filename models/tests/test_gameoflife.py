@@ -1,3 +1,4 @@
+import sys
 from unittest import TestCase, main
 from propargs.propargs import PropArgs
 from indra.agent import Agent
@@ -72,20 +73,13 @@ class GameOfLifeTestCase(TestCase):
         g.groups[0] += create_agent(TEST_X + 2, TEST_Y)
         self.assertEqual(apply_dead_rules_composite(g.groups[0]), False)
 
-    # def test_check_for_new_agents(self):
-    #     a = create_agent(TEST_X, TEST_Y)
-    #     b = create_agent(TEST_X - 1, TEST_Y)
-    #     c = create_agent(TEST_X + 1, TEST_Y)
-    #     g.gameoflife_env.place_member(a, xy=(TEST_X, TEST_Y))
-    #     g.gameoflife_env.place_member(b, xy=(TEST_X + 1, TEST_Y))
-    #     g.gameoflife_env.place_member(c, xy=(TEST_X , TEST_Y + 1))
-    #     g.groups = []
-    #     g.groups.append(Composite("black"))
-    #     g.groups[0] += a
-    #     self.assertEqual(check_for_new_agents(a), [])
-    #     g.groups[0] += b
-    #     g.groups[0] += c
-    #     self.assertEqual((TEST_X + 1, TEST_Y + 1) in check_for_new_agents(a), True)
+    def test_check_for_new_agents(self):
+        a = create_agent(TEST_X, TEST_Y)
+        g.gameoflife_env.place_member(a, xy=(TEST_X, TEST_Y))
+        g.groups = []
+        g.groups.append(Composite("black"))
+        g.groups[0] += a
+        self.assertEqual(check_for_new_agents(a), [])
 
     def test_populate_board_glider(self):
         black = Composite("black")
