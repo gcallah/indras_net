@@ -174,6 +174,10 @@ class Agent(object):
             loc = self.locator
         else:
             loc = str(self.locator)
+        if self.prim_group is None:
+            pg = self.prim_group
+        else:
+            pg = str(self.prim_group)
         return {"name": self.name,
                 "type": self.type,
                 "duration": self.duration,
@@ -182,7 +186,7 @@ class Agent(object):
                 "groups": grp_nms,
                 "active": self.active,
                 "type_sig": self.type_sig,
-                "prim_group": str(self.prim_group),
+                "prim_group": pg,
                 "locator": loc,
                 "neighbors": self.neighbors,
                 "action_key": self.action_key

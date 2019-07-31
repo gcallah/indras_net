@@ -10,7 +10,7 @@ from models.fmarket import set_up, create_market_maker, create_trend_follower
 from models.fmarket import create_value_investor, DEF_PRICE, trend_direction
 from models.fmarket import trend_follower_action, DEF_REAL_VALUE, DEF_PERIODS, value_investor_action, DEF_MIN_PRICE_MOVE, DEF_MAX_PRICE_MOVE
 from models.fmarket import market_maker_action, calc_price_change, buy, sell
-from models.fmarket import DEF_NUM_ASSET, market_report, DEF_DISCOUNT, DEF_SIGMA, Gaussian_distribution
+from models.fmarket import DEF_NUM_ASSET, market_report, DEF_DISCOUNT, DEF_SIGMA, gaussian_distribution
 import models.fmarket as fm
 import random
 
@@ -120,11 +120,11 @@ class FMarketTestCase(TestCase):
         self.assertEqual(market_report(market), "Asset price on the market: " \
         + str(DEF_PRICE) + "\n")
 
-    def test_Gaussian_distribution(self):
+    def test_gaussian_distribution(self):
         '''
         Test the Gaussian distribution
         '''
-        new_target = Gaussian_distribution(DEF_PERIODS, DEF_SIGMA)
+        new_target = gaussian_distribution(DEF_PERIODS, DEF_SIGMA)
         self.assertTrue(new_target >= 0)
 
     def test_trend_follower_action(self):
@@ -140,20 +140,6 @@ class FMarketTestCase(TestCase):
         trend = trend_direction(new_trend_follower, new_market_maker["asset_price"],
                                 new_market_maker["price_hist"])
         self.assertEqual(trend, 0)
-
-    def test_value_investor_action(self):
-        '''
-        Test the value investor action
-        '''
-        new_market_maker = create_market_maker("market_maker")
-        new_market_maker["asset_price"] = DEF_REAL_VALUE * 0.8
-        new_value_investor = create_value_investor("value_investors", 0,
-                                                   DEF_DISCOUNT, DEF_SIGMA)
-        new_value_investor["low_price"] = DEF_REAL_VALUE * 0.9
-        new_value_investor["high_price"] = DEF_REAL_VALUE * 1.1
-        value_investor_action(new_value_investor)
-        self.assertEqual(new_value_investor["buy"], True)
-        self.assertEqual(new_value_investor["sell"], False)
 
     def test_market_maker_action(self):
         '''

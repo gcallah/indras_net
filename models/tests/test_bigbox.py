@@ -112,7 +112,7 @@ class BigBoxTestCase(TestCase):
 		Create a mom and pop agent
 		"""
 		mp = bb.create_mp("Mom and pop: Books", 0)
-		self.assertEqual(len(mp.attrs), 4)
+		self.assertEqual(len(mp.attrs), 5)
 
 
 	def test_create_bb(self):
@@ -120,7 +120,7 @@ class BigBoxTestCase(TestCase):
 		Create a big box agent
 		"""
 		bigBox = bb.create_bb("Big Box"+str(0))
-		self.assertEqual(len(bigBox.attrs), 4)
+		self.assertEqual(len(bigBox.attrs), 5)
 
 	
 	def test_mp_action(self):

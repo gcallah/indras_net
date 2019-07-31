@@ -126,10 +126,12 @@ class Env(Space):
                                      skip_user_questions=True)
         self.pop_hist = PopHist(serial_pops=serial_obj["pop_hist"])
         self.plot_title = serial_obj["pop_hist"]
-        # self.user = APIUser(serial_obj["user"])
+        self.user = APIUser(serial_obj["user"], self)
         self.name = serial_obj["name"]
         self.womb = serial_obj["womb"]
         self.switches = serial_obj["switches"]
+        self.census_func = serial_obj["census_func"]
+        self.line_data_func = serial_obj["data_func"]
         # construct self.registry
         self.registry = {}
         for nm in self.members:
@@ -138,19 +140,24 @@ class Env(Space):
         for nm in self.registry:
             if len(self.registry[nm].groups) != 0:
                 for gnm in self.registry[nm].groups:
-                    if gnm != "env":
+                    if gnm != "env" and gnm != "Society":
                         self.registry[nm].add_group(self.registry[gnm])
 
     def to_json(self):
         rep = super().to_json()
         rep["type"] = self.type
-        # rep["census_func"] = self.census_func
-        # rep["line_data_func"] = self.line_data_func
+        rep["user"] = self.user.name
+        rep["census_func"] = self.census_func
         rep["plot_title"] = self.plot_title
-        rep["props"] = self.props.to_json()
+        if self.props is None:
+            rep["props"] = self.props
+        else:
+            rep["props"] = self.props.to_json()
         rep["pop_hist"] = self.pop_hist.to_json()
         rep["womb"] = self.womb
         rep["switches"] = self.switches
+        rep["census_func"] = None
+        rep["data_func"] = None
         ret_mbrs = {}
         for mnm in rep["members"]:
             ret_mbrs[mnm] = rep["members"][mnm]
@@ -269,6 +276,9 @@ class Env(Space):
             self.num_moves += m
             census_rpt = self.get_census()
             self.user.tell(census_rpt)
+            self.num_acts = 0
+            self.num_moves = 0
+            self.num_switches = 0
         return num_acts
 
     def get_census(self):
@@ -285,17 +295,22 @@ class Env(Space):
         if self.census_func:
             return self.census_func(self)
         else:
-            census_str = ("\nCensus for period " + str(self.get_periods())
-                          + ":\n")
+            census_str = ("\nTotal census for period "
+                          + str(self.get_periods()) + ":\n"
+                          + "==================\n"
+                          + "Composite census:\n"
+                          + "==================\n")
             for composite_str in self.members:
                 population = len(self.members[composite_str])
-                census_str += (composite_str + ": " + str(population) + "\n")
-            census_str += ("\tTotal agents moved: " + str(self.num_moves)
-                           + "\n" + "\tTotal agents who switched groups: "
+                census_str += ("  " + composite_str + ": "
+                               + str(population) + "\n")
+            census_str += ("==================\n"
+                           + "Agent census:\n"
+                           + "==================\n"
+                           + "  Total agents moved: "
+                           + str(self.num_moves) + "\n"
+                           + "  Total agents who switched groups: "
                            + str(self.num_switches))
-        self.num_acts = 0
-        self.num_moves = 0
-        self.num_switches = 0
         return census_str
 
     def has_disp(self):

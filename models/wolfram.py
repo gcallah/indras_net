@@ -91,10 +91,6 @@ def wolfram_action(wolfram_env):
         curr_row = wolfram_env.get_row_hood(active_row_y)
     wolfram_env.user.tell("\nChecking agents in row " + str(active_row_y)
                           + " against the rule...")
-    if DEBUG:
-        print("Current row")
-        for agent in curr_row:
-            print("   ", curr_row[agent])
     if active_row_y < 1:
         wolfram_env.user.error_message["run"] = ("You have exceeded the"
                                                  + " maximum height"
@@ -109,10 +105,16 @@ def wolfram_action(wolfram_env):
             curr_row[get_str_key(0, active_row_y)].primary_group())
         x = 0
         for agent in curr_row:
+            if DEBUG:
+                print("Checking agent at", curr_row[agent])
             if (x > 0) and (x < wolfram_env.width - 1):
                 middle_color = get_color(curr_row[agent].primary_group())
                 right_color = get_color(curr_row[get_str_key(x + 1,
                                         active_row_y)].primary_group())
+                if DEBUG:
+                    print("  Left color: " + str(left_color)
+                          + ", middle color: " + str(middle_color)
+                          + ", right color " + str(right_color))
                 if next_color(rule_dict, left_color, middle_color,
                               right_color):
                     wolfram_env.add_switch(next_row[
@@ -145,8 +147,8 @@ def set_up(props=None):
     rule_dict = get_rule(rule_num)
     height = 0
     height = (width // 2) + (width % 2)
-    white = Composite("white", {"color": WHITE})
-    black = Composite("black", {"color": BLACK, "marker": SQUARE})
+    white = Composite("White", {"color": WHITE})
+    black = Composite("Black", {"color": BLACK, "marker": SQUARE})
     groups = []
     groups.append(white)
     groups.append(black)

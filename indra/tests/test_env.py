@@ -14,6 +14,8 @@ from indra.composite import Composite
 from indra.tests.test_agent import create_newton
 from indra.tests.test_composite import create_calcguys, create_cambguys
 
+from APIServer.test.test_env_json import env_json_basic, env_json_fashion
+
 travis = False
 
 GRP1 = "Group1"
@@ -21,205 +23,6 @@ GRP2 = "Group2"
 
 X = 0
 Y = 1
-
-tests_env = {
-    "name": "env",
-    "type": "env",
-    "duration": 9223372036854775805,
-    "pos": None,
-    "attrs": {},
-    "groups": [],
-    "active": True,
-    "type_sig": 0,
-    "prim_group": "None",
-    "locator": None,
-    "neighbors": None,
-    "action_key": None,
-    "members": {
-        "Blues": {
-            "name": "Blues",
-            "type": "composite",
-            "duration": 9223372036854775805,
-            "pos": None,
-            "attrs": {
-                "color": "blue"
-            },
-            "groups": [
-                "env"
-            ],
-            "active": True,
-            "type_sig": 0,
-            "prim_group": "env",
-            "locator": None,
-            "neighbors": None,
-            "action_key": None,
-            "members": {
-                "Blues0": {
-                    "name": "Blues0",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        6,
-                        16
-                    ],
-                    "attrs": {},
-                    "groups": [
-                        "Blues"
-                    ],
-                    "active": True,
-                    "type_sig": 0,
-                    "prim_group": "Blues",
-                    "locator": "env",
-                    "neighbors": None,
-                    "action_key": "agent_action"
-                },
-                "Blues1": {
-                    "name": "Blues1",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        5,
-                        5
-                    ],
-                    "attrs": {},
-                    "groups": [
-                        "Blues"
-                    ],
-                    "active": True,
-                    "type_sig": 0,
-                    "prim_group": "Blues",
-                    "locator": "env",
-                    "neighbors": None,
-                    "action_key": "agent_action"
-                }
-            }
-        },
-        "Reds": {
-            "name": "Reds",
-            "type": "composite",
-            "duration": 9223372036854775805,
-            "pos": None,
-            "attrs": {
-                "color": "red"
-            },
-            "groups": [
-                "env"
-            ],
-            "active": True,
-            "type_sig": 0,
-            "prim_group": "env",
-            "locator": None,
-            "neighbors": None,
-            "action_key": None,
-            "members": {
-                "Reds0": {
-                    "name": "Reds0",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        1,
-                        0
-                    ],
-                    "attrs": {},
-                    "groups": [
-                        "Reds"
-                    ],
-                    "active": True,
-                    "type_sig": 0,
-                    "prim_group": "Reds",
-                    "locator": "env",
-                    "neighbors": None,
-                    "action_key": "agent_action"
-                },
-                "Reds1": {
-                    "name": "Reds1",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        17,
-                        0
-                    ],
-                    "attrs": {},
-                    "groups": [
-                        "Reds"
-                    ],
-                    "active": True,
-                    "type_sig": 0,
-                    "prim_group": "Reds",
-                    "locator": "env",
-                    "neighbors": None,
-                    "action_key": "agent_action"
-                }
-            }
-        }
-    },
-    "width": 20,
-    "height": 20,
-    "plot_title": "env",
-    "props": {
-        "grid_height": {
-            "val": 20,
-            "question": "What is the grid height?",
-            "atype": "INT",
-            "lowval": 2,
-            "hival": 100
-        },
-        "grid_width": {
-            "val": 20,
-            "question": "What is the grid width?",
-            "atype": "INT",
-            "lowval": 2,
-            "hival": 100
-        },
-        "num_blue": {
-            "val": 2,
-            "question": "How many blue agents do you want?",
-            "atype": "INT",
-            "lowval": 1,
-            "hival": 100
-        },
-        "num_red": {
-            "val": 2,
-            "question": "How many red agents do you want?",
-            "atype": "INT",
-            "lowval": 1,
-            "hival": 100
-        },
-        "user_type": {
-            "val": "terminal",
-            "question": None,
-            "atype": None,
-            "lowval": None,
-            "hival": None
-        },
-        "OS": {
-            "val": "Darwin",
-            "question": None,
-            "atype": None,
-            "lowval": None,
-            "hival": None
-        }
-    },
-    "pop_hist": {
-        "periods": 2,
-        "pops": {
-            "Blues": [
-                2,
-                2,
-                2
-            ],
-            "Reds": [
-                2,
-                2,
-                2
-            ]
-        }
-    },
-    "womb": [],
-    "switches": [],
-    "registry": {}
-}
-
 
 def env_action(env):
     print("Calling action for env")
@@ -335,12 +138,12 @@ class EnvTestCase(TestCase):
 
     def test_from_json(self):
         self.maxDiff = None
+        tests_env = env_json_basic.ret()
         self.env = Env(name='Test env', serial_obj=tests_env)
-        # print(str(type(self.env.registry["Reds0"].locator)))
-        # print()
-        # self.assertEqual(self.env, tests_env, msg=self.env.to_json())
         self.assertEqual(str(type(self.env)), "<class 'indra.env.Env'>")
-
+        tests_env = env_json_fashion.ret()
+        self.env = Env(name='Test env', serial_obj=tests_env)
+        self.assertEqual(str(type(self.env)), "<class 'indra.env.Env'>")
 
 if __name__ == '__main__':
     main()

@@ -113,7 +113,7 @@ class Test(TestCase):
         """
         with app.test_request_context():
             rv = self.Run.put(10)
-        self.assertEqual(type(rv), int)
+        self.assertEqual(type(rv), dict)
 
     def test_err_return(self):
         """

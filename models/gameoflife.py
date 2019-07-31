@@ -91,12 +91,16 @@ def gameoflife_action(gameoflife_env):
     global reset_lists
 
     for agent_pos in to_come_alive:
+        if DEBUG:
+            print("Agent at", to_come_alive[agent_pos], "will come alive")
         if gameoflife_env.get_agent_at(agent_pos[0], agent_pos[1]) is None:
             agent = create_agent(agent_pos[0], agent_pos[1])
             groups[0] += agent
             gameoflife_env.place_member(agent, xy=(agent_pos[0], agent_pos[1]))
     for agent in to_die:
         if not isinstance(agent, tuple):
+            if DEBUG:
+                print("Agent at", to_die[agent], "will die")
             agent.die()
             groups[0].del_member(agent)
             gameoflife_env.remove_location(agent.get_x(), agent.get_y())
@@ -284,7 +288,7 @@ def set_up(props=None):
     height = pa.get("grid_height", DEF_HEIGHT)
     width = pa.get("grid_width", DEF_WIDTH)
     simulation = pa.get("simulation", 0)
-    black = Composite("black", {"color": BLACK, "marker": SQUARE})
+    black = Composite("Black", {"color": BLACK, "marker": SQUARE})
     groups = []
     groups.append(black)
     gameoflife_env = Env("Game of Life",
