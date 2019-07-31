@@ -31,7 +31,7 @@ tests_env = {
     "groups": [],
     "active": True,
     "type_sig": 0,
-    "prim_group": "None",
+    "prim_group": None,
     "locator": None,
     "neighbors": None,
     "action_key": None,
