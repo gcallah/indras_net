@@ -59,8 +59,8 @@ tests_env = {
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        0,
-                        8
+                        12,
+                        17
                     ],
                     "attrs": {},
                     "groups": [
@@ -78,7 +78,7 @@ tests_env = {
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        16,
+                        8,
                         16
                     ],
                     "attrs": {},
@@ -117,8 +117,8 @@ tests_env = {
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        12,
-                        7
+                        7,
+                        17
                     ],
                     "attrs": {},
                     "groups": [
@@ -136,8 +136,8 @@ tests_env = {
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        20,
-                        8
+                        9,
+                        12
                     ],
                     "attrs": {},
                     "groups": [
@@ -155,6 +155,7 @@ tests_env = {
     },
     "width": 20,
     "height": 20,
+    "user": "ziruizhou",
     "plot_title": "env",
     "props": {
         "grid_height": {
