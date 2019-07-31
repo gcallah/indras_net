@@ -271,6 +271,9 @@ class Env(Space):
             self.num_moves += m
             census_rpt = self.get_census()
             self.user.tell(census_rpt)
+            self.num_acts = 0
+            self.num_moves = 0
+            self.num_switches = 0
         return num_acts
 
     def get_census(self):
@@ -287,17 +290,22 @@ class Env(Space):
         if self.census_func:
             return self.census_func(self)
         else:
-            census_str = ("\nCensus for period " + str(self.get_periods())
-                          + ":\n")
+            census_str = ("\nTotal census for period "
+                          + str(self.get_periods())
+                          + ":\n==================\n"
+                          + "Composite census:\n"
+                          + "==================\n")
             for composite_str in self.members:
                 population = len(self.members[composite_str])
-                census_str += (composite_str + ": " + str(population) + "\n")
-            census_str += ("\tTotal agents moved: " + str(self.num_moves)
-                           + "\n" + "\tTotal agents who switched groups: "
+                census_str += ("  " + composite_str + ": "
+                               + str(population) + "\n")
+            census_str += ("==================\n"
+                           + "Agent census:\n"
+                           + "==================\n"
+                           + "  Total agents moved: "
+                           + str(self.num_moves) + "\n"
+                           + "  Total agents who switched groups: "
                            + str(self.num_switches))
-        self.num_acts = 0
-        self.num_moves = 0
-        self.num_switches = 0
         return census_str
 
     def has_disp(self):
