@@ -59,8 +59,8 @@ tests_env = {
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        6,
-                        16
+                        0,
+                        8
                     ],
                     "attrs": {},
                     "groups": [
@@ -78,8 +78,8 @@ tests_env = {
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        5,
-                        5
+                        16,
+                        16
                     ],
                     "attrs": {},
                     "groups": [
@@ -117,8 +117,8 @@ tests_env = {
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        1,
-                        0
+                        12,
+                        7
                     ],
                     "attrs": {},
                     "groups": [
@@ -136,8 +136,8 @@ tests_env = {
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        17,
-                        0
+                        20,
+                        8
                     ],
                     "attrs": {},
                     "groups": [
@@ -185,6 +185,13 @@ tests_env = {
             "lowval": 1,
             "hival": 100
         },
+        "use_line": {
+            "val": True,
+            "question": None,
+            "atype": None,
+            "lowval": None,
+            "hival": None
+        },
         "user_type": {
             "val": "terminal",
             "question": None,
@@ -194,6 +201,13 @@ tests_env = {
         },
         "OS": {
             "val": "Darwin",
+            "question": None,
+            "atype": None,
+            "lowval": None,
+            "hival": None
+        },
+        "use_scatter": {
+            "val": True,
             "question": None,
             "atype": None,
             "lowval": None,
@@ -217,6 +231,7 @@ tests_env = {
     },
     "womb": [],
     "switches": [],
+    "census_func": None,
     "registry": {}
 }
 
