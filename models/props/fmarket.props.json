@@ -1,6 +1,6 @@
 {
   "value_investors": {
-    "val": 2,
+    "val": 20,
     "question": "How many value investors do you want?",
     "atype": "INT",
     "hival": 1000,
@@ -21,7 +21,7 @@
     "lowval": 0.001
   },
   "trend_followers": {
-    "val": 2,
+    "val": 20,
     "question": "How many trend followers do you want?",
     "atype": "INT",
     "hival": 1000,

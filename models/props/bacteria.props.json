@@ -56,7 +56,7 @@
     "lowval": 1
   },
   "bacterium_move": {
-    "val": 1,
+    "val": 3,
     "question": "What bacterium maximum move do you want?",
     "atype": "INT",
     "hival": 15,
