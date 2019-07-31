@@ -130,6 +130,7 @@ class Env(Space):
         self.name = serial_obj["name"]
         self.womb = serial_obj["womb"]
         self.switches = serial_obj["switches"]
+        self.census_func = serial_obj["census_func"]
         # construct self.registry
         self.registry = {}
         for nm in self.members:
@@ -151,6 +152,7 @@ class Env(Space):
         rep["pop_hist"] = self.pop_hist.to_json()
         rep["womb"] = self.womb
         rep["switches"] = self.switches
+        rep["census_func"] = None
         ret_mbrs = {}
         for mnm in rep["members"]:
             ret_mbrs[mnm] = rep["members"][mnm]
