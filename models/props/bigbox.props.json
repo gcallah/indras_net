@@ -47,5 +47,10 @@
     "atype": "INT",
     "hival": 5,
     "lowval": 1
+  },
+  "store_census": {
+    "val": false,
+    "question": "Do you want to see stores census at the end of every period?",
+    "atype": "BOOL"
   }
 }

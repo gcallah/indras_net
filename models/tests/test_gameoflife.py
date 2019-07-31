@@ -64,6 +64,13 @@ class GameOfLifeTestCase(TestCase):
         self.assertEqual(apply_live_rules(a), False)
 
     def test_apply_dead_rules_composite(self):
+        """
+        Creates three agents initially as neighbors and add it to a compsite, 
+        and run that composite through apply_dead_rules_composite.
+        It should return True because there are three neighbors.
+        Add another agent to the composite and run it through apply_dead_rules_composite,
+        which should return False as there are four neighbors.
+        """
         g.groups = []
         g.groups.append(Composite("black"))
         g.groups[0] += create_agent(TEST_X, TEST_Y)
@@ -74,6 +81,10 @@ class GameOfLifeTestCase(TestCase):
         self.assertEqual(apply_dead_rules_composite(g.groups[0]), False)
 
     def test_check_for_new_agents(self):
+        """
+        Create an agent and run it thorugh check_for_new_agent, which should return an empty list
+        because there is only one agent in the enviornment.
+        """
         a = create_agent(TEST_X, TEST_Y)
         g.gameoflife_env.place_member(a, xy=(TEST_X, TEST_Y))
         g.groups = []
