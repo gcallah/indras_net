@@ -140,7 +140,7 @@ class Env(Space):
         for nm in self.registry:
             if len(self.registry[nm].groups) != 0:
                 for gnm in self.registry[nm].groups:
-                    if gnm != "env":
+                    if gnm != "env" and gnm != "Society":
                         self.registry[nm].add_group(self.registry[gnm])
 
     def to_json(self):

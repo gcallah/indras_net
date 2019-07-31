@@ -14,7 +14,7 @@ from indra.composite import Composite
 from indra.tests.test_agent import create_newton
 from indra.tests.test_composite import create_calcguys, create_cambguys
 
-from APIServer.test.test_env_json import env_json_basic
+from APIServer.test.test_env_json import env_json_basic, env_json_fashion
 
 travis = False
 
@@ -23,8 +23,6 @@ GRP2 = "Group2"
 
 X = 0
 Y = 1
-
-tests_env = env_json_basic.ret()
 
 def env_action(env):
     print("Calling action for env")
@@ -140,12 +138,12 @@ class EnvTestCase(TestCase):
 
     def test_from_json(self):
         self.maxDiff = None
+        tests_env = env_json_basic.ret()
         self.env = Env(name='Test env', serial_obj=tests_env)
-        # print(str(type(self.env.registry["Reds0"].locator)))
-        # print()
-        # self.assertEqual(self.env, tests_env, msg=self.env.to_json())
         self.assertEqual(str(type(self.env)), "<class 'indra.env.Env'>")
-
+        tests_env = env_json_fashion.ret()
+        self.env = Env(name='Test env', serial_obj=tests_env)
+        self.assertEqual(str(type(self.env)), "<class 'indra.env.Env'>")
 
 if __name__ == '__main__':
     main()
