@@ -141,18 +141,6 @@ class FMarketTestCase(TestCase):
                                 new_market_maker["price_hist"])
         self.assertEqual(trend, 0)
 
-    def test_value_investor_action(self):
-        '''
-        Test the value investor action
-        '''
-        new_market_maker = create_market_maker("market_maker")
-        new_market_maker["asset_price"] = DEF_REAL_VALUE * 0.8
-        new_value_investor = create_value_investor("value_investors", 0,
-                                                   DEF_DISCOUNT, DEF_SIGMA)
-        new_value_investor["low_price"] = DEF_REAL_VALUE * 0.9
-        new_value_investor["high_price"] = DEF_REAL_VALUE * 1.1
-        value_investor_action(new_value_investor)
-
     def test_market_maker_action(self):
         '''
         Test the market maker action
