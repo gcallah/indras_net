@@ -2,6 +2,14 @@
   "models_database": [
     {
       "model ID": 0,
+      "name": "Basic",
+      "run": "basic",
+      "props": "models/props/basic.props.json",
+      "doc": "A toy model for testing",
+      "source": "https://github.com/gcallah/indras_net/blob/master/models/basic.py"
+    },
+    {
+      "model ID": 9,
       "name": "Bacteria",
       "run": "bacteria",
       "props": "models/props/bacteria.props.json",
