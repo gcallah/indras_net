@@ -233,6 +233,7 @@ tests_env = {
     "womb": [],
     "switches": [],
     "census_func": None,
+    "data_func": None,
     "registry": {}
 }
 
