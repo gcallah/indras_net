@@ -155,7 +155,7 @@ class MenuList extends Component {
                       onClick={
                         !this.state.disabled_button ? this.sendNumPeriods : null
                       }
-                      className="btn btn-outline-success m-2"
+                      className="btn btn-success m-2"
                     >
                       {'  '}Run{'  '}
                     </button>
