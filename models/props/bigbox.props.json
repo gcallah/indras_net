@@ -50,7 +50,9 @@
   },
   "store_census": {
     "val": false,
-    "question": "Do you want to see stores census at the end of every period?",
-    "atype": "BOOL"
+    "question": "Show stores census at the end of every period?",
+    "atype": "BOOL",
+    "hival": false,
+    "lowval": true
   }
 }
