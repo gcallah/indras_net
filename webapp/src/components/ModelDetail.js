@@ -113,6 +113,7 @@ class ModelDetail extends Component {
       const res = await axios.put(this.api_server + localStorage.getItem("menu_id"), this.state.model_details)
       var item_id = localStorage.getItem("menu_id")
       this.setState({env_file: res.data})
+      localStorage.setItem("env_file", JSON.stringify(this.state.env_file))
       this.props.history.push({pathname:"/models/menu/" + (item_id.toString(10)) ,state: {
                   env_file: this.state.env_file,
                  }});

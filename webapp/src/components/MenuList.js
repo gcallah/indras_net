@@ -34,11 +34,12 @@ class MenuList extends Component {
     const id = localStorage.getItem ('menu_id');
     const name = localStorage.getItem ('name');
     const source = localStorage.getItem ('source');
+    const env = localStorage.getItem('env_file')
     this.setState ({name: name});
     this.setState ({model_id: id});
     this.setState ({source: source});
     this.setState ({loadingData: false});
-    this.setState ({env_file: this.props.location.state.env_file});
+    this.setState ({env_file: JSON.parse(env)});
   }
 
   viewSource = () => {
