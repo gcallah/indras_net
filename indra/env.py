@@ -149,7 +149,10 @@ class Env(Space):
         rep["user"] = self.user.name
         rep["census_func"] = self.census_func
         rep["plot_title"] = self.plot_title
-        rep["props"] = self.props.to_json()
+        if self.props is None:
+            rep["props"] = self.props
+        else:
+            rep["props"] = self.props.to_json()
         rep["pop_hist"] = self.pop_hist.to_json()
         rep["womb"] = self.womb
         rep["switches"] = self.switches
