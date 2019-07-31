@@ -293,8 +293,8 @@ class Env(Space):
             return self.census_func(self)
         else:
             census_str = ("\nTotal census for period "
-                          + str(self.get_periods())
-                          + ":\n==================\n"
+                          + str(self.get_periods()) + ":\n"
+                          + "==================\n"
                           + "Composite census:\n"
                           + "==================\n")
             for composite_str in self.members:
