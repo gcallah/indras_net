@@ -101,14 +101,20 @@ class MenuList extends Component {
     }
   };
 
-  sendNumPeriods = async => {
+  sendNumPeriods = async() => {
     console.log(this.api_server + 'run/' + String(this.state.period_num))
-    const res = axios.put (
+    try{
+      const res = await axios.put(
       this.api_server + 'run/' + String(this.state.period_num),
       this.state.env_file,
       this.state.period_num
-    )
-    console.log(res)
+      )
+      this.setState({env_file: res.data})
+      console.log(res.data)
+    }catch(e){
+      console.log(e.message)
+    }
+
   };
 
   render () {
