@@ -20,6 +20,7 @@ groups = None
 reset_lists = False
 to_come_alive = []
 to_die = []
+DEBUG = False
 
 
 def create_agent(x, y):
@@ -321,6 +322,10 @@ def main():
     global gameoflife_env
     global groups
     (gameoflife_env, groups) = set_up()
+
+    if DEBUG:
+        print(gameoflife_env.__repr__())
+
     gameoflife_env()
     return 0
 
