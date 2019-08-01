@@ -114,12 +114,6 @@ class Space(Composite):
     def __repr__(self):
         return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
 
-    def loc_dict(self):
-        dic = {}
-        for key in self.locations:
-            dic[self.locations[key].name] = key
-        return dic
-
     def grid_size(self):
         """
         How big is da grid?
@@ -436,7 +430,7 @@ class Space(Composite):
         """
         closest = None
         min_distance_seen = MAX_WIDTH * MAX_HEIGHT
-        for key, other in self.locations:
+        for key, other in self.locations.items():
             if other is agent:
                 continue
             d = distance(agent, other)
@@ -445,7 +439,10 @@ class Space(Composite):
                 closest = other
         return closest
 
-    def point_from_vector(self, angle, max_move, xy):
+    def get_max_distance(self):
+        return sqrt((self.height ** 2) + (self.width ** 2))
+
+    def point_from_vector(self, angle, max_move, xy, vector_start=(0, 0)):
         """
         Given a vector with one end at the origin, find
         the other end -- if off grid, pull it back onto the
@@ -463,7 +460,6 @@ class Space(Composite):
 
         #  Adjust if the cur_x and cur_y are out of range
         if out_of_bounds(cur_x, cur_y, 0, 0, self.width, self.height):
-
             if (cur_x == prev_x):
                 if (cur_y < 0):
                     return (cur_x, 0)

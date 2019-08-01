@@ -16,57 +16,45 @@ from indra.display_methods import BLUE
 
 MODEL_NAME = "drunks"
 
-DEF_NUM_DRINKERS = 10
+DEF_POPULATION = 10
 
 POPULATION = 10
 OPTIMAL_OCCUPANCY = 0.6 * POPULATION
 MOTIVATION = [0.6] * POPULATION
 
+bar_pop = 0
+attenders = []
+attendance = 0
+
 drinkers = None
 bar = None
 
 
-def get_decision(actor):
+def get_decision(agent):
+    """
+    Makes a decision randomly for the agent whether or not to go to the bar
+    """
     random_integer = random.randint(1, 100) / 100
-    if random_integer <= MOTIVATION[actor]:
-        return 1
+    if random_integer <= agent["motivation"]:
+        return True
 
-    return 0
+    return False
 
 
-def discourage(unwanted, attenders):
+def discourage(unwanted, drunks_in_bar):
+    """
+    Discourages extra drinkers from going to the bar by decreasing motivation.
+    Chooses drinkers randomly from the drinkers that went to the bar.
+    """
     while unwanted:
-        demotivate_person = attenders[random.randint(0, len(attenders) - 1)]
-        MOTIVATION[demotivate_person] -= 0.05
+        x = random.randint(0, len(drunks_in_bar) - 1)
+        demotivate_agent = drunks_in_bar[x]
+        drunks_in_bar.pop(x)
+        # MOTIVATION[demotivate_person] -= 0.05
+        demotivate_agent["motivation"] -= 0.05
         unwanted -= 1
 
     return 0
-
-
-def random_drunks(weekends=10):
-    # print("Motivation: ", MOTIVATION)
-
-    attendance_record = []
-    while weekends > 0:
-        person = 0
-        attendance = 0
-        attenders = []
-        while person < POPULATION:
-            decision = get_decision(person)
-            if decision:
-                attendance += 1
-                attenders.append(person)
-
-            person += 1
-
-        if attendance > OPTIMAL_OCCUPANCY:
-            extras = attendance - OPTIMAL_OCCUPANCY
-            discourage(extras, attenders)
-
-        attendance_record.append(attendance)
-        weekends -= 1
-
-    return attendance_record
 
 
 def get_average_attendance(record):
@@ -79,8 +67,48 @@ def get_average_attendance(record):
     return sum_attendance / len(record)
 
 
+# def random_drunks(weekends=10):
+#     # print("Motivation: ", MOTIVATION)
+#
+#     attendance_record = []
+#     while weekends > 0:
+#         person = 0
+#         # attendance = 0
+#         # attenders = []
+#         while person < POPULATION:
+#             decision = get_decision(person)
+#             if decision:
+#                 attendance += 1
+#                 attenders.append(person)
+#
+#             person += 1
+#
+#         if attendance > OPTIMAL_OCCUPANCY:
+#             extras = attendance - OPTIMAL_OCCUPANCY
+#             discourage(extras, attenders)
+#
+#         attendance_record.append(attendance)
+#         weekends -= 1
+#
+#     return attendance_record
+
+
 def drinker_action(agent):
-    print("I'm " + agent.name + " and I need a drink.")
+    # print("I'm " + agent.name + " and I need a drink.")
+    global attendance
+    global attenders
+
+    decision = get_decision(agent)
+    agent["going_to_bar"] = decision
+    if decision:
+        attendance += 1
+        attenders.append(agent)
+
+    if agent.name[-1] == POPULATION - 1:
+        if attendance > OPTIMAL_OCCUPANCY:
+            extras = attendance - OPTIMAL_OCCUPANCY
+            discourage(extras, attenders)
+
     # return False means to move
     return False
 
@@ -90,7 +118,7 @@ def create_drinker(color, i):
     Create an agent.
     """
     return Agent("drunk" + str(i), action=drinker_action,
-                 attrs={"going_to_bar": False})
+                 attrs={"going_to_bar": False, "motivation": 0.6})
 
 
 def set_up(props=None):
@@ -107,8 +135,8 @@ def set_up(props=None):
 
     drinkers = Composite("Drinkers", {"color": BLUE},
                          member_creator=create_drinker,
-                         num_members=pa.get('num_drinkers',
-                                            DEF_NUM_DRINKERS))
+                         num_members=pa.get('population',
+                                            DEF_POPULATION))
 
     bar = Env("env",
               height=pa.get('grid_height', DEF_HEIGHT),
