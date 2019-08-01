@@ -32,6 +32,7 @@ def create_teeny_space():
     space += create_ramanujan()
     return space
 
+
 class SpaceTestCase(TestCase):
     def setUp(self):
         (self.space, self.newton) = create_space()
@@ -49,12 +50,17 @@ class SpaceTestCase(TestCase):
         self.test_agent3 = None
         self.test_agent4 = None
 
+    def test_get_closest_agent(self):
+        closest = self.space.get_closest_agent(self.newton)
+        self.assertTrue(distance(self.newton, closest) <=
+                        self.space.get_max_distance())
+
     def test_get_row_hood(self):
-            row_grp = self.teeny_space.get_row_hood(1)
-            if row_grp is not None:
-                for cell in row_grp:
-                    pass
-                #assert(cell.get_y() == 2)        
+        row_grp = self.teeny_space.get_row_hood(1)
+        if row_grp is not None:
+            for cell in row_grp:
+                pass
+            #assert(cell.get_y() == 2)        
 
     def test_constrain_x(self):
         """

@@ -6,7 +6,7 @@ from propargs.propargs import PropArgs
 from indra.utils import get_prop_path
 from indra.agent import Agent
 from indra.composite import Composite
-from indra.space import DEF_HEIGHT, DEF_WIDTH
+from indra.space import DEF_HEIGHT, DEF_WIDTH, distance
 from indra.env import Env
 from indra.display_methods import BLUE, TREE
 
@@ -15,38 +15,27 @@ DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
 DEF_NUM_BIRDS = 10
+DEF_DESIRED_DISTANCE = 2
 
 flock = None
 the_sky = None
 
 
-def agent_action(agent):
-    # print("I'm " + agent.name + " and I'm acting.")
-    # # return False means to move
-    # return False
-    if agent.neighbors is None:
-        neighbors = agent.locator.get_moore_hood(agent, save_neighbors=False)
-
-    if neighbors is not None:
-        print("Creating Birds in a group")
+def bird_action(this_bird):
+    nearest_bird = this_bird.locator.get_closest_agent(this_bird)
+    if nearest_bird is not None:
+        curr_distance = distance(this_bird, nearest_bird)
+        print("Distance between ", nearest_bird, " and ", this_bird,
+              " is ", curr_distance)
     return False
 
 
-def create_agent(color, i):
+def create_bird(name, i):
     """
-    Create an agent.
+    Creates a bird with a numbered name and an action function
+    making it flock.
     """
-    return Agent(color + str(i), action=agent_action)
-
-
-# def closest_bird(dist, desired):
-
-#     if dist > desired:
-
-#     elif dist < desired:
-
-#     else:
-#         pass
+    return Agent(name + str(i), action=bird_action)
 
 
 def set_up(props=None):
@@ -62,7 +51,7 @@ def set_up(props=None):
                                    prop_dict=props)
 
     flock = Composite("Birds", {"color": BLUE, "marker": TREE},
-                      member_creator=create_agent,
+                      member_creator=create_bird,
                       num_members=pa.get('num_flock', DEF_NUM_BIRDS))
 
     the_sky = Env("the_sky",

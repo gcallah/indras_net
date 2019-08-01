@@ -1,5 +1,4 @@
 {
-  "grid_height": {
     "val": 50,
     "question": "What is the grid height?",
     "atype": "INT",
