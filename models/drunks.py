@@ -31,6 +31,9 @@ bar = None
 
 
 def get_decision(agent):
+    """
+    Makes a decision randomly for the agent whether or not to go to the bar
+    """
     random_integer = random.randint(1, 100) / 100
     if random_integer <= agent["motivation"]:
         return "going_to_bar"
@@ -39,6 +42,10 @@ def get_decision(agent):
 
 
 def discourage(unwanted, drunks_in_bar):
+    """
+    Discourages extra drinkers from going to the bar by decreasing motivation.
+    Chooses drinkers randomly from the drinkers that went to the bar.
+    """
     while unwanted:
         x = random.randint(0, len(drunks_in_bar) - 1)
         demotivate_agent = drunks_in_bar[x]
@@ -50,32 +57,6 @@ def discourage(unwanted, drunks_in_bar):
     return 0
 
 
-def random_drunks(weekends=10):
-    # print("Motivation: ", MOTIVATION)
-
-    attendance_record = []
-    while weekends > 0:
-        person = 0
-        # attendance = 0
-        # attenders = []
-        while person < POPULATION:
-            decision = get_decision(person)
-            if decision:
-                attendance += 1
-                attenders.append(person)
-
-            person += 1
-
-        if attendance > OPTIMAL_OCCUPANCY:
-            extras = attendance - OPTIMAL_OCCUPANCY
-            discourage(extras, attenders)
-
-        attendance_record.append(attendance)
-        weekends -= 1
-
-    return attendance_record
-
-
 def get_average_attendance(record):
     i = len(record)
     sum_attendance = 0
@@ -84,6 +65,32 @@ def get_average_attendance(record):
         i -= 1
 
     return sum_attendance / len(record)
+
+
+# def random_drunks(weekends=10):
+#     # print("Motivation: ", MOTIVATION)
+#
+#     attendance_record = []
+#     while weekends > 0:
+#         person = 0
+#         # attendance = 0
+#         # attenders = []
+#         while person < POPULATION:
+#             decision = get_decision(person)
+#             if decision:
+#                 attendance += 1
+#                 attenders.append(person)
+#
+#             person += 1
+#
+#         if attendance > OPTIMAL_OCCUPANCY:
+#             extras = attendance - OPTIMAL_OCCUPANCY
+#             discourage(extras, attenders)
+#
+#         attendance_record.append(attendance)
+#         weekends -= 1
+#
+#     return attendance_record
 
 
 def drinker_action(agent):
