@@ -1,0 +1,23 @@
+{
+  "grid_height": {
+    "val": 20,
+    "question": "What is the grid height?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 2
+  },
+  "grid_width": {
+    "val": 20,
+    "question": "What is the grid width?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 2
+  },
+  "num_drinkers": {
+    "val": 2,
+    "question": "How many drinkers do you want?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 1
+  }
+}
