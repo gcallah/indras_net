@@ -36,9 +36,9 @@ def get_decision(agent):
     """
     random_integer = random.randint(1, 100) / 100
     if random_integer <= agent["motivation"]:
-        return "going_to_bar"
+        return True
 
-    return "not_going_to_bar"
+    return False
 
 
 def discourage(unwanted, drunks_in_bar):
@@ -99,8 +99,8 @@ def drinker_action(agent):
     global attenders
 
     decision = get_decision(agent)
-    agent["motivation"] = decision
-    if decision == "going_to_bar":
+    agent["going_to_bar"] = decision
+    if decision:
         attendance += 1
         attenders.append(agent)
 
