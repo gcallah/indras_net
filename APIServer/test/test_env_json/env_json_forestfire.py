@@ -1,2 +1,2 @@
 def ret():
-    return "error, need to find out"
+    return "circular reference, need to find out"
