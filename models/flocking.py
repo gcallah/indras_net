@@ -39,6 +39,16 @@ def create_agent(color, i):
     return Agent(color + str(i), action=agent_action)
 
 
+# def closest_bird(dist, desired):
+
+#     if dist > desired:
+
+#     elif dist < desired:
+
+#     else:
+#         pass
+
+
 def set_up(props=None):
     """
     A func to set up run that can also be used by test code.

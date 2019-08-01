@@ -12,7 +12,7 @@ from indra.env import Env
 from indra.display_methods import BLACK, WHITE, SQUARE
 
 MODEL_NAME = "wolfram"
-DEBUG = False  # Turns debugging code on or off
+DEBUG = True  # Turns debugging code on or off
 DEF_RULE = 30
 
 # Group codes:
@@ -30,8 +30,7 @@ def create_agent(x, y):
     """
     Create an agent with the passed x, y value as its name.
     """
-    name = "(" + str(x) + "," + str(y) + ")"
-    return Agent(name=name, action=wfagent_action)
+    return Agent(name=("(%d,%d)" % (x, y)), action=wfagent_action)
 
 
 def get_color(group):
@@ -71,7 +70,7 @@ def next_color(rule_dict, left, middle, right):
 
 
 def get_str_key(x, y):
-    return "(" + str(x) + "," + str(y) + ")"
+    return ("(%d,%d)" % (x, y))
 
 
 def wfagent_action(agent):
@@ -91,17 +90,14 @@ def wolfram_action(wolfram_env):
         curr_row = wolfram_env.get_row_hood(active_row_y)
     wolfram_env.user.tell("\nChecking agents in row " + str(active_row_y)
                           + " against the rule...")
-    if DEBUG:
-        print("Current row")
-        for agent in curr_row:
-            print("   ", curr_row[agent])
     if active_row_y < 1:
-        wolfram_env.user.error_message["run"] = ("You have exceeded the"
-                                                 + " maximum height"
-                                                 + " and cannot run the model"
-                                                 + " for more periods.\n"
-                                                 + "Please pick one of the"
-                                                 + " other options.")
+        wolfram_env.user.error_message["run"] = (' '.join([
+                                                 "You have exceeded the ",
+                                                 "maximum height ",
+                                                 "and cannot run the model ",
+                                                 "for more periods.\n",
+                                                 "Please pick one of the ",
+                                                 "other options."]))
         wolfram_env.exclude_menu_item("run", "line_graph")
     else:
         next_row = wolfram_env.get_row_hood(active_row_y - 1)
@@ -109,10 +105,15 @@ def wolfram_action(wolfram_env):
             curr_row[get_str_key(0, active_row_y)].primary_group())
         x = 0
         for agent in curr_row:
+            if DEBUG:
+                print("Checking agent at", curr_row[agent])
             if (x > 0) and (x < wolfram_env.width - 1):
                 middle_color = get_color(curr_row[agent].primary_group())
                 right_color = get_color(curr_row[get_str_key(x + 1,
                                         active_row_y)].primary_group())
+                if DEBUG:
+                    print("  Left: %d, middle: %d, right: %d" %
+                          (left_color, middle_color, right_color))
                 if next_color(rule_dict, left_color, middle_color,
                               right_color):
                     wolfram_env.add_switch(next_row[
@@ -145,8 +146,8 @@ def set_up(props=None):
     rule_dict = get_rule(rule_num)
     height = 0
     height = (width // 2) + (width % 2)
-    white = Composite("white", {"color": WHITE})
-    black = Composite("black", {"color": BLACK, "marker": SQUARE})
+    white = Composite("White", {"color": WHITE})
+    black = Composite("Black", {"color": BLACK, "marker": SQUARE})
     groups = []
     groups.append(white)
     groups.append(black)
@@ -173,6 +174,10 @@ def main():
     global rule_dict
 
     (wolfram_env, groups, rule_dict) = set_up()
+
+    if DEBUG:
+        print(wolfram_env.__repr__())
+
     wolfram_env()
     return 0
 

@@ -23,8 +23,7 @@ def create_agent(x, y):
     """
     Create an agent with the passed x, y value as its name.
     """
-    name = "(" + str(x) + "," + str(y) + ")"
-    return Agent(name=name, action=spagent_action)
+    return Agent(name=("(%d,%d)" % (x, y)), action=spagent_action)
 
 
 def add_grain(agent):
@@ -111,6 +110,7 @@ def set_up(props=None):
                        height=height,
                        width=width,
                        members=groups,
+                       attrs={"change_grid_spacing": 0, "hide_axes": True},
                        random_placing=False,
                        props=pa)
     sandpile_env.attrs["center_agent"] = sandpile_env.get_agent_at(height // 2,

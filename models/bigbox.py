@@ -14,9 +14,9 @@ from indra.display_methods import BLACK, BLUE, GRAY, GREEN, RED, TAN, YELLOW
 MODEL_NAME = "bigbox"
 DEBUG = False
 
-NUM_OF_CONSUMERS = 150
-NUM_OF_BB = 3
-NUM_OF_MP = 6
+NUM_OF_CONSUMERS = 180
+NUM_OF_BB = 4
+NUM_OF_MP = 8
 
 MP_PREF = 0.1
 RADIUS = 2
@@ -29,16 +29,19 @@ town = None
 groups = None
 mp_pref = None
 radius = None
+store_census = None
 
-mp_stores = {"Mom and pop: Books": [45, 30, 360, 60, TAN],
-             "Mom and pop: Coffee": [23, 15, 180, 30, BLACK],
-             "Mom and pop: Groceries": [67, 45, 540, 90, GREEN],
-             "Mom and pop: Hardware": [60, 40, 480, 80, RED],
-             "Mom and pop: Meals": [40, 23, 270, 45, YELLOW]}
-# "Store type": [fixed expense, variable expense, capital, inventory, color]
+mp_stores = {"Mom and pop: Books": [45, 30, 360, 60, TAN, 0],
+             "Mom and pop: Coffee": [23, 15, 180, 30, BLACK, 0],
+             "Mom and pop: Groceries": [67, 45, 540, 90, GREEN, 0],
+             "Mom and pop: Hardware": [60, 40, 480, 80, RED, 0],
+             "Mom and pop: Meals": [40, 23, 270, 45, YELLOW, 0]}
+# "Store type":
+# [fixed expense, variable expense, capital, inventory,
+# color, consumers visited]
 
-bb_store = [60, 25, 480, 90]
-# [Fixed expense, variable expense, capital, inventory]
+bb_store = [60, 25, 480, 90, 0]
+# [Fixed expense, variable expense, capital, inventory, consumers visited]
 
 
 def create_consumer(name):
@@ -72,7 +75,8 @@ def create_bb(name):
     store_books = {"fixed expense": expense[0],
                    "variable expense": expense[1],
                    "capital": expense[2],
-                   "inventory": [expense[3], expense[3]]}
+                   "inventory": [expense[3], expense[3]],
+                   "visited": expense[4]}
     return Agent(name=name, attrs=store_books, action=bb_action)
 
 
@@ -94,7 +98,8 @@ def create_mp(store_type, i):
     store_books = {"fixed expense": expense[0],
                    "variable expense": expense[1],
                    "capital": expense[2],
-                   "inventory": [expense[3], expense[3]]}
+                   "inventory": [expense[3], expense[3]],
+                   "visited": expense[5]}
     return Agent(name=name, attrs=store_books, action=mp_action)
 
 
@@ -107,6 +112,7 @@ def transaction(store, consumer):
     Calcuates the expense and the revenue of the store passed in
         after a transaction with the consumer passed in.
     """
+    store.attrs["visited"] += 1
     store.attrs["capital"] += consumer.attrs["spending power"]
     store.attrs["inventory"][1] -= 1
     if store.attrs["inventory"][1] == 1:
@@ -123,14 +129,26 @@ def transaction(store, consumer):
 
 
 def get_store_census(town):
-    print("\nStore census:")
+    to_print = "\n==================\n"
+    to_print += ("Store census for period " + str(town.get_periods()) + ":\n"
+                 + "==================\n")
     for i in range(1, 6):
         for store in groups[i]:
             if groups[i][store].attrs["capital"] > -1:
-                print(groups[i][store], "has a capital of",
-                      groups[i][store].attrs["capital"],
-                      "and inventory of",
-                      (groups[i][store]).attrs["inventory"][1])
+                to_print += (str(groups[i][store])
+                             + "\n  Capital: "
+                             + str(groups[i][store].attrs["capital"])
+                             + "\n  Inventory: "
+                             + str((groups[i][store]).attrs["inventory"][1]))
+                to_print += ("\n" + "  "
+                             + str((groups[i][store]).attrs["visited"]))
+                if (groups[i][store]).attrs["visited"] == 1:
+                    to_print += (" consumer has visited this store"
+                                 + " in the last period.\n")
+                else:
+                    to_print += (" consumers have visited this store"
+                                 + " in the last period.\n")
+    town.user.tell(to_print)
 
 
 def town_action(town):
@@ -144,6 +162,7 @@ def town_action(town):
     global groups
     global mp_pref
     global radius
+    global store_census
 
     for y in range(town.height):
         for x in range(town.width):
@@ -165,6 +184,8 @@ def town_action(town):
                         != groups[CONSUMER_INDX]
                             and neighbor.attrs["capital"] > -1):
                         curr_store_util = 0.0
+                        if neighbor.attrs["visited"] > 0:
+                            neighbor.attrs["visited"] = 0
                         neighbor.attrs["capital"] -= (
                             neighbor.attrs["fixed expense"])
                         if (neighbor.primary_group()
@@ -206,7 +227,7 @@ def town_action(town):
                               + str(curr_consumer.attrs["spending power"])
                               + " at " + str(store_to_go) + "...")
                     transaction(store_to_go, curr_consumer)
-    if DEBUG:
+    if DEBUG or store_census:
         get_store_census(town)
 
 
@@ -230,6 +251,7 @@ def set_up(props=None):
     global groups
     global mp_pref
     global radius
+    global store_census
 
     ds_file = get_prop_path(MODEL_NAME)
     if props is None:
@@ -245,6 +267,7 @@ def set_up(props=None):
     num_mp = pa.get("mp_num", NUM_OF_MP)
     mp_pref = pa.get("mp_pref", MP_PREF)
     radius = pa.get("radius", RADIUS)
+    store_census = pa.get("store_census", False)
 
     consumer_group = Composite("Consumer", {"color": GRAY})
     bb_group = Composite("Big box", {"color": BLUE})
@@ -262,12 +285,6 @@ def set_up(props=None):
     for m in range(0, num_mp):
         rand = random.randint(2, len(groups) - 1)
         groups[rand] += create_mp(groups[rand], m)
-    if DEBUG:
-        for comp in groups:
-            print(comp)
-            for agents in comp:
-                print("    ", comp[agents])
-        print(get_store_census(town))
     town = Env("Town",
                action=town_action,
                members=groups,

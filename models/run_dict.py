@@ -31,6 +31,8 @@ from models.wolfram import wolfram_action, wfagent_action
 from models.wolfsheep import main as wsmain
 from models.wolfsheep import set_up as wsset_up
 from models.wolfsheep import sheep_action, wolf_action
+from models.fmarket import market_maker_action, trend_follower_action
+from models.fmarket import value_investor_action
 
 
 rdict = {
@@ -83,5 +85,8 @@ action_dict = {
     "gameoflife_action": gameoflife_action,
     "game_agent_action": game_agent_action,
     "wolfram_action": wolfram_action,
-    "wfagent_action": wfagent_action
+    "wfagent_action": wfagent_action,
+    "market_maker_action": market_maker_action,
+    "trend_follower_action": trend_follower_action,
+    "value_investor_action": value_investor_action
 }

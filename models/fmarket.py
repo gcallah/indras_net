@@ -90,7 +90,7 @@ def calc_price_change(ratio, min_price_move=DEF_MIN_PRICE_MOVE,
     return direction * min(max_price_move, min_price_move * ratio)
 
 
-def Gaussian_distribution(default_target, sigma):
+def gaussian_distribution(default_target, sigma):
     new_target = random.gauss(default_target, sigma)
     if new_target < 0:
         new_target *= -1
@@ -127,7 +127,7 @@ def create_trend_follower(name, i, average_period, dev):
     """
 
     trend_follower = Agent(name + str(i), action=trend_follower_action)
-    trend_follower["change_period"] = Gaussian_distribution(average_period,
+    trend_follower["change_period"] = gaussian_distribution(average_period,
                                                             dev)
     if trend_follower["change_period"] < 0:
         trend_follower["change_period"] *= -1
@@ -143,13 +143,11 @@ def create_value_investor(name, i, mean_price, dev):
     """
     value_investor = Agent(name + str(i), action=value_investor_action)
 
-    low_val_percentage = Gaussian_distribution(mean_price, dev)
-    high_val_percentage = Gaussian_distribution(mean_price, dev)
-    low_price = DEF_REAL_VALUE * (1 - low_val_percentage)
-    high_price = DEF_REAL_VALUE * (1 + high_val_percentage)
+    low_val_percentage = gaussian_distribution(mean_price, dev)
+    high_val_percentage = gaussian_distribution(mean_price, dev)
+    value_investor["low_price"] = DEF_REAL_VALUE * (1 - low_val_percentage)
+    value_investor["high_price"] = DEF_REAL_VALUE * (1 + high_val_percentage)
 
-    value_investor["low_price"] = low_price
-    value_investor["high_price"] = high_price
     value_investor["capital"] = DEF_CAPITAL
     value_investor["num_stock"] = 0
     return value_investor
@@ -180,12 +178,8 @@ def trend_follower_action(agent):
     # or sell the stock
     if trend_direction(agent, market_maker["asset_price"],
                        market_maker["price_hist"]) == 1:
-        agent["buy"] = True
-        agent["sell"] = False
         buy(agent)
     else:
-        agent["buy"] = False
-        agent["sell"] = True
         sell(agent)
 
     return True
@@ -194,12 +188,8 @@ def trend_follower_action(agent):
 def value_investor_action(agent):
     # Determine if value investors should buy or sell the stock
     if market_maker["asset_price"] >= agent["high_price"]:
-        agent["sell"] = True
-        agent["buy"] = False
         sell(agent)
     elif market_maker["asset_price"] <= agent["low_price"]:
-        agent["sell"] = False
-        agent["buy"] = True
         buy(agent)
 
     return True

@@ -220,6 +220,7 @@ class LineGraph():
         self.create_lines(x, self.ax, varieties)
         self.ax.legend()
         self.ax.set_title(self.title)
+        # self.fig.canvas.draw()
 
     def create_lines(self, x, ax, varieties):
         """
@@ -254,6 +255,7 @@ class LineGraph():
         (data_points, varieties) = self.data_func()
         self.draw_graph(data_points, varieties)
         self.show()
+        # return self.lines
 
 
 class ScatterPlot():
@@ -271,13 +273,15 @@ class ScatterPlot():
                     scat.remove()
         varieties = self.data_func()
         self.create_scats(varieties)
+        # fig.canvas.draw()
         return self.scats
 
     @expects_plt
     def __init__(self, title, varieties, width, height,
                  anim=True, data_func=None, is_headless=False,
-                 legend_pos=4, change_grid_spacing=0, hide_xy_labels=False,
-                 show_legend=True):
+                 legend_pos=4, show_legend=True,
+                 change_grid_spacing=0, hide_xy_labels=False, hide_axes=False
+                 ):
         """
         Setup a scatter plot.
         varieties contains the different types of
@@ -305,11 +309,13 @@ class ScatterPlot():
         if hide_xy_labels:
             ax.tick_params(axis='both', bottom=False, left=False,
                            labelbottom=False)
+        if hide_axes:
+            plt.axis('off')
         self.create_scats(varieties)
         if show_legend:
             ax.legend(loc=legend_pos)
         ax.set_title(title)
-        plt.grid(True)
+        # fig.canvas.draw()
 
         if anim and not self.headless:
             anim_func = animation.FuncAnimation(fig,
