@@ -1,23 +1,22 @@
 {
-  "grid_height": {
-    "val": 20,
+    "val": 50,
     "question": "What is the grid height?",
     "atype": "INT",
-    "hival": 100,
-    "lowval": 2
+    "hival": 500,
+    "lowval": 1
   },
   "grid_width": {
-    "val": 20,
+    "val": 50,
     "question": "What is the grid width?",
     "atype": "INT",
-    "hival": 100,
-    "lowval": 2
+    "hival": 500,
+    "lowval": 1
   },
-  "num_drinkers": {
-    "val": 2,
-    "question": "How many drinkers do you want?",
+  "population": {
+    "val": 10,
+    "question": "What is the population of the town?",
     "atype": "INT",
-    "hival": 100,
+    "hival": 500,
     "lowval": 1
   }
 }
