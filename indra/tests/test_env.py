@@ -15,7 +15,8 @@ from indra.tests.test_agent import create_newton
 from indra.tests.test_composite import create_calcguys, create_cambguys
 
 from APIServer.test.test_env_json import env_json_basic, env_json_fashion, env_json_sandpile
-from APIServer.test.test_env_json import env_json_bacteria, env_json_scheduler
+from APIServer.test.test_env_json import env_json_bacteria, env_json_scheduler, env_json_flocking
+from APIServer.test.test_env_json import env_json_segregation
 
 travis = False
 
@@ -152,6 +153,12 @@ class EnvTestCase(TestCase):
         self.env = Env(name='Test env', serial_obj=tests_env)
         self.assertEqual(str(type(self.env)), "<class 'indra.env.Env'>")
         tests_env = env_json_scheduler.ret()
+        self.env = Env(name='Test env', serial_obj=tests_env)
+        self.assertEqual(str(type(self.env)), "<class 'indra.env.Env'>")
+        tests_env = env_json_flocking.ret()
+        self.env = Env(name='Test env', serial_obj=tests_env)
+        self.assertEqual(str(type(self.env)), "<class 'indra.env.Env'>")
+        tests_env = env_json_segregation.ret()
         self.env = Env(name='Test env', serial_obj=tests_env)
         self.assertEqual(str(type(self.env)), "<class 'indra.env.Env'>")
 
