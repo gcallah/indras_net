@@ -14,21 +14,21 @@
     "lowval": 20
   },
   "consumer_num": {
-    "val": 150,
+    "val": 180,
     "question": "How many consumers woud you like?",
     "atype": "INT",
     "hival": 400,
     "lowval": 50
   },
   "bb_num": {
-    "val": 3,
+    "val": 4,
     "question": "How many big box stores woud you like?",
     "atype": "INT",
     "hival": 20,
     "lowval": 1
   },
   "mp_num": {
-    "val": 6,
+    "val": 8,
     "question": "How many mom and pop stores woud you like?",
     "atype": "INT",
     "hival": 30,

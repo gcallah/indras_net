@@ -26,8 +26,7 @@ def create_agent(x, y):
     """
     Create an agent with the passed x, y value as its name.
     """
-    name = "(" + str(x) + "," + str(y) + ")"
-    return Agent(name=name, action=game_agent_action)
+    return Agent(name=("(%d,%d)" % (x, y)), action=game_agent_action)
 
 
 def apply_live_rules(agent):

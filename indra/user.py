@@ -144,6 +144,7 @@ class TermUser(User):
         self.menu_title = "Menu of Actions"
         self.stars = "*" * len(self.menu_title)
         self.exclude_menu_item("source")
+        self.show_line_graph = False
 
     def tell(self, msg, end='\n'):
         """
@@ -194,6 +195,12 @@ class TermUser(User):
             if choice >= 0:
                 for item in self.menu:
                     if item["id"] == choice:
+                        if choice == 2:
+                            self.show_line_graph = True
+                        if choice == 3:
+                            self.show_line_graph = False
+                        if self.show_line_graph:
+                            line_graph(self)
                         return menu_functions[item["func"]](self)
             self.tell_err(str(c) + " is an invalid option. "
                           + "Please enter a valid option.")

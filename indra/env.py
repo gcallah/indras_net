@@ -352,17 +352,21 @@ class Env(Space):
                 data = self.plot_data()
                 change_grid_spacing = 0
                 hide_xy_labels = False
+                hide_axes = False
                 if "change_grid_spacing" in self.attrs:
                     change_grid_spacing = self.attrs["change_grid_spacing"]
                 if "hide_xy_labels" in self.attrs:
                     hide_xy_labels = True
+                if "hide_axes" in self.attrs:
+                    hide_axes = True
                 scatter_plot = disp.ScatterPlot(
                     self.plot_title, data,
                     int(self.width), int(self.height),
                     anim=True, data_func=self.plot_data,
                     is_headless=self.headless(),
                     change_grid_spacing=change_grid_spacing,
-                    hide_xy_labels=hide_xy_labels)
+                    hide_xy_labels=hide_xy_labels,
+                    hide_axes=hide_axes)
                 scatter_plot.show()
                 return scatter_plot
             except Exception as e:

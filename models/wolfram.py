@@ -12,7 +12,7 @@ from indra.env import Env
 from indra.display_methods import BLACK, WHITE, SQUARE
 
 MODEL_NAME = "wolfram"
-DEBUG = False  # Turns debugging code on or off
+DEBUG = True  # Turns debugging code on or off
 DEF_RULE = 30
 
 # Group codes:
@@ -30,8 +30,7 @@ def create_agent(x, y):
     """
     Create an agent with the passed x, y value as its name.
     """
-    name = "(" + str(x) + "," + str(y) + ")"
-    return Agent(name=name, action=wfagent_action)
+    return Agent(name=("(%d,%d)" % (x, y)), action=wfagent_action)
 
 
 def get_color(group):
@@ -71,7 +70,7 @@ def next_color(rule_dict, left, middle, right):
 
 
 def get_str_key(x, y):
-    return "(" + str(x) + "," + str(y) + ")"
+    return ("(%d,%d)" % (x, y))
 
 
 def wfagent_action(agent):
@@ -92,12 +91,13 @@ def wolfram_action(wolfram_env):
     wolfram_env.user.tell("\nChecking agents in row " + str(active_row_y)
                           + " against the rule...")
     if active_row_y < 1:
-        wolfram_env.user.error_message["run"] = ("You have exceeded the"
-                                                 + " maximum height"
-                                                 + " and cannot run the model"
-                                                 + " for more periods.\n"
-                                                 + "Please pick one of the"
-                                                 + " other options.")
+        wolfram_env.user.error_message["run"] = (' '.join([
+                                                 "You have exceeded the ",
+                                                 "maximum height ",
+                                                 "and cannot run the model ",
+                                                 "for more periods.\n",
+                                                 "Please pick one of the ",
+                                                 "other options."]))
         wolfram_env.exclude_menu_item("run", "line_graph")
     else:
         next_row = wolfram_env.get_row_hood(active_row_y - 1)
@@ -112,9 +112,8 @@ def wolfram_action(wolfram_env):
                 right_color = get_color(curr_row[get_str_key(x + 1,
                                         active_row_y)].primary_group())
                 if DEBUG:
-                    print("  Left color: " + str(left_color)
-                          + ", middle color: " + str(middle_color)
-                          + ", right color " + str(right_color))
+                    print("  Left: %d, middle: %d, right: %d" %
+                          (left_color, middle_color, right_color))
                 if next_color(rule_dict, left_color, middle_color,
                               right_color):
                     wolfram_env.add_switch(next_row[

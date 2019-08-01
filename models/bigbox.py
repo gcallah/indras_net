@@ -14,9 +14,9 @@ from indra.display_methods import BLACK, BLUE, GRAY, GREEN, RED, TAN, YELLOW
 MODEL_NAME = "bigbox"
 DEBUG = False
 
-NUM_OF_CONSUMERS = 150
-NUM_OF_BB = 3
-NUM_OF_MP = 6
+NUM_OF_CONSUMERS = 180
+NUM_OF_BB = 4
+NUM_OF_MP = 8
 
 MP_PREF = 0.1
 RADIUS = 2
