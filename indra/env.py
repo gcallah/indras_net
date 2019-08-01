@@ -168,12 +168,12 @@ class Env(Space):
     def __repr__(self):
         return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
 
-    # def __init_unrestorables(self):
-    #     pass
+    def __init_unrestorables(self):
+        pass
 
     def restore_env(self, serial_obj):
         self.from_json(serial_obj)
-        # self.__init_unrestorables()
+        self.__init_unrestorables()
 
     def add_mbr_to_regis(self, member):
         if member.type == "agent":
