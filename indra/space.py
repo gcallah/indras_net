@@ -442,7 +442,7 @@ class Space(Composite):
     def get_max_distance(self):
         return sqrt((self.height ** 2) + (self.width ** 2))
 
-    def point_from_vector(self, angle, max_move, xy):
+    def point_from_vector(self, angle, max_move, xy, vector_start=(0, 0)):
         """
         Given a vector with one end at the origin, find
         the other end -- if off grid, pull it back onto the
@@ -460,7 +460,6 @@ class Space(Composite):
 
         #  Adjust if the cur_x and cur_y are out of range
         if out_of_bounds(cur_x, cur_y, 0, 0, self.width, self.height):
-
             if (cur_x == prev_x):
                 if (cur_y < 0):
                     return (cur_x, 0)

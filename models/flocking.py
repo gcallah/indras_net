@@ -16,9 +16,16 @@ DEBUG2 = False  # turns deeper debugging code on or off
 
 DEF_NUM_BIRDS = 10
 DEF_DESIRED_DISTANCE = 2
+BIRD_MAX_MOVE = 2
 
 flock = None
 the_sky = None
+
+
+def calc_angle(agent1, agent2):
+    pos1 = agent1.get_pos()
+    print("Pos1 = ", pos1)
+    return 0  # you must calculate!
 
 
 def bird_action(this_bird):
@@ -27,6 +34,11 @@ def bird_action(this_bird):
         curr_distance = distance(this_bird, nearest_bird)
         print("Distance between ", nearest_bird, " and ", this_bird,
               " is ", curr_distance)
+        angle_to_nearest = calc_angle(this_bird, nearest_bird)
+        if curr_distance < DEF_DESIRED_DISTANCE:
+            this_bird["angle"] = (angle_to_nearest + 180) % 360
+        else:
+            this_bird["angle"] = angle_to_nearest
     return False
 
 
@@ -35,7 +47,9 @@ def create_bird(name, i):
     Creates a bird with a numbered name and an action function
     making it flock.
     """
-    return Agent(name + str(i), action=bird_action)
+    return Agent(name + str(i), action=bird_action,
+                 attrs={"max_move": BIRD_MAX_MOVE,
+                        "angle": 0})
 
 
 def set_up(props=None):
