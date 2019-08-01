@@ -174,6 +174,10 @@ def main():
     global rule_dict
 
     (wolfram_env, groups, rule_dict) = set_up()
+
+    if DEBUG:
+        print(wolfram_env.__repr__())
+
     wolfram_env()
     return 0
 
