@@ -72,7 +72,7 @@ def change_color(agent, society, opp_group):
 def new_color_pref(old_pref, env_color):
     me = math.asin(old_pref)
     env = math.asin(env_color)
-    avg = np.average([me,env], weights=weightings)   # noqa: E231
+    avg = np.average([me, env], weights=weightings)
     new_color = math.sin(avg)
     return new_color
 
