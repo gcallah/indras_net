@@ -34,10 +34,10 @@ def ret():
                 "wolf0": {
                     "name": "wolf0",
                     "type": "agent",
-                    "duration": 18,
+                    "duration": 10,
                     "pos": [
-                        9,
-                        8
+                        8,
+                        2
                     ],
                     "attrs": {
                         "time_to_repr": 4,
@@ -56,10 +56,10 @@ def ret():
                 "wolf1": {
                     "name": "wolf1",
                     "type": "agent",
-                    "duration": 18,
+                    "duration": 11,
                     "pos": [
-                        8,
-                        4
+                        2,
+                        1
                     ],
                     "attrs": {
                         "time_to_repr": 4,
@@ -80,8 +80,8 @@ def ret():
                     "type": "agent",
                     "duration": 11,
                     "pos": [
-                        2,
-                        4
+                        4,
+                        3
                     ],
                     "attrs": {
                         "time_to_repr": 4,
@@ -100,9 +100,9 @@ def ret():
                 "wolf3": {
                     "name": "wolf3",
                     "type": "agent",
-                    "duration": 11,
+                    "duration": 18,
                     "pos": [
-                        1,
+                        3,
                         10
                     ],
                     "attrs": {
@@ -124,7 +124,7 @@ def ret():
                     "type": "agent",
                     "duration": 11,
                     "pos": [
-                        10,
+                        3,
                         6
                     ],
                     "attrs": {
@@ -144,10 +144,10 @@ def ret():
                 "wolf5": {
                     "name": "wolf5",
                     "type": "agent",
-                    "duration": 11,
+                    "duration": 3,
                     "pos": [
-                        1,
-                        0
+                        9,
+                        4
                     ],
                     "attrs": {
                         "time_to_repr": 4,
@@ -166,9 +166,9 @@ def ret():
                 "wolf6": {
                     "name": "wolf6",
                     "type": "agent",
-                    "duration": 10,
+                    "duration": 11,
                     "pos": [
-                        10,
+                        9,
                         9
                     ],
                     "attrs": {
@@ -188,10 +188,10 @@ def ret():
                 "wolf7": {
                     "name": "wolf7",
                     "type": "agent",
-                    "duration": 10,
+                    "duration": 11,
                     "pos": [
-                        4,
-                        10
+                        10,
+                        1
                     ],
                     "attrs": {
                         "time_to_repr": 4,
@@ -212,8 +212,8 @@ def ret():
                     "type": "agent",
                     "duration": 3,
                     "pos": [
-                        7,
-                        5
+                        2,
+                        2
                     ],
                     "attrs": {
                         "time_to_repr": 4,
@@ -234,8 +234,8 @@ def ret():
                     "type": "agent",
                     "duration": 3,
                     "pos": [
-                        10,
-                        4
+                        1,
+                        10
                     ],
                     "attrs": {
                         "time_to_repr": 4,
@@ -270,12 +270,59 @@ def ret():
             "locator": None,
             "neighbors": None,
             "action_key": None,
-            "members": {}
+            "members": {
+                "sheep3": {
+                    "name": "sheep3",
+                    "type": "agent",
+                    "duration": 6,
+                    "pos": [
+                        1,
+                        8
+                    ],
+                    "attrs": {
+                        "time_to_repr": 1,
+                        "orig_repr_time": 3
+                    },
+                    "groups": [
+                        "sheep"
+                    ],
+                    "active": True,
+                    "type_sig": 2,
+                    "prim_group": "sheep",
+                    "locator": "meadow",
+                    "neighbors": None,
+                    "action_key": "sheep_action"
+                },
+                "sheep6": {
+                    "name": "sheep6",
+                    "type": "agent",
+                    "duration": 6,
+                    "pos": [
+                        1,
+                        0
+                    ],
+                    "attrs": {
+                        "time_to_repr": 1,
+                        "orig_repr_time": 3
+                    },
+                    "groups": [
+                        "sheep"
+                    ],
+                    "active": True,
+                    "type_sig": 2,
+                    "prim_group": "sheep",
+                    "locator": "meadow",
+                    "neighbors": None,
+                    "action_key": "sheep_action"
+                }
+            }
         }
     },
     "width": 10,
     "height": 10,
-    "user": "ziruizhou",
+    "user": {
+        "name": "ziruizhou"
+    },
     "census_func": None,
     "plot_title": "meadow",
     "props": {
