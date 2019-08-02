@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import ModelMenu from "./ModelMenu"
 
 var model_image = require('./images/model_images.png')
+var spider_web_img = require('./images/spider_web.png')
 
 class Home extends Component {
   api_server = 'https://indrasnet.pythonanywhere.com/';
@@ -54,7 +55,7 @@ class Home extends Component {
         <h1 style={{ "textAlign": "center", "fontWeight": '200'}}>Welcome to the Indra ABM platform!</h1>
         <br /><br />
         <h1 style={{"fontSize": 16, "fontWeight": '400'}}>Please choose a model: </h1>
-        <img src={model_image} class="img-fluid" alt="Responsive image" style={{display:'block', float:'right', width:'45%', alignItems: "center"}}/>
+        <img src={spider_web_img} class="img-fluid" alt="Responsive image" style={{display:'block', float:'right', width:'45%', alignItems: "center"}} data-toggle="tooltip" data-placement="top" title="Image by Barbara Thayer."/>
         <ul class="list-group">
           <div class="row">
             <div class="col">

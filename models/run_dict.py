@@ -31,6 +31,8 @@ from models.wolfram import wolfram_action, wfagent_action
 from models.wolfsheep import main as wsmain
 from models.wolfsheep import set_up as wsset_up
 from models.wolfsheep import sheep_action, wolf_action
+from models.fmarket import set_up as fmset_up
+from models.fmarket import main as fmmain
 from models.fmarket import market_maker_action, trend_follower_action
 from models.fmarket import value_investor_action
 
@@ -47,6 +49,7 @@ rdict = {
     "bigbox": bbmain,
     "gameoflife": gamemain,
     "wolfram": wfmain,
+    "fmarket": fmmain,
 }
 
 setup_dict = {
@@ -61,6 +64,7 @@ setup_dict = {
     "gameoflife": gset_up,
     "bigbox": bbset_up,
     "wolfram": wfset_up,
+    "fmarket": fmset_up,
 }
 
 action_dict = {
