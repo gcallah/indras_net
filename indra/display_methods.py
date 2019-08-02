@@ -142,10 +142,10 @@ def draw_graph(graph, title, hierarchy=False, root=None):
     graph is the graph to draw.
     hierarchy is whether we should draw it as a tree.
     """
-#    pos = None
+    # pos = None
     plt.title(title)
-#    if hierarchy:
-#        pos = hierarchy_pos(graph, root)
+    # if hierarchy:
+    #     pos = hierarchy_pos(graph, root)
     # out for now:
     # nx.draw(graph, pos=pos, with_labels=True)
     plt.show()
@@ -189,11 +189,11 @@ class LineGraph():
     thing to graph.
     data_points is the length of the x-axis.
     """
-
     def __init__(self, title, varieties, data_points,
                  anim=False, data_func=None, is_headless=False, legend_pos=4):
         global anim_func
 
+        plt.close()
         self.title = title
         self.anim = anim
         self.data_func = data_func
@@ -220,7 +220,6 @@ class LineGraph():
         self.create_lines(x, self.ax, varieties)
         self.ax.legend()
         self.ax.set_title(self.title)
-        # self.fig.canvas.draw()
 
     def create_lines(self, x, ax, varieties):
         """
@@ -255,27 +254,12 @@ class LineGraph():
         (data_points, varieties) = self.data_func()
         self.draw_graph(data_points, varieties)
         self.show()
-        # return self.lines
 
 
 class ScatterPlot():
     """
     We are going to use a class here to save state for our animation
     """
-
-    def update_plot(self, i):
-        """
-        This is our animation function.
-        """
-        if self.scats is not None:
-            for scat in self.scats:
-                if scat is not None:
-                    scat.remove()
-        varieties = self.data_func()
-        self.create_scats(varieties)
-        # fig.canvas.draw()
-        return self.scats
-
     @expects_plt
     def __init__(self, title, varieties, width, height,
                  anim=True, data_func=None, is_headless=False,
@@ -290,6 +274,7 @@ class ScatterPlot():
         """
         global anim_func
 
+        plt.close()
         self.scats = None
         self.anim = anim
         self.data_func = data_func
@@ -315,7 +300,6 @@ class ScatterPlot():
         if show_legend:
             ax.legend(loc=legend_pos)
         ax.set_title(title)
-        # fig.canvas.draw()
 
         if anim and not self.headless:
             anim_func = animation.FuncAnimation(fig,
@@ -323,18 +307,6 @@ class ScatterPlot():
                                                 frames=1000,
                                                 interval=500,
                                                 blit=False)
-
-    @expects_plt
-    def show(self):
-        """
-        Display the plot.
-        """
-        if not self.headless:
-            plt.show()
-        else:
-            file = io.BytesIO()
-            plt.savefig(file, format="png")
-            return file
 
     def get_arrays(self, varieties, var):
         x_array = np.array(varieties[var][X])
@@ -358,3 +330,28 @@ class ScatterPlot():
                                alpha=1.0, marker=marker,
                                edgecolors='none', s=self.s)
             self.scats.append(scat)
+
+    @expects_plt
+    def show(self):
+        """
+        Display the plot.
+        """
+        if not self.headless:
+            plt.show()
+        else:
+            file = io.BytesIO()
+            plt.savefig(file, format="png")
+            return file
+
+    @expects_plt
+    def update_plot(self, i):
+        """
+        This is our animation function.
+        """
+        if self.scats is not None:
+            for scat in self.scats:
+                if scat is not None:
+                    scat.remove()
+        varieties = self.data_func()
+        self.create_scats(varieties)
+        return self.scats
