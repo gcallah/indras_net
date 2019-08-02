@@ -29,11 +29,11 @@ def agent_action(agent):
     return False
 
 
-def create_agent(color, i):
+def create_agent(name, i, props=None):
     """
     Create an agent.
     """
-    return Agent(color + str(i), action=agent_action)
+    return Agent(name + str(i), action=agent_action)
 
 
 def set_up(props=None):

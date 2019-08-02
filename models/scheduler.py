@@ -28,7 +28,7 @@ def sched_agent_action(agent):
     return False
 
 
-def create_agent(color, i):
+def create_agent(color, i, props=None):
     """
     Create an agent.
     """
