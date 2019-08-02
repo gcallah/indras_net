@@ -91,10 +91,6 @@ class Space(Composite):
 
     def restore_space(self, serial_obj):
         self.from_json(serial_obj)
-        self.__init_unrestorables()
-
-    def __init_unrestorables(self):
-        pass
 
     def to_json(self):
         rep = super().to_json()
