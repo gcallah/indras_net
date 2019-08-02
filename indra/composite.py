@@ -41,6 +41,7 @@ class Composite(Agent):
                          action=action, serial_obj=serial_obj)
 
         self.type = "composite"
+
         if serial_obj is not None:
             self.restore_composite(serial_obj)
         else:
@@ -70,11 +71,9 @@ class Composite(Agent):
             if serial_obj["members"][nm]["type"] == "agent":
                 ret = Agent(name=nm, serial_obj=serial_obj["members"][nm])
                 self.members[nm] = ret
-                # self.registry[nm] = ret
-            else:
+            elif serial_obj["members"][nm]["type"] == "composite":
                 ret = Composite(name=nm, serial_obj=serial_obj["members"][nm])
                 self.members[nm] = ret
-                # self.registry[nm] = ret
 
     def __repr__(self):
         return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
