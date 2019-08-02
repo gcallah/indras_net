@@ -132,7 +132,9 @@ def ret():
                 },
                 "width": 20,
                 "height": 20,
-                "user": "ziruizhou",
+                "user": {
+                    "name": "ziruizhou"
+                },
                 "plot_title": "env",
                 "props": {
                     "grid_height": {

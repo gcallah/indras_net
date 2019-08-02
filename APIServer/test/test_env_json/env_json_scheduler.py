@@ -36,8 +36,8 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        2,
-                        1
+                        6,
+                        4
                     ],
                     "attrs": {},
                     "groups": [
@@ -55,8 +55,8 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        2,
-                        10
+                        3,
+                        9
                     ],
                     "attrs": {},
                     "groups": [
@@ -74,8 +74,8 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        9,
-                        1
+                        5,
+                        6
                     ],
                     "attrs": {},
                     "groups": [
@@ -93,8 +93,8 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        1,
-                        0
+                        2,
+                        7
                     ],
                     "attrs": {},
                     "groups": [
@@ -112,8 +112,8 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        5,
-                        9
+                        7,
+                        10
                     ],
                     "attrs": {},
                     "groups": [
@@ -132,7 +132,7 @@ def ret():
                     "duration": 9223372036854775805,
                     "pos": [
                         9,
-                        6
+                        3
                     ],
                     "attrs": {},
                     "groups": [
@@ -150,8 +150,8 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        10,
-                        10
+                        3,
+                        0
                     ],
                     "attrs": {},
                     "groups": [
@@ -169,8 +169,8 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        8,
-                        9
+                        7,
+                        0
                     ],
                     "attrs": {},
                     "groups": [
@@ -188,8 +188,8 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        8,
-                        1
+                        3,
+                        10
                     ],
                     "attrs": {},
                     "groups": [
@@ -207,7 +207,7 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        4,
+                        6,
                         2
                     ],
                     "attrs": {},
@@ -247,7 +247,7 @@ def ret():
                     "duration": 9223372036854775805,
                     "pos": [
                         5,
-                        8
+                        0
                     ],
                     "attrs": {},
                     "groups": [
@@ -265,7 +265,7 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        8,
+                        4,
                         7
                     ],
                     "attrs": {},
@@ -284,8 +284,8 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        7,
-                        3
+                        8,
+                        7
                     ],
                     "attrs": {},
                     "groups": [
@@ -303,8 +303,8 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        6,
-                        4
+                        0,
+                        10
                     ],
                     "attrs": {},
                     "groups": [
@@ -322,8 +322,8 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        2,
-                        4
+                        1,
+                        3
                     ],
                     "attrs": {},
                     "groups": [
@@ -341,7 +341,7 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        3,
+                        1,
                         10
                     ],
                     "attrs": {},
@@ -361,7 +361,7 @@ def ret():
                     "duration": 9223372036854775805,
                     "pos": [
                         3,
-                        6
+                        8
                     ],
                     "attrs": {},
                     "groups": [
@@ -379,8 +379,8 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        2,
-                        8
+                        9,
+                        10
                     ],
                     "attrs": {},
                     "groups": [
@@ -398,8 +398,8 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        9,
-                        10
+                        10,
+                        5
                     ],
                     "attrs": {},
                     "groups": [
@@ -417,8 +417,8 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        7,
-                        0
+                        9,
+                        4
                     ],
                     "attrs": {},
                     "groups": [
@@ -436,7 +436,9 @@ def ret():
     },
     "width": 10,
     "height": 10,
-    "user": "ziruizhou",
+    "user": {
+        "name": "ziruizhou"
+    },
     "census_func": None,
     "plot_title": "env",
     "props": {
