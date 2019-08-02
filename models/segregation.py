@@ -2,8 +2,7 @@
     This is Schelling's segregation model re-written in Indra V2.
 """
 import random
-from indra.utils import get_prop_path
-from propargs.propargs import PropArgs
+from indra.utils import get_props
 from indra.agent import Agent
 from indra.composite import Composite
 # from indra.space import in_hood
@@ -126,13 +125,7 @@ def set_up(props=None):
     global city
     global fetched_moore_hood
 
-    ds_file = get_prop_path(MODEL_NAME)
-    if props is None:
-        pa = PropArgs.create_props(MODEL_NAME,
-                                   ds_file=ds_file)
-    else:
-        pa = PropArgs.create_props(MODEL_NAME,
-                                   prop_dict=props)
+    pa = get_props(MODEL_NAME, props)
     blue_agents = Composite(group_names[BLUE_TEAM] + " group", {"color": BLUE})
     red_agents = Composite(group_names[RED_TEAM] + " group", {"color": RED})
     for i in range(pa.get('num_red', NUM_RED)):

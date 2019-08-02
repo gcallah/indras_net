@@ -4,9 +4,8 @@
 
 from math import isclose
 import random
-from propargs.propargs import PropArgs
 
-from indra.utils import get_prop_path
+from indra.utils import get_props
 from indra.agent import Agent
 from indra.composite import Composite
 from indra.env import Env, UNLIMITED
@@ -201,11 +200,8 @@ def set_up(props=None):
     """
 
     global market_maker
-    ds_file = get_prop_path(MODEL_NAME)
-    if props is None:
-        pa = PropArgs.create_props(MODEL_NAME, ds_file=ds_file)
-    else:
-        pa = PropArgs.create_props(MODEL_NAME, prop_dict=props)
+
+    pa = get_props(MODEL_NAME, props)
 
     value_investors = Composite("value_investors", {"color": BLUE})
     trend_followers = Composite("trend_followers", {"color": RED})

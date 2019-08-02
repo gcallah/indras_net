@@ -3,8 +3,7 @@ Wolfram's cellular automata model
 """
 import ast
 
-from propargs.propargs import PropArgs
-from indra.utils import get_prop_path
+from indra.utils import get_props
 from indra.agent import Agent
 from indra.composite import Composite
 from indra.space import DEF_WIDTH
@@ -12,7 +11,7 @@ from indra.env import Env
 from indra.display_methods import BLACK, WHITE, SQUARE
 
 MODEL_NAME = "wolfram"
-DEBUG = True  # Turns debugging code on or off
+DEBUG = False  # Turns debugging code on or off
 DEF_RULE = 30
 
 # Group codes:
@@ -134,13 +133,7 @@ def set_up(props=None):
     global rule_dict
     global rule_num
 
-    ds_file = get_prop_path(MODEL_NAME)
-    if props is None:
-        pa = PropArgs.create_props(MODEL_NAME,
-                                   ds_file=ds_file)
-    else:
-        pa = PropArgs.create_props(MODEL_NAME,
-                                   prop_dict=props)
+    pa = get_props(MODEL_NAME, props)
     width = pa.get('grid_width', DEF_WIDTH)
     rule_num = pa.get('rule_number', DEF_RULE)
     rule_dict = get_rule(rule_num)
