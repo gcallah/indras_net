@@ -79,6 +79,14 @@
       "props": "models/props/bigbox.props.json",
       "doc": "Stimulate mom and pop and bigbox stores.",
       "source": "https://github.com/gcallah/indras_net/blob/master/models/bigbox.py"
+    },
+    {
+      "model ID": 9,
+      "name": "Financial Market",
+      "run": "fmarket",
+      "props": "models/props/fmarket.props.json",
+      "doc": "Stimulate the financial market.",
+      "source": "https://github.com/gcallah/indras_net/blob/master/models/fmarket.py"
     }
   ]
 }
