@@ -151,7 +151,8 @@ def set_up(props=None):
     blue_tsetters = Composite(BLUE_TSETTERS, {"color": NAVY})
     red_tsetters = Composite(RED_TSETTERS, {"color": DARKRED},
                              member_creator=create_tsetter, props=pa,
-                             num_members=pa.get('num_tsetters', NUM_TSETTERS))
+                             num_members=pa.get('num_tsetters',
+                                                NUM_TSETTERS))
     # for i in range():
     #     red_tsetters += create_tsetter(i)
 
