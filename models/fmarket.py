@@ -49,7 +49,7 @@ def trend_direction(agent, cur_price, price_hist):
 
 
 def buy(agent):
-    price = float(market_maker["asset_price"] * DEF_NUM_ASSET)
+    price = market_maker["asset_price"] * DEF_NUM_ASSET
     if agent["capital"] >= price:
         agent["capital"] -= price
         agent["num_stock"] += DEF_NUM_ASSET
@@ -57,7 +57,7 @@ def buy(agent):
 
 
 def sell(agent):
-    price = float(market_maker["asset_price"] * DEF_NUM_ASSET)
+    price = market_maker["asset_price"] * DEF_NUM_ASSET
     if agent["num_stock"] >= DEF_NUM_ASSET:
         market_maker["sell"] += 1
         agent["capital"] += price
