@@ -96,21 +96,21 @@ class Env(Space):
             self.user = None
             self.registry = {}
             self.line_data_func = line_data_func
+            self.womb = []  # for agents waiting to be born
+            self.switches = []  # for agents waiting to switch groups
+            self.user_type = os.getenv("user_type", TERMINAL)
+            if (self.user_type == TERMINAL):
+                self.user = TermUser(getpass.getuser(), self)
+                self.user.tell("Welcome to Indra, " + str(self.user) + "!")
+            elif (self.user_type == TEST):
+                self.user = TestUser(getpass.getuser(), self)
+            elif (self.user_type == API):
+                self.user = APIUser(getpass.getuser(), self)
 
         self.type = "env"
-        self.womb = []  # for agents waiting to be born
-        self.switches = []  # for agents waiting to switch groups
-        self.user_type = os.getenv("user_type", TERMINAL)
         self.num_acts = 0
         self.num_moves = 0
         self.num_switches = 0
-        if (self.user_type == TERMINAL):
-            self.user = TermUser(getpass.getuser(), self)
-            self.user.tell("Welcome to Indra, " + str(self.user) + "!")
-        elif (self.user_type == TEST):
-            self.user = TestUser(getpass.getuser(), self)
-        elif (self.user_type == API):
-            self.user = APIUser(getpass.getuser(), self)
         if self.props is not None:
             if not self.props.get('use_line', True):
                 self.exclude_menu_item("line_graph")
