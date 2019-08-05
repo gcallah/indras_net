@@ -103,13 +103,20 @@ def seg_agent_action(agent):
     return stay_put
 
 
-def create_agent(i, mean_tol, dev, color):
+def create_agent(name, i, props=None):
     """
     Creates agent of specified color type
     """
+    if "Blue" in name:
+        color = 0
+        mean_tol = props.get('mean_tol', DEF_TOLERANCE)
+    else:
+        color = 1
+        mean_tol = -props.get('mean_tol', DEF_TOLERANCE)
+    dev = props.get('deviation', DEF_SIGMA)
     this_tolerance = get_tolerance(mean_tol,
                                    dev)
-    return Agent(group_names[color] + str(i),
+    return Agent(name + str(i),
                  action=seg_agent_action,
                  attrs={TOLERANCE: this_tolerance,
                         COLOR: color, "hood_changed": True,
@@ -126,20 +133,14 @@ def set_up(props=None):
     global fetched_moore_hood
 
     pa = get_props(MODEL_NAME, props)
-    blue_agents = Composite(group_names[BLUE_TEAM] + " group", {"color": BLUE})
-    red_agents = Composite(group_names[RED_TEAM] + " group", {"color": RED})
-    for i in range(pa.get('num_red', NUM_RED)):
-        red_agents += create_agent(i,
-                                   -pa.get('mean_tol', DEF_TOLERANCE),
-                                   pa.get('deviation', DEF_SIGMA),
-                                   color=RED_TEAM)
+    blue_agents = Composite(group_names[BLUE_TEAM] + " group", {"color": BLUE},
+                            props=pa, member_creator=create_agent,
+                            num_members=pa.get('num_blue', NUM_BLUE))
+    red_agents = Composite(group_names[RED_TEAM] + " group", {"color": RED},
+                           props=pa, member_creator=create_agent,
+                           num_members=pa.get('num_red', NUM_RED))
     if DEBUG2:
         print(red_agents.__repr__())
-    for i in range(pa.get('num_blue', NUM_BLUE)):
-        blue_agents += create_agent(i,
-                                    pa.get('mean_tol', DEF_TOLERANCE),
-                                    pa.get('deviation', DEF_SIGMA),
-                                    color=BLUE_TEAM)
     if DEBUG2:
         print(blue_agents.__repr__())
     city = Env("A city", members=[blue_agents, red_agents],

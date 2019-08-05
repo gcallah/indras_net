@@ -120,11 +120,12 @@ def create_market_maker(name):
     return market_maker
 
 
-def create_trend_follower(name, i, average_period, dev):
+def create_trend_follower(name, i, props=None):
     """
     Create a trend follower.
     """
-
+    average_period = props.get("average_period", DEF_PERIODS)
+    dev = props.get("deviation_follower", DEF_SIGMA)
     trend_follower = Agent(name + str(i), action=trend_follower_action)
     trend_follower["change_period"] = gaussian_distribution(average_period,
                                                             dev)
@@ -136,12 +137,13 @@ def create_trend_follower(name, i, average_period, dev):
     return trend_follower
 
 
-def create_value_investor(name, i, mean_price, dev):
+def create_value_investor(name, i, props=None):
     """
     Create a value investor.
     """
     value_investor = Agent(name + str(i), action=value_investor_action)
-
+    mean_price = props.get("discount", DEF_DISCOUNT)
+    dev = props.get("deviation_investor", DEF_SIGMA)
     low_val_percentage = gaussian_distribution(mean_price, dev)
     high_val_percentage = gaussian_distribution(mean_price, dev)
     value_investor["low_price"] = DEF_REAL_VALUE * (1 - low_val_percentage)
@@ -203,20 +205,14 @@ def set_up(props=None):
 
     pa = get_props(MODEL_NAME, props)
 
-    value_investors = Composite("value_investors", {"color": BLUE})
-    trend_followers = Composite("trend_followers", {"color": RED})
-    for i in range(pa.get("value_investors", DEF_NUM_VALUE_INVESTOR)):
-        value_investors += create_value_investor("value_investors", i,
-                                                 pa.get("discount",
-                                                        DEF_DISCOUNT),
-                                                 pa.get("deviation_investor",
-                                                        DEF_SIGMA))
-    for i in range(pa.get("trend_followers", DEF_NUM_TREND_FOLLOWER)):
-        trend_followers += create_trend_follower("trend_followers", i,
-                                                 pa.get("average_period",
-                                                        DEF_PERIODS),
-                                                 pa.get("deviation_follower",
-                                                        DEF_SIGMA))
+    value_investors = Composite("value_investors", {"color": BLUE},
+                                props=pa, member_creator=create_value_investor,
+                                num_members=pa.get("value_investors",
+                                                   DEF_NUM_VALUE_INVESTOR))
+    trend_followers = Composite("trend_followers", {"color": RED}, props=pa,
+                                member_creator=create_trend_follower,
+                                num_members=pa.get("trend_followers",
+                                                   DEF_NUM_TREND_FOLLOWER))
     market_maker = create_market_maker("market_maker")
     market = Env("env",
                  members=[value_investors, trend_followers, market_maker],

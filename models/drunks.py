@@ -119,8 +119,6 @@ def drinker_action(agent):
             changed = False
             bar.add_switch(agent, drinkers,
                            non_drinkers)
-
-
     # if agent.name[-1] == POPULATION - 1:
     #     if attendance > OPTIMAL_OCCUPANCY:
     #         extras = attendance - OPTIMAL_OCCUPANCY
