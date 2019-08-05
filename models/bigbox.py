@@ -30,14 +30,18 @@ mp_pref = None
 radius = None
 store_census = None
 
+# The data below creates store types with default values.
+# "Store type":
+# [fixed expense, variable expense, capital, inventory,
+# color, consumers visited]
 mp_stores = {"Mom and pop: Books": [45, 30, 360, 60, TAN, 0],
              "Mom and pop: Coffee": [23, 15, 180, 30, BLACK, 0],
              "Mom and pop: Groceries": [67, 45, 540, 90, GREEN, 0],
              "Mom and pop: Hardware": [60, 40, 480, 80, RED, 0],
              "Mom and pop: Meals": [40, 23, 270, 45, YELLOW, 0]}
-# "Store type":
-# [fixed expense, variable expense, capital, inventory,
-# color, consumers visited]
+
+COLOR_INDEX = 4
+
 
 bb_store = [60, 25, 480, 90, 0]
 # [Fixed expense, variable expense, capital, inventory, consumers visited]
@@ -275,7 +279,7 @@ def set_up(props=None):
     for stores in range(0, len(mp_stores)):
         store_name = list(mp_stores.keys())[stores]
         groups.append(Composite(store_name,
-                                {"color": mp_stores[store_name][4]}))
+                                {"color": mp_stores[store_name][COLOR_INDEX]}))
     for c in range(0, num_consumers):
         groups[CONSUMER_INDX] += create_consumer("Consumer " + str(c))
     for b in range(0, num_bb):
