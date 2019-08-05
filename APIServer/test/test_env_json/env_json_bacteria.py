@@ -36,8 +36,8 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        4,
-                        14
+                        2,
+                        5
                     ],
                     "attrs": {
                         "max_move": 1
@@ -77,8 +77,8 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        19,
-                        14
+                        7,
+                        3
                     ],
                     "attrs": {
                         "max_move": 1
@@ -118,13 +118,13 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        15,
-                        12
+                        0,
+                        3.5475862866889702
                     ],
                     "attrs": {
-                        "prev_toxicity": -0.009433962264150941,
-                        "prev_nutricity": 0.01639344262295082,
-                        "angle": None,
+                        "prev_toxicity": -0.1636793656235601,
+                        "prev_nutricity": 0.020284037070336464,
+                        "angle": 85,
                         "max_move": 3
                     },
                     "groups": [
@@ -140,21 +140,23 @@ def ret():
             }
         }
     },
-    "width": 20,
-    "height": 20,
-    "user": "ziruizhou",
+    "width": 10,
+    "height": 10,
+    "user": {
+        "name": "ziruizhou"
+    },
     "census_func": None,
     "plot_title": "Petrie dish",
     "props": {
         "grid_height": {
-            "val": 20,
+            "val": 10,
             "question": "What is the grid height?",
             "atype": "INT",
             "lowval": 2,
             "hival": 100
         },
         "grid_width": {
-            "val": 20,
+            "val": 10,
             "question": "What is the grid width?",
             "atype": "INT",
             "lowval": 2,

@@ -2,8 +2,7 @@
 Conway's Game of Life model
 """
 
-from propargs.propargs import PropArgs
-from indra.utils import get_prop_path
+from indra.utils import get_props
 from indra.agent import Agent
 from indra.composite import Composite
 from indra.env import Env
@@ -279,12 +278,8 @@ def set_up(props=None):
     global groups
     global gameoflife_env
 
-    ds_file = get_prop_path(MODEL_NAME)
-    if props is None:
-        pa = PropArgs.create_props(MODEL_NAME, ds_file=ds_file)
-    else:
-        pa = PropArgs.create_props(MODEL_NAME,
-                                   prop_dict=props)
+    pa = get_props(MODEL_NAME, props)
+
     height = pa.get("grid_height", DEF_HEIGHT)
     width = pa.get("grid_width", DEF_WIDTH)
     simulation = pa.get("simulation", 0)

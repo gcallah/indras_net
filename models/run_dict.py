@@ -35,6 +35,7 @@ from models.fmarket import set_up as fmset_up
 from models.fmarket import main as fmmain
 from models.fmarket import market_maker_action, trend_follower_action
 from models.fmarket import value_investor_action
+from models.flocking import bird_action
 
 
 rdict = {
@@ -92,5 +93,6 @@ action_dict = {
     "wfagent_action": wfagent_action,
     "market_maker_action": market_maker_action,
     "trend_follower_action": trend_follower_action,
-    "value_investor_action": value_investor_action
+    "value_investor_action": value_investor_action,
+    "bird_action": bird_action
 }

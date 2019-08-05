@@ -36,17 +36,19 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        5,
-                        16
+                        1,
+                        19
                     ],
                     "attrs": {
-                        "spending power": 87,
+                        "spending power": 93,
                         "last util": 0.0,
-                        "item needed": "Mom and pop: Books",
+                        "item needed": "Mom and pop: Coffee",
                         "last utils": 0.0
                     },
                     "groups": [
-                        "Consumer"
+                        "Consumer",
+                        "x neighbors",
+                        "Moore neighbors"
                     ],
                     "active": True,
                     "type_sig": 3,
@@ -60,13 +62,13 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        4,
-                        1
+                        16,
+                        8
                     ],
                     "attrs": {
-                        "spending power": 72,
+                        "spending power": 96,
                         "last util": 0.0,
-                        "item needed": "Mom and pop: Meals",
+                        "item needed": "Mom and pop: Coffee",
                         "last utils": 0.0
                     },
                     "groups": [
@@ -87,18 +89,16 @@ def ret():
                     "duration": 9223372036854775805,
                     "pos": [
                         16,
-                        18
+                        12
                     ],
                     "attrs": {
                         "spending power": 90,
                         "last util": 0.0,
-                        "item needed": "Mom and pop: Meals",
-                        "last utils": 0.0
+                        "item needed": "Mom and pop: Hardware",
+                        "last utils": 0.5062924678343619
                     },
                     "groups": [
-                        "Consumer",
-                        "x neighbors",
-                        "Moore neighbors"
+                        "Consumer"
                     ],
                     "active": True,
                     "type_sig": 3,
@@ -112,13 +112,13 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        9,
-                        0
+                        2,
+                        3
                     ],
                     "attrs": {
-                        "spending power": 99,
+                        "spending power": 80,
                         "last util": 0.0,
-                        "item needed": "Mom and pop: Books",
+                        "item needed": "Mom and pop: Groceries",
                         "last utils": 0.0
                     },
                     "groups": [
@@ -138,17 +138,19 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        13,
-                        15
+                        18,
+                        19
                     ],
                     "attrs": {
-                        "spending power": 81,
+                        "spending power": 96,
                         "last util": 0.0,
                         "item needed": "Mom and pop: Meals",
                         "last utils": 0.0
                     },
                     "groups": [
-                        "Consumer"
+                        "Consumer",
+                        "x neighbors",
+                        "Moore neighbors"
                     ],
                     "active": True,
                     "type_sig": 3,
@@ -162,11 +164,11 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        17,
-                        7
+                        5,
+                        3
                     ],
                     "attrs": {
-                        "spending power": 71,
+                        "spending power": 72,
                         "last util": 0.0,
                         "item needed": "Mom and pop: Meals",
                         "last utils": 0.0
@@ -188,13 +190,13 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        5,
-                        0
+                        2,
+                        20
                     ],
                     "attrs": {
-                        "spending power": 70,
+                        "spending power": 94,
                         "last util": 0.0,
-                        "item needed": "Mom and pop: Meals",
+                        "item needed": "Mom and pop: Hardware",
                         "last utils": 0.0
                     },
                     "groups": [
@@ -214,13 +216,13 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        19,
-                        17
+                        4,
+                        14
                     ],
                     "attrs": {
-                        "spending power": 87,
+                        "spending power": 79,
                         "last util": 0.0,
-                        "item needed": "Mom and pop: Coffee",
+                        "item needed": "Mom and pop: Books",
                         "last utils": 0.0
                     },
                     "groups": [
@@ -240,13 +242,13 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        10,
-                        10
+                        20,
+                        9
                     ],
                     "attrs": {
-                        "spending power": 70,
+                        "spending power": 88,
                         "last util": 0.0,
-                        "item needed": "Mom and pop: Hardware",
+                        "item needed": "Mom and pop: Groceries",
                         "last utils": 0.0
                     },
                     "groups": [
@@ -266,17 +268,19 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        13,
-                        1
+                        10,
+                        4
                     ],
                     "attrs": {
-                        "spending power": 92,
+                        "spending power": 83,
                         "last util": 0.0,
-                        "item needed": "Mom and pop: Groceries",
+                        "item needed": "Mom and pop: Coffee",
                         "last utils": 0.0
                     },
                     "groups": [
-                        "Consumer"
+                        "Consumer",
+                        "x neighbors",
+                        "Moore neighbors"
                     ],
                     "active": True,
                     "type_sig": 3,
@@ -290,11 +294,11 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        1,
-                        20
+                        17,
+                        16
                     ],
                     "attrs": {
-                        "spending power": 70,
+                        "spending power": 72,
                         "last util": 0.0,
                         "item needed": "Mom and pop: Meals",
                         "last utils": 0.0
@@ -316,14 +320,14 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        10,
-                        0
+                        7,
+                        5
                     ],
                     "attrs": {
                         "spending power": 75,
                         "last util": 0.0,
                         "item needed": "Mom and pop: Groceries",
-                        "last utils": 0.5129215751443139
+                        "last utils": 0.0
                     },
                     "groups": [
                         "Consumer",
@@ -342,13 +346,13 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        6,
-                        3
+                        19,
+                        1
                     ],
                     "attrs": {
-                        "spending power": 82,
+                        "spending power": 99,
                         "last util": 0.0,
-                        "item needed": "Mom and pop: Hardware",
+                        "item needed": "Mom and pop: Books",
                         "last utils": 0.0
                     },
                     "groups": [
@@ -368,13 +372,13 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        6,
-                        15
+                        20,
+                        0
                     ],
                     "attrs": {
-                        "spending power": 80,
+                        "spending power": 70,
                         "last util": 0.0,
-                        "item needed": "Mom and pop: Groceries",
+                        "item needed": "Mom and pop: Books",
                         "last utils": 0.0
                     },
                     "groups": [
@@ -394,17 +398,19 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        1,
-                        4
+                        7,
+                        3
                     ],
                     "attrs": {
-                        "spending power": 71,
+                        "spending power": 78,
                         "last util": 0.0,
-                        "item needed": "Mom and pop: Groceries",
+                        "item needed": "Mom and pop: Coffee",
                         "last utils": 0.0
                     },
                     "groups": [
-                        "Consumer"
+                        "Consumer",
+                        "x neighbors",
+                        "Moore neighbors"
                     ],
                     "active": True,
                     "type_sig": 3,
@@ -418,13 +424,13 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        17,
-                        16
+                        11,
+                        10
                     ],
                     "attrs": {
-                        "spending power": 74,
+                        "spending power": 75,
                         "last util": 0.0,
-                        "item needed": "Mom and pop: Meals",
+                        "item needed": "Mom and pop: Groceries",
                         "last utils": 0.0
                     },
                     "groups": [
@@ -444,13 +450,13 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        2,
-                        9
+                        0,
+                        6
                     ],
                     "attrs": {
-                        "spending power": 93,
+                        "spending power": 100,
                         "last util": 0.0,
-                        "item needed": "Mom and pop: Coffee",
+                        "item needed": "Mom and pop: Books",
                         "last utils": 0.0
                     },
                     "groups": [
@@ -470,13 +476,13 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        11,
-                        19
+                        15,
+                        18
                     ],
                     "attrs": {
-                        "spending power": 96,
+                        "spending power": 89,
                         "last util": 0.0,
-                        "item needed": "Mom and pop: Groceries",
+                        "item needed": "Mom and pop: Coffee",
                         "last utils": 0.0
                     },
                     "groups": [
@@ -496,13 +502,13 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        17,
-                        6
+                        11,
+                        12
                     ],
                     "attrs": {
-                        "spending power": 99,
+                        "spending power": 72,
                         "last util": 0.0,
-                        "item needed": "Mom and pop: Meals",
+                        "item needed": "Mom and pop: Hardware",
                         "last utils": 0.0
                     },
                     "groups": [
@@ -522,13 +528,13 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        6,
-                        12
+                        4,
+                        3
                     ],
                     "attrs": {
-                        "spending power": 100,
+                        "spending power": 86,
                         "last util": 0.0,
-                        "item needed": "Mom and pop: Meals",
+                        "item needed": "Mom and pop: Groceries",
                         "last utils": 0.0
                     },
                     "groups": [
@@ -548,13 +554,13 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        8,
-                        5
+                        18,
+                        15
                     ],
                     "attrs": {
-                        "spending power": 90,
+                        "spending power": 95,
                         "last util": 0.0,
-                        "item needed": "Mom and pop: Books",
+                        "item needed": "Mom and pop: Groceries",
                         "last utils": 0.0
                     },
                     "groups": [
@@ -574,13 +580,13 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        17,
-                        18
+                        10,
+                        2
                     ],
                     "attrs": {
-                        "spending power": 77,
+                        "spending power": 74,
                         "last util": 0.0,
-                        "item needed": "Mom and pop: Books",
+                        "item needed": "Mom and pop: Groceries",
                         "last utils": 0.0
                     },
                     "groups": [
@@ -600,13 +606,13 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        11,
-                        3
+                        10,
+                        7
                     ],
                     "attrs": {
-                        "spending power": 88,
+                        "spending power": 94,
                         "last util": 0.0,
-                        "item needed": "Mom and pop: Books",
+                        "item needed": "Mom and pop: Meals",
                         "last utils": 0.0
                     },
                     "groups": [
@@ -626,19 +632,16 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        14,
-                        17
+                        13,
+                        8
                     ],
                     "attrs": {
-                        "spending power": 83,
+                        "spending power": 90,
                         "last util": 0.0,
-                        "item needed": "Mom and pop: Hardware",
-                        "last utils": 0.0
+                        "item needed": "Mom and pop: Books"
                     },
                     "groups": [
-                        "Consumer",
-                        "x neighbors",
-                        "Moore neighbors"
+                        "Consumer"
                     ],
                     "active": True,
                     "type_sig": 3,
@@ -652,13 +655,13 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        9,
+                        0,
                         7
                     ],
                     "attrs": {
-                        "spending power": 72,
+                        "spending power": 79,
                         "last util": 0.0,
-                        "item needed": "Mom and pop: Hardware",
+                        "item needed": "Mom and pop: Groceries",
                         "last utils": 0.0
                     },
                     "groups": [
@@ -682,7 +685,7 @@ def ret():
                         17
                     ],
                     "attrs": {
-                        "spending power": 73,
+                        "spending power": 99,
                         "last util": 0.0,
                         "item needed": "Mom and pop: Books",
                         "last utils": 0.0
@@ -701,518 +704,6 @@ def ret():
                 },
                 "Consumer 26": {
                     "name": "Consumer 26",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        13,
-                        6
-                    ],
-                    "attrs": {
-                        "spending power": 86,
-                        "last util": 0.0,
-                        "item needed": "Mom and pop: Coffee",
-                        "last utils": 0.0
-                    },
-                    "groups": [
-                        "Consumer",
-                        "x neighbors",
-                        "Moore neighbors"
-                    ],
-                    "active": True,
-                    "type_sig": 3,
-                    "prim_group": "Consumer",
-                    "locator": "Town",
-                    "neighbors": None,
-                    "action_key": "consumer_action"
-                },
-                "Consumer 27": {
-                    "name": "Consumer 27",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        13,
-                        8
-                    ],
-                    "attrs": {
-                        "spending power": 71,
-                        "last util": 0.0,
-                        "item needed": "Mom and pop: Meals",
-                        "last utils": 0.0
-                    },
-                    "groups": [
-                        "Consumer",
-                        "x neighbors",
-                        "Moore neighbors"
-                    ],
-                    "active": True,
-                    "type_sig": 3,
-                    "prim_group": "Consumer",
-                    "locator": "Town",
-                    "neighbors": None,
-                    "action_key": "consumer_action"
-                },
-                "Consumer 28": {
-                    "name": "Consumer 28",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        15,
-                        4
-                    ],
-                    "attrs": {
-                        "spending power": 86,
-                        "last util": 0.0,
-                        "item needed": "Mom and pop: Books",
-                        "last utils": 0.0
-                    },
-                    "groups": [
-                        "Consumer",
-                        "x neighbors",
-                        "Moore neighbors"
-                    ],
-                    "active": True,
-                    "type_sig": 3,
-                    "prim_group": "Consumer",
-                    "locator": "Town",
-                    "neighbors": None,
-                    "action_key": "consumer_action"
-                },
-                "Consumer 29": {
-                    "name": "Consumer 29",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        4,
-                        3
-                    ],
-                    "attrs": {
-                        "spending power": 85,
-                        "last util": 0.0,
-                        "item needed": "Mom and pop: Meals",
-                        "last utils": 0.0
-                    },
-                    "groups": [
-                        "Consumer"
-                    ],
-                    "active": True,
-                    "type_sig": 3,
-                    "prim_group": "Consumer",
-                    "locator": "Town",
-                    "neighbors": None,
-                    "action_key": "consumer_action"
-                },
-                "Consumer 30": {
-                    "name": "Consumer 30",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        18,
-                        2
-                    ],
-                    "attrs": {
-                        "spending power": 81,
-                        "last util": 0.0,
-                        "item needed": "Mom and pop: Books",
-                        "last utils": 0.0
-                    },
-                    "groups": [
-                        "Consumer",
-                        "x neighbors",
-                        "Moore neighbors"
-                    ],
-                    "active": True,
-                    "type_sig": 3,
-                    "prim_group": "Consumer",
-                    "locator": "Town",
-                    "neighbors": None,
-                    "action_key": "consumer_action"
-                },
-                "Consumer 31": {
-                    "name": "Consumer 31",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        17,
-                        4
-                    ],
-                    "attrs": {
-                        "spending power": 77,
-                        "last util": 0.0,
-                        "item needed": "Mom and pop: Meals",
-                        "last utils": 0.0
-                    },
-                    "groups": [
-                        "Consumer",
-                        "x neighbors",
-                        "Moore neighbors"
-                    ],
-                    "active": True,
-                    "type_sig": 3,
-                    "prim_group": "Consumer",
-                    "locator": "Town",
-                    "neighbors": None,
-                    "action_key": "consumer_action"
-                },
-                "Consumer 32": {
-                    "name": "Consumer 32",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        8,
-                        12
-                    ],
-                    "attrs": {
-                        "spending power": 86,
-                        "last util": 0.0,
-                        "item needed": "Mom and pop: Groceries",
-                        "last utils": 0.0
-                    },
-                    "groups": [
-                        "Consumer",
-                        "x neighbors",
-                        "Moore neighbors"
-                    ],
-                    "active": True,
-                    "type_sig": 3,
-                    "prim_group": "Consumer",
-                    "locator": "Town",
-                    "neighbors": None,
-                    "action_key": "consumer_action"
-                },
-                "Consumer 33": {
-                    "name": "Consumer 33",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        14,
-                        1
-                    ],
-                    "attrs": {
-                        "spending power": 87,
-                        "last util": 0.0,
-                        "item needed": "Mom and pop: Coffee",
-                        "last utils": 0.0
-                    },
-                    "groups": [
-                        "Consumer",
-                        "x neighbors",
-                        "Moore neighbors"
-                    ],
-                    "active": True,
-                    "type_sig": 3,
-                    "prim_group": "Consumer",
-                    "locator": "Town",
-                    "neighbors": None,
-                    "action_key": "consumer_action"
-                },
-                "Consumer 34": {
-                    "name": "Consumer 34",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        9,
-                        2
-                    ],
-                    "attrs": {
-                        "spending power": 85,
-                        "last util": 0.0,
-                        "item needed": "Mom and pop: Meals",
-                        "last utils": 0.0
-                    },
-                    "groups": [
-                        "Consumer",
-                        "x neighbors",
-                        "Moore neighbors"
-                    ],
-                    "active": True,
-                    "type_sig": 3,
-                    "prim_group": "Consumer",
-                    "locator": "Town",
-                    "neighbors": None,
-                    "action_key": "consumer_action"
-                },
-                "Consumer 35": {
-                    "name": "Consumer 35",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        12,
-                        1
-                    ],
-                    "attrs": {
-                        "spending power": 71,
-                        "last util": 0.0,
-                        "item needed": "Mom and pop: Books",
-                        "last utils": 0.0
-                    },
-                    "groups": [
-                        "Consumer",
-                        "x neighbors",
-                        "Moore neighbors"
-                    ],
-                    "active": True,
-                    "type_sig": 3,
-                    "prim_group": "Consumer",
-                    "locator": "Town",
-                    "neighbors": None,
-                    "action_key": "consumer_action"
-                },
-                "Consumer 36": {
-                    "name": "Consumer 36",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        11,
-                        17
-                    ],
-                    "attrs": {
-                        "spending power": 87,
-                        "last util": 0.0,
-                        "item needed": "Mom and pop: Books",
-                        "last utils": 0.0
-                    },
-                    "groups": [
-                        "Consumer",
-                        "x neighbors",
-                        "Moore neighbors"
-                    ],
-                    "active": True,
-                    "type_sig": 3,
-                    "prim_group": "Consumer",
-                    "locator": "Town",
-                    "neighbors": None,
-                    "action_key": "consumer_action"
-                },
-                "Consumer 37": {
-                    "name": "Consumer 37",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        8,
-                        15
-                    ],
-                    "attrs": {
-                        "spending power": 95,
-                        "last util": 0.0,
-                        "item needed": "Mom and pop: Groceries",
-                        "last utils": 0.0
-                    },
-                    "groups": [
-                        "Consumer",
-                        "x neighbors",
-                        "Moore neighbors"
-                    ],
-                    "active": True,
-                    "type_sig": 3,
-                    "prim_group": "Consumer",
-                    "locator": "Town",
-                    "neighbors": None,
-                    "action_key": "consumer_action"
-                },
-                "Consumer 38": {
-                    "name": "Consumer 38",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        1,
-                        10
-                    ],
-                    "attrs": {
-                        "spending power": 78,
-                        "last util": 0.0,
-                        "item needed": "Mom and pop: Hardware",
-                        "last utils": 0.0
-                    },
-                    "groups": [
-                        "Consumer"
-                    ],
-                    "active": True,
-                    "type_sig": 3,
-                    "prim_group": "Consumer",
-                    "locator": "Town",
-                    "neighbors": None,
-                    "action_key": "consumer_action"
-                },
-                "Consumer 39": {
-                    "name": "Consumer 39",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        3,
-                        6
-                    ],
-                    "attrs": {
-                        "spending power": 93,
-                        "last util": 0.0,
-                        "item needed": "Mom and pop: Hardware",
-                        "last utils": 0.0
-                    },
-                    "groups": [
-                        "Consumer",
-                        "x neighbors",
-                        "Moore neighbors"
-                    ],
-                    "active": True,
-                    "type_sig": 3,
-                    "prim_group": "Consumer",
-                    "locator": "Town",
-                    "neighbors": None,
-                    "action_key": "consumer_action"
-                },
-                "Consumer 40": {
-                    "name": "Consumer 40",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        1,
-                        6
-                    ],
-                    "attrs": {
-                        "spending power": 97,
-                        "last util": 0.0,
-                        "item needed": "Mom and pop: Meals",
-                        "last utils": 0.0
-                    },
-                    "groups": [
-                        "Consumer",
-                        "x neighbors",
-                        "Moore neighbors"
-                    ],
-                    "active": True,
-                    "type_sig": 3,
-                    "prim_group": "Consumer",
-                    "locator": "Town",
-                    "neighbors": None,
-                    "action_key": "consumer_action"
-                },
-                "Consumer 41": {
-                    "name": "Consumer 41",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        2,
-                        17
-                    ],
-                    "attrs": {
-                        "spending power": 72,
-                        "last util": 0.0,
-                        "item needed": "Mom and pop: Coffee",
-                        "last utils": 0.0
-                    },
-                    "groups": [
-                        "Consumer",
-                        "x neighbors",
-                        "Moore neighbors"
-                    ],
-                    "active": True,
-                    "type_sig": 3,
-                    "prim_group": "Consumer",
-                    "locator": "Town",
-                    "neighbors": None,
-                    "action_key": "consumer_action"
-                },
-                "Consumer 42": {
-                    "name": "Consumer 42",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        16,
-                        6
-                    ],
-                    "attrs": {
-                        "spending power": 92,
-                        "last util": 0.0,
-                        "item needed": "Mom and pop: Hardware",
-                        "last utils": 0.0
-                    },
-                    "groups": [
-                        "Consumer"
-                    ],
-                    "active": True,
-                    "type_sig": 3,
-                    "prim_group": "Consumer",
-                    "locator": "Town",
-                    "neighbors": None,
-                    "action_key": "consumer_action"
-                },
-                "Consumer 43": {
-                    "name": "Consumer 43",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        7,
-                        4
-                    ],
-                    "attrs": {
-                        "spending power": 88,
-                        "last util": 0.0,
-                        "item needed": "Mom and pop: Coffee",
-                        "last utils": 0.0
-                    },
-                    "groups": [
-                        "Consumer",
-                        "x neighbors",
-                        "Moore neighbors"
-                    ],
-                    "active": True,
-                    "type_sig": 3,
-                    "prim_group": "Consumer",
-                    "locator": "Town",
-                    "neighbors": None,
-                    "action_key": "consumer_action"
-                },
-                "Consumer 44": {
-                    "name": "Consumer 44",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        13,
-                        2
-                    ],
-                    "attrs": {
-                        "spending power": 79,
-                        "last util": 0.0,
-                        "item needed": "Mom and pop: Groceries",
-                        "last utils": 0.0
-                    },
-                    "groups": [
-                        "Consumer"
-                    ],
-                    "active": True,
-                    "type_sig": 3,
-                    "prim_group": "Consumer",
-                    "locator": "Town",
-                    "neighbors": None,
-                    "action_key": "consumer_action"
-                },
-                "Consumer 45": {
-                    "name": "Consumer 45",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        9,
-                        18
-                    ],
-                    "attrs": {
-                        "spending power": 99,
-                        "last util": 0.0,
-                        "item needed": "Mom and pop: Meals",
-                        "last utils": 0.0
-                    },
-                    "groups": [
-                        "Consumer",
-                        "x neighbors",
-                        "Moore neighbors"
-                    ],
-                    "active": True,
-                    "type_sig": 3,
-                    "prim_group": "Consumer",
-                    "locator": "Town",
-                    "neighbors": None,
-                    "action_key": "consumer_action"
-                },
-                "Consumer 46": {
-                    "name": "Consumer 46",
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
@@ -1237,18 +728,538 @@ def ret():
                     "neighbors": None,
                     "action_key": "consumer_action"
                 },
+                "Consumer 27": {
+                    "name": "Consumer 27",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        2,
+                        0
+                    ],
+                    "attrs": {
+                        "spending power": 86,
+                        "last util": 0.0,
+                        "item needed": "Mom and pop: Books",
+                        "last utils": 0.0
+                    },
+                    "groups": [
+                        "Consumer",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 3,
+                    "prim_group": "Consumer",
+                    "locator": "Town",
+                    "neighbors": None,
+                    "action_key": "consumer_action"
+                },
+                "Consumer 28": {
+                    "name": "Consumer 28",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        13,
+                        16
+                    ],
+                    "attrs": {
+                        "spending power": 100,
+                        "last util": 0.0,
+                        "item needed": "Mom and pop: Coffee",
+                        "last utils": 0.0
+                    },
+                    "groups": [
+                        "Consumer",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 3,
+                    "prim_group": "Consumer",
+                    "locator": "Town",
+                    "neighbors": None,
+                    "action_key": "consumer_action"
+                },
+                "Consumer 29": {
+                    "name": "Consumer 29",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        6,
+                        12
+                    ],
+                    "attrs": {
+                        "spending power": 78,
+                        "last util": 0.0,
+                        "item needed": "Mom and pop: Meals",
+                        "last utils": 0.0
+                    },
+                    "groups": [
+                        "Consumer",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 3,
+                    "prim_group": "Consumer",
+                    "locator": "Town",
+                    "neighbors": None,
+                    "action_key": "consumer_action"
+                },
+                "Consumer 30": {
+                    "name": "Consumer 30",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        7,
+                        18
+                    ],
+                    "attrs": {
+                        "spending power": 82,
+                        "last util": 0.0,
+                        "item needed": "Mom and pop: Books",
+                        "last utils": 0.7638432067804084
+                    },
+                    "groups": [
+                        "Consumer",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 3,
+                    "prim_group": "Consumer",
+                    "locator": "Town",
+                    "neighbors": None,
+                    "action_key": "consumer_action"
+                },
+                "Consumer 31": {
+                    "name": "Consumer 31",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        8,
+                        7
+                    ],
+                    "attrs": {
+                        "spending power": 95,
+                        "last util": 0.0,
+                        "item needed": "Mom and pop: Coffee",
+                        "last utils": 0.0
+                    },
+                    "groups": [
+                        "Consumer",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 3,
+                    "prim_group": "Consumer",
+                    "locator": "Town",
+                    "neighbors": None,
+                    "action_key": "consumer_action"
+                },
+                "Consumer 32": {
+                    "name": "Consumer 32",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        2,
+                        2
+                    ],
+                    "attrs": {
+                        "spending power": 78,
+                        "last util": 0.0,
+                        "item needed": "Mom and pop: Coffee",
+                        "last utils": 0.0
+                    },
+                    "groups": [
+                        "Consumer",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 3,
+                    "prim_group": "Consumer",
+                    "locator": "Town",
+                    "neighbors": None,
+                    "action_key": "consumer_action"
+                },
+                "Consumer 33": {
+                    "name": "Consumer 33",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        20,
+                        7
+                    ],
+                    "attrs": {
+                        "spending power": 82,
+                        "last util": 0.0,
+                        "item needed": "Mom and pop: Books",
+                        "last utils": 0.0
+                    },
+                    "groups": [
+                        "Consumer",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 3,
+                    "prim_group": "Consumer",
+                    "locator": "Town",
+                    "neighbors": None,
+                    "action_key": "consumer_action"
+                },
+                "Consumer 34": {
+                    "name": "Consumer 34",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        6,
+                        0
+                    ],
+                    "attrs": {
+                        "spending power": 79,
+                        "last util": 0.0,
+                        "item needed": "Mom and pop: Meals",
+                        "last utils": 0.0
+                    },
+                    "groups": [
+                        "Consumer",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 3,
+                    "prim_group": "Consumer",
+                    "locator": "Town",
+                    "neighbors": None,
+                    "action_key": "consumer_action"
+                },
+                "Consumer 35": {
+                    "name": "Consumer 35",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        5,
+                        8
+                    ],
+                    "attrs": {
+                        "spending power": 87,
+                        "last util": 0.0,
+                        "item needed": "Mom and pop: Books",
+                        "last utils": 0.0
+                    },
+                    "groups": [
+                        "Consumer",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 3,
+                    "prim_group": "Consumer",
+                    "locator": "Town",
+                    "neighbors": None,
+                    "action_key": "consumer_action"
+                },
+                "Consumer 36": {
+                    "name": "Consumer 36",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        4,
+                        7
+                    ],
+                    "attrs": {
+                        "spending power": 80,
+                        "last util": 0.0,
+                        "item needed": "Mom and pop: Hardware",
+                        "last utils": 0.0
+                    },
+                    "groups": [
+                        "Consumer",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 3,
+                    "prim_group": "Consumer",
+                    "locator": "Town",
+                    "neighbors": None,
+                    "action_key": "consumer_action"
+                },
+                "Consumer 37": {
+                    "name": "Consumer 37",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        14,
+                        14
+                    ],
+                    "attrs": {
+                        "spending power": 99,
+                        "last util": 0.0,
+                        "item needed": "Mom and pop: Meals",
+                        "last utils": 0.180784001210056
+                    },
+                    "groups": [
+                        "Consumer",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 3,
+                    "prim_group": "Consumer",
+                    "locator": "Town",
+                    "neighbors": None,
+                    "action_key": "consumer_action"
+                },
+                "Consumer 38": {
+                    "name": "Consumer 38",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        7,
+                        1
+                    ],
+                    "attrs": {
+                        "spending power": 92,
+                        "last util": 0.0,
+                        "item needed": "Mom and pop: Coffee",
+                        "last utils": 0.0
+                    },
+                    "groups": [
+                        "Consumer",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 3,
+                    "prim_group": "Consumer",
+                    "locator": "Town",
+                    "neighbors": None,
+                    "action_key": "consumer_action"
+                },
+                "Consumer 39": {
+                    "name": "Consumer 39",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        8,
+                        14
+                    ],
+                    "attrs": {
+                        "spending power": 70,
+                        "last util": 0.0,
+                        "item needed": "Mom and pop: Meals",
+                        "last utils": 0.0
+                    },
+                    "groups": [
+                        "Consumer",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 3,
+                    "prim_group": "Consumer",
+                    "locator": "Town",
+                    "neighbors": None,
+                    "action_key": "consumer_action"
+                },
+                "Consumer 40": {
+                    "name": "Consumer 40",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        8,
+                        13
+                    ],
+                    "attrs": {
+                        "spending power": 92,
+                        "last util": 0.0,
+                        "item needed": "Mom and pop: Books",
+                        "last utils": 0.0
+                    },
+                    "groups": [
+                        "Consumer",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 3,
+                    "prim_group": "Consumer",
+                    "locator": "Town",
+                    "neighbors": None,
+                    "action_key": "consumer_action"
+                },
+                "Consumer 41": {
+                    "name": "Consumer 41",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        15,
+                        20
+                    ],
+                    "attrs": {
+                        "spending power": 72,
+                        "last util": 0.0,
+                        "item needed": "Mom and pop: Books",
+                        "last utils": 0.0
+                    },
+                    "groups": [
+                        "Consumer",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 3,
+                    "prim_group": "Consumer",
+                    "locator": "Town",
+                    "neighbors": None,
+                    "action_key": "consumer_action"
+                },
+                "Consumer 42": {
+                    "name": "Consumer 42",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        7,
+                        6
+                    ],
+                    "attrs": {
+                        "spending power": 84,
+                        "last util": 0.0,
+                        "item needed": "Mom and pop: Coffee",
+                        "last utils": 0.0
+                    },
+                    "groups": [
+                        "Consumer",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 3,
+                    "prim_group": "Consumer",
+                    "locator": "Town",
+                    "neighbors": None,
+                    "action_key": "consumer_action"
+                },
+                "Consumer 43": {
+                    "name": "Consumer 43",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        6,
+                        20
+                    ],
+                    "attrs": {
+                        "spending power": 85,
+                        "last util": 0.0,
+                        "item needed": "Mom and pop: Hardware",
+                        "last utils": 0.0
+                    },
+                    "groups": [
+                        "Consumer",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 3,
+                    "prim_group": "Consumer",
+                    "locator": "Town",
+                    "neighbors": None,
+                    "action_key": "consumer_action"
+                },
+                "Consumer 44": {
+                    "name": "Consumer 44",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        19,
+                        0
+                    ],
+                    "attrs": {
+                        "spending power": 83,
+                        "last util": 0.0,
+                        "item needed": "Mom and pop: Coffee",
+                        "last utils": 0.0
+                    },
+                    "groups": [
+                        "Consumer",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 3,
+                    "prim_group": "Consumer",
+                    "locator": "Town",
+                    "neighbors": None,
+                    "action_key": "consumer_action"
+                },
+                "Consumer 45": {
+                    "name": "Consumer 45",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        20,
+                        11
+                    ],
+                    "attrs": {
+                        "spending power": 96,
+                        "last util": 0.0,
+                        "item needed": "Mom and pop: Coffee",
+                        "last utils": 0.0
+                    },
+                    "groups": [
+                        "Consumer",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 3,
+                    "prim_group": "Consumer",
+                    "locator": "Town",
+                    "neighbors": None,
+                    "action_key": "consumer_action"
+                },
+                "Consumer 46": {
+                    "name": "Consumer 46",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        11,
+                        4
+                    ],
+                    "attrs": {
+                        "spending power": 78,
+                        "last util": 0.0,
+                        "item needed": "Mom and pop: Coffee",
+                        "last utils": 0.0
+                    },
+                    "groups": [
+                        "Consumer",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 3,
+                    "prim_group": "Consumer",
+                    "locator": "Town",
+                    "neighbors": None,
+                    "action_key": "consumer_action"
+                },
                 "Consumer 47": {
                     "name": "Consumer 47",
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        8,
-                        18
+                        0,
+                        19
                     ],
                     "attrs": {
-                        "spending power": 89,
+                        "spending power": 76,
                         "last util": 0.0,
-                        "item needed": "Mom and pop: Groceries",
+                        "item needed": "Mom and pop: Meals",
                         "last utils": 0.0
                     },
                     "groups": [
@@ -1268,13 +1279,13 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        7,
-                        16
+                        10,
+                        0
                     ],
                     "attrs": {
-                        "spending power": 89,
+                        "spending power": 82,
                         "last util": 0.0,
-                        "item needed": "Mom and pop: Books",
+                        "item needed": "Mom and pop: Groceries",
                         "last utils": 0.0
                     },
                     "groups": [
@@ -1294,13 +1305,13 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        2,
+                        1,
                         11
                     ],
                     "attrs": {
-                        "spending power": 80,
+                        "spending power": 86,
                         "last util": 0.0,
-                        "item needed": "Mom and pop: Coffee",
+                        "item needed": "Mom and pop: Meals",
                         "last utils": 0.0
                     },
                     "groups": [
@@ -1340,21 +1351,53 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        20,
-                        4
+                        1,
+                        15
                     ],
                     "attrs": {
                         "fixed expense": 60,
                         "variable expense": 25,
-                        "capital": 480,
+                        "capital": 502,
                         "inventory": [
                             90,
-                            90
+                            87
                         ],
-                        "visited": 0
+                        "visited": 1
                     },
                     "groups": [
-                        "Big box"
+                        "Big box",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 5,
+                    "prim_group": "Big box",
+                    "locator": "Town",
+                    "neighbors": None,
+                    "action_key": "bb_action"
+                },
+                "Big box 1": {
+                    "name": "Big box 1",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        0,
+                        14
+                    ],
+                    "attrs": {
+                        "fixed expense": 60,
+                        "variable expense": 25,
+                        "capital": 399,
+                        "inventory": [
+                            90,
+                            89
+                        ],
+                        "visited": 1
+                    },
+                    "groups": [
+                        "Big box",
+                        "x neighbors",
+                        "Moore neighbors"
                     ],
                     "active": True,
                     "type_sig": 5,
@@ -1382,7 +1425,38 @@ def ret():
             "locator": None,
             "neighbors": None,
             "action_key": None,
-            "members": {}
+            "members": {
+                "Mom and pop: Books 4": {
+                    "name": "Mom and pop: Books 4",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        9,
+                        16
+                    ],
+                    "attrs": {
+                        "fixed expense": 45,
+                        "variable expense": 30,
+                        "capital": 225,
+                        "inventory": [
+                            60,
+                            60
+                        ],
+                        "visited": 0
+                    },
+                    "groups": [
+                        "Mom and pop: Books",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 5,
+                    "prim_group": "Mom and pop: Books",
+                    "locator": "Town",
+                    "neighbors": None,
+                    "action_key": "mp_action"
+                }
+            }
         },
         "Mom and pop: Coffee": {
             "name": "Mom and pop: Coffee",
@@ -1401,7 +1475,38 @@ def ret():
             "locator": None,
             "neighbors": None,
             "action_key": None,
-            "members": {}
+            "members": {
+                "Mom and pop: Coffee 0": {
+                    "name": "Mom and pop: Coffee 0",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        13,
+                        0
+                    ],
+                    "attrs": {
+                        "fixed expense": 23,
+                        "variable expense": 15,
+                        "capital": -4,
+                        "inventory": [
+                            30,
+                            30
+                        ],
+                        "visited": 0
+                    },
+                    "groups": [
+                        "Mom and pop: Coffee",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 5,
+                    "prim_group": "Mom and pop: Coffee",
+                    "locator": "Town",
+                    "neighbors": None,
+                    "action_key": "mp_action"
+                }
+            }
         },
         "Mom and pop: Groceries": {
             "name": "Mom and pop: Groceries",
@@ -1421,23 +1526,23 @@ def ret():
             "neighbors": None,
             "action_key": None,
             "members": {
-                "Mom and pop: Groceries 0": {
-                    "name": "Mom and pop: Groceries 0",
+                "Mom and pop: Groceries 2": {
+                    "name": "Mom and pop: Groceries 2",
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        9,
+                        3,
                         5
                     ],
                     "attrs": {
                         "fixed expense": 67,
                         "variable expense": 45,
-                        "capital": 481,
+                        "capital": -21,
                         "inventory": [
                             90,
-                            89
+                            88
                         ],
-                        "visited": 1
+                        "visited": 0
                     },
                     "groups": [
                         "Mom and pop: Groceries",
@@ -1476,13 +1581,13 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        16,
-                        19
+                        5,
+                        20
                     ],
                     "attrs": {
                         "fixed expense": 60,
                         "variable expense": 40,
-                        "capital": 240,
+                        "capital": 480,
                         "inventory": [
                             80,
                             80
@@ -1490,39 +1595,7 @@ def ret():
                         "visited": 0
                     },
                     "groups": [
-                        "Mom and pop: Hardware",
-                        "x neighbors",
-                        "Moore neighbors"
-                    ],
-                    "active": True,
-                    "type_sig": 5,
-                    "prim_group": "Mom and pop: Hardware",
-                    "locator": "Town",
-                    "neighbors": None,
-                    "action_key": "mp_action"
-                },
-                "Mom and pop: Hardware 2": {
-                    "name": "Mom and pop: Hardware 2",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        6,
-                        16
-                    ],
-                    "attrs": {
-                        "fixed expense": 60,
-                        "variable expense": 40,
-                        "capital": 420,
-                        "inventory": [
-                            80,
-                            80
-                        ],
-                        "visited": 0
-                    },
-                    "groups": [
-                        "Mom and pop: Hardware",
-                        "x neighbors",
-                        "Moore neighbors"
+                        "Mom and pop: Hardware"
                     ],
                     "active": True,
                     "type_sig": 5,
@@ -1536,13 +1609,13 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        14,
-                        16
+                        2,
+                        7
                     ],
                     "attrs": {
                         "fixed expense": 60,
                         "variable expense": 40,
-                        "capital": 120,
+                        "capital": -60,
                         "inventory": [
                             80,
                             80
@@ -1580,41 +1653,14 @@ def ret():
             "locator": None,
             "neighbors": None,
             "action_key": None,
-            "members": {
-                "Mom and pop: Meals 4": {
-                    "name": "Mom and pop: Meals 4",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        19,
-                        6
-                    ],
-                    "attrs": {
-                        "fixed expense": 40,
-                        "variable expense": 23,
-                        "capital": 270,
-                        "inventory": [
-                            45,
-                            45
-                        ],
-                        "visited": 0
-                    },
-                    "groups": [
-                        "Mom and pop: Meals"
-                    ],
-                    "active": True,
-                    "type_sig": 5,
-                    "prim_group": "Mom and pop: Meals",
-                    "locator": "Town",
-                    "neighbors": None,
-                    "action_key": "mp_action"
-                }
-            }
+            "members": {}
         }
     },
     "width": 20,
     "height": 20,
-    "user": "ziruizhou",
+    "user": {
+        "name": "ziruizhou"
+    },
     "census_func": None,
     "plot_title": "Town",
     "props": {
@@ -1640,7 +1686,7 @@ def ret():
             "hival": 400
         },
         "bb_num": {
-            "val": 1,
+            "val": 2,
             "question": "How many big box stores woud you like?",
             "atype": "INT",
             "lowval": 1,
@@ -1661,7 +1707,7 @@ def ret():
             "hival": 0.4
         },
         "radius": {
-            "val": 1,
+            "val": 2,
             "question": "How close should the consumers be to the stores to shop there?",
             "atype": "INT",
             "lowval": 1,
@@ -1712,19 +1758,19 @@ def ret():
                 50
             ],
             "Big box": [
+                2,
+                2,
+                2
+            ],
+            "Mom and pop: Books": [
                 1,
                 1,
                 1
             ],
-            "Mom and pop: Books": [
-                0,
-                0,
-                0
-            ],
             "Mom and pop: Coffee": [
-                0,
-                0,
-                0
+                1,
+                1,
+                1
             ],
             "Mom and pop: Groceries": [
                 1,
@@ -1732,14 +1778,14 @@ def ret():
                 1
             ],
             "Mom and pop: Hardware": [
-                3,
-                3,
-                3
+                2,
+                2,
+                2
             ],
             "Mom and pop: Meals": [
-                1,
-                1,
-                1
+                0,
+                0,
+                0
             ]
         }
     },

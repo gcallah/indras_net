@@ -5,6 +5,8 @@ def ret():
     "duration": 9223372036854775805,
     "pos": None,
     "attrs": {
+        "change_grid_spacing": 0,
+        "hide_axes": True,
         "center_agent": {
             "name": "(5,5)",
             "type": "agent",
@@ -2014,7 +2016,9 @@ def ret():
     },
     "width": 10,
     "height": 10,
-    "user": "ziruizhou",
+    "user": {
+        "name": "ziruizhou"
+    },
     "census_func": None,
     "plot_title": "Sanpile",
     "props": {

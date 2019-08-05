@@ -85,7 +85,7 @@
       "name": "Financial Market",
       "run": "fmarket",
       "props": "models/props/fmarket.props.json",
-      "doc": "Stimulate the financial market.",
+      "doc": "A model in which value investors and trend followers buy and sell in waves, causing an asset price to cycle.",
       "source": "https://github.com/gcallah/indras_net/blob/master/models/fmarket.py"
     }
   ]

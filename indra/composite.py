@@ -35,7 +35,7 @@ class Composite(Agent):
 
     def __init__(self, name, attrs=None, members=None,
                  duration=INF, action=None, member_creator=None,
-                 num_members=None, serial_obj=None):
+                 num_members=None, serial_obj=None, props=None):
         self.members = OrderedDict()
         super().__init__(name, attrs=attrs, duration=duration,
                          action=action, serial_obj=serial_obj)
@@ -50,14 +50,10 @@ class Composite(Agent):
                     join(self, member)
             if member_creator is not None:
                 for i in range(num_members):
-                    self += member_creator(name, i)
+                    self += member_creator(name, i, props=props)
 
     def restore_composite(self, serial_obj):
         self.from_json(serial_obj)
-        self.__init_unrestorables()
-
-    def __init_unrestorables(self):
-        pass
 
     def to_json(self):
         rep = super().to_json()

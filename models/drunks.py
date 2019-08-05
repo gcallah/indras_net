@@ -12,7 +12,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.env import Env
-from indra.display_methods import BLUE
+from indra.display_methods import BLUE, RED
 
 MODEL_NAME = "drunks"
 
@@ -27,6 +27,7 @@ attenders = []
 attendance = 0
 
 drinkers = None
+non_drinkers = None
 bar = None
 
 
@@ -35,7 +36,8 @@ def get_decision(agent):
     Makes a decision randomly for the agent whether or not to go to the bar
     """
     random_integer = random.randint(1, 100) / 100
-    if random_integer <= agent["motivation"]:
+    # if random_integer <= agent["motivation"]:
+    if random_integer <= 0.6:
         return True
 
     return False
@@ -98,33 +100,78 @@ def drinker_action(agent):
     global attendance
     global attenders
 
+    changed = True
     decision = get_decision(agent)
-    agent["going_to_bar"] = decision
+    # agent["going_to_bar"] = decision
     if decision:
         attendance += 1
-        attenders.append(agent)
+        # attenders.append(agent)
 
-    if agent.name[-1] == POPULATION - 1:
-        if attendance > OPTIMAL_OCCUPANCY:
-            extras = attendance - OPTIMAL_OCCUPANCY
-            discourage(extras, attenders)
+        # if "non-drunk" in agent.name:
+        if agent.primary_group() == non_drinkers:
+            changed = False
+            bar.add_switch(agent, non_drinkers,
+                           drinkers)
+
+    else:
+        # if "non" not in agent.name:
+        if agent.primary_group() == drinkers:
+            changed = False
+            bar.add_switch(agent, drinkers,
+                           non_drinkers)
+
+    # if agent.name[-1] == POPULATION - 1:
+    #     if attendance > OPTIMAL_OCCUPANCY:
+    #         extras = attendance - OPTIMAL_OCCUPANCY
+    #         discourage(extras, attenders)
 
     # return False means to move
-    return False
+    return changed
 
 
-def create_drinker(color, i):
+# def non_drinker_action(agent):
+#     # print("I'm " + agent.name + " and I need a drink.")
+#     global attendance
+#     global attenders
+#
+#     decision = get_decision(agent)
+#     # agent["going_to_bar"] = decision
+#     if decision:
+#         attendance += 1
+#         # attenders.append(agent)
+#
+#     # if agent.name[-1] == POPULATION - 1:
+#     #     if attendance > OPTIMAL_OCCUPANCY:
+#     #         extras = attendance - OPTIMAL_OCCUPANCY
+#     #         discourage(extras, attenders)
+#
+#     # return False means to move
+#     return False
+
+
+def create_drinker(i):
     """
     Create an agent.
     """
-    return Agent("drunk" + str(i), action=drinker_action,
-                 attrs={"going_to_bar": False, "motivation": 0.6})
+    return Agent("drunk" + str(i), action=drinker_action)
+    # ,attrs={"motivation": 0.6})
+
+
+def create_non_drinker(i):
+    """
+    Create an agent.
+    """
+    return Agent("non-drunk" + str(i), action=drinker_action)
+    # ,attrs={"motivation": 0.6})
 
 
 def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
+    global drinkers
+    global non_drinkers
+
     ds_file = get_prop_path(MODEL_NAME)
     if props is None:
         pa = PropArgs.create_props(MODEL_NAME,
@@ -133,25 +180,33 @@ def set_up(props=None):
         pa = PropArgs.create_props(MODEL_NAME,
                                    prop_dict=props)
 
-    drinkers = Composite("Drinkers", {"color": BLUE},
-                         member_creator=create_drinker,
-                         num_members=pa.get('population',
-                                            DEF_POPULATION))
+    # drinkers = Composite("Drinkers", {"color": BLUE},
+    #                      member_creator=create_drinker,
+    #                      num_members=pa.get('population',
+    #                                         DEF_POPULATION))
+
+    drinkers = Composite("Drinkers", {"color": BLUE})
+    for i in range(pa.get('population', DEF_POPULATION) // 2):
+        drinkers += (create_drinker(i))
+
+    non_drinkers = Composite("Non-Drinkers", {"color": RED})
+    for i in range(pa.get('population', DEF_POPULATION) // 2):
+        non_drinkers += create_non_drinker(i)
 
     bar = Env("env",
               height=pa.get('grid_height', DEF_HEIGHT),
               width=pa.get('grid_width', DEF_WIDTH),
-              members=[drinkers],
+              members=[drinkers, non_drinkers],
               props=pa)
 
-    return (bar, drinkers)
+    return (bar, drinkers, non_drinkers)
 
 
 def main():
     global drinkers
     global bar
 
-    (bar, drinkers) = set_up()
+    (bar, drinkers, non_drinkers) = set_up()
 
     bar()
 

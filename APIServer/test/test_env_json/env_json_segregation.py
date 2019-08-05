@@ -36,13 +36,13 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        0,
+                        2,
                         6
                     ],
                     "attrs": {
-                        "tolerance": 0.7305242928456188,
+                        "tolerance": 0.4928747839895938,
                         "color": 0,
-                        "hood_changed": False,
+                        "hood_changed": True,
                         "just_moved": False
                     },
                     "groups": [
@@ -62,14 +62,14 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        7,
-                        3
+                        1,
+                        8
                     ],
                     "attrs": {
-                        "tolerance": 0.4296700859302084,
+                        "tolerance": 0.7104502686652412,
                         "color": 0,
                         "hood_changed": True,
-                        "just_moved": False
+                        "just_moved": True
                     },
                     "groups": [
                         "Blue Agent group",
@@ -88,17 +88,19 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        3,
-                        0
+                        1,
+                        7
                     ],
                     "attrs": {
-                        "tolerance": 0.7275710851348819,
+                        "tolerance": 0.6748626409185068,
                         "color": 0,
                         "hood_changed": True,
                         "just_moved": True
                     },
                     "groups": [
-                        "Blue Agent group"
+                        "Blue Agent group",
+                        "x neighbors",
+                        "Moore neighbors"
                     ],
                     "active": True,
                     "type_sig": 4,
@@ -112,17 +114,19 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        3,
-                        4
+                        5,
+                        9
                     ],
                     "attrs": {
-                        "tolerance": 0.5203908556727088,
+                        "tolerance": 0.907006738060486,
                         "color": 0,
-                        "hood_changed": True,
-                        "just_moved": True
+                        "hood_changed": False,
+                        "just_moved": False
                     },
                     "groups": [
-                        "Blue Agent group"
+                        "Blue Agent group",
+                        "x neighbors",
+                        "Moore neighbors"
                     ],
                     "active": True,
                     "type_sig": 4,
@@ -136,11 +140,11 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        9,
-                        6
+                        6,
+                        8
                     ],
                     "attrs": {
-                        "tolerance": 0.5517414217303577,
+                        "tolerance": 0.4990507443320545,
                         "color": 0,
                         "hood_changed": False,
                         "just_moved": False
@@ -162,11 +166,11 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        8,
-                        4
+                        0,
+                        8
                     ],
                     "attrs": {
-                        "tolerance": 0.5845050724027155,
+                        "tolerance": 0.49442717591713703,
                         "color": 0,
                         "hood_changed": False,
                         "just_moved": False
@@ -186,11 +190,11 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        6,
-                        10
+                        7,
+                        3
                     ],
                     "attrs": {
-                        "tolerance": 0.26903314377483734,
+                        "tolerance": 0.5786551005474763,
                         "color": 0,
                         "hood_changed": True,
                         "just_moved": True
@@ -210,11 +214,11 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        7,
-                        2
+                        2,
+                        7
                     ],
                     "attrs": {
-                        "tolerance": 0.5304240646215297,
+                        "tolerance": 0.1593578587217856,
                         "color": 0,
                         "hood_changed": False,
                         "just_moved": False
@@ -236,14 +240,14 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        0,
-                        7
+                        3,
+                        8
                     ],
                     "attrs": {
-                        "tolerance": 0.5314662810932657,
+                        "tolerance": 0.30230950628575115,
                         "color": 0,
-                        "hood_changed": False,
-                        "just_moved": False
+                        "hood_changed": True,
+                        "just_moved": True
                     },
                     "groups": [
                         "Blue Agent group",
@@ -262,19 +266,17 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        8,
-                        6
+                        6,
+                        9
                     ],
                     "attrs": {
-                        "tolerance": 0.5588818278205893,
+                        "tolerance": 0.6575456576279697,
                         "color": 0,
-                        "hood_changed": False,
-                        "just_moved": False
+                        "hood_changed": True,
+                        "just_moved": True
                     },
                     "groups": [
-                        "Blue Agent group",
-                        "x neighbors",
-                        "Moore neighbors"
+                        "Blue Agent group"
                     ],
                     "active": True,
                     "type_sig": 4,
@@ -309,7 +311,7 @@ def ret():
                     "duration": 9223372036854775805,
                     "pos": [
                         7,
-                        0
+                        5
                     ],
                     "attrs": {
                         "tolerance": 0.0,
@@ -318,7 +320,9 @@ def ret():
                         "just_moved": False
                     },
                     "groups": [
-                        "Red Agent group"
+                        "Red Agent group",
+                        "x neighbors",
+                        "Moore neighbors"
                     ],
                     "active": True,
                     "type_sig": 4,
@@ -332,8 +336,8 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        2,
-                        1
+                        0,
+                        2
                     ],
                     "attrs": {
                         "tolerance": 0.0,
@@ -356,8 +360,8 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        10,
-                        7
+                        3,
+                        4
                     ],
                     "attrs": {
                         "tolerance": 0.0,
@@ -366,7 +370,9 @@ def ret():
                         "just_moved": False
                     },
                     "groups": [
-                        "Red Agent group"
+                        "Red Agent group",
+                        "x neighbors",
+                        "Moore neighbors"
                     ],
                     "active": True,
                     "type_sig": 4,
@@ -377,30 +383,6 @@ def ret():
                 },
                 "Red Agent3": {
                     "name": "Red Agent3",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        9,
-                        1
-                    ],
-                    "attrs": {
-                        "tolerance": 0.0,
-                        "color": 1,
-                        "hood_changed": False,
-                        "just_moved": False
-                    },
-                    "groups": [
-                        "Red Agent group"
-                    ],
-                    "active": True,
-                    "type_sig": 4,
-                    "prim_group": "Red Agent group",
-                    "locator": "A city",
-                    "neighbors": None,
-                    "action_key": "seg_agent_action"
-                },
-                "Red Agent4": {
-                    "name": "Red Agent4",
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
@@ -423,8 +405,82 @@ def ret():
                     "neighbors": None,
                     "action_key": "seg_agent_action"
                 },
+                "Red Agent4": {
+                    "name": "Red Agent4",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        5,
+                        7
+                    ],
+                    "attrs": {
+                        "tolerance": 0.0,
+                        "color": 1,
+                        "hood_changed": False,
+                        "just_moved": False
+                    },
+                    "groups": [
+                        "Red Agent group",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 4,
+                    "prim_group": "Red Agent group",
+                    "locator": "A city",
+                    "neighbors": None,
+                    "action_key": "seg_agent_action"
+                },
                 "Red Agent5": {
                     "name": "Red Agent5",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        3,
+                        0
+                    ],
+                    "attrs": {
+                        "tolerance": 0.0,
+                        "color": 1,
+                        "hood_changed": False,
+                        "just_moved": False
+                    },
+                    "groups": [
+                        "Red Agent group"
+                    ],
+                    "active": True,
+                    "type_sig": 4,
+                    "prim_group": "Red Agent group",
+                    "locator": "A city",
+                    "neighbors": None,
+                    "action_key": "seg_agent_action"
+                },
+                "Red Agent6": {
+                    "name": "Red Agent6",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        9,
+                        7
+                    ],
+                    "attrs": {
+                        "tolerance": 0.0,
+                        "color": 1,
+                        "hood_changed": False,
+                        "just_moved": False
+                    },
+                    "groups": [
+                        "Red Agent group"
+                    ],
+                    "active": True,
+                    "type_sig": 4,
+                    "prim_group": "Red Agent group",
+                    "locator": "A city",
+                    "neighbors": None,
+                    "action_key": "seg_agent_action"
+                },
+                "Red Agent7": {
+                    "name": "Red Agent7",
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
@@ -449,61 +505,13 @@ def ret():
                     "neighbors": None,
                     "action_key": "seg_agent_action"
                 },
-                "Red Agent6": {
-                    "name": "Red Agent6",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        7,
-                        10
-                    ],
-                    "attrs": {
-                        "tolerance": 0.0,
-                        "color": 1,
-                        "hood_changed": False,
-                        "just_moved": False
-                    },
-                    "groups": [
-                        "Red Agent group"
-                    ],
-                    "active": True,
-                    "type_sig": 4,
-                    "prim_group": "Red Agent group",
-                    "locator": "A city",
-                    "neighbors": None,
-                    "action_key": "seg_agent_action"
-                },
-                "Red Agent7": {
-                    "name": "Red Agent7",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        0,
-                        3
-                    ],
-                    "attrs": {
-                        "tolerance": 0.0,
-                        "color": 1,
-                        "hood_changed": False,
-                        "just_moved": False
-                    },
-                    "groups": [
-                        "Red Agent group"
-                    ],
-                    "active": True,
-                    "type_sig": 4,
-                    "prim_group": "Red Agent group",
-                    "locator": "A city",
-                    "neighbors": None,
-                    "action_key": "seg_agent_action"
-                },
                 "Red Agent8": {
                     "name": "Red Agent8",
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
                         4,
-                        9
+                        2
                     ],
                     "attrs": {
                         "tolerance": 0.0,
@@ -526,8 +534,8 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        9,
-                        9
+                        6,
+                        10
                     ],
                     "attrs": {
                         "tolerance": 0.0,
@@ -536,9 +544,7 @@ def ret():
                         "just_moved": False
                     },
                     "groups": [
-                        "Red Agent group",
-                        "x neighbors",
-                        "Moore neighbors"
+                        "Red Agent group"
                     ],
                     "active": True,
                     "type_sig": 4,
@@ -552,7 +558,9 @@ def ret():
     },
     "width": 10,
     "height": 10,
-    "user": "ziruizhou",
+    "user": {
+        "name": "ziruizhou"
+    },
     "census_func": None,
     "plot_title": "A city",
     "props": {

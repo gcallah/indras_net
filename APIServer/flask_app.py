@@ -115,7 +115,7 @@ class Run(Resource):
     def put(self, run_time):
         env_json = api.payload
         v = Env(name='API env', serial_obj=env_json)
-        v.runN(run_time)
+        v.runN(periods=run_time)
         return json_converter(v)
 
 

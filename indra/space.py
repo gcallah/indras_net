@@ -91,10 +91,6 @@ class Space(Composite):
 
     def restore_space(self, serial_obj):
         self.from_json(serial_obj)
-        self.__init_unrestorables()
-
-    def __init_unrestorables(self):
-        pass
 
     def to_json(self):
         rep = super().to_json()
@@ -475,15 +471,11 @@ class Space(Composite):
             if (cur_x != prev_x and cur_y != prev_y):
                 slope = float((cur_y - prev_y) / (cur_x - prev_x))
 
-                '''
-                Calculate the intersection of the vector and Ox and Oy axes
-                '''
+                # Calculate the intersection of the vector and Ox and Oy axes
                 y_intercept = float(cur_y - slope * cur_x)
                 x_intercept = float(y_intercept / slope) * (-1)
 
-                '''
-                Calculate the intersection of the vector and grid axes
-                '''
+                # Calculate the intersection of the vector and grid axes
                 x_vertical = self.width - 1
                 y_vertical = float(slope * x_vertical) + y_intercept
                 y_horizontal = self.height - 1

@@ -2,8 +2,7 @@
     This is the fashion model re-written in indra.
 """
 
-from propargs.propargs import PropArgs
-from indra.utils import get_prop_path
+from indra.utils import get_props
 from indra.agent import prob_state_trans
 from indra.agent import Agent
 from indra.composite import Composite
@@ -118,12 +117,7 @@ def set_up(props=None):
     global on_fire
     global healthy
 
-    ds_file = get_prop_path(MODEL_NAME)
-    if props is None:
-        pa = PropArgs.create_props(MODEL_NAME, ds_file=ds_file)
-    else:
-        pa = PropArgs.create_props(MODEL_NAME,
-                                   prop_dict=props)
+    pa = get_props(MODEL_NAME, props)
 
     forest_height = pa.get('grid_height', DEF_DIM)
     forest_width = pa.get('grid_width', DEF_DIM)

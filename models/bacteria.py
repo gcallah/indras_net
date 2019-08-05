@@ -3,8 +3,7 @@ This is the model that stimulate the behavior
 of bacterias according to toxin and nutrients level.
 """
 
-from propargs.propargs import PropArgs
-from indra.utils import get_prop_path
+from indra.utils import get_props
 from indra.agent import Agent
 from indra.composite import Composite
 from indra.space import DEF_HEIGHT, DEF_WIDTH, distance
@@ -148,13 +147,7 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    ds_file = get_prop_path(MODEL_NAME)
-    if props is None:
-        pa = PropArgs.create_props(MODEL_NAME,
-                                   ds_file=ds_file)
-    else:
-        pa = PropArgs.create_props(MODEL_NAME,
-                                   prop_dict=props)
+    pa = get_props(MODEL_NAME, props)
 
     toxins = Composite("Toxins", {"color": RED})
     for i in range(pa.get('num_toxins', DEF_NUM_TOXINS)):
