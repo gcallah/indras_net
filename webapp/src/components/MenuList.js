@@ -40,6 +40,8 @@ class MenuList extends Component {
     this.setState ({source: source});
     this.setState ({loadingData: false});
     this.setState ({env_file: JSON.parse(env)});
+    this.setState({msg: this.state.env_file["user"]["user_msgs"]})
+    console.log(typeof(this.state.msg))
   }
 
   viewSource = () => {
@@ -110,7 +112,9 @@ class MenuList extends Component {
       this.state.period_num
       )
       this.setState({env_file: res.data})
+      this.setState({msg: res.data["user"]["user_msgs"]})
       console.log(res.data)
+      console.log(this.state.msg)
     }catch(e){
       console.log(e.message)
     }
@@ -135,7 +139,7 @@ class MenuList extends Component {
         <div class="card w-50 overflow-auto" style={{float: 'right', width: "18rem", height: "18rem"}}>
         <h5 style={{textAlign: 'center', "fontSize": 16}} class="card-header bg-primary text-white">Update Status</h5>
         <div class="card-body">
-        An agent-based model (ABM) is a class of computational models for simulating the actions and interactions of autonomous agents (both individual or collective entities such as organizations or groups) with a view to assessing their effects on the system as a whole. It combines elements of game theory, complex systems, emergence, computational sociology, multi-agent systems, and evolutionary programming. Monte Carlo methods are used to introduce randomness. Particularly within ecology, ABMs are also called individual-based models (IBMs),[1] and individuals within IBMs may be simpler than fully autonomous agents within ABMs. A review of recent literature on individual-based models, agent-based models, and multiagent systems shows that ABMs are used on non-computing related scientific domains including biology, ecology and social science.[2] Agent-based modeling is related to, but distinct from, the concept of multi-agent systems or multi-agent simulation in that the goal of ABM is to search for explanatory insight into the collective behavior of agents obeying simple rules, typically in natural systems, rather than in designing agents or solving specific practical or engineering problems.[2]
+        {this.state.msg}
         </div>
         </div>
           <ul class="list-group">
