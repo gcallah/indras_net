@@ -291,14 +291,16 @@ class Env(Space):
         if self.census_func:
             return self.census_func(self)
         else:
+            total_pop = 0
             census_str = ("\nTotal census for period "
                           + str(self.get_periods()) + ":\n"
                           + "==================\n"
-                          + "Composite census:\n"
+                          + "Group census:\n"
                           + "==================\n")
-            for composite_str in self.members:
-                population = len(self.members[composite_str])
-                census_str += ("  " + composite_str + ": "
+            for name in self.members:
+                population = len(self.members[name])
+                total_pop += population
+                census_str += ("  " + name + ": "
                                + str(population) + "\n")
             census_str += ("==================\n"
                            + "Agent census:\n"
