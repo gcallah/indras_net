@@ -12,7 +12,7 @@ from indra.env import Env
 from indra.display_methods import BLACK, WHITE, SQUARE
 
 MODEL_NAME = "wolfram"
-DEBUG = True  # Turns debugging code on or off
+DEBUG = False  # Turns debugging code on or off
 DEF_RULE = 30
 
 # Group codes:

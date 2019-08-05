@@ -7,6 +7,8 @@ for using matplotlib.
 from functools import wraps
 from math import ceil
 import numpy as np
+# import pandas as pd
+import seaborn as sns
 # import networkx as nx
 import logging
 import io
@@ -14,6 +16,7 @@ import os
 from indra.user import TERMINAL, API
 plt_present = True
 plt_present_error_message = ""
+sns.set(style="darkgrid")
 
 try:
     import matplotlib as mpl
@@ -296,10 +299,11 @@ class ScatterPlot():
                            labelbottom=False)
         if hide_axes:
             plt.axis('off')
-        self.create_scats(varieties)
         if show_legend:
             ax.legend(loc=legend_pos)
+            # plt.legend()
         ax.set_title(title)
+        self.create_scats(varieties)
 
         if anim and not self.headless:
             anim_func = animation.FuncAnimation(fig,
@@ -307,6 +311,13 @@ class ScatterPlot():
                                                 frames=1000,
                                                 interval=500,
                                                 blit=False)
+        # fig, ax = plt.subplots()
+        # self.create_scats(varieties)
+        # scatter_graph = sns.load_dataset(self.scats)
+        # sns.scatterplot(x="x axis", y="y axis",
+        #                 data=scatter_graph, palette=cmap)
+        # ax.set_ylabel('')
+        # ax.set_xlabel('')
 
     def get_arrays(self, varieties, var):
         x_array = np.array(varieties[var][X])

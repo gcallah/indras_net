@@ -129,25 +129,29 @@ def transaction(store, consumer):
 
 
 def get_store_census(town):
-    to_print = "\n==================\n"
-    to_print += ("Store census for period " + str(town.get_periods()) + ":\n"
-                 + "==================\n")
+    to_print = " ".join(["\n==================\n",
+                         "Store census for period ",
+                         str(town.get_periods()), ":\n",
+                         "==================\n"])
     for i in range(1, 6):
         for store in groups[i]:
             if groups[i][store].attrs["capital"] > -1:
-                to_print += (str(groups[i][store])
-                             + "\n  Capital: "
-                             + str(groups[i][store].attrs["capital"])
-                             + "\n  Inventory: "
-                             + str((groups[i][store]).attrs["inventory"][1]))
-                to_print += ("\n" + "  "
-                             + str((groups[i][store]).attrs["visited"]))
+                to_print = " ".join([to_print, str(groups[i][store]),
+                                     "\n  Capital: ",
+                                     str(groups[i][store].attrs["capital"]),
+                                     "\n  Inventory: ",
+                                     str((groups[i][store]
+                                          ).attrs["inventory"][1]),
+                                     "\n  ",
+                                     str((groups[i][store]).attrs["visited"])])
                 if (groups[i][store]).attrs["visited"] == 1:
-                    to_print += (" consumer has visited this store"
-                                 + " in the last period.\n")
+                    to_print = " ".join([to_print,
+                                         " consumer visited this store",
+                                         " in the last period.\n"])
                 else:
-                    to_print += (" consumers have visited this store"
-                                 + " in the last period.\n")
+                    to_print = " ".join([to_print,
+                                         " consumers visited this store",
+                                         " in the last period.\n"])
     town.user.tell(to_print)
 
 
@@ -171,8 +175,8 @@ def town_action(town):
                     and (curr_consumer.primary_group()
                          == groups[CONSUMER_INDX])):
                 if DEBUG:
-                    print("Checking around consumer "
-                          + str(curr_consumer.get_pos()) + "...")
+                    print(" ".join(["Checking around consumer",
+                                    str(curr_consumer.get_pos()), "..."]))
                 nearby_neighbors = town.get_moore_hood(curr_consumer,
                                                        radius=radius)
                 store_to_go = None
@@ -192,10 +196,10 @@ def town_action(town):
                            == groups[BB_INDX]):
                             curr_store_util = calc_util(neighbor)
                             if DEBUG:
-                                print("   Getting util from big box "
-                                      + str(neighbor.get_pos()) + "...")
-                                print("      Utility from big box:",
-                                      curr_store_util)
+                                print(" ".join(["   Getting util from bb ",
+                                                str(neighbor.get_pos()), "\n",
+                                                "      Utility from big box:",
+                                                str(curr_store_util)]))
                         else:
                             if DEBUG:
                                 print("   Checking if mom and pop at "
