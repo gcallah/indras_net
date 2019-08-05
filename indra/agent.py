@@ -197,7 +197,10 @@ class Agent(object):
         self.type_sig = serial_agent["type_sig"]
         self.active = serial_agent["active"]
         self.attrs = serial_agent["attrs"]
-        self.pos = serial_agent["pos"]
+        if not serial_agent["pos"]:
+            self.pos = None
+        else:
+            self.pos = tuple(serial_agent["pos"])
         self.duration = serial_agent["duration"]
         self.name = serial_agent["name"]
         self.groups = {}

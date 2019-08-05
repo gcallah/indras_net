@@ -82,12 +82,12 @@ class Space(Composite):
             self.locations = {}
             self.registry = {}
 
-        # by making two class methods for rand_place_members and
-        # place_member, we allow two places to override
-        if random_placing:
-            self.rand_place_members(self.members)
-        else:
-            self.consec_place_members(self.members)
+            # by making two class methods for rand_place_members and
+            # place_member, we allow two places to override
+            if random_placing:
+                self.rand_place_members(self.members)
+            else:
+                self.consec_place_members(self.members)
 
     def restore_space(self, serial_obj):
         self.from_json(serial_obj)
@@ -125,9 +125,8 @@ class Space(Composite):
                         self.registry[nm].add_group(self.registry[gnm])
         # construct self.location
         self.locations = {}
-        for nm in serial_space["locations"]:
-            obj = self.registry[nm]
-            self.locations[tuple(serial_space["locations"][nm])] = obj
+        for nm in self.registry:
+            self.locations[self.registry[nm].pos] = self.registry[nm]
 
     def add_mbr_to_regis(self, member):
         if member.type == "agent":
@@ -305,6 +304,7 @@ class Space(Composite):
         """
         if (nx, ny) not in self.locations:
             self.locations[(nx, ny)] = self.locations[(ox, oy)]
+
             del self.locations[(ox, oy)]
 
     def remove_location(self, x, y):

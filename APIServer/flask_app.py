@@ -116,6 +116,7 @@ class Run(Resource):
         env_json = api.payload
         v = Env(name='API env', serial_obj=env_json)
         v.runN(periods=run_time)
+        # print(v.members["Reds"].members["Reds0"].pos)
         return json_converter(v)
 
 
