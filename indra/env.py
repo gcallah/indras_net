@@ -94,23 +94,22 @@ class Env(Space):
             # Attributes for plotting
             self.plot_title = self.name
             self.user = None
-            self.registry = {}
             self.line_data_func = line_data_func
+            self.womb = []  # for agents waiting to be born
+            self.switches = []  # for agents waiting to switch groups
+            self.user_type = os.getenv("user_type", TERMINAL)
+            if (self.user_type == TERMINAL):
+                self.user = TermUser(getpass.getuser(), self)
+                self.user.tell("Welcome to Indra, " + str(self.user) + "!")
+            elif (self.user_type == TEST):
+                self.user = TestUser(getpass.getuser(), self)
+            elif (self.user_type == API):
+                self.user = APIUser(getpass.getuser(), self)
 
         self.type = "env"
-        self.womb = []  # for agents waiting to be born
-        self.switches = []  # for agents waiting to switch groups
-        self.user_type = os.getenv("user_type", TERMINAL)
         self.num_acts = 0
         self.num_moves = 0
         self.num_switches = 0
-        if (self.user_type == TERMINAL):
-            self.user = TermUser(getpass.getuser(), self)
-            self.user.tell("Welcome to Indra, " + str(self.user) + "!")
-        elif (self.user_type == TEST):
-            self.user = TestUser(getpass.getuser(), self)
-        elif (self.user_type == API):
-            self.user = APIUser(getpass.getuser(), self)
         if self.props is not None:
             if not self.props.get('use_line', True):
                 self.exclude_menu_item("line_graph")
@@ -126,22 +125,15 @@ class Env(Space):
                                      skip_user_questions=True)
         self.pop_hist = PopHist(serial_pops=serial_obj["pop_hist"])
         self.plot_title = serial_obj["pop_hist"]
-        self.user = APIUser(serial_obj["user"], self)
+        nm = serial_obj["user"]["name"]
+        msg = serial_obj["user"]["user_msgs"]
+        self.user = APIUser(nm, self)
+        self.user.tell(msg)
         self.name = serial_obj["name"]
         self.womb = serial_obj["womb"]
         self.switches = serial_obj["switches"]
         self.census_func = serial_obj["census_func"]
         self.line_data_func = serial_obj["data_func"]
-        # construct self.registry
-        self.registry = {}
-        for nm in self.members:
-            self.add_mbr_to_regis(self.members[nm])
-        # construct self.groups and self.prim_group and self.locator
-        for nm in self.registry:
-            if len(self.registry[nm].groups) != 0:
-                for gnm in self.registry[nm].groups:
-                    if gnm in self.registry:
-                        self.registry[nm].add_group(self.registry[gnm])
 
     def to_json(self):
         rep = super().to_json()
@@ -158,11 +150,6 @@ class Env(Space):
         rep["switches"] = self.switches
         rep["census_func"] = None
         rep["data_func"] = None
-        ret_mbrs = {}
-        for mnm in rep["members"]:
-            ret_mbrs[mnm] = rep["members"][mnm]
-        rep["members"] = ret_mbrs
-        rep["registry"] = self.registry
         return rep
 
     def __repr__(self):
@@ -170,14 +157,6 @@ class Env(Space):
 
     def restore_env(self, serial_obj):
         self.from_json(serial_obj)
-
-    def add_mbr_to_regis(self, member):
-        if member.type == "agent":
-            self.registry[member.name] = member
-        else:
-            self.registry[member.name] = member
-            for mbrnm in member.members:
-                self.add_mbr_to_regis(member.members[mbrnm])
 
     def exclude_menu_item(self, to_exclude):
         """
@@ -291,14 +270,16 @@ class Env(Space):
         if self.census_func:
             return self.census_func(self)
         else:
+            total_pop = 0
             census_str = ("\nTotal census for period "
                           + str(self.get_periods()) + ":\n"
                           + "==================\n"
-                          + "Composite census:\n"
+                          + "Group census:\n"
                           + "==================\n")
-            for composite_str in self.members:
-                population = len(self.members[composite_str])
-                census_str += ("  " + composite_str + ": "
+            for name in self.members:
+                population = len(self.members[name])
+                total_pop += population
+                census_str += ("  " + name + ": "
                                + str(population) + "\n")
             census_str += ("==================\n"
                            + "Agent census:\n"

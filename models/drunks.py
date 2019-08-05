@@ -6,8 +6,7 @@ occupied by 60% of the population every time
 
 import random
 
-from propargs.propargs import PropArgs
-from indra.utils import get_prop_path
+from indra.utils import get_props
 from indra.agent import Agent
 from indra.composite import Composite
 from indra.space import DEF_HEIGHT, DEF_WIDTH
@@ -172,13 +171,7 @@ def set_up(props=None):
     global drinkers
     global non_drinkers
 
-    ds_file = get_prop_path(MODEL_NAME)
-    if props is None:
-        pa = PropArgs.create_props(MODEL_NAME,
-                                   ds_file=ds_file)
-    else:
-        pa = PropArgs.create_props(MODEL_NAME,
-                                   prop_dict=props)
+    pa = get_props(MODEL_NAME, props)
 
     # drinkers = Composite("Drinkers", {"color": BLUE},
     #                      member_creator=create_drinker,
