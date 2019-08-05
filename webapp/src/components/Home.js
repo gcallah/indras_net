@@ -69,10 +69,9 @@ class Home extends Component {
         </a>)}
         </div></div> </ul>
 
-        <h1 style={{"fontSize": 16, "fontWeight": '400'}}>To see the
+        <h1 style={{"fontSize": 16, "fontWeight": '400'}}>
         <a href="#" class="text-primary m-2" onClick={this.showSource}>
-        description </a> 
-        of the project.</h1>
+        View Project Description </a> </h1>
         <br /><br />
         <br /><br />
       </div>
