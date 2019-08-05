@@ -58,8 +58,8 @@ def discourage(unwanted):
         random_drunk = random.choice(list(drinkers.members))
         # while random_drunk not in seen:
         #     random_drunk = random.choice(list(drinkers.members))
-        print(drinkers.members[random_drunk])
-        # drinkers.members[random_drunk]["attrs"]["motivation"] -= 0.05
+        print("drinker ", random_drunk, " = ", repr(drinkers[random_drunk]))
+        drinkers[random_drunk]["motivation"] -= 0.05
         seen.append(random_drunk)
 
         unwanted -= 1
@@ -231,6 +231,9 @@ def main():
     global bar
 
     (bar, drinkers, non_drinkers) = set_up()
+
+    print(repr(drinkers))
+    print(repr(drinkers["Drinkers1"]))
 
     bar()
 
