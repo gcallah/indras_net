@@ -82,12 +82,12 @@ class Space(Composite):
             self.locations = {}
             self.registry = {}
 
-            # by making two class methods for rand_place_members and
-            # place_member, we allow two places to override
-            if random_placing:
-                self.rand_place_members(self.members)
-            else:
-                self.consec_place_members(self.members)
+        # by making two class methods for rand_place_members and
+        # place_member, we allow two places to override
+        if random_placing:
+            self.rand_place_members(self.members)
+        else:
+            self.consec_place_members(self.members)
 
     def restore_space(self, serial_obj):
         self.from_json(serial_obj)
@@ -102,9 +102,11 @@ class Space(Composite):
             ret_mbrs[mnm] = rep["members"][mnm]
         rep["members"] = ret_mbrs
         rep["registry"] = self.registry
+
         rep["locations"] = {}
-        # for loc in rep["locations"]:
-        #     rep["locations"][loc] = self.locations[loc].name
+        for loc in self.locations:
+            rep["locations"][self.locations[loc].name] = loc
+
         return rep
 
     def from_json(self, serial_space):
@@ -121,8 +123,11 @@ class Space(Composite):
                 for gnm in self.registry[nm].groups:
                     if gnm in self.registry:
                         self.registry[nm].add_group(self.registry[gnm])
-        # find the agents and put them into the specific locations
-        # self.locations = serial_space["locations"]
+        # construct self.location
+        self.locations = {}
+        for nm in serial_space["locations"]:
+            obj = self.registry[nm]
+            self.locations[tuple(serial_space["locations"][nm])] = obj
 
     def add_mbr_to_regis(self, member):
         if member.type == "agent":
