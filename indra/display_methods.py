@@ -8,7 +8,7 @@ from functools import wraps
 from math import ceil
 import numpy as np
 # import pandas as pd
-import seaborn as sns
+# import seaborn as sns
 # import networkx as nx
 import logging
 import io
@@ -16,7 +16,7 @@ import os
 from indra.user import TERMINAL, API
 plt_present = True
 plt_present_error_message = ""
-sns.set(style="darkgrid")
+# sns.set(style="darkgrid")
 
 try:
     import matplotlib as mpl
