@@ -25,7 +25,7 @@ the_sky = None
 def calc_angle(agent1, agent2):
     pos1 = agent1.get_pos()
     print("Pos1 = ", pos1)
-    return 0  # you must calculate!
+    return atan(pos1)  # you must calculate!
 
 
 def bird_action(this_bird):
