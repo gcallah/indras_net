@@ -40,8 +40,6 @@ class MenuList extends Component {
     this.setState ({source: source});
     this.setState ({loadingData: false});
     this.setState ({env_file: JSON.parse(env)});
-    this.setState({msg: this.state.env_file["user"]["user_msgs"]})
-    console.log(typeof(this.state.msg))
   }
 
   viewSource = () => {
@@ -112,9 +110,7 @@ class MenuList extends Component {
       this.state.period_num
       )
       this.setState({env_file: res.data})
-      this.setState({msg: res.data["user"]["user_msgs"]})
       console.log(res.data)
-      console.log(this.state.msg)
     }catch(e){
       console.log(e.message)
     }
@@ -139,7 +135,7 @@ class MenuList extends Component {
         <div class="card w-50 overflow-auto" style={{float: 'right', width: "18rem", height: "18rem"}}>
         <h5 style={{textAlign: 'center', "fontSize": 16}} class="card-header bg-primary text-white">Update Status</h5>
         <div class="card-body">
-        {this.state.msg}
+        {localStorage.getItem('env_file')}
         </div>
         </div>
           <ul class="list-group">

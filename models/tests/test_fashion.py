@@ -22,8 +22,8 @@ class FashionTestCase(TestCase):
     def setUp(self):
         (fshn.society, fshn.blue_tsetters, fshn.red_tsetters,
          fshn.blue_followers, fshn.red_followers, fshn.opp_group) = set_up()
-        self.test_follower = create_follower(TEST_FNUM)
-        self.test_tsetter = create_tsetter(TEST_TNUM)
+        self.test_follower = create_follower(FOLLOWER_PRENM, TEST_FNUM)
+        self.test_tsetter = create_tsetter(TSETTER_PRENM, TEST_TNUM)
         fshn.red_tsetters += self.test_tsetter
         fshn.blue_followers += self.test_follower
 
@@ -75,12 +75,12 @@ class FashionTestCase(TestCase):
         # self.assertAlmostEqual(new_pref, NEUTRAL)
 
     def test_create_tsetter(self):
-        new_agent = create_tsetter(2, RED_SIN)
+        new_agent = create_tsetter(TSETTER_PRENM, 2, RED_SIN)
 
         self.assertEqual(new_agent.name, TSETTER_PRENM +str(2))
 
     def test_create_follower(self):
-        new_follower = create_follower(2 , BLUE_SIN)
+        new_follower = create_follower(FOLLOWER_PRENM, 2 , BLUE_SIN)
         self.assertEqual(new_follower.name, FOLLOWER_PRENM + str(2))
 
     def test_follower_action(self):
