@@ -23,6 +23,7 @@ test_models:
 	nosetests tests.test_models
 
 test_drunks:
+	$(PYLINT) $(PYLINTFLAGS) drunks.py
 	nosetests tests.test_drunks --nocapture
 
 test_seg:
