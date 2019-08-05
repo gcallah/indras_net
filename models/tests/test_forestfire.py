@@ -7,7 +7,7 @@ from indra.agent import Agent, possible_trans
 from indra.composite import Composite
 from indra.env import Env
 from models.forestfire import get_new_state, NUM_STATES, plant_tree
-from models.forestfire import is_healthy, OF, set_up, STATE_TRANS
+from models.forestfire import is_healthy, OF, set_up, STATE_TRANS, TREE_PREFIX
 import models.forestfire as ff
 
 TEST_ANUM = 999999
@@ -20,7 +20,7 @@ def print_sep():
 
 class ForestfireTestCase(TestCase):
     def setUp(self):
-        self.test_tree = plant_tree(TEST_ANUM)
+        self.test_tree = plant_tree(TREE_PREFIX, TEST_ANUM)
         (ff.forest, ff.group_map) = set_up()
         ff.healthy += self.test_tree
         ff.forest.place_member(self.test_tree)
@@ -46,9 +46,9 @@ class ForestfireTestCase(TestCase):
         self.assertTrue(is_healthy(self.test_tree))
 
     def test_plant_tree(self):
-        new_tree = plant_tree(TEST_ANUM + 1)
+        new_tree = plant_tree(TREE_PREFIX, TEST_ANUM + 1)
         self.assertTrue(is_healthy(new_tree))
-        new_tree = plant_tree(TEST_ANUM + 1, state=OF)
+        new_tree = plant_tree(TREE_PREFIX, TEST_ANUM + 1, state=OF)
         self.assertFalse(is_healthy(new_tree))
 
     def test_tree_action(self):

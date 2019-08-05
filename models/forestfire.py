@@ -100,12 +100,13 @@ def tree_action(agent):
     return True
 
 
-def plant_tree(i, state=HE):
+def plant_tree(name, i, props=None, state=HE):
     """
     Plant a new tree!
     By default, they start out healthy.
     """
-    return Agent(TREE_PREFIX + str(i),
+    name = TREE_PREFIX
+    return Agent(name + str(i),
                  action=tree_action,
                  attrs={"state": state})
 
@@ -122,14 +123,16 @@ def set_up(props=None):
     forest_height = pa.get('grid_height', DEF_DIM)
     forest_width = pa.get('grid_width', DEF_DIM)
     forest_density = pa.get('density', DEF_DENSITY)
-
-    healthy = Composite(HEALTHY, {"color": GREEN, "marker": TREE})
+    num = int(forest_height * forest_width * forest_density)
+    healthy = Composite(HEALTHY, {"color": GREEN, "marker": TREE},
+                        member_creator=plant_tree, props=pa,
+                        num_members=num)
     new_fire = Composite(NEW_FIRE, {"color": TOMATO, "marker": TREE})
     on_fire = Composite(ON_FIRE, {"color": RED, "marker": TREE})
     burned_out = Composite(BURNED_OUT, {"color": BLACK, "marker": TREE})
     new_growth = Composite(NEW_GROWTH, {"color": SPRINGGREEN, "marker": TREE})
-    for i in range(int(forest_height * forest_width * forest_density)):
-        healthy += plant_tree(i)
+    # for i in range():
+    #     healthy += plant_tree(i)
 
     forest = Env("Forest", height=forest_height, width=forest_width,
                  members=[healthy, new_fire, on_fire, burned_out,
