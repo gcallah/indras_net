@@ -113,21 +113,23 @@ def common_action(agent, others_red, others_blue, op1, op2):
     return changed
 
 
-def create_tsetter(i, color=RED_SIN):
+def create_tsetter(name, i, props=None, color=RED_SIN):
     """
     Create a trendsetter: all RED_SIN to start.
     """
-    return Agent(TSETTER_PRENM + str(i),
+    name = TSETTER_PRENM
+    return Agent(name + str(i),
                  action=tsetter_action,
                  attrs={COLOR_PREF: color,
                         DISPLAY_COLOR: color})
 
 
-def create_follower(i, color=BLUE_SIN):
+def create_follower(name, i, props=None, color=BLUE_SIN):
     """
     Create a follower: all BLUE_SIN to start.
     """
-    return Agent(FOLLOWER_PRENM + str(i),
+    name = FOLLOWER_PRENM
+    return Agent(name + str(i),
                  action=follower_action,
                  attrs={COLOR_PREF: color,
                         DISPLAY_COLOR: color})
@@ -147,17 +149,22 @@ def set_up(props=None):
     pa = get_props(MODEL_NAME, props)
 
     blue_tsetters = Composite(BLUE_TSETTERS, {"color": NAVY})
-    red_tsetters = Composite(RED_TSETTERS, {"color": DARKRED})
-    for i in range(pa.get('num_tsetters', NUM_TSETTERS)):
-        red_tsetters += create_tsetter(i)
+    red_tsetters = Composite(RED_TSETTERS, {"color": DARKRED},
+                             member_creator=create_tsetter, props=pa,
+                             num_members=pa.get('num_tsetters', NUM_TSETTERS))
+    # for i in range():
+    #     red_tsetters += create_tsetter(i)
 
     if DEBUG2:
         print(red_tsetters.__repr__())
 
     red_followers = Composite(RED_FOLLOWERS, {"color": RED})
-    blue_followers = Composite(BLUE_FOLLOWERS, {"color": BLUE})
-    for i in range(pa.get('num_followers', NUM_FOLLOWERS)):
-        blue_followers += create_follower(i)
+    blue_followers = Composite(BLUE_FOLLOWERS, {"color": BLUE},
+                               props=pa, member_creator=create_follower,
+                               num_members=pa.get('num_followers',
+                                                  NUM_FOLLOWERS))
+    # for i in range():
+    #     blue_followers += create_follower(i)
 
     opp_group = {str(red_tsetters): blue_tsetters,
                  str(blue_tsetters): red_tsetters,
