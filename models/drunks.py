@@ -200,11 +200,6 @@ def set_up(props=None):
     pa = get_props(MODEL_NAME, props)
     agents_decided = 0
 
-    # drinkers = Composite("Drinkers", {"color": BLUE},
-    #                      member_creator=create_drinker,
-    #                      num_members=pa.get('population',
-    #                                         DEF_POPULATION))
-
     # drinkers = Composite("Drinkers", {"color": BLUE})
     # for i in range(pa.get('population', DEF_POPULATION) // 2):
     #     drinkers += (create_drinker(i))
@@ -215,14 +210,11 @@ def set_up(props=None):
 
     non_drinkers = Composite("Non-Drinkers", {"color": BLUE}, props=pa,
                              member_creator=create_non_drinker,
-                             num_members=pa.get('population', DEF_POPULATION) // 2)
+                             num_members=pa.get('population',
+                                                DEF_POPULATION) // 2)
 
     population = len(drinkers) + len(non_drinkers)
     optimal_occupancy = int(population * 0.6)
-
-    # non_drinkers = Composite("Non-Drinkers", {"color": RED})
-    # for i in range(pa.get('population', DEF_POPULATION) // 2):
-    #     non_drinkers += create_non_drinker(i)
 
     bar = Env("env",
               height=pa.get('grid_height', DEF_HEIGHT),

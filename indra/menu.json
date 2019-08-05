@@ -18,7 +18,7 @@
         {
             "id": 4,
             "func": "debug",
-            "question": "Enter debugger."
+            "question": "Examine model data."
         },
         {
             "id": 5,
