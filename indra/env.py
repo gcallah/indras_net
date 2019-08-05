@@ -96,21 +96,21 @@ class Env(Space):
             self.user = None
             self.registry = {}
             self.line_data_func = line_data_func
+            self.womb = []  # for agents waiting to be born
+            self.switches = []  # for agents waiting to switch groups
+            self.user_type = os.getenv("user_type", TERMINAL)
+            if (self.user_type == TERMINAL):
+                self.user = TermUser(getpass.getuser(), self)
+                self.user.tell("Welcome to Indra, " + str(self.user) + "!")
+            elif (self.user_type == TEST):
+                self.user = TestUser(getpass.getuser(), self)
+            elif (self.user_type == API):
+                self.user = APIUser(getpass.getuser(), self)
 
         self.type = "env"
-        self.womb = []  # for agents waiting to be born
-        self.switches = []  # for agents waiting to switch groups
-        self.user_type = os.getenv("user_type", TERMINAL)
         self.num_acts = 0
         self.num_moves = 0
         self.num_switches = 0
-        if (self.user_type == TERMINAL):
-            self.user = TermUser(getpass.getuser(), self)
-            self.user.tell("Welcome to Indra, " + str(self.user) + "!")
-        elif (self.user_type == TEST):
-            self.user = TestUser(getpass.getuser(), self)
-        elif (self.user_type == API):
-            self.user = APIUser(getpass.getuser(), self)
         if self.props is not None:
             if not self.props.get('use_line', True):
                 self.exclude_menu_item("line_graph")
@@ -126,7 +126,10 @@ class Env(Space):
                                      skip_user_questions=True)
         self.pop_hist = PopHist(serial_pops=serial_obj["pop_hist"])
         self.plot_title = serial_obj["pop_hist"]
-        self.user = APIUser(serial_obj["user"], self)
+        nm = serial_obj["user"]["name"]
+        msg = serial_obj["user"]["user_msgs"]
+        self.user = APIUser(nm, self)
+        self.user.tell(msg)
         self.name = serial_obj["name"]
         self.womb = serial_obj["womb"]
         self.switches = serial_obj["switches"]
@@ -291,14 +294,16 @@ class Env(Space):
         if self.census_func:
             return self.census_func(self)
         else:
+            total_pop = 0
             census_str = ("\nTotal census for period "
                           + str(self.get_periods()) + ":\n"
                           + "==================\n"
-                          + "Composite census:\n"
+                          + "Group census:\n"
                           + "==================\n")
-            for composite_str in self.members:
-                population = len(self.members[composite_str])
-                census_str += ("  " + composite_str + ": "
+            for name in self.members:
+                population = len(self.members[name])
+                total_pop += population
+                census_str += ("  " + name + ": "
                                + str(population) + "\n")
             census_str += ("==================\n"
                            + "Agent census:\n"
