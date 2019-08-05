@@ -1,6 +1,6 @@
 export user_type="test"
 export test_dir="tests"
-export ignores="FOO"  # dummy file!
+export ignores="scheduler"  # dummy file!
 
 if [ -z $1 ]
 then
