@@ -1,15 +1,14 @@
 """
     This is the flocking model written in indra.
 """
+import math
 
-from propargs.propargs import PropArgs
-from indra.utils import get_prop_path
-from indra.agent import Agent
+from indra.utils import get_props
+from indra.agent import Agent, X, Y
 from indra.composite import Composite
 from indra.space import DEF_HEIGHT, DEF_WIDTH, distance
 from indra.env import Env
 from indra.display_methods import BLUE, TREE
-import math
 MODEL_NAME = "flocking"
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
@@ -18,21 +17,21 @@ DEF_NUM_BIRDS = 10
 DEF_DESIRED_DISTANCE = 2
 BIRD_MAX_MOVE = 2
 
+HALF_CIRCLE = 180
+FULL_CIRCLE = 360
+
 flock = None
 the_sky = None
 
 
 def calc_angle(agent1, agent2):
     pos1 = agent1.get_pos()
-    print("Pos1 = ", pos1)
-    if pos1[0] != 0:
-        ang = math.tan((pos1[1] / pos1[0]))
-        print(ang)
-        return ang
-    else:
-        print("0")
-        return 0
-    # return int(math.atan(pos1))  # you must calculate!
+    pos2 = agent2.get_pos()
+    x = pos2[X] - pos1[X]
+    y = pos2[Y] - pos1[Y]
+    angle = math.degrees(math.atan2(y, x))
+    angle = angle if angle >= 0 else (angle * -1) + HALF_CIRCLE
+    return angle
 
 
 def bird_action(this_bird):
@@ -43,9 +42,10 @@ def bird_action(this_bird):
               " is ", curr_distance)
         angle_to_nearest = calc_angle(this_bird, nearest_bird)
         if curr_distance < DEF_DESIRED_DISTANCE:
-            this_bird["angle"] = (angle_to_nearest + 180) % 360
+            this_bird["angle"] = (angle_to_nearest + HALF_CIRCLE) % FULL_CIRCLE
         else:
             this_bird["angle"] = angle_to_nearest
+        print(this_bird.name, "'s angle is ", this_bird["angle"])
     return False
 
 
@@ -63,17 +63,11 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    ds_file = get_prop_path(MODEL_NAME)
-    if props is None:
-        pa = PropArgs.create_props(MODEL_NAME,
-                                   ds_file=ds_file)
-    else:
-        pa = PropArgs.create_props(MODEL_NAME,
-                                   prop_dict=props)
+    pa = get_props(MODEL_NAME, props)
 
     flock = Composite("Birds", {"color": BLUE, "marker": TREE},
                       member_creator=create_bird,
-                      num_members=pa.get('num_flock', DEF_NUM_BIRDS))
+                      num_members=pa.get('num_birds', DEF_NUM_BIRDS))
 
     the_sky = Env("the_sky",
                   height=pa.get('grid_height', DEF_HEIGHT),
