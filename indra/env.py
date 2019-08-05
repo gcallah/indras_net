@@ -126,7 +126,10 @@ class Env(Space):
                                      skip_user_questions=True)
         self.pop_hist = PopHist(serial_pops=serial_obj["pop_hist"])
         self.plot_title = serial_obj["pop_hist"]
-        self.user = APIUser(serial_obj["user"], self)
+        nm = serial_obj["user"]["name"]
+        msg = serial_obj["user"]["user_msgs"]
+        self.user = APIUser(nm, self)
+        self.user.tell(msg)
         self.name = serial_obj["name"]
         self.womb = serial_obj["womb"]
         self.switches = serial_obj["switches"]
