@@ -215,7 +215,8 @@ def set_up(props=None):
 
     non_drinkers = Composite("Non-Drinkers", {"color": BLUE}, props=pa,
                              member_creator=create_non_drinker,
-                             num_members=pa.get('population', DEF_POPULATION) // 2)
+                             num_members=pa.get('population',
+                             DEF_POPULATION) // 2)
 
     population = len(drinkers) + len(non_drinkers)
     optimal_occupancy = int(population * 0.6)
