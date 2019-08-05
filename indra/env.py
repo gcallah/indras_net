@@ -8,6 +8,7 @@ import getpass
 # import logging
 import indra.display_methods as disp
 from indra.agent import join, switch, Agent, AgentEncoder
+from indra.agent import is_space
 from indra.space import Space
 from indra.user import TermUser, TERMINAL, API
 from indra.user import TEST, TestUser, USER_EXIT, APIUser
@@ -134,6 +135,15 @@ class Env(Space):
         self.switches = serial_obj["switches"]
         self.census_func = serial_obj["census_func"]
         self.line_data_func = serial_obj["data_func"]
+        self.registry[self.name] = self
+
+        # set up self.locator
+        for nm in self.registry:
+            primgp = self.registry[nm].prim_group
+            # print(str(type(primgp)), primgp)
+            if primgp == self.name:
+                self.registry[nm].locator = self
+            print(self.registry[nm].locator)
 
     def to_json(self):
         rep = super().to_json()
@@ -150,6 +160,12 @@ class Env(Space):
         rep["switches"] = self.switches
         rep["census_func"] = None
         rep["data_func"] = None
+        rep["registry"] = {}
+        for elem in self.registry:
+            if is_space(self.registry[elem]):
+                rep["registry"][elem] = self.registry[elem].name
+            else:
+                rep["registry"][elem] = self.registry[elem]
         return rep
 
     def __repr__(self):

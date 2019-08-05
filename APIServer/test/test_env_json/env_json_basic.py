@@ -6,7 +6,7 @@ def ret():
     "pos": None,
     "attrs": {},
     "groups": [],
-    "active": True,
+    "active": None,
     "type_sig": 0,
     "prim_group": None,
     "locator": None,
@@ -24,7 +24,7 @@ def ret():
             "groups": [
                 "env"
             ],
-            "active": True,
+            "active": None,
             "type_sig": 0,
             "prim_group": "env",
             "locator": None,
@@ -36,14 +36,14 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        18,
-                        2
+                        7,
+                        17
                     ],
                     "attrs": {},
                     "groups": [
                         "Blues"
                     ],
-                    "active": True,
+                    "active": None,
                     "type_sig": 0,
                     "prim_group": "Blues",
                     "locator": "env",
@@ -55,14 +55,14 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        4,
-                        17
+                        8,
+                        4
                     ],
                     "attrs": {},
                     "groups": [
                         "Blues"
                     ],
-                    "active": True,
+                    "active": None,
                     "type_sig": 0,
                     "prim_group": "Blues",
                     "locator": "env",
@@ -82,7 +82,7 @@ def ret():
             "groups": [
                 "env"
             ],
-            "active": True,
+            "active": None,
             "type_sig": 0,
             "prim_group": "env",
             "locator": None,
@@ -94,14 +94,14 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        15,
-                        6
+                        19,
+                        20
                     ],
                     "attrs": {},
                     "groups": [
                         "Reds"
                     ],
-                    "active": True,
+                    "active": None,
                     "type_sig": 0,
                     "prim_group": "Reds",
                     "locator": "env",
@@ -113,14 +113,14 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        7,
-                        10
+                        3,
+                        14
                     ],
                     "attrs": {},
                     "groups": [
                         "Reds"
                     ],
-                    "active": True,
+                    "active": None,
                     "type_sig": 0,
                     "prim_group": "Reds",
                     "locator": "env",
@@ -132,23 +132,22 @@ def ret():
     },
     "width": 20,
     "height": 20,
-    "registry": {},
     "locations": {
         "Blues0": [
-            18,
-            2
-        ],
-        "Blues1": [
-            4,
+            7,
             17
         ],
+        "Blues1": [
+            8,
+            4
+        ],
         "Reds0": [
-            15,
-            6
+            19,
+            20
         ],
         "Reds1": [
-            7,
-            10
+            3,
+            14
         ]
     },
     "user": {
@@ -187,7 +186,7 @@ def ret():
             "hival": 100
         },
         "use_line": {
-            "val": True,
+            "val": None,
             "question": None,
             "atype": None,
             "lowval": None,
@@ -208,7 +207,7 @@ def ret():
             "hival": None
         },
         "use_scatter": {
-            "val": True,
+            "val": None,
             "question": None,
             "atype": None,
             "lowval": None,
@@ -232,5 +231,6 @@ def ret():
     },
     "womb": [],
     "switches": [],
-    "data_func": None
+    "data_func": None,
+    "registry": {}
 }

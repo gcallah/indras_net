@@ -101,8 +101,6 @@ class Space(Composite):
         for mnm in rep["members"]:
             ret_mbrs[mnm] = rep["members"][mnm]
         rep["members"] = ret_mbrs
-        rep["registry"] = self.registry
-
         rep["locations"] = {}
         for loc in self.locations:
             rep["locations"][self.locations[loc].name] = loc
@@ -117,7 +115,7 @@ class Space(Composite):
         self.registry = {}
         for nm in self.members:
             self.add_mbr_to_regis(self.members[nm])
-        # construct self.groups and self.prim_group and self.locator
+        # construct self.groups
         for nm in self.registry:
             if len(self.registry[nm].groups) != 0:
                 for gnm in self.registry[nm].groups:
@@ -126,7 +124,8 @@ class Space(Composite):
         # construct self.location
         self.locations = {}
         for nm in self.registry:
-            self.locations[self.registry[nm].pos] = self.registry[nm]
+            if self.registry[nm].type == "agent":
+                self.locations[self.registry[nm].pos] = self.registry[nm]
 
     def add_mbr_to_regis(self, member):
         if member.type == "agent":
