@@ -172,6 +172,7 @@ def set_up(props=None):
     """
     global drinkers
     global non_drinkers
+    global bar
 
     ds_file = get_prop_path(MODEL_NAME)
     if props is None:
@@ -205,6 +206,7 @@ def set_up(props=None):
 
 def main():
     global drinkers
+    global non_drinkers
     global bar
 
     (bar, drinkers, non_drinkers) = set_up()
