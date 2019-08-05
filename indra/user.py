@@ -105,6 +105,12 @@ class User(Agent):
         return {"user_msgs": self.user_msgs,
                 "name": self.name}
 
+    def from_json(self):
+        """
+        This must be written!
+        """
+        pass
+
     def exclude_menu_item(self, to_exclude):
         """
         This will immediately remove an item from the menu.
@@ -177,9 +183,6 @@ class TermUser(User):
             return True
         except ValueError:
             return False
-
-    def to_json(self):
-        return {"name": self.name}
 
     def __call__(self):
         self.tell('\n' + self.stars + '\n' + self.menu_title + '\n'
