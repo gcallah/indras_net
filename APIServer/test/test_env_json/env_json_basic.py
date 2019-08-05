@@ -36,8 +36,8 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        4,
-                        12
+                        18,
+                        2
                     ],
                     "attrs": {},
                     "groups": [
@@ -55,8 +55,8 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        17,
-                        4
+                        4,
+                        17
                     ],
                     "attrs": {},
                     "groups": [
@@ -94,8 +94,8 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        19,
-                        10
+                        15,
+                        6
                     ],
                     "attrs": {},
                     "groups": [
@@ -113,8 +113,8 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        4,
-                        3
+                        7,
+                        10
                     ],
                     "attrs": {},
                     "groups": [
@@ -132,6 +132,25 @@ def ret():
     },
     "width": 20,
     "height": 20,
+    "registry": {},
+    "locations": {
+        "Blues0": [
+            18,
+            2
+        ],
+        "Blues1": [
+            4,
+            17
+        ],
+        "Reds0": [
+            15,
+            6
+        ],
+        "Reds1": [
+            7,
+            10
+        ]
+    },
     "user": {
         "user_msgs": "",
         "name": "ziruizhou"
@@ -213,6 +232,5 @@ def ret():
     },
     "womb": [],
     "switches": [],
-    "data_func": None,
-    "registry": {}
+    "data_func": None
 }

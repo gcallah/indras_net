@@ -94,7 +94,6 @@ class Env(Space):
             # Attributes for plotting
             self.plot_title = self.name
             self.user = None
-            self.registry = {}
             self.line_data_func = line_data_func
             self.womb = []  # for agents waiting to be born
             self.switches = []  # for agents waiting to switch groups
@@ -135,16 +134,6 @@ class Env(Space):
         self.switches = serial_obj["switches"]
         self.census_func = serial_obj["census_func"]
         self.line_data_func = serial_obj["data_func"]
-        # construct self.registry
-        self.registry = {}
-        for nm in self.members:
-            self.add_mbr_to_regis(self.members[nm])
-        # construct self.groups and self.prim_group and self.locator
-        for nm in self.registry:
-            if len(self.registry[nm].groups) != 0:
-                for gnm in self.registry[nm].groups:
-                    if gnm in self.registry:
-                        self.registry[nm].add_group(self.registry[gnm])
 
     def to_json(self):
         rep = super().to_json()
@@ -161,11 +150,6 @@ class Env(Space):
         rep["switches"] = self.switches
         rep["census_func"] = None
         rep["data_func"] = None
-        ret_mbrs = {}
-        for mnm in rep["members"]:
-            ret_mbrs[mnm] = rep["members"][mnm]
-        rep["members"] = ret_mbrs
-        rep["registry"] = self.registry
         return rep
 
     def __repr__(self):
@@ -173,14 +157,6 @@ class Env(Space):
 
     def restore_env(self, serial_obj):
         self.from_json(serial_obj)
-
-    def add_mbr_to_regis(self, member):
-        if member.type == "agent":
-            self.registry[member.name] = member
-        else:
-            self.registry[member.name] = member
-            for mbrnm in member.members:
-                self.add_mbr_to_regis(member.members[mbrnm])
 
     def exclude_menu_item(self, to_exclude):
         """

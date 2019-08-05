@@ -36,10 +36,10 @@
   },
 
   "bird_range": {
-    "val": 5,
-    "question": "What is distance between birds?",
+    "val": 2,
+    "question": "What is the optimal distance between birds?",
     "atype": "INT",
-    "hival": 50,
+    "hival": 20,
     "lowval": 1
   },
   "use_line":{
