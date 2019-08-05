@@ -25,7 +25,14 @@ the_sky = None
 def calc_angle(agent1, agent2):
     pos1 = agent1.get_pos()
     print("Pos1 = ", pos1)
-    return math.atan(pos1)  # you must calculate!
+    if pos1[0] != 0:
+        ang = math.tan((pos1[1]/pos1[0]))
+        print(ang)
+        return ang
+    else:
+        print("0")
+        return 0
+    # return int(math.atan(pos1))  # you must calculate!
 
 
 def bird_action(this_bird):
@@ -42,7 +49,7 @@ def bird_action(this_bird):
     return False
 
 
-def create_bird(name, i):
+def create_bird(name, i, props = None):
     """
     Creates a bird with a numbered name and an action function
     making it flock.
