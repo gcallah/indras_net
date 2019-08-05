@@ -9,7 +9,7 @@ from indra.composite import Composite
 from indra.space import DEF_HEIGHT, DEF_WIDTH, distance
 from indra.env import Env
 from indra.display_methods import BLUE, TREE
-
+import math
 MODEL_NAME = "flocking"
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
@@ -25,7 +25,7 @@ the_sky = None
 def calc_angle(agent1, agent2):
     pos1 = agent1.get_pos()
     print("Pos1 = ", pos1)
-    return 0  # you must calculate!
+    return math.atan(pos1)  # you must calculate!
 
 
 def bird_action(this_bird):
