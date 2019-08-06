@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-function renderPreFormTextBox(props){
+function PreFormTextBox(props){
 	return(
       <div class="card w-50 overflow-auto" style={{float:'right', width:"18rem", height:"18rem"}}>
       <h5 style={{textAlign: 'center', "fontSize": 16}}
@@ -14,4 +14,4 @@ function renderPreFormTextBox(props){
 	)
 }
 
-export default renderPreFormTextBox;
+export default PreFormTextBox;
