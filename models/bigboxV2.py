@@ -35,19 +35,27 @@ store_census = None
 # The data below creates store types with default values.
 # "Store type":
 # [expense, capital, color]
-mp_stores = {"Mom and pop: Books": [45, 105, TAN],
-             "Mom and pop: Coffee": [23, 100, BLACK],
-             "Mom and pop: Groceries": [67, 100, GREEN],
-             "Mom and pop: Hardware": [60, 110, RED],
-             "Mom and pop: Meals": [40, 100, YELLOW]}
+mp_stores = {"Bookshop": [45, 105, TAN],
+             "Coffeeshop": [23, 100, BLACK],
+             "Grocery store": [67, 100, GREEN],
+             "Hardware": [60, 110, RED],
+             "Restaurant": [40, 100, YELLOW]}
+
+
+def sells_good(good_type):
+    pass
+    # if BB return True else return seller sells that type
+
+
+def get_rand_good_type():
+    return random.choice(list(mp_stores.keys()))
 
 
 def create_consumer(name, i, props=None):
     spending_power = random.randint(70, 100)
-    item_needed = random.choice(list(mp_stores.keys()))
     consumer_books = {"spending power": spending_power,
                       "last util": 0.0,
-                      "item needed": item_needed}
+                      "item needed": get_rand_good_type()}
     return Agent(name + str(i), attrs=consumer_books, action=consumer_action)
 
 
@@ -85,6 +93,9 @@ def consumer_action(consumer):
                 and neighbor.primary_group()
             != groups[CONSUMER_INDX]
                 and neighbor["capital"] > -1):
+            # collapse if and else to single case by
+            #  1) make bb sell all goods and
+            #  2) make store cough up util and add mp_pref in there
             if neighbor.primary_group() == groups[BB_INDX]:
                 curr_store_util = calc_util(neighbor)
                 if curr_store_util > max_util:
@@ -98,6 +109,7 @@ def consumer_action(consumer):
                         store_to_go = neighbor
     if store_to_go is not None:
         transaction(store_to_go, consumer)
+    consumer["item needed"] = get_rand_good_type()
     return False
 
 
