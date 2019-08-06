@@ -7,7 +7,7 @@ import ScatterPlot from './ScatterPlot.js';
 import Debugger from './Debugger.js';
 import renderPreFormTextBox from './PreFormTextBox.js';
 
-class MenuList extends Component {
+class ActionMenu extends Component {
   api_server = 'https://indrasnet.pythonanywhere.com/models/menu/';
 
   state = {
@@ -244,4 +244,4 @@ class MenuList extends Component {
   }
 }
 
-export default MenuList;
+export default ActionMenu;
