@@ -4,8 +4,6 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import ModelMenu from "./ModelMenu"
 
-var model_image = require('./images/model_images.png')
-
 class Home extends Component {
   api_server = 'https://indrasnet.pythonanywhere.com/';
   state = {
@@ -34,6 +32,11 @@ class Home extends Component {
     return <h1 style={{"fontSize": 16, "fontWeight": '400'}}>
         <a href="#" class="text-primary m-2" onClick={window.open(link)}>
         View Project Description </a> </h1>
+  }
+
+
+  showSourc = () => {
+    window.open('https://gcallah.github.io/indras_net/index.html')
   }
 
   handleClick(id, name, source){
@@ -82,7 +85,9 @@ class Home extends Component {
           </Link>
         </a>)}
         </div></div> </ul>
-        {this.showSource()}
+        <h1 style={{"fontSize": 16, "fontWeight": '400'}}>
+        <a href="#" class="text-primary m-2" onClick={this.showSourc}>
+        View Project Description </a> </h1>
         <br /><br />
         <br /><br />
       </div>
