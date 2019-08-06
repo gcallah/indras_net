@@ -34,9 +34,9 @@ def ret():
                 "wolf0": {
                     "name": "wolf0",
                     "type": "agent",
-                    "duration": 10,
+                    "duration": 11,
                     "pos": [
-                        8,
+                        3,
                         2
                     ],
                     "attrs": {
@@ -56,10 +56,10 @@ def ret():
                 "wolf1": {
                     "name": "wolf1",
                     "type": "agent",
-                    "duration": 11,
+                    "duration": 10,
                     "pos": [
-                        2,
-                        1
+                        9,
+                        0
                     ],
                     "attrs": {
                         "time_to_repr": 4,
@@ -78,10 +78,10 @@ def ret():
                 "wolf2": {
                     "name": "wolf2",
                     "type": "agent",
-                    "duration": 11,
+                    "duration": 18,
                     "pos": [
                         4,
-                        3
+                        7
                     ],
                     "attrs": {
                         "time_to_repr": 4,
@@ -100,10 +100,10 @@ def ret():
                 "wolf3": {
                     "name": "wolf3",
                     "type": "agent",
-                    "duration": 18,
+                    "duration": 11,
                     "pos": [
-                        3,
-                        10
+                        8,
+                        8
                     ],
                     "attrs": {
                         "time_to_repr": 4,
@@ -124,8 +124,8 @@ def ret():
                     "type": "agent",
                     "duration": 11,
                     "pos": [
-                        3,
-                        6
+                        5,
+                        2
                     ],
                     "attrs": {
                         "time_to_repr": 4,
@@ -144,10 +144,10 @@ def ret():
                 "wolf5": {
                     "name": "wolf5",
                     "type": "agent",
-                    "duration": 3,
+                    "duration": 11,
                     "pos": [
-                        9,
-                        4
+                        3,
+                        6
                     ],
                     "attrs": {
                         "time_to_repr": 4,
@@ -166,10 +166,10 @@ def ret():
                 "wolf6": {
                     "name": "wolf6",
                     "type": "agent",
-                    "duration": 11,
+                    "duration": 3,
                     "pos": [
-                        9,
-                        9
+                        5,
+                        5
                     ],
                     "attrs": {
                         "time_to_repr": 4,
@@ -190,8 +190,8 @@ def ret():
                     "type": "agent",
                     "duration": 11,
                     "pos": [
-                        10,
-                        1
+                        8,
+                        6
                     ],
                     "attrs": {
                         "time_to_repr": 4,
@@ -210,10 +210,10 @@ def ret():
                 "wolf8": {
                     "name": "wolf8",
                     "type": "agent",
-                    "duration": 3,
+                    "duration": 18,
                     "pos": [
-                        2,
-                        2
+                        10,
+                        3
                     ],
                     "attrs": {
                         "time_to_repr": 4,
@@ -234,8 +234,8 @@ def ret():
                     "type": "agent",
                     "duration": 3,
                     "pos": [
-                        1,
-                        10
+                        6,
+                        7
                     ],
                     "attrs": {
                         "time_to_repr": 4,
@@ -270,57 +270,95 @@ def ret():
             "locator": None,
             "neighbors": None,
             "action_key": None,
-            "members": {
-                "sheep3": {
-                    "name": "sheep3",
-                    "type": "agent",
-                    "duration": 6,
-                    "pos": [
-                        1,
-                        8
-                    ],
-                    "attrs": {
-                        "time_to_repr": 1,
-                        "orig_repr_time": 3
-                    },
-                    "groups": [
-                        "sheep"
-                    ],
-                    "active": True,
-                    "type_sig": 2,
-                    "prim_group": "sheep",
-                    "locator": "meadow",
-                    "neighbors": None,
-                    "action_key": "sheep_action"
-                },
-                "sheep6": {
-                    "name": "sheep6",
-                    "type": "agent",
-                    "duration": 6,
-                    "pos": [
-                        1,
-                        0
-                    ],
-                    "attrs": {
-                        "time_to_repr": 1,
-                        "orig_repr_time": 3
-                    },
-                    "groups": [
-                        "sheep"
-                    ],
-                    "active": True,
-                    "type_sig": 2,
-                    "prim_group": "sheep",
-                    "locator": "meadow",
-                    "neighbors": None,
-                    "action_key": "sheep_action"
-                }
-            }
+            "members": {}
         }
     },
     "width": 10,
     "height": 10,
+    "locations": {
+        "sheep0": [
+            9,
+            8
+        ],
+        "sheep3": [
+            7,
+            4
+        ],
+        "sheep4": [
+            4,
+            9
+        ],
+        "sheep5": [
+            9,
+            3
+        ],
+        "sheep6": [
+            8,
+            10
+        ],
+        "sheep8": [
+            2,
+            5
+        ],
+        "sheep9": [
+            8,
+            9
+        ],
+        "sheep1": [
+            4,
+            10
+        ],
+        "sheep2": [
+            0,
+            0
+        ],
+        "sheep7": [
+            7,
+            3
+        ],
+        "wolf0": [
+            3,
+            2
+        ],
+        "wolf1": [
+            9,
+            0
+        ],
+        "wolf2": [
+            4,
+            7
+        ],
+        "wolf3": [
+            8,
+            8
+        ],
+        "wolf4": [
+            5,
+            2
+        ],
+        "wolf5": [
+            3,
+            6
+        ],
+        "wolf6": [
+            5,
+            5
+        ],
+        "wolf7": [
+            8,
+            6
+        ],
+        "wolf8": [
+            10,
+            3
+        ],
+        "wolf9": [
+            6,
+            7
+        ]
+    },
     "user": {
+        "user_msgs": "",
         "name": "ziruizhou"
     },
     "census_func": None,
@@ -436,7 +474,7 @@ def ret():
             "sheep": [
                 10,
                 10,
-                4
+                3
             ]
         }
     },

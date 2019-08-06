@@ -31,194 +31,16 @@ def ret():
             "neighbors": None,
             "action_key": None,
             "members": {
-                "Blue Agent0": {
-                    "name": "Blue Agent0",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        2,
-                        6
-                    ],
-                    "attrs": {
-                        "tolerance": 0.4928747839895938,
-                        "color": 0,
-                        "hood_changed": True,
-                        "just_moved": False
-                    },
-                    "groups": [
-                        "Blue Agent group",
-                        "x neighbors",
-                        "Moore neighbors"
-                    ],
-                    "active": True,
-                    "type_sig": 4,
-                    "prim_group": "Blue Agent group",
-                    "locator": "A city",
-                    "neighbors": None,
-                    "action_key": "seg_agent_action"
-                },
-                "Blue Agent1": {
-                    "name": "Blue Agent1",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        1,
-                        8
-                    ],
-                    "attrs": {
-                        "tolerance": 0.7104502686652412,
-                        "color": 0,
-                        "hood_changed": True,
-                        "just_moved": True
-                    },
-                    "groups": [
-                        "Blue Agent group",
-                        "x neighbors",
-                        "Moore neighbors"
-                    ],
-                    "active": True,
-                    "type_sig": 4,
-                    "prim_group": "Blue Agent group",
-                    "locator": "A city",
-                    "neighbors": None,
-                    "action_key": "seg_agent_action"
-                },
-                "Blue Agent2": {
-                    "name": "Blue Agent2",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        1,
-                        7
-                    ],
-                    "attrs": {
-                        "tolerance": 0.6748626409185068,
-                        "color": 0,
-                        "hood_changed": True,
-                        "just_moved": True
-                    },
-                    "groups": [
-                        "Blue Agent group",
-                        "x neighbors",
-                        "Moore neighbors"
-                    ],
-                    "active": True,
-                    "type_sig": 4,
-                    "prim_group": "Blue Agent group",
-                    "locator": "A city",
-                    "neighbors": None,
-                    "action_key": "seg_agent_action"
-                },
-                "Blue Agent3": {
-                    "name": "Blue Agent3",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        5,
-                        9
-                    ],
-                    "attrs": {
-                        "tolerance": 0.907006738060486,
-                        "color": 0,
-                        "hood_changed": False,
-                        "just_moved": False
-                    },
-                    "groups": [
-                        "Blue Agent group",
-                        "x neighbors",
-                        "Moore neighbors"
-                    ],
-                    "active": True,
-                    "type_sig": 4,
-                    "prim_group": "Blue Agent group",
-                    "locator": "A city",
-                    "neighbors": None,
-                    "action_key": "seg_agent_action"
-                },
-                "Blue Agent4": {
-                    "name": "Blue Agent4",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        6,
-                        8
-                    ],
-                    "attrs": {
-                        "tolerance": 0.4990507443320545,
-                        "color": 0,
-                        "hood_changed": False,
-                        "just_moved": False
-                    },
-                    "groups": [
-                        "Blue Agent group",
-                        "x neighbors",
-                        "Moore neighbors"
-                    ],
-                    "active": True,
-                    "type_sig": 4,
-                    "prim_group": "Blue Agent group",
-                    "locator": "A city",
-                    "neighbors": None,
-                    "action_key": "seg_agent_action"
-                },
-                "Blue Agent5": {
-                    "name": "Blue Agent5",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        0,
-                        8
-                    ],
-                    "attrs": {
-                        "tolerance": 0.49442717591713703,
-                        "color": 0,
-                        "hood_changed": False,
-                        "just_moved": False
-                    },
-                    "groups": [
-                        "Blue Agent group"
-                    ],
-                    "active": True,
-                    "type_sig": 4,
-                    "prim_group": "Blue Agent group",
-                    "locator": "A city",
-                    "neighbors": None,
-                    "action_key": "seg_agent_action"
-                },
-                "Blue Agent6": {
-                    "name": "Blue Agent6",
+                "Blue Agent group0": {
+                    "name": "Blue Agent group0",
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
                         7,
-                        3
+                        5
                     ],
                     "attrs": {
-                        "tolerance": 0.5786551005474763,
-                        "color": 0,
-                        "hood_changed": True,
-                        "just_moved": True
-                    },
-                    "groups": [
-                        "Blue Agent group"
-                    ],
-                    "active": True,
-                    "type_sig": 4,
-                    "prim_group": "Blue Agent group",
-                    "locator": "A city",
-                    "neighbors": None,
-                    "action_key": "seg_agent_action"
-                },
-                "Blue Agent7": {
-                    "name": "Blue Agent7",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        2,
-                        7
-                    ],
-                    "attrs": {
-                        "tolerance": 0.1593578587217856,
+                        "tolerance": 0.28173754193142225,
                         "color": 0,
                         "hood_changed": False,
                         "just_moved": False
@@ -235,16 +57,66 @@ def ret():
                     "neighbors": None,
                     "action_key": "seg_agent_action"
                 },
-                "Blue Agent8": {
-                    "name": "Blue Agent8",
+                "Blue Agent group1": {
+                    "name": "Blue Agent group1",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        9,
+                        4
+                    ],
+                    "attrs": {
+                        "tolerance": 0.7228830211433017,
+                        "color": 0,
+                        "hood_changed": False,
+                        "just_moved": False
+                    },
+                    "groups": [
+                        "Blue Agent group",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 4,
+                    "prim_group": "Blue Agent group",
+                    "locator": "A city",
+                    "neighbors": None,
+                    "action_key": "seg_agent_action"
+                },
+                "Blue Agent group2": {
+                    "name": "Blue Agent group2",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        10,
+                        7
+                    ],
+                    "attrs": {
+                        "tolerance": 0.9068078501872943,
+                        "color": 0,
+                        "hood_changed": True,
+                        "just_moved": True
+                    },
+                    "groups": [
+                        "Blue Agent group"
+                    ],
+                    "active": True,
+                    "type_sig": 4,
+                    "prim_group": "Blue Agent group",
+                    "locator": "A city",
+                    "neighbors": None,
+                    "action_key": "seg_agent_action"
+                },
+                "Blue Agent group3": {
+                    "name": "Blue Agent group3",
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
                         3,
-                        8
+                        7
                     ],
                     "attrs": {
-                        "tolerance": 0.30230950628575115,
+                        "tolerance": 0.6239178826629674,
                         "color": 0,
                         "hood_changed": True,
                         "just_moved": True
@@ -261,22 +133,152 @@ def ret():
                     "neighbors": None,
                     "action_key": "seg_agent_action"
                 },
-                "Blue Agent9": {
-                    "name": "Blue Agent9",
+                "Blue Agent group4": {
+                    "name": "Blue Agent group4",
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        6,
-                        9
+                        7,
+                        0
                     ],
                     "attrs": {
-                        "tolerance": 0.6575456576279697,
+                        "tolerance": 0.6480831160185075,
                         "color": 0,
                         "hood_changed": True,
                         "just_moved": True
                     },
                     "groups": [
                         "Blue Agent group"
+                    ],
+                    "active": True,
+                    "type_sig": 4,
+                    "prim_group": "Blue Agent group",
+                    "locator": "A city",
+                    "neighbors": None,
+                    "action_key": "seg_agent_action"
+                },
+                "Blue Agent group5": {
+                    "name": "Blue Agent group5",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        6,
+                        6
+                    ],
+                    "attrs": {
+                        "tolerance": 0.4235330688536634,
+                        "color": 0,
+                        "hood_changed": True,
+                        "just_moved": True
+                    },
+                    "groups": [
+                        "Blue Agent group",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 4,
+                    "prim_group": "Blue Agent group",
+                    "locator": "A city",
+                    "neighbors": None,
+                    "action_key": "seg_agent_action"
+                },
+                "Blue Agent group6": {
+                    "name": "Blue Agent group6",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        8,
+                        4
+                    ],
+                    "attrs": {
+                        "tolerance": 0.6708046792430584,
+                        "color": 0,
+                        "hood_changed": False,
+                        "just_moved": False
+                    },
+                    "groups": [
+                        "Blue Agent group",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 4,
+                    "prim_group": "Blue Agent group",
+                    "locator": "A city",
+                    "neighbors": None,
+                    "action_key": "seg_agent_action"
+                },
+                "Blue Agent group7": {
+                    "name": "Blue Agent group7",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        0,
+                        1
+                    ],
+                    "attrs": {
+                        "tolerance": 0.5499157700061804,
+                        "color": 0,
+                        "hood_changed": True,
+                        "just_moved": True
+                    },
+                    "groups": [
+                        "Blue Agent group",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 4,
+                    "prim_group": "Blue Agent group",
+                    "locator": "A city",
+                    "neighbors": None,
+                    "action_key": "seg_agent_action"
+                },
+                "Blue Agent group8": {
+                    "name": "Blue Agent group8",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        6,
+                        7
+                    ],
+                    "attrs": {
+                        "tolerance": 0.41020706399055934,
+                        "color": 0,
+                        "hood_changed": True,
+                        "just_moved": True
+                    },
+                    "groups": [
+                        "Blue Agent group",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 4,
+                    "prim_group": "Blue Agent group",
+                    "locator": "A city",
+                    "neighbors": None,
+                    "action_key": "seg_agent_action"
+                },
+                "Blue Agent group9": {
+                    "name": "Blue Agent group9",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        9,
+                        5
+                    ],
+                    "attrs": {
+                        "tolerance": 0.41272046475569635,
+                        "color": 0,
+                        "hood_changed": False,
+                        "just_moved": False
+                    },
+                    "groups": [
+                        "Blue Agent group",
+                        "x neighbors",
+                        "Moore neighbors"
                     ],
                     "active": True,
                     "type_sig": 4,
@@ -305,12 +307,38 @@ def ret():
             "neighbors": None,
             "action_key": None,
             "members": {
-                "Red Agent0": {
-                    "name": "Red Agent0",
+                "Red Agent group0": {
+                    "name": "Red Agent group0",
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        7,
+                        1,
+                        6
+                    ],
+                    "attrs": {
+                        "tolerance": 0.0,
+                        "color": 1,
+                        "hood_changed": False,
+                        "just_moved": False
+                    },
+                    "groups": [
+                        "Red Agent group",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 4,
+                    "prim_group": "Red Agent group",
+                    "locator": "A city",
+                    "neighbors": None,
+                    "action_key": "seg_agent_action"
+                },
+                "Red Agent group1": {
+                    "name": "Red Agent group1",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        0,
                         5
                     ],
                     "attrs": {
@@ -331,13 +359,117 @@ def ret():
                     "neighbors": None,
                     "action_key": "seg_agent_action"
                 },
-                "Red Agent1": {
-                    "name": "Red Agent1",
+                "Red Agent group2": {
+                    "name": "Red Agent group2",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        2,
+                        7
+                    ],
+                    "attrs": {
+                        "tolerance": 0.0,
+                        "color": 1,
+                        "hood_changed": False,
+                        "just_moved": False
+                    },
+                    "groups": [
+                        "Red Agent group",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 4,
+                    "prim_group": "Red Agent group",
+                    "locator": "A city",
+                    "neighbors": None,
+                    "action_key": "seg_agent_action"
+                },
+                "Red Agent group3": {
+                    "name": "Red Agent group3",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        3,
+                        5
+                    ],
+                    "attrs": {
+                        "tolerance": 0.0,
+                        "color": 1,
+                        "hood_changed": False,
+                        "just_moved": False
+                    },
+                    "groups": [
+                        "Red Agent group",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 4,
+                    "prim_group": "Red Agent group",
+                    "locator": "A city",
+                    "neighbors": None,
+                    "action_key": "seg_agent_action"
+                },
+                "Red Agent group4": {
+                    "name": "Red Agent group4",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        8,
+                        7
+                    ],
+                    "attrs": {
+                        "tolerance": 0.0,
+                        "color": 1,
+                        "hood_changed": False,
+                        "just_moved": False
+                    },
+                    "groups": [
+                        "Red Agent group",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 4,
+                    "prim_group": "Red Agent group",
+                    "locator": "A city",
+                    "neighbors": None,
+                    "action_key": "seg_agent_action"
+                },
+                "Red Agent group5": {
+                    "name": "Red Agent group5",
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
                         0,
-                        2
+                        7
+                    ],
+                    "attrs": {
+                        "tolerance": 0.0,
+                        "color": 1,
+                        "hood_changed": False,
+                        "just_moved": False
+                    },
+                    "groups": [
+                        "Red Agent group",
+                        "x neighbors",
+                        "Moore neighbors"
+                    ],
+                    "active": True,
+                    "type_sig": 4,
+                    "prim_group": "Red Agent group",
+                    "locator": "A city",
+                    "neighbors": None,
+                    "action_key": "seg_agent_action"
+                },
+                "Red Agent group6": {
+                    "name": "Red Agent group6",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        1,
+                        10
                     ],
                     "attrs": {
                         "tolerance": 0.0,
@@ -355,12 +487,12 @@ def ret():
                     "neighbors": None,
                     "action_key": "seg_agent_action"
                 },
-                "Red Agent2": {
-                    "name": "Red Agent2",
+                "Red Agent group7": {
+                    "name": "Red Agent group7",
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        3,
+                        6,
                         4
                     ],
                     "attrs": {
@@ -381,37 +513,13 @@ def ret():
                     "neighbors": None,
                     "action_key": "seg_agent_action"
                 },
-                "Red Agent3": {
-                    "name": "Red Agent3",
+                "Red Agent group8": {
+                    "name": "Red Agent group8",
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        8,
-                        10
-                    ],
-                    "attrs": {
-                        "tolerance": 0.0,
-                        "color": 1,
-                        "hood_changed": False,
-                        "just_moved": False
-                    },
-                    "groups": [
-                        "Red Agent group"
-                    ],
-                    "active": True,
-                    "type_sig": 4,
-                    "prim_group": "Red Agent group",
-                    "locator": "A city",
-                    "neighbors": None,
-                    "action_key": "seg_agent_action"
-                },
-                "Red Agent4": {
-                    "name": "Red Agent4",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        5,
-                        7
+                        4,
+                        8
                     ],
                     "attrs": {
                         "tolerance": 0.0,
@@ -431,12 +539,12 @@ def ret():
                     "neighbors": None,
                     "action_key": "seg_agent_action"
                 },
-                "Red Agent5": {
-                    "name": "Red Agent5",
+                "Red Agent group9": {
+                    "name": "Red Agent group9",
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        3,
+                        1,
                         0
                     ],
                     "attrs": {
@@ -446,105 +554,9 @@ def ret():
                         "just_moved": False
                     },
                     "groups": [
-                        "Red Agent group"
-                    ],
-                    "active": True,
-                    "type_sig": 4,
-                    "prim_group": "Red Agent group",
-                    "locator": "A city",
-                    "neighbors": None,
-                    "action_key": "seg_agent_action"
-                },
-                "Red Agent6": {
-                    "name": "Red Agent6",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        9,
-                        7
-                    ],
-                    "attrs": {
-                        "tolerance": 0.0,
-                        "color": 1,
-                        "hood_changed": False,
-                        "just_moved": False
-                    },
-                    "groups": [
-                        "Red Agent group"
-                    ],
-                    "active": True,
-                    "type_sig": 4,
-                    "prim_group": "Red Agent group",
-                    "locator": "A city",
-                    "neighbors": None,
-                    "action_key": "seg_agent_action"
-                },
-                "Red Agent7": {
-                    "name": "Red Agent7",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        5,
-                        5
-                    ],
-                    "attrs": {
-                        "tolerance": 0.0,
-                        "color": 1,
-                        "hood_changed": False,
-                        "just_moved": False
-                    },
-                    "groups": [
                         "Red Agent group",
                         "x neighbors",
                         "Moore neighbors"
-                    ],
-                    "active": True,
-                    "type_sig": 4,
-                    "prim_group": "Red Agent group",
-                    "locator": "A city",
-                    "neighbors": None,
-                    "action_key": "seg_agent_action"
-                },
-                "Red Agent8": {
-                    "name": "Red Agent8",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        4,
-                        2
-                    ],
-                    "attrs": {
-                        "tolerance": 0.0,
-                        "color": 1,
-                        "hood_changed": False,
-                        "just_moved": False
-                    },
-                    "groups": [
-                        "Red Agent group"
-                    ],
-                    "active": True,
-                    "type_sig": 4,
-                    "prim_group": "Red Agent group",
-                    "locator": "A city",
-                    "neighbors": None,
-                    "action_key": "seg_agent_action"
-                },
-                "Red Agent9": {
-                    "name": "Red Agent9",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        6,
-                        10
-                    ],
-                    "attrs": {
-                        "tolerance": 0.0,
-                        "color": 1,
-                        "hood_changed": False,
-                        "just_moved": False
-                    },
-                    "groups": [
-                        "Red Agent group"
                     ],
                     "active": True,
                     "type_sig": 4,
@@ -558,7 +570,90 @@ def ret():
     },
     "width": 10,
     "height": 10,
+    "locations": {
+        "Blue Agent group6": [
+            8,
+            4
+        ],
+        "Blue Agent group9": [
+            9,
+            5
+        ],
+        "Red Agent group0": [
+            1,
+            6
+        ],
+        "Red Agent group1": [
+            0,
+            5
+        ],
+        "Red Agent group2": [
+            2,
+            7
+        ],
+        "Red Agent group3": [
+            3,
+            5
+        ],
+        "Red Agent group4": [
+            8,
+            7
+        ],
+        "Red Agent group5": [
+            0,
+            7
+        ],
+        "Red Agent group6": [
+            1,
+            10
+        ],
+        "Red Agent group7": [
+            6,
+            4
+        ],
+        "Red Agent group8": [
+            4,
+            8
+        ],
+        "Red Agent group9": [
+            1,
+            0
+        ],
+        "Blue Agent group0": [
+            7,
+            5
+        ],
+        "Blue Agent group1": [
+            9,
+            4
+        ],
+        "Blue Agent group2": [
+            10,
+            7
+        ],
+        "Blue Agent group3": [
+            3,
+            7
+        ],
+        "Blue Agent group4": [
+            7,
+            0
+        ],
+        "Blue Agent group5": [
+            6,
+            6
+        ],
+        "Blue Agent group7": [
+            0,
+            1
+        ],
+        "Blue Agent group8": [
+            6,
+            7
+        ]
+    },
     "user": {
+        "user_msgs": "",
         "name": "ziruizhou"
     },
     "census_func": None,

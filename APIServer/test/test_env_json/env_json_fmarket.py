@@ -36,12 +36,12 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        531,
-                        669
+                        23,
+                        323
                     ],
                     "attrs": {
-                        "low_price": 9.87782725174823,
-                        "high_price": 10.635897135628703,
+                        "low_price": 9.697977068257789,
+                        "high_price": 10.76435978230952,
                         "capital": 836.0,
                         "num_stock": 20
                     },
@@ -60,12 +60,12 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        684,
-                        365
+                        254,
+                        613
                     ],
                     "attrs": {
-                        "low_price": 9.773534816477603,
-                        "high_price": 10.322032641352049,
+                        "low_price": 9.797890780155528,
+                        "high_price": 10.7313892228899,
                         "capital": 836.0,
                         "num_stock": 20
                     },
@@ -84,12 +84,12 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        98,
-                        253
+                        840,
+                        636
                     ],
                     "attrs": {
-                        "low_price": 8.942056200395925,
-                        "high_price": 10.435944344967519,
+                        "low_price": 9.202257747042168,
+                        "high_price": 10.356250610992745,
                         "capital": 836.0,
                         "num_stock": 20
                     },
@@ -108,12 +108,12 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        409,
-                        683
+                        848,
+                        624
                     ],
                     "attrs": {
-                        "low_price": 9.870002851616151,
-                        "high_price": 10.679919134452973,
+                        "low_price": 9.740326831366012,
+                        "high_price": 10.217631217626241,
                         "capital": 836.0,
                         "num_stock": 20
                     },
@@ -132,12 +132,12 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        583,
-                        801
+                        581,
+                        737
                     ],
                     "attrs": {
-                        "low_price": 9.681939215092234,
-                        "high_price": 10.248617135100478,
+                        "low_price": 9.8110052760191,
+                        "high_price": 10.282545981033952,
                         "capital": 836.0,
                         "num_stock": 20
                     },
@@ -156,12 +156,12 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        427,
-                        524
+                        589,
+                        423
                     ],
                     "attrs": {
-                        "low_price": 9.720821856705086,
-                        "high_price": 10.513761538304289,
+                        "low_price": 9.635799956537047,
+                        "high_price": 10.212944807598168,
                         "capital": 836.0,
                         "num_stock": 20
                     },
@@ -180,12 +180,12 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        496,
-                        372
+                        949,
+                        823
                     ],
                     "attrs": {
-                        "low_price": 9.153261462951638,
-                        "high_price": 10.009790751113297,
+                        "low_price": 9.568596834001106,
+                        "high_price": 10.649874090786597,
                         "capital": 836.0,
                         "num_stock": 20
                     },
@@ -204,12 +204,12 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        865,
-                        57
+                        566,
+                        427
                     ],
                     "attrs": {
-                        "low_price": 9.2531691827124,
-                        "high_price": 10.145214410516608,
+                        "low_price": 9.847792774398034,
+                        "high_price": 10.241025624202916,
                         "capital": 836.0,
                         "num_stock": 20
                     },
@@ -228,12 +228,12 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        999,
-                        547
+                        654,
+                        786
                     ],
                     "attrs": {
-                        "low_price": 9.812224539525348,
-                        "high_price": 10.933494224330115,
+                        "low_price": 9.555661118756213,
+                        "high_price": 10.157313061273394,
                         "capital": 836.0,
                         "num_stock": 20
                     },
@@ -252,252 +252,12 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        49,
-                        422
+                        201,
+                        641
                     ],
                     "attrs": {
-                        "low_price": 9.710004362465968,
-                        "high_price": 10.107769729541422,
-                        "capital": 836.0,
-                        "num_stock": 20
-                    },
-                    "groups": [
-                        "value_investors"
-                    ],
-                    "active": True,
-                    "type_sig": 0,
-                    "prim_group": "value_investors",
-                    "locator": "env",
-                    "neighbors": None,
-                    "action_key": "value_investor_action"
-                },
-                "value_investors10": {
-                    "name": "value_investors10",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        80,
-                        260
-                    ],
-                    "attrs": {
-                        "low_price": 9.599074640912391,
-                        "high_price": 10.37106439182974,
-                        "capital": 836.0,
-                        "num_stock": 20
-                    },
-                    "groups": [
-                        "value_investors"
-                    ],
-                    "active": True,
-                    "type_sig": 0,
-                    "prim_group": "value_investors",
-                    "locator": "env",
-                    "neighbors": None,
-                    "action_key": "value_investor_action"
-                },
-                "value_investors11": {
-                    "name": "value_investors11",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        862,
-                        1
-                    ],
-                    "attrs": {
-                        "low_price": 9.437389437907598,
-                        "high_price": 10.110735904010447,
-                        "capital": 836.0,
-                        "num_stock": 20
-                    },
-                    "groups": [
-                        "value_investors"
-                    ],
-                    "active": True,
-                    "type_sig": 0,
-                    "prim_group": "value_investors",
-                    "locator": "env",
-                    "neighbors": None,
-                    "action_key": "value_investor_action"
-                },
-                "value_investors12": {
-                    "name": "value_investors12",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        471,
-                        386
-                    ],
-                    "attrs": {
-                        "low_price": 9.972573582452053,
-                        "high_price": 10.467314886211142,
-                        "capital": 836.0,
-                        "num_stock": 20
-                    },
-                    "groups": [
-                        "value_investors"
-                    ],
-                    "active": True,
-                    "type_sig": 0,
-                    "prim_group": "value_investors",
-                    "locator": "env",
-                    "neighbors": None,
-                    "action_key": "value_investor_action"
-                },
-                "value_investors13": {
-                    "name": "value_investors13",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        775,
-                        410
-                    ],
-                    "attrs": {
-                        "low_price": 9.935442496835474,
-                        "high_price": 10.49265374363014,
-                        "capital": 836.0,
-                        "num_stock": 20
-                    },
-                    "groups": [
-                        "value_investors"
-                    ],
-                    "active": True,
-                    "type_sig": 0,
-                    "prim_group": "value_investors",
-                    "locator": "env",
-                    "neighbors": None,
-                    "action_key": "value_investor_action"
-                },
-                "value_investors14": {
-                    "name": "value_investors14",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        29,
-                        249
-                    ],
-                    "attrs": {
-                        "low_price": 9.864237566837703,
-                        "high_price": 10.165995116961636,
-                        "capital": 836.0,
-                        "num_stock": 20
-                    },
-                    "groups": [
-                        "value_investors"
-                    ],
-                    "active": True,
-                    "type_sig": 0,
-                    "prim_group": "value_investors",
-                    "locator": "env",
-                    "neighbors": None,
-                    "action_key": "value_investor_action"
-                },
-                "value_investors15": {
-                    "name": "value_investors15",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        495,
-                        282
-                    ],
-                    "attrs": {
-                        "low_price": 9.932660273914667,
-                        "high_price": 10.595899968116619,
-                        "capital": 836.0,
-                        "num_stock": 20
-                    },
-                    "groups": [
-                        "value_investors"
-                    ],
-                    "active": True,
-                    "type_sig": 0,
-                    "prim_group": "value_investors",
-                    "locator": "env",
-                    "neighbors": None,
-                    "action_key": "value_investor_action"
-                },
-                "value_investors16": {
-                    "name": "value_investors16",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        968,
-                        747
-                    ],
-                    "attrs": {
-                        "low_price": 9.849381499425975,
-                        "high_price": 10.354234637034065,
-                        "capital": 836.0,
-                        "num_stock": 20
-                    },
-                    "groups": [
-                        "value_investors"
-                    ],
-                    "active": True,
-                    "type_sig": 0,
-                    "prim_group": "value_investors",
-                    "locator": "env",
-                    "neighbors": None,
-                    "action_key": "value_investor_action"
-                },
-                "value_investors17": {
-                    "name": "value_investors17",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        549,
-                        92
-                    ],
-                    "attrs": {
-                        "low_price": 8.61492334943949,
-                        "high_price": 11.253625800664015,
-                        "capital": 836.0,
-                        "num_stock": 20
-                    },
-                    "groups": [
-                        "value_investors"
-                    ],
-                    "active": True,
-                    "type_sig": 0,
-                    "prim_group": "value_investors",
-                    "locator": "env",
-                    "neighbors": None,
-                    "action_key": "value_investor_action"
-                },
-                "value_investors18": {
-                    "name": "value_investors18",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        55,
-                        433
-                    ],
-                    "attrs": {
-                        "low_price": 9.712396559825919,
-                        "high_price": 10.678691651926076,
-                        "capital": 836.0,
-                        "num_stock": 20
-                    },
-                    "groups": [
-                        "value_investors"
-                    ],
-                    "active": True,
-                    "type_sig": 0,
-                    "prim_group": "value_investors",
-                    "locator": "env",
-                    "neighbors": None,
-                    "action_key": "value_investor_action"
-                },
-                "value_investors19": {
-                    "name": "value_investors19",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        930,
-                        127
-                    ],
-                    "attrs": {
-                        "low_price": 9.457155876009045,
-                        "high_price": 10.549846859655812,
+                        "low_price": 8.925377950028146,
+                        "high_price": 10.042021835758668,
                         "capital": 836.0,
                         "num_stock": 20
                     },
@@ -536,11 +296,11 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        980,
-                        717
+                        855,
+                        36
                     ],
                     "attrs": {
-                        "change_period": 3.039588421232598,
+                        "change_period": 3.074875542987271,
                         "capital": 1000,
                         "num_stock": 0
                     },
@@ -559,11 +319,11 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        719,
-                        668
+                        703,
+                        379
                     ],
                     "attrs": {
-                        "change_period": 3.0174128530778117,
+                        "change_period": 3.0647943035419467,
                         "capital": 1000,
                         "num_stock": 0
                     },
@@ -582,11 +342,11 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        504,
-                        946
+                        694,
+                        285
                     ],
                     "attrs": {
-                        "change_period": 2.9810368680944492,
+                        "change_period": 2.996366873333262,
                         "capital": 1000,
                         "num_stock": 0
                     },
@@ -605,11 +365,11 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        484,
-                        350
+                        270,
+                        658
                     ],
                     "attrs": {
-                        "change_period": 2.987417657747142,
+                        "change_period": 3.048043216214639,
                         "capital": 1000,
                         "num_stock": 0
                     },
@@ -628,11 +388,11 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        152,
-                        297
+                        449,
+                        816
                     ],
                     "attrs": {
-                        "change_period": 3.0173787899269846,
+                        "change_period": 2.957194807550735,
                         "capital": 1000,
                         "num_stock": 0
                     },
@@ -651,11 +411,11 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        451,
-                        323
+                        854,
+                        228
                     ],
                     "attrs": {
-                        "change_period": 2.9784917423435746,
+                        "change_period": 3.0860292998837804,
                         "capital": 1000,
                         "num_stock": 0
                     },
@@ -674,11 +434,11 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        186,
-                        481
+                        667,
+                        72
                     ],
                     "attrs": {
-                        "change_period": 2.997213893232306,
+                        "change_period": 3.0165944064781414,
                         "capital": 1000,
                         "num_stock": 0
                     },
@@ -697,11 +457,11 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        337,
-                        928
+                        388,
+                        697
                     ],
                     "attrs": {
-                        "change_period": 3.0157899708114058,
+                        "change_period": 3.0688350539583027,
                         "capital": 1000,
                         "num_stock": 0
                     },
@@ -720,11 +480,11 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        701,
-                        263
+                        913,
+                        823
                     ],
                     "attrs": {
-                        "change_period": 2.955008269735762,
+                        "change_period": 3.0765623690389745,
                         "capital": 1000,
                         "num_stock": 0
                     },
@@ -743,11 +503,11 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        948,
-                        624
+                        59,
+                        628
                     ],
                     "attrs": {
-                        "change_period": 2.9775119306051923,
+                        "change_period": 2.9597196644664754,
                         "capital": 1000,
                         "num_stock": 0
                     },
@@ -766,11 +526,11 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        223,
-                        771
+                        545,
+                        590
                     ],
                     "attrs": {
-                        "change_period": 3.0406814536294315,
+                        "change_period": 2.9907449888493165,
                         "capital": 1000,
                         "num_stock": 0
                     },
@@ -789,11 +549,11 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        366,
-                        22
+                        133,
+                        744
                     ],
                     "attrs": {
-                        "change_period": 2.983617966767857,
+                        "change_period": 2.990277188037477,
                         "capital": 1000,
                         "num_stock": 0
                     },
@@ -812,11 +572,11 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        839,
-                        255
+                        322,
+                        510
                     ],
                     "attrs": {
-                        "change_period": 2.9372217942530554,
+                        "change_period": 3.0411885087116777,
                         "capital": 1000,
                         "num_stock": 0
                     },
@@ -835,11 +595,11 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        953,
-                        12
+                        847,
+                        197
                     ],
                     "attrs": {
-                        "change_period": 2.980090081628214,
+                        "change_period": 2.9859549017098455,
                         "capital": 1000,
                         "num_stock": 0
                     },
@@ -858,11 +618,11 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        149,
-                        827
+                        199,
+                        810
                     ],
                     "attrs": {
-                        "change_period": 3.056279238370833,
+                        "change_period": 3.004223188810017,
                         "capital": 1000,
                         "num_stock": 0
                     },
@@ -881,11 +641,11 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        92,
-                        873
+                        27,
+                        931
                     ],
                     "attrs": {
-                        "change_period": 2.9147848015273157,
+                        "change_period": 2.921949748423732,
                         "capital": 1000,
                         "num_stock": 0
                     },
@@ -904,11 +664,11 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        328,
-                        999
+                        306,
+                        841
                     ],
                     "attrs": {
-                        "change_period": 3.0316854083851146,
+                        "change_period": 3.0221248716646105,
                         "capital": 1000,
                         "num_stock": 0
                     },
@@ -927,11 +687,11 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        950,
-                        84
+                        730,
+                        256
                     ],
                     "attrs": {
-                        "change_period": 2.9345281233376594,
+                        "change_period": 3.002940455245435,
                         "capital": 1000,
                         "num_stock": 0
                     },
@@ -950,11 +710,11 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        976,
-                        107
+                        762,
+                        833
                     ],
                     "attrs": {
-                        "change_period": 3.0519530759175937,
+                        "change_period": 3.070466591299514,
                         "capital": 1000,
                         "num_stock": 0
                     },
@@ -973,11 +733,11 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        256,
-                        648
+                        772,
+                        428
                     ],
                     "attrs": {
-                        "change_period": 3.008350433741383,
+                        "change_period": 3.001088920677305,
                         "capital": 1000,
                         "num_stock": 0
                     },
@@ -998,8 +758,8 @@ def ret():
             "type": "agent",
             "duration": 9223372036854775805,
             "pos": [
-                104,
-                496
+                285,
+                332
             ],
             "attrs": {
                 "buy": 0,
@@ -1025,14 +785,141 @@ def ret():
     },
     "width": 1000,
     "height": 1000,
+    "locations": {
+        "value_investors0": [
+            23,
+            323
+        ],
+        "value_investors1": [
+            254,
+            613
+        ],
+        "value_investors2": [
+            840,
+            636
+        ],
+        "value_investors3": [
+            848,
+            624
+        ],
+        "value_investors4": [
+            581,
+            737
+        ],
+        "value_investors5": [
+            589,
+            423
+        ],
+        "value_investors6": [
+            949,
+            823
+        ],
+        "value_investors7": [
+            566,
+            427
+        ],
+        "value_investors8": [
+            654,
+            786
+        ],
+        "value_investors9": [
+            201,
+            641
+        ],
+        "trend_followers0": [
+            855,
+            36
+        ],
+        "trend_followers1": [
+            703,
+            379
+        ],
+        "trend_followers2": [
+            694,
+            285
+        ],
+        "trend_followers3": [
+            270,
+            658
+        ],
+        "trend_followers4": [
+            449,
+            816
+        ],
+        "trend_followers5": [
+            854,
+            228
+        ],
+        "trend_followers6": [
+            667,
+            72
+        ],
+        "trend_followers7": [
+            388,
+            697
+        ],
+        "trend_followers8": [
+            913,
+            823
+        ],
+        "trend_followers9": [
+            59,
+            628
+        ],
+        "trend_followers10": [
+            545,
+            590
+        ],
+        "trend_followers11": [
+            133,
+            744
+        ],
+        "trend_followers12": [
+            322,
+            510
+        ],
+        "trend_followers13": [
+            847,
+            197
+        ],
+        "trend_followers14": [
+            199,
+            810
+        ],
+        "trend_followers15": [
+            27,
+            931
+        ],
+        "trend_followers16": [
+            306,
+            841
+        ],
+        "trend_followers17": [
+            730,
+            256
+        ],
+        "trend_followers18": [
+            762,
+            833
+        ],
+        "trend_followers19": [
+            772,
+            428
+        ],
+        "market_maker": [
+            285,
+            332
+        ]
+    },
     "user": {
+        "user_msgs": "",
         "name": "ziruizhou"
     },
     "census_func": None,
     "plot_title": "env",
     "props": {
         "value_investors": {
-            "val": 20,
+            "val": 10,
             "question": "How many value investors do you want?",
             "atype": "INT",
             "lowval": 1,
@@ -1106,9 +993,9 @@ def ret():
         "periods": 2,
         "pops": {
             "value_investors": [
-                20,
-                20,
-                20
+                10,
+                10,
+                10
             ],
             "trend_followers": [
                 20,

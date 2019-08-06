@@ -31,31 +31,12 @@ def ret():
             "neighbors": None,
             "action_key": None,
             "members": {
-                "Blues0": {
-                    "name": "Blues0",
+                "Blues_Peter Parker": {
+                    "name": "Blues_Peter Parker",
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        6,
-                        4
-                    ],
-                    "attrs": {},
-                    "groups": [
-                        "Blues"
-                    ],
-                    "active": True,
-                    "type_sig": 0,
-                    "prim_group": "Blues",
-                    "locator": "env",
-                    "neighbors": None,
-                    "action_key": "sched_agent_action"
-                },
-                "Blues1": {
-                    "name": "Blues1",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        3,
+                        0,
                         9
                     ],
                     "attrs": {},
@@ -69,12 +50,69 @@ def ret():
                     "neighbors": None,
                     "action_key": "sched_agent_action"
                 },
-                "Blues2": {
-                    "name": "Blues2",
+                "Blues_666": {
+                    "name": "Blues_666",
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        5,
+                        3,
+                        2
+                    ],
+                    "attrs": {},
+                    "groups": [
+                        "Blues"
+                    ],
+                    "active": True,
+                    "type_sig": 0,
+                    "prim_group": "Blues",
+                    "locator": "env",
+                    "neighbors": None,
+                    "action_key": "sched_agent_action"
+                },
+                "Blues_Rachel Smith": {
+                    "name": "Blues_Rachel Smith",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        7,
+                        10
+                    ],
+                    "attrs": {},
+                    "groups": [
+                        "Blues"
+                    ],
+                    "active": True,
+                    "type_sig": 0,
+                    "prim_group": "Blues",
+                    "locator": "env",
+                    "neighbors": None,
+                    "action_key": "sched_agent_action"
+                },
+                "Blues_115b": {
+                    "name": "Blues_115b",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        7,
+                        5
+                    ],
+                    "attrs": {},
+                    "groups": [
+                        "Blues"
+                    ],
+                    "active": True,
+                    "type_sig": 0,
+                    "prim_group": "Blues",
+                    "locator": "env",
+                    "neighbors": None,
+                    "action_key": "sched_agent_action"
+                },
+                "Blues_201": {
+                    "name": "Blues_201",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        8,
                         6
                     ],
                     "attrs": {},
@@ -88,12 +126,12 @@ def ret():
                     "neighbors": None,
                     "action_key": "sched_agent_action"
                 },
-                "Blues3": {
-                    "name": "Blues3",
+                "Blues_Chu Yen": {
+                    "name": "Blues_Chu Yen",
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        2,
+                        1,
                         7
                     ],
                     "attrs": {},
@@ -107,13 +145,13 @@ def ret():
                     "neighbors": None,
                     "action_key": "sched_agent_action"
                 },
-                "Blues4": {
-                    "name": "Blues4",
+                "Blues_115a": {
+                    "name": "Blues_115a",
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        7,
-                        10
+                        0,
+                        7
                     ],
                     "attrs": {},
                     "groups": [
@@ -126,13 +164,51 @@ def ret():
                     "neighbors": None,
                     "action_key": "sched_agent_action"
                 },
-                "Blues5": {
-                    "name": "Blues5",
+                "Blues_745b": {
+                    "name": "Blues_745b",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        2,
+                        0
+                    ],
+                    "attrs": {},
+                    "groups": [
+                        "Blues"
+                    ],
+                    "active": True,
+                    "type_sig": 0,
+                    "prim_group": "Blues",
+                    "locator": "env",
+                    "neighbors": None,
+                    "action_key": "sched_agent_action"
+                },
+                "Blues_John Smith": {
+                    "name": "Blues_John Smith",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        1,
+                        9
+                    ],
+                    "attrs": {},
+                    "groups": [
+                        "Blues"
+                    ],
+                    "active": True,
+                    "type_sig": 0,
+                    "prim_group": "Blues",
+                    "locator": "env",
+                    "neighbors": None,
+                    "action_key": "sched_agent_action"
+                },
+                "Blues_Jamir Abdullah": {
+                    "name": "Blues_Jamir Abdullah",
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
                         9,
-                        3
+                        5
                     ],
                     "attrs": {},
                     "groups": [
@@ -145,69 +221,12 @@ def ret():
                     "neighbors": None,
                     "action_key": "sched_agent_action"
                 },
-                "Blues6": {
-                    "name": "Blues6",
+                "Blues_433": {
+                    "name": "Blues_433",
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        3,
-                        0
-                    ],
-                    "attrs": {},
-                    "groups": [
-                        "Blues"
-                    ],
-                    "active": True,
-                    "type_sig": 0,
-                    "prim_group": "Blues",
-                    "locator": "env",
-                    "neighbors": None,
-                    "action_key": "sched_agent_action"
-                },
-                "Blues7": {
-                    "name": "Blues7",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        7,
-                        0
-                    ],
-                    "attrs": {},
-                    "groups": [
-                        "Blues"
-                    ],
-                    "active": True,
-                    "type_sig": 0,
-                    "prim_group": "Blues",
-                    "locator": "env",
-                    "neighbors": None,
-                    "action_key": "sched_agent_action"
-                },
-                "Blues8": {
-                    "name": "Blues8",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        3,
-                        10
-                    ],
-                    "attrs": {},
-                    "groups": [
-                        "Blues"
-                    ],
-                    "active": True,
-                    "type_sig": 0,
-                    "prim_group": "Blues",
-                    "locator": "env",
-                    "neighbors": None,
-                    "action_key": "sched_agent_action"
-                },
-                "Blues9": {
-                    "name": "Blues9",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        6,
+                        8,
                         2
                     ],
                     "attrs": {},
@@ -241,34 +260,34 @@ def ret():
             "neighbors": None,
             "action_key": None,
             "members": {
-                "Reds0": {
-                    "name": "Reds0",
+                "Reds_chemistry": {
+                    "name": "Reds_chemistry",
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
                         5,
-                        0
-                    ],
-                    "attrs": {},
-                    "groups": [
-                        "Reds"
-                    ],
-                    "active": True,
-                    "type_sig": 0,
-                    "prim_group": "Reds",
-                    "locator": "env",
-                    "neighbors": None,
-                    "action_key": "sched_agent_action"
-                },
-                "Reds1": {
-                    "name": "Reds1",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        4,
                         7
                     ],
-                    "attrs": {},
+                    "attrs": {
+                        "professor": "Peter Parker",
+                        "room": "666",
+                        "start_time_mon": [
+                            8,
+                            0
+                        ],
+                        "end_time_mon": [
+                            9,
+                            30
+                        ],
+                        "start_time_wed": [
+                            12,
+                            0
+                        ],
+                        "end_time_wed": [
+                            13,
+                            30
+                        ]
+                    },
                     "groups": [
                         "Reds"
                     ],
@@ -279,148 +298,308 @@ def ret():
                     "neighbors": None,
                     "action_key": "sched_agent_action"
                 },
-                "Reds2": {
-                    "name": "Reds2",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        8,
-                        7
-                    ],
-                    "attrs": {},
-                    "groups": [
-                        "Reds"
-                    ],
-                    "active": True,
-                    "type_sig": 0,
-                    "prim_group": "Reds",
-                    "locator": "env",
-                    "neighbors": None,
-                    "action_key": "sched_agent_action"
-                },
-                "Reds3": {
-                    "name": "Reds3",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        0,
-                        10
-                    ],
-                    "attrs": {},
-                    "groups": [
-                        "Reds"
-                    ],
-                    "active": True,
-                    "type_sig": 0,
-                    "prim_group": "Reds",
-                    "locator": "env",
-                    "neighbors": None,
-                    "action_key": "sched_agent_action"
-                },
-                "Reds4": {
-                    "name": "Reds4",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        1,
-                        3
-                    ],
-                    "attrs": {},
-                    "groups": [
-                        "Reds"
-                    ],
-                    "active": True,
-                    "type_sig": 0,
-                    "prim_group": "Reds",
-                    "locator": "env",
-                    "neighbors": None,
-                    "action_key": "sched_agent_action"
-                },
-                "Reds5": {
-                    "name": "Reds5",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        1,
-                        10
-                    ],
-                    "attrs": {},
-                    "groups": [
-                        "Reds"
-                    ],
-                    "active": True,
-                    "type_sig": 0,
-                    "prim_group": "Reds",
-                    "locator": "env",
-                    "neighbors": None,
-                    "action_key": "sched_agent_action"
-                },
-                "Reds6": {
-                    "name": "Reds6",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        3,
-                        8
-                    ],
-                    "attrs": {},
-                    "groups": [
-                        "Reds"
-                    ],
-                    "active": True,
-                    "type_sig": 0,
-                    "prim_group": "Reds",
-                    "locator": "env",
-                    "neighbors": None,
-                    "action_key": "sched_agent_action"
-                },
-                "Reds7": {
-                    "name": "Reds7",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        9,
-                        10
-                    ],
-                    "attrs": {},
-                    "groups": [
-                        "Reds"
-                    ],
-                    "active": True,
-                    "type_sig": 0,
-                    "prim_group": "Reds",
-                    "locator": "env",
-                    "neighbors": None,
-                    "action_key": "sched_agent_action"
-                },
-                "Reds8": {
-                    "name": "Reds8",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        10,
-                        5
-                    ],
-                    "attrs": {},
-                    "groups": [
-                        "Reds"
-                    ],
-                    "active": True,
-                    "type_sig": 0,
-                    "prim_group": "Reds",
-                    "locator": "env",
-                    "neighbors": None,
-                    "action_key": "sched_agent_action"
-                },
-                "Reds9": {
-                    "name": "Reds9",
+                "Reds_biology 2": {
+                    "name": "Reds_biology 2",
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
                         9,
                         4
                     ],
-                    "attrs": {},
+                    "attrs": {
+                        "professor": "Rachel Smith",
+                        "room": "115b",
+                        "start_time_mon": [
+                            13,
+                            30
+                        ],
+                        "end_time_mon": [
+                            14,
+                            30
+                        ],
+                        "start_time_tues": [
+                            15,
+                            30
+                        ],
+                        "end_time_tues": [
+                            16,
+                            30
+                        ],
+                        "start_time_wed": [
+                            14,
+                            0
+                        ],
+                        "end_time_wed": [
+                            15,
+                            0
+                        ]
+                    },
+                    "groups": [
+                        "Reds"
+                    ],
+                    "active": True,
+                    "type_sig": 0,
+                    "prim_group": "Reds",
+                    "locator": "env",
+                    "neighbors": None,
+                    "action_key": "sched_agent_action"
+                },
+                "Reds_molecular biology": {
+                    "name": "Reds_molecular biology",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        9,
+                        6
+                    ],
+                    "attrs": {
+                        "professor": "Peter Parker",
+                        "room": "201",
+                        "start_time_mon": [
+                            11,
+                            30
+                        ],
+                        "end_time_mon": [
+                            12,
+                            30
+                        ]
+                    },
+                    "groups": [
+                        "Reds"
+                    ],
+                    "active": True,
+                    "type_sig": 0,
+                    "prim_group": "Reds",
+                    "locator": "env",
+                    "neighbors": None,
+                    "action_key": "sched_agent_action"
+                },
+                "Reds_calculus 1": {
+                    "name": "Reds_calculus 1",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        8,
+                        3
+                    ],
+                    "attrs": {
+                        "professor": "Chu Yen",
+                        "room": "115a",
+                        "start_time_mon": [
+                            13,
+                            30
+                        ],
+                        "end_time_mon": [
+                            14,
+                            30
+                        ],
+                        "start_time_thur": [
+                            14,
+                            0
+                        ],
+                        "end_time_thur": [
+                            15,
+                            0
+                        ],
+                        "start_time_fri": [
+                            10,
+                            0
+                        ],
+                        "end_time_fri": [
+                            11,
+                            0
+                        ]
+                    },
+                    "groups": [
+                        "Reds"
+                    ],
+                    "active": True,
+                    "type_sig": 0,
+                    "prim_group": "Reds",
+                    "locator": "env",
+                    "neighbors": None,
+                    "action_key": "sched_agent_action"
+                },
+                "Reds_biology 1": {
+                    "name": "Reds_biology 1",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        3,
+                        6
+                    ],
+                    "attrs": {
+                        "professor": "Peter Parker",
+                        "room": "745b",
+                        "start_time_tues": [
+                            8,
+                            30
+                        ],
+                        "end_time_tues": [
+                            10,
+                            0
+                        ],
+                        "start_time_thur": [
+                            8,
+                            30
+                        ],
+                        "end_time_thur": [
+                            10,
+                            0
+                        ]
+                    },
+                    "groups": [
+                        "Reds"
+                    ],
+                    "active": True,
+                    "type_sig": 0,
+                    "prim_group": "Reds",
+                    "locator": "env",
+                    "neighbors": None,
+                    "action_key": "sched_agent_action"
+                },
+                "Reds_physics": {
+                    "name": "Reds_physics",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        8,
+                        10
+                    ],
+                    "attrs": {
+                        "professor": "John Smith",
+                        "room": "115b",
+                        "start_time_wed": [
+                            13,
+                            30
+                        ],
+                        "end_time_wed": [
+                            14,
+                            30
+                        ],
+                        "start_time_thur": [
+                            8,
+                            0
+                        ],
+                        "end_time_thur": [
+                            9,
+                            0
+                        ],
+                        "start_time_fri": [
+                            10,
+                            0
+                        ],
+                        "end_time_fri": [
+                            11,
+                            0
+                        ]
+                    },
+                    "groups": [
+                        "Reds"
+                    ],
+                    "active": True,
+                    "type_sig": 0,
+                    "prim_group": "Reds",
+                    "locator": "env",
+                    "neighbors": None,
+                    "action_key": "sched_agent_action"
+                },
+                "Reds_biochemistry": {
+                    "name": "Reds_biochemistry",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        1,
+                        1
+                    ],
+                    "attrs": {
+                        "professor": "Peter Parker",
+                        "room": "666",
+                        "start_time_wed": [
+                            13,
+                            30
+                        ],
+                        "end_time_wed": [
+                            15,
+                            0
+                        ],
+                        "start_time_thur": [
+                            11,
+                            30
+                        ],
+                        "end_time_thur": [
+                            13,
+                            0
+                        ]
+                    },
+                    "groups": [
+                        "Reds"
+                    ],
+                    "active": True,
+                    "type_sig": 0,
+                    "prim_group": "Reds",
+                    "locator": "env",
+                    "neighbors": None,
+                    "action_key": "sched_agent_action"
+                },
+                "Reds_calculus 4": {
+                    "name": "Reds_calculus 4",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        1,
+                        5
+                    ],
+                    "attrs": {
+                        "professor": "Jamir Abdullah",
+                        "room": "201",
+                        "start_time_thur": [
+                            13,
+                            30
+                        ],
+                        "end_time_thur": [
+                            14,
+                            30
+                        ],
+                        "start_time_fri": [
+                            15,
+                            0
+                        ],
+                        "end_time_fri": [
+                            16,
+                            0
+                        ]
+                    },
+                    "groups": [
+                        "Reds"
+                    ],
+                    "active": True,
+                    "type_sig": 0,
+                    "prim_group": "Reds",
+                    "locator": "env",
+                    "neighbors": None,
+                    "action_key": "sched_agent_action"
+                },
+                "Reds_astrophysics": {
+                    "name": "Reds_astrophysics",
+                    "type": "agent",
+                    "duration": 9223372036854775805,
+                    "pos": [
+                        10,
+                        8
+                    ],
+                    "attrs": {
+                        "professor": "Chu Yen",
+                        "room": "433",
+                        "start_time_fri": [
+                            17,
+                            0
+                        ],
+                        "end_time_fri": [
+                            18,
+                            0
+                        ]
+                    },
                     "groups": [
                         "Reds"
                     ],
@@ -436,7 +615,90 @@ def ret():
     },
     "width": 10,
     "height": 10,
+    "locations": {
+        "Blues_Peter Parker": [
+            0,
+            9
+        ],
+        "Blues_666": [
+            3,
+            2
+        ],
+        "Blues_Rachel Smith": [
+            7,
+            10
+        ],
+        "Blues_115b": [
+            7,
+            5
+        ],
+        "Blues_201": [
+            8,
+            6
+        ],
+        "Blues_Chu Yen": [
+            1,
+            7
+        ],
+        "Blues_115a": [
+            0,
+            7
+        ],
+        "Blues_745b": [
+            2,
+            0
+        ],
+        "Blues_John Smith": [
+            1,
+            9
+        ],
+        "Blues_Jamir Abdullah": [
+            9,
+            5
+        ],
+        "Blues_433": [
+            8,
+            2
+        ],
+        "Reds_chemistry": [
+            5,
+            7
+        ],
+        "Reds_biology 2": [
+            9,
+            4
+        ],
+        "Reds_molecular biology": [
+            9,
+            6
+        ],
+        "Reds_calculus 1": [
+            8,
+            3
+        ],
+        "Reds_biology 1": [
+            3,
+            6
+        ],
+        "Reds_physics": [
+            8,
+            10
+        ],
+        "Reds_biochemistry": [
+            1,
+            1
+        ],
+        "Reds_calculus 4": [
+            1,
+            5
+        ],
+        "Reds_astrophysics": [
+            10,
+            8
+        ]
+    },
     "user": {
+        "user_msgs": "",
         "name": "ziruizhou"
     },
     "census_func": None,
@@ -471,14 +733,14 @@ def ret():
             "hival": None
         },
         "num_blue": {
-            "val": 10,
+            "val": 0,
             "question": None,
             "atype": None,
             "lowval": None,
             "hival": None
         },
         "num_red": {
-            "val": 10,
+            "val": 0,
             "question": None,
             "atype": None,
             "lowval": None,
@@ -517,14 +779,14 @@ def ret():
         "periods": 2,
         "pops": {
             "Blues": [
-                10,
-                10,
-                10
+                11,
+                11,
+                11
             ],
             "Reds": [
-                10,
-                10,
-                10
+                9,
+                9,
+                9
             ]
         }
     },

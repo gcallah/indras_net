@@ -36,8 +36,8 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        2,
-                        5
+                        14,
+                        10
                     ],
                     "attrs": {
                         "max_move": 1
@@ -77,8 +77,8 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        7,
-                        3
+                        8,
+                        15
                     ],
                     "attrs": {
                         "max_move": 1
@@ -119,12 +119,12 @@ def ret():
                     "duration": 9223372036854775805,
                     "pos": [
                         0,
-                        3.5475862866889702
+                        11.583650153762417
                     ],
                     "attrs": {
-                        "prev_toxicity": -0.1636793656235601,
-                        "prev_nutricity": 0.020284037070336464,
-                        "angle": 85,
+                        "prev_toxicity": -0.008196721311475409,
+                        "prev_nutricity": 0.024390243902439025,
+                        "angle": 323,
                         "max_move": 3
                     },
                     "groups": [
@@ -140,23 +140,38 @@ def ret():
             }
         }
     },
-    "width": 10,
-    "height": 10,
+    "width": 20,
+    "height": 20,
+    "locations": {
+        "Toxins0": [
+            14,
+            10
+        ],
+        "Nutrients0": [
+            8,
+            15
+        ],
+        "Bacteria0": [
+            0,
+            11.583650153762417
+        ]
+    },
     "user": {
+        "user_msgs": "",
         "name": "ziruizhou"
     },
     "census_func": None,
     "plot_title": "Petrie dish",
     "props": {
         "grid_height": {
-            "val": 10,
+            "val": 20,
             "question": "What is the grid height?",
             "atype": "INT",
             "lowval": 2,
             "hival": 100
         },
         "grid_width": {
-            "val": 10,
+            "val": 20,
             "question": "What is the grid width?",
             "atype": "INT",
             "lowval": 2,
