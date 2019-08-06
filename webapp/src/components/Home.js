@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import ModelMenu from "./ModelMenu"
 
 var model_image = require('./images/model_images.png')
-var sandpile_img = require('./images/Sandpile.jpg')
 
 class Home extends Component {
   api_server = 'https://indrasnet.pythonanywhere.com/';
@@ -31,7 +30,10 @@ class Home extends Component {
   }
 
   showSource = () => {
-    window.open('https://gcallah.github.io/indras_net/index.html')
+    const link = 'https://gcallah.github.io/indras_net/index.html'
+    return <h1 style={{"fontSize": 16, "fontWeight": '400'}}>
+        <a href="#" class="text-primary m-2" onClick={window.open(link)}>
+        View Project Description </a> </h1>
   }
 
   handleClick(id, name, source){
@@ -40,6 +42,18 @@ class Home extends Component {
     localStorage.setItem("source", source)
   }
 
+  renderImage = () => {
+    const sandpile_img = require('./images/Sandpile.jpg')
+    return <img src={sandpile_img} class="rounded-circle" alt="Responsive image" style={{display:'block', float:'right', width:'45%', alignItems: "center"}} data-toggle="tooltip" data-placement="top" title="Image by Seth Terashima."/>
+  }
+
+  renderHeader = () => {
+    return <h1 style={{ "textAlign": "center", "fontWeight": '200'}}>Indra Agent-Based Modeling System</h1>
+  }
+
+  renderChooseModelProp = () => {
+    return <h1 style={{"fontSize": 16, "fontWeight": '400'}}>Please choose a model: </h1>
+  }
   
   render() {
     if (this.state.loadingData) {
@@ -52,10 +66,10 @@ class Home extends Component {
     return (
       <div>
         <br />
-        <h1 style={{ "textAlign": "center", "fontWeight": '200'}}>Indra Agent-Based Modeling System</h1>
+        {this.renderHeader()}
         <br /><br />
-        <h1 style={{"fontSize": 16, "fontWeight": '400'}}>Please choose a model: </h1>
-        <img src={sandpile_img} class="rounded-circle" alt="Responsive image" style={{display:'block', float:'right', width:'45%', alignItems: "center"}} data-toggle="tooltip" data-placement="top" title="Image by Seth Terashima."/>
+        {this.renderChooseModelProp()}
+        {this.renderImage()}
         <ul class="list-group">
           <div class="row">
             <div class="col">
@@ -68,9 +82,7 @@ class Home extends Component {
           </Link>
         </a>)}
         </div></div> </ul>
-        <h1 style={{"fontSize": 16, "fontWeight": '400'}}>
-        <a href="#" class="text-primary m-2" onClick={this.showSource}>
-        View Project Description </a> </h1>
+        {this.showSource()}
         <br /><br />
         <br /><br />
       </div>

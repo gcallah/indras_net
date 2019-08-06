@@ -124,6 +124,15 @@ class ModelDetail extends Component {
     }
   }
 
+  renderHeader = () => {
+    return <h1 style={{ "textAlign": "center", "fontWeight": '200' }}>Please set the parameters for the {localStorage.getItem("name")} model</h1>
+  }
+
+  renderSubmitButton = () => {
+    const { disabled_button } = this.state;
+    return <button disabled={disabled_button} onClick={!disabled_button ? this.handleSubmit : null}
+    className="btn btn-primary m-2">Submit</button>
+  }
 
   goback=()=>{
      this.props.history.goBack();
@@ -131,7 +140,6 @@ class ModelDetail extends Component {
 
 
   render() {
-    const { disabled_button } = this.state;
 
     if (this.state.loadingData) {
       return (
@@ -144,7 +152,7 @@ class ModelDetail extends Component {
       <div>
         <br />
         <br />
-        <h1 style={{ "textAlign": "center", "fontWeight": '200' }}>Please set the parameters for the {localStorage.getItem("name")} model</h1>
+        {this.renderHeader()}
         <br /><br />
         <form>
           {Object.keys(this.state.model_details).map((item,i)=> {
@@ -162,9 +170,7 @@ class ModelDetail extends Component {
           }
         </form>
         <br /><br />
-        <button disabled={disabled_button} onClick={!disabled_button ? this.handleSubmit : null}
-        className="btn btn-primary m-2">Submit</button>
-        
+        {this.renderSubmitButton()}
       </div>
     );
   }
