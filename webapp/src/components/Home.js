@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import ModelMenu from "./ModelMenu"
 
 var model_image = require('./images/model_images.png')
-var spider_web_img = require('./images/spider_web.png')
+var sandpile_img = require('./images/Sandpile.jpg')
 
 class Home extends Component {
   api_server = 'https://indrasnet.pythonanywhere.com/';
@@ -55,7 +55,7 @@ class Home extends Component {
         <h1 style={{ "textAlign": "center", "fontWeight": '200'}}>Indra Agent-Based Modeling System</h1>
         <br /><br />
         <h1 style={{"fontSize": 16, "fontWeight": '400'}}>Please choose a model: </h1>
-        <img src={spider_web_img} class="img-fluid" alt="Responsive image" style={{display:'block', float:'right', width:'45%', alignItems: "center"}} data-toggle="tooltip" data-placement="top" title="Image by Barbara Thayer."/>
+        <img src={sandpile_img} class="rounded-circle" alt="Responsive image" style={{display:'block', float:'right', width:'45%', alignItems: "center"}} data-toggle="tooltip" data-placement="top" title="Image by Seth Terashima."/>
         <ul class="list-group">
           <div class="row">
             <div class="col">
@@ -68,7 +68,6 @@ class Home extends Component {
           </Link>
         </a>)}
         </div></div> </ul>
-
         <h1 style={{"fontSize": 16, "fontWeight": '400'}}>
         <a href="#" class="text-primary m-2" onClick={this.showSource}>
         View Project Description </a> </h1>
