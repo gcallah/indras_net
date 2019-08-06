@@ -1,0 +1,58 @@
+{
+  "grid_height": {
+    "val": 30,
+    "question": "What is the grid height?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 20
+  },
+  "grid_width": {
+    "val": 30,
+    "question": "What is the grid width?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 20
+  },
+  "consumer_num": {
+    "val": 180,
+    "question": "How many consumers woud you like?",
+    "atype": "INT",
+    "hival": 400,
+    "lowval": 50
+  },
+  "bb_num": {
+    "val": 4,
+    "question": "How many big box stores woud you like?",
+    "atype": "INT",
+    "hival": 20,
+    "lowval": 1
+  },
+  "mp_num": {
+    "val": 8,
+    "question": "How many mom and pop stores woud you like?",
+    "atype": "INT",
+    "hival": 30,
+    "lowval": 5
+  },
+  "mp_pref": {
+    "val": 0.1,
+    "question": "How much percentage preference should customers have to mom and pop stores?",
+    "atype": "DBL",
+    "hival": 0.4,
+    "lowval": 0.0
+  },
+  "radius": {
+    "val": 2,
+    "question": "How close should the consumers be to the stores to shop there?",
+    "atype": "INT",
+    "hival": 5,
+    "lowval": 1
+  },
+  "store_census": {
+    "val": false,
+    "question": "Show stores census at the end of every period?",
+    "atype": "BOOL",
+    "hival": false,
+    "lowval": true
+  }
+}

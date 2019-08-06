@@ -1,44 +1,48 @@
 {
   "grid_height": {
-    "val": 20,
+    "val": 30,
     "question": "What is the grid height?",
     "atype": "INT",
     "hival": 100,
-    "loval": 2
+    "lowval": 2
   },
   "grid_width": {
-    "val": 20,
+    "val": 30,
     "question": "What is the grid width?",
     "atype": "INT",
     "hival": 100,
-    "loval": 2
+    "lowval": 2
   },
   "num_blue": {
-    "val": 100,
+    "val": 250,
     "question": "How many blue agents do you want?",
     "atype": "INT",
-    "hival": 100,
-    "loval": 1
+    "hival": 1000,
+    "lowval": 1
   },
   "num_red": {
-    "val": 100,
+    "val": 250,
     "question": "How many red agents do you want?",
     "atype": "INT",
-    "hival": 100,
-    "loval": 1
+    "hival": 1000,
+    "lowval": 1
   },
   "mean_tol": {
       "val": 0.5,
       "question": "What tolerance should agents have?",
       "atype": "DBL",
       "hival": 0.9,
-      "loval": 0.1
+      "lowval": 0.1
   },
   "tol_deviation": {
       "val": 0.2,
       "question": "What should the standard deviation of the agents' tolerance be?",
       "atype": "DBL",
       "hival": 0.3,
-      "loval": 0.01
+      "lowval": 0.01
+  },
+  "use_line":{
+    "val": 0,
+    "atype": "BOOL"
   }
 }

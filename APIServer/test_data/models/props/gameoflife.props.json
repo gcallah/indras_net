@@ -1,0 +1,27 @@
+{
+  "grid_height": {
+    "val": 30,
+    "question": "What height would you like for the grid?",
+    "atype": "INT",
+    "hival": 200,
+    "lowval": 20
+  },
+  "grid_width": {
+    "val": 30,
+    "question": "What width would you like for the grid?",
+    "atype": "INT",
+    "hival": 200,
+    "lowval": 20
+  },
+  "simulation": {
+    "val": 0,
+    "question": "Which simulation would you like to load?\n0: Glider (Default) \n1: Small Exploder \n2: Exploder \n3: Horizontal Row of Length 10 \n4: Vertical Row of Height 10 \n5: Lightweight Spaceship\n6: Tumbler\n",
+    "atype": "INT",
+    "hival": 6,
+    "lowval": 0
+  },
+  "use_line":{
+    "val": 0,
+    "atype": "BOOL"
+  }
+}

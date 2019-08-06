@@ -1,0 +1,65 @@
+{
+  "grid_height": {
+    "val": 20,
+    "question": "What is the grid height?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 2
+  },
+  "grid_width": {
+    "val": 20,
+    "question": "What is the grid width?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 2
+  },
+  "num_toxins": {
+    "val": 1,
+    "question": "How many toxins do you want?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 1
+  },
+  "threshold": {
+    "val": -0.22,
+    "question": "What toxin concentration threshold do you want?",
+    "atype": "DBL",
+    "hival": -0.01,
+    "lowval": -1
+  },
+  "toxin_move": {
+    "val": 1,
+    "question": "What toxin maximum move do you want?",
+    "atype": "INT",
+    "hival": 5,
+    "lowval": 1
+  },
+  "num_nutrients": {
+    "val": 1,
+    "question": "How many nutrients do you want?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 1
+  },
+  "nutrient_move": {
+    "val": 1,
+    "question": "What nutrient maximum move do you want?",
+    "atype": "INT",
+    "hival": 10,
+    "lowval": 1
+  },
+  "num_bacteria": {
+    "val": 1,
+    "question": "How many bacteria do you want?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 1
+  },
+  "bacterium_move": {
+    "val": 3,
+    "question": "What bacterium maximum move do you want?",
+    "atype": "INT",
+    "hival": 15,
+    "lowval": 1
+  }
+}

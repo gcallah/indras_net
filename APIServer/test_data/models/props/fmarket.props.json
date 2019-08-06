@@ -1,0 +1,48 @@
+{
+  "value_investors": {
+    "val": 20,
+    "question": "How many value investors do you want?",
+    "atype": "INT",
+    "hival": 1000,
+    "lowval": 1
+  },
+  "discount":{
+    "val": 0.01,
+    "question": "What % discount from 'true value' do the value investors want?",
+    "atype": "DBL",
+    "hival": 0.5,
+    "lowval": 0.01
+  },
+  "deviation_investor":{
+    "val": 0.05,
+    "question": "What is the std deviation of that discount?",
+    "atype": "DBL",
+    "hival": 0.5,
+    "lowval": 0.001
+  },
+  "trend_followers": {
+    "val": 20,
+    "question": "How many trend followers do you want?",
+    "atype": "INT",
+    "hival": 1000,
+    "lowval": 1
+  },
+  "average_period":{
+    "val": 3,
+    "question": "What average number of periods do the trend followers want?",
+    "atype": "DBL",
+    "hival": 100,
+    "lowval": 1
+  },
+    "deviation_follower":{
+    "val": 0.05,
+    "question": "What is the std deviation of that average number of periods?",
+    "atype": "DBL",
+    "hival": 0.5,
+    "lowval": 0.001
+  },
+  "use_scatter":{
+    "val": 0,
+    "atype": "BOOL"
+  }
+}

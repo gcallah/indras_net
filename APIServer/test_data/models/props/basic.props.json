@@ -4,27 +4,31 @@
     "question": "What is the grid height?",
     "atype": "INT",
     "hival": 100,
-    "loval": 2
+    "lowval": 2
   },
   "grid_width": {
     "val": 20,
     "question": "What is the grid width?",
     "atype": "INT",
     "hival": 100,
-    "loval": 2
+    "lowval": 2
   },
   "num_blue": {
-    "val": 20,
+    "val": 2,
     "question": "How many blue agents do you want?",
     "atype": "INT",
     "hival": 100,
-    "loval": 1
+    "lowval": 1
   },
   "num_red": {
-    "val": 20,
+    "val": 2,
     "question": "How many red agents do you want?",
     "atype": "INT",
     "hival": 100,
-    "loval": 1
+    "lowval": 1
+  },
+  "use_line": {
+    "val": 0,
+    "atype": "BOOL"
   }
 }
