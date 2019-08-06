@@ -24,7 +24,7 @@ NUM_NON_DRINKERS = DEF_POPULATION - NUM_DRINKERS
 
 population = 0
 optimal_occupancy = 0
-attenders = []
+attendance_record = []
 attendance = 0
 agents_decided = 0
 
@@ -41,9 +41,6 @@ def get_decision(agent):
     if random_integer <= agent["motivation"]:
         return True
 
-    # if random_integer <= 0.6:
-    #     return True
-
     return False
 
 
@@ -52,15 +49,19 @@ def discourage(unwanted):
     Discourages extra drinkers from going to the bar by decreasing motivation.
     Chooses drinkers randomly from the drinkers that went to the bar.
     """
-    seen = []
+    # seen = []
     while unwanted:
 
+        # print("The members are: ", drinkers.members)
         random_drunk = random.choice(list(drinkers.members))
+
         # while random_drunk not in seen:
         #     random_drunk = random.choice(list(drinkers.members))
-        print("drinker ", random_drunk, " = ", repr(drinkers[random_drunk]))
+
+        # print("drinker ", random_drunk, " = ", repr(drinkers[random_drunk]))
+
         drinkers[random_drunk]["motivation"] -= 0.05
-        seen.append(random_drunk)
+        # seen.append(random_drunk)
 
         unwanted -= 1
 
@@ -68,45 +69,14 @@ def discourage(unwanted):
 
 
 def get_average_attendance(record):
-    i = len(record)
-    sum_attendance = 0
-    while i:
-        sum_attendance += record[i - 1]
-        i -= 1
-
-    return sum_attendance / len(record)
-
-
-# def random_drunks(weekends=10):
-#     # print("Motivation: ", MOTIVATION)
-#
-#     attendance_record = []
-#     while weekends > 0:
-#         person = 0
-#         # attendance = 0
-#         # attenders = []
-#         while person < POPULATION:
-#             decision = get_decision(person)
-#             if decision:
-#                 attendance += 1
-#                 attenders.append(person)
-#
-#             person += 1
-#
-#         if attendance > OPTIMAL_OCCUPANCY:
-#             extras = attendance - OPTIMAL_OCCUPANCY
-#             discourage(extras, attenders)
-#
-#         attendance_record.append(attendance)
-#         weekends -= 1
-#
-#     return attendance_record
+    # print(attendance_record)
+    return sum(record) / len(record)
 
 
 def drinker_action(agent):
-    # print("I'm " + agent.name + " and I need a drink.")
+
     global attendance
-    global attenders
+    global attendance_record
     global agents_decided
 
     changed = True
@@ -114,60 +84,33 @@ def drinker_action(agent):
     agents_decided += 1
 
     if agents_decided == population:
+        attendance_record.append(attendance)
         if attendance > optimal_occupancy:
             extras = attendance - optimal_occupancy
             discourage(extras)
+
         # print(drinkers.members)
         agents_decided = 0
+        attendance = 0
+        print("Avg attendance so far: ",
+              get_average_attendance(attendance_record))
 
     if decision:
         attendance += 1
-        # attenders.append(agent)
 
-        # if "non-drunk" in agent.name:
         if agent.primary_group() == non_drinkers:
             changed = False
             bar.add_switch(agent, non_drinkers,
                            drinkers)
 
     else:
-        # if "non" not in agent.name:
         if agent.primary_group() == drinkers:
             changed = False
             bar.add_switch(agent, drinkers,
                            non_drinkers)
 
-    # print("Agents decided: ", agents_decided)
-    # print("Population: ", population)
-    # if agents_decided == population:
-    #     if attendance > optimal_occupancy:
-    #         extras = attendance - optimal_occupancy
-    #         discourage(extras)
-    #     print(drinkers.members)
-    #     agents_decided = 0
-
     # return False means to move
     return changed
-
-
-# def non_drinker_action(agent):
-#     # print("I'm " + agent.name + " and I need a drink.")
-#     global attendance
-#     global attenders
-#
-#     decision = get_decision(agent)
-#     # agent["going_to_bar"] = decision
-#     if decision:
-#         attendance += 1
-#         # attenders.append(agent)
-#
-#     # if agent.name[-1] == POPULATION - 1:
-#     #     if attendance > OPTIMAL_OCCUPANCY:
-#     #         extras = attendance - OPTIMAL_OCCUPANCY
-#     #         discourage(extras, attenders)
-#
-#     # return False means to move
-#     return False
 
 
 def create_drinker(name, i, props=None):
@@ -200,10 +143,6 @@ def set_up(props=None):
     pa = get_props(MODEL_NAME, props)
     agents_decided = 0
 
-    # drinkers = Composite("Drinkers", {"color": BLUE})
-    # for i in range(pa.get('population', DEF_POPULATION) // 2):
-    #     drinkers += (create_drinker(i))
-
     drinkers = Composite("Drinkers", {"color": RED}, props=pa,
                          member_creator=create_drinker,
                          num_members=pa.get('population', DEF_POPULATION) // 2)
@@ -232,8 +171,8 @@ def main():
 
     (bar, drinkers, non_drinkers) = set_up()
 
-    print(repr(drinkers))
-    print(repr(drinkers["Drinkers1"]))
+    # print(repr(drinkers))
+    # print(repr(drinkers["Drinkers1"]))
 
     bar()
 
