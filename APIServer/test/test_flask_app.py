@@ -77,7 +77,7 @@ class Test(TestCase):
         """
         See if we can get props.
         """
-        model_id = random.randint(0, 6)
+        model_id = random.randint(0, 10)
         rv = self.Props.get(model_id)
 
         test_model_file = indra_dir + "/models/models.json"
