@@ -37,6 +37,7 @@ class Composite(Agent):
                  duration=INF, action=None, member_creator=None,
                  num_members=None, serial_obj=None, props=None,
                  **kwargs):
+
         self.members = OrderedDict()
         super().__init__(name, attrs=attrs, duration=duration,
                          action=action, serial_obj=serial_obj)
@@ -46,6 +47,7 @@ class Composite(Agent):
         if serial_obj is not None:
             self.restore_composite(serial_obj)
         else:
+            self.registry = {}
             if members is not None:
                 for member in members:
                     join(self, member)
@@ -71,6 +73,19 @@ class Composite(Agent):
             elif serial_obj["members"][nm]["type"] == "composite":
                 ret = Composite(name=nm, serial_obj=serial_obj["members"][nm])
                 self.members[nm] = ret
+
+        # construct self.registry
+        self.registry = {}
+        for nm in self.members:
+            self.add_mbr_to_regis(self.members[nm])
+
+    def add_mbr_to_regis(self, member):
+        if member.type == "agent":
+            self.registry[member.name] = member
+        else:
+            self.registry[member.name] = member
+            for mbrnm in member.members:
+                self.add_mbr_to_regis(member.members[mbrnm])
 
     def __repr__(self):
         return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
@@ -279,13 +294,13 @@ class Composite(Agent):
         For now, composites just stay active.
         """
         return True
-# we should look at bringing back this logic at some point,
-# but the problem is it will block pending actions like deleting dead members
-# from the group.
-#        for member in self.members.values():
-#            if member.isactive():
-#                return True
-#        return False
+        # we should look at bringing back this logic at some point,
+        # but the problem is it will block pending
+        # actions like deleting dead members from the group.
+        #        for member in self.members.values():
+        #            if member.isactive():
+        #                return True
+        #        return False
 
     def is_mbr_comp(self, mbr):
         return is_composite(self.members[mbr])

@@ -6,7 +6,7 @@ def ret():
     "pos": None,
     "attrs": {},
     "groups": [],
-    "active": None,
+    "active": True,
     "type_sig": 0,
     "prim_group": None,
     "locator": None,
@@ -24,7 +24,7 @@ def ret():
             "groups": [
                 "env"
             ],
-            "active": None,
+            "active": True,
             "type_sig": 0,
             "prim_group": "env",
             "locator": None,
@@ -37,13 +37,13 @@ def ret():
                     "duration": 9223372036854775805,
                     "pos": [
                         7,
-                        17
+                        1
                     ],
                     "attrs": {},
                     "groups": [
                         "Blues"
                     ],
-                    "active": None,
+                    "active": True,
                     "type_sig": 0,
                     "prim_group": "Blues",
                     "locator": "env",
@@ -55,14 +55,14 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        8,
-                        4
+                        20,
+                        13
                     ],
                     "attrs": {},
                     "groups": [
                         "Blues"
                     ],
-                    "active": None,
+                    "active": True,
                     "type_sig": 0,
                     "prim_group": "Blues",
                     "locator": "env",
@@ -82,7 +82,7 @@ def ret():
             "groups": [
                 "env"
             ],
-            "active": None,
+            "active": True,
             "type_sig": 0,
             "prim_group": "env",
             "locator": None,
@@ -94,14 +94,14 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        19,
+                        13,
                         20
                     ],
                     "attrs": {},
                     "groups": [
                         "Reds"
                     ],
-                    "active": None,
+                    "active": True,
                     "type_sig": 0,
                     "prim_group": "Reds",
                     "locator": "env",
@@ -113,14 +113,14 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        3,
-                        14
+                        7,
+                        2
                     ],
                     "attrs": {},
                     "groups": [
                         "Reds"
                     ],
-                    "active": None,
+                    "active": True,
                     "type_sig": 0,
                     "prim_group": "Reds",
                     "locator": "env",
@@ -135,19 +135,19 @@ def ret():
     "locations": {
         "Blues0": [
             7,
-            17
+            1
         ],
         "Blues1": [
-            8,
-            4
+            20,
+            13
         ],
         "Reds0": [
-            19,
+            13,
             20
         ],
         "Reds1": [
-            3,
-            14
+            7,
+            2
         ]
     },
     "user": {
@@ -186,7 +186,7 @@ def ret():
             "hival": 100
         },
         "use_line": {
-            "val": None,
+            "val": True,
             "question": None,
             "atype": None,
             "lowval": None,
@@ -207,7 +207,7 @@ def ret():
             "hival": None
         },
         "use_scatter": {
-            "val": None,
+            "val": True,
             "question": None,
             "atype": None,
             "lowval": None,
