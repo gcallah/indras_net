@@ -21,7 +21,7 @@
     "lowval": 50
   },
   "bb_num": {
-    "val": 4,
+    "val": 1,
     "question": "How many big box stores woud you like?",
     "atype": "INT",
     "hival": 20,
@@ -54,5 +54,19 @@
     "atype": "BOOL",
     "hival": false,
     "lowval": true
+  },
+  "bb_capital": {
+    "val": 2000,
+    "question": "How many times of capital of mom and pop should the capital of big box be?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 10
+  },
+  "period": {
+    "val": 7,
+    "question": "after how mnay period should there be a big box store?",
+    "atype": "INT",
+    "hival": 15,
+    "lowval": 1
   }
 }
