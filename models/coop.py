@@ -226,7 +226,8 @@ def set_up(props=None):
                    action=coop_action, width=UNLIMITED,
                    height=UNLIMITED,
                    census=coop_report,
-                   props=pa)
+                   props=pa,
+                   exclude_member="CENTRAL_BANK")
 
     return (coop_env, groups, group_indices)
 
