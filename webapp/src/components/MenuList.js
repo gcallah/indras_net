@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Loader, Dimmer, Menu, Card} from 'semantic-ui-react';
+import {Loader, Dimmer} from 'semantic-ui-react';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
 import PopulationGraph from './PopulationGraph.js';
@@ -114,7 +114,7 @@ class MenuList extends Component {
       this.setState({env_file: res.data})
       this.setState({msg: res.data["user"]["user_msgs"]})
       console.log(res.data)
-    }catch(e){
+    } catch(e) {
       console.log(e.message)
     }
 
@@ -127,10 +127,11 @@ class MenuList extends Component {
   }
 
   renderStatusBox = () => {
-    return 
-          <div class="card w-50 overflow-auto" style={{float: 'right', width: "18rem", height: "18rem"}}>
-          {renderPreFormTextBox("Model Status", "Text")}  // {this.state.msg})
-          </div>
+    return (
+        <div class="card w-50 overflow-auto" style={{float: 'right', width: "18rem", height: "18rem"}}> 
+        { renderPreFormTextBox("Model Status", this.state.msg) }
+        </div>
+    );
   }
 
   render () {
@@ -144,9 +145,9 @@ class MenuList extends Component {
     return (
       <div>
         <br />
-        {this.renderHeader()}
+        { this.renderHeader() }
         <br /><br />
-        {this.renderStatusBox()}
+        { this.renderStatusBox() }
           <ul class="list-group">
             <div class="row">
               <div class="col">

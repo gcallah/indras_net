@@ -1,14 +1,16 @@
-import React, {Component} from 'react';
+import React from 'react';
 
-const renderPreFormTextBox = (title, dispText) => {
+function renderPreFormTextBox(title, text) {
+    return (
     <div>
     <h5 style={{textAlign: 'center', "fontSize": 16}}
-        class="card-header bg-primary text-white">{title}</h5>
+        class="card-header bg-primary text-white">{ title }</h5>
     <div class="card-body">
     <pre>
-    {dispText}
+    { text }
     </pre>
     </div>
-    </div>
+    </div>);
 }
 
+export default renderPreFormTextBox;
