@@ -1,17 +1,16 @@
-import React, {Component} from 'react';
+import React from 'react';
 
-function PreFormTextBox(props){
-	return(
-      <div class="card w-50 overflow-auto" style={{float:'right', width:"18rem", height:"18rem"}}>
-      <h5 style={{textAlign: 'center', "fontSize": 16}}
-          class="card-header bg-primary text-white">{"Model Status"}</h5>
-      <div class="card-body">
-      <pre>
-      {props.msg}
-      </pre>
-      </div>
-      </div>
-	)
+function renderPreFormTextBox(title, text) {
+    return (
+    <div>
+    <h5 style={{textAlign: 'center', "fontSize": 16}}
+        class="card-header bg-primary text-white">{ title }</h5>
+    <div class="card-body">
+    <pre>
+    { text }
+    </pre>
+    </div>
+    </div>);
 }
 
-export default PreFormTextBox;
+export default renderPreFormTextBox;

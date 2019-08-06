@@ -1,13 +1,13 @@
 import React, {Component} from 'react';
-import {Loader, Dimmer, Menu, Card} from 'semantic-ui-react';
+import {Loader, Dimmer } from 'semantic-ui-react';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
 import PopulationGraph from './PopulationGraph.js';
 import ScatterPlot from './ScatterPlot.js';
 import Debugger from './Debugger.js';
-import PreFormTextBox from './PreFormTextBox.js';
+import renderPreFormTextBox from './PreFormTextBox.js';
 
-class MenuList extends Component {
+class ActionMenu extends Component {
   api_server = 'https://indrasnet.pythonanywhere.com/models/menu/';
 
   state = {
@@ -127,6 +127,17 @@ class MenuList extends Component {
   }
 
 
+    renderModelStatus = () => {
+        return (
+        <div>
+        <div class="card w-50 overflow-auto"
+            style={{float:'right', width:"18rem", height:"18rem"}}>
+            { renderPreFormTextBox("Model Status", this.state.msg) } 
+        </div>
+        </div>
+        );
+    }
+
   render () {
     if (this.state.loadingData) {
       return (
@@ -140,7 +151,7 @@ class MenuList extends Component {
         <br />
         {this.renderHeader()}
         <br /><br />
-        <PreFormTextBox msg = {this.state.msg}/>
+        { this.renderModelStatus() }
           <ul class="list-group">
             <div class="row">
               <div class="col">
@@ -233,4 +244,4 @@ class MenuList extends Component {
   }
 }
 
-export default MenuList;
+export default ActionMenu;
