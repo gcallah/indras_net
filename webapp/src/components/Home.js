@@ -27,16 +27,16 @@ class Home extends Component {
     } 
   }
 
-  showSource = () => {
+  openDescription = () => {
     const link = 'https://gcallah.github.io/indras_net/index.html'
-    return <h1 style={{"fontSize": 16, "fontWeight": '400'}}>
-        <a href="#" class="text-primary m-2" onClick={window.open(link)}>
-        View Project Description </a> </h1>
+    window.open(link)
   }
-
-
-  showSourc = () => {
-    window.open('https://gcallah.github.io/indras_net/index.html')
+  renderShowDescription = () => {
+    console.log("renderShowDescription called")
+    return <h1 style={{"fontSize": 16, "fontWeight": '400'}}>
+        <a href="#" class="text-primary m-2" onClick={this.openDescription}>
+        View Project Description </a> </h1>
+       
   }
 
   handleClick(id, name, source){
@@ -85,9 +85,7 @@ class Home extends Component {
           </Link>
         </a>)}
         </div></div> </ul>
-        <h1 style={{"fontSize": 16, "fontWeight": '400'}}>
-        <a href="#" class="text-primary m-2" onClick={this.showSourc}>
-        View Project Description </a> </h1>
+        {this.renderShowDescription()}
         <br /><br />
         <br /><br />
       </div>
