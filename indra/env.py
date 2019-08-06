@@ -136,15 +136,18 @@ class Env(Space):
         self.switches = serial_obj["switches"]
         self.census_func = serial_obj["census_func"]
         self.line_data_func = serial_obj["data_func"]
-        self.registry[self.name] = self
 
+        self.registry[self.name] = self
+        # construct self.groups
+        for nm in self.registry:
+            if len(self.registry[nm].groups) != 0:
+                for gnm in self.registry[nm].groups:
+                    if gnm in self.registry:
+                        self.registry[nm].add_group(self.registry[gnm])
         # set up self.locator
         for nm in self.registry:
-            primgp = self.registry[nm].prim_group
-            # print(str(type(primgp)), primgp)
-            if primgp == self.name:
+            if nm != self.name and self.registry[nm].type == "agent":
                 self.registry[nm].locator = self
-            print(self.registry[nm].locator)
 
     def to_json(self):
         rep = super().to_json()

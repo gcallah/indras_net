@@ -88,7 +88,6 @@ class Space(Composite):
             self.height = height
             # the location of members in the space {(tuple):Agent}
             self.locations = {}
-            self.registry = {}
 
             # by making two class methods for rand_place_members and
             # place_member, we allow two places to override
@@ -105,10 +104,6 @@ class Space(Composite):
         rep["type"] = self.type
         rep["width"] = self.width
         rep["height"] = self.height
-        ret_mbrs = {}
-        for mnm in rep["members"]:
-            ret_mbrs[mnm] = rep["members"][mnm]
-        rep["members"] = ret_mbrs
         rep["locations"] = {}
         for loc in self.locations:
             rep["locations"][self.locations[loc].name] = loc
@@ -119,29 +114,11 @@ class Space(Composite):
         super().from_json(serial_space)
         self.width = serial_space["width"]
         self.height = serial_space["height"]
-        # construct self.registry
-        self.registry = {}
-        for nm in self.members:
-            self.add_mbr_to_regis(self.members[nm])
-        # construct self.groups
-        for nm in self.registry:
-            if len(self.registry[nm].groups) != 0:
-                for gnm in self.registry[nm].groups:
-                    if gnm in self.registry:
-                        self.registry[nm].add_group(self.registry[gnm])
         # construct self.location
         self.locations = {}
         for nm in self.registry:
             if self.registry[nm].type == "agent":
                 self.locations[self.registry[nm].pos] = self.registry[nm]
-
-    def add_mbr_to_regis(self, member):
-        if member.type == "agent":
-            self.registry[member.name] = member
-        else:
-            self.registry[member.name] = member
-            for mbrnm in member.members:
-                self.add_mbr_to_regis(member.members[mbrnm])
 
     def __repr__(self):
         return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
