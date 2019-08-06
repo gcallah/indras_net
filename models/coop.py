@@ -221,6 +221,9 @@ def set_up(props=None):
 
     for i in range(num_members):
         groups[BSIT_INDEX] += create_babysitter('Babysitters', i, pa)
+        i += 1
+        if i < num_members:
+            groups[GO_OUT_INDEX] += create_babysitter('Babysitters', i, pa)
 
     coop_env = Env('coop_env', members=groups,
                    action=coop_action, width=UNLIMITED,
