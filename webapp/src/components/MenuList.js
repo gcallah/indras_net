@@ -5,7 +5,7 @@ import {Link} from 'react-router-dom';
 import PopulationGraph from './PopulationGraph.js';
 import ScatterPlot from './ScatterPlot.js';
 import Debugger from './Debugger.js';
-import renderPreFormTextBox from './PreFormTextBox.js';
+import PreFormTextBox from './PreFormTextBox.js';
 
 class MenuList extends Component {
   api_server = 'https://indrasnet.pythonanywhere.com/models/menu/';
@@ -126,12 +126,6 @@ class MenuList extends Component {
     </h1>
   }
 
-  renderStatusBox = () => {
-    return 
-          <div class="card w-50 overflow-auto" style={{float: 'right', width: "18rem", height: "18rem"}}>
-          {renderPreFormTextBox("Model Status", "Text")}  // {this.state.msg})
-          </div>
-  }
 
   render () {
     if (this.state.loadingData) {
@@ -146,7 +140,7 @@ class MenuList extends Component {
         <br />
         {this.renderHeader()}
         <br /><br />
-        {this.renderStatusBox()}
+        <PreFormTextBox msg = {this.state.msg}/>
           <ul class="list-group">
             <div class="row">
               <div class="col">
