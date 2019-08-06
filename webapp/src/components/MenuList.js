@@ -119,6 +119,24 @@ class MenuList extends Component {
 
   };
 
+  renderHeader = () => {
+    return <h1 style={{textAlign: 'center', fontWeight: '200'}}>
+    {this.state.name}
+    </h1>
+  }
+
+  renderCard = () => {
+    return <div class="card w-50 overflow-auto" style={{float: 'right', width: "18rem", height: "18rem"}}>
+    <h5 style={{textAlign: 'center', "fontSize": 16}}
+        class="card-header bg-primary text-white">Update Status</h5>
+    <div class="card-body">
+    <pre>
+    {this.state.msg}
+    </pre>
+    </div>
+    </div>
+  }
+
   render () {
     if (this.state.loadingData) {
       return (
@@ -130,19 +148,9 @@ class MenuList extends Component {
     return (
       <div>
         <br />
-        <h1 style={{textAlign: 'center', fontWeight: '200'}}>
-          {this.state.name}
-        </h1>
+        {this.renderHeader()}
         <br /><br />
-        <div class="card w-50 overflow-auto" style={{float: 'right', width: "18rem", height: "18rem"}}>
-        <h5 style={{textAlign: 'center', "fontSize": 16}}
-            class="card-header bg-primary text-white">Update Status</h5>
-        <div class="card-body">
-        <pre>
-        {this.state.msg}
-        </pre>
-        </div>
-        </div>
+        {this.renderCard()}
           <ul class="list-group">
             <div class="row">
               <div class="col">
