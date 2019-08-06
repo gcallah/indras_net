@@ -3,13 +3,13 @@
 """
 
 from math import isclose
-import random
 
 from indra.utils import get_props
 from indra.agent import Agent
 from indra.composite import Composite
 from indra.env import Env, UNLIMITED
 from indra.display_methods import BLUE, RED
+from indra.space import gaussian_distribution
 
 MODEL_NAME = "fmarket"
 DEF_NUM_TREND_FOLLOWER = 10
@@ -87,13 +87,6 @@ def calc_price_change(ratio, min_price_move=DEF_MIN_PRICE_MOVE,
         direction = -1
 
     return direction * min(max_price_move, min_price_move * ratio)
-
-
-def gaussian_distribution(default_target, sigma):
-    new_target = random.gauss(default_target, sigma)
-    if new_target < 0:
-        new_target *= -1
-    return new_target
 
 
 def plot_asset_price(env):
