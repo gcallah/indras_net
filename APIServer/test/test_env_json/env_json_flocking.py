@@ -37,12 +37,12 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        8.0,
-                        2.0
+                        0.9494553514977329,
+                        0
                     ],
                     "attrs": {
                         "max_move": 2,
-                        "angle": 0
+                        "angle": 270.0
                     },
                     "groups": [
                         "Birds"
@@ -59,12 +59,12 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        2.0,
-                        9.0
+                        2.8703462748580066,
+                        0
                     ],
                     "attrs": {
                         "max_move": 2,
-                        "angle": 0
+                        "angle": 24.27340708677616
                     },
                     "groups": [
                         "Birds"
@@ -81,12 +81,12 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        6.0,
-                        4.0
+                        0.9298183658768056,
+                        0
                     ],
                     "attrs": {
                         "max_move": 2,
-                        "angle": 0
+                        "angle": 180.0
                     },
                     "groups": [
                         "Birds"
@@ -103,12 +103,12 @@ def ret():
                     "type": "agent",
                     "duration": 9223372036854775805,
                     "pos": [
-                        9,
-                        4
+                        0,
+                        5
                     ],
                     "attrs": {
                         "max_move": 2,
-                        "angle": 0
+                        "angle": 209.86621354939476
                     },
                     "groups": [
                         "Birds"
@@ -126,121 +126,11 @@ def ret():
                     "duration": 9223372036854775805,
                     "pos": [
                         0,
-                        1.6864971185413822
+                        0.2527759326690546
                     ],
                     "attrs": {
                         "max_move": 2,
-                        "angle": 180
-                    },
-                    "groups": [
-                        "Birds"
-                    ],
-                    "active": True,
-                    "type_sig": 2,
-                    "prim_group": "Birds",
-                    "locator": "the_sky",
-                    "neighbors": None,
-                    "action_key": "bird_action"
-                },
-                "Birds5": {
-                    "name": "Birds5",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        6.0,
-                        2.0
-                    ],
-                    "attrs": {
-                        "max_move": 2,
-                        "angle": 0
-                    },
-                    "groups": [
-                        "Birds"
-                    ],
-                    "active": True,
-                    "type_sig": 2,
-                    "prim_group": "Birds",
-                    "locator": "the_sky",
-                    "neighbors": None,
-                    "action_key": "bird_action"
-                },
-                "Birds6": {
-                    "name": "Birds6",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        9,
-                        10.0
-                    ],
-                    "attrs": {
-                        "max_move": 2,
-                        "angle": 0
-                    },
-                    "groups": [
-                        "Birds"
-                    ],
-                    "active": True,
-                    "type_sig": 2,
-                    "prim_group": "Birds",
-                    "locator": "the_sky",
-                    "neighbors": None,
-                    "action_key": "bird_action"
-                },
-                "Birds7": {
-                    "name": "Birds7",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        0,
-                        1.4561837586463238
-                    ],
-                    "attrs": {
-                        "max_move": 2,
-                        "angle": 180
-                    },
-                    "groups": [
-                        "Birds"
-                    ],
-                    "active": True,
-                    "type_sig": 2,
-                    "prim_group": "Birds",
-                    "locator": "the_sky",
-                    "neighbors": None,
-                    "action_key": "bird_action"
-                },
-                "Birds8": {
-                    "name": "Birds8",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        6.0,
-                        8.0
-                    ],
-                    "attrs": {
-                        "max_move": 2,
-                        "angle": 0
-                    },
-                    "groups": [
-                        "Birds"
-                    ],
-                    "active": True,
-                    "type_sig": 2,
-                    "prim_group": "Birds",
-                    "locator": "the_sky",
-                    "neighbors": None,
-                    "action_key": "bird_action"
-                },
-                "Birds9": {
-                    "name": "Birds9",
-                    "type": "agent",
-                    "duration": 9223372036854775805,
-                    "pos": [
-                        9,
-                        8
-                    ],
-                    "attrs": {
-                        "max_move": 2,
-                        "angle": 0
+                        "angle": 286.2913944110637
                     },
                     "groups": [
                         "Birds"
@@ -255,9 +145,32 @@ def ret():
             }
         }
     },
-    "width": 10,
-    "height": 10,
+    "width": 5,
+    "height": 5,
+    "locations": {
+        "Birds3": [
+            0,
+            5
+        ],
+        "Birds0": [
+            0.9494553514977329,
+            0
+        ],
+        "Birds1": [
+            2.8703462748580066,
+            0
+        ],
+        "Birds2": [
+            0.9298183658768056,
+            0
+        ],
+        "Birds4": [
+            0,
+            0.2527759326690546
+        ]
+    },
     "user": {
+        "user_msgs": "",
         "name": "ziruizhou"
     },
     "census_func": None,
@@ -267,9 +180,9 @@ def ret():
         "periods": 2,
         "pops": {
             "Birds": [
-                10,
-                10,
-                10
+                5,
+                5,
+                5
             ]
         }
     },
