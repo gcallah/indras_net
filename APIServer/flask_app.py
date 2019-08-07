@@ -15,6 +15,7 @@ from models.fashion import fs_unrestorable
 from models.flocking import fl_unrestorable
 from models.fmarket import fm_unrestorable
 from models.scheduler import sd_unrestorable
+from models.segregation import sg_unrestorable
 
 
 ERROR = "Error:"
@@ -137,6 +138,8 @@ class Run(Resource):
             fm_unrestorable(v)
         elif v.name == "scheduler":
             sd_unrestorable(v)
+        elif v.name == "A city":
+            sg_unrestorable(v)
         v.runN(periods=run_time)
         return json_converter(v)
 
