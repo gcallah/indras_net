@@ -296,6 +296,27 @@ def set_up(props=None):
     return (town, groups)
 
 
+def bb_unrestorable(env):
+    global town
+    global groups
+    global mp_pref
+    global radius
+    global store_census
+    town = env
+    mp_pref = env.props["mp_pref"]
+    radius = env.props["radius"]
+    store_census = env.props["store_census"]
+
+    consumer_group = env.registry["Consumer"]
+    bb_group = env.registry["Big box"]
+    groups = []
+    groups.append(consumer_group)
+    groups.append(bb_group)
+    for stores in range(0, len(mp_stores)):
+        store_name = list(mp_stores.keys())[stores]
+        groups.append(env.registry[store_name])
+
+
 def main():
     global town
     global groups
