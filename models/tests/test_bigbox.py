@@ -50,16 +50,16 @@ class BigBoxTestCase(TestCase):
 		"""
 		a = bb.create_bb("Big box" + str(0))
 		b = bb.create_consumer("Consumer" + str(0))
-		spending_power = b.attrs["spending power"]
+		spending_power = b["spending power"]
 		bb.transaction(a,b)
-		self.assertEqual(a.attrs["capital"],480 + spending_power)
-		self.assertEqual(a.attrs["inventory"][1], 89)
-		a.attrs["inventory"][1] -= 87
+		self.assertEqual(a["capital"],480 + spending_power)
+		self.assertEqual(a["inventory"][1], 89)
+		a["inventory"][1] -= 87
 		bb.transaction(a,b)
-		self.assertEqual(a.attrs["inventory"][1], 91)
-		self.assertEqual(a.attrs["capital"], 480 + (2 * spending_power) - 25)
-		while a.attrs["capital"] > -1 * spending_power:
-			a.attrs["capital"] -= (a.attrs["fixed expense"])
+		self.assertEqual(a["inventory"][1], 91)
+		self.assertEqual(a["capital"], 480 + (2 * spending_power) - 25)
+		while a["capital"] > -1 * spending_power:
+			a["capital"] -= (a["fixed expense"])
 		bb.transaction(a,b)
 		self.assertEqual(a.active, False)
 
@@ -69,7 +69,7 @@ class BigBoxTestCase(TestCase):
 		Create a consumer agent
 		"""
 		bob = bb.create_consumer("Consumer"+str(0))
-		self.assertEqual(len(bob.attrs), 3)
+		self.assertEqual(len(bob), 3)
 
 
 	def test_create_mp(self):
@@ -77,7 +77,7 @@ class BigBoxTestCase(TestCase):
 		Create a mom and pop agent
 		"""
 		mp = bb.create_mp("Mom and pop: Books", 0)
-		self.assertEqual(len(mp.attrs), 5)
+		self.assertEqual(len(mp), 5)
 
 
 	def test_create_bb(self):
@@ -85,7 +85,7 @@ class BigBoxTestCase(TestCase):
 		Create a big box agent
 		"""
 		bigBox = bb.create_bb("Big Box"+str(0))
-		self.assertEqual(len(bigBox.attrs), 5)
+		self.assertEqual(len(bigBox), 5)
 
 	
 	def test_mp_action(self):
