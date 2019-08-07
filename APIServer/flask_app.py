@@ -11,6 +11,7 @@ from indra.env import Env
 from models.sandpile import sp_unrestorable
 from models.bacteria import bt_unrestorable
 from models.bigbox import bb_unrestorable
+from models.fashion import fs_unrestorable
 
 
 ERROR = "Error:"
@@ -125,6 +126,8 @@ class Run(Resource):
             bt_unrestorable(v)
         elif v.name == "Town":
             bb_unrestorable(v)
+        elif v.name == "Society":
+            fs_unrestorable(v)
         v.runN(periods=run_time)
         return json_converter(v)
 

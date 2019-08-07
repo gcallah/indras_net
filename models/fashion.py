@@ -183,6 +183,24 @@ def set_up(props=None):
             red_followers, opp_group)
 
 
+def fs_unrestorable(env):
+    global red_tsetters
+    global blue_tsetters
+    global red_followers
+    global blue_followers
+    global society
+    global opp_group
+    society = env
+    blue_tsetters = env.registry[BLUE_TSETTERS]
+    red_tsetters = env.registry[RED_TSETTERS]
+    red_followers = env.registry[RED_FOLLOWERS]
+    blue_followers = env.registry[BLUE_FOLLOWERS]
+    opp_group = {str(red_tsetters): blue_tsetters,
+                 str(blue_tsetters): red_tsetters,
+                 str(red_followers): blue_followers,
+                 str(blue_followers): red_followers}
+
+
 def main():
     global red_tsetters
     global blue_tsetters
