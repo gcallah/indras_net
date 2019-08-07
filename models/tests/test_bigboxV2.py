@@ -22,12 +22,10 @@ class BigBoxV2TestCase(TestCase):
         set up test environment
         """
         (bb.town, bb.groups) = set_up()
-        self.groups = bb.groups
 
     def tearDown(self):
         bb.town = None
         bb.groups = None
-        self.groups = None
 
     def test_calc_util(self):
         """
@@ -85,6 +83,7 @@ class BigBoxV2TestCase(TestCase):
         self.assertEqual(True, bb.mp_action(mp))
         bb.mp_action(mp)
         self.assertEqual(mp["capital"], capital - 2*expense)
+        self.assertEqual(mp.isactive(), False)
 
     def test_bb_action(self):
         bigbox = bb.create_bb("BigBox")
@@ -93,6 +92,7 @@ class BigBoxV2TestCase(TestCase):
         self.assertEqual(True, bb.bb_action(bigbox))
         bb.bb_action(bigbox)
         self.assertEqual(bigbox["capital"], capital - 2*expense)
+        self.assertEqual(bigbox.isactive(), True)
 
 
     # def test_consumer_action(self):
@@ -108,22 +108,23 @@ class BigBoxV2TestCase(TestCase):
 
     def test_sells_good(self):
         bigbox = bb.create_bb("BigBox")
-        self.groups[BB_INDX] += bigbox
+        bb.groups[BB_INDX] += bigbox
         consumer = bb.create_consumer("Consumer", 1)
-        self.assertEqual(bb.sells_good(bigbox, consumer, self.groups), True)
+        self.assertEqual(bb.sells_good(bigbox, consumer, bb.groups), True)
         mp = bb.create_mp("Bookshop" , 1)
         consumer["item needed"] = "Bookshop"
-        self.assertEqual(bb.sells_good(mp, consumer, self.groups), True)
+        self.assertEqual(bb.sells_good(mp, consumer, bb.groups), True)
         consumer["item needed"] = "Restaurant"
-        self.assertEqual(bb.sells_good(mp, consumer, self.groups), False)
+        self.assertEqual(bb.sells_good(mp, consumer, bb.groups), False)
     
 
-    # def test_get_util(self):
-    #     bigbox = bb.create_bb("BigBox")
-    #     mp = bb.create_mp("Bookshop", 1)
-    #     bb_util = bb.get_util(bigbox)
-    #     mp_util = bb.get_util(mp)
-    #     self.assertLess(bb_util, 1.0)
-    #     self.assertGreater(bb_util, 0.0)
-    #     self.assertLess(mp_util, 1.1)
-    #     self.assertGreater(mp_util, 0.1)
+    def test_get_util(self):
+        bigbox = bb.create_bb("BigBox")
+        bb.groups[BB_INDX] += bigbox
+        mp = bb.create_mp("Bookshop", 1)
+        bb_util = bb.get_util(bigbox)
+        mp_util = bb.get_util(mp)
+        self.assertLess(bb_util, 1.0)
+        self.assertGreater(bb_util, 0.0)
+        self.assertLess(mp_util, 1.1)
+        self.assertGreater(mp_util, 0.1)

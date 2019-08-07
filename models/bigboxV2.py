@@ -84,6 +84,12 @@ def create_bb(name):
 
 def bb_action(bb):
     bb["capital"] -= bb["expense"]
+    if DEBUG:
+        print("       ", bb, "has a capital of ", bb["capital"])
+    if bb["capital"] <= 0:
+        bb.die()
+        if DEBUG:
+            print("       ", bb, "is out of business.")
     return True
 
 
@@ -111,9 +117,6 @@ def consumer_action(consumer):
                 if curr_store_util > max_util:
                     max_util = curr_store_util
                     store_to_go = neighbor
-            # collapse if and else to single case by
-            #  1) make bb sell all goods and
-            #  2) make store cough up util and add mp_pref in there
     if store_to_go is not None:
         transaction(store_to_go, consumer)
         if DEBUG:
@@ -132,8 +135,14 @@ def calc_util(stores):
 
 
 def mp_action(mp):
+
     mp["capital"] -= mp["expense"]
-    # print("    ", mp, "has a capital of ", mp["capital"])
+    if DEBUG:
+        print("       ", mp, "has a capital of ", mp["capital"])
+    if mp["capital"] <= 0:
+        mp.die()
+        if DEBUG:
+            print("       ", mp, "is out of business.")
     return True
 
 
@@ -141,25 +150,10 @@ def town_action(town):
     global groups
     global period
 
-    count = 0
     if town.get_periods() == period:
         new_bb = create_bb("Big Box")
         groups[BB_INDX] += new_bb
         town.place_member(new_bb)
-    for y in range(town.height):
-        for x in range(town.width):
-            curr_store = town.get_agent_at(x, y)
-            if (curr_store is not None and curr_store.primary_group()
-               != groups[CONSUMER_INDX]):
-                count += 1
-                print(count)
-                if DEBUG:
-                    print("       ", curr_store, "has a capital of ",
-                          curr_store["capital"])
-                if curr_store["capital"] <= 0:
-                    curr_store.die()
-                    if DEBUG:
-                        print("       ", curr_store, "is out of business.")
 
 
 def set_up(props=None):
