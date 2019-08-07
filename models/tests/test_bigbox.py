@@ -7,7 +7,7 @@ from models.bigbox import create_consumer, create_bb, create_mp, set_up
 from models.bigbox import calc_util, transaction, town_action
 from models.bigbox import bb_store, consumer_action, mp_action, bb_action
 from models.bigbox import MP_PREF, RADIUS, CONSUMER_INDX, get_store_census
-from models.bigbox import BB_INDX, MP_INDX, mp_stores, town_action
+from models.bigbox import BB_INDX, MP_INDX, mp_stores
 import models.bigbox as bb
 
 TEST_WIDTH=4
@@ -39,41 +39,6 @@ class BigBoxTestCase(TestCase):
 		util = bb.calc_util(a)
 		self.assertLess(util, 1.0)
 		self.assertGreater(util, 0.0)
-
-	# def test_town_action(self):
-	# 	"""
-	# 	Create three composites and three agents with height
-	# 	and width of 4. Test if twon_action works and see 
-	# 	if transactions match.
-	# 	"""
-	# 	bigBox = Composite("blue")
-	# 	consumer = Composite("gray")
-	# 	mp = Composite("red")
-	# 	bb.groups = []
-	# 	bb.groups.append(bigBox)
-	# 	bb.groups.append(consumer)
-	# 	bb.groups.append(mp)
-	# 	a = bb.create_bb("Big box"+str(0))
-	# 	bb.groups[BB_INDX] += a
-	# 	b = bb.create_consumer("Consumer"+str(0))
-	# 	bb.groups[CONSUMER_INDX] += b
-	# 	c = bb.create_mp(b.attrs["item needed"],0)
-	# 	bb.groups[MP_INDX] += c
-	# 	Test_town = Env("town for test", width=TEST_WIDTH, height=TEST_HEIGHT, members=bb.groups, action=bb.town_action)
-	# 	radius=RADIUS
-	# 	bb.town_action(Test_town)
-	# 	bb_util=bb.calc_util(a)
-	# 	mp_util=bb.calc_util(c)+MP_PREF
-	# 	max_util = max(bb_util, mp_util)
-	# 	if bb_util > mp_util:
-	# 		store_to_go = a
-	# 	else:
-	# 		store_to_go = c
-	# 	bb.transaction(store_to_go,b)
-	# 	if bb_util > mp_util:
-	# 		self.assertEqual(a.attrs["capital"], 480+b.attrs["spending power"])
-	# 	else:
-	# 		self.assertEqual(a.attrs["capital"], 480)
 	
 
 	def test_transaction(self):
