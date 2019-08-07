@@ -1,6 +1,6 @@
 def ret():
     return {
-    "name": "Sanpile",
+    "name": "Sandpile",
     "type": "env",
     "duration": 9223372036854775805,
     "pos": None,

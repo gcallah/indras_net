@@ -9,6 +9,7 @@ from models.run_dict import setup_dict
 from indra.agent import AgentEncoder
 from indra.env import Env
 from models.sandpile import sp_unrestorable
+from models.bacteria import bt_unrestorable
 
 
 ERROR = "Error:"
@@ -117,8 +118,10 @@ class Run(Resource):
     def put(self, run_time):
         env_json = api.payload
         v = Env(name='API env', serial_obj=env_json)
-        if v.name == "Sanpile":
+        if v.name == "Sandpile":
             sp_unrestorable(v)
+        elif v.name == "Petrie dish":
+            bt_unrestorable(v)
         v.runN(periods=run_time)
         return json_converter(v)
 

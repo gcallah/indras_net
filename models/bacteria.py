@@ -172,6 +172,17 @@ def set_up(props=None):
     return (petri_dish, toxins, nutrients, bacteria)
 
 
+def bt_unrestorable(env):
+    global toxins
+    global nutrients
+    global bacteria
+    global petri_dish
+    petri_dish = env
+    toxins = env.registry["Toxins"]
+    bacteria = env.registry["Bacteria"]
+    nutrients = env.registry["Nutrients"]
+
+
 def main():
     global bacteria
     global toxins
