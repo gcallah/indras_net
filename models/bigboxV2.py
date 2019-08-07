@@ -20,7 +20,8 @@ BB_INDX = 1
 RADIUS = 2
 MP_PREF = 0.1
 PERIOD = 7
-BB_CAPITAL = 2000
+STANDARD = 200
+MULTIPLIER = 10
 
 EXPENSE_INDX = 0
 CAPITAL_INDX = 1
@@ -42,8 +43,13 @@ mp_stores = {"Bookshop": [45, 105, TAN],
              "Restaurant": [40, 100, YELLOW]}
 
 
-def sells_good(good_type):
-    pass
+def sells_good(store, consumer):
+    if store.primary_group() == groups[BB_INDX]:
+        return True
+    else:
+        if consumer["item needed"] in store.name:
+            return True
+        return False
     # if BB return True else return seller sells that type
 
 
@@ -68,10 +74,10 @@ def create_mp(store_type, i):
 
 
 def create_bb(name):
-    global bb_capital
+    global multiplier
 
     bb_book = {"expense": 150,
-               "capital": bb_capital}
+               "capital": multiplier * STANDARD}
     return Agent(name=name, attrs=bb_book, action=bb_action)
 
 
@@ -80,9 +86,17 @@ def bb_action(bb):
     return True
 
 
+def get_util(store):
+    global mp_pref
+
+    if store.primary_group() == groups[BB_INDX]:
+        return calc_util(store)
+    else:
+        return calc_util(store) + mp_pref
+
+
 def consumer_action(consumer):
     global radius
-    global mp_pref
     nearby_neighbors = town.get_moore_hood(consumer,
                                            radius=radius)
     store_to_go = None
@@ -91,22 +105,15 @@ def consumer_action(consumer):
         neighbor = nearby_neighbors[neighbors]
         if (neighbor.isactive()
                 and neighbor.primary_group()
-            != groups[CONSUMER_INDX]
-                and neighbor["capital"] > -1):
-            # collapse if and else to single case by
-            #  1) make bb sell all goods and
-            #  2) make store cough up util and add mp_pref in there
-            if neighbor.primary_group() == groups[BB_INDX]:
-                curr_store_util = calc_util(neighbor)
+            != groups[CONSUMER_INDX]):
+            if sells_good(neighbor, consumer):
+                curr_store_util = get_util(neighbor)
                 if curr_store_util > max_util:
                     max_util = curr_store_util
                     store_to_go = neighbor
-            else:
-                if consumer["item needed"] in neighbor.name:
-                    curr_store_util = calc_util(neighbor) + mp_pref
-                    if curr_store_util > max_util:
-                        max_util = curr_store_util
-                        store_to_go = neighbor
+            # collapse if and else to single case by
+            #  1) make bb sell all goods and
+            #  2) make store cough up util and add mp_pref in there
     if store_to_go is not None:
         transaction(store_to_go, consumer)
     consumer["item needed"] = get_rand_good_type()
@@ -153,7 +160,7 @@ def set_up(props=None):
     global radius
     global store_census
     global period
-    global bb_capital
+    global multiplier
 
     pa = get_props(MODEL_NAME, props)
 
@@ -164,7 +171,7 @@ def set_up(props=None):
     mp_pref = pa.get("mp_pref", MP_PREF)
     radius = pa.get("radius", RADIUS)
     store_census = pa.get("store_census", False)
-    bb_capital = pa.get("bb_capital", BB_CAPITAL)
+    multiplier = pa.get("multiple", MULTIPLIER)
     period = pa.get("period", PERIOD)
 
     consumer_group = Composite("Consumer", {"color": GRAY},

@@ -55,8 +55,8 @@
     "hival": false,
     "lowval": true
   },
-  "bb_capital": {
-    "val": 2000,
+  "multiple": {
+    "val": 10,
     "question": "How many times of capital of mom and pop should the capital of big box be?",
     "atype": "INT",
     "hival": 100,
@@ -64,7 +64,7 @@
   },
   "period": {
     "val": 7,
-    "question": "after how mnay period should there be a big box store?",
+    "question": "After how many period should there be a big box store?",
     "atype": "INT",
     "hival": 15,
     "lowval": 1
