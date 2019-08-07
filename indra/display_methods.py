@@ -18,17 +18,15 @@ plt_present = True
 plt_present_error_message = ""
 # sns.set(style="darkgrid")
 
-try:
-    import matplotlib as mpl
-    user_type = os.getenv("user_type", TERMINAL)
-    if user_type == API:
-        mpl.use('Agg')
-    import matplotlib.pyplot as plt
-    import matplotlib.animation as animation
-    plt.ion()
-except ImportError as e:
-    plt_present = False
-    plt_present_error_message = e.msg
+user_type = os.getenv("user_type", TERMINAL)
+if user_type != API:
+    try:
+        import matplotlib.pyplot as plt
+        import matplotlib.animation as animation
+        plt.ion()
+    except ImportError as e:
+        plt_present = False
+        plt_present_error_message = e.msg
 
 global imageIO
 
