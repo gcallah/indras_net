@@ -86,6 +86,9 @@ class BigBoxV2TestCase(TestCase):
         self.assertEqual(mp.isactive(), False)
 
     def test_bb_action(self):
+        """
+        Test the action of a bigbox store.
+        """
         bigbox = bb.create_bb("BigBox")
         expense = bigbox["expense"]
         capital = bigbox["capital"]
@@ -107,6 +110,9 @@ class BigBoxV2TestCase(TestCase):
 
 
     def test_sells_good(self):
+        """
+        Test if sells_ggod return the right boolean.
+        """
         bigbox = bb.create_bb("BigBox")
         bb.groups[BB_INDX] += bigbox
         consumer = bb.create_consumer("Consumer", 1)
@@ -119,6 +125,9 @@ class BigBoxV2TestCase(TestCase):
     
 
     def test_get_util(self):
+        """
+        Test if get_util return a value in the right range.
+        """
         bigbox = bb.create_bb("BigBox")
         bb.groups[BB_INDX] += bigbox
         mp = bb.create_mp("Bookshop", 1)
