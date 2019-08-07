@@ -110,9 +110,7 @@ def coop_action(coop_env):
 
 def coop_report(coop_env):
     num_babysitter = len(groups[BSIT_INDEX])
-    num_going_out = len(groups[GO_OUT_INDEX])
     return 'Number of babysitters is: ' + str(num_babysitter) \
-        + ', number of people going out is: ' + str(num_going_out) \
         + ', number of people staying home_B is: ' \
         + str(len(groups[B_HOME])) \
         + ', number of people staying home_G is: ' \
@@ -137,14 +135,6 @@ def babysitter_action(agent):
     agent['sitting'] = False
     agent['going_out'] = False
     act(agent)
-    print(agent.name,
-          'babysitting: ',
-          agent['sitting'],
-          ' and going_out ',
-          agent['going_out'],
-          ' and I have ',
-          agent['coupons'],
-          ' coupons')
     return False
 
 
@@ -161,8 +151,8 @@ def central_bank_action(agent):
 
 def create_babysitter(name, i, props=None):
     """
-  Create a babysitter.
-  """
+    Create a babysitter.
+    """
 
     babysitter = Agent(name + str(i), action=babysitter_action)
     mean_coupons = props.get("average_coupons", DEF_COUPON)
@@ -177,8 +167,8 @@ def create_babysitter(name, i, props=None):
 
 def create_central_bank(name, i, props=None):
     """
-  Create the central bank to distribute the coupons
-  """
+    Create the central bank to distribute the coupons
+    """
 
     central_bank = Agent(name, action=central_bank_action)
     central_bank["percent_change"] = props.get("percent_change", DEF_PERCENT)
@@ -190,8 +180,8 @@ def create_central_bank(name, i, props=None):
 
 def set_up(props=None):
     """
-  A func to set up run that can also be used by test code.
-  """
+    A func to set up run that can also be used by test code.
+    """
 
     global coop_env
     global groups

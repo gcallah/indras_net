@@ -138,16 +138,25 @@ class ModelDetail extends Component {
      this.props.history.goBack();
   }
 
+  renderDimmer = () => {
+    return (
+      <Dimmer active inverted>
+      <Loader size='massive'>Loading...</Loader>
+      </Dimmer>
+    );
+  }
+
 
   render() {
 
     if (this.state.loadingData) {
-      return (
-      <Dimmer active inverted>
-      <Loader size='massive'>Loading...</Loader>
-      </Dimmer>
+      return ( 
+        <div>
+      {this.renderDimmer()}
+        </div>
       );
     }
+    
     return (
       <div>
         <br />
