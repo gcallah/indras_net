@@ -1,18 +1,18 @@
 import React, {Component} from 'react';
 import {Loader, Dimmer } from 'semantic-ui-react';
 import axios from 'axios';
-import {Link} from 'react-router-dom';
 import PopulationGraph from './PopulationGraph.js';
 import ScatterPlot from './ScatterPlot.js';
 import Debugger from './Debugger.js';
-import renderPreFormTextBox from './PreFormTextBox.js';
+import PreFormTextBox from './PreFormTextBox.js';
+import MenuItem from './MenuItem.js';
 
 class ActionMenu extends Component {
   api_server = 'https://indrasnet.pythonanywhere.com/models/menu/';
 
   state = {
     msg: '',
-    menu_list: {},
+    menu: {},
     loadingData: false,
     env_file: {},
     model_id: 0,
@@ -29,9 +29,9 @@ class ActionMenu extends Component {
   async componentDidMount () {
     this.setState ({loadingData: true});
     document.title = 'Indra | Menu';
-    const menu = await axios.get (this.api_server);
+    const m = await axios.get (this.api_server);
     console.log (this.api_server);
-    this.setState ({menu_list: menu.data});
+    this.setState ({menu: m.data});
     const id = localStorage.getItem ('menu_id');
     const name = localStorage.getItem ('name');
     const source = localStorage.getItem ('source');
@@ -88,6 +88,7 @@ class ActionMenu extends Component {
   };
 
   handleClick = e => {
+      console.log("e = " + String(e))
     this.setState ({loadingData: false});
     this.setState ({loading_population: false});
     this.setState ({loading_scatter: false});
@@ -127,12 +128,12 @@ class ActionMenu extends Component {
   }
 
 
-    renderModelStatus = () => {
-        return (
+  renderModelStatus = () => {
+     return (
         <div>
         <div class="card w-50 overflow-auto"
             style={{float:'right', width:"18rem", height:"18rem"}}>
-            { renderPreFormTextBox("Model Status", this.state.msg) } 
+            { PreFormTextBox("Model Status", this.state.msg) } 
         </div>
         </div>
         );
@@ -155,21 +156,14 @@ class ActionMenu extends Component {
           <ul class="list-group">
             <div class="row">
               <div class="col">
-          {Object.keys (this.state.menu_list).map ((item, i) => (
-            <a class="w-50 p-3 list-group-item list-group-item-action" key={i}>
-              {this.state.menu_list[item]['id'] === 0
-                ? <Link class="text-danger"
-                    to={{
-                      pathname: '/',
-                      state: {action_id: this.state.menu_list[item]['id']},
-                    }}
-                  >
-                    {this.state.menu_list[item]['question']}
-                  </Link>
-                : null}
+          {
+              Object.keys (this.state.menu).map ((item, i) => (
+              <a class="w-50 p-3 list-group-item list-group-item-action" key={i}>
 
-              {this.state.menu_list[item]['id'] === 1
-                ? <div>
+              { this.state.menu[item]['id'] === 0 ? null : null }
+
+              {this.state.menu[item]['id'] === 1 ?
+                  <div>
                     <button 
                       disabled={this.state.disabled_button}
                       onClick={
@@ -197,32 +191,16 @@ class ActionMenu extends Component {
                   </div>
                 : null}
 
-              {this.state.menu_list[item]['id'] === 2
-                ? <Link class="text-primary" onClick={() => this.handleClick (2)}>
-                    {this.state.menu_list[item]['question']}
-                  </Link>
-                : null}
+                {
+                    this.state.menu[item]['id'] > 1 ?
+                        MenuItem(this.state.menu[item]['id'],
+                                 this.state.menu[item]['question'])
+                    : null
+                }
 
-              {this.state.menu_list[item]['id'] === 3
-                ? <Link class="text-primary" onClick={() => this.handleClick (3)}>
-                    {this.state.menu_list[item]['question']}
-                  </Link>
-                : null}
-
-              {this.state.menu_list[item]['id'] === 4
-                ? <Link class="text-primary" onClick={() => this.handleClick (4)}>
-                    {this.state.menu_list[item]['question']}
-                  </Link>
-                : null}
-
-              {this.state.menu_list[item]['id'] === 5
-                ? <Link class="text-primary" onClick={() => this.handleClick (5)}>
-                    {this.state.menu_list[item]['question']}
-                  </Link>
-                : null}
-              
             </a>
-          ))}
+          ))
+          }
             </div></div> </ul>
         <br /><br />
         <br /><br />

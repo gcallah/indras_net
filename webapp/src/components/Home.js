@@ -33,7 +33,7 @@ class Home extends Component {
   renderShowDescription = () => {
     console.log("renderShowDescription called")
     return <h1 style={{"fontSize": 16, "fontWeight": '400'}}>
-        <a href="#" class="text-primary m-2" onClick={this.openDescription}>
+        <a href="#" className="text-primary m-2" onClick={this.openDescription}>
         View Project Description </a> </h1>
        
   }
@@ -46,7 +46,11 @@ class Home extends Component {
 
   renderImage = () => {
     const sandpile_img = require('./images/Sandpile.jpg')
-    return <img src={sandpile_img} class="rounded-circle" alt="Responsive image" style={{display:'block', float:'right', width:'45%', alignItems: "center"}} data-toggle="tooltip" data-placement="top" title="by Seth Terashima."/>
+    return <img src={sandpile_img}
+      className="rounded-circle"
+      alt="Responsive image"
+      style={{display:'block', float:'right', width:'45%', alignItems: "center"}}
+      data-toggle="tooltip" data-placement="top" title="by Seth Terashima."/>
   }
 
   renderHeader = () => {
@@ -72,20 +76,21 @@ class Home extends Component {
         <br /><br />
         {this.renderChooseModelProp()}
         {this.renderImage()}
-        <ul class="list-group">
-          <div class="row">
-            <div class="col">
+        <ul className="list-group">
+          <div className="row">
+            <div className="col">
         {Object.keys(this.state.allItems).map((item,i)=>
-        <a class=" w-50 p-3 list-group-item list-group-item-action"  key={i}>
+        <p className="w-50 p-3 list-group-item list-group-item-action"  key={i}>
           {console.log(this.state.allItems[item]['model ID'])}
           <Link to={{pathname: `/models/props/${i}`}}
-            class="text-primary" data-toggle="tooltip"
+            className="text-primary" data-toggle="tooltip"
             data-placement="top" title={this.state.allItems[item]['doc']}
             onClick={() => this.handleClick(this.state.allItems[item]['model ID'],
-                this.state.allItems[item]['name'], this.state.allItems[item]['source'])}>
+                this.state.allItems[item]['name'],
+                this.state.allItems[item]['source'])}>
             {this.state.allItems[item]['name']}
           </Link>
-        </a>)}
+        </p>)}
         </div></div> </ul>
         {this.renderShowDescription()}
         <br /><br />

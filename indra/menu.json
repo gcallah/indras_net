@@ -3,32 +3,32 @@
         {
             "id": 1,
             "func": "run",
-            "question": "Run for N periods."
+            "question": "Run for N periods"
         },
         {
             "id": 2,
             "func": "line_graph",
-            "question": "Display a population graph."
+            "question": "Display a population graph"
         },
         {
             "id": 3,
             "func": "scatter_plot",
-            "question": "Display a scatter plot."
+            "question": "Display a scatter plot"
         },
         {
             "id": 4,
             "func": "debug",
-            "question": "Examine model data."
+            "question": "Examine model data"
         },
         {
             "id": 5,
             "func": "source",
-            "question": "View the source code."
+            "question": "View the source code"
         },
         {
             "id": 0,
             "func": "leave",
-            "question": "Quit."
+            "question": "Quit"
         }
     ]
 }

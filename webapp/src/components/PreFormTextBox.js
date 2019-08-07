@@ -1,6 +1,6 @@
 import React from 'react';
 
-function renderPreFormTextBox(title, text) {
+function PreFormTextBox(title, text) {
     return (
     <div>
     <h5 style={{textAlign: 'center', "fontSize": 16}}
@@ -13,4 +13,4 @@ function renderPreFormTextBox(title, text) {
     </div>);
 }
 
-export default renderPreFormTextBox;
+export default PreFormTextBox;
