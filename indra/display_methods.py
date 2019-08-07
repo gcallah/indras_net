@@ -16,7 +16,6 @@ import os
 from indra.user import TERMINAL, API
 plt_present = True
 plt_present_error_message = ""
-sns.set(style="darkgrid")
 
 user_type = os.getenv("user_type", TERMINAL)
 if user_type != API:
@@ -26,6 +25,7 @@ if user_type != API:
         import numpy as np
         import pandas as pd
         import seaborn as sns
+        sns.set(style="darkgrid")
         plt.ion()
     except ImportError as e:
         plt_present = False
@@ -337,7 +337,7 @@ class ScatterPlot():
                 ax.set_yticklabels([])
                 ax.set_xticklabels([])
             if "hide_grid_lines" in attrs:
-                sns.set_style("whitegrid", {"axes.grid" : False})
+                sns.set_style("whitegrid", {"axes.grid": False})
             if "legend_pos" in attrs:
                 legend_pos = attrs["legend_pos"]
             if "hide_legend" not in attrs:
