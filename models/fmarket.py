@@ -207,7 +207,7 @@ def set_up(props=None):
                                 num_members=pa.get("trend_followers",
                                                    DEF_NUM_TREND_FOLLOWER))
     market_maker = create_market_maker("market_maker")
-    market = Env("env",
+    market = Env("fmarket",
                  members=[value_investors, trend_followers, market_maker],
                  props=pa,
                  width=UNLIMITED,
