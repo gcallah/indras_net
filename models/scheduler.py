@@ -439,12 +439,21 @@ def set_up(props=None):
     print(red_group.members)
     print('```````')
     print(blue_group.members)
-    env = Env("env",
+    env = Env("scheduler",
               height=pa.get('grid_height', DEF_HEIGHT),
               width=pa.get('grid_width', DEF_WIDTH),
               members=[blue_group, red_group],
               props=pa)
     return (env, blue_group, red_group)
+
+
+def sd_unrestorable(v):
+    global red_group
+    global blue_group
+    global env
+    env = v
+    red_group = v.registry["Reds"]
+    blue_group = v.registry["Blues"]
 
 
 def main():
