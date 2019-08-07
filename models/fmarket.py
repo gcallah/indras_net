@@ -218,6 +218,17 @@ def set_up(props=None):
     return (market, value_investors, trend_followers, market_maker)
 
 
+def fm_unrestorable(env):
+    global trend_followers
+    global value_investors
+    global market_maker
+    global market
+    market = env
+    trend_followers = env.registry["trend_followers"]
+    value_investors = env.registry["value_investors"]
+    market_maker = env.registry["market_maker"]
+
+
 def main():
     global trend_followers
     global value_investors
