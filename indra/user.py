@@ -49,13 +49,19 @@ def leave(user):
     return USER_EXIT
 
 
-def scatter_plot(user):
-    user.tell("Drawing a scatter plot.")
+def scatter_plot(user, update=False):
+    if update:
+        user.tell("Updating the scatter plot.")
+    else:
+        user.tell("Drawing a scatter plot.")
     return user.env.scatter_graph()
 
 
-def line_graph(user):
-    user.tell("Drawing a line graph.")
+def line_graph(user, update=False):
+    if update:
+        user.tell("Updating the line graph.")
+    else:
+        user.tell("Drawing a line graph.")
     return user.env.line_graph()
 
 
@@ -151,6 +157,7 @@ class TermUser(User):
         self.stars = "*" * len(self.menu_title)
         self.exclude_menu_item("source")
         self.show_line_graph = False
+        self.show_scatter_plot = False
 
     def tell(self, msg, end='\n'):
         """
@@ -189,6 +196,10 @@ class TermUser(User):
                   + self.stars)
         for item in self.menu:
             print(str(item["id"]) + ". ", item["question"])
+        if self.show_line_graph:
+            line_graph(self, update=True)
+        if self.show_scatter_plot:
+            scatter_plot(self, update=True)
         self.tell("Please choose a number from the menu above:")
         c = input()
         if not c or c.isspace():
@@ -198,12 +209,12 @@ class TermUser(User):
             if choice >= 0:
                 for item in self.menu:
                     if item["id"] == choice:
-                        if choice == 2:
+                        if item["func"] == "line_graph":
                             self.show_line_graph = True
-                        if choice == 3:
+                            self.show_scatter_plot = False
+                        if item["func"] == "scatter_plot":
+                            self.show_scatter_plot = True
                             self.show_line_graph = False
-                        if self.show_line_graph:
-                            line_graph(self)
                         return menu_functions[item["func"]](self)
             self.tell_err(str(c) + " is an invalid option. "
                           + "Please enter a valid option.")

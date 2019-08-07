@@ -97,7 +97,7 @@ def wolfram_action(wolfram_env):
                                                  "for more periods.\n",
                                                  "Please pick one of the ",
                                                  "other options."]))
-        wolfram_env.exclude_menu_item("run", "line_graph")
+        wolfram_env.exclude_menu_item("run")
     else:
         next_row = wolfram_env.get_row_hood(active_row_y - 1)
         left_color = get_color(
@@ -152,6 +152,9 @@ def set_up(props=None):
                       height=height,
                       width=width,
                       members=groups,
+                      attrs={"size": 50,
+                             "hide_grid_lines": True,
+                             "hide_legend": True},
                       random_placing=False,
                       props=pa)
     wolfram_env.exclude_menu_item("line_graph")

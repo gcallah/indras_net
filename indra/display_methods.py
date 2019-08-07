@@ -6,7 +6,7 @@ for using matplotlib.
 """
 from functools import wraps
 from math import ceil
-import numpy as np
+# import numpy as np
 # import pandas as pd
 # import seaborn as sns
 # import networkx as nx
@@ -16,13 +16,16 @@ import os
 from indra.user import TERMINAL, API
 plt_present = True
 plt_present_error_message = ""
-# sns.set(style="darkgrid")
+sns.set(style="darkgrid")
 
 user_type = os.getenv("user_type", TERMINAL)
 if user_type != API:
     try:
         import matplotlib.pyplot as plt
         import matplotlib.animation as animation
+        import numpy as np
+        import pandas as pd
+        import seaborn as sns
         plt.ion()
     except ImportError as e:
         plt_present = False
@@ -38,6 +41,7 @@ BLUE = 'blue'
 CYAN = 'cyan'
 GREEN = 'green'
 SPRINGGREEN = 'springgreen'
+LIMEGREEN = 'limegreen'
 YELLOW = 'yellow'
 TAN = 'tan'
 ORANGE = 'orange'
@@ -56,6 +60,7 @@ colors = [PURPLE,
           CYAN,
           GREEN,
           SPRINGGREEN,
+          LIMEGREEN,
           YELLOW,
           TAN,
           ORANGE,
@@ -69,6 +74,25 @@ colors = [PURPLE,
           WHITE
           ]
 
+colors_dict = {"purple": PURPLE,
+               "navy": NAVY,
+               "blue": BLUE,
+               "cyan": CYAN,
+               "green": GREEN,
+               "springgreen": SPRINGGREEN,
+               "limegreen": LIMEGREEN,
+               "yellow": YELLOW,
+               "tan": TAN,
+               "orange": ORANGE,
+               "orangered": ORANGERED,
+               "tomato": TOMATO,
+               "red": RED,
+               "darkred": DARKRED,
+               "magenta": MAGENTA,
+               "white": WHITE,
+               "gray": GRAY,
+               "black": BLACK}
+
 NUM_COLORS = len(colors)
 X = 0
 Y = 1
@@ -78,11 +102,17 @@ SQUARE = 's'
 TREE = '^'
 CIRCLE = 'o'
 
-markers = [DEFAULT_MARKER,
-           SQUARE,
-           TREE,
-           CIRCLE
-           ]
+# markers = [DEFAULT_MARKER,
+#            SQUARE,
+#            TREE,
+#            CIRCLE
+#            ]
+
+markers = {DEFAULT_MARKER: "8",
+           SQUARE: "s",
+           TREE: "^",
+           CIRCLE: "o"
+           }
 
 
 def expects_plt(fn):
@@ -264,9 +294,7 @@ class ScatterPlot():
     @expects_plt
     def __init__(self, title, varieties, width, height,
                  anim=True, data_func=None, is_headless=False,
-                 legend_pos=4, show_legend=True,
-                 change_grid_spacing=0, hide_xy_labels=False, hide_axes=False
-                 ):
+                 attrs=None):
         """
         Setup a scatter plot.
         varieties contains the different types of
@@ -281,41 +309,49 @@ class ScatterPlot():
         self.data_func = data_func
         self.s = ceil(4096 / width)
         self.headless = is_headless
+        self.legend = ["Type"]
+        size = 40
+        legend_pos = "upper left"
 
         fig, ax = plt.subplots()
         ax.set_xlim(0, width)
         ax.set_ylim(0, height)
-        if change_grid_spacing > 0:
-            ax.set_axisbelow(True)
-            major_ticks = np.arange(change_grid_spacing, width, 1)
-            ax.set_xticks(major_ticks)
-            ax.set_yticks(major_ticks)
-            ax.set_yticklabels([])
-            ax.set_xticklabels([])
-        if hide_xy_labels:
-            ax.tick_params(axis='both', bottom=False, left=False,
-                           labelbottom=False)
-        if hide_axes:
-            plt.axis('off')
-        if show_legend:
-            ax.legend(loc=legend_pos)
-            # plt.legend()
-        ax.set_title(title)
         self.create_scats(varieties)
-
-        if anim and not self.headless:
-            anim_func = animation.FuncAnimation(fig,
-                                                self.update_plot,
-                                                frames=1000,
-                                                interval=500,
-                                                blit=False)
-        # fig, ax = plt.subplots()
-        # self.create_scats(varieties)
-        # scatter_graph = sns.load_dataset(self.scats)
-        # sns.scatterplot(x="x axis", y="y axis",
-        #                 data=scatter_graph, palette=cmap)
-        # ax.set_ylabel('')
-        # ax.set_xlabel('')
+        if attrs is not None and "size" in attrs:
+            size = attrs["size"]
+        g = sns.scatterplot("x", "y", data=self.scats,
+                            hue="color", palette=colors_dict,
+                            style="marker", markers=markers, s=size)
+        if attrs is not None:
+            if "change_grid_spacing" in attrs:
+                change_grid_spacing = attrs["change_grid_spacing"]
+                start, end = ax.get_xlim()
+                ax.xaxis.set_ticks(np.arange(0.5,
+                                             end, change_grid_spacing))
+                ax.yaxis.set_ticks(np.arange(0.5,
+                                             end, change_grid_spacing))
+            if "show_xy_labels" not in attrs:
+                ax.set_xlabel('')
+                ax.set_ylabel('')
+            if "hide_xy_ticks" in attrs:
+                ax.set_yticklabels([])
+                ax.set_xticklabels([])
+            if "hide_grid_lines" in attrs:
+                sns.set_style("whitegrid", {"axes.grid" : False})
+            if "legend_pos" in attrs:
+                legend_pos = attrs["legend_pos"]
+            if "hide_legend" not in attrs:
+                handles, _ = g.get_legend_handles_labels()
+                g.legend(handles, self.legend, loc=legend_pos)
+            elif "hide_legend" in attrs:
+                g.legend_.remove()
+        ax.set_title(title)
+        # if anim and not self.headless:
+        #     anim_func = animation.FuncAnimation(fig,
+        #                                         self.update_plot,
+        #                                         frames=1000,
+        #                                         interval=500,
+        #                                         blit=False)
 
     def get_arrays(self, varieties, var):
         x_array = np.array(varieties[var][X])
@@ -324,8 +360,9 @@ class ScatterPlot():
 
     @expects_plt
     def create_scats(self, varieties):
-        self.scats = []
+        self.scats = pd.DataFrame(columns=["x", "y", "color", "marker", "var"])
         for i, var in enumerate(varieties):
+            self.legend.append(var)
             (x_array, y_array) = self.get_arrays(varieties, var)
             if len(x_array) <= 0:  # no data to graph!
                 next
@@ -334,11 +371,13 @@ class ScatterPlot():
                 next
             color = get_color(varieties[var], i)
             marker = get_marker(varieties[var], i)
-            scat = plt.scatter(x_array, y_array,
-                               c=color, label=var,
-                               alpha=1.0, marker=marker,
-                               edgecolors='none', s=self.s)
-            self.scats.append(scat)
+            scat = pd.DataFrame({"x": pd.Series(x_array),
+                                 "y": pd.Series(y_array),
+                                 "color": color,
+                                 "marker": marker,
+                                 "var": var})
+            self.scats = self.scats.append(scat, ignore_index=True,
+                                           sort=False)
 
     @expects_plt
     def show(self):
