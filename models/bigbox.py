@@ -115,20 +115,20 @@ def transaction(store, consumer):
     Calcuates the expense and the revenue of the store passed in
         after a transaction with the consumer passed in.
     """
-    store.attrs["visited"] += 1
-    store.attrs["capital"] += consumer.attrs["spending power"]
-    store.attrs["inventory"][1] -= 1
-    if store.attrs["inventory"][1] == 1:
-        store.attrs["capital"] -= (
-            store.attrs["variable expense"])
-        store.attrs["inventory"][1] += (
-            store.attrs["inventory"][0])
-    if store.attrs["capital"] <= 0:
+    store["visited"] += 1
+    store["capital"] += consumer["spending power"]
+    store["inventory"][1] -= 1
+    if store["inventory"][1] == 1:
+        store["capital"] -= (
+            store["variable expense"])
+        store["inventory"][1] += (
+            store["inventory"][0])
+    if store["capital"] <= 0:
         print("     ", store, "is out of buisness")
         store.die()
     if DEBUG:
-        print("     ", store, "has a capital of", store.attrs["capital"],
-              "and inventory of", store.attrs["inventory"][1])
+        print("     ", store, "has a capital of", store["capital"],
+              "and inventory of", store["inventory"][1])
 
 
 def get_store_census(town):
@@ -138,16 +138,16 @@ def get_store_census(town):
                          "==================\n"])
     for i in range(1, 6):
         for store in groups[i]:
-            if groups[i][store].attrs["capital"] > -1:
+            if groups[i][store]["capital"] > -1:
                 to_print = " ".join([to_print, str(groups[i][store]),
                                      "\n  Capital: ",
-                                     str(groups[i][store].attrs["capital"]),
+                                     str(groups[i][store]["capital"]),
                                      "\n  Inventory: ",
                                      str((groups[i][store]
-                                          ).attrs["inventory"][1]),
+                                          )["inventory"][1]),
                                      "\n  ",
-                                     str((groups[i][store]).attrs["visited"])])
-                if (groups[i][store]).attrs["visited"] == 1:
+                                     str((groups[i][store])["visited"])])
+                if (groups[i][store])["visited"] == 1:
                     to_print = " ".join([to_print,
                                          " consumer visited this store",
                                          " in the last period.\n"])
@@ -189,12 +189,12 @@ def town_action(town):
                     if (neighbor.isactive()
                             and neighbor.primary_group()
                         != groups[CONSUMER_INDX]
-                            and neighbor.attrs["capital"] > -1):
+                            and neighbor["capital"] > -1):
                         curr_store_util = 0.0
-                        if neighbor.attrs["visited"] > 0:
-                            neighbor.attrs["visited"] = 0
-                        neighbor.attrs["capital"] -= (
-                            neighbor.attrs["fixed expense"])
+                        if neighbor["visited"] > 0:
+                            neighbor["visited"] = 0
+                        neighbor["capital"] -= (
+                            neighbor["fixed expense"])
                         if (neighbor.primary_group()
                            == groups[BB_INDX]):
                             curr_store_util = calc_util(neighbor)
@@ -207,9 +207,9 @@ def town_action(town):
                             if DEBUG:
                                 print("   Checking if mom and pop at "
                                       + str(neighbor.get_pos()) + " has "
-                                      + curr_consumer.attrs["item needed"]
+                                      + curr_consumer["item needed"]
                                       + "...")
-                            if (curr_consumer.attrs["item needed"] in
+                            if (curr_consumer["item needed"] in
                                     neighbor.name):
                                 curr_store_util = (calc_util(neighbor)
                                                    + mp_pref)
@@ -226,12 +226,12 @@ def town_action(town):
                         if curr_store_util > max_util:
                             max_util = curr_store_util
                             store_to_go = neighbor
-                curr_consumer.attrs["last utils"] = max_util
+                curr_consumer["last utils"] = max_util
                 if store_to_go is not None:
                     if DEBUG:
                         print("   Max utility was", max_util)
                         print("   Spending $"
-                              + str(curr_consumer.attrs["spending power"])
+                              + str(curr_consumer["spending power"])
                               + " at " + str(store_to_go) + "...")
                     transaction(store_to_go, curr_consumer)
     if DEBUG or store_census:
@@ -294,6 +294,27 @@ def set_up(props=None):
                width=width,
                props=pa)
     return (town, groups)
+
+
+def bb_unrestorable(env):
+    global town
+    global groups
+    global mp_pref
+    global radius
+    global store_census
+    town = env
+    mp_pref = env.props["mp_pref"]
+    radius = env.props["radius"]
+    store_census = env.props["store_census"]
+
+    consumer_group = env.registry["Consumer"]
+    bb_group = env.registry["Big box"]
+    groups = []
+    groups.append(consumer_group)
+    groups.append(bb_group)
+    for stores in range(0, len(mp_stores)):
+        store_name = list(mp_stores.keys())[stores]
+        groups.append(env.registry[store_name])
 
 
 def main():

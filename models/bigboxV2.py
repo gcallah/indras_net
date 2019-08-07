@@ -12,6 +12,7 @@ from indra.display_methods import BLACK, BLUE, GRAY, GREEN, RED, TAN, YELLOW
 MODEL_NAME = "bigbox"
 NUM_OF_CONSUMERS = 50
 NUM_OF_MP = 8
+DEBUG = True
 
 CONSUMER_INDX = 0
 BB_INDX = 1
@@ -31,15 +32,16 @@ groups = None
 mp_pref = None
 radius = None
 store_census = None
+bb_capital = 2000
 
 # The data below creates store types with default values.
 # "Store type":
 # [expense, capital, color]
-mp_stores = {"Bookshop": [45, 105, TAN],
-             "Coffeeshop": [23, 100, BLACK],
+mp_stores = {"Bookshop": [65, 90, TAN],
+             "Coffeeshop": [63, 100, BLACK],
              "Grocery store": [67, 100, GREEN],
              "Hardware": [60, 110, RED],
-             "Restaurant": [40, 100, YELLOW]}
+             "Restaurant": [60, 100, YELLOW]}
 
 
 def sells_good(store, consumer):
@@ -57,7 +59,7 @@ def get_rand_good_type():
 
 
 def create_consumer(name, i, props=None):
-    spending_power = random.randint(70, 100)
+    spending_power = random.randint(50, 70)
     consumer_books = {"spending power": spending_power,
                       "last util": 0.0,
                       "item needed": get_rand_good_type()}
@@ -73,10 +75,10 @@ def create_mp(store_type, i):
 
 
 def create_bb(name):
-    global multiplier
+    global bb_capital
 
     bb_book = {"expense": 150,
-               "capital": multiplier * STANDARD}
+               "capital": bb_capital}
     return Agent(name=name, attrs=bb_book, action=bb_action)
 
 
@@ -114,6 +116,8 @@ def consumer_action(consumer):
             #  2) make store cough up util and add mp_pref in there
     if store_to_go is not None:
         transaction(store_to_go, consumer)
+        if DEBUG:
+            print("     someone shopped at ", store_to_go)
     consumer["item needed"] = get_rand_good_type()
     return False
 
@@ -137,6 +141,7 @@ def town_action(town):
     global groups
     global period
 
+    count = 0
     if town.get_periods() == period:
         new_bb = create_bb("Big Box")
         groups[BB_INDX] += new_bb
@@ -146,9 +151,15 @@ def town_action(town):
             curr_store = town.get_agent_at(x, y)
             if (curr_store is not None and curr_store.primary_group()
                != groups[CONSUMER_INDX]):
+                count += 1
+                print(count)
+                if DEBUG:
+                    print("       ", curr_store, "has a capital of ",
+                          curr_store["capital"])
                 if curr_store["capital"] <= 0:
                     curr_store.die()
-                    print("       ", curr_store, "is out of business.")
+                    if DEBUG:
+                        print("       ", curr_store, "is out of business.")
 
 
 def set_up(props=None):
@@ -158,7 +169,7 @@ def set_up(props=None):
     global radius
     global store_census
     global period
-    global multiplier
+    global bb_capital
 
     pa = get_props(MODEL_NAME, props)
 
@@ -170,6 +181,7 @@ def set_up(props=None):
     radius = pa.get("radius", RADIUS)
     store_census = pa.get("store_census", False)
     multiplier = pa.get("multiple", MULTIPLIER)
+    bb_capital = multiplier * STANDARD
     period = pa.get("period", PERIOD)
 
     consumer_group = Composite("Consumer", {"color": GRAY},
