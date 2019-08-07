@@ -151,6 +151,16 @@ def set_up(props=None):
     return (city, blue_agents, red_agents)
 
 
+def sg_unrestorable(env):
+    global blue_agents
+    global red_agents
+    global city
+    global fetched_moore_hood
+    city = env
+    blue_agents = env.registry[group_names[BLUE_TEAM]+" group"]
+    red_agents = env.registry[group_names[RED_TEAM]+" group"]
+
+
 def main():
     global blue_agents
     global red_agents
