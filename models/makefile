@@ -26,6 +26,9 @@ test_drunks:
 	$(PYLINT) $(PYLINTFLAGS) drunks.py
 	nosetests tests.test_drunks --nocapture
 
+test_bigbox:
+	nosetests tests.test_bigboxV2 --nocapture
+
 test_seg:
 	nosetests tests.test_segregation --nocapture
 

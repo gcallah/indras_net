@@ -185,7 +185,7 @@ class ActionMenu extends Component {
           {'  '}Run{'  '}
         </button>
         {' '}
-        <span>for</span>
+        <span>model for</span>
         {' '}
         <input
           style={{width: 30, height: 30}}

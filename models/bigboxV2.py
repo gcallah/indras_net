@@ -44,7 +44,7 @@ mp_stores = {"Bookshop": [65, 90, TAN],
              "Restaurant": [60, 100, YELLOW]}
 
 
-def sells_good(store, consumer):
+def sells_good(store, consumer, groups):
     if store.primary_group() == groups[BB_INDX]:
         return True
     else:
@@ -106,7 +106,7 @@ def consumer_action(consumer):
         neighbor = nearby_neighbors[neighbors]
         if (neighbor.isactive() and (neighbor.primary_group()
            != groups[CONSUMER_INDX])):
-            if sells_good(neighbor, consumer):
+            if sells_good(neighbor, consumer, groups):
                 curr_store_util = get_util(neighbor)
                 if curr_store_util > max_util:
                     max_util = curr_store_util
