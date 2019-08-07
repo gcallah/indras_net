@@ -139,12 +139,20 @@ class ActionMenu extends Component {
         );
     }
 
-  render () {
-    if (this.state.loadingData) {
+    renderDimmer = () => {
       return (
         <Dimmer active inverted>
           <Loader size="massive">Loading...</Loader>
         </Dimmer>
+      );
+    }
+
+  render () {
+    if (this.state.loadingData) {
+      return (
+        <div>
+        {this.renderDimmer()}
+        </div>
       );
     }
     return (
@@ -195,6 +203,7 @@ class ActionMenu extends Component {
                     this.state.menu[item]['id'] > 1 ?
                         MenuItem(this.state.menu[item]['id'],
                                  this.state.menu[item]['question'])
+                            
                     : null
                 }
 
