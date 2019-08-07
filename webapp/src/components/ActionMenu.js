@@ -1,11 +1,17 @@
 import React, {Component} from 'react';
 import {Loader, Dimmer } from 'semantic-ui-react';
+import {Link} from 'react-router-dom';
 import axios from 'axios';
 import PopulationGraph from './PopulationGraph.js';
 import ScatterPlot from './ScatterPlot.js';
 import Debugger from './Debugger.js';
 import PreFormTextBox from './PreFormTextBox.js';
-import MenuItem from './MenuItem.js';
+
+const POP = 2;
+const SCATTER = 3;
+const DATA = 4;
+const SOURCE = 5;
+
 
 class ActionMenu extends Component {
   api_server = 'https://indrasnet.pythonanywhere.com/models/menu/';
@@ -93,14 +99,21 @@ class ActionMenu extends Component {
     this.setState ({loading_population: false});
     this.setState ({loading_scatter: false});
     this.setState ({action_id: e});
-    if (e === 2) {
-      this.setState ({loading_population: true});
-    } else if (e === 3) {
-      this.setState ({loading_scatter: true});
-    } else if (e === 4) {
-      this.setState ({loading_debugger: true});
-    } else if (e === 5) {
-      this.viewSource ();
+    switch (e) {
+        case POP:
+            this.setState ({loading_population: true});
+            break;
+        case SCATTER:
+            this.setState ({loading_scatter: true});
+            break;
+        case DATA:
+            this.setState ({loading_debugger: true});
+            break;
+        case SOURCE:
+            this.viewSource ();
+            break;
+        default:
+            break;
     }
   };
 
@@ -128,6 +141,18 @@ class ActionMenu extends Component {
   }
 
 
+  MenuItem = (i, action, text) => {
+      return (
+          <a class="w-50 p-3 list-group-item list-group-item-action" key={i}>
+          <Link class="text-primary"
+              onClick={() => this.handleClick(action)}
+          >
+          { text }
+          </Link>
+          </a>
+      );
+  }
+
   renderModelStatus = () => {
      return (
         <div>
@@ -147,6 +172,37 @@ class ActionMenu extends Component {
       );
     }
 
+  renderRunButton = () => {
+      return (
+          <div>
+        <button 
+          disabled={this.state.disabled_button}
+          onClick={
+            !this.state.disabled_button ? this.sendNumPeriods : null
+          }
+          className="btn btn-success m-2"
+        >
+          {'  '}Run{'  '}
+        </button>
+        {' '}
+        <span>for</span>
+        {' '}
+        <input
+          style={{width: 30, height: 30}}
+          type="INT"
+          class="from-control m-2"
+          placeholder="10"
+          onChange={this.handleRunPeriod}
+        />
+        {' '}
+        periods.
+        <span style={{color: 'red', fontSize: 12}}>
+          {this.state.errorMessage}
+        </span>
+          </div>
+      );
+  }
+
   render () {
     if (this.state.loadingData) {
       return (
@@ -163,64 +219,46 @@ class ActionMenu extends Component {
         { this.renderModelStatus() }
           <ul class="list-group">
             <div class="row">
+              <div>
+                { this.renderRunButton() }
+                <br /><br />
+                <h3>Model Analysis:</h3>
+                <br />
+              </div>
+            </div>
+            <div class="row">
               <div class="col">
-          {
+              {
               Object.keys (this.state.menu).map ((item, i) => (
-              <a class="w-50 p-3 list-group-item list-group-item-action" key={i}>
+              <div>
+              {
+                  this.state.menu[item]['id'] > 1 ?
+                      this.MenuItem(i,
+                                    this.state.menu[item]['id'],
+                                    this.state.menu[item]['question'])
+                  : null
+              }
+              </div>
 
-              { this.state.menu[item]['id'] === 0 ? null : null }
-
-              {this.state.menu[item]['id'] === 1 ?
-                  <div>
-                    <button 
-                      disabled={this.state.disabled_button}
-                      onClick={
-                        !this.state.disabled_button ? this.sendNumPeriods : null
-                      }
-                      className="btn btn-success m-2"
-                    >
-                      {'  '}Run{'  '}
-                    </button>
-                    {' '}
-                    <span>for</span>
-                    {' '}
-                    <input
-                      style={{width: 30, height: 30}}
-                      type="INT"
-                      class="from-control m-2"
-                      placeholder="10"
-                      onChange={this.handleRunPeriod}
-                    />
-                    {' '}
-                    periods.
-                    <span style={{color: 'red', fontSize: 12}}>
-                      {this.state.errorMessage}
-                    </span>
-                  </div>
-                : null}
-
-                {
-                    this.state.menu[item]['id'] > 1 ?
-                        MenuItem(this.state.menu[item]['id'],
-                                 this.state.menu[item]['question'])
-                            
-                    : null
-                }
-
-            </a>
-          ))
+              )
+            )
           }
-            </div></div> </ul>
+        </div>
+        </div>
+        </ul>
         <br /><br />
         <br /><br />
+
         <PopulationGraph
           loadingData={this.state.loading_population}
           env_file={this.state.env_file}
         />
+
         <ScatterPlot
           loadingData={this.state.loading_scatter}
           env_file={this.state.env_file}
         />
+
         <Debugger
           loadingData={this.state.loading_debugger}
           env_file={this.state.env_file}
