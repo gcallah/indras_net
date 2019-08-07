@@ -13,6 +13,7 @@ from indra.space import Space
 from indra.user import TermUser, TERMINAL, API
 from indra.user import TEST, TestUser, USER_EXIT, APIUser
 import json
+# from indra.display_methods import CIRCLE
 
 DEBUG = False
 DEBUG2 = False

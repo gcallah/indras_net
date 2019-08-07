@@ -31,7 +31,6 @@ def add_grain(agent):
         by changing the group that it is in.
     """
     global sandpile_env
-
     curr_group_idx = group_indices[agent.primary_group().name]
     next_group_idx = (curr_group_idx + 1) % NUM_GROUPS
     if DEBUG:
@@ -71,6 +70,8 @@ def sandpile_action(sandpile_env):
               sandpile_env.attrs["center_agent"].pos,
               "which is in the group",
               sandpile_env.attrs["center_agent"].primary_group())
+    # if str(type(sandpile_env.attrs["center_agent"])) == "<class 'dict'>":
+    #     add_grain(sandpile_env.registry[sandpile_env.attrs["center_agent"]["name"]])
     add_grain(sandpile_env.attrs["center_agent"])
     return True
 
@@ -109,6 +110,20 @@ def set_up(props=None):
     sandpile_env.attrs["center_agent"] = sandpile_env.get_agent_at(height // 2,
                                                                    width // 2)
     return (sandpile_env, groups, group_indices)
+
+
+def sp_unrestorable(env):
+    global groups
+    global group_indices
+    global sandpile_env
+    sandpile_env = env
+    groups = []
+    group_indices = {}
+    for i in range(NUM_GROUPS):
+        groups.append(env.registry["Group" + str(i)])
+        group_indices[groups[i].name] = i
+    env.attrs["center_agent"] = env.get_agent_at(env.height // 2,
+                                                 env.width // 2)
 
 
 def main():

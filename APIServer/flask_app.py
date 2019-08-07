@@ -8,6 +8,7 @@ from indra.user import APIUser
 from models.run_dict import setup_dict
 from indra.agent import AgentEncoder
 from indra.env import Env
+from models.sandpile import sp_unrestorable
 
 
 ERROR = "Error:"
@@ -95,7 +96,8 @@ class Props(Resource):
         props_dict = api.payload
         models_db = load_models()
         con_env = 0
-        env = setup_dict[models_db[model_id]["run"]](props=props_dict)[con_env]
+        ret = setup_dict[models_db[model_id]["run"]](props=props_dict)
+        env = ret[con_env]
         return json_converter(env)
 
 
@@ -115,8 +117,9 @@ class Run(Resource):
     def put(self, run_time):
         env_json = api.payload
         v = Env(name='API env', serial_obj=env_json)
+        if v.name == "Sanpile":
+            sp_unrestorable(v)
         v.runN(periods=run_time)
-        # print(v.members["Reds"].members["Reds0"].pos)
         return json_converter(v)
 
 
