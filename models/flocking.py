@@ -76,6 +76,13 @@ def set_up(props=None):
     return (the_sky, flock)
 
 
+def fl_unrestorable(env):
+    global flock
+    global the_sky
+    the_sky = env
+    flock = env.registry["Birds"]
+
+
 def main():
     global flock
     global the_sky
