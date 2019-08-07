@@ -47,6 +47,7 @@ mp_stores = {"Bookshop": [65, 90, TAN],
 def sells_good(store, consumer, groups):
     """
     Check if the store sells what the consumer wants.
+    If BB return True else return whether seller sells that type.
     """
     if store.primary_group() == groups[BB_INDX]:
         return True
@@ -54,12 +55,11 @@ def sells_good(store, consumer, groups):
         if consumer["item needed"] in store.name:
             return True
         return False
-    # if BB return True else return seller sells that type
 
 
 def get_rand_good_type():
     """
-    randomly select consumer's item needed
+    Randomly select consumer's item needed
     after each run.
     """
     return random.choice(list(mp_stores.keys()))
@@ -100,7 +100,7 @@ def create_bb(name):
 
 def bb_action(bb):
     """
-    deduct expense from the capital of big box and
+    Deduct expense from the capital of big box and
     check if big box goes out of business.
     """
     bb["capital"] -= bb["expense"]
@@ -115,7 +115,7 @@ def bb_action(bb):
 
 def get_util(store):
     """
-    get utility depending on the store type.
+    Get utility depending on the store type.
     """
     global mp_pref
 
