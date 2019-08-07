@@ -16,23 +16,16 @@ import os
 from indra.user import TERMINAL, API
 plt_present = True
 plt_present_error_message = ""
-<<<<<<< Updated upstream
-# sns.set(style="darkgrid")
-=======
 sns.set(style="darkgrid")
->>>>>>> Stashed changes
 
 user_type = os.getenv("user_type", TERMINAL)
 if user_type != API:
     try:
         import matplotlib.pyplot as plt
         import matplotlib.animation as animation
-<<<<<<< Updated upstream
-=======
         import numpy as np
         import pandas as pd
         import seaborn as sns
->>>>>>> Stashed changes
         plt.ion()
     except ImportError as e:
         plt_present = False
