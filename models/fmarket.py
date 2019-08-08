@@ -49,6 +49,10 @@ def trend_direction(agent, cur_price, price_hist):
 
 
 def buy(agent):
+    global trend_followers
+    global value_investors
+    global market_maker
+
     price = market_maker["asset_price"] * DEF_NUM_ASSET
     if agent["capital"] >= price:
         agent["capital"] -= price
@@ -57,6 +61,8 @@ def buy(agent):
 
 
 def sell(agent):
+    global market_maker
+
     price = market_maker["asset_price"] * DEF_NUM_ASSET
     if agent["num_stock"] >= DEF_NUM_ASSET:
         market_maker["sell"] += 1
@@ -65,6 +71,7 @@ def sell(agent):
 
 
 def market_report(env):
+    global market_maker
     return "Asset price on the market: " \
         + str(round(market_maker["asset_price"], 4)) + "\n"
 
@@ -90,6 +97,8 @@ def calc_price_change(ratio, min_price_move=DEF_MIN_PRICE_MOVE,
 
 
 def plot_asset_price(env):
+    global market_maker
+
     data = {}
     data_hist = market_maker["price_hist"]
     data["asset_price"] = {}
@@ -103,6 +112,7 @@ def create_market_maker(name):
     """
     Create a market maker.
     """
+    global market_maker
 
     market_maker = Agent(name, action=market_maker_action)
     market_maker["buy"] = 0
@@ -117,6 +127,8 @@ def create_trend_follower(name, i, props=None):
     """
     Create a trend follower.
     """
+    global trend_followers
+
     average_period = props.get("average_period", DEF_PERIODS)
     dev = props.get("deviation_follower", DEF_SIGMA)
     trend_follower = Agent(name + str(i), action=trend_follower_action)
@@ -134,6 +146,8 @@ def create_value_investor(name, i, props=None):
     """
     Create a value investor.
     """
+    global value_investors
+
     value_investor = Agent(name + str(i), action=value_investor_action)
     mean_price = props.get("discount", DEF_DISCOUNT)
     dev = props.get("deviation_investor", DEF_SIGMA)
@@ -149,6 +163,7 @@ def create_value_investor(name, i, props=None):
 
 def market_maker_action(agent):
     # Determine the current price asset
+    global market_maker
 
     market_maker["prev_asset_price"] = market_maker["asset_price"]
     ratio = 1
@@ -170,6 +185,8 @@ def market_maker_action(agent):
 def trend_follower_action(agent):
     # Determine if trend followers should buy
     # or sell the stock
+    global market_maker
+
     if trend_direction(agent, market_maker["asset_price"],
                        market_maker["price_hist"]) == 1:
         buy(agent)
@@ -181,6 +198,8 @@ def trend_follower_action(agent):
 
 def value_investor_action(agent):
     # Determine if value investors should buy or sell the stock
+    global market_maker
+
     if market_maker["asset_price"] >= agent["high_price"]:
         sell(agent)
     elif market_maker["asset_price"] <= agent["low_price"]:
@@ -193,8 +212,10 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-
+    global trend_followers
+    global value_investors
     global market_maker
+    global market
 
     pa = get_props(MODEL_NAME, props)
 
@@ -224,6 +245,7 @@ def fm_unrestorable(env):
     global market_maker
     global market
     market = env
+    market.exclude_menu_item("scatter_plot")
     trend_followers = env.registry["trend_followers"]
     value_investors = env.registry["value_investors"]
     market_maker = env.registry["market_maker"]

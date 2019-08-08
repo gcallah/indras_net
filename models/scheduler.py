@@ -466,7 +466,7 @@ def main():
     if DEBUG2:
         print(env.__repr__())
 
-    # env()
+    env()
     return 0
 
 

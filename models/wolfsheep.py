@@ -102,6 +102,7 @@ def sheep_action(agent):
 def wolf_action(agent):
     global wolves
     global wolves_created
+    global sheep
 
     prey = get_prey(agent, sheep)
     if prey is not None:
@@ -172,6 +173,15 @@ def set_up(props=None):
                  width=pa.get('meadow_width', MEADOW_WIDTH),
                  props=pa)
     return (meadow, wolves, sheep)
+
+
+def ws_unrestorable(env):
+    global wolves
+    global sheep
+    global meadow
+    meadow = env
+    wolves = env.registry[COMP_WOLF_NAME]
+    sheep = env.registry[COMP_SHEEP_NAME]
 
 
 def main():

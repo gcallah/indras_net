@@ -31,6 +31,8 @@ def add_grain(agent):
         by changing the group that it is in.
     """
     global sandpile_env
+    global groups
+    global group_indices
     curr_group_idx = group_indices[agent.primary_group().name]
     next_group_idx = (curr_group_idx + 1) % NUM_GROUPS
     if DEBUG:
@@ -51,6 +53,8 @@ def topple(agent):
         and if those agents need to topple, recursively calls topple.
     """
     global sandpile_env
+    global groups
+    global group_indices
 
     if DEBUG:
         print("Sandpile in", agent.pos, "is toppling")
@@ -65,6 +69,9 @@ def sandpile_action(sandpile_env):
     The action that will be taken avery period.
     Adds a grain to the center agent.
     """
+    global groups
+    global group_indices
+
     if DEBUG:
         print("Adding a grain to sandpile in position",
               sandpile_env.attrs["center_agent"].pos,
@@ -99,7 +106,7 @@ def set_up(props=None):
     for y in range(height):
         for x in range(width):
             groups[0] += create_agent(x, y)
-    sandpile_env = Env("Sanpile",
+    sandpile_env = Env("Sandpile",
                        action=sandpile_action,
                        height=height,
                        width=width,

@@ -168,11 +168,13 @@ class ActionMenu extends Component {
                 <PopulationGraph
                 loadingData={this.state.loading_population}
                 env_file={this.state.env_file}
+                id={this.state.model_id}
                 />
 
                 <ScatterPlot
                 loadingData={this.state.loading_scatter}
                 env_file={this.state.env_file}
+                id={this.state.model_id}
                 />
 
                 <Debugger
