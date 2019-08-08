@@ -22,6 +22,7 @@ TOLERANCE = "tolerance"
 DEVIATION = "deviation"
 COLOR = "color"
 
+DEF_HOOD_SIZE = 1
 DEF_TOLERANCE = .5
 DEF_SIGMA = .2
 
@@ -37,6 +38,7 @@ group_names = ["Blue Agent", "Red Agent"]
 reds = None
 blues = None
 city = None
+hood_size = None
 
 opp_group = None
 
@@ -82,7 +84,7 @@ def seg_agent_action(agent):
     agent_group = agent.primary_group()
     if agent["hood_changed"]:
         ratio_same = 0
-        neighbors = city.get_moore_hood(agent)
+        neighbors = city.get_moore_hood(agent, radius=agent['hood_size'])
         fetched_moore_hood += 1
         num_same = 0
         for neighbor in neighbors:
@@ -107,6 +109,7 @@ def create_agent(name, i, props=None):
     """
     Creates agent of specified color type
     """
+
     if "Blue" in name:
         color = 0
         mean_tol = props.get('mean_tol', DEF_TOLERANCE)
@@ -116,11 +119,16 @@ def create_agent(name, i, props=None):
     dev = props.get('deviation', DEF_SIGMA)
     this_tolerance = get_tolerance(mean_tol,
                                    dev)
+
+    hood_size = props.get('hood_size', DEF_HOOD_SIZE)
+
     return Agent(name + str(i),
                  action=seg_agent_action,
                  attrs={TOLERANCE: this_tolerance,
                         COLOR: color, "hood_changed": True,
-                        "just_moved": False})
+                        "just_moved": False,
+                        "hood_size": hood_size
+                        },)
 
 
 def set_up(props=None):
