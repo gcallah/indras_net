@@ -162,6 +162,27 @@ class ActionMenu extends Component {
         );
     }
 
+    renderMenuItem = () => {
+        return (
+            <div>
+                <PopulationGraph
+                loadingData={this.state.loading_population}
+                env_file={this.state.env_file}
+                />
+
+                <ScatterPlot
+                loadingData={this.state.loading_scatter}
+                env_file={this.state.env_file}
+                />
+
+                <Debugger
+                loadingData={this.state.loading_debugger}
+                env_file={this.state.env_file}
+                />
+            </div>
+        )
+    }
+
     renderRunButton = () => {
         return (
             <div>
@@ -193,6 +214,29 @@ class ActionMenu extends Component {
         );
     }
 
+    renderMapItem = () => {
+        return (
+            <div class="row">
+                <div class="col">
+                {
+                    Object.keys (this.state.menu).map ((item, i) => (
+                        <div>
+                            {
+                                this.state.menu[item]['id'] > 1 ?
+                                this.MenuItem(i,
+                                this.state.menu[item]['id'],
+                                this.state.menu[item]['question'])
+                                : null
+                            }
+                        </div>
+                        )
+                    )
+                }
+                </div>
+            </div>
+        )
+    }
+    
     render () {
         if (this.state.loadingData) {
             return (
@@ -216,43 +260,11 @@ class ActionMenu extends Component {
                             <br />
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col">
-                        {
-                            Object.keys (this.state.menu).map ((item, i) => (
-                                <div>
-                                    {
-                                        this.state.menu[item]['id'] > 1 ?
-                                        this.MenuItem(i,
-                                        this.state.menu[item]['id'],
-                                        this.state.menu[item]['question'])
-                                        : null
-                                    }
-                                </div>
-                                )
-                            )
-                        }
-                        </div>
-                    </div>
+                    {this.renderMapItem()}
                 </ul>
                 <br /><br />
                 <br /><br />
-
-                <PopulationGraph
-                loadingData={this.state.loading_population}
-                env_file={this.state.env_file}
-                />
-
-                <ScatterPlot
-                loadingData={this.state.loading_scatter}
-                env_file={this.state.env_file}
-                />
-
-                <Debugger
-                loadingData={this.state.loading_debugger}
-                env_file={this.state.env_file}
-                />
-
+                {this.renderMenuItem()}
             </div>
         );
     }

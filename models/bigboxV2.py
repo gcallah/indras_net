@@ -45,20 +45,30 @@ mp_stores = {"Bookshop": [65, 90, TAN],
 
 
 def sells_good(store, consumer, groups):
+    """
+    Check if the store sells what the consumer wants.
+    If BB return True else return whether seller sells that type.
+    """
     if store.primary_group() == groups[BB_INDX]:
         return True
     else:
         if consumer["item needed"] in store.name:
             return True
         return False
-    # if BB return True else return seller sells that type
 
 
 def get_rand_good_type():
+    """
+    Randomly select consumer's item needed
+    after each run.
+    """
     return random.choice(list(mp_stores.keys()))
 
 
 def create_consumer(name, i, props=None):
+    """
+    Create consumers
+    """
     spending_power = random.randint(50, 70)
     consumer_books = {"spending power": spending_power,
                       "last util": 0.0,
@@ -67,6 +77,9 @@ def create_consumer(name, i, props=None):
 
 
 def create_mp(store_type, i):
+    """
+    Create a mom and pop store.
+    """
     expense = mp_stores[str(store_type)]
     name = str(store_type) + " " + str(i)
     store_books = {"expense": expense[EXPENSE_INDX],
@@ -75,6 +88,9 @@ def create_mp(store_type, i):
 
 
 def create_bb(name):
+    """
+    Create a big box store.
+    """
     global bb_capital
 
     bb_book = {"expense": 150,
@@ -83,6 +99,10 @@ def create_bb(name):
 
 
 def bb_action(bb):
+    """
+    Deduct expense from the capital of big box and
+    check if big box goes out of business.
+    """
     bb["capital"] -= bb["expense"]
     if DEBUG:
         print("       ", bb, "has a capital of ", bb["capital"])
@@ -94,6 +114,9 @@ def bb_action(bb):
 
 
 def get_util(store):
+    """
+    Get utility depending on the store type.
+    """
     global mp_pref
 
     if store.primary_group() == groups[BB_INDX]:
@@ -103,6 +126,10 @@ def get_util(store):
 
 
 def consumer_action(consumer):
+    """
+    Check shops near consumer and
+    consumer decide where to shop at.
+    """
     global radius
     nearby_neighbors = town.get_moore_hood(consumer,
                                            radius=radius)
@@ -126,15 +153,25 @@ def consumer_action(consumer):
 
 
 def transaction(store, consumer):
+    """
+    Add money to the store's capital from consumer.
+    """
     store["capital"] += consumer["spending power"]
     # print("   ", consumer, "spend money at ", store)
 
 
 def calc_util(stores):
+    """
+    calculate utility for stores.
+    """
     return random.random()
 
 
 def mp_action(mp):
+    """
+    deduct expenses from mom and pop stores and
+    check if mom and pop store goes out or business.
+    """
 
     mp["capital"] -= mp["expense"]
     if DEBUG:
@@ -147,6 +184,10 @@ def mp_action(mp):
 
 
 def town_action(town):
+    """
+    check the period and decide when to add
+    the big box store
+    """
     global groups
     global period
 
@@ -157,6 +198,9 @@ def town_action(town):
 
 
 def set_up(props=None):
+    """
+    Create an Env for Big box.
+    """
     global town
     global groups
     global mp_pref

@@ -94,7 +94,7 @@ def set_up(props=None):
     groups = []
     group_indices = {}
     for i in range(NUM_GROUPS):
-        groups.append(Composite(("Group" + str(i)), {"marker": CIRCLE}))
+        groups.append(Composite("Group" + str(i), {"marker": CIRCLE}))
         group_indices[groups[i].name] = i
     for y in range(height):
         for x in range(width):
@@ -104,7 +104,9 @@ def set_up(props=None):
                        height=height,
                        width=width,
                        members=groups,
-                       attrs={"change_grid_spacing": 0, "hide_axes": True},
+                       attrs={"size": 65,
+                              "hide_axes": True,
+                              "hide_legend": True},
                        random_placing=False,
                        props=pa)
     sandpile_env.attrs["center_agent"] = sandpile_env.get_agent_at(height // 2,
