@@ -1,6 +1,7 @@
 export user_type="test"
 export test_dir="tests"
 export ignores="FOO"
+echo "$INDRA_HOME"
 if [ "$USER" == "arnavshah" ]
 then
     export ignores="test_user\.py"

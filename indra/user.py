@@ -17,10 +17,10 @@ DEF_STEPS = 1
 DEFAULT_CHOICE = '1'
 USER_EXIT = -999
 
-menu_dir = os.getenv("INDRA_HOME", ".") + "/indra"
+menu_dir = os.getenv("INDRA_HOME", "/home/indrasnet/indras_net") + "/indra"
 menu_file = "menu.json"
 menu_src = menu_dir + "/" + menu_file
-PA_menu_src = "/home/indrasnet/indras_net" + "/indra/" + menu_file
+print("menu source = ", menu_src)
 
 
 def not_impl(user):
@@ -90,9 +90,7 @@ def get_menu_json():
             menu_db = json.load(f)
             menu_json = menu_db["menu_database"]
     except FileNotFoundError:
-        with open(PA_menu_src, 'r') as f:
-            menu_db = json.load(f)
-            menu_json = menu_db["menu_database"]
+        print("Could not open menu file.")
     return menu_json
 
 

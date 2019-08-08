@@ -15,7 +15,6 @@ MSG = "Hello world"
 
 class UserTestCase(TestCase):
     def setUp(self):
-        # we will need to change env above from None ASAP!
         self.env = Env("Test env")
         self.user = TermUser("User", self.env)
         self.test_user = TestUser("TestUser", self.env)

@@ -14,21 +14,21 @@
     "lowval": 2
   },
   "num_blue": {
-    "val": 250,
+    "val": 360,
     "question": "How many blue agents do you want?",
     "atype": "INT",
     "hival": 1000,
     "lowval": 1
   },
   "num_red": {
-    "val": 250,
+    "val": 360,
     "question": "How many red agents do you want?",
     "atype": "INT",
     "hival": 1000,
     "lowval": 1
   },
   "mean_tol": {
-      "val": 0.5,
+      "val": 0.4,
       "question": "What tolerance should agents have?",
       "atype": "DBL",
       "hival": 0.9,

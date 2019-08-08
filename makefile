@@ -5,7 +5,7 @@ BOX_DIR = bigbox
 BOX_DATA = $(BOX_DIR)/data
 BOXPLOTS = $(shell ls $(BOX_DATA)/plot*.pdf)
 DOCKER_DIR = docker
-REQ_DIR = docker
+REQ_DIR = $(DOCKER_DIR)
 REPO = indras_net
 MODELS_DIR = models
 WEB_DIR = webapp
@@ -26,6 +26,14 @@ INCS = $(TEMPLATE_DIR)/head.txt $(TEMPLATE_DIR)/logo.txt $(TEMPLATE_DIR)/menu.tx
 HTMLFILES = $(shell ls $(PTML_DIR)/*.ptml | sed -e 's/.ptml/.html/' | sed -e 's/html_src\///')
 
 FORCE:
+
+create_dev_env:
+	pip3 install -r $(REQ_DIR)/requirements-dev.txt
+	git submodule add https://github.com/gcallah/utils.git
+	git submodule init https://github.com/gcallah/utils.git
+	echo "Set PYTHONPATH and INDRA_HOME in your login script as follows:"
+	echo "export INDRA_HOME=(You Indra location)"
+	echo "export PYTHONPATH=$(INDRA_HOME):(old python path)"
 
 setup_react:
 	cd $(WEB_DIR); npm install
