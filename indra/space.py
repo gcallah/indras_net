@@ -392,7 +392,7 @@ class Space(Composite):
             agent.neighbors = vonneumann_hood
         return vonneumann_hood
 
-    # @use_saved_hood
+    @use_saved_hood
     def get_moore_hood(self, agent, pred=None, save_neighbors=False,
                        include_self=False, radius=1):
         """

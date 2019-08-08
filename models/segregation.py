@@ -85,6 +85,7 @@ def seg_agent_action(agent):
     if agent["hood_changed"]:
         ratio_same = 0
         neighbors = city.get_moore_hood(agent, radius=agent['hood_size'])
+        print("hood size = ", agent['hood_size'])
         fetched_moore_hood += 1
         num_same = 0
         for neighbor in neighbors:
