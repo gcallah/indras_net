@@ -102,6 +102,7 @@ def sheep_action(agent):
 def wolf_action(agent):
     global wolves
     global wolves_created
+    global sheep
 
     prey = get_prey(agent, sheep)
     if prey is not None:
