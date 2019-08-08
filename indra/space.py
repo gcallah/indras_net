@@ -6,7 +6,7 @@ from functools import wraps
 from random import randint
 import random
 from math import sqrt
-from indra.agent import is_composite, AgentEncoder
+from indra.agent import is_composite, AgentEncoder, X, Y
 from indra.composite import Composite
 import json
 import math
@@ -400,8 +400,8 @@ class Space(Composite):
         """
         moore_hood = Composite("Moore neighbors")
         if isinstance(agent, tuple):
-            x = agent[0]
-            y = agent[1]
+            x = agent[X]
+            y = agent[Y]
         else:
             x = agent.get_x()
             y = agent.get_y()
