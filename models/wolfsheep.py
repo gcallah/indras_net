@@ -174,6 +174,15 @@ def set_up(props=None):
     return (meadow, wolves, sheep)
 
 
+def ws_unrestorable(env):
+    global wolves
+    global sheep
+    global meadow
+    meadow = env
+    wolves = env.registry[COMP_WOLF_NAME]
+    sheep = env.registry[COMP_SHEEP_NAME]
+
+
 def main():
     global wolves
     global sheep
