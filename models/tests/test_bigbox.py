@@ -6,7 +6,7 @@ from indra.env import Env
 from models.bigbox import create_consumer, create_bb, create_mp, set_up
 from models.bigbox import calc_util, transaction, town_action
 from models.bigbox import bb_store, consumer_action, mp_action, bb_action
-from models.bigbox import MP_PREF, RADIUS, CONSUMER_INDX, get_store_census
+from models.bigbox import MP_PREF, HOOD_SIZE, CONSUMER_INDX, get_store_census
 from models.bigbox import BB_INDX, MP_INDX, mp_stores
 import models.bigbox as bb
 
