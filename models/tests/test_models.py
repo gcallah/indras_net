@@ -22,4 +22,4 @@ class TestAllModels(TestCase):
     def test_models(self):
         for name, env in self.models.items():
             print("Testing " + name + "...", file=sys.stderr)
-            self.assertTrue(env.runN() > 0)
+            self.assertTrue(env.runN(2) > 0)

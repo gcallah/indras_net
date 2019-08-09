@@ -1,6 +1,6 @@
 export user_type="test"
 export test_dir="tests"
-export ignores="scheduler, gameoflife"
+export ignores="scheduler"
 
 if [ -z $1 ]
 then

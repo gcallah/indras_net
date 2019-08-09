@@ -6,7 +6,7 @@ from unittest import TestCase, main
 from indra.agent import Agent, possible_trans
 from indra.composite import Composite
 from indra.env import Env
-from models.forestfire import get_new_state, NUM_STATES, plant_tree
+from models.forestfire import NUM_STATES, plant_tree
 from models.forestfire import is_healthy, OF, set_up, STATE_TRANS, TREE_PREFIX
 import models.forestfire as ff
 
@@ -29,14 +29,6 @@ class ForestfireTestCase(TestCase):
         self.test_tree = None
         ff.forest = None
         ff.group_map = None
-
-    def test_get_new_state(self):
-        """
-        Make sure we change tree states in an orderly fashion.
-        """
-        for i in range(NUM_STATES):
-            new_state = get_new_state(i)
-            self.assertEqual(new_state, (i + 1) % NUM_STATES)
 
     def test_is_healthy(self):
         """
