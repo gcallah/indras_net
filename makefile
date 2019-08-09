@@ -29,7 +29,7 @@ FORCE:
 
 create_dev_env:
 	pip3 install -r $(REQ_DIR)/requirements-dev.txt
-	git submodule init https://github.com/gcallah/utils.git
+	git submodule update https://github.com/gcallah/utils.git
 	echo "Set PYTHONPATH and INDRA_HOME in your login script as follows:"
 	echo "export INDRA_HOME=(You Indra location)"
 	echo "export PYTHONPATH=$(INDRA_HOME):(old python path)"
@@ -48,6 +48,14 @@ $(WEB_PUBLIC)/index.html: $(WEBFILES)
 	mv build/index.html build/webapp.html && \
 	cp -r build/* .. && \
 	cd ..
+
+deploy_webapp: webapp
+	git add static/js/*js
+	git add static/js/*map
+	git add $(WEB_DIR)/build/static/js/*js
+	git add $(WEB_DIR)/build/static/js/*map
+	git add $(WEB_DIR)/build/webapp.html
+	cd $(WEB_DIR); npm run deploy
 
 # build tags file for vim:
 tags: FORCE
