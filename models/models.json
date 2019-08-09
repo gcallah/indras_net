@@ -57,14 +57,6 @@
       "source": "https://github.com/gcallah/indras_net/blob/master/models/wolfsheep.py"
     },
     {
-      "model ID": 7,
-      "name": "Conway's Game of Life",
-      "run": "gameoflife",
-      "props": "models/props/gameoflife.props.json",
-      "doc": "Simulate John Conway's Game of Life model.",
-      "source": "https://github.com/gcallah/indras_net/blob/master/models/gameoflife.py"
-    },
-    {
       "model ID": 8,
       "name": "Wolfram's Automata",
       "run": "wolfram",

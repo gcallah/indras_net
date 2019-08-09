@@ -6,7 +6,7 @@ from functools import wraps
 from random import randint
 import random
 from math import sqrt
-from indra.agent import is_composite, AgentEncoder, X, Y
+from indra.agent import is_composite, AgentEncoder
 from indra.composite import Composite
 import json
 import math
@@ -301,7 +301,9 @@ class Space(Composite):
         @wraps(hood_func)
         def wrapper(*args, **kwargs):
             agent = args[1]
-            if not isinstance(agent, tuple) and agent.neighbors:
+            if ("save_neighbors" in agent and agent["save_neighbors"]
+                    and agent.neighbors):
+                print("Using saved hood")
                 return agent.neighbors
             return hood_func(*args, **kwargs)
         return wrapper
@@ -320,7 +322,7 @@ class Space(Composite):
                                        include_self=True)
             return row_hood
 
-    # @use_saved_hood
+    @use_saved_hood
     def get_x_hood(self, agent, width=1, pred=None, include_self=False,
                    save_neighbors=False):
         """
@@ -331,12 +333,8 @@ class Space(Composite):
         """
         if agent is not None:
             x_hood = Composite("x neighbors")
-            if isinstance(agent, tuple):
-                agent_x = agent[0]
-                agent_y = agent[1]
-            else:
-                agent_x = agent.get_x()
-                agent_y = agent.get_y()
+            agent_x = agent.get_x()
+            agent_y = agent.get_y()
             neighbor_x_coords = []
             for i in range(-width, 0):
                 neighbor_x_coords.append(i)
@@ -349,7 +347,7 @@ class Space(Composite):
                 if not out_of_bounds(neighbor_x, agent_y, 0, 0,
                                      self.width, self.height):
                     x_hood += self.get_agent_at(neighbor_x, agent_y)
-            if save_neighbors and not isinstance(agent, tuple):
+            if save_neighbors:
                 agent.neighbors = x_hood
             return x_hood
 
@@ -398,21 +396,15 @@ class Space(Composite):
         """
         Takes in an agent and returns a Composite of its Moore neighbors.
         """
+        print("Getting moore hood")
         moore_hood = Composite("Moore neighbors")
-        if isinstance(agent, tuple):
-            x = agent[X]
-            y = agent[Y]
-        else:
-            x = agent.get_x()
-            y = agent.get_y()
+        x = agent.get_x()
+        y = agent.get_y()
         for upper_range in range(radius):
             if (y < self.height - 1) and (y + upper_range < self.height - 1):
-                if isinstance(agent, tuple):
+                upper_agent = self.get_agent_at(x, y + upper_range + 1)
+                if upper_agent is None:
                     upper_agent = (x, y + upper_range + 1)
-                else:
-                    upper_agent = self.get_agent_at(x, y + upper_range + 1)
-                    if upper_agent is None:
-                        upper_agent = (x, y + upper_range + 1)
                 moore_hood += self.get_x_hood(upper_agent,
                                               width=radius,
                                               include_self=True)
@@ -421,16 +413,13 @@ class Space(Composite):
                                       include_self=include_self)
         for lower_range in range(radius):
             if (y > 0) and (y - lower_range > 0):
-                if isinstance(agent, tuple):
+                lower_agent = self.get_agent_at(x, y - lower_range - 1)
+                if lower_agent is None:
                     lower_agent = (x, y - lower_range - 1)
-                else:
-                    lower_agent = self.get_agent_at(x, y - lower_range - 1)
-                    if lower_agent is None:
-                        lower_agent = (x, y - lower_range - 1)
                 moore_hood += self.get_x_hood(lower_agent,
                                               width=radius,
                                               include_self=True)
-        if save_neighbors and not isinstance(agent, tuple):
+        if save_neighbors:
             agent.neighbors = moore_hood
         return moore_hood
 
