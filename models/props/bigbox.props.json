@@ -34,7 +34,7 @@
     "hival": 0.4,
     "lowval": 0.0
   },
-  "radius": {
+  "hood_size": {
     "val": 2,
     "question": "How close should the consumers be to the stores to shop there?",
     "atype": "INT",

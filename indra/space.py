@@ -406,15 +406,14 @@ class Space(Composite):
 
     @use_saved_hood
     def get_moore_hood(self, agent, pred=None, save_neighbors=False,
-                       include_self=False, radius=1):
+                       include_self=False, hood_size=1):
         """
         Takes in an agent and returns a Composite of its Moore neighbors.
-        `radius` is a bad name in a square: must be changed!
         """
         moore_hood = Composite("Moore neighbors")
         x1, x2, y1, y2 = self.get_square_view(agent.get_x(),
                                               agent.get_y(),
-                                              radius)
+                                              hood_size)
 
         for x in range(x1, x2 + 1):
             for y in range(y1, y2 + 1):
