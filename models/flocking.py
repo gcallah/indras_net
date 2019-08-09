@@ -13,7 +13,7 @@ MODEL_NAME = "flocking"
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
-DEF_NUM_BIRDS = 10
+DEF_NUM_BIRDS = 2
 DEF_DESIRED_DISTANCE = 2
 BIRD_MAX_MOVE = 2
 
@@ -26,10 +26,15 @@ the_sky = None
 
 def calc_angle(agent1, agent2):
     pos1 = agent1.get_pos()
+    print(pos1)
     pos2 = agent2.get_pos()
+    print(pos2)
     x = pos2[X] - pos1[X]
+    print(x)
     y = pos2[Y] - pos1[Y]
+    print(y)
     angle = math.degrees(math.atan2(y, x))
+    print(angle)
     angle = angle if angle >= 0 else (angle * -1) + HALF_CIRCLE
     return angle
 
