@@ -14,7 +14,7 @@ MODEL_NAME = "bigbox"
 DEBUG = False
 
 NUM_OF_CONSUMERS = 180
-NUM_OF_BB = 4
+NUM_OF_BB = 1
 NUM_OF_MP = 8
 
 MP_PREF = 0.1
@@ -265,7 +265,7 @@ def set_up(props=None):
     width = pa.get("grid_width", DEF_WIDTH)
     height = pa.get("grid_height", DEF_HEIGHT)
     num_consumers = pa.get("consumer_num", NUM_OF_CONSUMERS)
-    num_bb = pa.get("bb_num", NUM_OF_BB)
+    num_bb = NUM_OF_BB
     num_mp = pa.get("mp_num", NUM_OF_MP)
     mp_pref = pa.get("mp_pref", MP_PREF)
     radius = pa.get("radius", RADIUS)
