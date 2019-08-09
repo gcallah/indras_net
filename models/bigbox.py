@@ -14,11 +14,11 @@ MODEL_NAME = "bigbox"
 DEBUG = False
 
 NUM_OF_CONSUMERS = 180
-NUM_OF_BB = 4
+NUM_OF_BB = 1
 NUM_OF_MP = 8
 
 MP_PREF = 0.1
-RADIUS = 2
+HOOD_SIZE = 2
 
 CONSUMER_INDX = 0
 BB_INDX = 1
@@ -27,7 +27,7 @@ MP_INDX = 2
 town = None
 groups = None
 mp_pref = None
-radius = None
+hood_size = None
 store_census = None
 
 # The data below creates store types with default values.
@@ -168,7 +168,7 @@ def town_action(town):
     """
     global groups
     global mp_pref
-    global radius
+    global hood_size
     global store_census
 
     for y in range(town.height):
@@ -181,7 +181,7 @@ def town_action(town):
                     print(" ".join(["Checking around consumer",
                                     str(curr_consumer.get_pos()), "..."]))
                 nearby_neighbors = town.get_moore_hood(curr_consumer,
-                                                       radius=radius)
+                                                       hood_size=hood_size)
                 store_to_go = None
                 max_util = 0.0
                 for neighbors in nearby_neighbors:
@@ -257,7 +257,7 @@ def set_up(props=None):
     global town
     global groups
     global mp_pref
-    global radius
+    global hood_size
     global store_census
 
     pa = get_props(MODEL_NAME, props)
@@ -265,10 +265,10 @@ def set_up(props=None):
     width = pa.get("grid_width", DEF_WIDTH)
     height = pa.get("grid_height", DEF_HEIGHT)
     num_consumers = pa.get("consumer_num", NUM_OF_CONSUMERS)
-    num_bb = pa.get("bb_num", NUM_OF_BB)
+    num_bb = NUM_OF_BB
     num_mp = pa.get("mp_num", NUM_OF_MP)
     mp_pref = pa.get("mp_pref", MP_PREF)
-    radius = pa.get("radius", RADIUS)
+    hood_size = pa.get("hood_size", HOOD_SIZE)
     store_census = pa.get("store_census", False)
 
     consumer_group = Composite("Consumer", {"color": GRAY})
@@ -300,11 +300,11 @@ def bb_unrestorable(env):
     global town
     global groups
     global mp_pref
-    global radius
+    global hood_size
     global store_census
     town = env
     mp_pref = env.props["mp_pref"]
-    radius = env.props["radius"]
+    hood_size = env.props["hood_size"]
     store_census = env.props["store_census"]
 
     consumer_group = env.registry["Consumer"]
