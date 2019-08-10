@@ -10,7 +10,7 @@ from indra.env import Env
 from indra.display_methods import RED, GREEN, BLACK, SPRINGGREEN, TOMATO, TREE
 
 MODEL_NAME = "forestfire"
-DEBUG = True  # turns debugging code on or off
+DEBUG = False  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
 NEARBY = 1.8
@@ -27,7 +27,7 @@ ON_FIRE = "On Fire"
 BURNED_OUT = "Burned Out"
 NEW_GROWTH = "New Growth"
 
-# states numbers
+# state numbers
 HE = 0
 NF = 1
 OF = 2
@@ -51,10 +51,6 @@ on_fire = None
 healthy = None
 
 group_map = {HE: None, NF: None, OF: None, BO: None, NG: None}
-
-
-def get_new_state(old_state):
-    return (old_state + 1) % NUM_STATES
 
 
 def is_healthy(agent, *args):

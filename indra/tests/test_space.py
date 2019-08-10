@@ -55,13 +55,6 @@ class SpaceTestCase(TestCase):
         self.assertTrue(distance(self.newton, closest) <=
                         self.space.get_max_distance())
 
-    def test_get_row_hood(self):
-        row_grp = self.teeny_space.get_row_hood(1)
-        if row_grp is not None:
-            for cell in row_grp:
-                pass
-            #assert(cell.get_y() == 2)        
-
     def test_constrain_x(self):
         """
         Test keeping x in bounds.

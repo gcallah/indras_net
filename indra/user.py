@@ -20,7 +20,6 @@ USER_EXIT = -999
 menu_dir = os.getenv("INDRA_HOME", "/home/indrasnet/indras_net") + "/indra"
 menu_file = "menu.json"
 menu_src = menu_dir + "/" + menu_file
-print("menu source = ", menu_src)
 
 
 def not_impl(user):
