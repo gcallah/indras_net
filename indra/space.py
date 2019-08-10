@@ -120,6 +120,12 @@ class Space(Composite):
             if self.registry[nm].type == "agent":
                 self.locations[self.registry[nm].pos] = self.registry[nm]
 
+        # set up self.neighbors
+        for nm in self.registry:
+            s = self.registry[nm].neighbors
+            if not s and s in self.registry:
+                self.registry[nm].neighbors = self.registry[s]
+
     def __repr__(self):
         return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
 

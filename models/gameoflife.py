@@ -121,13 +121,15 @@ def game_agent_action(agent):
     global to_come_alive
     global to_die
     global reset_lists
+    global gameoflife_env
 
     if reset_lists:
         to_come_alive = []
         to_die = []
         reset_lists = False
 
-    gameoflife_env.get_moore_hood(agent, save_neighbors=True)
+    ret = gameoflife_env.get_moore_hood(agent, save_neighbors=True)
+    gameoflife_env.registry["Moore neighbors"] = ret
     check_for_new_agents(agent)
     if apply_live_rules(agent):
         to_die.append(agent)
@@ -317,6 +319,13 @@ def set_up(props=None):
     elif simulation == 6:
         populate_board_tumbler(width, height)
     return (gameoflife_env, groups)
+
+
+def gl_unrestorable(env):
+    global groups
+    global gameoflife_env
+    gameoflife_env = env
+    groups = [env.registry["Black"]]
 
 
 def main():
