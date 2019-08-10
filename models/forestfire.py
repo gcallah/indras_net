@@ -10,7 +10,7 @@ from indra.env import Env
 from indra.display_methods import RED, GREEN, BLACK, SPRINGGREEN, TOMATO, TREE
 
 MODEL_NAME = "forestfire"
-DEBUG = True  # turns debugging code on or off
+DEBUG = False  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
 NEARBY = 1.8

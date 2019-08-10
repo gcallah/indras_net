@@ -424,8 +424,14 @@ class Space(Composite):
         for x in range(x1, x2 + 1):
             for y in range(y1, y2 + 1):
                 neighbor = self.get_agent_at(x, y)
-                if neighbor is not None:
+                if neighbor is not None and (agent.get_x() != x
+                                             or agent.get_y() != y):
                     moore_hood += neighbor
+        if include_self:
+            moore_hood += self.get_agent_at(agent.get_x(), agent.get_y())
+        print(agent)
+        for agents in moore_hood:
+            print("  ", moore_hood[agents])
 
         if save_neighbors:
             agent.neighbors = moore_hood
