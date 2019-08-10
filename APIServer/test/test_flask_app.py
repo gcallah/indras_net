@@ -94,7 +94,7 @@ class Test(TestCase):
         """
         Test whether we are able to put props
         """
-        model_id = random.randint(0, 6)
+        model_id = random.randint(0, 10)
         with app.test_request_context():
             rv = self.Props.put(model_id)
         self.assertEqual(type(rv), dict)
