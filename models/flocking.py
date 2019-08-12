@@ -35,7 +35,7 @@ def calc_angle(agent1, agent2):
     print("Result of y coordinates " + str(y))
     angle = math.degrees(math.atan2(y, x))
     print("The required angle is " + str(angle))
-    angle = angle if angle >= 0 else (angle * -1) + HALF_CIRCLE
+    angle = angle if angle >= 0 else angle + FULL_CIRCLE
     return angle
 
 
