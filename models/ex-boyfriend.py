@@ -1,6 +1,6 @@
 """
 A basic model.
-Places two groups of agents in the enviornment randomly
+Places two groups of agents in the environment randomly
 and moves them around randomly.
 """
 
@@ -19,38 +19,87 @@ DEBUG2 = False  # turns deeper debugging code on or off
 
 # Girlfriend's State Strings
 PICK_RANDOM = "Pick Random Cycle"
-GO_OUT = "Go Out"
 REPEAT_CYCLE = "Repeat Cycle"
-CHANGE = "Change day"
+CHANGE_DAY = "Change day"
 SUCCESS = "Success"
 
 # state numbers
 PR = 0
-GO = 1
-RC = 2
-CH = 3
-SU = 4
+RC = 1
+CD = 2
+SU = 3
 
-NUM_STATES = 5
+NUM_STATES = 4
 
-STATE_MAP = {PR: PICK_RANDOM, GO: GO_OUT,
-             RC: REPEAT_CYCLE, CH: CHANGE, SU: SUCCESS}
+STATE_MAP = {PR: PICK_RANDOM, RC: REPEAT_CYCLE,
+             CD: CHANGE_DAY, SU: SUCCESS}
 
 DEF_NUM_BLUE = 1
 DEF_NUM_RED = 1
 DEF_CYCLE = 7
 
+DEF_HEIGHT = 50
+DEF_WIDTH = 50
+
 girlfriend = None
 ex_boyfriend = None
 env = None
 
+girlfriend_cycle = None
 ex_boyfriend_start = None
+girlfriend_start = None
 period = None
 boyfriend_going = False
+day = None
+
+
+def get_girlfriend_decision():
+    global period
+    global girlfriend_start
+    global girlfriend_cycle
+
+    return (period - girlfriend_start) % girlfriend_cycle == 0
 
 
 def girlfriend_action(agent):
+    global period
+    global girlfriend_cycle
+    global girlfriend_start
 
+    girlfriend_going = False
+
+    if agent["state"] == PR:
+        if girlfriend_cycle is None:
+            girlfriend_cycle = random.randint(1, 7)
+            girlfriend_start = period
+
+        girlfriend_going = get_girlfriend_decision()
+        if girlfriend_going and boyfriend_going:
+            agent["state"] = RC
+        else:
+            agent["state"] = CD
+            girlfriend_start += 1
+
+    elif agent["state"] == RC:
+        girlfriend_going = get_girlfriend_decision()
+        if girlfriend_going and boyfriend_going:
+            girlfriend_cycle = None
+            agent["state"] = PR
+        else:
+            agent["state"] = SU
+
+    elif agent["state"] == CD:
+        girlfriend_going = get_girlfriend_decision()
+        if girlfriend_going and boyfriend_going:
+            agent["state"] = RC
+
+    else:
+        pass
+
+    if girlfriend_going:
+        return False
+    else:
+        return True
 
 
 def boyfriend_action(agent):
@@ -60,14 +109,22 @@ def boyfriend_action(agent):
     global boyfriend_going
 
     period += 1
-    if ex_boyfriend_start is None:
-        decide = random.randint(0,1)
-        if decide:
-            ex_boyfriend_start = period
-            boyfriend_going = True
 
-    # return False means to move
-    return False
+    # if ex_boyfriend_start is None:
+    #     decide = random.randint(0,1)
+    #     if decide:
+    #         ex_boyfriend_start = period
+    #         boyfriend_going = True
+
+    if period % agent["cycle"] == 0:
+        boyfriend_going = True
+        # return False means to move
+        return False
+
+    else:
+        boyfriend_going = False
+
+    return True
 
 
 def create_boyfriend(name, i, props=None):
@@ -94,30 +151,35 @@ def set_up(props=None):
     global girlfriend
     global ex_boyfriend
     global env
+    global period
+
+    period = 0
 
     pa = get_props(MODEL_NAME, props)
-    girlfriend = Composite("Girlfriend", {"color": BLUE},
+
+    girlfriend = Composite("Girlfriend", {"color": BLUE}, props=pa,
                            member_creator=create_girlfriend,
                            num_members=1)
-    ex_boyfriend = Composite("Ex-Boyfriend", {"color": RED},
+
+    ex_boyfriend = Composite("Ex-Boyfriend", {"color": RED}, props=pa,
                              member_creator=create_boyfriend,
                              num_members=1)
 
     env = Env("env",
-              # height=pa.get('grid_height', DEF_HEIGHT),
-              # width=pa.get('grid_width', DEF_WIDTH),
-              members=[girlfriend, ex_boyfriend],
+              height=pa.get('grid_height', DEF_HEIGHT),
+              width=pa.get('grid_width', DEF_WIDTH),
+              members=[ex_boyfriend, girlfriend],
               props=pa)
 
-    return (env, girlfriend, ex_boyfriend)
+    return (env, ex_boyfriend, girlfriend)
 
 
 def main():
-    global red_group
-    global blue_group
+    global ex_boyfriend
+    global girlfriend
     global env
 
-    (env, blue_group, red_group) = set_up()
+    (env, ex_boyfriend, girlfriend) = set_up()
 
     if DEBUG2:
         print(env.__repr__())
