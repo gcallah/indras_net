@@ -120,6 +120,12 @@ class Space(Composite):
             if self.registry[nm].type == "agent":
                 self.locations[self.registry[nm].pos] = self.registry[nm]
 
+        # set up self.neighbors
+        for nm in self.registry:
+            s = self.registry[nm].neighbors
+            if not s and s in self.registry:
+                self.registry[nm].neighbors = self.registry[s]
+
     def __repr__(self):
         return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
 
@@ -200,6 +206,14 @@ class Space(Composite):
         Pull y in bounds if it ain't.
         """
         return bound(y, 0, self.height - 1)
+
+    def get_square_view(self, x, y, distance):
+        low_x = x - distance
+        high_x = x + distance
+        low_y = y - distance
+        high_y = y + distance
+        return (self.constrain_x(low_x), self.constrain_x(high_x),
+                self.constrain_y(low_y), self.constrain_y(high_y))
 
     def gen_new_pos(self, mbr, max_move):
         """
@@ -301,7 +315,9 @@ class Space(Composite):
         @wraps(hood_func)
         def wrapper(*args, **kwargs):
             agent = args[1]
-            if ("save_neighbors" in agent and agent["save_neighbors"]
+            if (not isinstance(agent, tuple)
+                    and "save_neighbors" in agent
+                    and agent["save_neighbors"]
                     and agent.neighbors):
                 print("Using saved hood")
                 return agent.neighbors
@@ -333,8 +349,12 @@ class Space(Composite):
         """
         if agent is not None:
             x_hood = Composite("x neighbors")
-            agent_x = agent.get_x()
-            agent_y = agent.get_y()
+            if isinstance(agent, tuple):
+                agent_x = agent[0]
+                agent_y = agent[1]
+            else:
+                agent_x = agent.get_x()
+                agent_y = agent.get_y()
             neighbor_x_coords = []
             for i in range(-width, 0):
                 neighbor_x_coords.append(i)
@@ -347,7 +367,7 @@ class Space(Composite):
                 if not out_of_bounds(neighbor_x, agent_y, 0, 0,
                                      self.width, self.height):
                     x_hood += self.get_agent_at(neighbor_x, agent_y)
-            if save_neighbors:
+            if save_neighbors and not isinstance(agent, tuple):
                 agent.neighbors = x_hood
             return x_hood
 
@@ -392,33 +412,27 @@ class Space(Composite):
 
     @use_saved_hood
     def get_moore_hood(self, agent, pred=None, save_neighbors=False,
-                       include_self=False, radius=1):
+                       include_self=False, hood_size=1):
         """
         Takes in an agent and returns a Composite of its Moore neighbors.
         """
-        print("Getting moore hood")
         moore_hood = Composite("Moore neighbors")
-        x = agent.get_x()
-        y = agent.get_y()
-        for upper_range in range(radius):
-            if (y < self.height - 1) and (y + upper_range < self.height - 1):
-                upper_agent = self.get_agent_at(x, y + upper_range + 1)
-                if upper_agent is None:
-                    upper_agent = (x, y + upper_range + 1)
-                moore_hood += self.get_x_hood(upper_agent,
-                                              width=radius,
-                                              include_self=True)
-        moore_hood += self.get_x_hood(agent,
-                                      width=radius,
-                                      include_self=include_self)
-        for lower_range in range(radius):
-            if (y > 0) and (y - lower_range > 0):
-                lower_agent = self.get_agent_at(x, y - lower_range - 1)
-                if lower_agent is None:
-                    lower_agent = (x, y - lower_range - 1)
-                moore_hood += self.get_x_hood(lower_agent,
-                                              width=radius,
-                                              include_self=True)
+        x1, x2, y1, y2 = self.get_square_view(agent.get_x(),
+                                              agent.get_y(),
+                                              hood_size)
+
+        for x in range(x1, x2 + 1):
+            for y in range(y1, y2 + 1):
+                neighbor = self.get_agent_at(x, y)
+                if neighbor is not None and (agent.get_x() != x
+                                             or agent.get_y() != y):
+                    moore_hood += neighbor
+        if include_self:
+            moore_hood += self.get_agent_at(agent.get_x(), agent.get_y())
+        print(agent)
+        for agents in moore_hood:
+            print("  ", moore_hood[agents])
+
         if save_neighbors:
             agent.neighbors = moore_hood
         return moore_hood

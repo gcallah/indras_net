@@ -17,6 +17,7 @@ from models.fmarket import fm_unrestorable
 from models.scheduler import sd_unrestorable
 from models.segregation import sg_unrestorable
 from models.wolfsheep import ws_unrestorable
+from models.gameoflife import gl_unrestorable
 
 
 ERROR = "Error:"
@@ -143,6 +144,8 @@ class Run(Resource):
             sg_unrestorable(v)
         elif v.name == "meadow":
             ws_unrestorable(v)
+        elif v.name == "Game of Life":
+            gl_unrestorable(v)
         v.runN(periods=run_time)
         return json_converter(v)
 

@@ -26,15 +26,15 @@ the_sky = None
 
 def calc_angle(agent1, agent2):
     pos1 = agent1.get_pos()
-    print(pos1)
+    print("Coordinates of first point " + str(pos1))
     pos2 = agent2.get_pos()
-    print(pos2)
+    print("Coordinates of second point " + str(pos2))
     x = pos2[X] - pos1[X]
-    print(x)
+    print("Result of x coordinates " + str(x))
     y = pos2[Y] - pos1[Y]
-    print(y)
+    print("Result of y coordinates " + str(y))
     angle = math.degrees(math.atan2(y, x))
-    print(angle)
+    print("The required angle is " + str(angle))
     angle = angle if angle >= 0 else (angle * -1) + HALF_CIRCLE
     return angle
 

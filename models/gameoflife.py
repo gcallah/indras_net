@@ -39,7 +39,8 @@ def apply_live_rules(agent):
 
     num_live_neighbors = 0
     for neighbor in agent.neighbors:
-        if agent.neighbors[neighbor].primary_group() == groups[0]:
+        if (agent.neighbors[neighbor].primary_group() == groups[0]
+           and agent.neighbors[neighbor].get_pos() != agent.get_pos()):
             num_live_neighbors += 1
     if (num_live_neighbors != 2 and num_live_neighbors != 3):
         return True
@@ -47,13 +48,16 @@ def apply_live_rules(agent):
         return False
 
 
-def apply_dead_rules_composite(composite):
+def apply_dead_rules(curr_x, curr_y, x1, x2, y1, y2):
     global groups
 
     num_live_neighbors = 0
-    for neighbor in composite:
-        if composite[neighbor].primary_group() == groups[0]:
-            num_live_neighbors += 1
+    for x in range(x1, x2 + 1):
+        for y in range(y1, y2 + 1):
+            neighbor = gameoflife_env.get_agent_at(x, y)
+            if (neighbor is not None and neighbor.primary_group() == groups[0]
+               and (curr_x != x or curr_y != y)):
+                num_live_neighbors += 1
     if num_live_neighbors == 3:
         return True
     else:
@@ -62,18 +66,19 @@ def apply_dead_rules_composite(composite):
 
 def check_for_new_agents(agent):
     global gameoflife_env
+    global to_come_alive
 
     curr_x = agent.get_x()
     curr_y = agent.get_y()
-    to_come_alive = []
     for y in ([-1, 0, 1]):
         for x in ([-1, 0, 1]):
             if (x != 0) or (y != 0):
                 new_x = curr_x + x
                 new_y = curr_y + y
                 if gameoflife_env.get_agent_at(new_x, new_y) is None:
-                    neighbors = gameoflife_env.get_moore_hood((new_x, new_y))
-                    if apply_dead_rules_composite(neighbors):
+                    x1, x2, y1, y2 = gameoflife_env.get_square_view(new_x,
+                                                                    new_y, 1)
+                    if apply_dead_rules(new_x, new_y, x1, x2, y1, y2):
                         to_come_alive.append((new_x, new_y))
     return to_come_alive
 
@@ -91,7 +96,7 @@ def gameoflife_action(gameoflife_env):
 
     for agent_pos in to_come_alive:
         if DEBUG:
-            print("Agent at", to_come_alive[agent_pos], "will come alive")
+            print("Agent at", agent_pos, "will come alive")
         if gameoflife_env.get_agent_at(agent_pos[0], agent_pos[1]) is None:
             agent = create_agent(agent_pos[0], agent_pos[1])
             groups[0] += agent
@@ -116,14 +121,16 @@ def game_agent_action(agent):
     global to_come_alive
     global to_die
     global reset_lists
+    global gameoflife_env
 
     if reset_lists:
         to_come_alive = []
         to_die = []
         reset_lists = False
 
-    gameoflife_env.get_moore_hood(agent, save_neighbors=True)
-    to_come_alive += check_for_new_agents(agent)
+    ret = gameoflife_env.get_moore_hood(agent, save_neighbors=True)
+    gameoflife_env.registry["Moore neighbors"] = ret
+    check_for_new_agents(agent)
     if apply_live_rules(agent):
         to_die.append(agent)
     return True
@@ -312,6 +319,13 @@ def set_up(props=None):
     elif simulation == 6:
         populate_board_tumbler(width, height)
     return (gameoflife_env, groups)
+
+
+def gl_unrestorable(env):
+    global groups
+    global gameoflife_env
+    gameoflife_env = env
+    groups = [env.registry["Black"]]
 
 
 def main():

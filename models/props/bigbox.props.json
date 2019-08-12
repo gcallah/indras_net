@@ -20,13 +20,6 @@
     "hival": 400,
     "lowval": 50
   },
-  "bb_num": {
-    "val": 1,
-    "question": "How many big box stores woud you like?",
-    "atype": "INT",
-    "hival": 20,
-    "lowval": 1
-  },
   "mp_num": {
     "val": 8,
     "question": "How many mom and pop stores woud you like?",
@@ -41,7 +34,7 @@
     "hival": 0.4,
     "lowval": 0.0
   },
-  "radius": {
+  "hood_size": {
     "val": 2,
     "question": "How close should the consumers be to the stores to shop there?",
     "atype": "INT",

@@ -174,6 +174,10 @@ class Agent(object):
             pg = self.prim_group
         else:
             pg = str(self.prim_group)
+        if not self.neighbors:
+            nb = None
+        else:
+            nb = self.neighbors.name
         return {"name": self.name,
                 "type": self.type,
                 "duration": self.duration,
@@ -184,7 +188,7 @@ class Agent(object):
                 "type_sig": self.type_sig,
                 "prim_group": pg,
                 "locator": loc,
-                "neighbors": self.neighbors,
+                "neighbors": nb,
                 "action_key": self.action_key
                 }
 
