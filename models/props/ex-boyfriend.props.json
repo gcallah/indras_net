@@ -1,0 +1,9 @@
+{
+  "cycle": {
+    "val": 7,
+    "question": "What is the ex-boyfriend's cycle?",
+    "atype": "INT",
+    "hival": 30,
+    "lowval": 2
+  }
+}
