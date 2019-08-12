@@ -1,0 +1,23 @@
+{
+  "grid_height": {
+    "val": 50,
+    "question": "What is the grid height?",
+    "atype": "INT",
+    "hival": 500,
+    "lowval": 1
+  },
+  "grid_width": {
+    "val": 50,
+    "question": "What is the grid width?",
+    "atype": "INT",
+    "hival": 500,
+    "lowval": 1
+  },
+  "cycle": {
+    "val": 4,
+    "question": "What is the ex-boyfriend's cycle?",
+    "atype": "INT",
+    "hival": 7,
+    "lowval": 2
+  }
+}
