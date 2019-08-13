@@ -429,9 +429,11 @@ class Space(Composite):
                     moore_hood += neighbor
         if include_self:
             moore_hood += self.get_agent_at(agent.get_x(), agent.get_y())
-        print(agent)
-        for agents in moore_hood:
-            print("  ", moore_hood[agents])
+
+        if DEBUG:
+            print(agent)
+            for agents in moore_hood:
+                print("  ", moore_hood[agents])
 
         if save_neighbors:
             agent.neighbors = moore_hood

@@ -12,9 +12,10 @@ function ScatterPlot(props) {
         console.log(WIDTH)
         console.log(env)
         var data=[]
-        Object.keys(env).map((group,i_group)=> {
+        Object.keys(env).map((group, i_group)=> {
             return(
-                data.push({name:env[group]['name'],color: env[group]['attrs']['color'], data: []}),
+                data.push({name:env[group]['name'],
+                    color: env[group]['attrs']['color'], data: []}),
                 Object.keys(env[group]['members']).map((member, i_member)=>{
                 	if (env[group]['members'][member]['pos'] !== null){
 	                    return(

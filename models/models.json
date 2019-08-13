@@ -25,22 +25,6 @@
       "source": "https://github.com/gcallah/indras_net/blob/master/models/fashion.py"
     },
     {
-      "model ID": 3,
-      "name": "Forest Fire",
-      "run": "forestfire",
-      "props": "models/props/forestfire.props.json",
-      "doc": "A model forest with trees that randomly catch fire.",
-      "source": "https://github.com/gcallah/indras_net/blob/master/models/forestfire.py"
-    },
-    {
-      "model ID": 4,
-      "name": "Abelian Sandpile",
-      "run": "sandpile",
-      "props": "models/props/sandpile.props.json",
-      "doc": "A sandpile that makes colorful patterns as the sand tumbles down.",
-      "source": "https://github.com/gcallah/indras_net/blob/master/models/sandpile.py"
-    },
-    {
       "model ID": 5,
       "name": "Schelling's Segregation Model",
       "run": "segregation",
@@ -55,30 +39,6 @@
       "props": "models/props/wolfsheep.props.json",
       "doc": "Wolves eat sheep in a meadow and their populations' cycle.",
       "source": "https://github.com/gcallah/indras_net/blob/master/models/wolfsheep.py"
-    },
-    {
-      "model ID": 7,
-      "name": "Conway's Game of Life",
-      "run": "gameoflife",
-      "props": "models/props/gameoflife.props.json",
-      "doc": "Simulate John Conway's Game of Life model.",
-      "source": "https://github.com/gcallah/indras_net/blob/master/models/gameoflife.py"
-    },
-    {
-      "model ID": 8,
-      "name": "Wolfram's Automata",
-      "run": "wolfram",
-      "props": "models/props/wolfram.props.json",
-      "doc": "Test out Stephen Wolfram's automata.",
-      "source": "https://github.com/gcallah/indras_net/blob/master/models/wolfram.py"
-    },
-    {
-      "model ID": 9,
-      "name": "Bigbox",
-      "run": "bigbox",
-      "props": "models/props/bigbox.props.json",
-      "doc": "Stimulate mom and pop and bigbox stores.",
-      "source": "https://github.com/gcallah/indras_net/blob/master/models/bigbox.py"
     },
     {
       "model ID": 10,
