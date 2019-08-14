@@ -399,7 +399,7 @@ class Space(Composite):
         Von Neumann neighbors.
         """
         vonneumann_hood = self.get_x_hood(agent) + self.get_y_hood(agent)
-        if save_neighbors:
+        if agent.get("save_neighbors", False):
             agent.neighbors = vonneumann_hood
         return vonneumann_hood
 
