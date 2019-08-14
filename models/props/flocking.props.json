@@ -14,7 +14,7 @@
     "lowval": 2
   },
   "num_birds": {
-    "val": 20,
+    "val": 2,
     "question": "How many birds do you want?",
     "atype": "INT",
     "hival": 100,

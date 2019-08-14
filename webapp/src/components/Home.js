@@ -30,6 +30,7 @@ class Home extends Component {
         const link = 'https://gcallah.github.io/indras_net/index.html'
         window.open(link)
     }
+
     renderShowDescription = () => {
         console.log("renderShowDescription called")
         return <h1 style={{"fontSize": 16, "fontWeight": '400'}}>
@@ -53,7 +54,8 @@ class Home extends Component {
     }
 
     renderHeader = () => {
-        return <h1 style={{ "textAlign": "center", "fontWeight": '200'}}>Indra Agent-Based Modeling System</h1>
+        return <h1 style={{ "textAlign": "center",
+                "fontWeight": '200'}}>Indra Agent-Based Modeling System</h1>
     }
 
     renderChooseModelProp = () => {
@@ -78,13 +80,15 @@ class Home extends Component {
                 <ul className="list-group">
                     <div className="row">
                         <div className="col">
-                            {Object.keys(this.state.allItems).map((item,i)=>
-                                <p className="w-50 p-3 list-group-item list-group-item-action"  key={i}>
+                            {Object.keys(this.state.allItems).map((item, i)=>
+                                <p className="w-50 p-3 list-group-item list-group-item-action"
+                                key={i}>
                                 {console.log(this.state.allItems[item]['model ID'])}
                                     <Link to={{pathname: `/models/props/${i}`}}
                                         className="text-primary" data-toggle="tooltip"
                                         data-placement="top" title={this.state.allItems[item]['doc']}
-                                        onClick={() => this.handleClick(this.state.allItems[item]['model ID'],
+                                        onClick={() =>
+                                            this.handleClick(this.state.allItems[item]['model ID'],
                                         this.state.allItems[item]['name'],
                                         this.state.allItems[item]['source'])}>
                                         {this.state.allItems[item]['name']}

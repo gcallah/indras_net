@@ -15,7 +15,7 @@ DEBUG2 = False  # turns deeper debugging code on or off
 
 DEF_NUM_BIRDS = 2
 DEF_DESIRED_DISTANCE = 2
-BIRD_MAX_MOVE = 2
+BIRD_MAX_MOVE = 1
 
 HALF_CIRCLE = 180
 FULL_CIRCLE = 360
@@ -24,18 +24,23 @@ flock = None
 the_sky = None
 
 
+def invert_direction(angle):
+    return (angle + HALF_CIRCLE) % FULL_CIRCLE
+
+
 def calc_angle(agent1, agent2):
     pos1 = agent1.get_pos()
-    print("Coordinates of first point " + str(pos1))
     pos2 = agent2.get_pos()
-    print("Coordinates of second point " + str(pos2))
     x = pos2[X] - pos1[X]
-    print("Result of x coordinates " + str(x))
     y = pos2[Y] - pos1[Y]
-    print("Result of y coordinates " + str(y))
     angle = math.degrees(math.atan2(y, x))
+<<<<<<< HEAD
     print("The required angle is " + str(angle))
     angle = angle if angle >= 0 else angle + FULL_CIRCLE
+=======
+    if angle < 0:
+        angle = angle + FULL_CIRCLE
+>>>>>>> 631d2d26c65461749f54046dcfb88d2799862dbe
     return angle
 
 
@@ -43,14 +48,19 @@ def bird_action(this_bird):
     nearest_bird = this_bird.locator.get_closest_agent(this_bird)
     if nearest_bird is not None:
         curr_distance = distance(this_bird, nearest_bird)
-        print("Distance between ", nearest_bird, " and ", this_bird,
-              " is ", curr_distance)
-        angle_to_nearest = calc_angle(this_bird, nearest_bird)
+        this_bird["angle"] = calc_angle(this_bird, nearest_bird)
+        if DEBUG:
+            print("Distance between ", nearest_bird, " and ", this_bird,
+                  " is ", curr_distance)
+            print(this_bird.name, "'s angle rel. to ", nearest_bird.name,
+                  "is", this_bird["angle"])
+
         if curr_distance < DEF_DESIRED_DISTANCE:
-            this_bird["angle"] = (angle_to_nearest + HALF_CIRCLE) % FULL_CIRCLE
-        else:
-            this_bird["angle"] = angle_to_nearest
-        print(this_bird.name, "'s angle is ", this_bird["angle"])
+            this_bird["angle"] = invert_direction(this_bird["angle"])
+
+        if this_bird.name == "Birds1":
+            return True
+
     return False
 
 

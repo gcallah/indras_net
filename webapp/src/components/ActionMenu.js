@@ -110,7 +110,7 @@ class ActionMenu extends Component {
 
     sendNumPeriods = async() => {
         console.log(this.api_server + 'run/' + String(this.state.period_num))
-        try{
+        try { 
             const res = await axios.put(
             this.api_server + 'run/' + String(this.state.period_num),
             this.state.env_file,
@@ -119,7 +119,7 @@ class ActionMenu extends Component {
         this.setState({env_file: res.data})
         this.setState({msg: res.data["user"]["user_msgs"]})
         console.log(res.data)
-        }catch(e){
+        } catch(e) {
             console.log(e.message)
         }
 
