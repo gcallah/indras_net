@@ -16,7 +16,7 @@ function ScatterPlot(props) {
             return(
                 data.push({name:env[group]['name'],
                     color: env[group]['attrs']['color'], data: []}),
-                Object.keys(env[group]['members']).map((member, i_member)=>{
+                Object.keys(env[group]['members']).map((member, i_member) => {
                 	if (env[group]['members'][member]['pos'] !== null){
 	                    return(
 	                        data[i_group]['data'].push(env[group]['members'][member]['pos'])
@@ -33,7 +33,7 @@ function ScatterPlot(props) {
             </div>
         );
     }
-    else if (props.loadingData && props.id == FMARKET){
+    else if (props.loadingData && props.id === FMARKET){
         return(
             <p> There is no scatter plot available for this model! </p>
         )
