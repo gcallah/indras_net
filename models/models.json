@@ -25,7 +25,7 @@
       "source": "https://github.com/gcallah/indras_net/blob/master/models/fashion.py"
     },
     {
-      "model ID": 5,
+      "model ID": 3,
       "name": "Schelling's Segregation Model",
       "run": "segregation",
       "props": "models/props/segregation.props.json",
@@ -33,7 +33,7 @@
       "source": "https://github.com/gcallah/indras_net/blob/master/models/segregation.py"
     },
     {
-      "model ID": 6,
+      "model ID": 4,
       "name": "Predator-Prey Model",
       "run": "wolfsheep",
       "props": "models/props/wolfsheep.props.json",
@@ -41,7 +41,7 @@
       "source": "https://github.com/gcallah/indras_net/blob/master/models/wolfsheep.py"
     },
     {
-      "model ID": 10,
+      "model ID": 5,
       "name": "Financial Market",
       "run": "fmarket",
       "props": "models/props/fmarket.props.json",
