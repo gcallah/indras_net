@@ -62,7 +62,7 @@ class ModelDetail extends Component {
         return ans
     }
 
-    handleChange = e =>{ 
+    propChanged = e =>{ 
         let model_detail = this.state.model_details;
         const {name,value} = e.target
         let valid = this.checkValidity(name,value)
@@ -174,9 +174,9 @@ class ModelDetail extends Component {
                                     key={i}>{this.state.model_details[item]['question']} {" "}
                                 </label>
                                 <input type={this.state.model_details[item]['atype']}
-                                class="col-sm-2 col-form-label m-4 mb-3"
+                                class="col-sm-3 col-form-label m-4 mb-3"
                                 placeholder={this.state.model_details[item]['val']}
-                                onChange={this.handleChange} style={{width: 60}} name={item}/>
+                                onChange={this.propChanged} style={{width: 60}} name={item}/>
                                 <span style={{color:"red", fontSize: 12}}>
                                 {this.state.model_details[item]['errorMessage']}</span>
                                 <br/>
