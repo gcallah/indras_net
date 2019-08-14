@@ -62,7 +62,7 @@ class ModelDetail extends Component {
         return ans
     }
 
-    handleChange = e =>{ 
+    propChanged = e =>{ 
         let model_detail = this.state.model_details;
         const {name,value} = e.target
         let valid = this.checkValidity(name,value)
@@ -81,8 +81,9 @@ class ModelDetail extends Component {
             console.log(this.state.model_details[name])
 
         } else {
-            model_detail[name]['errorMessage']=`**Please input a number between ${this.state[name]['lowval']} and ${this.state[name]['hival']}.`
-            model_detail[name]['val']= this.state[name]['val']
+            model_detail[name]['errorMessage'] 
+                = `**Please input a number between ${this.state[name]['lowval']} and ${this.state[name]['hival']}.`
+            model_detail[name]['val'] = this.state[name]['val']
             this.setState({model_details:model_detail})
         }  
 
@@ -91,7 +92,8 @@ class ModelDetail extends Component {
 
 
     checkValidity = (name,value) => {
-        if (value<=this.state.model_details[name]['hival'] && value >=this.state.model_details[name]['lowval']){
+        if (value <= this.state.model_details[name]['hival']
+                && value >= this.state.model_details[name]['lowval']){
             if (this.state.model_details[name]['atype'] === 'INT' && !!(value%1)=== false){
                 return 1
             }
@@ -171,8 +173,12 @@ class ModelDetail extends Component {
                                 <label
                                     key={i}>{this.state.model_details[item]['question']} {" "}
                                 </label>
-                                <input type={this.state.model_details[item]['atype']} class="col-sm-2 col-form-label m-4 mb-3" placeholder={this.state.model_details[item]['val']} onChange={this.handleChange} style={{width: 60}} name={item}/>
-                                <span style={{color:"red",fontSize: 12}}>{this.state.model_details[item]['errorMessage']}</span>
+                                <input type={this.state.model_details[item]['atype']}
+                                class="col-sm-3 col-form-label m-4 mb-3"
+                                placeholder={this.state.model_details[item]['val']}
+                                onChange={this.propChanged} style={{width: 60}} name={item}/>
+                                <span style={{color:"red", fontSize: 12}}>
+                                {this.state.model_details[item]['errorMessage']}</span>
                                 <br/>
                             </div>
                             )}

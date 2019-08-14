@@ -2,7 +2,6 @@
 Big box model for simulating the behaviors of consumers.
 """
 import random
-
 from indra.utils import get_props
 from indra.agent import Agent
 from indra.composite import Composite
@@ -11,267 +10,219 @@ from indra.env import Env
 from indra.display_methods import BLACK, BLUE, GRAY, GREEN, RED, TAN, YELLOW
 
 MODEL_NAME = "bigbox"
-DEBUG = False
-
-NUM_OF_CONSUMERS = 180
-NUM_OF_BB = 1
+NUM_OF_CONSUMERS = 50
 NUM_OF_MP = 8
-
-MP_PREF = 0.1
-HOOD_SIZE = 2
+DEBUG = True
 
 CONSUMER_INDX = 0
 BB_INDX = 1
-MP_INDX = 2
+
+HOOD_SIZE = 2
+MP_PREF = 0.1
+PERIOD = 7
+STANDARD = 200
+MULTIPLIER = 10
+
+EXPENSE_INDX = 0
+CAPITAL_INDX = 1
+COLOR_INDX = 2
 
 town = None
 groups = None
 mp_pref = None
 hood_size = None
-store_census = None
+bb_capital = 2000
 
 # The data below creates store types with default values.
 # "Store type":
-# [fixed expense, variable expense, capital, inventory,
-# color, consumers visited]
-mp_stores = {"Mom and pop: Books": [45, 30, 360, 60, TAN, 0],
-             "Mom and pop: Coffee": [23, 15, 180, 30, BLACK, 0],
-             "Mom and pop: Groceries": [67, 45, 540, 90, GREEN, 0],
-             "Mom and pop: Hardware": [60, 40, 480, 80, RED, 0],
-             "Mom and pop: Meals": [40, 23, 270, 45, YELLOW, 0]}
-
-COLOR_INDEX = 4
+# [expense, capital, color]
+mp_stores = {"Bookshop": [65, 90, TAN],
+             "Coffeeshop": [63, 100, BLACK],
+             "Grocery store": [67, 100, GREEN],
+             "Hardware": [60, 110, RED],
+             "Restaurant": [60, 100, YELLOW]}
 
 
-bb_store = [60, 25, 480, 90, 0]
-# [Fixed expense, variable expense, capital, inventory, consumers visited]
-
-
-def create_consumer(name):
+def sells_good(store, consumer, groups):
     """
-    Creates a consumer agent.
-    Expense is the amount of money that the agent will spend
-        in a store during a single period.
+    Check if the store sells what the consumer wants.
+    If BB return True else return whether seller sells that type.
     """
-    spending_power = random.randint(70, 100)
-    item_needed = random.choice(list(mp_stores.keys()))
+    if store.primary_group() == groups[BB_INDX]:
+        return True
+    else:
+        if consumer["item needed"] in store.name:
+            return True
+        return False
+
+
+def get_rand_good_type():
+    """
+    Randomly select consumer's item needed
+    after each run.
+    """
+    return random.choice(list(mp_stores.keys()))
+
+
+def create_consumer(name, i, props=None):
+    """
+    Create consumers
+    """
+    spending_power = random.randint(50, 70)
     consumer_books = {"spending power": spending_power,
                       "last util": 0.0,
-                      "item needed": item_needed}
-    return Agent(name=name, attrs=consumer_books, action=consumer_action)
-
-
-def create_bb(name):
-    """
-    Creates a big box store agent.
-    Does not have to randomly determine the store type
-        because big box stores will sell everything.
-    Expense is a list of ints that contain the corresponding values.
-    Fixed expense is things like rent, electricity bills, etc
-        that will be taken out every period.
-    Variable expense is the cost of buying new inventory of goods.
-    Capital is the money that is in the bank.
-    Inventory is the amount of consumer that the store can serve
-        before it needs to restock and pay the variable expense.
-    """
-    expense = bb_store
-    store_books = {"fixed expense": expense[0],
-                   "variable expense": expense[1],
-                   "capital": expense[2],
-                   "inventory": [expense[3], expense[3]],
-                   "visited": expense[4]}
-    return Agent(name=name, attrs=store_books, action=bb_action)
+                      "item needed": get_rand_good_type()}
+    return Agent(name + str(i), attrs=consumer_books, action=consumer_action)
 
 
 def create_mp(store_type, i):
     """
-    Creates a mom and pop store agent.
-    Store type (what the store will sell) is determined randomly
-    and assigned as a name.
-    Expense is a list of ints that contain the corresponding values.
-    Fixed expense is things like rent, electricity bills, etc
-        that will be taken out every period.
-    Variable expense is the cost of buying new inventory of goods.
-    Capital is the money that is in the bank.
-    Inventory is the amount of consumers that the store can serve
-        before it needs to restock and pay the variable expense.
+    Create a mom and pop store.
     """
     expense = mp_stores[str(store_type)]
     name = str(store_type) + " " + str(i)
-    store_books = {"fixed expense": expense[0],
-                   "variable expense": expense[1],
-                   "capital": expense[2],
-                   "inventory": [expense[3], expense[3]],
-                   "visited": expense[5]}
+    store_books = {"expense": expense[EXPENSE_INDX],
+                   "capital": expense[CAPITAL_INDX]}
     return Agent(name=name, attrs=store_books, action=mp_action)
 
 
-def calc_util(stores):
-    return random.random()
+def create_bb(name):
+    """
+    Create a big box store.
+    """
+    global bb_capital
+
+    bb_book = {"expense": 150,
+               "capital": bb_capital}
+    return Agent(name=name, attrs=bb_book, action=bb_action)
+
+
+def bb_action(bb):
+    """
+    Deduct expense from the capital of big box and
+    check if big box goes out of business.
+    """
+    bb["capital"] -= bb["expense"]
+    if DEBUG:
+        print("       ", bb, "has a capital of ", bb["capital"])
+    if bb["capital"] <= 0:
+        bb.die()
+        if DEBUG:
+            print("       ", bb, "is out of business.")
+    return True
+
+
+def get_util(store):
+    """
+    Get utility depending on the store type.
+    """
+    global mp_pref
+
+    if store.primary_group() == groups[BB_INDX]:
+        return calc_util(store)
+    else:
+        return calc_util(store) + mp_pref
+
+
+def consumer_action(consumer):
+    """
+    Check shops near consumer and
+    consumer decide where to shop at.
+    """
+    global hood_size
+    nearby_neighbors = town.get_moore_hood(consumer,
+                                           hood_size=hood_size)
+    store_to_go = None
+    max_util = 0.0
+    for neighbors in nearby_neighbors:
+        neighbor = nearby_neighbors[neighbors]
+        if (neighbor.isactive() and (neighbor.primary_group()
+           != groups[CONSUMER_INDX])):
+            if sells_good(neighbor, consumer, groups):
+                curr_store_util = get_util(neighbor)
+                if curr_store_util > max_util:
+                    max_util = curr_store_util
+                    store_to_go = neighbor
+    if store_to_go is not None:
+        transaction(store_to_go, consumer)
+        if DEBUG:
+            print("     someone shopped at ", store_to_go)
+    consumer["item needed"] = get_rand_good_type()
+    return False
 
 
 def transaction(store, consumer):
     """
-    Calcuates the expense and the revenue of the store passed in
-        after a transaction with the consumer passed in.
+    Add money to the store's capital from consumer.
     """
-    store["visited"] += 1
     store["capital"] += consumer["spending power"]
-    store["inventory"][1] -= 1
-    if store["inventory"][1] == 1:
-        store["capital"] -= (
-            store["variable expense"])
-        store["inventory"][1] += (
-            store["inventory"][0])
-    if store["capital"] <= 0:
-        print("     ", store, "is out of buisness")
-        store.die()
+    # print("   ", consumer, "spend money at ", store)
+
+
+def calc_util(stores):
+    """
+    calculate utility for stores.
+    """
+    return random.random()
+
+
+def mp_action(mp):
+    """
+    deduct expenses from mom and pop stores and
+    check if mom and pop store goes out or business.
+    """
+
+    mp["capital"] -= mp["expense"]
     if DEBUG:
-        print("     ", store, "has a capital of", store["capital"],
-              "and inventory of", store["inventory"][1])
-
-
-def get_store_census(town):
-    to_print = " ".join(["\n==================\n",
-                         "Store census for period ",
-                         str(town.get_periods()), ":\n",
-                         "==================\n"])
-    for i in range(1, 6):
-        for store in groups[i]:
-            if groups[i][store]["capital"] > -1:
-                to_print = " ".join([to_print, str(groups[i][store]),
-                                     "\n  Capital: ",
-                                     str(groups[i][store]["capital"]),
-                                     "\n  Inventory: ",
-                                     str((groups[i][store]
-                                          )["inventory"][1]),
-                                     "\n  ",
-                                     str((groups[i][store])["visited"])])
-                if (groups[i][store])["visited"] == 1:
-                    to_print = " ".join([to_print,
-                                         " consumer visited this store",
-                                         " in the last period.\n"])
-                else:
-                    to_print = " ".join([to_print,
-                                         " consumers visited this store",
-                                         " in the last period.\n"])
-    town.user.tell(to_print)
+        print("       ", mp, "has a capital of ", mp["capital"])
+    if mp["capital"] <= 0:
+        mp.die()
+        if DEBUG:
+            print("       ", mp, "is out of business.")
+    return True
 
 
 def town_action(town):
     """
-    The action that will be taken every turn.
-    Loops through the town env and finds the consumer agents.
-    The consumer agents are assigned their neighbors,
-        and loop through the neighbors to determine which is a store
-        and carries out the transaction.
+    check the period and decide when to add
+    the big box store
     """
     global groups
-    global mp_pref
-    global hood_size
-    global store_census
+    global period
 
-    for y in range(town.height):
-        for x in range(town.width):
-            curr_consumer = town.get_agent_at(x, y)
-            if (curr_consumer is not None
-                    and (curr_consumer.primary_group()
-                         == groups[CONSUMER_INDX])):
-                if DEBUG:
-                    print(" ".join(["Checking around consumer",
-                                    str(curr_consumer.get_pos()), "..."]))
-                nearby_neighbors = town.get_moore_hood(curr_consumer,
-                                                       hood_size=hood_size)
-                store_to_go = None
-                max_util = 0.0
-                for neighbors in nearby_neighbors:
-                    neighbor = nearby_neighbors[neighbors]
-                    if (neighbor.isactive()
-                            and neighbor.primary_group()
-                        != groups[CONSUMER_INDX]
-                            and neighbor["capital"] > -1):
-                        curr_store_util = 0.0
-                        if neighbor["visited"] > 0:
-                            neighbor["visited"] = 0
-                        neighbor["capital"] -= (
-                            neighbor["fixed expense"])
-                        if (neighbor.primary_group()
-                           == groups[BB_INDX]):
-                            curr_store_util = calc_util(neighbor)
-                            if DEBUG:
-                                print(" ".join(["   Getting util from bb ",
-                                                str(neighbor.get_pos()), "\n",
-                                                "      Utility from big box:",
-                                                str(curr_store_util)]))
-                        else:
-                            if DEBUG:
-                                print("   Checking if mom and pop at "
-                                      + str(neighbor.get_pos()) + " has "
-                                      + curr_consumer["item needed"]
-                                      + "...")
-                            if (curr_consumer["item needed"] in
-                                    neighbor.name):
-                                curr_store_util = (calc_util(neighbor)
-                                                   + mp_pref)
-                                if DEBUG:
-                                    print("     ", neighbor, "has item")
-                                    print("      Getting util from mp"
-                                          + str(neighbor.get_pos()) + "...")
-                                    print("      Utility from mom and pop:",
-                                          curr_store_util)
-                            else:
-                                if DEBUG:
-                                    print("     ", neighbor,
-                                          "does not have item")
-                        if curr_store_util > max_util:
-                            max_util = curr_store_util
-                            store_to_go = neighbor
-                curr_consumer["last utils"] = max_util
-                if store_to_go is not None:
-                    if DEBUG:
-                        print("   Max utility was", max_util)
-                        print("   Spending $"
-                              + str(curr_consumer["spending power"])
-                              + " at " + str(store_to_go) + "...")
-                    transaction(store_to_go, curr_consumer)
-    if DEBUG or store_census:
-        get_store_census(town)
-
-
-def consumer_action(consumer):
-    return False
-
-
-def bb_action(bb):
-    return True
-
-
-def mp_action(mp):
-    return True
+    if town.get_periods() == period:
+        new_bb = create_bb("Big Box")
+        groups[BB_INDX] += new_bb
+        town.place_member(new_bb)
 
 
 def set_up(props=None):
     """
-    A func to set up run that can also be used by test code.
+    Create an Env for Big box.
     """
     global town
     global groups
     global mp_pref
     global hood_size
     global store_census
+    global period
+    global bb_capital
 
     pa = get_props(MODEL_NAME, props)
 
     width = pa.get("grid_width", DEF_WIDTH)
     height = pa.get("grid_height", DEF_HEIGHT)
     num_consumers = pa.get("consumer_num", NUM_OF_CONSUMERS)
-    num_bb = NUM_OF_BB
     num_mp = pa.get("mp_num", NUM_OF_MP)
     mp_pref = pa.get("mp_pref", MP_PREF)
     hood_size = pa.get("hood_size", HOOD_SIZE)
-    store_census = pa.get("store_census", False)
+    multiplier = pa.get("multiple", MULTIPLIER)
+    bb_capital = multiplier * STANDARD
+    period = pa.get("period", PERIOD)
 
-    consumer_group = Composite("Consumer", {"color": GRAY})
+    consumer_group = Composite("Consumer", {"color": GRAY},
+                               member_creator=create_consumer,
+                               num_members=num_consumers)
     bb_group = Composite("Big box", {"color": BLUE})
     groups = []
     groups.append(consumer_group)
@@ -279,11 +230,7 @@ def set_up(props=None):
     for stores in range(0, len(mp_stores)):
         store_name = list(mp_stores.keys())[stores]
         groups.append(Composite(store_name,
-                                {"color": mp_stores[store_name][COLOR_INDEX]}))
-    for c in range(0, num_consumers):
-        groups[CONSUMER_INDX] += create_consumer("Consumer " + str(c))
-    for b in range(0, num_bb):
-        groups[BB_INDX] += create_bb("Big box " + str(b))
+                                {"color": mp_stores[store_name][COLOR_INDX]}))
     for m in range(0, num_mp):
         rand = random.randint(2, len(groups) - 1)
         groups[rand] += create_mp(groups[rand], m)
@@ -305,16 +252,6 @@ def bb_unrestorable(env):
     town = env
     mp_pref = env.props["mp_pref"]
     hood_size = env.props["hood_size"]
-    store_census = env.props["store_census"]
-
-    consumer_group = env.registry["Consumer"]
-    bb_group = env.registry["Big box"]
-    groups = []
-    groups.append(consumer_group)
-    groups.append(bb_group)
-    for stores in range(0, len(mp_stores)):
-        store_name = list(mp_stores.keys())[stores]
-        groups.append(env.registry[store_name])
 
 
 def main():

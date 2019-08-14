@@ -41,13 +41,6 @@
     "hival": 5,
     "lowval": 1
   },
-  "store_census": {
-    "val": false,
-    "question": "Show stores census at the end of every period?",
-    "atype": "BOOL",
-    "hival": false,
-    "lowval": true
-  },
   "multiple": {
     "val": 10,
     "question": "How many times of capital of mom and pop should the capital of big box be?",
