@@ -7,7 +7,7 @@ and moves them around randomly.
 from indra.utils import get_props
 from indra.agent import Agent
 from indra.composite import Composite
-# from indra.space import DEF_HEIGHT, DEF_WIDTH
+from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.env import Env
 from indra.display_methods import RED, BLUE
 
@@ -38,9 +38,6 @@ DEF_NUM_BLUE = 1
 DEF_NUM_RED = 1
 DEF_CYCLE = 7
 
-DEF_HEIGHT = 50
-DEF_WIDTH = 50
-
 girlfriend = None
 ex_boyfriend = None
 env = None
@@ -67,6 +64,7 @@ def girlfriend_action(agent):
     global girlfriend_start
 
     girlfriend_going = False
+    # print("GF here")
 
     if agent["state"] == PR:
         if girlfriend_cycle is None:
@@ -74,19 +72,21 @@ def girlfriend_action(agent):
             girlfriend_start = period
 
         girlfriend_going = get_girlfriend_decision()
-        if girlfriend_going and boyfriend_going:
-            agent["state"] = RC
-        else:
-            agent["state"] = CD
-            girlfriend_start += 1
+        if girlfriend_going:
+            if girlfriend_going and boyfriend_going:
+                agent["state"] = RC
+            else:
+                agent["state"] = CD
+                girlfriend_start += 1
 
     elif agent["state"] == RC:
         girlfriend_going = get_girlfriend_decision()
-        if girlfriend_going and boyfriend_going:
-            girlfriend_cycle = None
-            agent["state"] = PR
-        else:
-            agent["state"] = SU
+        if girlfriend_going:
+            if not boyfriend_going:
+                girlfriend_cycle = None
+                agent["state"] = PR
+            else:
+                agent["state"] = SU
 
     elif agent["state"] == CD:
         girlfriend_going = get_girlfriend_decision()
@@ -94,11 +94,15 @@ def girlfriend_action(agent):
             agent["state"] = RC
 
     else:
-        pass
+        print("SUCCESS!!!!")
+
+    print("State: ", agent["state"])
 
     if girlfriend_going:
+        # print("GF going")
         return False
     else:
+        # print("GF not going")
         return True
 
 
@@ -109,19 +113,17 @@ def boyfriend_action(agent):
     global boyfriend_going
 
     period += 1
-
-    # if ex_boyfriend_start is None:
-    #     decide = random.randint(0,1)
-    #     if decide:
-    #         ex_boyfriend_start = period
-    #         boyfriend_going = True
+    # print("Period: ", period)
+    # print("Cycle: ", agent['cycle'])
 
     if period % agent["cycle"] == 0:
+        # print("BF Going")
         boyfriend_going = True
         # return False means to move
         return False
 
     else:
+        # print("BF not going")
         boyfriend_going = False
 
     return True
