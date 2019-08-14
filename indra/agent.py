@@ -258,6 +258,12 @@ class Agent(object):
     def __getitem__(self, key):
         return self.attrs[key]
 
+    def get(self, key, default=None):
+        if key in self.attrs:
+            return self.__getitem__(key)
+        else:
+            return default
+
     def __setitem__(self, key, value):
         self.attrs[key] = value
 
