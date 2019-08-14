@@ -207,7 +207,18 @@ class Space(Composite):
         """
         return bound(y, 0, self.height - 1)
 
+    def get_row_view(self, x, y, distance):
+        pass
+
+    def get_col_view(self, x, y, distance):
+        pass
+
     def get_square_view(self, x, y, distance):
+        """
+        Return set of coords (x1, x2, y1, y2) that are the
+        corners of a square... *unless* those corners could
+        be off the grid. In that case, pull them back in bounds.
+        """
         low_x = x - distance
         high_x = x + distance
         low_y = y - distance
@@ -422,11 +433,6 @@ class Space(Composite):
                     moore_hood += neighbor
         if include_self:
             moore_hood += self.get_agent_at(agent.get_x(), agent.get_y())
-
-        if DEBUG:
-            print(agent)
-            for agents in moore_hood:
-                print("  ", moore_hood[agents])
 
         if agent.get("save_neighbors", False):
             agent.neighbors = moore_hood

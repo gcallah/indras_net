@@ -34,13 +34,8 @@ def calc_angle(agent1, agent2):
     x = pos2[X] - pos1[X]
     y = pos2[Y] - pos1[Y]
     angle = math.degrees(math.atan2(y, x))
-<<<<<<< HEAD
-    print("The required angle is " + str(angle))
-    angle = angle if angle >= 0 else angle + FULL_CIRCLE
-=======
     if angle < 0:
         angle = angle + FULL_CIRCLE
->>>>>>> 631d2d26c65461749f54046dcfb88d2799862dbe
     return angle
 
 
