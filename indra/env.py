@@ -333,7 +333,8 @@ class Env(Space):
 
                 line_plot = disp.LineGraph(self.plot_title,
                                            data, period,
-                                           is_headless=self.headless())
+                                           is_headless=self.headless(),
+                                           attrs=self.attrs)
                 line_plot.show()
                 return line_plot
             except Exception as e:

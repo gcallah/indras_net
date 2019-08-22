@@ -1,5 +1,5 @@
 """
-    This is the fashion model re-written in indra.
+A model to simulate the spread of fire in a forest.
 """
 
 from indra.utils import get_props

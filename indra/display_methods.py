@@ -21,7 +21,7 @@ user_type = os.getenv("user_type", TERMINAL)
 if user_type != API:
     try:
         import matplotlib.pyplot as plt
-        import matplotlib.animation as animation
+        # import matplotlib.animation as animation
         import numpy as np
         import pandas as pd
         import seaborn as sns
@@ -220,60 +220,89 @@ class LineGraph():
     thing to graph.
     data_points is the length of the x-axis.
     """
-    def __init__(self, title, varieties, data_points,
-                 anim=False, data_func=None, is_headless=False, legend_pos=4):
+    def __init__(self, title, varieties, data_points, attrs,
+                 anim=False, data_func=None, is_headless=False):
         global anim_func
 
         plt.close()
+        self.legend = ["Type"]
         self.title = title
-        self.anim = anim
-        self.data_func = data_func
+        # self.anim = anim
+        # self.data_func = data_func
         for i in varieties:
             data_points = len(varieties[i]["data"])
             break
-        self.draw_graph(data_points, varieties)
         self.headless = is_headless
+        self.draw_graph(data_points, varieties, attrs)
 
-        if anim and not self.headless:
-            anim_func = animation.FuncAnimation(self.fig,
-                                                self.update_plot,
-                                                frames=1000,
-                                                interval=500,
-                                                blit=False)
+        # if anim and not self.headless:
+        #     anim_func = animation.FuncAnimation(self.fig,
+        #                                         self.update_plot,
+        #                                         frames=1000,
+        #                                         interval=500,
+        #                                         blit=False)
 
     @expects_plt
-    def draw_graph(self, data_points, varieties):
+    def draw_graph(self, data_points, varieties, attrs):
         """
         Draw all elements of the graph.
         """
-        self.fig, self.ax = plt.subplots()
+        # fig, ax = plt.subplots()
         x = np.arange(0, data_points)
-        self.create_lines(x, self.ax, varieties)
-        self.ax.legend()
-        self.ax.set_title(self.title)
+        lines = self.create_lines(x, varieties)
+        # ax.legend(self.legend)
+        sns.relplot("x", "y", data=lines, kind="line",
+                    hue="color", palette=colors_dict)
+        # if attrs is not None:
+        #     if "show_xy_labels" not in attrs:
+        #         ax.set_xlabel('')
+        #         ax.set_ylabel('')
+        #     if "hide_xy_ticks" in attrs:
+        #         ax.set_yticklabels([])
+        #         ax.set_xticklabels([])
+        #     if "hide_grid_lines" in attrs:
+        #         sns.set_style("whitegrid", {"axes.grid": False})
+        #     if "legend_pos" in attrs:
+        #         legend_pos = attrs["legend_pos"]
+        #     if "hide_legend" not in attrs:
+        #         pass
+        #         # handles, _ = g.get_legend_handles_labels()
+        #         # g.legend(handles, self.legend, loc=legend_pos)
+        #     elif "hide_legend" in attrs:
+        #         pass
+        #         #g.legend_.remove()
+        # ax.set_title(self.title)
+        plt.show()
 
-    def create_lines(self, x, ax, varieties):
+    def create_lines(self, x, varieties):
         """
         Draw just the data portion.
         """
-        self.lines = []
+        lines = pd.DataFrame()
         for i, var in enumerate(varieties):
+            self.legend.append(var)
             data = varieties[var]["data"]
             color = get_color(varieties[var], i)
-            y = np.array(data)
-            ax.plot(x, y, linewidth=2, label=var, alpha=1.0, c=color)
+            x_array = np.array(x)
+            y_array = np.array(data)
+            line = pd.DataFrame({"x": x_array,
+                                 "y": y_array,
+                                 "color": color,
+                                 "var": var})
+            lines = lines.append(line, ignore_index=True, sort=False)
+        return lines
 
     @expects_plt
     def show(self):
         """
         Display the plot.
         """
-        if not self.headless:
-            plt.show()
-        else:
-            file = io.BytesIO()
-            plt.savefig(file, format="png")
-            return file
+        # if not self.headless:
+        #     plt.show()
+        # else:
+        #     file = io.BytesIO()
+        #     plt.savefig(file, format="png")
+        #     return file
 
     @expects_plt
     def update_plot(self, i):
@@ -292,9 +321,8 @@ class ScatterPlot():
     We are going to use a class here to save state for our animation
     """
     @expects_plt
-    def __init__(self, title, varieties, width, height,
-                 anim=True, data_func=None, is_headless=False,
-                 attrs=None):
+    def __init__(self, title, varieties, width, height, attrs,
+                 anim=True, data_func=None, is_headless=False):
         """
         Setup a scatter plot.
         varieties contains the different types of
@@ -324,11 +352,12 @@ class ScatterPlot():
                             style="marker", markers=markers, s=size)
         if attrs is not None:
             if "change_grid_spacing" in attrs:
-                change_grid_spacing = attrs["change_grid_spacing"]
+                begin_index = attrs["change_grid_spacing"][0]
+                change_grid_spacing = attrs["change_grid_spacing"][1]
                 start, end = ax.get_xlim()
-                ax.xaxis.set_ticks(np.arange(0.5,
+                ax.xaxis.set_ticks(np.arange(begin_index,
                                              end, change_grid_spacing))
-                ax.yaxis.set_ticks(np.arange(0.5,
+                ax.yaxis.set_ticks(np.arange(begin_index,
                                              end, change_grid_spacing))
             if "show_xy_labels" not in attrs:
                 ax.set_xlabel('')

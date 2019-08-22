@@ -76,8 +76,8 @@ def check_for_new_agents(agent):
                 new_x = curr_x + x
                 new_y = curr_y + y
                 if gameoflife_env.get_agent_at(new_x, new_y) is None:
-                    x1, x2, y1, y2 = gameoflife_env.get_square_view(new_x,
-                                                                    new_y, 1)
+                    x1, x2, y1, y2 = gameoflife_env.get_moore_hood_idx(new_x,
+                                                                       new_y)
                     if apply_dead_rules(new_x, new_y, x1, x2, y1, y2):
                         to_come_alive.append((new_x, new_y))
     return to_come_alive
@@ -299,7 +299,7 @@ def set_up(props=None):
                          width=width,
                          members=groups,
                          attrs={"size": 100,
-                                "change_grid_spacing": 1,
+                                "change_grid_spacing": (0.5, 1),
                                 "hide_xy_ticks": True,
                                 "hide_legend": True},
                          random_placing=False,

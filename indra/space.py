@@ -207,7 +207,7 @@ class Space(Composite):
         """
         return bound(y, 0, self.height - 1)
 
-    def get_square_view(self, x, y, distance):
+    def get_moore_hood_idx(self, x, y, distance=1):
         low_x = x - distance
         high_x = x + distance
         low_y = y - distance
@@ -319,7 +319,6 @@ class Space(Composite):
                     and "save_neighbors" in agent
                     and agent["save_neighbors"]
                     and agent.neighbors):
-                print("Using saved hood")
                 return agent.neighbors
             return hood_func(*args, **kwargs)
         return wrapper
@@ -417,9 +416,9 @@ class Space(Composite):
         Takes in an agent and returns a Composite of its Moore neighbors.
         """
         moore_hood = Composite("Moore neighbors")
-        x1, x2, y1, y2 = self.get_square_view(agent.get_x(),
-                                              agent.get_y(),
-                                              hood_size)
+        x1, x2, y1, y2 = self.get_moore_hood_idx(agent.get_x(),
+                                                 agent.get_y(),
+                                                 hood_size)
 
         for x in range(x1, x2 + 1):
             for y in range(y1, y2 + 1):
@@ -429,10 +428,6 @@ class Space(Composite):
                     moore_hood += neighbor
         if include_self:
             moore_hood += self.get_agent_at(agent.get_x(), agent.get_y())
-        print(agent)
-        for agents in moore_hood:
-            print("  ", moore_hood[agents])
-
         if save_neighbors:
             agent.neighbors = moore_hood
         return moore_hood
