@@ -247,32 +247,31 @@ class LineGraph():
         """
         Draw all elements of the graph.
         """
-        # fig, ax = plt.subplots()
+        legend_pos = "upper left"
+
+        fig, ax = plt.subplots()
+        ax.legend(self.legend)
+        ax.set_title(self.title)
         x = np.arange(0, data_points)
         lines = self.create_lines(x, varieties)
-        # ax.legend(self.legend)
-        sns.relplot("x", "y", data=lines, kind="line",
-                    hue="color", palette=colors_dict)
-        # if attrs is not None:
-        #     if "show_xy_labels" not in attrs:
-        #         ax.set_xlabel('')
-        #         ax.set_ylabel('')
-        #     if "hide_xy_ticks" in attrs:
-        #         ax.set_yticklabels([])
-        #         ax.set_xticklabels([])
-        #     if "hide_grid_lines" in attrs:
-        #         sns.set_style("whitegrid", {"axes.grid": False})
-        #     if "legend_pos" in attrs:
-        #         legend_pos = attrs["legend_pos"]
-        #     if "hide_legend" not in attrs:
-        #         pass
-        #         # handles, _ = g.get_legend_handles_labels()
-        #         # g.legend(handles, self.legend, loc=legend_pos)
-        #     elif "hide_legend" in attrs:
-        #         pass
-        #         #g.legend_.remove()
-        # ax.set_title(self.title)
-        plt.show()
+        g = sns.lineplot("x", "y", data=lines,
+                         hue="color", palette=colors_dict)
+        if attrs is not None:
+            if "show_xy_labels" not in attrs:
+                ax.set_xlabel('')
+                ax.set_ylabel('')
+            if "hide_xy_ticks" in attrs:
+                ax.set_yticklabels([])
+                ax.set_xticklabels([])
+            if "hide_grid_lines" in attrs:
+                sns.set_style("whitegrid", {"axes.grid": False})
+            if "legend_pos" in attrs:
+                legend_pos = attrs["legend_pos"]
+            if "hide_legend" not in attrs:
+                handles, _ = g.get_legend_handles_labels()
+                g.legend(handles, self.legend, loc=legend_pos)
+            elif "hide_legend" in attrs:
+                g.legend_.remove()
 
     def create_lines(self, x, varieties):
         """
@@ -297,12 +296,12 @@ class LineGraph():
         """
         Display the plot.
         """
-        # if not self.headless:
-        #     plt.show()
-        # else:
-        #     file = io.BytesIO()
-        #     plt.savefig(file, format="png")
-        #     return file
+        if not self.headless:
+            plt.show()
+        else:
+            file = io.BytesIO()
+            plt.savefig(file, format="png")
+            return file
 
     @expects_plt
     def update_plot(self, i):
