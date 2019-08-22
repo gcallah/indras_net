@@ -1,6 +1,7 @@
 """
-Abelian sandpile model
+Abelian sandpile model.
 """
+
 from indra.utils import get_props
 from indra.agent import Agent
 from indra.composite import Composite

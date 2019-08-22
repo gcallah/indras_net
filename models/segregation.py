@@ -1,6 +1,7 @@
 """
-    This is Schelling's segregation model re-written in Indra V2.
+Schelling's segregation model.
 """
+
 import random
 from indra.utils import get_props
 from indra.agent import Agent

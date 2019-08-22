@@ -1,6 +1,7 @@
 """
 Big box model for simulating the behaviors of consumers.
 """
+
 import random
 from indra.utils import get_props
 from indra.agent import Agent

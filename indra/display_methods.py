@@ -257,6 +257,14 @@ class LineGraph():
         g = sns.lineplot("x", "y", data=lines,
                          hue="color", palette=colors_dict)
         if attrs is not None:
+            """
+            By default:
+            Hides x and y labels (x on x axis and y on y axis).
+            Shows x and y ticks (numbers on x and y axis).
+            Shows grid lines (line on the ticks on x and y axis).
+            Legend is located on top left.
+            Shows legend.
+            """
             if "show_xy_labels" not in attrs:
                 ax.set_xlabel('')
                 ax.set_ylabel('')
@@ -350,14 +358,28 @@ class ScatterPlot():
                             hue="color", palette=colors_dict,
                             style="marker", markers=markers, s=size)
         if attrs is not None:
+            """
+            By default:
+            Grid spacing is every 10, starting from 0 (the begin index).
+            Hides x and y labels (x on x axis and y on y axis).
+            Shows x and y ticks (numbers on x and y axis).
+            Shows grid lines (line on the ticks on x and y axis).
+            Legend is located on top left.
+            Shows legend.
+            """
             if "change_grid_spacing" in attrs:
+                """
+                Begin index is where the grid spacing would start from.
+                For example, if begin index is 6 and grid spacing is 9,
+                    the axis lines would be drawn from 6, then 15, 21, etc.
+                """
                 begin_index = attrs["change_grid_spacing"][0]
-                change_grid_spacing = attrs["change_grid_spacing"][1]
+                grid_spacing = attrs["change_grid_spacing"][1]
                 start, end = ax.get_xlim()
                 ax.xaxis.set_ticks(np.arange(begin_index,
-                                             end, change_grid_spacing))
+                                             end, grid_spacing))
                 ax.yaxis.set_ticks(np.arange(begin_index,
-                                             end, change_grid_spacing))
+                                             end, grid_spacing))
             if "show_xy_labels" not in attrs:
                 ax.set_xlabel('')
                 ax.set_ylabel('')
@@ -374,6 +396,7 @@ class ScatterPlot():
             elif "hide_legend" in attrs:
                 g.legend_.remove()
         ax.set_title(title)
+
         # if anim and not self.headless:
         #     anim_func = animation.FuncAnimation(fig,
         #                                         self.update_plot,

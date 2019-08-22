@@ -1,6 +1,7 @@
 """
-Wolfram's cellular automata model
+Wolfram's cellular automata model.
 """
+
 import ast
 
 from indra.utils import get_props

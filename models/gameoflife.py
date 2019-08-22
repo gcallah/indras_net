@@ -1,5 +1,5 @@
 """
-Conway's Game of Life model
+Conway's Game of Life model.
 """
 
 from indra.utils import get_props
