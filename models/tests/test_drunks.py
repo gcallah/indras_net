@@ -24,5 +24,12 @@ class DrunksTestCase(TestCase):
         agent = drunks.create_non_drinker("non-drunk", 0)
         self.assertEqual(agent.name, "non-drunk0")
 
+    def test_create_drinker(self):
+        """
+        Test creating a drinker.
+        """
+        agent = drunks.create_drinker("drunk", 0)
+        self.assertEqual(agent.name, "drunk0")
+
     if __name__ == '__main__':
         main()

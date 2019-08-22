@@ -207,7 +207,18 @@ class Space(Composite):
         """
         return bound(y, 0, self.height - 1)
 
+    def get_row_view(self, x, y, distance):
+        pass
+
+    def get_col_view(self, x, y, distance):
+        pass
+
     def get_moore_hood_idx(self, x, y, distance=1):
+        """
+        Return set of coords (x1, x2, y1, y2) that are the
+        corners of a square... *unless* those corners could
+        be off the grid. In that case, pull them back in bounds.
+        """
         low_x = x - distance
         high_x = x + distance
         low_y = y - distance
@@ -315,10 +326,8 @@ class Space(Composite):
         @wraps(hood_func)
         def wrapper(*args, **kwargs):
             agent = args[1]
-            if (not isinstance(agent, tuple)
-                    and "save_neighbors" in agent
-                    and agent["save_neighbors"]
-                    and agent.neighbors):
+            if (agent.get("save_neighbors", False) and agent.neighbors is not
+                    None):
                 return agent.neighbors
             return hood_func(*args, **kwargs)
         return wrapper
@@ -348,12 +357,8 @@ class Space(Composite):
         """
         if agent is not None:
             x_hood = Composite("x neighbors")
-            if isinstance(agent, tuple):
-                agent_x = agent[0]
-                agent_y = agent[1]
-            else:
-                agent_x = agent.get_x()
-                agent_y = agent.get_y()
+            agent_x = agent.get_x()
+            agent_y = agent.get_y()
             neighbor_x_coords = []
             for i in range(-width, 0):
                 neighbor_x_coords.append(i)
@@ -366,7 +371,7 @@ class Space(Composite):
                 if not out_of_bounds(neighbor_x, agent_y, 0, 0,
                                      self.width, self.height):
                     x_hood += self.get_agent_at(neighbor_x, agent_y)
-            if save_neighbors and not isinstance(agent, tuple):
+            if save_neighbors:
                 agent.neighbors = x_hood
             return x_hood
 
@@ -405,7 +410,7 @@ class Space(Composite):
         Von Neumann neighbors.
         """
         vonneumann_hood = self.get_x_hood(agent) + self.get_y_hood(agent)
-        if save_neighbors:
+        if agent.get("save_neighbors", False):
             agent.neighbors = vonneumann_hood
         return vonneumann_hood
 
@@ -428,7 +433,7 @@ class Space(Composite):
                     moore_hood += neighbor
         if include_self:
             moore_hood += self.get_agent_at(agent.get_x(), agent.get_y())
-        if save_neighbors:
+        if agent.get("save_neighbors", False):
             agent.neighbors = moore_hood
         return moore_hood
 

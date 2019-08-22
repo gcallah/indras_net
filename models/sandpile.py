@@ -22,7 +22,9 @@ def create_agent(x, y):
     """
     Create an agent with the passed x, y value as its name.
     """
-    return Agent(name=("(%d,%d)" % (x, y)), action=spagent_action)
+    return Agent(name=("(%d,%d)" % (x, y)),
+                 action=spagent_action,
+                 attrs={"save_neighbors": True})
 
 
 def add_grain(agent):
@@ -59,7 +61,7 @@ def topple(agent):
     if DEBUG:
         print("Sandpile in", agent.pos, "is toppling")
     if agent.neighbors is None:
-        sandpile_env.get_vonneumann_hood(agent, save_neighbors=True)
+        sandpile_env.get_vonneumann_hood(agent)
     for neighbor in agent.neighbors:
         add_grain(agent.neighbors[neighbor])
 

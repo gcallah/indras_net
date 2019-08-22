@@ -76,8 +76,7 @@ def tree_action(agent):
     old_state = agent["state"]
     if is_healthy(agent):
         nearby_fires = Composite(agent.name + "'s nearby fires")
-        neighbors = agent.locator.get_moore_hood(agent,
-                                                 save_neighbors=True)
+        neighbors = agent.locator.get_moore_hood(agent)
         if neighbors is not None:
             nearby_fires = neighbors.subset(is_on_fire, agent)
         if len(nearby_fires) > 0:
@@ -104,7 +103,8 @@ def plant_tree(name, i, props=None, state=HE):
     name = TREE_PREFIX
     return Agent(name + str(i),
                  action=tree_action,
-                 attrs={"state": state})
+                 attrs={"state": state,
+                        "save_neighbors": True})
 
 
 def set_up(props=None):

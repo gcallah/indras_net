@@ -9,7 +9,7 @@ from random import random
 from collections import OrderedDict
 
 
-DEBUG = False  # turns debugging code on or off
+DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
 # x and y indices
@@ -258,6 +258,12 @@ class Agent(object):
     def __getitem__(self, key):
         return self.attrs[key]
 
+    def get(self, key, default=None):
+        if key in self.attrs:
+            return self.__getitem__(key)
+        else:
+            return default
+
     def __setitem__(self, key, value):
         self.attrs[key] = value
 
@@ -336,6 +342,8 @@ class Agent(object):
         if (self.islocated() and self.locator is not None
                 and not self.locator.is_full()):
             if angle is not None:
+                if DEBUG:
+                    print("Using angled move")
                 new_xy = self.locator.point_from_vector(angle,
                                                         max_move, self.pos)
                 self.locator.place_member(self, max_move, new_xy)

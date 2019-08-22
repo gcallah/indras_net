@@ -26,7 +26,9 @@ def create_agent(x, y):
     """
     Create an agent with the passed x, y value as its name.
     """
-    return Agent(name=("(%d,%d)" % (x, y)), action=game_agent_action)
+    return Agent(name=("(%d,%d)" % (x, y)),
+                 action=game_agent_action,
+                 attrs={"save_neighbors": True})
 
 
 def apply_live_rules(agent):
@@ -128,7 +130,7 @@ def game_agent_action(agent):
         to_die = []
         reset_lists = False
 
-    ret = gameoflife_env.get_moore_hood(agent, save_neighbors=True)
+    ret = gameoflife_env.get_moore_hood(agent)
     gameoflife_env.registry["Moore neighbors"] = ret
     check_for_new_agents(agent)
     if apply_live_rules(agent):

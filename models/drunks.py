@@ -155,7 +155,7 @@ def set_up(props=None):
     population = len(drinkers) + len(non_drinkers)
     optimal_occupancy = int(population * 0.6)
 
-    bar = Env("env",
+    bar = Env("bar",
               height=pa.get('grid_height', DEF_HEIGHT),
               width=pa.get('grid_width', DEF_WIDTH),
               members=[drinkers, non_drinkers],
