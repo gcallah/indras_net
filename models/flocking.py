@@ -15,6 +15,7 @@ DEBUG2 = False  # turns deeper debugging code on or off
 
 DEF_NUM_BIRDS = 2
 DEF_DESIRED_DISTANCE = 2
+ACCEPTABLE_DEV = .05
 BIRD_MAX_MOVE = 1
 
 HALF_CIRCLE = 180
@@ -43,18 +44,20 @@ def bird_action(this_bird):
     nearest_bird = this_bird.locator.get_closest_agent(this_bird)
     if nearest_bird is not None:
         curr_distance = distance(this_bird, nearest_bird)
-        this_bird["angle"] = calc_angle(this_bird, nearest_bird)
         if DEBUG:
             print("Distance between ", nearest_bird, " and ", this_bird,
                   " is ", curr_distance)
+        if abs(curr_distance - DEF_DESIRED_DISTANCE) < (DEF_DESIRED_DISTANCE
+                                                        * ACCEPTABLE_DEV):
+            return True  # True return means agent is ok don't move!
+
+        this_bird["angle"] = calc_angle(this_bird, nearest_bird)
+        if DEBUG:
             print(this_bird.name, "'s angle rel. to ", nearest_bird.name,
                   "is", this_bird["angle"])
 
         if curr_distance < DEF_DESIRED_DISTANCE:
             this_bird["angle"] = invert_direction(this_bird["angle"])
-
-        if this_bird.name == "Birds1":
-            return True
 
     return False
 
