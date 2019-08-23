@@ -17,14 +17,16 @@ class ModelDetail extends Component {
         try{
             document.title = "Indra | Property";
             this.setState({ loadingData: true });
-            console.log(this.api_server + `${localStorage.getItem("menu_id")}`)
-            const properties = await axios.get(this.api_server + `${localStorage.getItem("menu_id")}`);
+            console.log(this.api_server
+                + `${localStorage.getItem("menu_id")}`)
+            const properties = await axios.get(this.api_server
+                + `${localStorage.getItem("menu_id")}`);
             this.setState({ model_details: properties.data });
             console.log(this.state.model_details)
             this.states(properties.data);
             this.errors(properties.data);
             this.setState({ loadingData: false });
-        }catch(e){
+        } catch(e) {
             console.log(e.message);
         }
 
@@ -68,13 +70,13 @@ class ModelDetail extends Component {
         let valid = this.checkValidity(name,value)
         model_detail[name]['disabledButton']=true
 
-        if (valid === 1){
+        if (valid === 1) {
             model_detail[name]['val']= value
             model_detail[name]['errorMessage']=""
             model_detail[name]['disabledButton']=false
             this.setState({model_details:model_detail})
 
-        } else if(valid === -1){
+        } else if(valid === -1) {
             model_detail[name]['errorMessage']="**Wrong Input Type"
             model_detail[name]['val']= this.state[name]['val']
             this.setState({model_details:model_detail})
@@ -94,7 +96,8 @@ class ModelDetail extends Component {
     checkValidity = (name,value) => {
         if (value <= this.state.model_details[name]['hival']
                 && value >= this.state.model_details[name]['lowval']){
-            if (this.state.model_details[name]['atype'] === 'INT' && !!(value%1)=== false){
+            if (this.state.model_details[name]['atype'] === 'INT'
+                && !!(value%1) === false) {
                 return 1
             }
             else if(this.state.model_details[name]['atype'] === 'DBL'){
