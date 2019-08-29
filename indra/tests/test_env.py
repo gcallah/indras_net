@@ -140,6 +140,9 @@ class EnvTestCase(TestCase):
         return True
 
     def test_from_json(self):
+        """
+        These tests are too tied to particular models!
+        """
         self.maxDiff = None
         tests_env = env_json_basic.ret()
         self.env = Env(name='Test env', serial_obj=tests_env)
@@ -151,9 +154,6 @@ class EnvTestCase(TestCase):
         self.env = Env(name='Test env', serial_obj=tests_env)
         self.assertEqual(str(type(self.env)), "<class 'indra.env.Env'>")
         tests_env = env_json_bacteria.ret()
-        self.env = Env(name='Test env', serial_obj=tests_env)
-        self.assertEqual(str(type(self.env)), "<class 'indra.env.Env'>")
-        tests_env = env_json_scheduler.ret()
         self.env = Env(name='Test env', serial_obj=tests_env)
         self.assertEqual(str(type(self.env)), "<class 'indra.env.Env'>")
         tests_env = env_json_flocking.ret()

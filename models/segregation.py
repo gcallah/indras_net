@@ -27,6 +27,9 @@ DEF_HOOD_SIZE = 1
 DEF_TOLERANCE = .5
 DEF_SIGMA = .2
 
+MAX_TOL = 0.1
+MIN_TOL = 0.9
+
 BLUE_TEAM = 0
 RED_TEAM = 1
 
@@ -35,6 +38,8 @@ HOOD_SIZE = 4
 NOT_ZERO = .001
 
 group_names = ["Blue Agent", "Red Agent"]
+
+group_suffix = "s"
 
 reds = None
 blues = None
@@ -51,8 +56,9 @@ fetched_moore_hood = 0
 
 def get_tolerance(default_tolerance, sigma):
     tol = random.gauss(default_tolerance, sigma)
-    tol = max(tol, 0.0)
-    tol = min(tol, 1.0)
+    # a low tolerance number here means high tolerance!
+    tol = max(tol, MAX_TOL)
+    tol = min(tol, MIN_TOL)
     return tol
 
 
@@ -86,7 +92,8 @@ def seg_agent_action(agent):
     if agent["hood_changed"]:
         ratio_same = 0
         neighbors = city.get_moore_hood(agent, hood_size=agent['hood_size'])
-        print("hood size = ", agent['hood_size'])
+        if DEBUG2:
+            print("hood size = ", agent['hood_size'])
         fetched_moore_hood += 1
         num_same = 0
         for neighbor in neighbors:
@@ -143,10 +150,12 @@ def set_up(props=None):
     global fetched_moore_hood
 
     pa = get_props(MODEL_NAME, props)
-    blue_agents = Composite(group_names[BLUE_TEAM] + " group", {"color": BLUE},
+    blue_agents = Composite(group_names[BLUE_TEAM] + group_suffix,
+                            {"color": BLUE},
                             props=pa, member_creator=create_agent,
                             num_members=pa.get('num_blue', NUM_BLUE))
-    red_agents = Composite(group_names[RED_TEAM] + " group", {"color": RED},
+    red_agents = Composite(group_names[RED_TEAM] + group_suffix,
+                           {"color": RED},
                            props=pa, member_creator=create_agent,
                            num_members=pa.get('num_red', NUM_RED))
     if DEBUG2:
@@ -162,13 +171,16 @@ def set_up(props=None):
 
 
 def sg_unrestorable(env):
+    """
+    This handles are unrestorable from JSON data.
+    """
     global blue_agents
     global red_agents
     global city
     global fetched_moore_hood
     city = env
-    blue_agents = env.registry[group_names[BLUE_TEAM] + 's']
-    red_agents = env.registry[group_names[RED_TEAM] + 's']
+    blue_agents = env.registry[group_names[BLUE_TEAM] + group_suffix]
+    red_agents = env.registry[group_names[RED_TEAM] + group_suffix]
 
 
 def main():

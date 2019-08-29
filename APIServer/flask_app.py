@@ -8,13 +8,15 @@ from indra.user import APIUser
 from models.run_dict import setup_dict
 from indra.agent import AgentEncoder
 from indra.env import Env
+# these imports must be automated somehow;
+# also, keep name constant and preface with model name, e.g.,
+# fashion.unrestorable()
 from models.sandpile import sp_unrestorable
 from models.bacteria import bt_unrestorable
 from models.bigbox import bb_unrestorable
 from models.fashion import fs_unrestorable
 from models.flocking import fl_unrestorable
 from models.fmarket import fm_unrestorable
-from models.scheduler import sd_unrestorable
 from models.segregation import sg_unrestorable
 from models.wolfsheep import ws_unrestorable
 from models.gameoflife import gl_unrestorable
@@ -126,6 +128,7 @@ class Run(Resource):
     def put(self, run_time):
         env_json = api.payload
         v = Env(name='API env', serial_obj=env_json)
+        # this should be dictionary lookup not if elif statements.
         if v.name == "Sandpile":
             sp_unrestorable(v)
         elif v.name == "Petrie dish":
@@ -138,8 +141,6 @@ class Run(Resource):
             fl_unrestorable(v)
         elif v.name == "fmarket":
             fm_unrestorable(v)
-        elif v.name == "scheduler":
-            sd_unrestorable(v)
         elif v.name == "A city":
             sg_unrestorable(v)
         elif v.name == "meadow":

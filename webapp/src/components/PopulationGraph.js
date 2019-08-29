@@ -2,18 +2,24 @@ import React from "react";
 import { LineChart } from 'react-chartkick'
 import 'chart.js'
 
-const FMARKET = 10
+const FMARKET = 5
+
 function PopulationGraph(props) {
     if (props.loadingData){
         var data=[]
         console.log("props.id = " + props.id)
         if (props.id != FMARKET){
             let env=props.env_file['pop_hist']['pops']
-            Object.keys(env).map((group,i_group)=> {
+            Object.keys(env).map((group, i_group) => {
                 console.log(props.env_file['members'][group]['attrs']['color'])
+                /*
+                 * Must determine what this code does and write it more clearly
+                 * if possible.
+                 */
                 return(
-                    data.push({name:group,color: props.env_file['members'][group]['attrs']['color'], data: {}}),
-                    Object.keys(env[group]).map((member, i_member)=>{
+                    data.push({name: group, color: props.env_file['members'][group]['attrs']['color'],
+                        data: {}}),
+                    Object.keys(env[group]).map((member, i_member) => {
                         console.log(member)
                         return(
                             data[i_group]['data'][member] = env[group][i_member]

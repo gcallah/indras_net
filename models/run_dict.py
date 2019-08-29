@@ -22,9 +22,6 @@ from models.sandpile import sandpile_action, spagent_action
 from models.segregation import main as semain
 from models.segregation import set_up as seset_up
 from models.segregation import seg_agent_action
-from models.scheduler import main as scmain
-from models.scheduler import set_up as scset_up
-from models.scheduler import sched_agent_action
 from models.wolfram import main as wfmain
 from models.wolfram import set_up as wfset_up
 from models.wolfram import wolfram_action, wfagent_action
@@ -43,7 +40,6 @@ rdict = {
     "fashion": famain,
     "forestfire": ffmain,
     "sandpile": spmain,
-    "scheduler": scmain,
     "segregation": semain,
     "wolfsheep": wsmain,
     "bacteria": bactmain,
@@ -58,7 +54,6 @@ setup_dict = {
     "fashion": faset_up,
     "forestfire": ffset_up,
     "sandpile": spset_up,
-    "scheduler": scset_up,
     "segregation": seset_up,
     "wolfsheep": wsset_up,
     "bacteria": bactset_up,
@@ -77,7 +72,6 @@ action_dict = {
     "sandpile_action": sandpile_action,
     "spagent_action": spagent_action,
     "seg_agent_action": seg_agent_action,
-    "sched_agent_action": sched_agent_action,
     "sheep_action": sheep_action,
     "wolf_action": wolf_action,
     "bacterium_action": bacterium_action,

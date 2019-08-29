@@ -35,7 +35,7 @@
       "lowval": 0.1
   },
   "tol_deviation": {
-      "val": 0.2,
+      "val": 0.1,
       "question": "What should the standard deviation of the agents' tolerance be?",
       "atype": "DBL",
       "hival": 0.3,
