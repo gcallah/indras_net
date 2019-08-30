@@ -12,7 +12,6 @@ class ModelDetail extends Component {
         env_file:{},
     }
 
-
     async componentDidMount() {
         try{
             document.title = "Indra | Property";
@@ -169,24 +168,28 @@ class ModelDetail extends Component {
                 {this.renderHeader()}
                 <br /><br />
                 <form>
+                    <div class ="container">
                     {Object.keys(this.state.model_details).map((item,i)=> {
                         if ('question' in this.state.model_details[item]){
                             return(
                             <div class="form-group">
-                                <label
-                                    key={i}>{this.state.model_details[item]['question']} {" "}
-                                </label>
-                                <input type={this.state.model_details[item]['atype']}
-                                class="col-sm-3 col-form-label m-4 mb-3"
-                                placeholder={this.state.model_details[item]['val']}
-                                onChange={this.propChanged} style={{width: 60}} name={item}/>
-                                <span style={{color:"red", fontSize: 12}}>
-                                {this.state.model_details[item]['errorMessage']}</span>
-                                <br/>
+                                <div>
+                                    <label class ="col-sm-4 col-md-4 col-lg-4"
+                                        key={i}>{this.state.model_details[item]['question']} {" "}
+                                    </label>
+                                    <input type={this.state.model_details[item]['atype']}
+                                    class="col-sm-2 col-md-2 col-lg-2" style={{fontSize:"15pt"}}
+                                    placeholder={this.state.model_details[item]['val']}
+                                    onChange={this.propChanged} /*style={{width: 60}} */ name={item}/>
+                                    <span class="col-sm-6 col-md-6 col-lg-6" style={{color:"red", fontSize: 12}}>
+                                    {this.state.model_details[item]['errorMessage']}</span>
+                                    <br/>
+                                </div>
                             </div>
                             )}
                         })
                     }
+                    </div>
                 </form>
                 <br /><br />
                 {this.renderSubmitButton()}
