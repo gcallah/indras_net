@@ -70,6 +70,24 @@ with open(filepath) as fp:
     setupCode += code[1]
     nb['cells'].append(nbf.v4.new_code_cell(setupCode))
 
+    # Running the model
+    nb['cells'].append(nbf.v4.new_markdown_cell
+                       ("You can run the model through the following command"))
+
+    nb['cells'].append(nbf.v4.new_code_cell("env.runN()"))
+
+    # Displaying the scatter graph
+    nb['cells'].append(nbf.v4.new_markdown_cell
+                       ("You can view the scatter graph through the following command"))
+
+    nb['cells'].append(nbf.v4.new_code_cell("env.scatter_graph()"))
+
+    # Displaying the line graph
+    nb['cells'].append(nbf.v4.new_markdown_cell
+                       ("You can view the line graph through the following command"))
+
+    nb['cells'].append(nbf.v4.new_code_cell("env.line_graph()"))
+
     # Finish making notebook and add notebook to
     # directory with the same name as the model
     fname = filename[:-3] + '.ipynb'
