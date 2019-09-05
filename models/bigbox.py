@@ -13,7 +13,7 @@ from indra.display_methods import BLACK, BLUE, GRAY, GREEN, RED, TAN, YELLOW
 MODEL_NAME = "bigbox"
 NUM_OF_CONSUMERS = 50
 NUM_OF_MP = 8
-DEBUG = True
+DEBUG = False
 
 CONSUMER_INDX = 0
 BB_INDX = 1
