@@ -8,6 +8,14 @@ import sys
 import os
 
 
+def skip_comments(fp, line):
+    if '"""' in line:
+        line = fp.readline()
+        while '"""' not in line:
+            line = fp.readline()
+        return = fp.readline()
+
+
 nb = nbf.v4.new_notebook()
 filename = sys.argv[-1]
 nb['cells'] = []
@@ -21,11 +29,7 @@ with open(filepath) as fp:
     line = fp.readline()
 
     #  Skip comments
-    if '"""' in line:
-        line = fp.readline()
-        while '"""' not in line:
-            line = fp.readline()
-        line = fp.readline()
+    line = skip_comments(fp, line)
 
     nb['cells'].append(nbf.v4.new_markdown_cell(
         "First we import all necessary files"))
