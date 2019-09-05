@@ -239,7 +239,7 @@ class Agent(object):
         return self.pos[Y]
 
     def __eq__(self, other):
-        if (type(self) != type(other) or len(self) != len(other)):
+        if type(self) != type(other) or len(self) != len(other):
             return False
         else:
             for key in self:

@@ -162,13 +162,13 @@ class Space(Composite):
         if members is not None:
             for nm, mbr in members.items():
                 if not is_composite(mbr):
-                    if (curr_col < self.width):
+                    if curr_col < self.width:
                         self.place_member(mbr, xy=(curr_col, curr_row))
                         if DEBUG:
                             print("Placing member at (" + str(curr_col) + ","
                                   + str(curr_row) + ")")
                         curr_col += 1
-                    if (curr_col == self.width):
+                    if curr_col == self.width:
                         if DEBUG:
                             print("Moving up a row from", curr_row,
                                   "to", curr_row + 1)
@@ -390,7 +390,7 @@ class Space(Composite):
         neighbor_y_coords = []
         for i in range(-height, 0):
             neighbor_y_coords.append(i)
-        if (include_self):
+        if include_self:
             neighbor_y_coords.append(0)
         for i in range(1, height + 1):
             neighbor_y_coords.append(i)
@@ -473,19 +473,19 @@ class Space(Composite):
 
         #  Adjust if the cur_x and cur_y are out of range
         if out_of_bounds(cur_x, cur_y, 0, 0, self.width, self.height):
-            if (cur_x == prev_x):
-                if (cur_y < 0):
+            if cur_x == prev_x:
+                if cur_y < 0:
                     return (cur_x, 0)
                 else:
                     return (cur_x, self.height - 1)
 
-            if (cur_y == prev_y):
-                if (cur_x < 0):
+            if cur_y == prev_y:
+                if cur_x < 0:
                     return (0, cur_y)
                 else:
                     return (self.width - 1, cur_y)
 
-            if (cur_x != prev_x and cur_y != prev_y):
+            if cur_x != prev_x and cur_y != prev_y:
                 slope = float((cur_y - prev_y) / (cur_x - prev_x))
 
                 # Calculate the intersection of the vector and Ox and Oy axes
@@ -504,13 +504,13 @@ class Space(Composite):
             #  3. If only one coordinate < 0
             #  4. If only one coordinate > grid size
 
-            if (cur_y < 0 and cur_x < 0):
+            if cur_y < 0 and cur_x < 0:
                 if x_intercept > 0:
                     return (x_intercept, 0)
                 else:
                     return (0, y_intercept)
 
-            elif (cur_y >= self.height and cur_x >= self.width):
+            elif cur_y >= self.height and cur_x >= self.width:
                 if x_horizontal < self.width:
                     cur_x = x_horizontal
                     cur_y = y_horizontal
@@ -519,7 +519,7 @@ class Space(Composite):
                     cur_y = y_vertical
                 return (cur_x, cur_y)
 
-            elif (cur_y * cur_x < 0):
+            elif cur_y * cur_x < 0:
                 if cur_x < 0:
                     cur_x = 0
                     cur_y = y_intercept
@@ -528,7 +528,7 @@ class Space(Composite):
                     cur_x = x_intercept
                 return (cur_x, cur_y)
 
-            elif (cur_x >= self.width or cur_y >= self.height):
+            elif cur_x >= self.width or cur_y >= self.height:
                 if cur_x >= self.width:
                     cur_x = x_vertical
                     cur_y = y_vertical
