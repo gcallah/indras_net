@@ -8,6 +8,7 @@ DOCKER_DIR = docker
 REQ_DIR = $(DOCKER_DIR)
 REPO = indras_net
 MODELS_DIR = models
+NB_DIR = notebooks
 WEB_DIR = webapp
 WEB_PUBLIC = $(WEB_DIR)/public
 WEB_SRC = $(WEB_DIR)/src
@@ -25,7 +26,15 @@ INCS = $(TEMPLATE_DIR)/head.txt $(TEMPLATE_DIR)/logo.txt $(TEMPLATE_DIR)/menu.tx
 
 HTMLFILES = $(shell ls $(PTML_DIR)/*.ptml | sed -e 's/.ptml/.html/' | sed -e 's/html_src\///')
 
+MODELFILES = $(shell ls $(MODELS_DIR)/*.py)
+
 FORCE:
+
+notebooks: $(MODELFILES)
+
+$(NB_DIR)/%.ipynb: $(MODELS_DIR)/%.py
+	python3 $(NB_DIR)/create_model_notebooks.py $<
+	git add $@
 
 create_dev_env:
 	pip3 install -r $(REQ_DIR)/requirements-dev.txt
