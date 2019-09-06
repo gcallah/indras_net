@@ -134,8 +134,8 @@ class ActionMenu extends Component {
 
     MenuItem = (i, action, text) => {
         return (
-        <a class="w-50 p-3 list-group-item list-group-item-action" key={i}>
-            <Link class="text-primary"
+        <a className="w-50 p-3 list-group-item list-group-item-action" key={i}>
+            <Link className="text-primary"
                 onClick={() => this.handleClick(action)}>
                 { text }
             </Link>
@@ -146,7 +146,7 @@ class ActionMenu extends Component {
     renderModelStatus = () => {
         return (
             <div>
-                <div class="card w-50 overflow-auto"
+                <div className="card w-50 overflow-auto"
                     style={{float:'right', width:"18rem", height:"18rem"}}>
                     { PreFormTextBox("Model Status", this.state.msg) } 
                 </div>
@@ -203,7 +203,7 @@ class ActionMenu extends Component {
                     <input
                         style={{width: 30, height: 30}}
                         type="INT"
-                        class="from-control m-2"
+                        className="from-control m-2"
                         placeholder="10"
                         onChange={this.handleRunPeriod}
                     />
@@ -218,11 +218,11 @@ class ActionMenu extends Component {
 
     renderMapItem = () => {
         return (
-            <div class="row">
-                <div class="col">
+            <div className="row">
+                <div className="col">
                 {
                     Object.keys (this.state.menu).map ((item, i) => (
-                        <div>
+                        <div key={i}>
                             {
                                 this.state.menu[item]['id'] > 1 ?
                                 this.MenuItem(i,
@@ -253,8 +253,8 @@ class ActionMenu extends Component {
                 {this.renderHeader()}
                 <br /><br />
                 { this.renderModelStatus() }
-                <ul class="list-group">
-                    <div class="row">
+                <ul className="list-group">
+                    <div className="row">
                         <div>
                             { this.renderRunButton() }
                             <br /><br />
