@@ -1,12 +1,7 @@
 {
   "main.css": "static/css/main.2eeff675.css",
   "main.css.map": "static/css/main.2eeff675.css.map",
-<<<<<<< HEAD
-  "main.js": "static/js/main.10d6f1ed.js",
-  "main.js.map": "static/js/main.10d6f1ed.js.map",
-=======
   "main.js": "static/js/main.a93ff330.js",
   "main.js.map": "static/js/main.a93ff330.js.map",
->>>>>>> 741f10a4145035e590d0214b14c7c45f8ce5dec0
   "static/media/Sandpile.jpg": "static/media/Sandpile.090bc1a0.jpg"
 }
