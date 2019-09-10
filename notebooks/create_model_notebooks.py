@@ -44,34 +44,38 @@ def globals_block(fp, line):
 
 def set_up_block(fp, line):
     setup_code = ""
+    env = None
     while "set_up()" not in line:
+        if 'Env(' in line:
+            code = line.split('    ')
+            env = code[1].split(' = ')[0]
         line = fp.readline()
 
     code = line.split('    ')
     setup_code += code[1]
 
-    return line, setup_code
+    return line, setup_code, env
 
 
-def execute(nb):
+def execute(nb, env):
     nb['cells'].append(nbf.v4.new_markdown_cell
                        ("You can run the model N periods by typing the number"
                         " you want in the following function and then running it."))
 
-    nb['cells'].append(nbf.v4.new_code_cell("env.runN()"))
+    nb['cells'].append(nbf.v4.new_code_cell(env + ".runN()"))
 
     # Displaying the scatter graph
     nb['cells'].append(nbf.v4.new_markdown_cell
                        ("You can view the position of all of the agents in "
                         "space with the following command:"))
 
-    nb['cells'].append(nbf.v4.new_code_cell("env.scatter_graph()"))
+    nb['cells'].append(nbf.v4.new_code_cell(env + ".scatter_graph()"))
 
     # Displaying the line graph
     nb['cells'].append(nbf.v4.new_markdown_cell
                        ("You can view the line graph through the following command:"))
 
-    nb['cells'].append(nbf.v4.new_code_cell("env.line_graph()"))
+    nb['cells'].append(nbf.v4.new_code_cell(env + ".line_graph()"))
 
     return nb
 
@@ -109,21 +113,26 @@ def main():
 
         nb['cells'].append(nbf.v4.new_code_cell(global_code))
 
-        nb['cells'].append(nbf.v4.new_markdown_cell("Next we call the `set_up` function "
-                                                    "to set up the environment, groups, and agents of the model."))
+        nb['cells'].append(nbf.v4.new_markdown_cell
+                           ("Next we call the `set_up` function "
+                            "to set up the environment, groups, and agents of the model."))
 
         # set_up block
-        line, setup_code = set_up_block(fp, line)
+        line, setup_code, env = set_up_block(fp, line)
 
         nb['cells'].append(nbf.v4.new_code_cell(setup_code))
 
         # Running the model
-        nb = execute(nb)
+        nb = execute(nb, env)
 
-        # Finish making notebook and add notebook to
-        # directory with the same name as the model
-        fname = filename[:-3] + '.ipynb'
-        with open(fname, 'w') as f:
-            nbf.write(nb, f)
+    # Finish making notebook and add notebook to
+    # directory with the same name as the model
+    fname = filename[:-3] + '.ipynb'
+    with open(fname, 'w') as f:
+        nbf.write(nb, f)
 
     return 0
+
+
+if __name__ == "__main__":
+    main()
