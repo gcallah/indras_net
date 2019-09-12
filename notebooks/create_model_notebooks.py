@@ -85,7 +85,8 @@ def main():
     filename = sys.argv[-1]
     nb['cells'] = []
 
-    filepath = os.path.abspath('../models') + '/' + filename
+    # filepath = os.path.abspath('../models') + '/' + filename
+    filepath = filename
     with open(filepath) as fp:
         intro = """# How to run the """ + filename[:-3] + """ model."""
 
