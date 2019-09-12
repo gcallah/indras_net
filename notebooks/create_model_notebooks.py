@@ -1,6 +1,6 @@
 """
 Program that creates jupyter notebooks of models passed as
-filename parameter
+input_file parameter
 """
 
 import nbformat as nbf
@@ -82,13 +82,17 @@ def execute(nb, env):
 
 def main():
     nb = nbf.v4.new_notebook()
-    filename = sys.argv[-1]
+    if len(sys.argv) < 3:
+        print("Usage: PROG [input file] [output file]")
+        exit(1)
+
+    input_file = sys.argv[1]
+    output_file = sys.argv[2]
     nb['cells'] = []
 
-    # filepath = os.path.abspath('../models') + '/' + filename
-    filepath = filename
+    filepath = input_file
     with open(filepath) as fp:
-        intro = """# How to run the """ + filename[:-3] + """ model."""
+        intro = """# How to run the """ + input_file[:-3] + """ model."""
 
         nb['cells'].append(nbf.v4.new_markdown_cell(intro))
 
@@ -103,11 +107,12 @@ def main():
 
         # Import block
         line, import_code = import_block(fp, line)
-        import_code += "from models." + filename[:-3] + " import set_up"
+        import_code += "from models." + input_file[:-3] + " import set_up"
 
         nb['cells'].append(nbf.v4.new_code_cell(import_code))
 
-        nb['cells'].append(nbf.v4.new_markdown_cell("We then initialize global variables."))
+        nb['cells'].append(nbf.v4.new_markdown_cell(
+            "We then initialize global variables."))
 
         # Globals block
         line, global_code = globals_block(fp, line)
@@ -126,10 +131,8 @@ def main():
         # Running the model
         nb = execute(nb, env)
 
-    # Finish making notebook and add notebook to
-    # directory with the same name as the model
-    fname = filename[:-3] + '.ipynb'
-    with open(fname, 'w') as f:
+    # Finish making notebook and add notebook 
+    with open(output_file, 'w') as f:
         nbf.write(nb, f)
 
     return 0
