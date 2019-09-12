@@ -168,20 +168,20 @@ class ModelDetail extends Component {
                 {this.renderHeader()}
                 <br /><br />
                 <form>
-                    <div class ="container">
+                    <div className="container">
                     {Object.keys(this.state.model_details).map((item,i)=> {
                         if ('question' in this.state.model_details[item]){
                             return(
-                            <div class="form-group">
+                            <div className="form-group">
                                 <div>
-                                    <label class ="col-sm-4 col-md-4 col-lg-4"
+                                    <label className="col-sm-4 col-md-4 col-lg-4"
                                         key={i}>{this.state.model_details[item]['question']} {" "}
                                     </label>
                                     <input type={this.state.model_details[item]['atype']}
-                                    class="col-sm-2 col-md-2 col-lg-2" style={{fontSize:"15pt"}}
+                                    className="col-sm-2 col-md-2 col-lg-2" style={{fontSize:"15pt"}}
                                     placeholder={this.state.model_details[item]['val']}
                                     onChange={this.propChanged} /*style={{width: 60}} */ name={item}/>
-                                    <span class="col-sm-6 col-md-6 col-lg-6" style={{color:"red", fontSize: 12}}>
+                                    <span className="col-sm-6 col-md-6 col-lg-6" style={{color:"red", fontSize: 12}}>
                                     {this.state.model_details[item]['errorMessage']}</span>
                                     <br/>
                                 </div>

@@ -9,91 +9,130 @@ import os
 
 
 def skip_comments(fp, line):
-    if '"""' in line:
-        line = fp.readline()
-        while '"""' not in line:
-            line = fp.readline()
-        return = fp.readline()
-
-
-nb = nbf.v4.new_notebook()
-filename = sys.argv[-1]
-nb['cells'] = []
-
-filepath = os.path.abspath('../models') + '/' + filename
-with open(filepath) as fp:
-    intro = """# This is the working of the """ + filename[:-3] + """ model."""
-
-    nb['cells'].append(nbf.v4.new_markdown_cell(intro))
-
+    # if '"""' in line:
     line = fp.readline()
+    while '"""' not in line:
+        line = fp.readline()
+    return fp.readline()
 
-    #  Skip comments
-    line = skip_comments(fp, line)
 
-    nb['cells'].append(nbf.v4.new_markdown_cell(
-        "First we import all necessary files"))
-
-    # Import block
-    importCode = ""
+def import_block(fp, line):
+    import_code = ""
     line = fp.readline()
     while line.startswith("from ") or line.startswith("import "):
-        importCode += line
+        import_code += line
         line = fp.readline()
 
-    importCode += "from models." + filename[:-3] + " import set_up"
+    return line, import_code
 
-    nb['cells'].append(nbf.v4.new_code_cell(importCode))
 
-    nb['cells'].append(nbf.v4.new_markdown_cell("We then initialize global variables"))
-
-    # Globals block
+def globals_block(fp, line):
     while line == '\n':
         line = fp.readline()
 
     prev = line
-    globalCode = ""
+    global_code = ""
     while not line.startswith('def '):
-        globalCode += line
+        global_code += line
         line = fp.readline()
         if line == prev:
             break
         prev = line
 
-    nb['cells'].append(nbf.v4.new_code_cell(globalCode))
+    return line, global_code
 
-    nb['cells'].append(nbf.v4.new_markdown_cell("Now we call the set_up function "
-                       "to set up the environment of the model"))
 
-    # set_up block
-    setupCode = ""
+def set_up_block(fp, line):
+    setup_code = ""
+    env = None
     while "set_up()" not in line:
+        if 'Env(' in line:
+            code = line.split('    ')
+            env = code[1].split(' = ')[0]
         line = fp.readline()
 
     code = line.split('    ')
-    setupCode += code[1]
-    nb['cells'].append(nbf.v4.new_code_cell(setupCode))
+    setup_code += code[1]
 
-    # Running the model
+    return line, setup_code, env
+
+
+def execute(nb, env):
     nb['cells'].append(nbf.v4.new_markdown_cell
-                       ("You can run the model through the following command"))
+                       ("You can run the model N periods by typing the number"
+                        " you want in the following function and then running it."))
 
-    nb['cells'].append(nbf.v4.new_code_cell("env.runN()"))
+    nb['cells'].append(nbf.v4.new_code_cell(env + ".runN()"))
 
     # Displaying the scatter graph
     nb['cells'].append(nbf.v4.new_markdown_cell
-                       ("You can view the scatter graph through the following command"))
+                       ("You can view the position of all of the agents in "
+                        "space with the following command:"))
 
-    nb['cells'].append(nbf.v4.new_code_cell("env.scatter_graph()"))
+    nb['cells'].append(nbf.v4.new_code_cell(env + ".scatter_graph()"))
 
     # Displaying the line graph
     nb['cells'].append(nbf.v4.new_markdown_cell
-                       ("You can view the line graph through the following command"))
+                       ("You can view the line graph through the following command:"))
 
-    nb['cells'].append(nbf.v4.new_code_cell("env.line_graph()"))
+    nb['cells'].append(nbf.v4.new_code_cell(env + ".line_graph()"))
+
+    return nb
+
+
+def main():
+    nb = nbf.v4.new_notebook()
+    filename = sys.argv[-1]
+    nb['cells'] = []
+
+    filepath = os.path.abspath('../models') + '/' + filename
+    with open(filepath) as fp:
+        intro = """# How to run the """ + filename[:-3] + """ model."""
+
+        nb['cells'].append(nbf.v4.new_markdown_cell(intro))
+
+        line = fp.readline()
+
+        #  Skip comments
+        if '"""' in line:
+            line = skip_comments(fp, line)
+
+        nb['cells'].append(nbf.v4.new_markdown_cell(
+            "First we import all necessary files."))
+
+        # Import block
+        line, import_code = import_block(fp, line)
+        import_code += "from models." + filename[:-3] + " import set_up"
+
+        nb['cells'].append(nbf.v4.new_code_cell(import_code))
+
+        nb['cells'].append(nbf.v4.new_markdown_cell("We then initialize global variables."))
+
+        # Globals block
+        line, global_code = globals_block(fp, line)
+
+        nb['cells'].append(nbf.v4.new_code_cell(global_code))
+
+        nb['cells'].append(nbf.v4.new_markdown_cell
+                           ("Next we call the `set_up` function "
+                            "to set up the environment, groups, and agents of the model."))
+
+        # set_up block
+        line, setup_code, env = set_up_block(fp, line)
+
+        nb['cells'].append(nbf.v4.new_code_cell(setup_code))
+
+        # Running the model
+        nb = execute(nb, env)
 
     # Finish making notebook and add notebook to
     # directory with the same name as the model
     fname = filename[:-3] + '.ipynb'
     with open(fname, 'w') as f:
         nbf.write(nb, f)
+
+    return 0
+
+
+if __name__ == "__main__":
+    main()

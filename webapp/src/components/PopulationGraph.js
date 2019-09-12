@@ -8,7 +8,7 @@ function PopulationGraph(props) {
     if (props.loadingData){
         var data=[]
         console.log("props.id = " + props.id)
-        if (props.id != FMARKET){
+        if (props.id !== FMARKET){
             let env=props.env_file['pop_hist']['pops']
             Object.keys(env).map((group, i_group) => {
                 console.log(props.env_file['members'][group]['attrs']['color'])
@@ -37,7 +37,7 @@ function PopulationGraph(props) {
                 data[0]["data"][i] = data_hist[i]
             }
         }
-        console.log(data)
+        console.log("data passed to line graph",data)
         return (
             <div>
                 <LineChart
