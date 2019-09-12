@@ -29,7 +29,7 @@ HTMLFILES = $(shell ls $(PTML_DIR)/*.ptml | sed -e 's/.ptml/.html/' | sed -e 's/
 FORCE:
 
 notebooks: $(PYTHONFILES)
-	cd $(NB_DIR); make
+	cd $(NB_DIR); make notebooks
 
 local: $(HTMLFILES) $(INCS)
 
