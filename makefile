@@ -30,8 +30,7 @@ MODELFILES = $(shell ls $(MODELS_DIR)/*.py)
 
 FORCE:
 
-notebooks:
-	$(MODELFILES)
+notebooks: $(MODELFILES)
 
 $(NB_DIR)/%.ipynb: $(MODELS_DIR)/%.py
 	python3 $(NB_DIR)/create_model_notebooks.py $<
