@@ -1,0 +1,23 @@
+<html>
+    <head>
+<!--include head.txt -->
+        <title>
+            Modeling the Capital Structure
+        </title>
+    </head>
+
+    <body>
+<!--include menu.txt -->
+<!--include logo.txt -->
+        <h1>
+            Modeling the Capital Structure
+        </h1>
+
+        <p>
+            This project is intended to capture the idea of capital structure,
+            as presented in the works of Ludwig von Mises, Ludwig Lachmann,
+            Israel Kirzner, and others.
+        </p>
+
+    </body>
+</html>
