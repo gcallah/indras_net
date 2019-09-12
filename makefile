@@ -38,7 +38,8 @@ $(NB_DIR)/%.ipynb: $(MODELS_DIR)/%.py
 
 create_dev_env:
 	pip3 install -r $(REQ_DIR)/requirements-dev.txt
-	git submodule update https://github.com/gcallah/utils.git
+	git submodule init utils
+	git submodule update utils
 	echo "Set PYTHONPATH and INDRA_HOME in your login script as follows:"
 	echo "export INDRA_HOME=(You Indra location)"
 	echo "export PYTHONPATH=$(INDRA_HOME):(old python path)"
