@@ -81,6 +81,7 @@ def execute(nb, env):
 
 
 def main():
+    REMOVE_EXT = -3
     nb = nbf.v4.new_notebook()
     if len(sys.argv) < 3:
         print("Usage: PROG [input file] [output file]")
@@ -107,7 +108,8 @@ def main():
 
         # Import block
         line, import_code = import_block(fp, line)
-        import_code += "from models." + input_file[:-3] + " import set_up"
+        parts = input_file.split('/')
+        import_code += "from models." + parts[-1][:REMOVE_EXT] + " import set_up"
 
         nb['cells'].append(nbf.v4.new_code_cell(import_code))
 
