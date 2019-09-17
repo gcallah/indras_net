@@ -2,6 +2,11 @@ import React, { Component } from "react";
 import { Loader, Dimmer } from "semantic-ui-react";
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Slider from "react-slick";
+
+
 
 class Home extends Component {
     api_server = 'https://indrasnet.pythonanywhere.com/';
@@ -46,16 +51,33 @@ class Home extends Component {
 
     renderImage = () => {
         const sandpile_img = require('./images/Sandpile.jpg')
-        return <img src={sandpile_img}
-            className="rounded-circle"
-            alt="Responsive image"
-            style={{display:'block', float:'right', width:'45%', alignItems: "center"}}
-            data-toggle="tooltip" data-placement="top" title="by Seth Terashima."/>
+        var settings = {
+              dots: true,
+              infinite: true,
+              speed: 500,
+              slidesToShow: 1,
+              slidesToScroll: 1,
+              autoplay: true
+            };
+        //Please add the path of the images we wish to use in the carousel to the ListOfImages list.
+        var ListOfImages = [sandpile_img,sandpile_img,sandpile_img]
+        return <div>
+            <Slider {...settings}>
+                 {ListOfImages.map((pathOfImage,index) => {
+                     return <div key ={index}>
+                        <img src={pathOfImage}
+                        className="rounded-circle"
+                        alt="Responsive image"
+                        style={{display:'block', width:'100%', alignItems: "center"}}
+                        data-toggle="tooltip" data-placement="top" title="by Seth Terashima."/>
+                    </div>
+                })}
+            </Slider>
+        </div>
     }
 
     renderHeader = () => {
-        return <h1 style={{ "textAlign": "center",
-                "fontWeight": '200'}}>Indra Agent-Based Modeling System</h1>
+        return <h1 className={'text-center'}>Indra Agent-Based Modeling System</h1>
     }
 
     renderChooseModelProp = () => {
@@ -70,33 +92,44 @@ class Home extends Component {
             </Dimmer>
             );
         }
+         const sandpile_img = require('./images/Sandpile.jpg')
         return (
-            <div>
-                <br />
-                {this.renderHeader()}
+            <div className={'container'}>
+                <div>
+                    {this.renderHeader()}
+                </div>
+
                 <br /><br />
-                {this.renderChooseModelProp()}
-                {this.renderImage()}
-                <ul className="list-group">
-                    <div className="row">
-                        <div className="col">
-                            {Object.keys(this.state.allItems).map((item, i)=>
-                                <p className="w-50 p-3 list-group-item list-group-item-action"
-                                key={i}>
-                                {console.log(this.state.allItems[item]['model ID'])}
-                                    <Link to={{pathname: `/models/props/${i}`}}
-                                        className="text-primary" data-toggle="tooltip"
-                                        data-placement="top" title={this.state.allItems[item]['doc']}
-                                        onClick={() =>
-                                            this.handleClick(this.state.allItems[item]['model ID'],
-                                        this.state.allItems[item]['name'],
-                                        this.state.allItems[item]['source'])}>
-                                        {this.state.allItems[item]['name']}
-                                    </Link>
-                                </p>)}
-                        </div>
+                <br /><br />
+
+                <div className={'row'}>
+                    <div className={'col-6'}>
+                        {this.renderChooseModelProp()}
+                        <ul className="list-group">
+                            <div className="row">
+                                <div className="col">
+                                    {Object.keys(this.state.allItems).map((item, i)=>
+                                    <p className="w-50 p-3 list-group-item list-group-item-action"
+                                        key={i}>
+                                        {console.log(this.state.allItems[item]['model ID'])}
+                                        <Link to={{pathname: `/models/props/${i}`}}
+                                            className="text-primary" data-toggle="tooltip"
+                                            data-placement="top" title={this.state.allItems[item]['doc']}
+                                            onClick={() =>
+                                                this.handleClick(this.state.allItems[item]['model ID'],
+                                            this.state.allItems[item]['name'],
+                                            this.state.allItems[item]['source'])}>
+                                            {this.state.allItems[item]['name']}
+                                        </Link>
+                                    </p>)}
+                                </div>
+                            </div>
+                        </ul>
                     </div>
-                </ul>
+                    <div className={'col-6'}>
+                        {this.renderImage()}
+                    </div>
+                </div>
                 {this.renderShowDescription()}
                 <br /><br />
                 <br /><br />

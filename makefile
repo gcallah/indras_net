@@ -26,20 +26,21 @@ INCS = $(TEMPLATE_DIR)/head.txt $(TEMPLATE_DIR)/logo.txt $(TEMPLATE_DIR)/menu.tx
 
 HTMLFILES = $(shell ls $(PTML_DIR)/*.ptml | sed -e 's/.ptml/.html/' | sed -e 's/html_src\///')
 
-MODELFILES = $(shell ls $(MODELS_DIR)/*.py)
-
 FORCE:
 
-notebooks: $(MODELFILES)
+notebooks: $(PYTHONFILES)
+	cd $(NB_DIR); make notebooks
 
-$(NB_DIR)/%.ipynb: $(MODELS_DIR)/%.py
-	python3 $(NB_DIR)/create_model_notebooks.py $<
+local: $(HTMLFILES) $(INCS)
+
+%.html: $(PTML_DIR)/%.ptml $(INCS)
+	python3 $(UTILS_DIR)/html_checker.py $< 
+	$(UTILS_DIR)/html_include.awk <$< >$@
 	git add $@
 
 create_dev_env:
 	pip3 install -r $(REQ_DIR)/requirements-dev.txt
-	git submodule init utils
-	git submodule update utils
+	git submodule update https://github.com/gcallah/utils.git
 	echo "Set PYTHONPATH and INDRA_HOME in your login script as follows:"
 	echo "export INDRA_HOME=(You Indra location)"
 	echo "export PYTHONPATH=$(INDRA_HOME):(old python path)"
@@ -75,13 +76,6 @@ tags: FORCE
 
 submods:
 	cd utils; git pull origin master
-
-local: $(HTMLFILES) $(INCS)
-
-%.html: $(PTML_DIR)/%.ptml $(INCS)
-	python3 $(UTILS_DIR)/html_checker.py $< 
-	$(UTILS_DIR)/html_include.awk <$< >$@
-	git add $@
 
 # run tests then commit all, then push
 prod: tests
