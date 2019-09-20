@@ -16,6 +16,7 @@ class Home extends Component {
         loadingData: false,
     }
 
+
     async componentDidMount() {
         try {
             this.setState({ loadingData: true });
@@ -25,7 +26,7 @@ class Home extends Component {
             this.setState({ loadingData: false });
             const doc = localStorage.getItem("doc");
             this.setState({doc:doc});
-            console.log(this.state.allItems)
+            console.log('data-->',this.state.allItems)
         } catch (e) {
             console.log(e.message);
         } 
@@ -44,6 +45,7 @@ class Home extends Component {
     }
 
     handleClick(id, name, source){
+        console.log(localStorage)
         localStorage.setItem("menu_id", id)
         localStorage.setItem("name", name)
         localStorage.setItem("source", source)
@@ -61,6 +63,7 @@ class Home extends Component {
             };
         //Please add the path of the images we wish to use in the carousel to the ListOfImages list.
         var ListOfImages = [sandpile_img,sandpile_img,sandpile_img]
+
         return <div>
             <Slider {...settings}>
                  {ListOfImages.map((pathOfImage,index) => {
@@ -92,16 +95,14 @@ class Home extends Component {
             </Dimmer>
             );
         }
-         const sandpile_img = require('./images/Sandpile.jpg')
+
         return (
             <div className={'container'}>
                 <div>
                     {this.renderHeader()}
                 </div>
-
                 <br /><br />
                 <br /><br />
-
                 <div className={'row'}>
                     <div className={'col-6'}>
                         {this.renderChooseModelProp()}
@@ -111,8 +112,8 @@ class Home extends Component {
                                     {Object.keys(this.state.allItems).map((item, i)=>
                                     <p className="w-50 p-3 list-group-item list-group-item-action"
                                         key={i}>
-                                        {console.log(this.state.allItems[item]['model ID'])}
-                                        <Link to={{pathname: `/models/props/${i}`}}
+                                        {console.log(this.state.allItems)}
+                                        <Link to={{pathname: `/models/props/${this.state.allItems[item]['model ID']}`}}
                                             className="text-primary" data-toggle="tooltip"
                                             data-placement="top" title={this.state.allItems[item]['doc']}
                                             onClick={() =>
