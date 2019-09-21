@@ -126,12 +126,13 @@ class Home extends Component {
                                 </div>
                             </div>
                         </ul>
+                        {this.renderShowDescription()}
                     </div>
                     <div className={'col-6'}>
                         {this.renderImage()}
                     </div>
                 </div>
-                {this.renderShowDescription()}
+                
                 <br /><br />
                 <br /><br />
             </div>

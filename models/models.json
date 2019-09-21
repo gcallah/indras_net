@@ -8,14 +8,7 @@
       "doc": "A toy model for testing",
       "source": "https://github.com/gcallah/indras_net/blob/master/models/basic.py"
     },
-    {
-      "model ID": 1,
-      "name": "Bacteria",
-      "run": "bacteria",
-      "props": "models/props/bacteria.props.json",
-      "doc": "A model of bacteria with toxin and nutrient levels",
-      "source": "https://github.com/gcallah/indras_net/blob/master/models/bacteria.py"
-    },
+    
     {
       "model ID": 2,
       "name": "Adam Smith's Fashion Model",
@@ -24,6 +17,8 @@
       "doc": "A model of trendsetters and followers in the world of fashion.",
       "source": "https://github.com/gcallah/indras_net/blob/master/models/fashion.py"
     },
+    
+    
     {
       "model ID": 3,
       "name": "Schelling's Segregation Model",
@@ -40,6 +35,7 @@
       "doc": "Wolves eat sheep in a meadow and their populations' cycle.",
       "source": "https://github.com/gcallah/indras_net/blob/master/models/wolfsheep.py"
     },
+    
     {
       "model ID": 5,
       "name": "Financial Market",
