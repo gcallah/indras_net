@@ -39,7 +39,7 @@ class Home extends Component {
 
     renderShowDescription = () => {
         console.log("renderShowDescription called")
-        return <h1 style={{"fontSize": 30, "fontWeight": '400'}}>
+        return <h1 style={{"fontSize": 16, "fontWeight": '400'}}>
         <a href="#" className="text-primary m-2" onClick={this.openDescription}>
         View Project Description </a> </h1>
     }
