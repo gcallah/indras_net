@@ -21,7 +21,7 @@ class ModelDetail extends Component {
             const properties = await axios.get(this.api_server
                 + `${localStorage.getItem("menu_id")}`);
             this.setState({ model_details: properties.data });
-            console.log(this.state.model_details)
+            console.log('model_detail json',this.state.model_details)
             this.states(properties.data);
             this.errors(properties.data);
             this.setState({ loadingData: false });
