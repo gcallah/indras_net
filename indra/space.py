@@ -428,14 +428,25 @@ class Space(Composite):
         for x in range(x1, x2 + 1):
             for y in range(y1, y2 + 1):
                 neighbor = self.get_agent_at(x, y)
-                if neighbor is not None and (agent.get_x() != x
-                                             or agent.get_y() != y):
-                    moore_hood += neighbor
-        if include_self:
-            moore_hood += self.get_agent_at(agent.get_x(), agent.get_y())
+                if neighbor is not None:
+                    if pred is not None:
+                        if not pred(neighbor):
+                            print("pred is false")
+                            continue
+                    if agent is not neighbor or include_self:
+                        moore_hood += neighbor
+
         if agent.get("save_neighbors", False):
             agent.neighbors = moore_hood
         return moore_hood
+
+    def get_square_hood(self, agent, pred=None, save_neighbors=False,
+                        include_self=False, hood_size=1):
+        return self.get_moore_hood(agent,
+                                   pred=pred,
+                                   save_neighbors=save_neighbors,
+                                   include_self=include_self,
+                                   hood_size=hood_size)
 
     def get_closest_agent(self, agent):
         """
