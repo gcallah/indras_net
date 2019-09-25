@@ -36,9 +36,9 @@ def seller_action(agent):
 
 
 def buyer_action(agent):
-    neighbors = env.get_square_hood(agent, hood_size=4, pred=is_dealer)
-    env.user.tell("I'm " + agent.name + " and I have " + str(len(neighbors))
-                  + " neighbors")
+    my_dealer = env.get_neighbor_of_groupX(agent, dealer_grp,
+                                           hood_size=4)
+    print("My dealer is:", my_dealer)
     # return False means to move
     return False
 

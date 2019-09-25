@@ -442,11 +442,30 @@ class Space(Composite):
 
     def get_square_hood(self, agent, pred=None, save_neighbors=False,
                         include_self=False, hood_size=1):
+        """
+        Get a list of the nearby agents in a square neighborhood.
+        The size of the hood is given by hood_size.
+        We can filter with pred.
+        We may or may not save this hood.
+        """
         return self.get_moore_hood(agent,
                                    pred=pred,
                                    save_neighbors=save_neighbors,
                                    include_self=include_self,
                                    hood_size=hood_size)
+
+    def get_neighbor_of_groupX(self, agent, group, save_neighbors=False,
+                               hood_size=1):
+        """
+        If the agent has any neighbors in group X, return the first one
+        encountered.
+        """
+        hood = self.get_square_hood(agent, save_neighbors=save_neighbors,
+                                    hood_size=hood_size)
+        for agent in hood:
+            if group.ismember(agent):
+                return agent
+        return None
 
     def get_closest_agent(self, agent):
         """
