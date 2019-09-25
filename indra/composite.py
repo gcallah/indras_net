@@ -56,9 +56,15 @@ class Composite(Agent):
                     self += member_creator(name, i, props=props, **kwargs)
 
     def restore_composite(self, serial_obj):
+        """
+        Here we restore a composite from a serialized object.
+        """
         self.from_json(serial_obj)
 
     def to_json(self):
+        """
+        Here we turn a composite into a serialized object.
+        """
         rep = super().to_json()
         rep["type"] = self.type
         rep["members"] = self.members
@@ -301,6 +307,9 @@ class Composite(Agent):
         #            if member.isactive():
         #                return True
         #        return False
+
+    def ismember(self, agent):
+        return str(agent) in self.members
 
     def is_mbr_comp(self, mbr):
         return is_composite(self.members[mbr])

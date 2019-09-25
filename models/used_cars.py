@@ -20,14 +20,13 @@ DEF_NUM_RED = 10
 
 DEALERS = "Dealers"
 
-buyer_group = None
-dealer_group = None
+buyer_grp = None
+dealer_grp = None
 env = None
 
 
 def is_dealer(agent):
-    print(str(agent.primary_group), " == ", DEALERS)
-    return agent.primary_group.name == DEALERS
+    return dealer_grp.ismember(agent)
 
 
 def seller_action(agent):
@@ -63,28 +62,28 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     pa = get_props(MODEL_NAME, props)
-    dealer_group = Composite(DEALERS, {"color": BLUE},
+    dealer_grp = Composite(DEALERS, {"color": BLUE},
                              member_creator=create_seller,
                              num_members=pa.get('num_sellers', DEF_NUM_BLUE))
-    buyer_group = Composite("Buyers", {"color": RED},
+    buyer_grp = Composite("Buyers", {"color": RED},
                             member_creator=create_buyer,
                             num_members=pa.get('num_buyers', DEF_NUM_RED))
 
     env = Env("env",
               height=pa.get('grid_height', DEF_HEIGHT),
               width=pa.get('grid_width', DEF_WIDTH),
-              members=[dealer_group, buyer_group],
+              members=[dealer_grp, buyer_grp],
               props=pa)
 
-    return (env, dealer_group, buyer_group)
+    return (env, dealer_grp, buyer_grp)
 
 
 def main():
-    global buyer_group
-    global dealer_group
+    global buyer_grp
+    global dealer_grp
     global env
 
-    (env, dealer_group, buyer_group) = set_up()
+    (env, dealer_grp, buyer_grp) = set_up()
 
     if DEBUG2:
         print(env.__repr__())

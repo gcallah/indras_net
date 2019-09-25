@@ -83,6 +83,9 @@ class CompositeTestCase(TestCase):
         self.mathgrp = None
         self.mathguys = None
 
+    def test_ismember(self):
+        self.assertTrue(self.calc.ismember(self.newton))
+
     def test_eq(self):
         self.assertEqual(self.calc, self.calc)
         self.assertNotEqual(self.camb, self.calc)
