@@ -30,15 +30,15 @@ def is_dealer(agent):
 
 
 def seller_action(agent):
-    neighbors = env.get_square_hood(agent, hood_size=4, pred=is_dealer)
-    env.user.tell("I'm " + agent.name + " and I have " + str(len(neighbors))
-                  + " neighbors")
+    env.user.tell("I'm " + agent.name + " and I'm a dealer.")
     # return False means to move
     return False
 
 
 def buyer_action(agent):
-    env.user.tell("I'm " + agent.name + " and I'm buying.")
+    neighbors = env.get_square_hood(agent, hood_size=4, pred=is_dealer)
+    env.user.tell("I'm " + agent.name + " and I have " + str(len(neighbors))
+                  + " neighbors")
     # return False means to move
     return False
 
@@ -63,11 +63,11 @@ def set_up(props=None):
     """
     pa = get_props(MODEL_NAME, props)
     dealer_grp = Composite(DEALERS, {"color": BLUE},
-                             member_creator=create_seller,
-                             num_members=pa.get('num_sellers', DEF_NUM_BLUE))
+                           member_creator=create_seller,
+                           num_members=pa.get('num_sellers', DEF_NUM_BLUE))
     buyer_grp = Composite("Buyers", {"color": RED},
-                            member_creator=create_buyer,
-                            num_members=pa.get('num_buyers', DEF_NUM_RED))
+                          member_creator=create_buyer,
+                          num_members=pa.get('num_buyers', DEF_NUM_RED))
 
     env = Env("env",
               height=pa.get('grid_height', DEF_HEIGHT),
