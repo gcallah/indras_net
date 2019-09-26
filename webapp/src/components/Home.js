@@ -2,20 +2,25 @@ import React, { Component } from "react";
 import { Loader, Dimmer } from "semantic-ui-react";
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import Slider from "react-slick";
-
-
-
+import Carousel from './Carousel.js';
+import sandpile_img from './images/Sandpile.jpg'
+import sandpile1_img from './images/sandpile_2.png'
+import mandelobrot_img from './images/mendelobrot_sq.jpg'
 class Home extends Component {
     api_server = 'https://indrasnet.pythonanywhere.com/';
     state = {
         msg: '',
         allItems: [],
         loadingData: false,
+        dataForCarousel:[
+            {   'image':sandpile_img,
+                'title':"by Seth Terashima"},
+            {   'image':sandpile1_img,
+                'title':"by Colt Browninga"},
+            {   'image':mandelobrot_img,
+                'title':"by Adam majewski"}
+        ]
     }
-
 
     async componentDidMount() {
         try {
@@ -51,34 +56,6 @@ class Home extends Component {
         localStorage.setItem("source", source)
     }
 
-    renderImage = () => {
-        const sandpile_img = require('./images/Sandpile.jpg')
-        var settings = {
-              dots: true,
-              infinite: true,
-              speed: 500,
-              slidesToShow: 1,
-              slidesToScroll: 1,
-              autoplay: true
-            };
-        //Please add the path of the images we wish to use in the carousel to the ListOfImages list.
-        var ListOfImages = [sandpile_img,sandpile_img,sandpile_img]
-
-        return <div>
-            <Slider {...settings}>
-                 {ListOfImages.map((pathOfImage,index) => {
-                     return <div key ={index}>
-                        <img src={pathOfImage}
-                        className="rounded-circle"
-                        alt="Responsive image"
-                        style={{display:'block', width:'100%', alignItems: "center"}}
-                        data-toggle="tooltip" data-placement="top" title="by Seth Terashima."/>
-                    </div>
-                })}
-            </Slider>
-        </div>
-    }
-
     renderHeader = () => {
         return <h1 className={'text-center'}>Indra Agent-Based Modeling System</h1>
     }
@@ -91,11 +68,11 @@ class Home extends Component {
         if (this.state.loadingData) {
             return (
             <Dimmer active inverted>
-            <Loader size='massive'>Loading...</Loader>
+                <Loader size='massive'>Loading...</Loader>
             </Dimmer>
             );
         }
-
+        const data = this.state.dataForCarousel
         return (
             <div className={'container'}>
                 <div>
@@ -129,10 +106,9 @@ class Home extends Component {
                         {this.renderShowDescription()}
                     </div>
                     <div className={'col-6'}>
-                        {this.renderImage()}
+                        <Carousel speed={5000} autoplay={true}  className={'col-12'} data={data}/>
                     </div>
                 </div>
-                
                 <br /><br />
                 <br /><br />
             </div>
