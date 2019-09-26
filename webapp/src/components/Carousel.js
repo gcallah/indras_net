@@ -2,30 +2,43 @@ import React, { Component } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-
+import PropTypes from 'prop-types';
 
 class Carousel extends Component {
+
+    constructor(props) {
+        super(props)
+    }
+
     renderImage = () => {
         const sandpile_img = require('./images/Sandpile.jpg')
-        var settings = {
-              dots: true,
+        const sandpile1_img = require('./images/sandpile_2.png')
+        let settings = {
+              dots: this.props.dots,
               infinite: true,
-              speed: 500,
+              speed: this.props.speed,
               slidesToShow: 1,
               slidesToScroll: 1,
-              autoplay: true
+              autoplay: this.props.autoplay
             };
         //Please add the path of the images we wish to use in the carousel to the ListOfImages list.
-        var ListOfImages = [sandpile_img,sandpile_img,sandpile_img]
+        let imageObj = [
+            {   'image':sandpile_img,
+                'title':"by Seth Terashima"},
+            {   'image':sandpile1_img,
+                'title':"by Colt Browninga"}
+        ]
+
+
         return <div>
             <Slider {...settings}>
-                 {ListOfImages.map((pathOfImage,index) => {
+                 {imageObj.map((item,index) => {
                      return <div key ={index}>
-                        <img src={pathOfImage}
+                        <img src={item['image']}
                         className="rounded-circle"
                         alt="Responsive image"
                         style={{display:'block', width:'100%', alignItems: "center"}}
-                        data-toggle="tooltip" data-placement="top" title="by Seth Terashima."/>
+                        data-toggle="tooltip" data-placement="top" title={item['title']}/>
                     </div>
                 })}
             </Slider>
@@ -39,6 +52,18 @@ class Carousel extends Component {
              </div>
         );
     }
+}
+
+Carousel.PropTypes ={
+    dots: PropTypes.bool,
+    speed: PropTypes.number,
+    autoplay: PropTypes.bool
+}
+
+Carousel.defaultProps={
+    dots: true,
+    speed:500,
+    autoplay: false
 }
 
 export default Carousel;

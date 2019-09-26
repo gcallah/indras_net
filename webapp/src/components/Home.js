@@ -96,7 +96,7 @@ class Home extends Component {
                         {this.renderShowDescription()}
                     </div>
                     <div className={'col-6'}>
-                        <Carousel className = {'col-12'} />
+                        <Carousel speed={500} autoplay={true}  className={'col-12'} />
                     </div>
                 </div>
                 <br /><br />
