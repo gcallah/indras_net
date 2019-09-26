@@ -2,30 +2,34 @@ import React, { Component } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-
+import propTypes from 'prop-types';
 
 class Carousel extends Component {
+
+    constructor(props) {
+        super(props)
+    }
+
     renderImage = () => {
-        const sandpile_img = require('./images/Sandpile.jpg')
-        var settings = {
-              dots: true,
+        let settings = {
+              dots: this.props.dots,
               infinite: true,
-              speed: 500,
+              speed: this.props.speed,
               slidesToShow: 1,
               slidesToScroll: 1,
-              autoplay: true
+              autoplay: this.props.autoplay,
+              fade:true,
+              className: this.props.className,
             };
-        //Please add the path of the images we wish to use in the carousel to the ListOfImages list.
-        var ListOfImages = [sandpile_img,sandpile_img,sandpile_img]
         return <div>
             <Slider {...settings}>
-                 {ListOfImages.map((pathOfImage,index) => {
+                 {this.props.data.map((item,index) => {
                      return <div key ={index}>
-                        <img src={pathOfImage}
+                        <img src={item['image']}
                         className="rounded-circle"
                         alt="Responsive image"
                         style={{display:'block', width:'100%', alignItems: "center"}}
-                        data-toggle="tooltip" data-placement="top" title="by Seth Terashima."/>
+                        data-toggle="tooltip" data-placement="top" title={item['title']}/>
                     </div>
                 })}
             </Slider>
@@ -34,11 +38,24 @@ class Carousel extends Component {
 
     render() {
         return (
-             <div className={this.props.className}>
+             <div >
                  {this.renderImage()}
              </div>
         );
     }
+}
+
+Carousel.propTypes ={
+    dots: propTypes.bool,
+    speed: propTypes.number,
+    autoplay: propTypes.bool,
+    data: propTypes.array,
+}
+
+Carousel.defaultProps={
+    dots: true,
+    speed:1000,
+    autoplay: false
 }
 
 export default Carousel;

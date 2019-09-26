@@ -12,6 +12,7 @@
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.14.0",
     "local-storage": "^2.0.0",
+    "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-chartkick": "^0.3.1",
     "react-dom": "^16.8.6",
