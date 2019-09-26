@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-import PropTypes from 'prop-types';
+import propTypes from 'prop-types';
 
 class Carousel extends Component {
 
@@ -11,28 +11,19 @@ class Carousel extends Component {
     }
 
     renderImage = () => {
-        const sandpile_img = require('./images/Sandpile.jpg')
-        const sandpile1_img = require('./images/sandpile_2.png')
         let settings = {
               dots: this.props.dots,
               infinite: true,
               speed: this.props.speed,
               slidesToShow: 1,
               slidesToScroll: 1,
-              autoplay: this.props.autoplay
+              autoplay: this.props.autoplay,
+              fade:true,
+              className: this.props.className,
             };
-        //Please add the path of the images we wish to use in the carousel to the ListOfImages list.
-        let imageObj = [
-            {   'image':sandpile_img,
-                'title':"by Seth Terashima"},
-            {   'image':sandpile1_img,
-                'title':"by Colt Browninga"}
-        ]
-
-
         return <div>
             <Slider {...settings}>
-                 {imageObj.map((item,index) => {
+                 {this.props.data.map((item,index) => {
                      return <div key ={index}>
                         <img src={item['image']}
                         className="rounded-circle"
@@ -47,22 +38,23 @@ class Carousel extends Component {
 
     render() {
         return (
-             <div className={this.props.className}>
+             <div >
                  {this.renderImage()}
              </div>
         );
     }
 }
 
-Carousel.PropTypes ={
-    dots: PropTypes.bool,
-    speed: PropTypes.number,
-    autoplay: PropTypes.bool
+Carousel.propTypes ={
+    dots: propTypes.bool,
+    speed: propTypes.number,
+    autoplay: propTypes.bool,
+    data: propTypes.array,
 }
 
 Carousel.defaultProps={
     dots: true,
-    speed:500,
+    speed:1000,
     autoplay: false
 }
 
