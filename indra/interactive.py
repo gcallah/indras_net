@@ -25,5 +25,8 @@ gauss = Agent("Gauss")
 euler = Agent("Euler")
 laplace = Agent("Laplace")
 germans = Composite("Germans", members=[gauss, euler])
+
+print("Gauss in Germans = ", germans.ismember(str(gauss)))
+
 maths += germans
 math_hist = Env("History", members=[maths])

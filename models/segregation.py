@@ -88,8 +88,8 @@ def seg_agent_action(agent):
     global fetched_moore_hood
 
     stay_put = True
-    agent_group = agent.primary_group()
     if agent["hood_changed"]:
+        agent_group = agent.primary_group()
         ratio_same = 0
         neighbors = city.get_moore_hood(agent, hood_size=agent['hood_size'])
         if DEBUG2:
