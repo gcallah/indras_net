@@ -18,19 +18,27 @@ DEBUG2 = False  # turns deeper debugging code on or off
 DEF_NUM_BLUE = 10
 DEF_NUM_RED = 10
 
-buyer_group = None
-seller_group = None
+DEALERS = "Dealers"
+
+buyer_grp = None
+dealer_grp = None
 env = None
 
 
+def is_dealer(agent):
+    return dealer_grp.ismember(agent)
+
+
 def seller_action(agent):
-    print("I'm " + agent.name + " and I'm selling.")
+    env.user.tell("I'm " + agent.name + " and I'm a dealer.")
     # return False means to move
     return False
 
 
 def buyer_action(agent):
-    print("I'm " + agent.name + " and I'm buying.")
+    my_dealer = env.get_neighbor_of_groupX(agent, dealer_grp,
+                                           hood_size=4)
+    print("My dealer is:", my_dealer)
     # return False means to move
     return False
 
@@ -54,28 +62,28 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     pa = get_props(MODEL_NAME, props)
-    seller_group = Composite("Sellers", {"color": BLUE},
-                             member_creator=create_seller,
-                             num_members=pa.get('num_sellers', DEF_NUM_BLUE))
-    buyer_group = Composite("Buyers", {"color": RED},
-                            member_creator=create_buyer,
-                            num_members=pa.get('num_buyers', DEF_NUM_RED))
+    dealer_grp = Composite(DEALERS, {"color": BLUE},
+                           member_creator=create_seller,
+                           num_members=pa.get('num_sellers', DEF_NUM_BLUE))
+    buyer_grp = Composite("Buyers", {"color": RED},
+                          member_creator=create_buyer,
+                          num_members=pa.get('num_buyers', DEF_NUM_RED))
 
     env = Env("env",
               height=pa.get('grid_height', DEF_HEIGHT),
               width=pa.get('grid_width', DEF_WIDTH),
-              members=[seller_group, buyer_group],
+              members=[dealer_grp, buyer_grp],
               props=pa)
 
-    return (env, seller_group, buyer_group)
+    return (env, dealer_grp, buyer_grp)
 
 
 def main():
-    global buyer_group
-    global seller_group
+    global buyer_grp
+    global dealer_grp
     global env
 
-    (env, seller_group, buyer_group) = set_up()
+    (env, dealer_grp, buyer_grp) = set_up()
 
     if DEBUG2:
         print(env.__repr__())
