@@ -1,52 +1,53 @@
 {
-    "models_database": [
-        {
-            "model ID": 0,
-            "name": "Basic",
-            "run": "basic",
-            "props": "models/props/basic.props.json",
-            "doc": "A toy model for testing",
-            "source": "https://github.com/gcallah/indras_net/blob/master/models/basic.py"
-        },
-        {
-            "model ID": 1,
-            "name": "Bacteria",
-            "run": "bacteria",
-            "props": "models/props/bacteria.props.json",
-            "doc": "A model of bacteria with toxin and nutrient levels",
-            "source": "https://github.com/gcallah/indras_net/blob/master/models/bacteria.py"
-        },
-        {
-            "model ID": 2,
-            "name": "Adam Smith's Fashion Model",
-            "run": "fashion",
-            "props": "models/props/fashion.props.json",
-            "doc": "A model of trendsetters and followers in the world of fashion.",
-            "source": "https://github.com/gcallah/indras_net/blob/master/models/fashion.py"
-        },
-        {
-            "model ID": 3,
-            "name": "Schelling's Segregation Model",
-            "run": "segregation",
-            "props": "models/props/segregation.props.json",
-            "doc": "Thomas Schelling's famous model of segregated neighborhoods.",
-            "source": "https://github.com/gcallah/indras_net/blob/master/models/segregation.py"
-        },
-        {
-            "model ID": 4,
-            "name": "Predator-Prey Model",
-            "run": "wolfsheep",
-            "props": "models/props/wolfsheep.props.json",
-            "doc": "Wolves eat sheep in a meadow and their populations' cycle.",
-            "source": "https://github.com/gcallah/indras_net/blob/master/models/wolfsheep.py"
-        },
-        {
-            "model ID": 5,
-            "name": "Financial Market",
-            "run": "fmarket",
-            "props": "models/props/fmarket.props.json",
-            "doc": "A model in which value investors and trend followers buy and sell in waves, causing an asset price to cycle.",
-            "source": "https://github.com/gcallah/indras_net/blob/master/models/fmarket.py"
-        }
-    ]
+  "models_database": [
+    {
+      "model ID": 0,
+      "name": "Basic",
+      "run": "basic",
+      "props": "models/props/basic.props.json",
+      "doc": "A toy model for testing",
+      "source": "https://github.com/gcallah/indras_net/blob/master/models/basic.py"
+    },
+    {
+      "model ID": 1,
+      "name": "Bacteria",
+      "run": "bacteria",
+      "props": "models/props/bacteria.props.json",
+      "doc": "A model of bacteria with toxin and nutrient levels",
+      "source": "https://github.com/gcallah/indras_net/blob/master/models/bacteria.py"
+    },
+    {
+      "model ID": 2,
+      "name": "Adam Smith's Fashion Model",
+      "run": "fashion",
+      "props": "models/props/fashion.props.json",
+      "doc": "A model of trendsetters and followers in the world of fashion.",
+      "source": "https://github.com/gcallah/indras_net/blob/master/models/fashion.py"
+    },
+    {
+      "model ID": 3,
+      "name": "Schelling's Segregation Model",
+      "run": "segregation",
+      "props": "models/props/segregation.props.json",
+      "doc": "Thomas Schelling's famous model of segregated neighborhoods.",
+      "source": "https://github.com/gcallah/indras_net/blob/master/models/segregation.py"
+    },
+    {
+      "model ID": 4,
+      "name": "Predator-Prey Model",
+      "run": "wolfsheep",
+      "props": "models/props/wolfsheep.props.json",
+      "doc": "Wolves eat sheep in a meadow and their populations' cycle.",
+      "source": "https://github.com/gcallah/indras_net/blob/master/models/wolfsheep.py"
+    },
+    {
+      "model ID": 5,
+      "name": "Financial Market",
+      "run": "fmarket",
+      "props": "models/props/fmarket.props.json",
+      "doc": "A model in which value investors and trend followers buy and sell in waves, causing an asset price to cycle.",
+      "source": "https://github.com/gcallah/indras_net/blob/master/models/fmarket.py"
+    }
+  ]
 }
+
