@@ -51,8 +51,6 @@ opp_group = None
 red_agents = None
 blue_agents = None
 
-fetched_moore_hood = 0
-
 
 def get_tolerance(default_tolerance, sigma):
     tol = random.gauss(default_tolerance, sigma)
@@ -85,7 +83,6 @@ def seg_agent_action(agent):
     global city
     global red_agents
     global blue_agents
-    global fetched_moore_hood
 
     stay_put = True
     if agent["hood_changed"]:
@@ -94,7 +91,6 @@ def seg_agent_action(agent):
         neighbors = city.get_moore_hood(agent, hood_size=agent['hood_size'])
         if DEBUG2:
             print("hood size = ", agent['hood_size'])
-        fetched_moore_hood += 1
         num_same = 0
         for neighbor in neighbors:
             if neighbors[neighbor].primary_group() == agent_group:
@@ -147,7 +143,6 @@ def set_up(props=None):
     global blue_agents
     global red_agents
     global city
-    global fetched_moore_hood
 
     pa = get_props(MODEL_NAME, props)
     blue_agents = Composite(group_names[BLUE_TEAM] + group_suffix,
@@ -173,11 +168,13 @@ def set_up(props=None):
 def sg_unrestorable(env):
     """
     This handles are unrestorable from JSON data.
+    BUT... this absolutely should NOT be in the model!
+    The right thing to do is to handle unrestorables at the library
+    level!
     """
     global blue_agents
     global red_agents
     global city
-    global fetched_moore_hood
     city = env
     blue_agents = env.registry[group_names[BLUE_TEAM] + group_suffix]
     red_agents = env.registry[group_names[RED_TEAM] + group_suffix]
@@ -187,14 +184,12 @@ def main():
     global blue_agents
     global red_agents
     global city
-    global fetched_moore_hood
     (city, blue_agents, red_agents) = set_up()
 
     if DEBUG2:
         print(city.__repr__())
 
     city()
-    print("We fetched moore hoods ", fetched_moore_hood, " times")
     return 0
 
 
