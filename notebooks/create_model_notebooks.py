@@ -44,13 +44,22 @@ def globals_block(fp, line):
 def set_up_block(fp, line):
     setup_code = ""
     env = None
+    prev = None
+
     while "set_up()" not in line:
         if 'Env(' in line:
             code = line.split('    ')
             env = code[1].split(' = ')[0]
+        prev = line
         line = fp.readline()
 
     code = line.split('    ')
+
+    # Check for broken up long lines
+    first_part = code[1].split(' = ')[0]
+    if ')' in first_part and '(' not in first_part:
+        setup_code += prev.split('    ')[1]
+
     setup_code += code[1]
 
     return line, setup_code, env
@@ -97,6 +106,9 @@ def main():
         nb['cells'].append(nbf.v4.new_markdown_cell(intro))
 
         line = fp.readline()
+
+        if line == "":
+            return
 
         #  Skip comments
         if '"""' in line:
