@@ -76,7 +76,7 @@ submods:
 	cd utils; git pull origin master
 
 # run tests then commit all, then push
-prod: tests
+prod: local tests
 	- git commit -a
 	- git pull origin master
 	git push origin master
