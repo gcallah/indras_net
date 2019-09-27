@@ -13,16 +13,16 @@
     "hival": 100,
     "lowval": 2
   },
-  "num_blue": {
+  "num_tsetters": {
     "val": 20,
-    "question": "How many blue agents do you want?",
+    "question": "How many fashion trendsetters do you want?",
     "atype": "INT",
     "hival": 100,
     "lowval": 1
   },
-  "num_red": {
+  "num_followers": {
     "val": 20,
-    "question": "How many red agents do you want?",
+    "question": "How many fashion followers do you want?",
     "atype": "INT",
     "hival": 100,
     "lowval": 1
