@@ -53,7 +53,7 @@ Carousel.propTypes ={
 }
 
 Carousel.defaultProps={
-    dots: true,
+    dots: false,
     speed:1000,
     autoplay: false
 }
