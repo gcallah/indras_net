@@ -87,7 +87,7 @@ class Home extends Component {
                             <div className="row">
                                 <div className="col">
                                     {Object.keys(this.state.allItems).map((item, i)=>
-                                    <li className="w-50 p-3 list-group-item list-group-item-action"
+                                    <li className="w-75 p-3 list-group-item list-group-item-action"
                                         key={i}>
                                         {console.log(this.state.allItems)}
                                         <Link to={{pathname: `/models/props/${this.state.allItems[item]['model ID']}`}}
