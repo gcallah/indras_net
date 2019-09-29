@@ -150,7 +150,7 @@ class ModelDetail extends Component {
     renderDimmer = () => {
         return (
             <Dimmer active inverted>
-            <Loader size='massive'>Loading...</Loader>
+                <Loader size='massive'>Loading...</Loader>
             </Dimmer>
         );
     }
@@ -160,9 +160,7 @@ class ModelDetail extends Component {
 
         if (this.state.loadingData) {
             return ( 
-            <div>
-            {this.renderDimmer()}
-            </div>
+                <div>{this.renderDimmer()}</div>
             );
         }
 
@@ -177,7 +175,7 @@ class ModelDetail extends Component {
                     {Object.keys(this.state.model_details).map((item,i)=> {
                         if ('question' in this.state.model_details[item]){
                             return(
-                            <div className="form-group">
+                            <div key={i} className="form-group">
                                 <div>
                                     <label className="col-sm-4 col-md-4 col-lg-4"
                                         key={i}>{this.state.model_details[item]['question']} {" "}
@@ -192,6 +190,7 @@ class ModelDetail extends Component {
                                 </div>
                             </div>
                             )}
+                        return null;
                         })
                     }
                     </div>
