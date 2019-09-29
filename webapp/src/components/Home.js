@@ -87,7 +87,7 @@ class Home extends Component {
                             <div className="row">
                                 <div className="col">
                                     {Object.keys(this.state.allItems).map((item, i)=>
-                                    <p className="w-50 p-3 list-group-item list-group-item-action"
+                                    <li className="w-75 p-3 list-group-item list-group-item-action"
                                         key={i}>
                                         {console.log(this.state.allItems)}
                                         <Link to={{pathname: `/models/props/${this.state.allItems[item]['model ID']}`}}
@@ -99,14 +99,14 @@ class Home extends Component {
                                             this.state.allItems[item]['source'])}>
                                             {this.state.allItems[item]['name']}
                                         </Link>
-                                    </p>)}
+                                    </li>)}
                                 </div>
                             </div>
                         </ul>
                         {this.renderShowDescription()}
                     </div>
                     <div className={'col-6'}>
-                        <Carousel speed={5000} autoplay={true}  className={'col-12'} data={data}/>
+                        <Carousel speed={5000} autoplay={true} className={'col-12'} data={data}/>
                     </div>
                 </div>
                 <br /><br />

@@ -60,10 +60,7 @@ opp_group = None
 
 
 def change_color(agent, society, opp_group):
-    if DEBUG2:
-        print("Agent " + str(agent) + " is changing colors from "
-              + str(agent.primary_group()) + " to "
-              + str(opp_group[str(agent.primary_group())]))
+    agent[DISPLAY_COLOR] = not agent[DISPLAY_COLOR]
     society.add_switch(agent, agent.primary_group(),
                        opp_group[str(agent.primary_group())])
 
@@ -94,11 +91,8 @@ def tsetter_action(agent):
 
 
 def common_action(agent, others_red, others_blue, op1, op2):
-    changed = False
-    num_others_red = max(len(others_red.subset(in_hood, agent, HOOD_SIZE)),
-                         NOT_ZERO)   # prevent div by zero!
-    num_others_blue = max(len(others_blue.subset(in_hood, agent, HOOD_SIZE)),
-                          NOT_ZERO)   # prevent div by zero!
+    num_others_red = len(others_red.subset(in_hood, agent, HOOD_SIZE))
+    num_others_blue = len(others_blue.subset(in_hood, agent, HOOD_SIZE))
     total_others = num_others_red + num_others_blue
     if total_others <= 0:
         return False
@@ -107,10 +101,10 @@ def common_action(agent, others_red, others_blue, op1, op2):
 
     agent[COLOR_PREF] = new_color_pref(agent[COLOR_PREF], env_color)
     if env_unfavorable(agent[DISPLAY_COLOR], agent[COLOR_PREF], op1, op2):
-        changed = True
-        agent[DISPLAY_COLOR] = not agent[DISPLAY_COLOR]
         change_color(agent, society, opp_group)
-    return changed
+        return True
+    else:
+        return False
 
 
 def create_tsetter(name, i, props=None, color=RED_SIN):
