@@ -2,23 +2,27 @@ import React, { Component } from "react";
 import { Loader, Dimmer } from "semantic-ui-react";
 import axios from 'axios';
 
-class ModelDetail extends Component {
-    api_server = 'https://indrasnet.pythonanywhere.com/models/props/';
+const api_server = 'https://indrasnet.pythonanywhere.com/models/props/';
 
-    state = {
-        model_details: {},
-        loadingData: false,
-        disabled_button: false,
-        env_file:{},
+class ModelDetail extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            model_details: {},
+            loadingData: false,
+            disabled_button: false,
+            env_file:{},
+        }
     }
 
     async componentDidMount() {
         try{
             document.title = "Indra | Property";
             this.setState({ loadingData: true });
-            console.log(this.api_server
+            console.log(api_server
                 + `${localStorage.getItem("menu_id")}`)
-            const properties = await axios.get(this.api_server
+            const properties = await axios.get(api_server
                 + `${localStorage.getItem("menu_id")}`);
             this.setState({ model_details: properties.data });
             console.log('model_detail json',this.state.model_details)
@@ -34,8 +38,9 @@ class ModelDetail extends Component {
 
     states = data => {
         //loop over objects in data and create object in this.state
+        console.log(this.state);
         Object.keys(this.state.model_details).forEach(item => 
-            this.setState({[item]: data[item]})
+            this.setState({[item]: data[item]}), console.log(this.state)
         );
     }
 
@@ -114,7 +119,7 @@ class ModelDetail extends Component {
         event.preventDefault();
         console.log(this.state.model_details)
         try{
-            const res = await axios.put(this.api_server + localStorage.getItem("menu_id"), this.state.model_details)
+            const res = await axios.put(api_server + localStorage.getItem("menu_id"), this.state.model_details)
             var item_id = localStorage.getItem("menu_id")
             this.setState({env_file: res.data})
             localStorage.setItem("env_file", JSON.stringify(this.state.env_file))
@@ -145,7 +150,7 @@ class ModelDetail extends Component {
     renderDimmer = () => {
         return (
             <Dimmer active inverted>
-            <Loader size='massive'>Loading...</Loader>
+                <Loader size='massive'>Loading...</Loader>
             </Dimmer>
         );
     }
@@ -155,9 +160,7 @@ class ModelDetail extends Component {
 
         if (this.state.loadingData) {
             return ( 
-            <div>
-            {this.renderDimmer()}
-            </div>
+                <div>{this.renderDimmer()}</div>
             );
         }
 
@@ -172,7 +175,7 @@ class ModelDetail extends Component {
                     {Object.keys(this.state.model_details).map((item,i)=> {
                         if ('question' in this.state.model_details[item]){
                             return(
-                            <div className="form-group">
+                            <div key={i} className="form-group">
                                 <div>
                                     <label className="col-sm-4 col-md-4 col-lg-4"
                                         key={i}>{this.state.model_details[item]['question']} {" "}
@@ -187,6 +190,7 @@ class ModelDetail extends Component {
                                 </div>
                             </div>
                             )}
+                        return null;
                         })
                     }
                     </div>

@@ -3,13 +3,20 @@ import { Loader, Dimmer } from "semantic-ui-react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import Carousel from "./Carousel.js";
-
+import sandpile_img from "./images/Sandpile.jpg";
+import sandpile1_img from "./images/sandpile_2.png";
+import mandelobrot_img from "./images/mendelobrot_sq.jpg";
 class Home extends Component {
   api_server = "https://indrasnet.pythonanywhere.com/";
   state = {
     msg: "",
     allItems: [],
-    loadingData: false
+    loadingData: false,
+    dataForCarousel: [
+      { image: sandpile_img, title: "by Seth Terashima" },
+      { image: sandpile1_img, title: "by Colt Browninga" },
+      { image: mandelobrot_img, title: "by Adam majewski" }
+    ]
   };
 
   async componentDidMount() {
@@ -70,7 +77,7 @@ class Home extends Component {
         </Dimmer>
       );
     }
-
+    const data = this.state.dataForCarousel;
     return (
       <div className="container">
         <div>{this.renderHeader()}</div>
@@ -85,8 +92,8 @@ class Home extends Component {
               <div className="row">
                 <div className="col">
                   {Object.keys(this.state.allItems).map((item, i) => (
-                    <p
-                      className="w-50 p-3 list-group-item list-group-item-action"
+                    <li
+                      className="w-75 p-3 list-group-item list-group-item-action"
                       key={i}
                     >
                       {console.log(this.state.allItems)}
@@ -110,7 +117,7 @@ class Home extends Component {
                       >
                         {this.state.allItems[item]["name"]}
                       </Link>
-                    </p>
+                    </li>
                   ))}
                 </div>
               </div>
@@ -118,7 +125,12 @@ class Home extends Component {
             {this.renderShowDescription()}
           </div>
           <div className="col-6">
-            <Carousel speed={500} autoplay={true} className="col-12" />
+            <Carousel
+              speed={5000}
+              autoplay={true}
+              className="col-12"
+              data={data}
+            />
           </div>
         </div>
         <br />

@@ -4,6 +4,8 @@ Places two groups of agents in the enviornment randomly
 and moves them around randomly.
 """
 
+import random
+
 from indra.utils import get_props
 from indra.agent import Agent
 from indra.composite import Composite
@@ -18,6 +20,8 @@ DEBUG2 = False  # turns deeper debugging code on or off
 DEF_NUM_BLUE = 10
 DEF_NUM_RED = 10
 
+MAX_CAR_LIFE = 5
+
 DEALERS = "Dealers"
 
 buyer_grp = None
@@ -29,32 +33,52 @@ def is_dealer(agent):
     return dealer_grp.ismember(agent)
 
 
-def seller_action(agent):
+def get_car_life(dealer):
+    print("Getting car from dealer", dealer)
+    return random.randint(1, MAX_CAR_LIFE)
+
+
+def dealer_action(agent):
     env.user.tell("I'm " + agent.name + " and I'm a dealer.")
     # return False means to move
     return False
 
 
 def buyer_action(agent):
-    my_dealer = env.get_neighbor_of_groupX(agent, dealer_grp,
-                                           hood_size=4)
-    print("My dealer is:", my_dealer)
+    if not agent["has_car"]:
+        my_dealer = env.get_neighbor_of_groupX(agent, dealer_grp,
+                                               hood_size=1)
+        if my_dealer is not None:
+            print("My dealer is:", my_dealer)
+            agent["has_car"] = True
+            agent["car_life"] = get_car_life(my_dealer)
+            print("Got a car with a life of ", agent["car_life"])
+        else:
+            print("No dealers nearby.")
+    else:
+        print("I have a car!")
+        agent["car_life"] -= 1
+        if agent["car_life"] <= 0:
+            agent["has_car"] = False
+
     # return False means to move
     return False
 
 
-def create_seller(name, i, props=None):
+def create_dealer(name, i, props=None):
     """
     Create an agent.
     """
-    return Agent(name + str(i), action=seller_action)
+    return Agent(name + str(i), action=dealer_action)
 
 
 def create_buyer(name, i, props=None):
     """
     Create an agent.
     """
-    return Agent(name + str(i), action=buyer_action)
+    return Agent(name + str(i),
+                 action=buyer_action,
+                 attrs={"has_car": False, "car_life": MAX_CAR_LIFE})
 
 
 def set_up(props=None):
@@ -63,7 +87,7 @@ def set_up(props=None):
     """
     pa = get_props(MODEL_NAME, props)
     dealer_grp = Composite(DEALERS, {"color": BLUE},
-                           member_creator=create_seller,
+                           member_creator=create_dealer,
                            num_members=pa.get('num_sellers', DEF_NUM_BLUE))
     buyer_grp = Composite("Buyers", {"color": RED},
                           member_creator=create_buyer,
