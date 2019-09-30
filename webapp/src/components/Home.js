@@ -70,14 +70,14 @@ class Home extends Component {
   };
 
   render() {
-    if (this.state.loadingData) {
+    const {loadingData, dataForCarousel, allItems} = this.state;
+    if (loadingData) {
       return (
         <Dimmer active inverted>
           <Loader size="massive">Loading...</Loader>
         </Dimmer>
       );
     }
-    const data = this.state.dataForCarousel;
     return (
       <div className="container">
         <div style={{ marginBottom: 100 }}>{this.renderHeader()}</div>
@@ -87,31 +87,31 @@ class Home extends Component {
             <ul className="list-group">
               <div className="row">
                 <div className="col">
-                  {Object.keys(this.state.allItems).map((item, i) => (
+                  {Object.keys(allItems).map((item, i) => (
                     <li
                       className="w-75 p-3 list-group-item list-group-item-action"
                       key={i}
                     >
-                      {console.log(this.state.allItems)}
+                      {console.log(allItems)}
                       <Link
                         to={{
                           pathname: `/models/props/${
-                            this.state.allItems[item]["model ID"]
+                            allItems[item]["model ID"]
                           }`
                         }}
                         className="text-primary"
                         data-toggle="tooltip"
                         data-placement="top"
-                        title={this.state.allItems[item]["doc"]}
+                        title={allItems[item]["doc"]}
                         onClick={() =>
                           this.handleClick(
-                            this.state.allItems[item]["model ID"],
-                            this.state.allItems[item]["name"],
-                            this.state.allItems[item]["source"]
+                            allItems[item]["model ID"],
+                            allItems[item]["name"],
+                            allItems[item]["source"]
                           )
                         }
                       >
-                        {this.state.allItems[item]["name"]}
+                        {allItems[item]["name"]}
                       </Link>
                     </li>
                   ))}
@@ -125,7 +125,7 @@ class Home extends Component {
               speed={5000}
               autoplay={true}
               className="col-12"
-              data={data}
+              data={dataForCarousel}
             />
           </div>
         </div>
