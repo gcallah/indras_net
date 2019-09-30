@@ -101,16 +101,23 @@ def main():
 
     filepath = input_file
     with open(filepath) as fp:
+        line = ""
+
+        # Generate empty notebook for empty python file
+        if "__" in input_file or "_helper" in input_file:
+            nb['cells'].append(nbf.v4.new_code_cell(line))
+            with open(output_file, 'w') as f:
+                nbf.write(nb, f)
+
+            return 0
+
         intro = """# How to run the """ + input_file[:-3] + """ model."""
 
         nb['cells'].append(nbf.v4.new_markdown_cell(intro))
 
         line = fp.readline()
 
-        if line == "":
-            return
-
-        #  Skip comments
+        # Skip comments
         if '"""' in line:
             line = skip_comments(fp, line)
 
