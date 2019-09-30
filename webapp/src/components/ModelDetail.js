@@ -52,7 +52,7 @@ class ModelDetail extends Component {
                     ...prevState.model_details,          
                     [item]:{                     
                     ...prevState.model_details[item],  
-                    errorMessage: " ,
+                    errorMessage: "",
                     disabledButton: false,       
                     } 
                 }
