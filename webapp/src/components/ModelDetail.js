@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Loader, Dimmer } from "semantic-ui-react";
-import axios from 'axios';
+import axios from "axios";
 
-const api_server = 'https://indrasnet.pythonanywhere.com/models/props/';
+const api_server = "https://indrasnet.pythonanywhere.com/models/props/";
 
 class ModelDetail extends Component {
     constructor(props) {
@@ -25,7 +25,7 @@ class ModelDetail extends Component {
             const properties = await axios.get(api_server
                 + `${localStorage.getItem("menu_id")}`);
             this.setState({ model_details: properties.data });
-            console.log('model_detail json',this.state.model_details)
+            console.log("model_detail json",this.state.model_details)
             this.states(properties.data);
             this.errors(properties.data);
             this.setState({ loadingData: false });
@@ -52,7 +52,7 @@ class ModelDetail extends Component {
                     ...prevState.model_details,          
                     [item]:{                     
                     ...prevState.model_details[item],  
-                    errorMessage: '' ,
+                    errorMessage: " ,
                     disabledButton: false,       
                     } 
                 }
@@ -64,7 +64,7 @@ class ModelDetail extends Component {
     errorSubmit = () =>{
         let ans = false
         Object.keys(this.state.model_details).forEach(item => 
-            ans = ans || this.state.model_details[item]['disabledButton'])
+            ans = ans || this.state.model_details[item]["disabledButton"])
         return ans
     }
 
@@ -72,24 +72,24 @@ class ModelDetail extends Component {
         let model_detail = this.state.model_details;
         const {name,value} = e.target
         let valid = this.checkValidity(name,value)
-        model_detail[name]['disabledButton']=true
+        model_detail[name]["disabledButton"]=true
 
         if (valid === 1) {
-            model_detail[name]['val']= value
-            model_detail[name]['errorMessage']=""
-            model_detail[name]['disabledButton']=false
+            model_detail[name]["val"]= value
+            model_detail[name]["errorMessage"]=""
+            model_detail[name]["disabledButton"]=false
             this.setState({model_details:model_detail})
 
         } else if(valid === -1) {
-            model_detail[name]['errorMessage']="**Wrong Input Type"
-            model_detail[name]['val']= this.state[name]['val']
+            model_detail[name]["errorMessage"]="**Wrong Input Type"
+            model_detail[name]["val"]= this.state[name]["val"]
             this.setState({model_details:model_detail})
             console.log(this.state.model_details[name])
 
         } else {
-            model_detail[name]['errorMessage'] 
-                = `**Please input a number between ${this.state[name]['lowval']} and ${this.state[name]['hival']}.`
-            model_detail[name]['val'] = this.state[name]['val']
+            model_detail[name]["errorMessage"] 
+                = `**Please input a number between ${this.state[name]["lowval"]} and ${this.state[name]["hival"]}.`
+            model_detail[name]["val"] = this.state[name]["val"]
             this.setState({model_details:model_detail})
         }  
 
@@ -98,13 +98,13 @@ class ModelDetail extends Component {
 
 
     checkValidity = (name,value) => {
-        if (value <= this.state.model_details[name]['hival']
-                && value >= this.state.model_details[name]['lowval']){
-            if (this.state.model_details[name]['atype'] === 'INT'
+        if (value <= this.state.model_details[name]["hival"]
+                && value >= this.state.model_details[name]["lowval"]){
+            if (this.state.model_details[name]["atype"] === "INT"
                 && !!(value%1) === false) {
                 return 1
             }
-            else if(this.state.model_details[name]['atype'] === 'DBL'){
+            else if(this.state.model_details[name]["atype"] === "DBL"){
                 return 1
             }
             else {
@@ -129,12 +129,12 @@ class ModelDetail extends Component {
         }
         catch(e){
             console.log(e.message)
-            this.props.history.push('/errorCatching')
+            this.props.history.push("/errorCatching")
         }
     }
 
     renderHeader = () => {
-        return <h1 style={{ "textAlign": "center", "fontWeight": '200' }}>Please set the parameters for the {localStorage.getItem("name")} model</h1>
+        return <h1 style={{ "textAlign": "center", "fontWeight": "200" }}>Please set the parameters for the {localStorage.getItem("name")} model</h1>
     }
 
     renderSubmitButton = () => {
@@ -150,7 +150,7 @@ class ModelDetail extends Component {
     renderDimmer = () => {
         return (
             <Dimmer active inverted>
-                <Loader size='massive'>Loading...</Loader>
+                <Loader size="massive">Loading...</Loader>
             </Dimmer>
         );
     }
@@ -173,19 +173,19 @@ class ModelDetail extends Component {
                 <form>
                     <div className="container">
                     {Object.keys(this.state.model_details).map((item,i)=> {
-                        if ('question' in this.state.model_details[item]){
+                        if ("question" in this.state.model_details[item]){
                             return(
                             <div key={i} className="form-group">
                                 <div>
                                     <label className="col-sm-4 col-md-4 col-lg-4"
-                                        key={i}>{this.state.model_details[item]['question']} {" "}
+                                        key={i}>{this.state.model_details[item]["question"]} {" "}
                                     </label>
-                                    <input type={this.state.model_details[item]['atype']}
+                                    <input type={this.state.model_details[item]["atype"]}
                                     className="col-sm-2 col-md-2 col-lg-2" style={{fontSize:"15pt"}}
-                                    placeholder={this.state.model_details[item]['val']}
+                                    placeholder={this.state.model_details[item]["val"]}
                                     onChange={this.propChanged} /*style={{width: 60}} */ name={item}/>
                                     <span className="col-sm-6 col-md-6 col-lg-6" style={{color:"red", fontSize: 12}}>
-                                    {this.state.model_details[item]['errorMessage']}</span>
+                                    {this.state.model_details[item]["errorMessage"]}</span>
                                     <br/>
                                 </div>
                             </div>
