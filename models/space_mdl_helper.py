@@ -1,5 +1,5 @@
 """
-space_mdl.py:
+space_mdl_helper.py:
 Setup an interesting interactive, spatial env in which to play
 and try out new features.
 We're going to do "bad" import *s here because this isn't "real"
