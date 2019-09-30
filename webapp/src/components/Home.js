@@ -80,11 +80,7 @@ class Home extends Component {
     const data = this.state.dataForCarousel;
     return (
       <div className="container">
-        <div>{this.renderHeader()}</div>
-        <br />
-        <br />
-        <br />
-        <br />
+        <div style={{ marginBottom: 100 }}>{this.renderHeader()}</div>
         <div className="row">
           <div className="col-6">
             {this.renderChooseModelProp()}
@@ -133,10 +129,6 @@ class Home extends Component {
             />
           </div>
         </div>
-        <br />
-        <br />
-        <br />
-        <br />
       </div>
     );
   }
