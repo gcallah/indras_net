@@ -5,7 +5,6 @@ input_file parameter
 
 import nbformat as nbf
 import sys
-import os
 
 
 def skip_comments(fp, line):
@@ -45,13 +44,22 @@ def globals_block(fp, line):
 def set_up_block(fp, line):
     setup_code = ""
     env = None
+    prev = None
+
     while "set_up()" not in line:
         if 'Env(' in line:
             code = line.split('    ')
             env = code[1].split(' = ')[0]
+        prev = line
         line = fp.readline()
 
     code = line.split('    ')
+
+    # Check for broken up long lines
+    first_part = code[1].split(' = ')[0]
+    if ')' in first_part and '(' not in first_part:
+        setup_code += prev.split('    ')[1]
+
     setup_code += code[1]
 
     return line, setup_code, env
@@ -93,13 +101,23 @@ def main():
 
     filepath = input_file
     with open(filepath) as fp:
+        line = ""
+
+        # Generate empty notebook for empty python file
+        if "__" in input_file or "_helper" in input_file:
+            nb['cells'].append(nbf.v4.new_code_cell(line))
+            with open(output_file, 'w') as f:
+                nbf.write(nb, f)
+
+            return 0
+
         intro = """# How to run the """ + input_file[:-3] + """ model."""
 
         nb['cells'].append(nbf.v4.new_markdown_cell(intro))
 
         line = fp.readline()
 
-        #  Skip comments
+        # Skip comments
         if '"""' in line:
             line = skip_comments(fp, line)
 
