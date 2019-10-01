@@ -5,7 +5,7 @@ from flask_restplus import Resource, Api, fields
 from flask_cors import CORS
 import json
 from indra.user import APIUser
-from models.run_dict import setup_dict
+from models.run_dict_helper import setup_dict
 from indra.agent import AgentEncoder
 from indra.env import Env
 # these imports must be automated somehow;

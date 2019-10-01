@@ -1,5 +1,5 @@
 import json
-from models.run_dict import rdict
+from models.run_dict_helper import rdict
 
 
 def main(args=None):

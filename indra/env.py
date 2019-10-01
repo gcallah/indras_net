@@ -219,22 +219,22 @@ class Env(Space):
             self.user.tell("{} added to the womb".format(agent.name))
         # do we need to connect agent to env (self)?
 
-    def add_switch(self, agent, grp1, grp2):
+    def add_switch(self, agent, from_grp, to_grp):
         """
         Put a child agent in the womb.
         agent: child to add
         group: which group child will join
         """
-        self.switches.append((agent, grp1, grp2))
+        self.switches.append((agent, from_grp, to_grp))
         # do we need to connect agent to env (self)?
 
-    def now_switch(self, agent, grp1, grp2):
+    def now_switch(self, agent, from_grp, to_grp):
         """
         Switches the groups of the agent now
         instead of at the end of period
         unlike add_switch.
         """
-        switch(agent, grp1, grp2)
+        switch(agent, from_grp, to_grp)
         self.num_switches += 1
 
     def runN(self, periods=DEF_TIME):
@@ -255,8 +255,8 @@ class Env(Space):
                     join(group, agent)
                 del self.womb[:]
             if self.switches is not None:
-                for (agent, grp1, grp2) in self.switches:
-                    switch(agent, grp1, grp2)
+                for (agent, from_grp, to_grp) in self.switches:
+                    switch(agent, from_grp, to_grp)
                     self.num_switches += 1
                 del self.switches[:]
 
