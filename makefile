@@ -40,6 +40,7 @@ local: $(HTMLFILES) $(INCS)
 
 create_dev_env:
 	pip3 install -r $(REQ_DIR)/requirements-dev.txt
+	git submodule init https://github.com/gcallah/utils.git
 	git submodule update https://github.com/gcallah/utils.git
 	echo "Set PYTHONPATH and INDRA_HOME in your login script as follows:"
 	echo "export INDRA_HOME=(You Indra location)"
@@ -78,7 +79,7 @@ submods:
 	cd utils; git pull origin master
 
 # run tests then commit all, then push
-prod: tests
+prod: local tests
 	- git commit -a
 	- git pull origin master
 	git push origin master

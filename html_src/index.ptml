@@ -24,10 +24,10 @@
     We've made some Jupyter notebooks to help explain how models are
     programmed in Python,
     <a
-        href="https://github.com/gcallah/indras_net/blob/master/indra/InteractiveIndra.ipynb">here</a>
+        href="https://github.com/gcallah/indras_net/blob/master/notebooks/InteractiveIndra.ipynb">here</a>
     and
     <a
-        href="https://github.com/gcallah/indras_net/blob/master/indra/AFirstModel.ipynb">here</a>.
+        href="https://github.com/gcallah/indras_net/blob/master/notebooks/AFirstModel.ipynb">here</a>.
   </p>
 
   <p>
