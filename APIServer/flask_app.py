@@ -60,6 +60,25 @@ class HelloWorld(Resource):
         return {'hello': 'world'}
 
 
+model_specification = api.model("model_specification", {
+    "model_name": fields.String("Enter model name."),
+    "groups": fields.List(fields.String("Enter group names"))
+})
+
+
+@api.route('/model_creator')
+class ModelCreator(Resource):
+    def get(self):
+        return {'feature_name':
+                'This is the URL for the model creator: '
+                + 'it is used with a PUT request.'}
+
+    @api.expect(model_specification)
+    def put(self):
+        model_features = api.payload
+        return json_converter(Env(model_features["model_name"]))
+
+
 @api.route('/models')
 class Models(Resource):
     def get(self):
