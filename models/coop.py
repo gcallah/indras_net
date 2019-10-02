@@ -99,7 +99,8 @@ def exchange(coop_env):
 def distribute_coupons(agent):
     for i in range(4):
         for bbsit in groups[i]:
-            groups[i][bbsit]["coupons"] += int(gaussian_distribution(agent["extra_coupons"], agent["extra_dev"]))  # NOQA E501
+            groups[i][bbsit]["coupons"] += int(gaussian_distribution(
+                agent["extra_coupons"], agent["extra_dev"]))
 
 
 def coop_action(coop_env):
