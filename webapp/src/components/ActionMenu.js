@@ -7,11 +7,11 @@ import ScatterPlot from './ScatterPlot.js';
 import Debugger from './Debugger.js';
 import PreFormTextBox from './PreFormTextBox.js';
 
+
 const POP = 2;
 const SCATTER = 3;
 const DATA = 4;
 const SOURCE = 5;
-
 
 class ActionMenu extends Component {
     api_server = 'https://indrasnet.pythonanywhere.com/models/menu/';
@@ -33,7 +33,6 @@ class ActionMenu extends Component {
     };
 
     async componentDidMount () {
-        this.setState ({loadingData: true});
         document.title = 'Indra | Menu';
         const m = await axios.get (this.api_server);
         console.log (this.api_server);
@@ -45,7 +44,6 @@ class ActionMenu extends Component {
         this.setState ({name: name});
         this.setState ({model_id: id});
         this.setState ({source: source});
-        this.setState ({loadingData: false});
         this.setState ({env_file: JSON.parse(env)});
         this.setState({msg: this.state.env_file["user"]["user_msgs"]})
     }
@@ -110,14 +108,17 @@ class ActionMenu extends Component {
 
     sendNumPeriods = async() => {
         console.log(this.api_server + 'run/' + String(this.state.period_num))
+        this.setState({loadingData:true})
         try { 
             const res = await axios.put(
             this.api_server + 'run/' + String(this.state.period_num),
             this.state.env_file,
             this.state.period_num
         )
-        this.setState({env_file: res.data})
-        this.setState({msg: res.data["user"]["user_msgs"]})
+
+        this.setState({env_file: res.data,
+                            loadingData:false,
+                            msg: res.data["user"]["user_msgs"]})
         console.log(res.data)
         } catch(e) {
             console.log(e.message)
@@ -243,33 +244,41 @@ class ActionMenu extends Component {
         if (this.state.loadingData) {
             return (
                 <div>
-                    {this.renderDimmer()}
+                    <div className="text-center">
+                        <div className="spinner-border" role="status">
+                            <span className="sr-only">Loading...</span>
+                        </div>
+                    </div>
                 </div>
             );
         }
-        return (
-            <div>
-                <br />
-                {this.renderHeader()}
-                <br /><br />
-                { this.renderModelStatus() }
-                <ul className="list-group">
-                    <div className="row">
-                        <div>
-                            { this.renderRunButton() }
-                            <br /><br />
-                            <h3>Model Analysis:</h3>
-                            <br />
+        else {
+            return (
+                <div>
+
+                    <br/>
+                    {this.renderHeader()}
+                    <br/><br/>
+                    {this.renderModelStatus()}
+                    <ul className="list-group">
+                        <div className="row">
+                            <div>
+                                {this.renderRunButton()}
+                                <br/><br/>
+                                <h3>Model Analysis:</h3>
+                                <br/>
+                            </div>
                         </div>
-                    </div>
-                    {this.renderMapItem()}
-                </ul>
-                <br /><br />
-                <br /><br />
-                {this.renderMenuItem()}
-            </div>
-        );
+                        {this.renderMapItem()}
+                    </ul>
+                    <br/><br/>
+                    <br/><br/>
+                    {this.renderMenuItem()}
+                </div>
+            );
+        }
     }
+
 }
 
 export default ActionMenu;
