@@ -243,10 +243,12 @@ class ActionMenu extends Component {
     render () {
         if (this.state.loadingData) {
             return (
-                <div>
-                    <div className="text-center">
-                        <div className="spinner-border" role="status">
-                            <span className="sr-only">Loading...</span>
+                <div className="container-fluid" style={{height:600}}>
+                    <div className="row text-center" style={{height:'100%'}} >
+                        <div className="col-12" style={{display: "flex",justifyContent: "center", alignItems: "center"}}>
+                            <div className="spinner-border" role="status">
+                                <span className="sr-only">Loading...</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -255,7 +257,6 @@ class ActionMenu extends Component {
         else {
             return (
                 <div>
-
                     <br/>
                     {this.renderHeader()}
                     <br/><br/>
