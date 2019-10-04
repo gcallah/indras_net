@@ -30,6 +30,10 @@ def invert_direction(angle):
 
 
 def calc_angle(agent1, agent2):
+    """
+    Calculates the angle between two agents and returns the
+    angle
+    """
     pos1 = agent1.get_pos()
     pos2 = agent2.get_pos()
     x = pos2[X] - pos1[X]
