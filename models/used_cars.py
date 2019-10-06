@@ -32,6 +32,9 @@ env = None
 
 def bought_info(agent, dealer):
     msg = "My dealer is: " + dealer + "\nReceived a car with a life of " + str(agent["car_life"])
+    msg += "\nMy dealer" + dealer + "has an avg car life of" + str(dealer["avg_car_life_sold"])
+    msg += ". And sold "+ str(dealer["num_sales"]+" cars.")
+
     return msg
 
 def is_dealer(agent):
@@ -48,6 +51,8 @@ def dealer_action(agent):
     # return False means to move
     return False
 
+def calculate_avg_car_life_sold(dealer, new_car_life):
+    return (dealer["avg_car_life_sold"] * dealer["num_sales"] + new_car_life) / (dealer["num_sales"] + 1)
 
 def buyer_action(agent):
     if not agent["has_car"]:
@@ -55,8 +60,12 @@ def buyer_action(agent):
                                                hood_size=1)
         if my_dealer is not None:
             agent["has_car"] = True
-            agent["car_life"] = get_car_life(my_dealer)
+            received_car_life = get_car_life(my_dealer)
+            agent["car_life"] = received_car_life
+            my_dealer["avg_car_life_sold"] = calculate_avg_car_life_sold(my_dealer, received_car_life)
+            my_dealer["num_sales"] += 1
             print(bought_info(agent, my_dealer))
+            print("Dealer", my_dealer, "has an avg car life of", my_dealer["avg_car_life_sold"])
         else:
             print("No dealers nearby.")
     else:
@@ -73,7 +82,9 @@ def create_dealer(name, i, props=None):
     """
     Create an agent.
     """
-    return Agent(name + str(i), action=dealer_action)
+    return Agent(name + str(i),
+                 action=dealer_action,
+                 attrs = {"num_sales": 0, "num_returns": 0, "avg_car_life_sold": MIN_CAR_LIFE})
 
 
 def create_buyer(name, i, props=None):
