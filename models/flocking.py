@@ -26,6 +26,9 @@ the_sky = None
 
 
 def invert_direction(angle):
+    """
+    Inverts the current angle.
+    """
     return (angle + HALF_CIRCLE) % FULL_CIRCLE
 
 
