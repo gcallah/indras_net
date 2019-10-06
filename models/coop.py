@@ -126,7 +126,7 @@ def coop_report(coop_env):
 def act(agent):
     """
     Babysisters act as following:
-    if their holding coupons less than min_holding, they babysitting,
+    if their holding coupons less than min_holding, they babysit,
     or there is a 50-50 chance for them to going out.
     """
     if agent['coupons'] <= agent['min_holding']:
