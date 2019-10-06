@@ -45,6 +45,11 @@ def calc_angle(agent1, agent2):
 
 
 def bird_action(this_bird):
+    """
+    Finds the closest agent to the current agent and calculates
+    the distance between the two, inverting the direction if the
+    distance is too far.
+    """
     nearest_bird = this_bird.locator.get_closest_agent(this_bird)
     if nearest_bird is not None:
         curr_distance = distance(this_bird, nearest_bird)
