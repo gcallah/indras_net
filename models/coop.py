@@ -3,12 +3,12 @@ This is babysitting co-op rewritten in Indra.
 """
 import random
 
-from indra.utils import get_props
 from indra.agent import Agent
 from indra.composite import Composite
-from indra.env import Env, UNLIMITED
 from indra.display_methods import BLUE, ORANGE, RED, PURPLE, BLACK
+from indra.env import Env, UNLIMITED
 from indra.space import gaussian_distribution
+from indra.utils import get_props
 
 MODEL_NAME = 'coop'
 
@@ -98,8 +98,9 @@ def exchange(coop_env):
 
 def distribute_coupons(agent):
     """
-    Distrubute coupons from central bank randomly to each babysitter.
-    Each babysitter's coupons are gaussian distributed based on extra_coupons and extra_dev.
+    Distribute coupons from central bank randomly to each babysitter.
+    Each babysitter's coupons are gaussian distributed based on extra_coupons
+    and extra_dev.
     """
 
     for i in range(4):
@@ -117,10 +118,10 @@ def coop_action(coop_env):
 def coop_report(coop_env):
     num_babysitter = len(groups[BSIT_INDEX])
     return 'Number of babysitters is: ' + str(num_babysitter) \
-        + ', number of people staying home_B is: ' \
-        + str(len(groups[B_HOME])) \
-        + ', number of people staying home_G is: ' \
-        + str(len(groups[G_HOME])) + '\n'
+           + ', number of people staying home_B is: ' \
+           + str(len(groups[B_HOME])) \
+           + ', number of people staying home_G is: ' \
+           + str(len(groups[G_HOME])) + '\n'
 
 
 def act(agent):
