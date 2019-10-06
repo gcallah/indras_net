@@ -1,6 +1,6 @@
 #!/bin/sh
 export HOST_PORT="8000"
-export CONT_PORT="5000"
+export CONT_PORT="8000"
 export REPO="indras_net"
 export DH_ACCOUNT="gcallah"
 export CONTAINER="$DH_ACCOUNT/$REPO"

@@ -103,14 +103,15 @@ lint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
 dev_container: $(DOCKER_DIR)/Dockerfile $(DOCKER_DIR)/requirements.txt $(DOCKER_DIR)/requirements-dev.txt
 	docker build -t gcallah/$(REPO)-dev docker
 
-
 # prod container has only what's needed to run
 prod_container: $(DOCKER_DIR)/Deployable $(DOCKER_DIR)/requirements.txt
 	docker system prune -f
 	docker build -t gcallah/$(REPO) docker --no-cache --build-arg repo=$(REPO) -f $(DOCKER_DIR)/Deployable
 
+# deploy prod containerr
 deploy_container:
 	docker push gcallah/$(REPO):latest
+
 
 nocrud:
 	-rm *~
