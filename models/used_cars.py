@@ -20,6 +20,7 @@ DEBUG2 = False  # turns deeper debugging code on or off
 DEF_NUM_BLUE = 10
 DEF_NUM_RED = 10
 
+MIN_CAR_LIFE = 1
 MAX_CAR_LIFE = 5
 
 DEALERS = "Dealers"
@@ -29,13 +30,17 @@ dealer_grp = None
 env = None
 
 
+def bought_info(agent, dealer):
+    msg = "My dealer is: " + dealer + "\nReceived a car with a life of " + str(agent["car_life"])
+    return msg
+
 def is_dealer(agent):
     return dealer_grp.ismember(agent)
 
 
 def get_car_life(dealer):
     print("Getting car from dealer", dealer)
-    return random.randint(1, MAX_CAR_LIFE)
+    return random.randint(MIN_CAR_LIFE, MAX_CAR_LIFE)
 
 
 def dealer_action(agent):
@@ -49,10 +54,9 @@ def buyer_action(agent):
         my_dealer = env.get_neighbor_of_groupX(agent, dealer_grp,
                                                hood_size=1)
         if my_dealer is not None:
-            print("My dealer is:", my_dealer)
             agent["has_car"] = True
             agent["car_life"] = get_car_life(my_dealer)
-            print("Got a car with a life of ", agent["car_life"])
+            print(bought_info(agent, my_dealer))
         else:
             print("No dealers nearby.")
     else:
@@ -78,7 +82,7 @@ def create_buyer(name, i, props=None):
     """
     return Agent(name + str(i),
                  action=buyer_action,
-                 attrs={"has_car": False, "car_life": MAX_CAR_LIFE})
+                 attrs = {"has_car": False, "car_life": MAX_CAR_LIFE})
 
 
 def set_up(props=None):
