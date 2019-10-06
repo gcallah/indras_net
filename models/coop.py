@@ -192,7 +192,7 @@ def set_up(props=None):
     groups = []
     group_indices = {}
 
-    num_members = num_members = pa.get('num_babysitter', DEF_BABYSITTER)
+    num_members = pa.get('num_babysitter', DEF_BABYSITTER)
 
     # There are 4 groups: group of babysitters, group of people going out,
     # group of people who want to babysit but cannot,
