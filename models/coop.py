@@ -97,6 +97,11 @@ def exchange(coop_env):
 
 
 def distribute_coupons(agent):
+    """
+    Distrubute coupons from central bank randomly to each babysitter.
+    Each babysitter's coupons are gaussian distributed based on extra_coupons and extra_dev.
+    """
+
     for i in range(4):
         for bbsit in groups[i]:
             groups[i][bbsit]["coupons"] += int(gaussian_distribution(
