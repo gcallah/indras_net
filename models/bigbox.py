@@ -3,12 +3,13 @@ Big box model for simulating the behaviors of consumers.
 """
 
 import random
-from indra.utils import get_props
+
 from indra.agent import Agent
 from indra.composite import Composite
-from indra.space import DEF_HEIGHT, DEF_WIDTH
-from indra.env import Env
 from indra.display_methods import BLACK, BLUE, GRAY, GREEN, RED, TAN, YELLOW
+from indra.env import Env
+from indra.space import DEF_HEIGHT, DEF_WIDTH
+from indra.utils import get_props
 
 MODEL_NAME = "bigbox"
 NUM_OF_CONSUMERS = 50
@@ -100,17 +101,10 @@ def create_bb(name):
 
 def bb_action(bb):
     """
-    Deduct expense from the capital of big box and
+    Deduct expenses from the capital of big box and
     check if big box goes out of business.
     """
-    bb["capital"] -= bb["expense"]
-    if DEBUG:
-        print("       ", bb, "has a capital of ", bb["capital"])
-    if bb["capital"] <= 0:
-        bb.die()
-        if DEBUG:
-            print("       ", bb, "is out of business.")
-    return True
+    return common_action(bb)
 
 
 def get_util(store):
@@ -138,7 +132,7 @@ def consumer_action(consumer):
     for neighbors in nearby_neighbors:
         neighbor = nearby_neighbors[neighbors]
         if (neighbor.isactive() and (neighbor.primary_group()
-           != groups[CONSUMER_INDX])):
+                                     != groups[CONSUMER_INDX])):
             if sells_good(neighbor, consumer, groups):
                 curr_store_util = get_util(neighbor)
                 if curr_store_util > max_util:
@@ -169,17 +163,25 @@ def calc_util(stores):
 
 def mp_action(mp):
     """
-    deduct expenses from mom and pop stores and
-    check if mom and pop store goes out or business.
+    Deduct expenses from mom and pop stores and
+    check if mom and pop store goes out of business.
     """
 
-    mp["capital"] -= mp["expense"]
+    return common_action(mp)
+
+
+def common_action(obj):
+    """
+    Common action to deduct expenses and
+    check whether the entity goes out of business
+    """
+    obj["capital"] -= obj["expense"]
     if DEBUG:
-        print("       ", mp, "has a capital of ", mp["capital"])
-    if mp["capital"] <= 0:
-        mp.die()
+        print("       ", obj, "has a capital of ", obj["capital"])
+    if obj["capital"] <= 0:
+        obj.die()
         if DEBUG:
-            print("       ", mp, "is out of business.")
+            print("       ", obj, "is out of business.")
     return True
 
 
@@ -225,9 +227,7 @@ def set_up(props=None):
                                member_creator=create_consumer,
                                num_members=num_consumers)
     bb_group = Composite("Big box", {"color": BLUE})
-    groups = []
-    groups.append(consumer_group)
-    groups.append(bb_group)
+    groups = [consumer_group, bb_group]
     for stores in range(0, len(mp_stores)):
         store_name = list(mp_stores.keys())[stores]
         groups.append(Composite(store_name,

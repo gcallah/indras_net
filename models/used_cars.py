@@ -6,12 +6,12 @@ and moves them around randomly.
 
 import random
 
-from indra.utils import get_props
 from indra.agent import Agent
 from indra.composite import Composite
-from indra.space import DEF_HEIGHT, DEF_WIDTH
-from indra.env import Env
 from indra.display_methods import RED, BLUE
+from indra.env import Env
+from indra.space import DEF_HEIGHT, DEF_WIDTH
+from indra.utils import get_props
 
 MODEL_NAME = "used cars"
 DEBUG = True  # turns debugging code on or off
@@ -31,11 +31,14 @@ env = None
 
 
 def bought_info(agent, dealer):
-    msg = "My dealer is: " + dealer + "\nReceived a car with a life of " + str(agent["car_life"])
-    msg += "\nMy dealer" + dealer + "has an avg car life of" + str(dealer["avg_car_life_sold"])
-    msg += ". And sold "+ str(dealer["num_sales"]+" cars.")
+    msg = "My dealer is: " + dealer + "\nReceived a car with a life of " + str(
+        agent["car_life"])
+    msg += "\nMy dealer" + dealer + "has an avg car life of" + str(
+        dealer["avg_car_life_sold"])
+    msg += ". And sold " + str(dealer["num_sales"] + " cars.")
 
     return msg
+
 
 def is_dealer(agent):
     return dealer_grp.ismember(agent)
@@ -51,8 +54,11 @@ def dealer_action(agent):
     # return False means to move
     return False
 
+
 def calculate_avg_car_life_sold(dealer, new_car_life):
-    return (dealer["avg_car_life_sold"] * dealer["num_sales"] + new_car_life) / (dealer["num_sales"] + 1)
+    return (dealer["avg_car_life_sold"] * dealer[
+        "num_sales"] + new_car_life) / (dealer["num_sales"] + 1)
+
 
 def buyer_action(agent):
     if not agent["has_car"]:
@@ -62,10 +68,12 @@ def buyer_action(agent):
             agent["has_car"] = True
             received_car_life = get_car_life(my_dealer)
             agent["car_life"] = received_car_life
-            my_dealer["avg_car_life_sold"] = calculate_avg_car_life_sold(my_dealer, received_car_life)
+            my_dealer["avg_car_life_sold"] = calculate_avg_car_life_sold(
+                my_dealer, received_car_life)
             my_dealer["num_sales"] += 1
             print(bought_info(agent, my_dealer))
-            print("Dealer", my_dealer, "has an avg car life of", my_dealer["avg_car_life_sold"])
+            print("Dealer", my_dealer, "has an avg car life of",
+                  my_dealer["avg_car_life_sold"])
         else:
             print("No dealers nearby.")
     else:
@@ -84,7 +92,8 @@ def create_dealer(name, i, props=None):
     """
     return Agent(name + str(i),
                  action=dealer_action,
-                 attrs = {"num_sales": 0, "num_returns": 0, "avg_car_life_sold": MIN_CAR_LIFE})
+                 attrs={"num_sales": 0, "num_returns": 0,
+                        "avg_car_life_sold": MIN_CAR_LIFE})
 
 
 def create_buyer(name, i, props=None):
@@ -93,7 +102,7 @@ def create_buyer(name, i, props=None):
     """
     return Agent(name + str(i),
                  action=buyer_action,
-                 attrs = {"has_car": False, "car_life": MAX_CAR_LIFE})
+                 attrs={"has_car": False, "car_life": MAX_CAR_LIFE})
 
 
 def set_up(props=None):
