@@ -51,6 +51,10 @@ def distance(a1, a2):
 
 
 def in_hood(agent, other, hood_sz):
+    """
+    Check whether the distance between two objects is smaller than
+    the given distance
+    """
     d = distance(agent, other)
     if DEBUG2:
         print("Distance between " + str(agent)
