@@ -6,7 +6,7 @@ from flask_cors import CORS
 import json
 from indra.user import APIUser
 from models.run_dict_helper import setup_dict
-from indra.agent import AgentEncoder, Agent
+from indra.agent import AgentEncoder  # , Agent
 from indra.composite import Composite
 from indra.env import Env
 # these imports must be automated somehow;
@@ -60,17 +60,19 @@ class HelloWorld(Resource):
     def get(self):
         return {'hello': 'world'}
 
+
 model_specification = api.model("model_specification", {
     "model_name": fields.String("Enter model name."),
-    "env_width": fields.Integer("Enter enviornment width."), #can't be 0
-    "env_height": fields.Integer("Enter enviornment height."), #can't be 0
+    "env_width": fields.Integer("Enter enviornment width."),  # can't be 0
+    "env_height": fields.Integer("Enter enviornment height."),  # can't be 0
     "agent_names": fields.List(fields.String())
 })
+
 
 class AgentTypes(fields.Raw):
     def put(self, name):
         return Composite(name)
-    
+
 
 @api.route('/model_creator')
 class ModelCreator(Resource):
@@ -83,15 +85,18 @@ class ModelCreator(Resource):
     def put(self):
         model_features = api.payload
 
-        allMembers=[]
-        #Loop to add composite(s) to membersList
+        allMembers = []
+        # Loop to add composite(s) to membersList
         for mem in model_features["agent_names"]:
             allMembers.append(AgentTypes().put(mem))
 
-        return json_converter(Env( model_features["model_name"],
-                                   members= allMembers,#[ Composite(model_features["model_name2"]),Composite(model_features["model_name3"]) ] TEST
-                                   width= model_features["env_width"],
-                                   height= model_features["env_height"]))
+        return json_converter(Env(model_features["model_name"],
+                                  members=allMembers,
+                                  # [Composite(model_features["model_name2"])
+                                  #  Composite(model_features["model_name3"])]
+                                  #  TEST
+                                  width=model_features["env_width"],
+                                  height=model_features["env_height"]))
 
 
 @api.route('/models')
