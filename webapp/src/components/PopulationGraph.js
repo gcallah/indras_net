@@ -8,26 +8,26 @@ function PopulationGraph(props) {
   if (props.loadingData) {
     var data = [];
     console.log("props.id = " + props.id);
+    // if not Financial Market
     if (props.id !== FMARKET) {
       let env = props.env_file["pop_hist"]["pops"];
       Object.keys(env).map((group, i_group) => {
         console.log(props.env_file["members"][group]["attrs"]["color"]);
-        /*
-         * Must determine what this code does and write it more clearly
-         * if possible.
-         */
+        // populate 'data' array with members of 'pops' with their respective values
         return (
           data.push({
             name: group,
             color: props.env_file["members"][group]["attrs"]["color"],
             data: {}
           }),
+          // modify 'data' dictionary of each pops member copying 'pops' data
           Object.keys(env[group]).map((member, i_member) => {
             console.log(member);
             return (data[i_group]["data"][member] = env[group][i_member]);
           })
         );
       });
+    // if Financial Market
     } else {
       let period = props.env_file["pop_hist"]["periods"];
       let data_hist =
