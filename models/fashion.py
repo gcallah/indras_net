@@ -4,15 +4,17 @@
 
 import math
 from operator import gt, lt
-from indra.utils import get_props
+
+import numpy as np
+
 from indra.agent import Agent, X_VEC, Y_VEC, NEUTRAL
 from indra.agent import ratio_to_sin
 from indra.composite import Composite
-from indra.space import in_hood
-from indra.env import Env
 from indra.display_methods import NAVY, DARKRED, RED, BLUE
+from indra.env import Env
+from indra.space import in_hood
+from indra.utils import get_props
 
-import numpy as np
 MODEL_NAME = "fashion"
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
@@ -60,12 +62,19 @@ opp_group = None
 
 
 def change_color(agent, society, opp_group):
+    """
+    change agent's DISPLAY_COLOR to its opposite color
+    """
     agent[DISPLAY_COLOR] = not agent[DISPLAY_COLOR]
     society.add_switch(agent, agent.primary_group(),
                        opp_group[str(agent.primary_group())])
 
 
 def new_color_pref(old_pref, env_color):
+    """
+    Calculate new color pref with the formula below:
+    new_color = sin(avg(asin(old_pref) + asin(env_color)))
+    """
     me = math.asin(old_pref)
     env = math.asin(env_color)
     avg = np.average([me, env], weights=weightings)

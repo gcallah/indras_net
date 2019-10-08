@@ -3,12 +3,12 @@ This is babysitting co-op rewritten in Indra.
 """
 import random
 
-from indra.utils import get_props
 from indra.agent import Agent
 from indra.composite import Composite
-from indra.env import Env, UNLIMITED
 from indra.display_methods import BLUE, ORANGE, RED, PURPLE, BLACK
+from indra.env import Env, UNLIMITED
 from indra.space import gaussian_distribution
+from indra.utils import get_props
 
 MODEL_NAME = 'coop'
 
@@ -97,6 +97,11 @@ def exchange(coop_env):
 
 
 def distribute_coupons(agent):
+    """
+    Distribute coupons from central bank randomly to each babysitter.
+    Coupons are gaussian distributed based on extra_coupons and extra_dev.
+    """
+
     for i in range(4):
         for bbsit in groups[i]:
             groups[i][bbsit]["coupons"] += int(gaussian_distribution(
@@ -112,13 +117,18 @@ def coop_action(coop_env):
 def coop_report(coop_env):
     num_babysitter = len(groups[BSIT_INDEX])
     return 'Number of babysitters is: ' + str(num_babysitter) \
-        + ', number of people staying home_B is: ' \
-        + str(len(groups[B_HOME])) \
-        + ', number of people staying home_G is: ' \
-        + str(len(groups[G_HOME])) + '\n'
+           + ', number of people staying home_B is: ' \
+           + str(len(groups[B_HOME])) \
+           + ', number of people staying home_G is: ' \
+           + str(len(groups[G_HOME])) + '\n'
 
 
 def act(agent):
+    """
+    Babysisters act as following:
+    if their holding coupons are less than min_holding, they babysit,
+    or there is a 50-50 chance for them to go out.
+    """
     if agent['coupons'] <= agent['min_holding']:
         agent['goal'] = "BABYSITTING"
         agent['sitting'] = True
@@ -192,7 +202,7 @@ def set_up(props=None):
     groups = []
     group_indices = {}
 
-    num_members = num_members = pa.get('num_babysitter', DEF_BABYSITTER)
+    num_members = pa.get('num_babysitter', DEF_BABYSITTER)
 
     # There are 4 groups: group of babysitters, group of people going out,
     # group of people who want to babysit but cannot,

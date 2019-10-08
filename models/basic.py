@@ -16,6 +16,8 @@ DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
 DEF_NUM_BLUE = 10
+
+
 DEF_NUM_RED = 10
 
 red_group = None

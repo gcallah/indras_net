@@ -1,14 +1,14 @@
 """
-This is the model that stimulate the behavior
+This is the model that stimulates the behavior
 of bacterias according to toxin and nutrients level.
 """
 
-from indra.utils import get_props
 from indra.agent import Agent
 from indra.composite import Composite
-from indra.space import DEF_HEIGHT, DEF_WIDTH, distance
-from indra.env import Env
 from indra.display_methods import RED, GREEN, YELLOW
+from indra.env import Env
+from indra.space import DEF_HEIGHT, DEF_WIDTH, distance
+from indra.utils import get_props
 from random import randint
 import sys
 

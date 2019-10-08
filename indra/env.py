@@ -127,7 +127,7 @@ class Env(Space):
                                      prop_dict=model_prop,
                                      skip_user_questions=True)
         self.pop_hist = PopHist(serial_pops=serial_obj["pop_hist"])
-        self.plot_title = serial_obj["pop_hist"]
+        self.plot_title = serial_obj["plot_title"]
         nm = serial_obj["user"]["name"]
         msg = serial_obj["user"]["user_msgs"]
         self.user = APIUser(nm, self)

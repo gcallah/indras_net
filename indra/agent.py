@@ -78,7 +78,7 @@ def is_space(thing):
 
 def join(agent1, agent2):
     """
-        Create connection between agent1 and agent2.
+    Create connection between agent1 and agent2.
     """
     if not is_composite(agent1):
         print("Attempt to place " + str(agent2)
@@ -90,7 +90,7 @@ def join(agent1, agent2):
 
 def split(agent1, agent2):
     """
-        Break connection between agent1 and agent2.
+    Break connection between agent1 and agent2.
     """
     if not is_composite(agent1):
         print("Attempt to remove " + str(agent2)
@@ -102,7 +102,7 @@ def split(agent1, agent2):
 
 def switch(agent, grp1, grp2):
     """
-        Move agent from grp1 to grp2.
+    Move agent from grp1 to grp2.
     """
     split(grp1, agent)
     join(grp2, agent)
