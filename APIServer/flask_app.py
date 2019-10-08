@@ -62,17 +62,15 @@ class HelloWorld(Resource):
 
 model_specification = api.model("model_specification", {
     "model_name": fields.String("Enter model name."),
-    "model_name2": fields.String("Enter model name2."),
-    "model_name3": fields.String("Enter model name3."),
-    "env_width": fields.Integer("Enter enviornment width."),
-    "env_height": fields.Integer("Enter enviornment height."),
-    "agent_names": fields.List(fields.String())#fields.String("Enter group names")
+    "env_width": fields.Integer("Enter enviornment width."), #can't be 0
+    "env_height": fields.Integer("Enter enviornment height."), #can't be 0
+    "agent_names": fields.List(fields.String())
 })
 
-class AgentClass(fields.Raw):
+class AgentTypes(fields.Raw):
     def put(self, name):
-        return Agent(name)
-
+        return Composite(name)
+    
 
 @api.route('/model_creator')
 class ModelCreator(Resource):
@@ -86,15 +84,14 @@ class ModelCreator(Resource):
         model_features = api.payload
 
         allMembers=[]
-        #Loop to add agent(s) to membersList
-        for agent in model_features["agent_names"]:#loop for adding multiple agents
-            allMembers.append(AgentClass().put(agent))
-            
-        #Doesn't like width/height after members    
+        #Loop to add composite(s) to membersList
+        for mem in model_features["agent_names"]:
+            allMembers.append(AgentTypes().put(mem))
+
         return json_converter(Env( model_features["model_name"],
-                                   members= allMembers,#[ Composite(model_features["model_name2"]),Composite(model_features["model_name3"]) ]
+                                   members= allMembers,#[ Composite(model_features["model_name2"]),Composite(model_features["model_name3"]) ] TEST
                                    width= model_features["env_width"],
-                                   height= model_features["env_height"]))#Env(model_features["model_name"])   members= [ Agent(model_features["model_name2"]) ]
+                                   height= model_features["env_height"]))
 
 
 @api.route('/models')
