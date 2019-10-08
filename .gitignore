@@ -1,5 +1,7 @@
 .Rdata
 *.txt
+#Except the docker requirement.txt
+!/docker/*.txt
 *.props
 *.log
 *.out
