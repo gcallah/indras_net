@@ -66,6 +66,8 @@ class AgentClass(fields.Raw):
 
 model_specification = api.model("model_specification", {
     "model_name": fields.String("Enter model name."),
+    "model_name2": fields.String("Enter model name2."),
+    "model_name3": fields.String("Enter model name3."),
     "env_width": fields.Integer("Enter enviornment width."),
     "env_height": fields.Integer("Enter enviornment height."),
     "agent_names": fields.List(fields.String())#fields.String("Enter group names")
@@ -83,10 +85,13 @@ class ModelCreator(Resource):
     def put(self):
         model_features = api.payload
         
+        #for agent in model_features["model_name"]:#loop for adding multiple agents
+            
+        #Doesn't like width/height after members    
         return json_converter(Env( model_features["model_name"],
+                                   members= [ Composite(model_features["model_name2"]),Composite(model_features["model_name3"]) ],
                                    width= model_features["env_width"],
-                                   height = model_features["env_height"],
-                                  members=[Agent(model_features["model_name"])] ))#Env(model_features["model_name"])
+                                   height= model_features["env_height"]))#Env(model_features["model_name"])   members= [ Agent(model_features["model_name2"]) ]
 
 
 @api.route('/models')
