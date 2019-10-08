@@ -16,5 +16,7 @@ ENV PYTHONPATH "/home/$repo:${PYTHONPATH}"
 
 WORKDIR /home/$repo/
 
+# Expose 5000 for inter-container communication
 EXPOSE 5000
+
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
