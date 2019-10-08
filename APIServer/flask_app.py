@@ -6,7 +6,8 @@ from flask_cors import CORS
 import json
 from indra.user import APIUser
 from models.run_dict_helper import setup_dict
-from indra.agent import AgentEncoder
+from indra.agent import AgentEncoder, Agent
+from indra.composite import Composite
 from indra.env import Env
 # these imports must be automated somehow;
 # also, keep name constant and preface with model name, e.g.,
@@ -59,10 +60,15 @@ class HelloWorld(Resource):
     def get(self):
         return {'hello': 'world'}
 
+class AgentClass(fields.Raw):
+    def get(self):
+        return AgentEncoder()
 
 model_specification = api.model("model_specification", {
     "model_name": fields.String("Enter model name."),
-    "groups": fields.List(fields.String("Enter group names"))
+    "env_width": fields.Integer("Enter enviornment width."),
+    "env_height": fields.Integer("Enter enviornment height."),
+    "agent_names": fields.List(fields.String())#fields.String("Enter group names")
 })
 
 
@@ -76,7 +82,11 @@ class ModelCreator(Resource):
     @api.expect(model_specification)
     def put(self):
         model_features = api.payload
-        return json_converter(Env(model_features["model_name"]))
+        
+        return json_converter(Env( model_features["model_name"],
+                                   width= model_features["env_width"],
+                                   height = model_features["env_height"],
+                                  members=[Agent(model_features["model_name"])] ))#Env(model_features["model_name"])
 
 
 @api.route('/models')
