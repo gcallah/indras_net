@@ -14,13 +14,13 @@ class DrunksTestCase(TestCase):
     def setUp(self):
         (self.bar, self.drinkers, self.nondrinkers) = set_up()
         self.agent = drunks.create_drinker("drunk", 1)
-    
-    def test_get_decision(self):
-        val = drunks.get_decision(self.agent)
-        self.assertEqual(isinstance(val, bool), True)
 
     def tearDown(self):
         (self.bar, self.drinkers, self.nondrinkers) = (None, None, None)
+
+    def test_get_decision(self):
+        val = drunks.get_decision(self.agent)
+        self.assertEqual(isinstance(val, bool), True)
 
     def test_create_non_drinker(self):
         """
@@ -35,6 +35,11 @@ class DrunksTestCase(TestCase):
         """
         agent = drunks.create_drinker("drunk", 0)
         self.assertEqual(agent.name, "drunk0")
+
+    def test_discourage(self):
+        discouraged = drunks.discourage(1)
+        self.assertEqual(discouraged, 1)
+
 
     if __name__ == '__main__':
         main()

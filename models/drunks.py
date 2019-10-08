@@ -14,6 +14,8 @@ from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.env import Env
 from indra.display_methods import BLUE, RED
 
+DEBUG = False
+
 MODEL_NAME = "drunks"
 
 DEF_POPULATION = 10
@@ -37,8 +39,8 @@ def get_decision(agent):
     """
     Makes a decision randomly for the agent whether or not to go to the bar
     """
-    random_integer = random.randint(1, 100) / 100
-    if random_integer <= agent["motivation"]:
+    random_num = random.randint(1, 100) / 100
+    if random_num <= agent["motivation"]:
         return True
 
     return False
@@ -50,22 +52,25 @@ def discourage(unwanted):
     Chooses drinkers randomly from the drinkers that went to the bar.
     """
     # seen = []
+    discouraged = 0
     while unwanted:
 
-        # print("The members are: ", drinkers.members)
+        if DEBUG:
+            print("The members are: ", drinkers.members)
         random_drunk = random.choice(list(drinkers.members))
 
         # while random_drunk not in seen:
         #     random_drunk = random.choice(list(drinkers.members))
 
-        # print("drinker ", random_drunk, " = ", repr(drinkers[random_drunk]))
+        if DEBUG:
+            print("drinker ", random_drunk, " = ",
+                  repr(drinkers[random_drunk]))
 
         drinkers[random_drunk]["motivation"] -= 0.05
+        discouraged += 1
         # seen.append(random_drunk)
-
         unwanted -= 1
-
-    return 0
+    return discouraged
 
 
 def get_average_attendance(record):
