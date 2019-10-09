@@ -36,16 +36,15 @@ class ActionMenu extends Component {
         document.title = 'Indra | Menu';
         const m = await axios.get (this.api_server);
         console.log (this.api_server);
-        this.setState ({menu: m.data});
-        const id = localStorage.getItem ('menu_id');
-        const name = localStorage.getItem ('name');
-        const source = localStorage.getItem ('source');
-        const env = localStorage.getItem('env_file')
-        this.setState ({name: name});
-        this.setState ({model_id: id});
-        this.setState ({source: source});
-        this.setState ({env_file: JSON.parse(env)});
-        this.setState({msg: this.state.env_file["user"]["user_msgs"]})
+        this.setState ({
+            menu: m.data,
+            name: localStorage.getItem ('name'),
+            model_id: localStorage.getItem ('menu_id'),
+            source: localStorage.getItem ('source'),
+            env_file: JSON.parse(localStorage.getItem('env_file')),
+            msg: JSON.parse(localStorage.getItem('env_file'))["user"]["user_msgs"]
+        });
+        console.log(this.state)
     }
 
     viewSource = () => {
