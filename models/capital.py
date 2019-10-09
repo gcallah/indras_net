@@ -17,7 +17,6 @@ DEBUG2 = False  # turns deeper debugging code on or off
 
 DEF_NUM_BLUE = 10
 
-
 DEF_NUM_RED = 10
 
 resource_holders = None #list of resource holders
@@ -45,6 +44,7 @@ def set_up(props=None):
 
     global resource_holders
     global entrepreneurs
+    global market
 
     pa = get_props(MODEL_NAME, props)
     entrepreneurs = Composite("Entrepreneurs", {"color": BLUE},
