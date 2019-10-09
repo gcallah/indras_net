@@ -53,11 +53,13 @@ def dealer_action(agent):
     # return False means to move
     return False
 
+
 def calculate_avg_car_life_sold(dealer, new_car_life):
     total_life = dealer["avg_car_life_sold"] * dealer["num_sales"]
     total_life += new_car_life
     new_num_sales = dealer["num_sales"] + 1
-    return total_life/new_num_sales
+    return total_life / new_num_sales
+
 
 def buyer_action(agent):
     if not agent["has_car"]:
@@ -83,13 +85,16 @@ def buyer_action(agent):
     # return False means to move
     return False
 
+
 def create_dealer(name, i, props=None):
     """
     Create an agent.
     """
     return Agent(name + str(i),
                  action=dealer_action,
-                 attrs={"num_sales": 0, "num_returns": 0, "avg_car_life_sold": MIN_CAR_LIFE})
+                 attrs={"num_sales": 0,
+                        "num_returns": 0,
+                        "avg_car_life_sold": MIN_CAR_LIFE})
 
 
 def create_buyer(name, i, props=None):
