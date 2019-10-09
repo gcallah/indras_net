@@ -19,8 +19,8 @@ DEF_NUM_BLUE = 10
 
 DEF_NUM_RED = 10
 
-resource_holders = None #list of resource holders
-entrepreneurs = None  #list of entrepreneur
+resource_holders = None  # list of resource holders
+entrepreneurs = None  # list of entrepreneur
 market = None
 
 
@@ -48,17 +48,19 @@ def set_up(props=None):
 
     pa = get_props(MODEL_NAME, props)
     entrepreneurs = Composite("Entrepreneurs", {"color": BLUE},
-                           member_creator=create_agent,
-                           num_members=pa.get('num_blue', DEF_NUM_BLUE))
+                              member_creator=create_agent,
+                              num_members=pa.get('num_blue',
+                                                 DEF_NUM_BLUE))
     resource_holders = Composite("Resource_holders", {"color": RED},
-                          member_creator=create_agent,
-                          num_members=pa.get('num_red', DEF_NUM_RED))
+                                 member_creator=create_agent,
+                                 num_members=pa.get('num_red',
+                                                    DEF_NUM_RED))
 
     market = Env("neighborhood",
-              height=pa.get('grid_height', DEF_HEIGHT),
-              width=pa.get('grid_width', DEF_WIDTH),
-              members=[resource_holders, entrepreneurs],
-              props=pa)
+                 height=pa.get('grid_height', DEF_HEIGHT),
+                 width=pa.get('grid_width', DEF_WIDTH),
+                 members=[resource_holders, entrepreneurs],
+                 props=pa)
 
     return (market, resource_holders, entrepreneurs)
 
