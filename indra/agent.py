@@ -129,10 +129,11 @@ class Agent(object):
     Its basic character is that it is a vector, and basic
     vector and matrix operations will be implemented
     here.
+    We should begin passing env to all agents: we think it will
+    simplify code. It should replace `locator`.
     """
     def __init__(self, name, attrs=None, action=None, duration=INF,
-                 prim_group=None, serial_obj=None):
-
+                 prim_group=None, serial_obj=None, env=None):
         if serial_obj is not None:
             self.restore_agent(serial_obj)
         else:
@@ -154,6 +155,7 @@ class Agent(object):
             self.pos = None
             self.locator = None
             self.prim_group = prim_group
+            self.env = env
             if self.prim_group is not None:
                 self.groups[str(self.prim_group)] = self.prim_group
                 if is_space(self.prim_group):

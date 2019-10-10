@@ -85,6 +85,7 @@ class Env(Space):
                          **kwargs)
 
         if serial_obj is not None:
+            # are we restoring props?
             self.restore_env(serial_obj)
         else:
             self.props = props
@@ -310,6 +311,12 @@ class Env(Space):
                            + "  Total agents who switched groups: "
                            + str(self.num_switches))
         return census_str
+
+    def get_props(self):
+        """
+        A simple getter for props. Q: Should props be a property instead?
+        """
+        return self.props
 
     def has_disp(self):
         if not disp.plt_present:

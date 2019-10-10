@@ -14,7 +14,7 @@
     "lowval": 2
   },
   "num_sheep": {
-    "val": 20,
+    "val": 50,
     "question": "How many sheep do you want?",
     "atype": "INT",
     "hival": 100,
