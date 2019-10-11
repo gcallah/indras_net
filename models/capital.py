@@ -20,7 +20,7 @@ DEF_NUM_RED = 10
 
 DEF_ENTR_CASH = 10000
 DEF_RHOLDER_CASH = 0
-
+DEF_K_PRICE = 100
 
 resource_holders = None  # list of resource holders
 entrepreneurs = None  # list of entrepreneur
@@ -34,6 +34,7 @@ def entr_action(agent):
     if nearby_rholder is not None:
         if agent["cash"] > 0:
             # try to buy a resource if you have cash
+            agent["cash"] -= DEF_K_PRICE
             print("I'm " + agent.name + " and I will buy resources from "
                   + str(nearby_rholder))
         else:
