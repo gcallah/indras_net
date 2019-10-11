@@ -20,7 +20,7 @@ DEF_NUM_RED = 10
 
 DEF_ENTR_CASH = 10000
 DEF_RHOLDER_CASH = 0
-DEF_K_PRICE = 100
+DEF_K_PRICE = 1000
 
 resource_holders = None  # list of resource holders
 entrepreneurs = None  # list of entrepreneur
@@ -34,22 +34,29 @@ def entr_action(agent):
     if nearby_rholder is not None:
         if agent["cash"] > 0:
             # try to buy a resource if you have cash
+
+            # update cash for the two groups
             agent["cash"] -= DEF_K_PRICE
+            resource_holders[nearby_rholder]["cash"] += DEF_K_PRICE
+
             print("I'm " + agent.name + " and I will buy resources from "
-                  + str(nearby_rholder))
+                  + str(nearby_rholder) + ". I have "
+                  + str(agent["cash"]) + " dollars left.")
+            return False
+            # move to find resource holder
+
         else:
             print("I'm " + agent.name + " and I'm broke!")
     else:
         print("I'm " + agent.name + " and I can't find resources.")
-
-    # return False means to move
-    return False
+    return True
 
 
 def rholder_action(agent):
-    print("I'm " + agent.name + " and I've got resources.")
-    # return False means to move
-    return False
+    print("I'm " + agent.name + " and I've got resources. I have "
+          + str(agent["cash"]) + " dollors now.")
+    # resource holder dont move
+    return True
 
 
 def create_entr(name, i, props=None):
