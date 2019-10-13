@@ -40,6 +40,13 @@ def random_direction():
     return random.randint(0, FULL_CIRCLE)
 
 
+def lead_follow():
+    """
+    Randomly chooses if will lead or follow.
+    """
+    return random.randint(0, 2) % 2 == 0
+
+
 def calc_angle(agent1, agent2):
     """
     Calculates the angle between two agents and returns the
