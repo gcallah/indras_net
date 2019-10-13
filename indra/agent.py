@@ -1,13 +1,13 @@
 """
 This file defines an Agent.
 """
-import sys
-import numpy as np
-from math import pi, sin
 import json
-from random import random
+import sys
 from collections import OrderedDict
+from math import pi, sin
+from random import random
 
+import numpy as np
 
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
@@ -113,6 +113,7 @@ class AgentEncoder(json.JSONEncoder):
     The JSON encoder base class for all descendants
     of Agent.
     """
+
     def default(self, o):
         if hasattr(o, 'to_json'):
             return o.to_json()
@@ -132,6 +133,7 @@ class Agent(object):
     We should begin passing env to all agents: we think it will
     simplify code. It should replace `locator`.
     """
+
     def __init__(self, name, attrs=None, action=None, duration=INF,
                  prim_group=None, serial_obj=None, env=None):
         if serial_obj is not None:
@@ -182,7 +184,7 @@ class Agent(object):
             nb = self.neighbors.name
         return {"name": self.name,
                 "type": self.type,
-                "duration": self.duration,
+                "duration": str(self.duration),
                 "pos": self.pos,
                 "attrs": self.attrs_to_dict(),
                 "groups": grp_nms,
@@ -207,7 +209,7 @@ class Agent(object):
             self.pos = None
         else:
             self.pos = tuple(serial_agent["pos"])
-        self.duration = serial_agent["duration"]
+        self.duration = int(serial_agent["duration"])
         self.name = serial_agent["name"]
         self.groups = {}
         for gnm in serial_agent["groups"]:

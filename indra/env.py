@@ -2,17 +2,20 @@
 This file defines an Env, which is a collection
 of agents that share a timeline and a Space.
 """
-from propargs.propargs import PropArgs as pa
-import os
 import getpass
+import json
+import os
+
+from propargs.propargs import PropArgs as pa
+
 # import logging
 import indra.display_methods as disp
-from indra.agent import join, switch, Agent, AgentEncoder
 from indra.agent import is_space
+from indra.agent import join, switch, Agent, AgentEncoder
 from indra.space import Space
-from indra.user import TermUser, TERMINAL, API
 from indra.user import TEST, TestUser, USER_EXIT, APIUser
-import json
+from indra.user import TermUser, TERMINAL, API
+
 # from indra.display_methods import CIRCLE
 
 DEBUG = False
@@ -36,6 +39,7 @@ class PopHist():
         Data structure to record the fluctuating numbers of various agent
         types.
     """
+
     def __init__(self, serial_pops=None):
         self.pops = {}
         self.periods = 0
@@ -64,9 +68,7 @@ class PopHist():
         self.pops = pop_data['pops']
 
     def to_json(self):
-        rep = {}
-        rep["periods"] = self.periods
-        rep["pops"] = self.pops
+        rep = {"periods": self.periods, "pops": self.pops}
         return rep
 
 
@@ -76,6 +78,7 @@ class Env(Space):
     An env *is* a space and *has* a timeline (PopHist).
     That makes the inheritance work out as we want it to.
     """
+
     def __init__(self, name, action=None, random_placing=True,
                  props=None, serial_obj=None, census=None,
                  line_data_func=None, exclude_member=None,
@@ -123,7 +126,7 @@ class Env(Space):
     def from_json(self, serial_obj):
         super().from_json(serial_obj)
         model_prop = json.loads(json.dumps(serial_obj["props"],
-                                indent=4))
+                                           indent=4))
         self.props = pa.create_props("basic",
                                      prop_dict=model_prop,
                                      skip_user_questions=True)
