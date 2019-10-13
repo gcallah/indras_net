@@ -37,7 +37,7 @@ def random_direction():
     """
     Returns a random angle of direction.
     """
-    return random.randint(0, FULL_CIRCLE)
+    return random.randint(0, 90)
 
 
 def lead_follow():
