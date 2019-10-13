@@ -34,7 +34,7 @@ POP_SEP = ", "
 color_num = 0
 
 
-class PopHist():
+class PopHist:
     """
         Data structure to record the fluctuating numbers of various agent
         types.
@@ -53,7 +53,7 @@ class PopHist():
         return s
 
     def __repr__(self):
-        return (str(self))  # for now!
+        return str(self)  # for now!
 
     def add_period(self):
         self.periods += 1
@@ -178,7 +178,8 @@ class Env(Space):
         return rep
 
     def __repr__(self):
-        return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
+        return json.dumps(self.to_json(), cls=AgentEncoder, indent=4,
+                          sort_keys=True)
 
     def restore_env(self, serial_obj):
         self.from_json(serial_obj)
