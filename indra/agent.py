@@ -204,7 +204,7 @@ class Agent(object):
         self.action_key = serial_agent["action_key"]
         self.type_sig = serial_agent["type_sig"]
         self.active = serial_agent["active"]
-        self.attrs = serial_agent["attrs"]
+        self.attrs = OrderedDict(serial_agent["attrs"])
         if not serial_agent["pos"]:
             self.pos = None
         else:
