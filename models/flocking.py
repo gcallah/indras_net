@@ -76,9 +76,8 @@ def bird_action(this_bird):
                   " is ", curr_distance)
         if abs(curr_distance - DEF_DESIRED_DISTANCE) < (DEF_DESIRED_DISTANCE
                                                         * ACCEPTABLE_DEV):
-            this_bird["angle"] = random_direction()
-        else:
-            this_bird["angle"] = calc_angle(this_bird, nearest_bird)
+            return True
+        this_bird["angle"] = calc_angle(this_bird, nearest_bird)
         if DEBUG:
             print(this_bird.name, "'s angle rel. to ", nearest_bird.name,
                   "is", this_bird["angle"])
