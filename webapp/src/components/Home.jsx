@@ -11,7 +11,6 @@ class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      msg: '',
       allItems: [],
       loadingData: false,
       dataForCarousel: [
@@ -30,8 +29,6 @@ class Home extends Component {
       const res = await axios.get(`${this.api_server }models`);
       this.setState({ allItems: res.data });
       this.setState({ loadingData: false });
-      const doc = localStorage.getItem('doc');
-      this.setState({ doc });
       console.log('data-->', this.state.allItems);
     } catch (e) {
       console.log(e.message);
