@@ -37,7 +37,14 @@ def random_direction():
     """
     Returns a random angle of direction.
     """
-    return random.randint(0, FULL_CIRCLE)
+    return random.randint(0, 90)
+
+
+def lead_follow():
+    """
+    Randomly chooses if will lead or follow.
+    """
+    return random.randint(0, 2) % 2 == 0
 
 
 def calc_angle(agent1, agent2):
@@ -69,8 +76,7 @@ def bird_action(this_bird):
                   " is ", curr_distance)
         if abs(curr_distance - DEF_DESIRED_DISTANCE) < (DEF_DESIRED_DISTANCE
                                                         * ACCEPTABLE_DEV):
-            return True  # True return means agent is ok don't move!
-
+            return True
         this_bird["angle"] = calc_angle(this_bird, nearest_bird)
         if DEBUG:
             print(this_bird.name, "'s angle rel. to ", nearest_bird.name,
