@@ -182,6 +182,9 @@ class TermUser(User):
         return self.user.tell(msg, end)
 
     def is_number(self, c):
+        """
+        Check if it is a numeric number.
+        """
         try:
             int(c)
             return True
