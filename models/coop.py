@@ -24,6 +24,7 @@ GO_OUT_INDEX = 1
 B_HOME = 2
 G_HOME = 3
 CENTRAL_BANK = 4
+NUM_OF_GROUPS = 4
 
 groups = None
 group_indices = None
@@ -102,7 +103,7 @@ def distribute_coupons(agent):
     Coupons are gaussian distributed based on extra_coupons and extra_dev.
     """
 
-    for i in range(4):
+    for i in range(NUM_OF_GROUPS):
         for bbsit in groups[i]:
             groups[i][bbsit]["coupons"] += int(gaussian_distribution(
                 agent["extra_coupons"], agent["extra_dev"]))
@@ -217,7 +218,7 @@ def set_up(props=None):
                             member_creator=create_central_bank,
                             num_members=1))
 
-    for i in range(4):
+    for i in range(NUM_OF_GROUPS):
         group_indices[groups[i].name] = i
 
     for i in range(num_members):
