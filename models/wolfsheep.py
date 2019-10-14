@@ -39,7 +39,11 @@ create_wolf = None
 create_sheep = None
 wolves_created = 0
 sheep_created = 0
-pa = None
+
+wolf_repro = WOLF_REPRO_PERIOD
+wolf_life = WOLF_LIFESPAN
+sheep_repro = SHEEP_REPRO_PERIOD
+sheep_life = SHEEP_LIFESPAN
 
 
 def isactive(agent, *args):
@@ -81,9 +85,12 @@ def reproduce(agent, create_func, num_created, group):
     """
     Agents reproduce when "time_to_repr" reaches 0
     """
-    global pa
+    name_prefix = AGT_SHEEP_NAME
+    if str(agent) in wolves:
+        name_prefix = AGT_WOLF_NAME
     if agent["time_to_repr"] == 0:
-        meadow.add_child(create_func(AGT_SHEEP_NAME, num_created, pa), group)
+        meadow.add_child(create_func(name_prefix, num_created),
+                         group)
         agent["time_to_repr"] = agent["orig_repr_time"]
         return True
     else:
@@ -117,15 +124,17 @@ def create_wolf(name, i, props=None):
     Method to create wolf
     """
     global wolves_created
+    global meadow
+
     wolves_created += 1
-    name = AGT_WOLF_NAME
-    return Agent(name + str(i),
-                 duration=props.get('wolf_lifespan', WOLF_LIFESPAN),
+    return Agent(AGT_WOLF_NAME + str(i),
+                 duration=wolf_life,
                  action=wolf_action,
+                 env=meadow,
                  attrs={"time_to_repr":
-                        props.get('wolf_repro_period', WOLF_REPRO_PERIOD),
+                        wolf_repro,
                         "orig_repr_time":
-                        props.get('wolf_repro_period', WOLF_REPRO_PERIOD)})
+                        wolf_repro})
 
 
 def create_sheep(name, i, props=None):
@@ -133,15 +142,14 @@ def create_sheep(name, i, props=None):
     Method to create sheep
     """
     global sheep_created
+    global meadow
+
     sheep_created += 1
-    name = AGT_SHEEP_NAME
-    return Agent(name + str(i), duration=pa.get(
-                 'sheep_lifespan', SHEEP_LIFESPAN),
+    return Agent(AGT_SHEEP_NAME + str(i), duration=sheep_life,
                  action=sheep_action,
-                 attrs={"time_to_repr": props.get('sheep_repro_period',
-                                                  SHEEP_REPRO_PERIOD),
-                        "orig_repr_time": props.get('sheep_repro_period',
-                                                    SHEEP_REPRO_PERIOD)})
+                 env=meadow,
+                 attrs={"time_to_repr": sheep_repro,
+                        "orig_repr_time": sheep_repro})
 
 
 def set_up(props=None):
@@ -151,9 +159,9 @@ def set_up(props=None):
     global wolves
     global sheep
     global meadow
-    global pa
 
     pa = get_props(MODEL_NAME, props)
+
     wolves = Composite(COMP_WOLF_NAME, {"color": TAN}, props=pa,
                        member_creator=create_wolf,
                        num_members=pa.get('num_wolves', NUM_WOLVES))

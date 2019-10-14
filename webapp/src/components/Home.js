@@ -7,17 +7,20 @@ import sandpile_img from "./images/Sandpile.jpg";
 import sandpile1_img from "./images/sandpile_2.png";
 import mandelobrot_img from "./images/mendelobrot_sq.jpg";
 class Home extends Component {
-  api_server = "https://indrasnet.pythonanywhere.com/";
-  state = {
-    msg: "",
-    allItems: [],
-    loadingData: false,
-    dataForCarousel: [
-      { image: sandpile_img, title: "by Seth Terashima" },
-      { image: sandpile1_img, title: "by Colt Browninga" },
-      { image: mandelobrot_img, title: "by Adam majewski" }
-    ]
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      msg: "",
+      allItems: [],
+      loadingData: false,
+      dataForCarousel: [
+        { image: sandpile_img, title: "by Seth Terashima" },
+        { image: sandpile1_img, title: "by Colt Browninga" },
+        { image: mandelobrot_img, title: "by Adam majewski" }
+      ]
+    };
+    this.api_server = "https://indrasnet.pythonanywhere.com/";
+  }
 
   async componentDidMount() {
     try {

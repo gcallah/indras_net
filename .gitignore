@@ -1,5 +1,7 @@
 .Rdata
 *.txt
+#Except the docker requirement.txt
+!/docker/*.txt
 *.props
 *.log
 *.out
@@ -46,3 +48,4 @@ indras_net.egg-info/*
 !/APIServer/data/*.json
 !/webapp/*json
 APIServer/.coverage
+/venv/

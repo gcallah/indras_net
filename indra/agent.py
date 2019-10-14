@@ -1,13 +1,13 @@
 """
 This file defines an Agent.
 """
-import sys
-import numpy as np
-from math import pi, sin
 import json
-from random import random
+import sys
 from collections import OrderedDict
+from math import pi, sin
+from random import random
 
+import numpy as np
 
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
@@ -78,7 +78,7 @@ def is_space(thing):
 
 def join(agent1, agent2):
     """
-        Create connection between agent1 and agent2.
+    Create connection between agent1 and agent2.
     """
     if not is_composite(agent1):
         print("Attempt to place " + str(agent2)
@@ -90,7 +90,7 @@ def join(agent1, agent2):
 
 def split(agent1, agent2):
     """
-        Break connection between agent1 and agent2.
+    Break connection between agent1 and agent2.
     """
     if not is_composite(agent1):
         print("Attempt to remove " + str(agent2)
@@ -102,7 +102,7 @@ def split(agent1, agent2):
 
 def switch(agent, grp1, grp2):
     """
-        Move agent from grp1 to grp2.
+    Move agent from grp1 to grp2.
     """
     split(grp1, agent)
     join(grp2, agent)
@@ -113,6 +113,7 @@ class AgentEncoder(json.JSONEncoder):
     The JSON encoder base class for all descendants
     of Agent.
     """
+
     def default(self, o):
         if hasattr(o, 'to_json'):
             return o.to_json()
@@ -129,10 +130,12 @@ class Agent(object):
     Its basic character is that it is a vector, and basic
     vector and matrix operations will be implemented
     here.
+    We should begin passing env to all agents: we think it will
+    simplify code. It should replace `locator`.
     """
-    def __init__(self, name, attrs=None, action=None, duration=INF,
-                 prim_group=None, serial_obj=None):
 
+    def __init__(self, name, attrs=None, action=None, duration=INF,
+                 prim_group=None, serial_obj=None, env=None):
         if serial_obj is not None:
             self.restore_agent(serial_obj)
         else:
@@ -154,6 +157,7 @@ class Agent(object):
             self.pos = None
             self.locator = None
             self.prim_group = prim_group
+            self.env = env
             if self.prim_group is not None:
                 self.groups[str(self.prim_group)] = self.prim_group
                 if is_space(self.prim_group):
@@ -180,7 +184,7 @@ class Agent(object):
             nb = self.neighbors.name
         return {"name": self.name,
                 "type": self.type,
-                "duration": self.duration,
+                "duration": str(self.duration),
                 "pos": self.pos,
                 "attrs": self.attrs_to_dict(),
                 "groups": grp_nms,
@@ -200,12 +204,12 @@ class Agent(object):
         self.action_key = serial_agent["action_key"]
         self.type_sig = serial_agent["type_sig"]
         self.active = serial_agent["active"]
-        self.attrs = serial_agent["attrs"]
+        self.attrs = OrderedDict(serial_agent["attrs"])
         if not serial_agent["pos"]:
             self.pos = None
         else:
             self.pos = tuple(serial_agent["pos"])
-        self.duration = serial_agent["duration"]
+        self.duration = int(serial_agent["duration"])
         self.name = serial_agent["name"]
         self.groups = {}
         for gnm in serial_agent["groups"]:

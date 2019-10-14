@@ -14,6 +14,8 @@ from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.env import Env
 from indra.display_methods import BLUE, RED
 
+DEBUG = False
+
 MODEL_NAME = "drunks"
 
 DEF_POPULATION = 10
@@ -37,8 +39,8 @@ def get_decision(agent):
     """
     Makes a decision randomly for the agent whether or not to go to the bar
     """
-    random_integer = random.randint(1, 100) / 100
-    if random_integer <= agent["motivation"]:
+    random_num = random.random()
+    if random_num <= agent["motivation"]:
         return True
 
     return False
@@ -49,27 +51,25 @@ def discourage(unwanted):
     Discourages extra drinkers from going to the bar by decreasing motivation.
     Chooses drinkers randomly from the drinkers that went to the bar.
     """
-    # seen = []
+    discouraged = 0
     while unwanted:
 
-        # print("The members are: ", drinkers.members)
+        if DEBUG:
+            print("The members are: ", drinkers.members)
         random_drunk = random.choice(list(drinkers.members))
 
-        # while random_drunk not in seen:
-        #     random_drunk = random.choice(list(drinkers.members))
-
-        # print("drinker ", random_drunk, " = ", repr(drinkers[random_drunk]))
+        if DEBUG:
+            print("drinker ", random_drunk, " = ",
+                  repr(drinkers[random_drunk]))
 
         drinkers[random_drunk]["motivation"] -= 0.05
-        # seen.append(random_drunk)
-
+        discouraged += 1
         unwanted -= 1
 
-    return 0
+    return discouraged
 
 
 def get_average_attendance(record):
-    # print(attendance_record)
     return sum(record) / len(record)
 
 
@@ -89,7 +89,6 @@ def drinker_action(agent):
             extras = attendance - optimal_occupancy
             discourage(extras)
 
-        # print(drinkers.members)
         agents_decided = 0
         attendance = 0
         print("Avg attendance so far: ",
@@ -170,10 +169,6 @@ def main():
     global bar
 
     (bar, drinkers, non_drinkers) = set_up()
-
-    # print(repr(drinkers))
-    # print(repr(drinkers["Drinkers1"]))
-
     bar()
 
     return 0
