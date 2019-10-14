@@ -35,23 +35,15 @@ class Home extends Component {
     }
   }
 
-  openDescription = () => {
-    const link = 'https://gcallah.github.io/indras_net/index.html';
-    window.open(link);
-  };
-
-  renderShowDescription = () => {
-    console.log('renderShowDescription called');
-    return (
-      <h1 style={{ fontSize: 16, fontWeight: '400' }}>
-        <a href="#" className="text-primary m-2" onClick={this.openDescription}>
-          View Project Description
-          {' '}
-        </a>
+  renderShowDescription = () => (
+    <h1 style={{ fontSize: 16, fontWeight: '400' }}>
+      <a href="https://gcallah.github.io/indras_net/index.html" className="text-primary m-2" target="_blank" rel="noopener noreferrer">
+        View Project Description
         {' '}
-      </h1>
-    );
-  };
+      </a>
+      {' '}
+    </h1>
+  );
 
   handleClick(id, name, source) {
     console.log(localStorage);
