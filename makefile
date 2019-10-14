@@ -44,7 +44,7 @@ create_dev_env:
 	git submodule update $(UTILS_DIR)
 	@echo "Set PYTHONPATH and INDRA_HOME in your login script as follows:"
 	@echo "export INDRA_HOME=(You Indra location)"
-	@echo "export PYTHONPATH=$(INDRA_HOME):(old python path)"
+	@echo "export PYTHONPATH=$$(INDRA_HOME):(old python path)"
 
 setup_react:
 	cd $(WEB_DIR); npm install
