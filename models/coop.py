@@ -34,7 +34,7 @@ coop_env = None
 def classify_goal(coop_env):
     b_group = []
     g_group = []
-    for i in range(4):
+    for i in range(NUM_OF_GROUPS):
         for agent in groups[i]:
             if groups[i][agent]["goal"] == "BABYSITTING":
                 groups[i][agent]["sitting"] = True
@@ -49,15 +49,15 @@ def classify_goal(coop_env):
 
 
 def classify_group(b_group, g_group):
-    for agent in b_group:
-        if agent.primary_group() is not None:
-            index = group_indices[agent.primary_group().name]
-            coop_env.now_switch(agent, groups[index], groups[BSIT_INDEX])
+    classify_agent_group(b_group, BSIT_INDEX)
+    classify_agent_group(g_group, GO_OUT_INDEX)
 
-    for agent in g_group:
+
+def classify_agent_group(group, index):
+    for agent in group:
         if agent.primary_group() is not None:
             index = group_indices[agent.primary_group().name]
-            coop_env.now_switch(agent, groups[index], groups[GO_OUT_INDEX])
+            coop_env.now_switch(agent, groups[index], groups[index])
 
 
 def exchange(coop_env):
