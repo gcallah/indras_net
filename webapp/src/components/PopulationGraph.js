@@ -7,12 +7,11 @@ const FMARKET = 5;
 function PopulationGraph(props) {
   if (props.loadingData) {
     var data = [];
-    console.log("props.id = " + props.id);
     // if not Financial Market
     if (props.id !== FMARKET) {
+      // ["pop_hist"]["pops"] == group == agent name
       let env = props.env_file["pop_hist"]["pops"];
       Object.keys(env).map((group, i_group) => {
-        console.log(props.env_file["members"][group]["attrs"]["color"]);
         // populate 'data' array with members of 'pops' with their respective values
         return (
           data.push({
@@ -20,9 +19,8 @@ function PopulationGraph(props) {
             color: props.env_file["members"][group]["attrs"]["color"],
             data: {}
           }),
-          // modify 'data' dictionary of each pops member copying 'pops' data
+          // modify 'data' dictionary of each pops member by copying 'pops' data
           Object.keys(env[group]).map((member, i_member) => {
-            console.log(member);
             return (data[i_group]["data"][member] = env[group][i_member]);
           })
         );
@@ -38,7 +36,6 @@ function PopulationGraph(props) {
         data[0]["data"][i] = data_hist[i];
       }
     }
-    console.log("data passed to line graph", data);
     return (
       <div>
         <LineChart data={data} width="600px" height="600px" />
