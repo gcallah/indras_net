@@ -49,8 +49,8 @@ def classify_goal(coop_env):
 
 
 def classify_group(b_group, g_group):
-    classify_agent_group(b_group, BSIT_INDEX);
-    classify_agent_group(g_group, GO_OUT_INDEX);
+    classify_agent_group(b_group, BSIT_INDEX)
+    classify_agent_group(g_group, GO_OUT_INDEX)
 
 
 def classify_agent_group(group, index):
@@ -148,6 +148,7 @@ def babysitter_action(agent):
     agent['going_out'] = False
     act(agent)
     return False
+
 
 def central_bank_action(agent):
     num_home = len(groups[G_HOME]) + len(groups[B_HOME])
