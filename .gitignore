@@ -48,3 +48,4 @@ indras_net.egg-info/*
 !/APIServer/data/*.json
 !/webapp/*json
 APIServer/.coverage
+/venv/
