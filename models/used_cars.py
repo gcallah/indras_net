@@ -61,11 +61,17 @@ def calculate_avg_car_life_sold(dealer, new_car_life):
     return total_life / new_num_sales
 
 
+def check_credibility(dealer):
+    print("Dealer", dealer)
+    print("has an avg car life of", dealer["avg_car_life_sold"])
+    return dealer["avg_car_life_sold"] > 0
+
+
 def buyer_action(agent):
     if not agent["has_car"]:
         my_dealer = env.get_neighbor_of_groupX(agent, dealer_grp,
                                                hood_size=1)
-        if my_dealer is not None:
+        if my_dealer is not None and check_credibility(my_dealer):
             agent["has_car"] = True
             received_car_life = get_car_life(my_dealer)
             agent["car_life"] = received_car_life
@@ -73,8 +79,6 @@ def buyer_action(agent):
                 my_dealer, received_car_life)
             my_dealer["num_sales"] += 1
             print(bought_info(agent, my_dealer))
-            print("Dealer", my_dealer)
-            print("has an avg car life of", my_dealer["avg_car_life_sold"])
         else:
             print("No dealers nearby.")
     else:
@@ -90,11 +94,12 @@ def create_dealer(name, i, props=None):
     """
     Create an agent.
     """
+    avg_car_life = random.randint(MIN_CAR_LIFE, MAX_CAR_LIFE)
     return Agent(name + str(i),
                  action=dealer_action,
                  attrs={"num_sales": 0,
                         "num_returns": 0,
-                        "avg_car_life_sold": MIN_CAR_LIFE})
+                        "avg_car_life_sold": avg_car_life})
 
 
 def create_buyer(name, i, props=None):
