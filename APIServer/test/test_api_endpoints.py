@@ -16,6 +16,7 @@ menu = [{"val": 0, "func": "run", "question": "Run for N periods"},
         {"val": 4, "func": "leave", "question": "Quit)."}
         ]
 
+
 class Test(TestCase):
     def setUp(self):
         self.HelloWorld = HelloWorld(Resource)
@@ -23,7 +24,7 @@ class Test(TestCase):
         self.Props = Props(Resource)
         self.ModelMenu = ModelMenu(Resource)
         self.Run = Run(Resource)
-        self.LoadModels = load_models()
+        self.LoadModels = load_models(indra_dir)
         self.LoadMenu = load_menu()
 
     def test_load_models(self):

@@ -9,6 +9,7 @@ from models.run_dict_helper import setup_dict
 from indra.agent import AgentEncoder  # , Agent
 from indra.composite import Composite
 from indra.env import Env
+from models_api import load_models, get_models
 # these imports must be automated somehow;
 # also, keep name constant and preface with model name, e.g.,
 # fashion.unrestorable()
@@ -36,12 +37,6 @@ indra_dir = os.getenv("INDRA_HOME", "/home/indrasnet/indras_net")
 
 def err_return(s):
     return {ERROR: s}
-
-
-def load_models():
-    model_file = indra_dir + "/models/models.json"
-    with open(model_file) as file:
-        return json.loads(file.read())["models_database"]
 
 
 def load_menu():
@@ -102,23 +97,7 @@ class ModelCreator(Resource):
 @api.route('/models')
 class Models(Resource):
     def get(self):
-        global indra_dir
-
-        try:
-            models_db = load_models()
-        except FileNotFoundError:
-            return err_return("Model file not found.")
-
-        models_response = []
-        for model in models_db:
-            doc = ""
-            if "doc" in model:
-                doc = model["doc"]
-            models_response.append({"model ID": model["model ID"],
-                                    "name": model["name"],
-                                    "doc": doc,
-                                    "source": model["source"]})
-        return models_response
+        return get_models(indra_dir)
 
 
 props = api.model("props", {
@@ -132,7 +111,7 @@ class Props(Resource):
 
     def get(self, model_id):
         try:
-            models_db = load_models()
+            models_db = load_models(indra_dir)
             with open(indra_dir + "/" + models_db[model_id]["props"]) as file:
                 model_prop = json.loads(file.read())
                 return model_prop
@@ -144,7 +123,7 @@ class Props(Resource):
     @api.expect(props)
     def put(self, model_id):
         props_dict = api.payload
-        models_db = load_models()
+        models_db = load_models(indra_dir)
         con_env = 0
         ret = setup_dict[models_db[model_id]["run"]](props=props_dict)
         env = ret[con_env]
