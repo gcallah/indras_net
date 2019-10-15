@@ -47,7 +47,7 @@ class Home extends Component {
     </h1>
   );
 
-  handleClick(id, name, source) {
+  handleClick = (id, name, source) => {
     localStorage.setItem('menu_id', id);
     localStorage.setItem('name', name);
     localStorage.setItem('source', source);
