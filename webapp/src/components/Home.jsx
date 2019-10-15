@@ -16,6 +16,7 @@ class Home extends Component {
     this.state = {
       allItems: [],
       loadingData: false,
+      apiFailed: false,
       dataForCarousel: [
         { image: sandpileImg, title: 'by Seth Terashima' },
         { image: sandpile1Img, title: 'by Colt Browninga' },
@@ -30,10 +31,9 @@ class Home extends Component {
       this.setState({ loadingData: true });
       document.title = 'Indra | Home';
       const res = await axios.get(`${this.api_server}models`);
-      this.setState({ allItems: res.data });
-      this.setState({ loadingData: false });
+      this.setState({ allItems: res.data, loadingData: false });
     } catch (e) {
-      console.log(e.message);
+      this.setState({ apiFailed: true });
     }
   }
 
@@ -63,7 +63,14 @@ class Home extends Component {
   );
 
   render() {
-    const { loadingData, dataForCarousel, allItems } = this.state;
+    const {
+      loadingData, dataForCarousel, allItems, apiFailed,
+    } = this.state;
+    if (apiFailed) {
+      return (
+        <h1>404 Error</h1>
+      );
+    }
     if (loadingData) {
       return (
         <Dimmer active inverted>
