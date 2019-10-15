@@ -12,9 +12,9 @@ const POP = 2;
 const SCATTER = 3;
 const DATA = 4;
 const SOURCE = 5;
+const API_SERVER = 'https://indrasnet.pythonanywhere.com/models/menu/';
 
 class ActionMenu extends Component {
-    api_server = 'https://indrasnet.pythonanywhere.com/models/menu/';
 
     state = {
         msg: '',
@@ -34,8 +34,8 @@ class ActionMenu extends Component {
 
     async componentDidMount () {
         document.title = 'Indra | Menu';
-        const m = await axios.get (this.api_server);
-        console.log (this.api_server);
+        const m = await axios.get (API_SERVER);
+        console.log (API_SERVER);
         this.setState ({
             menu: m.data,
             name: localStorage.getItem ('name'),
@@ -65,11 +65,15 @@ class ActionMenu extends Component {
 
         let valid = this.checkValidity (e.target.value);
         if (valid === 0) {
-            this.setState ({errorMessage: '**Please input an integer'});
-            this.setState ({disabled_button: true});
+            this.setState ({
+                errorMessage: '**Please input an integer',
+                disabled_button: true
+            });
         } else {
-            this.setState ({errorMessage: ''});
-            this.setState ({disabled_button: false});
+            this.setState ({
+                errorMessage: '',
+                disabled_button: false
+            });
         }
     };
 
@@ -82,11 +86,13 @@ class ActionMenu extends Component {
 
     handleClick = e => {
         console.log("e = " + String(e))
-        this.setState ({loadingData: false});
-        this.setState ({loading_population: false});
-        this.setState ({loading_scatter: false});
-        this.setState({loading_debugger: false})
-        this.setState ({action_id: e});
+        this.setState ({
+            loadingData: false,
+            loading_population: false,
+            loading_scatter: false,
+            loading_debugger: false,
+            action_id: e
+        })
         switch (e) {
             case POP:
                 this.setState ({loading_population: true});
@@ -106,11 +112,11 @@ class ActionMenu extends Component {
     };
 
     sendNumPeriods = async() => {
-        console.log(this.api_server + 'run/' + String(this.state.period_num))
+        console.log(API_SERVER + 'run/' + String(this.state.period_num))
         this.setState({loadingData:true})
         try { 
             const res = await axios.put(
-            this.api_server + 'run/' + String(this.state.period_num),
+            API_SERVER + 'run/' + String(this.state.period_num),
             this.state.env_file,
             this.state.period_num
         )
