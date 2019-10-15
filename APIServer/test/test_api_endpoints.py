@@ -3,14 +3,16 @@ import json
 import random
 from flask_restplus import Resource, Api, fields
 
-from APIServer.flask_app import app, HelloWorld, Models
-from APIServer.flask_app import Props, ModelMenu, Run, err_return, load_models, load_menu
-from APIServer.flask_app import indra_dir
+from APIServer.api_endpoints import app, HelloWorld, Models
+from APIServer.api_endpoints import Props, ModelMenu, Run
+from APIServer.api_endpoints import err_return, load_models, load_menu
+from APIServer.api_endpoints import indra_dir
 
 menu = [{"val": 0, "func": "run", "question": "Run for N periods"},
         {"val": 1, "func": "line_graph", "question": "Display a population graph."},
         {"val": 2, "func": "scatter_plot", "question": "Display a scatter plot."},
-        {"val": 3, "func": "ipython", "question": "Leave menu for interactive python session."},
+        {"val": 3, "func": "ipython", "question":
+         "Leave menu for interactive python session."},
         {"val": 4, "func": "leave", "question": "Quit)."}
         ]
 
