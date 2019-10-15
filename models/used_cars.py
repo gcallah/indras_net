@@ -58,6 +58,13 @@ def dealer_action(agent):
     return False
 
 
+def dealer_emoji(agent):
+    print(agent.name, " is sending an emoji.")
+    pos_emoji_num = random.randint(0, len(POS_EMOJIS))
+    neg_emoji_num = random.randint(0, len(NEG_EMOJIS))
+    return {"pos": pos_emoji_num, "neg": neg_emoji_num}
+
+
 def calculate_avg_car_life_sold(dealer, new_car_life):
     total_life = dealer["avg_car_life_sold"] * dealer["num_sales"]
     total_life += new_car_life
@@ -104,7 +111,7 @@ def create_dealer(name, i, props=None):
                  attrs={"num_sales": 0,
                         "num_returns": 0,
                         "avg_car_life_sold": avg_car_life,
-                        "num_emoji_used": {"pos": 0, "neg": 0},
+                        "num_emoji_used": dealer_emoji,
                         "return_rate": 0,
                         "respond_rate": 0,
                         "num_completed_services": 0})
