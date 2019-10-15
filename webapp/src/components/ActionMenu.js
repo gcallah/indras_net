@@ -58,6 +58,10 @@ class ActionMenu extends Component {
         });
     };
 
+    goback=()=>{
+        this.props.history.goBack();
+    }
+
     handleRunPeriod = e => {
         this.setState ({
             period_num: e.target.value,
@@ -263,6 +267,7 @@ class ActionMenu extends Component {
             return (
                 <div>
                     <br/>
+                    <button className="btn btn-light m-2" onClick={this.goback}>Back</button>
                     {this.renderHeader()}
                     <br/><br/>
                     {this.renderModelStatus()}
