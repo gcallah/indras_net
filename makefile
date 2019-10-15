@@ -90,7 +90,7 @@ prod1: tests
 	git push origin master
 
 tests: FORCE
-	cd APIServer; make tests
+#	cd APIServer; make tests
 	cd indra; make tests
 	cd models; make tests
 
