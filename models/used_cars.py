@@ -23,6 +23,10 @@ DEF_NUM_RED = 10
 MIN_CAR_LIFE = 1
 MAX_CAR_LIFE = 5
 
+# categorized emojis reflects trend of dealer's respond
+POS_EMOJIS = ["smiley", "laughing", "relaxes", "wink"]
+NEG_EMOJIS = ["rage", "scream", "disappointed", "eye rolling"]
+
 DEALERS = "Dealers"
 
 buyer_grp = None
@@ -99,7 +103,11 @@ def create_dealer(name, i, props=None):
                  action=dealer_action,
                  attrs={"num_sales": 0,
                         "num_returns": 0,
-                        "avg_car_life_sold": avg_car_life})
+                        "avg_car_life_sold": avg_car_life,
+                        "num_emoji_used": {"pos": 0, "neg": 0},
+                        "return_rate": 0,
+                        "respond_rate": 0,
+                        "num_completed_services": 0})
 
 
 def create_buyer(name, i, props=None):
