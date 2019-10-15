@@ -7,8 +7,8 @@ import json
 from indra.user import APIUser
 from models.run_dict_helper import setup_dict
 from indra.env import Env
-from models_api import load_models, get_models
-from model_creator_api import put_model_creator
+from APIServer.models_api import load_models, get_models
+from APIServer.model_creator_api import put_model_creator
 # from model_creator_api import get_model_creator, put_model_creator
 from api_utils import json_converter
 # these imports must be automated somehow;
