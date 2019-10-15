@@ -1,7 +1,7 @@
 # This module handles the model creation portion of the API server.
 
 from flask_restplus import fields
-from api_utils import json_converter
+from APIServer.api_utils import json_converter
 from indra.env import Env
 from indra.composite import Composite
 
