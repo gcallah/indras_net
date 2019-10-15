@@ -6,10 +6,11 @@ from flask_cors import CORS
 import json
 from indra.user import APIUser
 from models.run_dict_helper import setup_dict
-from indra.agent import AgentEncoder  # , Agent
-from indra.composite import Composite
 from indra.env import Env
 from models_api import load_models, get_models
+from model_creator_api import put_model_creator
+# from model_creator_api import get_model_creator, put_model_creator
+from api_utils import json_converter
 # these imports must be automated somehow;
 # also, keep name constant and preface with model name, e.g.,
 # fashion.unrestorable()
@@ -45,11 +46,6 @@ def load_menu():
         return json.loads(file.read())["menu_database"]
 
 
-def json_converter(object):
-    return json.loads(json.dumps(object.to_json(),
-                      cls=AgentEncoder, indent=4))
-
-
 @api.route('/hello')
 class HelloWorld(Resource):
     def get(self):
@@ -64,11 +60,6 @@ model_specification = api.model("model_specification", {
 })
 
 
-class AgentTypes(fields.Raw):
-    def put(self, name):
-        return Composite(name)
-
-
 @api.route('/model_creator')
 class ModelCreator(Resource):
     def get(self):
@@ -78,20 +69,7 @@ class ModelCreator(Resource):
 
     @api.expect(model_specification)
     def put(self):
-        model_features = api.payload
-
-        allMembers = []
-        # Loop to add composite(s) to membersList
-        for mem in model_features["agent_names"]:
-            allMembers.append(AgentTypes().put(mem))
-
-        return json_converter(Env(model_features["model_name"],
-                                  members=allMembers,
-                                  # [Composite(model_features["model_name2"])
-                                  #  Composite(model_features["model_name3"])]
-                                  #  TEST
-                                  width=model_features["env_width"],
-                                  height=model_features["env_height"]))
+        return put_model_creator(api.payload)
 
 
 @api.route('/models')

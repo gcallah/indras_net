@@ -112,14 +112,6 @@ class Test(TestCase):
             test_menu = json.loads(file.read())["menu_database"]
         self.assertEqual(rv, test_menu)
 
-    def test_run(self):
-        """
-        Testing whether we are able to put the menu in
-        """
-        with app.test_request_context():
-            rv = self.Run.put(10)
-        self.assertEqual(type(rv), dict)
-
     def test_err_return(self):
         """
         Testing whether we are able to get the right error message
