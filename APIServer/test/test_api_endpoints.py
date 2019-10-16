@@ -1,4 +1,5 @@
 """
+"""
 from unittest import TestCase, main, skip
 import json
 import random
@@ -20,6 +21,7 @@ menu = [{"val": 0, "func": "run", "question": "Run for N periods"},
 
 class Test(TestCase):
     def setUp(self):
+        # none of the object's members names should have caps!
         self.HelloWorld = HelloWorld(Resource)
         self.Model = Models(Resource)
         self.Props = Props(Resource)
@@ -30,7 +32,7 @@ class Test(TestCase):
 
     def test_load_models(self):
         """
-        # See if models can be loaded.
+        See if models can be loaded.
         """
         rv = self.LoadModels
         test_model_file = indra_dir + "/models/models.json"
@@ -40,7 +42,7 @@ class Test(TestCase):
 
     def test_load_menu(self):
         """
-        # See if the menu can be loaded.
+        See if the menu can be loaded.
         """
         rv = self.LoadMenu
         test_menu_file = indra_dir + "/indra/menu.json"
@@ -50,14 +52,14 @@ class Test(TestCase):
 
     def test_hello_world(self):
         """
-        # See if HelloWorld works.
+        See if HelloWorld works.
         """
         rv = self.HelloWorld.get()
         self.assertEqual(rv, {'hello': 'world'})
 
     def test_get_model(self):
         """
-        # See if we can get models.
+        See if we can get models.
         """
         rv = self.Model.get()
 
@@ -79,7 +81,7 @@ class Test(TestCase):
 
     def test_get_props(self):
         """
-        # See if we can get props.
+        See if we can get props.
         """
         model_id = random.randint(0, 10)
         rv = self.Props.get(model_id)
@@ -96,7 +98,7 @@ class Test(TestCase):
     @skip("Skipping put props while json format is in flux.")
     def test_put_props(self):
         """
-        # Test whether we are able to put props
+        Test whether we are able to put props
         """
         model_id = random.randint(0, 10)
         with app.test_request_context():
@@ -105,7 +107,7 @@ class Test(TestCase):
 
     def test_get_ModelMenu(self):
         """
-        # Testing whether we are getting the menu.
+        Testing whether we are getting the menu.
         """
         rv = self.ModelMenu.get()
         test_menu_file = indra_dir + "/indra/menu.json"
@@ -115,7 +117,7 @@ class Test(TestCase):
 
     def test_err_return(self):
         """
-        # Testing whether we are able to get the right error message
+        Testing whether we are able to get the right error message
         """
         rv = err_return("error message")
         self.assertEqual(rv, {"Error:": "error message"})
@@ -123,4 +125,3 @@ class Test(TestCase):
 
 if __name__ == "__main__":
     main()
-    """

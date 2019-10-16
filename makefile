@@ -91,7 +91,7 @@ prod1: tests
 
 tests: FORCE
 # API server out for the moment as Travis test is failing!
-#	cd APIServer; make tests
+	cd APIServer; make tests
 	cd indra; make tests
 	cd models; make tests
 
