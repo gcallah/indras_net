@@ -79,6 +79,7 @@ class Test(TestCase):
 
         self.assertEqual(rv, test_models_response)
 
+    @skip("Skipping get props.")
     def test_get_props(self):
         """
         See if we can get props.

@@ -9,6 +9,7 @@ from models.run_dict_helper import setup_dict
 from indra.env import Env
 from APIServer.models_api import load_models, get_models
 from APIServer.model_creator_api import put_model_creator
+from APIServer.model_creator_api import get_model_creator
 from APIServer.api_utils import json_converter
 # these imports below must be automated somehow;
 # also, keep name constant and preface with model name, e.g.,
@@ -51,22 +52,24 @@ class HelloWorld(Resource):
         return {'hello': 'world'}
 
 
-model_specification = api.model("model_specification", {
+group_fields = api.model("group", {
+    "group_name": fields.List(fields.String)
+})
+
+create_model_spec = api.model("model_specification", {
     "model_name": fields.String("Enter model name."),
     "env_width": fields.Integer("Enter enviornment width."),  # can't be 0
     "env_height": fields.Integer("Enter enviornment height."),  # can't be 0
-    "agent_names": fields.List(fields.String())
+    "groups": fields.List(fields.Nested(group_fields)),
 })
 
 
 @api.route('/model_creator')
 class ModelCreator(Resource):
     def get(self):
-        return {'feature_name':
-                'This is the URL for the model creator: '
-                + 'it is used with a PUT request.'}
+        return get_model_creator()
 
-    @api.expect(model_specification)
+    @api.expect(create_model_spec)
     def put(self):
         return put_model_creator(api.payload)
 
