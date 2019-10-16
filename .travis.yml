@@ -13,7 +13,7 @@ install:
     - pip install -r docker/requirements-dev.txt
 
 env:
-    - PYTHONPATH=/home/travis/build/gcallah/indras_net props_dir=/home/travis/build/gcallah/indras_net/APIServer/data/
+    - PYTHONPATH=/home/travis/build/gcallah/indras_net:$(pwd) props_dir=/home/travis/build/gcallah/indras_net/APIServer/data/
 
 script:
     - make tests
