@@ -466,9 +466,10 @@ class Space(Composite):
         """
         hood = self.get_square_hood(agent, save_neighbors=save_neighbors,
                                     hood_size=hood_size)
-        for agent in hood:
-            if group.ismember(agent):
-                return agent
+        for agent_name in hood:
+            if group.ismember(agent_name):
+                # maybe we need return group[agent_name]
+                return agent_name
         return None
 
     def get_closest_agent(self, agent):
