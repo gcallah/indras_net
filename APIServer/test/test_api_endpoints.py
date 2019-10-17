@@ -7,8 +7,10 @@ from flask_restplus import Resource, Api, fields
 
 from APIServer.api_endpoints import app, HelloWorld, Models
 from APIServer.api_endpoints import Props, ModelMenu, Run
-from APIServer.api_endpoints import err_return, load_models, load_menu
+from APIServer.api_endpoints import load_menu
 from APIServer.api_endpoints import indra_dir
+from APIServer.models_api import load_models
+from APIServer.api_utils import err_return
 
 menu = [{"val": 0, "func": "run", "question": "Run for N periods"},
         {"val": 1, "func": "line_graph", "question": "Display a population graph."},
