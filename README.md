@@ -18,3 +18,9 @@ Create Development Environment
 To configure your system for development, first install Python 3 and git and
 then run `make create_dev_env`. This will install some dependencies using PIP.
 Follow the outputted instructions for setting your environment variables.
+
+To build the Docker container with the development environment, run
+`make dev_container`.
+
+To run the Docker container with the development environment, run
+`./dev_cont.sh`.
