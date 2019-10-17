@@ -21,11 +21,14 @@ DEF_NUM_BLUE = 10
 DEF_NUM_RED = 10
 
 MIN_CAR_LIFE = 1
+MEDIUM_CAR_LIFE = 3 
 MAX_CAR_LIFE = 5
 
+
 # categorized emojis reflects trend of dealer's respond
-POS_EMOJIS = ["smiley", "laughing", "relaxes", "wink"]
-NEG_EMOJIS = ["rage", "scream", "disappointed", "eye rolling"]
+POS_EMOJIS = ["smiley", "laughing", "relaxing", "wink"]
+NEG_EMOJIS = ["unnatural", "ambiguous", "hesitate", "eye rolling"]
+CHARACTERISTIC = ["good","bad"]
 
 DEALERS = "Dealers"
 
@@ -35,11 +38,11 @@ env = None
 
 
 def bought_info(agent, dealer):
-    msg = "My dealer is: " + dealer
+    msg = "My dealer is: " + dealer.name
     msg += "\nReceived a car with a life of " + str(agent["car_life"])
-    msg += "\nMy dealer" + dealer
+    msg += "\nMy dealer" + dealer.name
     msg += "has an avg car life of" + str(dealer["avg_car_life_sold"])
-    msg += ". And sold " + str(dealer["num_sales"] + " cars.")
+    msg += ". And sold " + str(dealer["num_sales"]) + " cars."
     return msg
 
 
@@ -49,46 +52,58 @@ def is_dealer(agent):
 
 def get_car_life(dealer):
     print("Getting car from dealer", dealer)
-    return random.randint(MIN_CAR_LIFE, MAX_CAR_LIFE)
+    
+    return dealer["curr_car_life"]
 
-
-def dealer_action(agent):
+def get_dealer_car(dealer_characteristc):
+    if dealer_characteristc == "good":
+        return random.randint(MEDIUM_CAR_LIFE,MAX_CAR_LIFE)
+    else: #dealer characteristic == bad
+        return random.randint(MIN_CAR_LIFE,MEDIUM_CAR_LIFE)
+        
+    
+def dealer_action(agent):  #this is more for buyer to see
     env.user.tell("I'm " + agent.name + " and I'm a dealer.")
+    dealer_characteristic = get_dealer_characteristic()
+    agent["dealer_characteristic"] = dealer_characteristic
+    agent["emoji_used"] = get_dearler_emoji(dealer_characteristic)
+    agent["curr_car_life"] = get_dealer_car(dealer_characteristic)
     # return False means to move
     return False
 
-
-def dealer_emoji(agent):
-    print(agent.name, " is sending an emoji.")
-    pos_emoji_num = random.randint(0, len(POS_EMOJIS))
-    neg_emoji_num = random.randint(0, len(NEG_EMOJIS))
-    return {"pos": pos_emoji_num, "neg": neg_emoji_num}
+def get_dealer_characteristic():
+    return CHARACTERISTIC[random.randint(0,1)]
 
 
-def calculate_avg_car_life_sold(dealer, new_car_life):
-    total_life = dealer["avg_car_life_sold"] * dealer["num_sales"]
-    total_life += new_car_life
-    new_num_sales = dealer["num_sales"] + 1
-    return total_life / new_num_sales
+def get_dearler_emoji(dealer_characteristic):
+    if dealer_characteristic == "good":
+        return POS_EMOJIS[random.randint(0,3)]
+    else: #dealer characteristic == bad
+        return NEG_EMOJIS[random.randint(0,3)]
 
 
+def update_dealer_sale(dealer, new_car_life):
+    dealer["num_sales"] += 1
+    if dealer["avg_car_life_sold"] == None:
+        dealer["avg_car_life_sold"] = new_car_life
+    else:
+        avg_car_life = (dealer["avg_car_life_sold"]+new_car_life)/dealer["num_sales"]
+        dealer["avg_car_life_sold"] = round(avg_car_life, 2)
+        
 def check_credibility(dealer):
-    print("Dealer", dealer)
-    print("has an avg car life of", dealer["avg_car_life_sold"])
-    return dealer["avg_car_life_sold"] > 0
+    #senario that none of the seller had already and have several crediable jobs
+    return (dealer["avg_car_life_sold"] == None or dealer["avg_car_life_sold"] >= MEDIUM_CAR_LIFE)
 
 
 def buyer_action(agent):
     if not agent["has_car"]:
         my_dealer = env.get_neighbor_of_groupX(agent, dealer_grp,
-                                               hood_size=1)
+                                               hood_size=1)     
         if my_dealer is not None and check_credibility(my_dealer):
             agent["has_car"] = True
             received_car_life = get_car_life(my_dealer)
             agent["car_life"] = received_car_life
-            my_dealer["avg_car_life_sold"] = calculate_avg_car_life_sold(
-                my_dealer, received_car_life)
-            my_dealer["num_sales"] += 1
+            update_dealer_sale(my_dealer, received_car_life)
             print(bought_info(agent, my_dealer))
         else:
             print("No dealers nearby.")
@@ -105,16 +120,17 @@ def create_dealer(name, i, props=None):
     """
     Create an agent.
     """
-    avg_car_life = random.randint(MIN_CAR_LIFE, MAX_CAR_LIFE)
     return Agent(name + str(i),
                  action=dealer_action,
                  attrs={"num_sales": 0,
                         "num_returns": 0,
-                        "avg_car_life_sold": avg_car_life,
-                        "num_emoji_used": dealer_emoji,
+                        "avg_car_life_sold": None,
+                        "curr_car_life": 0,
                         "return_rate": 0,
                         "respond_rate": 0,
-                        "num_completed_services": 0})
+                        "num_completed_services": 0,
+                        "emoji_used": None,
+                        "dealer_characteristic": None})
 
 
 def create_buyer(name, i, props=None):
@@ -123,7 +139,8 @@ def create_buyer(name, i, props=None):
     """
     return Agent(name + str(i),
                  action=buyer_action,
-                 attrs={"has_car": False, "car_life": MAX_CAR_LIFE})
+                 attrs={"has_car": False, 
+                        "car_life": None})
 
 
 def set_up(props=None):
@@ -154,7 +171,7 @@ def main():
 
     (env, dealer_grp, buyer_grp) = set_up()
 
-    if DEBUG2:
+    if DEBUG2: 
         print(env.__repr__())
 
     env()
