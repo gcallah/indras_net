@@ -442,7 +442,6 @@ class Space(Composite):
 
         if agent.get("save_neighbors", False):
             agent.neighbors = moore_hood
-       
         return moore_hood
 
     def get_square_hood(self, agent, pred=None, save_neighbors=False,
