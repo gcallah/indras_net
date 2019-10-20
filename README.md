@@ -24,3 +24,8 @@ To build the Docker container with the development environment, run
 
 To run the Docker container with the development environment, run
 `./dev_cont.sh`.
+
+To run tests, run `make tests`. This can be done inside or outside the Docker
+container. Optionally, you can first `cd` into [APIServer](APIServer),
+[indra](indra), or [models](models) before running `make tests` to run only the
+tests for that directory.
