@@ -13,8 +13,8 @@ We are currently building **indra2**, a new version of the system. Our API
 Serever is moving along,  we have a react frontend in progress, and many models
 have been ported to version 2.
 
-Create Development Environment
-------------------------------
+Developing and Contributing
+---------------------------
 To configure your system for development, first install Python 3 and git and
 then run `make create_dev_env`. This will install some dependencies using PIP.
 Follow the outputted instructions for setting your environment variables.
