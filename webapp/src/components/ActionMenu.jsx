@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Loader, Dimmer } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
+import ListGroup from 'react-bootstrap/ListGroup';
 import axios from 'axios';
 import PopulationGraph from './PopulationGraph';
 import ScatterPlot from './ScatterPlot';
@@ -148,14 +149,12 @@ class ActionMenu extends Component {
     }
 
     MenuItem = (i, action, text) => (
-      <a className="w-50 p-3 list-group-item list-group-item-action" key={i}>
-        <Link
-          className="text-primary"
-          onClick={() => this.handleClick(action)}
-        >
-          { text }
-        </Link>
-      </a>
+      <ListGroup className="w-50 text-primary p-3 list-group-item list-group-item-action"
+        key={i}
+        onClick={() => this.handleClick(action)}
+      >
+        { text }
+      </ListGroup>
     );
 
     renderModelStatus = () => {
