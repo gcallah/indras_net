@@ -97,6 +97,7 @@ class User(Agent):
     """
     A representation of the user in the system.
     """
+
     def __init__(self, name, env, **kwargs):
         super().__init__(name, **kwargs)
         self.env = env  # this class needs this all the time, we think
@@ -148,6 +149,7 @@ class TermUser(User):
     """
     A representation of the user on a terminal.
     """
+
     def __init__(self, name, env, **kwargs):
         super().__init__(name, env, **kwargs)
         self.menu_title = "Menu of Actions"
@@ -228,6 +230,7 @@ class TestUser(TermUser):
         This is our test user, who has some characteristics different from the
         terminal user, such as overriding ask() and __call__().
     """
+
     def ask(self, msg, default=None):
         """
             Can't ask anything of a scripted test!
@@ -246,6 +249,7 @@ class APIUser(User):
     This is our web user, who is expected to communicate with a web page
     frontend.
     """
+
     def __init__(self, name, env, **kwargs):
         super().__init__(name, env, **kwargs)
 

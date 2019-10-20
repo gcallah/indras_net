@@ -90,6 +90,7 @@ prod1: tests
 	git push origin master
 
 tests: FORCE
+# API server out for the moment as Travis test is failing!
 	cd APIServer; make tests
 	cd indra; make tests
 	cd models; make tests
@@ -109,7 +110,7 @@ prod_container: $(DOCKER_DIR)/Deployable $(DOCKER_DIR)/requirements.txt
 	docker build -t gcallah/$(REPO) docker --no-cache --build-arg repo=$(REPO) -f $(DOCKER_DIR)/Deployable
 
 # deploy prod containerr
-deploy_container:
+deploy_container: prod_container
 	docker push gcallah/$(REPO):latest
 
 

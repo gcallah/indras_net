@@ -100,6 +100,10 @@ def tsetter_action(agent):
 
 
 def common_action(agent, others_red, others_blue, op1, op2):
+    """
+    The actions for both followers and trendsetters
+    """
+
     num_others_red = len(others_red.subset(in_hood, agent, HOOD_SIZE))
     num_others_blue = len(others_blue.subset(in_hood, agent, HOOD_SIZE))
     total_others = num_others_red + num_others_blue
