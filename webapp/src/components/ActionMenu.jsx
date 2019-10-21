@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import { Loader, Dimmer } from 'semantic-ui-react';
 import PageLoader from "./PageLoader";
-import { Link } from 'react-router-dom';
 import ListGroup from 'react-bootstrap/ListGroup';
 import axios from 'axios';
 import PopulationGraph from './PopulationGraph';
@@ -171,12 +169,6 @@ class ActionMenu extends Component {
       </div>
     );
   }
-
-  renderDimmer = () => (
-    <Dimmer active inverted>
-      <Loader size="massive">Loading...</Loader>
-    </Dimmer>
-  );
 
   renderMenuItem = () => {
     const {
