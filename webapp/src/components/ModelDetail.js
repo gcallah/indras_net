@@ -116,7 +116,7 @@ class ModelDetail extends Component {
     }
 
 
-    handleSubmit = async() => {
+    handleSubmit = async(event) => {
         event.preventDefault();
         console.log(this.state.model_details)
         try{
