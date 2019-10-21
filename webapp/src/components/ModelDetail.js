@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Loader, Dimmer } from "semantic-ui-react";
 import ModelInputField from "./ModelInputField";
+import PageLoader from "./PageLoader";
 import axios from "axios";
 
 const api_server = "https://indrasnet.pythonanywhere.com/models/props/";
@@ -148,20 +148,11 @@ class ModelDetail extends Component {
         this.props.history.goBack();
     }
 
-    renderDimmer = () => {
-        return (
-            <Dimmer active inverted>
-                <Loader size="massive">Loading...</Loader>
-            </Dimmer>
-        );
-    }
-
-
     render() {
 
         if (this.state.loadingData) {
             return ( 
-                <div>{this.renderDimmer()}</div>
+                <PageLoader />
             );
         }
 

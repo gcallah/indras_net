@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Loader, Dimmer } from 'semantic-ui-react';
+import PageLoader from './PageLoader';
 import {Link} from 'react-router-dom';
 import axios from 'axios';
 import PopulationGraph from './PopulationGraph.js';
@@ -164,14 +164,6 @@ class ActionMenu extends Component {
         );
     }
 
-    renderDimmer = () => {
-        return (
-            <Dimmer active inverted>
-            <Loader size="massive">Loading...</Loader>
-            </Dimmer>
-        );
-    }
-
     renderMenuItem = () => {
         return (
             <div>
@@ -252,15 +244,7 @@ class ActionMenu extends Component {
     render () {
         if (this.state.loadingData) {
             return (
-                <div className="container-fluid" style={{height:600}}>
-                    <div className="row text-center" style={{height:'100%'}} >
-                        <div className="col-12" style={{display: "flex",justifyContent: "center", alignItems: "center"}}>
-                            <div className="spinner-border" role="status">
-                                <span className="sr-only">Loading...</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <PageLoader />
             );
         }
         else {
