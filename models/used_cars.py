@@ -103,7 +103,7 @@ def check_credibility(dealer):
 
 
 def buyer_action(agent):
-    print("_"*20)
+    print("_" * 20)
     print("Agent: " + agent.name)
     if not agent["has_car"]:
         my_dealer = env.get_neighbor_of_groupX(agent, dealer_grp,
@@ -151,7 +151,7 @@ def create_buyer(name, i, props=None):
                  action=buyer_action,
                  attrs={"has_car": False,
                         "car_life": None,
-                        "interaction_res" : None})
+                        "interaction_res": None})
 
 
 def set_up(props=None):
