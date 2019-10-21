@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Loader, Dimmer } from 'semantic-ui-react';
+import PageLoader from "./PageLoader";
 import { Link } from 'react-router-dom';
 import ListGroup from 'react-bootstrap/ListGroup';
 import axios from 'axios';
@@ -269,15 +270,7 @@ class ActionMenu extends Component {
     const { loadingData } = this.state;
     if (loadingData) {
       return (
-        <div className="container-fluid" style={{ height: 600 }}>
-          <div className="row text-center" style={{ height: '100%' }}>
-            <div className="col-12" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              <div className="spinner-border" role="status">
-                <span className="sr-only">Loading...</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        <PageLoader />
       );
     }
     return (
