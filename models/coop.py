@@ -13,7 +13,7 @@ from indra.utils import get_props
 MODEL_NAME = 'coop'
 
 DEF_BABYSITTER = 10
-DEF_MIN_HOLDING = 3
+DEF_DESIRED_CASH_BAL = 8
 DEF_COUPON = 2
 DEF_DISTRIBUTING_COUPON = 2
 DEF_SIGMA = 0.2
@@ -64,6 +64,9 @@ def exchange(coop_env):
     num_babysitter = len(groups[BSIT_INDEX])
     num_going_out = len(groups[GO_OUT_INDEX])
     exchange_num = min(num_babysitter, num_going_out)
+
+    print("exchange_num == ", exchange_num,
+          "num_going_out == ", num_going_out)
 
     cnt_0 = 0
     cnt_1 = 0
@@ -126,14 +129,17 @@ def coop_report(coop_env):
 
 def act(agent):
     """
-    Babysisters act as following:
-    if their holding coupons are less than min_holding, they babysit,
+    Co-op members act as follows:
+    if their holding coupons are less than desired cash balance, they babysit,
     or there is a 50-50 chance for them to go out.
     """
-    if agent['coupons'] <= agent['min_holding']:
+    print(str(agent), "coupons = ", agent['coupons'],
+          "desired = ", agent['desired_cash'])
+    if agent['coupons'] <= agent['desired_cash']:
         agent['goal'] = "BABYSITTING"
         agent['sitting'] = True
     else:
+        print(str(agent), "is not in first if!")
         if random.random() > .5:
             agent['goal'] = "GOING_OUT"
             agent['sitting'] = True
@@ -156,7 +162,8 @@ def central_bank_action(agent):
     if len(hist) > 0:
         prev_num_home = hist[-1]
         if prev_num_home != 0:
-            if (num_home / prev_num_home * 100) >= groups[CENTRAL_BANK]["CENTRAL_BANK"]["percent_change"]:  # NOQA E501
+            if ((num_home / prev_num_home * 100)
+                    >= groups[CENTRAL_BANK]["CENTRAL_BANK"]["percent_change"]):
                 distribute_coupons(agent)
     groups[CENTRAL_BANK]["CENTRAL_BANK"]["num_hist"].append(num_home)
 
@@ -165,7 +172,6 @@ def create_babysitter(name, i, props=None):
     """
     Create a babysitter.
     """
-
     babysitter = Agent(name + str(i), action=babysitter_action)
     mean_coupons = props.get("average_coupons", DEF_COUPON)
     dev = props.get("deviation", DEF_SIGMA)
@@ -173,7 +179,8 @@ def create_babysitter(name, i, props=None):
     babysitter['going_out'] = False
     babysitter["goal"] = None
     babysitter['coupons'] = int(gaussian_distribution(mean_coupons, dev))
-    babysitter['min_holding'] = props.get("min_holding", DEF_MIN_HOLDING)
+    babysitter['desired_cash'] = props.get("desired_cash",
+                                           DEF_DESIRED_CASH_BAL)
     return babysitter
 
 
@@ -181,7 +188,6 @@ def create_central_bank(name, i, props=None):
     """
     Create the central bank to distribute the coupons
     """
-
     central_bank = Agent(name, action=central_bank_action)
     central_bank["percent_change"] = props.get("percent_change", DEF_PERCENT)
     central_bank["extra_coupons"] = props.get("extra_coupons", DEF_COUPON)

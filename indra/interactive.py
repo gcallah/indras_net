@@ -7,9 +7,9 @@ We're going to do "bad" import *s here because this isn't "real"
 code, just a playground for experimenting.
 """
 
-from tests.test_agent import *
-from tests.test_composite import *
-from env import *
+from indra.tests.test_agent import *
+from indra.tests.test_composite import *
+from indra.env import *
 
 newton = create_newton()
 leibniz = create_leibniz()

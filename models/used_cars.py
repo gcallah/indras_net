@@ -40,9 +40,11 @@ env = None
 def bought_info(agent, dealer):
     msg = "My dealer is: " + dealer.name
     msg += "\nReceived a car with a life of " + str(agent["car_life"])
-    msg += "\nMy dealer" + dealer.name
-    msg += "has an avg car life of" + str(dealer["avg_car_life_sold"])
-    msg += ". And sold " + str(dealer["num_sales"]) + " cars."
+    msg += "\nMy dealer " + dealer.name
+    msg += " has an avg car life of " + str(dealer["avg_car_life_sold"])
+    msg += ". And he/she sold " + str(dealer["num_sales"]) + " cars."
+    msg += "\nMy dealer " + dealer.name
+    msg += " shows an emoji of " + agent["interaction_result"]
     return msg
 
 
@@ -101,6 +103,8 @@ def check_credibility(dealer):
 
 
 def buyer_action(agent):
+    print("_" * 20)
+    print("Agent: " + agent.name)
     if not agent["has_car"]:
         my_dealer = env.get_neighbor_of_groupX(agent, dealer_grp,
                                                hood_size=1)
@@ -108,6 +112,7 @@ def buyer_action(agent):
             agent["has_car"] = True
             received_car_life = get_car_life(my_dealer)
             agent["car_life"] = received_car_life
+            agent["interaction_result"] = my_dealer["emoji_used"]
             update_dealer_sale(my_dealer, received_car_life)
             print(bought_info(agent, my_dealer))
         else:
@@ -145,7 +150,8 @@ def create_buyer(name, i, props=None):
     return Agent(name + str(i),
                  action=buyer_action,
                  attrs={"has_car": False,
-                        "car_life": None})
+                        "car_life": None,
+                        "interaction_res": None})
 
 
 def set_up(props=None):
