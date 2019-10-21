@@ -2,7 +2,6 @@
     This is the flocking model written in indra.
 """
 import math
-import random
 
 from indra.utils import get_props
 from indra.agent import Agent, X, Y
@@ -31,20 +30,6 @@ def invert_direction(angle):
     Inverts the current angle.
     """
     return (angle + HALF_CIRCLE) % FULL_CIRCLE
-
-
-def random_direction():
-    """
-    Returns a random angle of direction.
-    """
-    return random.randint(0, 90)
-
-
-def lead_follow():
-    """
-    Randomly chooses if will lead or follow.
-    """
-    return random.randint(0, 2) % 2 == 0
 
 
 def calc_angle(agent1, agent2):
