@@ -33,7 +33,7 @@ class coopTestCase(TestCase):
          Test to see if babysitter is created
         """
         new_babysitter = create_babysitter("babysitters", 0, self.pa)
-        self.assertTrue(new_babysitter["min_holding"] >= 0)
+        self.assertTrue(new_babysitter["desired_cash"] >= 0)
         self.assertTrue(new_babysitter["sitting"] is False)
         self.assertTrue(new_babysitter["going_out"] >= 0)
         self.assertTrue(new_babysitter["goal"] is None)
@@ -121,7 +121,7 @@ class coopTestCase(TestCase):
         new_babysitter0 = create_babysitter("babysitters", 0, self.pa)
         new_babysitter0["goal"] = None
         new_babysitter0["coupons"] = DEF_COUPON - 1
-        new_babysitter0["min_holding"] = DEF_COUPON
+        new_babysitter0["desired_cash"] = DEF_COUPON
         act(new_babysitter0)
         self.assertEqual(new_babysitter0["goal"], "BABYSITTING")
         self.assertTrue(new_babysitter0["sitting"])
