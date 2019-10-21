@@ -243,7 +243,7 @@ class ActionMenu extends Component {
   renderMapItem = () => {
     const { menu } = this.state;
     return (
-      <div className="row">
+      <div className="row" style={{ marginBottom: 80 }}>
         <div className="col">
           {
             Object.keys(menu).map((item, i) => (
@@ -279,35 +279,27 @@ class ActionMenu extends Component {
           </div>
         </div>
       );
-    }
-    return (
-      <div>
-        <br />
-        <button type="button" className="btn btn-light m-2" onClick={this.goback}>Back</button>
-        {this.renderHeader()}
-        <br />
-        <br />
-        {this.renderModelStatus()}
-        <ul className="list-group">
-          <div className="row">
-            <div>
-              {this.renderRunButton()}
-              <br />
-              <br />
-              <h3>Model Analysis:</h3>
-              <br />
+    } else {
+      return (
+        <div>
+          <br />
+          <button type="button" className="btn btn-light m-2" onClick={this.goback}>Back</button>
+          {this.renderHeader()}
+          {this.renderModelStatus()}
+          <ul className="list-group">
+            <div className="row">
+              <div>
+                {this.renderRunButton()}
+                <h3 style={{marginTop: 64, marginBottom: 32}}>Model Analysis:</h3>
+              </div>
             </div>
-          </div>
-          {this.renderMapItem()}
-        </ul>
-        <br />
-        <br />
-        <br />
-        <br />
-        {this.renderMenuItem()}
-      </div>
-    );
+            {this.renderMapItem()}
+          </ul>
+          {this.renderMenuItem()}
+        </div>
+      );
   }
+}
 }
 
 export default ActionMenu;
