@@ -2,6 +2,10 @@
 A used cars model.
 Places two groups of agents in the enviornment randomly
 and moves them around randomly.
+Stage 1
+Two goals:
+1. Associate Emoji with car life buyer get
+2. Associate buyer with all past interaction with particular dealer
 """
 
 import random
@@ -23,7 +27,6 @@ DEF_NUM_RED = 10
 MIN_CAR_LIFE = 1
 MEDIUM_CAR_LIFE = 3
 MAX_CAR_LIFE = 5
-
 
 # categorized emojis reflects trend of dealer's respond
 POS_EMOJIS = ["smiley", "laughing", "relaxing", "wink"]
@@ -109,10 +112,17 @@ def buyer_action(agent):
         my_dealer = env.get_neighbor_of_groupX(agent, dealer_grp,
                                                hood_size=1)
         if my_dealer is not None and check_credibility(my_dealer):
+            # refactor code needed heres
             agent["has_car"] = True
             received_car_life = get_car_life(my_dealer)
             agent["car_life"] = received_car_life
-            agent["interaction_result"] = my_dealer["emoji_used"]
+            received_emoji = my_dealer["emoji_used"]
+            agent["interaction_result"] = received_emoji
+            # map each emoji associate with different car lives for ML prediction 
+            if received_emoji not in agent["emoji_carlife_assoc"]:
+                agent["emoji_carlife_assoc"][received_emoji] = [received_car_life]
+            else:
+                agent["emoji_carlife_assoc"][received_emoji].append(received_car_life)
             update_dealer_sale(my_dealer, received_car_life)
             print(bought_info(agent, my_dealer))
         else:
@@ -151,7 +161,9 @@ def create_buyer(name, i, props=None):
                  action=buyer_action,
                  attrs={"has_car": False,
                         "car_life": None,
-                        "interaction_res": None})
+                        "interaction_result": None,
+                        "dealer_his": [],
+                        "emoji_carlife_assoc": {}})
 
 
 def set_up(props=None):
