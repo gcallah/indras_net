@@ -27,6 +27,7 @@ GRP2 = "Group2"
 X = 0
 Y = 1
 
+
 def env_action(env):
     print("Calling action for env")
     env.name = "Monjur"
@@ -135,9 +136,9 @@ class EnvTestCase(TestCase):
         self.assertEqual(self.env.name, "Monjur")
 
     def test_restore_env(self):
-        # ret_env = Env("env", serial_env=serial_env)
-        # self.assertEqual(str(type(ret_env)), "<class 'indra.env.Env'>")
-        return True
+        tests_env = env_json_basic.ret()
+        ret_env = Env("env", serial_obj=tests_env)
+        self.assertEqual(str(type(ret_env)), "<class 'indra.env.Env'>")
 
     def test_from_json(self):
         """
@@ -174,6 +175,7 @@ class EnvTestCase(TestCase):
         tests_env = env_json_gameoflife.ret()
         self.env = Env(name='Test env', serial_obj=tests_env)
         self.assertEqual(str(type(self.env)), "<class 'indra.env.Env'>")
+
 
 if __name__ == '__main__':
     main()
