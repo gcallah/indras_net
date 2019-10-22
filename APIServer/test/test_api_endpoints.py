@@ -29,14 +29,14 @@ class Test(TestCase):
         self.Props = Props(Resource)
         self.ModelMenu = ModelMenu(Resource)
         self.Run = Run(Resource)
-        self.LoadModels = load_models(indra_dir)
+        self.Models = load_models(indra_dir)
         self.LoadMenu = load_menu()
 
     def test_load_models(self):
         """
         See if models can be loaded.
         """
-        rv = self.LoadModels
+        rv = self.Models
         test_model_file = indra_dir + "/models/models.json"
         with open(test_model_file) as file:
             test_rv = json.loads(file.read())["models_database"]
