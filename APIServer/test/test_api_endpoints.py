@@ -6,7 +6,7 @@ import random
 from flask_restplus import Resource, Api, fields
 
 from APIServer.api_endpoints import app, HelloWorld, Models
-from APIServer.api_endpoints import Props, ModelMenu, Run
+from APIServer.api_endpoints import Props, ModelMenu, RunModel
 from APIServer.api_endpoints import load_menu
 from APIServer.api_endpoints import indra_dir
 from APIServer.models_api import load_models
@@ -28,7 +28,7 @@ class Test(TestCase):
         self.model = Models(Resource)
         self.props = Props(Resource)
         self.model_menu = ModelMenu(Resource)
-        self.run = Run(Resource)
+        self.run = RunModel(Resource)
         self.models = load_models(indra_dir)
         self.load_menu = load_menu()
 
