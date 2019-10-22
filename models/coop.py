@@ -26,9 +26,31 @@ G_HOME = 3
 CENTRAL_BANK = 4
 NUM_OF_GROUPS = 4
 
+BABYSIT = "BABYSITTING"
+GO_OUT = "GOING_OUT"
+
+
 groups = None
 group_indices = None
 coop_env = None
+
+coop_members = None
+
+last_period_exchanges = 0
+
+
+def wants_to_sit(agent, *args):
+    """
+    Checking whether the state is healthy or not
+    """
+    return agent["goal"] == BABYSIT
+
+
+def wants_to_go_out(agent, *args):
+    """
+    Checking whether the state is healthy or not
+    """
+    return agent["goal"] == GO_OUT
 
 
 def classify_goal(coop_env):
@@ -36,12 +58,11 @@ def classify_goal(coop_env):
     g_group = []
     for i in range(NUM_OF_GROUPS):
         for agent in groups[i]:
-            if groups[i][agent]["goal"] == "BABYSITTING":
+            if groups[i][agent]["goal"] == BABYSIT:
                 groups[i][agent]["sitting"] = True
                 groups[i][agent]["goal"] = None
                 b_group.append(groups[i][agent])
-
-            elif groups[i][agent]["goal"] == "GOING_OUT":
+            elif groups[i][agent]["goal"] == GO_OUT:
                 groups[i][agent]["going_out"] = True
                 groups[i][agent]["goal"] = None
                 g_group.append(groups[i][agent])
@@ -60,44 +81,37 @@ def classify_agent_group(group, index):
             coop_env.now_switch(agent, groups[index], groups[index])
 
 
+def initial_exchanges(pop_hist):
+    """
+    Set up our pop hist object to record exchanges per period.
+    """
+    pop_hist.record_pop("Exchanges", 0)
+
+
+def record_exchanges(pop_hist):
+    """
+    This is our hook into the env to record the number of exchanges each
+    period.
+    """
+    global last_period_exchanges
+    pop_hist.record_pop("Exchanges", last_period_exchanges)
+
+
 def exchange(coop_env):
-    num_babysitter = len(groups[BSIT_INDEX])
-    num_going_out = len(groups[GO_OUT_INDEX])
-    exchange_num = min(num_babysitter, num_going_out)
+    global coop_members
+    global last_period_exchanges
 
-    print("exchange_num == ", exchange_num,
-          "num_going_out == ", num_going_out)
+    # sitters = coop_members.subset(wants_to_sit)
+    # going_out = coop_members.subset(wants_to_go_out)
+    # exchanges = min(len(sitters), len(going_out))
+    exchanges = 0
 
-    cnt_0 = 0
-    cnt_1 = 0
-    for agent in groups[BSIT_INDEX]:
-        if cnt_0 < exchange_num:
-            cnt_0 += 1
-            groups[BSIT_INDEX][agent]['sitting'] = False
-            groups[BSIT_INDEX][agent]['coupons'] += 1
+    for i in range(exchanges):
+        # going out agent gives one coupon to babysitting agent
+        pass
 
-    for agent in groups[GO_OUT_INDEX]:
-        if cnt_1 < exchange_num:
-            cnt_1 += 1
-            groups[GO_OUT_INDEX][agent]['going_out'] = False
-            groups[GO_OUT_INDEX][agent]['coupons'] -= 1
-
-    cur_index = -1
-    action = ""
-    if num_babysitter > exchange_num:
-        cur_index = 0
-        action = "sitting"
-    else:
-        cur_index = 1
-        action = "going_out"
-
-    swiches = []
-    for agent in groups[cur_index]:
-        if groups[cur_index][agent][action] is True:
-            swiches.append(groups[cur_index][agent])
-
-    for agent in swiches:
-        coop_env.now_switch(agent, groups[cur_index], groups[2 + cur_index])
+    # record exchanges in population history
+    last_period_exchanges = exchanges
 
 
 def distribute_coupons(agent):
@@ -200,7 +214,6 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-
     global coop_env
     global groups
     global group_indices
@@ -238,6 +251,8 @@ def set_up(props=None):
                    height=UNLIMITED,
                    census=coop_report,
                    props=pa,
+                   pop_hist_setup=initial_exchanges,
+                   pop_hist_func=record_exchanges,
                    exclude_member="CENTRAL_BANK")
 
     return (coop_env, groups, group_indices)
@@ -248,8 +263,10 @@ def main():
     global group_indices
     global central_bank
     global coop_env
+    global coop_members
 
     (coop_env, groups, group_indices) = set_up()
+    coop_members = groups[BSIT_INDEX]
 
     coop_env()
     return 0
