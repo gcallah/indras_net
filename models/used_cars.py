@@ -47,7 +47,7 @@ def bought_info(agent, dealer):
     msg += " has an avg car life of " + str(dealer["avg_car_life_sold"])
     msg += ". And he/she sold " + str(dealer["num_sales"]) + " cars."
     msg += "\nMy dealer " + dealer.name
-    msg += " shows an emoji of " + agent["interaction_result"]
+    msg += " shows an emoji of " + agent["interaction_res"]
     return msg
 
 
@@ -114,16 +114,19 @@ def buyer_action(agent):
         if my_dealer is not None and check_credibility(my_dealer):
             # refactor code needed heres
             agent["has_car"] = True
-            received_car_life = get_car_life(my_dealer)
-            agent["car_life"] = received_car_life
-            received_emoji = my_dealer["emoji_used"]
-            agent["interaction_result"] = received_emoji
-            # map each emoji associate with different car lives for ML prediction 
-            if received_emoji not in agent["emoji_carlife_assoc"]:
-                agent["emoji_carlife_assoc"][received_emoji] = [received_car_life]
+            agent["dealer_his"].append(my_dealer)
+            rec_carlife = get_car_life(my_dealer)
+            agent["car_life"] = rec_carlife
+            rec_emoji = my_dealer["emoji_used"]
+            agent["interaction_res"] = rec_emoji
+            # map each emoji associate with different
+            # car lives for ML prediction
+            assoc = agent["emoji_carlife_assoc"]
+            if rec_emoji not in assoc:
+                assoc[rec_emoji] = [rec_carlife]
             else:
-                agent["emoji_carlife_assoc"][received_emoji].append(received_car_life)
-            update_dealer_sale(my_dealer, received_car_life)
+                assoc[rec_emoji].append(rec_carlife)
+            update_dealer_sale(my_dealer, rec_carlife)
             print(bought_info(agent, my_dealer))
         else:
             print("No dealers nearby.")
@@ -161,7 +164,7 @@ def create_buyer(name, i, props=None):
                  action=buyer_action,
                  attrs={"has_car": False,
                         "car_life": None,
-                        "interaction_result": None,
+                        "interaction_res": None,
                         "dealer_his": [],
                         "emoji_carlife_assoc": {}})
 
