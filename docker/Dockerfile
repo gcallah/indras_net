@@ -7,8 +7,9 @@ RUN pip install --upgrade pip
 
 RUN pip install -r requirements-dev.txt
 
+ENV project IndrasNet
 ENV user_type TERMINAL
-ENV PYTHONPATH "/home/IndrasNet:${PYTHONPATH}"
-ENV props_dir "/home/IndrasNet/APIServer/data/"
+ENV PYTHONPATH "/home/${project}:${PYTHONPATH}"
+ENV props_dir "/home/${project}/APIServer/data/"
 
-WORKDIR /home/IndrasNet/
+WORKDIR /home/$project/
