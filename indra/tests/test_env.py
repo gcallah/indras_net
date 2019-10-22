@@ -65,10 +65,10 @@ class EnvTestCase(TestCase):
         """
         Test running for N turns.
         """
-        NUM_PERIODS = 10
+        num_periods = 10
         self.env += self.newton
-        acts = self.env.runN(NUM_PERIODS)
-        self.assertEqual(acts, NUM_PERIODS)
+        acts = self.env.runN(num_periods)
+        self.assertEqual(acts, num_periods)
 
     def test_str_pop(self):
         """
