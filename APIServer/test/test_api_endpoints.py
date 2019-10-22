@@ -22,21 +22,21 @@ menu = [{"val": 0, "func": "run", "question": "Run for N periods"},
 
 
 class Test(TestCase):
-    def setup(self):
+    def setUp(self):
         # none of the object's members names should have caps!
-        self.HelloWorld = HelloWorld(Resource)
-        self.Model = Models(Resource)
-        self.Props = Props(Resource)
-        self.ModelMenu = ModelMenu(Resource)
-        self.Run = Run(Resource)
-        self.Models = load_models(indra_dir)
-        self.LoadMenu = load_menu()
+        self.helloworld = HelloWorld(Resource)
+        self.model = Models(Resource)
+        self.props = Props(Resource)
+        self.modelmenu = ModelMenu(Resource)
+        self.run = Run(Resource)
+        self.models = load_models(indra_dir)
+        self.loadmenu = load_menu()
 
     def test_load_models(self):
         """
         See if models can be loaded.
         """
-        rv = self.Models
+        rv = self.models
         test_model_file = indra_dir + "/models/models.json"
         with open(test_model_file) as file:
             test_rv = json.loads(file.read())["models_database"]
@@ -46,7 +46,7 @@ class Test(TestCase):
         """
         See if the menu can be loaded.
         """
-        rv = self.LoadMenu
+        rv = self.loadmenu
         test_menu_file = indra_dir + "/indra/menu.json"
         with open(test_menu_file) as file:
             test_rv = json.loads(file.read())["menu_database"]
@@ -56,14 +56,14 @@ class Test(TestCase):
         """
         See if HelloWorld works.
         """
-        rv = self.HelloWorld.get()
+        rv = self.helloworld.get()
         self.assertEqual(rv, {'hello': 'world'})
 
     def test_get_model(self):
         """
         See if we can get models.
         """
-        rv = self.Model.get()
+        rv = self.model.get()
 
         test_model_file = indra_dir + "/models/models.json"
         with open(test_model_file) as file:
@@ -105,14 +105,14 @@ class Test(TestCase):
         """
         model_id = random.randint(0, 10)
         with app.test_request_context():
-            rv = self.Props.put(model_id)
+            rv = self.props.put(model_id)
         self.assertEqual(type(rv), dict)
 
     def test_get_ModelMenu(self):
         """
         Testing whether we are getting the menu.
         """
-        rv = self.ModelMenu.get()
+        rv = self.modelmenu.get()
         test_menu_file = indra_dir + "/indra/menu.json"
         with open(test_menu_file) as file:
             test_menu = json.loads(file.read())["menu_database"]
