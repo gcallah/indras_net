@@ -29,3 +29,11 @@ To run tests, run `make tests`. This can be done inside or outside the Docker
 container. Optionally, you can first `cd` into [APIServer](APIServer),
 [indra](indra), or [models](models) before running `make tests` to run only the
 tests for that directory.
+
+To test the APIServer with the front end locally:
+- Front end:
+    - run `make setup_react` to install all modules listed as dependencies.
+    - Find and replace the `https://indrasnet.pythonanywhere.com/` under `webapp/src/components/` to your server's address (such as `http://127.0.0.1:8000`)
+    - `cd` into `webapp` and run `npm run start` 
+- Back end:
+    - `cd` into [APIServer](APIServer), then run `./api.sh` to start your server

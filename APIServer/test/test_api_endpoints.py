@@ -22,7 +22,7 @@ menu = [{"val": 0, "func": "run", "question": "Run for N periods"},
 
 
 class Test(TestCase):
-    def setup(self):
+    def setUp(self):
         # none of the object's members names should have caps!
         self.HelloWorld = HelloWorld(Resource)
         self.Model = Models(Resource)
