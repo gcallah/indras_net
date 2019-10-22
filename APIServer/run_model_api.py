@@ -17,29 +17,29 @@ from models.gameoflife import gl_unrestorable
 
 
 def run_model_put(payload, run_time):
-        env = Env(name='API env', serial_obj=payload)
-        # this should be dictionary lookup not if elif statements!
-        # furthermore, lookup should be on model id, not env name!
-        if env.name == "Sandpile":
-            sp_unrestorable(env)
-        elif env.name == "Petrie dish":
-            bt_unrestorable(env)
-        elif env.name == "Town":
-            bb_unrestorable(env)
-        elif env.name == "Society":
-            fs_unrestorable(env)
-        elif env.name == "the_sky":
-            fl_unrestorable(env)
-        elif env.name == "fmarket":
-            fm_unrestorable(env)
-        elif env.name == "A city":
-            sg_unrestorable(env)
-        elif env.name == "meadow":
-            ws_unrestorable(env)
-        elif env.name == "Game of Life":
-            gl_unrestorable(env)
-        else:
-            err_return("Model env not found.")
+    env = Env(name='API env', serial_obj=payload)
+    # this should be dictionary lookup not if elif statements!
+    # furthermore, lookup should be on model id, not env name!
+    if env.name == "Sandpile":
+        sp_unrestorable(env)
+    elif env.name == "Petrie dish":
+        bt_unrestorable(env)
+    elif env.name == "Town":
+        bb_unrestorable(env)
+    elif env.name == "Society":
+        fs_unrestorable(env)
+    elif env.name == "the_sky":
+        fl_unrestorable(env)
+    elif env.name == "fmarket":
+        fm_unrestorable(env)
+    elif env.name == "A city":
+        sg_unrestorable(env)
+    elif env.name == "meadow":
+        ws_unrestorable(env)
+    elif env.name == "Game of Life":
+        gl_unrestorable(env)
+    else:
+        err_return("Model env not found.")
 
-        env.runN(periods=run_time)
-        return json_converter(env)
+    env.runN(periods=run_time)
+    return json_converter(env)
