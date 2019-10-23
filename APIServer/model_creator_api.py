@@ -3,12 +3,25 @@
 from flask_restplus import fields
 from APIServer.api_utils import json_converter
 from indra.env import Env
+from indra.agent import Agent
 from indra.composite import Composite
 
 
 class AgentTypes(fields.Raw):
     def put(self, name):
         return Composite(name)
+
+
+class CreateGroups(fields.Raw):
+    def addAgents(self, agent_name, i, props=None):
+        return Agent(agent_name + str(i))
+
+    def put(self, group_list):
+        groupsArr = []
+        for group in group_list:
+            groupsArr.append(Composite(group["group_name"],
+                                       members=[Agent("Agent")],))
+        return groupsArr
 
 
 def get_model_creator():
@@ -18,12 +31,13 @@ def get_model_creator():
 
 
 def put_model_creator(model_features):
-    allMembers = []
+    # allMembers = []
+    allGroups = CreateGroups().put(model_features["groups"])
     # Loop to add composite(s) to membersList
-    for mem in model_features["agent_names"]:
-        allMembers.append(AgentTypes().put(mem))
+    # for mem in model_features["agent_names"]:
+    # (in for loop)allMembers.append(AgentTypes().put(mem))
 
     return json_converter(Env(model_features["model_name"],
-                              members=allMembers,
+                              members=allGroups,
                               width=model_features["env_width"],
                               height=model_features["env_height"]))

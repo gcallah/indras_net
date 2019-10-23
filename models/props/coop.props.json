@@ -20,13 +20,19 @@
     "hival": 0.5,
     "lowval": 0.001
   },
+  "desired_cash": {
+    "val": 7,
+    "question": "What is the average desired cash balance?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 1
+  },
   "percent_change":{
     "val": 10,
     "question": "How much should 'unemployment' increase before the central bank prints more coupons?",
     "atype": "DBL",
     "hival": 50,
     "lowval": 1
-
   },
   "extra_coupons":{
     "val": 2,

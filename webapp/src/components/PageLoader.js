@@ -1,7 +1,7 @@
 import React from "react";
-import { Loader, Dimmer, DimmerDimmable } from "semantic-ui-react";
+import { Loader, Dimmer } from "semantic-ui-react";
 
-function Dimmer() {
+function PageDimmer() {
   return (
     <Dimmer active inverted>
       <Loader size="massive">Loading...</Loader>
@@ -9,4 +9,4 @@ function Dimmer() {
   )
 }
 
-export default Dimmer;
+export default PageDimmer;

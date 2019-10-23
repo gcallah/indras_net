@@ -6,7 +6,7 @@ import random
 from flask_restplus import Resource, Api, fields
 
 from APIServer.api_endpoints import app, HelloWorld, Models
-from APIServer.api_endpoints import Props, ModelMenu, Run
+from APIServer.api_endpoints import Props, ModelMenu, RunModel
 from APIServer.api_endpoints import load_menu
 from APIServer.api_endpoints import indra_dir
 from APIServer.models_api import load_models
@@ -16,7 +16,7 @@ menu = [{"val": 0, "func": "run", "question": "Run for N periods"},
         {"val": 1, "func": "line_graph", "question": "Display a population graph."},
         {"val": 2, "func": "scatter_plot", "question": "Display a scatter plot."},
         {"val": 3, "func": "ipython", "question":
-         "Leave menu for interactive python session."},
+            "Leave menu for interactive python session."},
         {"val": 4, "func": "leave", "question": "Quit)."}
         ]
 
@@ -24,19 +24,19 @@ menu = [{"val": 0, "func": "run", "question": "Run for N periods"},
 class Test(TestCase):
     def setUp(self):
         # none of the object's members names should have caps!
-        self.HelloWorld = HelloWorld(Resource)
-        self.Model = Models(Resource)
-        self.Props = Props(Resource)
-        self.ModelMenu = ModelMenu(Resource)
-        self.Run = Run(Resource)
-        self.LoadModels = load_models(indra_dir)
-        self.LoadMenu = load_menu()
+        self.hello_world = HelloWorld(Resource)
+        self.model = Models(Resource)
+        self.props = Props(Resource)
+        self.model_menu = ModelMenu(Resource)
+        self.run = RunModel(Resource)
+        self.models = load_models(indra_dir)
+        self.load_menu = load_menu()
 
     def test_load_models(self):
         """
         See if models can be loaded.
         """
-        rv = self.LoadModels
+        rv = self.models
         test_model_file = indra_dir + "/models/models.json"
         with open(test_model_file) as file:
             test_rv = json.loads(file.read())["models_database"]
@@ -46,7 +46,7 @@ class Test(TestCase):
         """
         See if the menu can be loaded.
         """
-        rv = self.LoadMenu
+        rv = self.load_menu
         test_menu_file = indra_dir + "/indra/menu.json"
         with open(test_menu_file) as file:
             test_rv = json.loads(file.read())["menu_database"]
@@ -56,14 +56,14 @@ class Test(TestCase):
         """
         See if HelloWorld works.
         """
-        rv = self.HelloWorld.get()
+        rv = self.hello_world.get()
         self.assertEqual(rv, {'hello': 'world'})
 
     def test_get_model(self):
         """
         See if we can get models.
         """
-        rv = self.Model.get()
+        rv = self.model.get()
 
         test_model_file = indra_dir + "/models/models.json"
         with open(test_model_file) as file:
@@ -75,9 +75,9 @@ class Test(TestCase):
             if "doc" in model:
                 doc = model["doc"]
             test_models_response.append({"model ID": model["model ID"],
-                                    "name": model["name"],
-                                    "doc": doc,
-                                    "source": model["source"]})
+                                         "name": model["name"],
+                                         "doc": doc,
+                                         "source": model["source"]})
 
         self.assertEqual(rv, test_models_response)
 
@@ -87,7 +87,7 @@ class Test(TestCase):
         See if we can get props.
         """
         model_id = random.randint(0, 10)
-        rv = self.Props.get(model_id)
+        rv = self.props.get(model_id)
 
         test_model_file = indra_dir + "/models/models.json"
         with open(test_model_file) as file:
@@ -105,14 +105,14 @@ class Test(TestCase):
         """
         model_id = random.randint(0, 10)
         with app.test_request_context():
-            rv = self.Props.put(model_id)
+            rv = self.props.put(model_id)
         self.assertEqual(type(rv), dict)
 
     def test_get_ModelMenu(self):
         """
         Testing whether we are getting the menu.
         """
-        rv = self.ModelMenu.get()
+        rv = self.model_menu.get()
         test_menu_file = indra_dir + "/indra/menu.json"
         with open(test_menu_file) as file:
             test_menu = json.loads(file.read())["menu_database"]

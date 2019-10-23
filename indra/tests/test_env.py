@@ -27,6 +27,7 @@ GRP2 = "Group2"
 X = 0
 Y = 1
 
+
 def env_action(env):
     print("Calling action for env")
     env.name = "Monjur"
@@ -65,10 +66,10 @@ class EnvTestCase(TestCase):
         """
         Test running for N turns.
         """
-        NUM_PERIODS = 10
+        num_periods = 10
         self.env += self.newton
-        acts = self.env.runN(NUM_PERIODS)
-        self.assertEqual(acts, NUM_PERIODS)
+        acts = self.env.runN(num_periods)
+        self.assertEqual(acts, num_periods)
 
     def test_str_pop(self):
         """
@@ -135,45 +136,23 @@ class EnvTestCase(TestCase):
         self.assertEqual(self.env.name, "Monjur")
 
     def test_restore_env(self):
-        # ret_env = Env("env", serial_env=serial_env)
-        # self.assertEqual(str(type(ret_env)), "<class 'indra.env.Env'>")
-        return True
+        tests_env = env_json_basic.ret()
+        ret_env = Env("env", serial_obj=tests_env)
+        self.assertEqual(str(type(ret_env)), "<class 'indra.env.Env'>")
 
     def test_from_json(self):
         """
         These tests are too tied to particular models!
         """
         self.maxDiff = None
-        tests_env = env_json_basic.ret()
-        self.env = Env(name='Test env', serial_obj=tests_env)
-        self.assertEqual(str(type(self.env)), "<class 'indra.env.Env'>")
-        tests_env = env_json_fashion.ret()
-        self.env = Env(name='Test env', serial_obj=tests_env)
-        self.assertEqual(str(type(self.env)), "<class 'indra.env.Env'>")
-        tests_env = env_json_sandpile.ret()
-        self.env = Env(name='Test env', serial_obj=tests_env)
-        self.assertEqual(str(type(self.env)), "<class 'indra.env.Env'>")
-        tests_env = env_json_bacteria.ret()
-        self.env = Env(name='Test env', serial_obj=tests_env)
-        self.assertEqual(str(type(self.env)), "<class 'indra.env.Env'>")
-        tests_env = env_json_flocking.ret()
-        self.env = Env(name='Test env', serial_obj=tests_env)
-        self.assertEqual(str(type(self.env)), "<class 'indra.env.Env'>")
-        tests_env = env_json_segregation.ret()
-        self.env = Env(name='Test env', serial_obj=tests_env)
-        self.assertEqual(str(type(self.env)), "<class 'indra.env.Env'>")
-        tests_env = env_json_wolfsheep.ret()
-        self.env = Env(name='Test env', serial_obj=tests_env)
-        self.assertEqual(str(type(self.env)), "<class 'indra.env.Env'>")
-        tests_env = env_json_fmarket.ret()
-        self.env = Env(name='Test env', serial_obj=tests_env)
-        self.assertEqual(str(type(self.env)), "<class 'indra.env.Env'>")
-        tests_env = env_json_bigbox.ret()
-        self.env = Env(name='Test env', serial_obj=tests_env)
-        self.assertEqual(str(type(self.env)), "<class 'indra.env.Env'>")
-        tests_env = env_json_gameoflife.ret()
-        self.env = Env(name='Test env', serial_obj=tests_env)
-        self.assertEqual(str(type(self.env)), "<class 'indra.env.Env'>")
+        test_env_collection = [env_json_basic.ret(), env_json_fashion.ret(), env_json_sandpile.ret(),
+                               env_json_bacteria.ret(), env_json_flocking.ret(), env_json_segregation.ret(),
+                               env_json_wolfsheep.ret(), env_json_fmarket.ret(),
+                               env_json_bigbox.ret(), env_json_gameoflife.ret()]
+        for tests_env in test_env_collection:
+            self.env = Env(name='Test env', serial_obj=tests_env)
+            self.assertEqual(str(type(self.env)), "<class 'indra.env.Env'>")
+
 
 if __name__ == '__main__':
     main()
