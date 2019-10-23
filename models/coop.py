@@ -109,15 +109,15 @@ def exchange(coop_env):
 
     for i in range(exchanges):
         # going out agent gives one coupon to babysitting agent
-        sitter = sitters['Babysitters' + str(i)]
+        sitter = sitters['Babysitters' + str(i + 1)]
         sitter['sitting'] = False
         sitter['coupons'] += 1
-        going_outer = going_out['Babysitters' + str(i)]
+        going_outer = going_out['Babysitters' + str(i + 1)]
         going_outer['goint_out'] = False
         going_outer['coupons'] -= 1
 
     # record exchanges in population history
-    last_period_exchanges = exchanges
+    # last_period_exchanges = exchanges
 
 
 def distribute_coupons(agent):
@@ -233,6 +233,8 @@ def set_up(props=None):
     # There are 4 groups: group of babysitters, group of people going out,
     # group of people who want to babysit but cannot,
     # group of people who want to go out but cannot.
+
+    # groups.append(Composite("COOP_MEMBERS"))
 
     groups.append(Composite("BBSIT", {"color": BLUE}))
     groups.append(Composite("GO_OUT", {"color": RED}))
