@@ -98,17 +98,23 @@ def record_exchanges(pop_hist):
 
 
 def exchange(coop_env):
-    global coop_members
-    global last_period_exchanges
 
-    # sitters = coop_members.subset(wants_to_sit)
-    # going_out = coop_members.subset(wants_to_go_out)
-    # exchanges = min(len(sitters), len(going_out))
-    exchanges = 0
+    global last_period_exchanges
+    global coop_members
+    # sitters = groups[BSIT_INDEX].subset(wants_to_sit)
+    # going_out = coop_members.members.subset(wants_to_go_out)
+    sitters = groups[BSIT_INDEX]
+    going_out = groups[GO_OUT_INDEX]
+    exchanges = min(len(sitters), len(going_out))
 
     for i in range(exchanges):
         # going out agent gives one coupon to babysitting agent
-        pass
+        sitter = sitters['Babysitters' + str(i)]
+        sitter['sitting'] = False
+        sitter['coupons'] += 1
+        going_outer = going_out['Babysitters' + str(i)]
+        going_outer['goint_out'] = False
+        going_outer['coupons'] -= 1
 
     # record exchanges in population history
     last_period_exchanges = exchanges
