@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Loader, Dimmer } from 'semantic-ui-react';
-import { Link } from 'react-router-dom';
 import ListGroup from 'react-bootstrap/ListGroup';
 import axios from 'axios';
 import PopulationGraph from './PopulationGraph';
