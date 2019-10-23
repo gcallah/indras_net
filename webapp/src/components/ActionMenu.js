@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import ListGroup from 'react-bootstrap/ListGroup';
 import axios from 'axios';
 import PageLoader from './PageLoader';
-import PopulationGraph from './PopulationGraph.jsx';
-import ScatterPlot from './ScatterPlot.jsx';
+import PopulationGraph from './PopulationGraph';
+import ScatterPlot from './ScatterPlot';
 import Debugger from './Debugger';
 import PreFormTextBox from './PreFormTextBox';
 
