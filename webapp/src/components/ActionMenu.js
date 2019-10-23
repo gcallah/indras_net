@@ -141,14 +141,15 @@ class ActionMenu extends Component {
   renderHeader = () => {
     const { name } = this.state;
     return (
-      <h1 style={{ textAlign: 'center', fontWeight: '200' }}>
+      <h1 className="header">
         {name}
       </h1>
     );
   }
 
   MenuItem = (i, action, text) => (
-    <ListGroup className="w-50 text-primary p-3 list-group-item list-group-item-action"
+    <ListGroup
+      className="w-50 text-primary p-3 list-group-item list-group-item-action"
       key={i}
       onClick={() => this.handleClick(action)}
     >
@@ -161,8 +162,7 @@ class ActionMenu extends Component {
     return (
       <div>
         <div
-          className="card w-50 overflow-auto"
-          style={{ float: 'right', width: '18rem', height: '18rem' }}
+          className="card w-50 overflow-auto model-status"
         >
           { PreFormTextBox('Model Status', msg) }
         </div>
@@ -218,15 +218,14 @@ class ActionMenu extends Component {
         <span>model for</span>
         {' '}
         <input
-          style={{ width: 30, height: 30 }}
           type="INT"
-          className="from-control m-2"
+          className="from-control m-2 number-input"
           placeholder="10"
           onChange={this.handleRunPeriod}
         />
         {' '}
         periods.
-        <span style={{ color: 'red', fontSize: 12 }}>
+        <span className="error-message">
           {errorMessage}
         </span>
       </div>
@@ -236,7 +235,7 @@ class ActionMenu extends Component {
   renderMapItem = () => {
     const { menu } = this.state;
     return (
-      <div className="row" style={{ marginBottom: 80 }}>
+      <div className="row margin-bottom-80">
         <div className="col">
           {
             Object.keys(menu).map((item, i) => (
@@ -275,7 +274,7 @@ class ActionMenu extends Component {
           <div className="row">
             <div>
               {this.renderRunButton()}
-              <h3 style={{marginTop: 64, marginBottom: 32}}>Model Analysis:</h3>
+              <h3 className="margin-top-60 mb-5">Model Analysis:</h3>
             </div>
           </div>
           {this.renderMapItem()}
