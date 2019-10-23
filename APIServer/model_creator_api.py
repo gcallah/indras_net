@@ -13,14 +13,25 @@ class AgentTypes(fields.Raw):
 
 
 class CreateGroups(fields.Raw):
-    def addAgents(self, agent_name, i, props=None):
-        return Agent(agent_name + str(i))
+    def addAgents(self, agent_name, agent_num):
+        agentsArr = []
+        i = 0
+        while i < agent_num:
+            agentsArr.append(Agent(agent_name + str(i + 1)))
+            i = i + 1
+        return agentsArr
 
     def put(self, group_list):
         groupsArr = []
+        agentsArr = []
         for group in group_list:
+            # add agents to the current group
+            if group["num_of_agents"] > 0:  # want to add agents to the group
+                agentsArr = self.addAgents(group["group_name"],
+                                           group["num_of_agents"])
+            # create the group
             groupsArr.append(Composite(group["group_name"],
-                                       members=[Agent("Agent")],))
+                                       members=agentsArr,))
         return groupsArr
 
 

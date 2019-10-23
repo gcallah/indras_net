@@ -39,6 +39,7 @@ group_fields = api.model("group", {
     "color": fields.String,
 })
 
+# env_width/height must be >0 when adding agents
 create_model_spec = api.model("model_specification", {
     "model_name": fields.String("Enter model name."),
     "env_width": fields.Integer("Enter enviornment width."),
