@@ -264,27 +264,26 @@ class ActionMenu extends Component {
       return (
         <PageLoader />
       );
-    } else {
-      return (
-        <div>
-          <br />
-          <button type="button" className="btn btn-light m-2" onClick={this.goback}>Back</button>
-          {this.renderHeader()}
-          {this.renderModelStatus()}
-          <ul className="list-group">
-            <div className="row">
-              <div>
-                {this.renderRunButton()}
-                <h3 style={{marginTop: 64, marginBottom: 32}}>Model Analysis:</h3>
-              </div>
+    }
+    return (
+      <div>
+        <br />
+        <button type="button" className="btn btn-light m-2" onClick={this.goback}>Back</button>
+        {this.renderHeader()}
+        {this.renderModelStatus()}
+        <ul className="list-group">
+          <div className="row">
+            <div>
+              {this.renderRunButton()}
+              <h3 style={{marginTop: 64, marginBottom: 32}}>Model Analysis:</h3>
             </div>
-            {this.renderMapItem()}
-          </ul>
-          {this.renderMenuItem()}
-        </div>
-      );
+          </div>
+          {this.renderMapItem()}
+        </ul>
+        {this.renderMenuItem()}
+      </div>
+    );
   }
-}
 }
 
 export default ActionMenu;
