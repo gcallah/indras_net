@@ -9,6 +9,7 @@ import Carousel from './Carousel';
 import sandpileImg from './images/Sandpile.jpg';
 import sandpile1Img from './images/sandpile_2.png';
 import mandelobrotImg from './images/mendelobrot_sq.jpg';
+import './styles.css';
 
 class Home extends Component {
   constructor(props) {
@@ -38,7 +39,7 @@ class Home extends Component {
   }
 
   renderShowDescription = () => (
-    <h1 style={{ fontSize: 16, fontWeight: '400' }}>
+    <h1 className="small-header">
       <a href="https://gcallah.github.io/indras_net/index.html" className="text-primary m-2" target="_blank" rel="noopener noreferrer">
         View Project Description
         {' '}
@@ -56,7 +57,7 @@ class Home extends Component {
   renderHeader = () => <h1 className="text-center">Indra Agent-Based Modeling System</h1>;
 
   renderChooseModelProp = () => (
-    <h1 style={{ fontSize: 16, fontWeight: '400' }}>
+    <h1 className="small-header">
       Please choose a model:
       {' '}
     </h1>
@@ -80,7 +81,7 @@ class Home extends Component {
     }
     return (
       <div className="container">
-        <div style={{ marginBottom: 100 }}>{this.renderHeader()}</div>
+        <div className="margin-bottom-100">{this.renderHeader()}</div>
         <div className="row">
           <div className="col-6">
             {this.renderChooseModelProp()}
