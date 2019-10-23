@@ -147,14 +147,14 @@ class ActionMenu extends Component {
     );
   }
 
-  MenuItem = (i, action, text) => (
-    <ListGroup
+  MenuItem = (i, action, text, key) => (
+    <ListGroup.Item
       className="w-50 text-primary p-3 list-group-item list-group-item-action"
-      key={i}
+      key={key}
       onClick={() => this.handleClick(action)}
     >
       { text }
-    </ListGroup>
+    </ListGroup.Item>
   );
 
   renderModelStatus = () => {
@@ -237,21 +237,20 @@ class ActionMenu extends Component {
     return (
       <div className="row margin-bottom-80">
         <div className="col">
-          {
-            Object.keys(menu).map((item, i) => (
-              <div key={i}>
-                {
-                  menu[item].id > 1
-                    ? this.MenuItem(
-                      i,
-                      menu[item].id,
-                      menu[item].question,
-                    )
-                    : null
-                }
-              </div>
-            ))
-          }
+          <ListGroup>
+            {
+              Object.keys(menu).map((item, i) => (
+                menu[item].id > 1
+                  ? this.MenuItem(
+                    i,
+                    menu[item].id,
+                    menu[item].question,
+                    menu[item].func,
+                  )
+                  : null
+              ))
+            }
+          </ListGroup>
         </div>
       </div>
     );
