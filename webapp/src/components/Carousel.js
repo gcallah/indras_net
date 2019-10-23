@@ -26,9 +26,8 @@ class Carousel extends Component {
                  {this.props.data.map((item,index) => {
                      return <div key ={index}>
                         <img src={item['image']}
-                        className="rounded-circle"
+                        className="rounded-circle carousel"
                         alt="Responsive image"
-                        style={{display:'block', width:'100%', alignItems: "center"}}
                         data-toggle="tooltip" data-placement="top" title={item['title']}/>
                     </div>
                 })}

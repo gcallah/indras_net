@@ -32,7 +32,6 @@ function ScatterPlot(props) {
     return (
       <div>
         <ScatterChart
-          style={{ flex: 1, alignItems: "center", margin: "auto" }}
           data={data}
           width="600px"
           height="600px"

@@ -1,3 +1,9 @@
+.carousel {
+  display: block;
+  width: 100%;
+  align-items: center;
+}
+
 .error-message {
   color: red;
   font-size: 12px;
