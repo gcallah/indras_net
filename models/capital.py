@@ -3,7 +3,7 @@ A basic model.
 Places two groups of agents in the enviornment randomly
 and moves them around randomly.
 """
-
+import copy
 from indra.utils import get_props
 from indra.agent import Agent
 from indra.composite import Composite
@@ -22,6 +22,9 @@ DEF_ENTR_CASH = 10000
 DEF_RHOLDER_CASH = 0
 DEF_K_PRICE = 1000
 
+DEF_RESOURCE_HOLD = ["land", "track", "labor"]
+DEF_CAP_WANTED = ["land", "track", "labor"]
+
 resource_holders = None  # list of resource holders
 entrepreneurs = None  # list of entrepreneur
 market = None
@@ -33,15 +36,41 @@ def entr_action(agent):
                                                    hood_size=4)
     if nearby_rholder is not None:
         if agent["cash"] > 0:
+
             # try to buy a resource if you have cash
+            for need in agent["wants"]:
+                # if find the resources entr want
+                if need in resource_holders[nearby_rholder]["resources"]:
+                    # update resources for the two groups
+                    # print(agent.name,agent["wants"])
+                    agent["wants"].remove(need)
+                    # print(agent.name,agent["wants"])
+                    agent["have"].append(need)
+                    resource_holders[nearby_rholder]["resources"].remove(need)
 
-            # update cash for the two groups
-            agent["cash"] -= DEF_K_PRICE
-            resource_holders[nearby_rholder]["cash"] += DEF_K_PRICE
+                    # update cash for the two groups
+                    agent["cash"] -= DEF_K_PRICE
+                    resource_holders[nearby_rholder]["cash"] += DEF_K_PRICE
+                    break
 
-            print("I'm " + agent.name + " and I will buy resources from "
-                  + str(nearby_rholder) + ". I have "
-                  + str(agent["cash"]) + " dollars left.")
+            if agent["wants"] and agent["have"]:
+                print("I'm " + agent.name + " and I will buy resources from "
+                      + str(nearby_rholder) + ". I have "
+                      + str(agent["cash"]) + " dollars left."
+                      + " I want " + str(agent["wants"])
+                      + ", and I have " + str(agent["have"]) + ".")
+            elif agent["wants"]:
+                print("I'm " + agent.name + " and I will buy resources from "
+                      + str(nearby_rholder) + ". I have "
+                      + str(agent["cash"]) + " dollars left."
+                      + " I want " + str(agent["wants"])
+                      + ", and I don't have any capital.")
+            elif agent["have"]:
+                print("I'm " + agent.name + " and I will buy resources from "
+                      + str(nearby_rholder) + ". I have "
+                      + str(agent["cash"]) + " dollars left."
+                      + " I got all I need, and I have "
+                      + str(agent["have"]) + "!")
             return False
             # move to find resource holder
 
@@ -53,8 +82,14 @@ def entr_action(agent):
 
 
 def rholder_action(agent):
-    print("I'm " + agent.name + " and I've got resources. I have "
-          + str(agent["cash"]) + " dollors now.")
+    if agent["resources"]:
+        print("I'm " + agent.name + " and I've got resources. I have "
+              + str(agent["cash"]) + " dollors now."
+              + " I have " + str(agent["resources"]) + ".")
+    else:
+        print("I'm " + agent.name + " and I've got resources. I have "
+              + str(agent["cash"]) + " dollors now."
+              + " I ran out of resources!")
     # resource holder dont move
     return True
 
@@ -64,7 +99,9 @@ def create_entr(name, i, props=None):
     Create an agent.
     """
     return Agent(name + str(i), action=entr_action,
-                 attrs={"cash": DEF_ENTR_CASH})
+                 attrs={"cash": DEF_ENTR_CASH,
+                        "wants": copy.deepcopy(DEF_CAP_WANTED),
+                        "have": []})
 
 
 def create_rholder(name, i, props=None):
@@ -72,7 +109,8 @@ def create_rholder(name, i, props=None):
     Create an agent.
     """
     return Agent(name + str(i), action=rholder_action,
-                 attrs={"cash": DEF_RHOLDER_CASH})
+                 attrs={"cash": DEF_RHOLDER_CASH,
+                        "resources": copy.deepcopy(DEF_RESOURCE_HOLD)})
 
 
 def set_up(props=None):
