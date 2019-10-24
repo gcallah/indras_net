@@ -25,8 +25,11 @@ DEF_NUM_BLUE = 10
 DEF_NUM_RED = 10
 
 MIN_CAR_LIFE = 1
-MEDIUM_CAR_LIFE = 3
+MAX_BAD_CAR_LIFE = 4
+MIN_GOOD_CAR_LIFE = 2
 MAX_CAR_LIFE = 5
+
+MEDIUM_CAR_LIFE = (MIN_CAR_LIFE + MAX_CAR_LIFE) // 2
 
 # categorized emojis reflects trend of dealer's respond
 POS_EMOJIS = ["smiley", "laughing", "relaxing", "wink"]
@@ -37,7 +40,7 @@ DEALERS = "Dealers"
 
 buyer_grp = None
 dealer_grp = None
-env = None
+car_market = None
 
 
 def bought_info(agent, dealer):
@@ -62,13 +65,13 @@ def get_car_life(dealer):
 
 def get_dealer_car(dealer_characteristc):
     if dealer_characteristc == "good":
-        return random.randint(MEDIUM_CAR_LIFE, MAX_CAR_LIFE)
+        return random.randint(MIN_GOOD_CAR_LIFE, MAX_CAR_LIFE)
     else:  # dealer characteristic == bad
-        return random.randint(MIN_CAR_LIFE, MEDIUM_CAR_LIFE)
+        return random.randint(MIN_CAR_LIFE, MAX_BAD_CAR_LIFE)
 
 
 def dealer_action(agent):  # this is more for buyer to see
-    env.user.tell("I'm " + agent.name + " and I'm a dealer.")
+    car_market.user.tell("I'm " + agent.name + " and I'm a dealer.")
     dealer_characteristic = get_dealer_characteristic()
     agent["dealer_characteristic"] = dealer_characteristic
     agent["emoji_used"] = get_dearler_emoji(dealer_characteristic)
@@ -109,8 +112,9 @@ def buyer_action(agent):
     print("_" * 20)
     print("Agent: " + agent.name)
     if not agent["has_car"]:
-        my_dealer = env.get_neighbor_of_groupX(agent, dealer_grp,
-                                               hood_size=1)
+        my_dealer = car_market.get_neighbor_of_groupX(agent,
+                                                      dealer_grp,
+                                                      hood_size=1)
         if my_dealer is not None and check_credibility(my_dealer):
             # refactor code needed heres
             agent["has_car"] = True
@@ -181,26 +185,26 @@ def set_up(props=None):
                           member_creator=create_buyer,
                           num_members=pa.get('num_buyers', DEF_NUM_RED))
 
-    env = Env("env",
-              height=pa.get('grid_height', DEF_HEIGHT),
-              width=pa.get('grid_width', DEF_WIDTH),
-              members=[dealer_grp, buyer_grp],
-              props=pa)
+    car_market = Env("Car market",
+                     height=pa.get('grid_height', DEF_HEIGHT),
+                     width=pa.get('grid_width', DEF_WIDTH),
+                     members=[dealer_grp, buyer_grp],
+                     props=pa)
 
-    return (env, dealer_grp, buyer_grp)
+    return (car_market, dealer_grp, buyer_grp)
 
 
 def main():
     global buyer_grp
     global dealer_grp
-    global env
+    global car_market
 
-    (env, dealer_grp, buyer_grp) = set_up()
+    (car_market, dealer_grp, buyer_grp) = set_up()
 
     if DEBUG2:
-        print(env.__repr__())
+        print(car_market.__repr__())
 
-    env()
+    car_market()
     return 0
 
 
