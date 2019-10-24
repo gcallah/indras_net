@@ -466,9 +466,9 @@ class Space(Composite):
         """
         hood = self.get_square_hood(agent, save_neighbors=save_neighbors,
                                     hood_size=hood_size)
-        for agent in hood:
-            if group.ismember(agent):
-                return agent
+        for agent_name in hood:
+            if group.ismember(agent_name):
+                return group[agent_name]
         return None
 
     def get_closest_agent(self, agent):
@@ -498,12 +498,8 @@ class Space(Composite):
         (prev_x, prev_y) = xy
         (cur_x, cur_y) = xy
         #  Calculate the coordinates
-        if math.cos(angle) < 0:
-            cur_x = prev_x * (-1)
-        if math.sin(angle) < 0:
-            cur_y = prev_y * (-1)
-        cur_x = math.cos(angle) * max_move + cur_x
-        cur_y = math.sin(angle) * max_move + cur_y
+        cur_x = math.cos(math.radians(angle)) * max_move + cur_x
+        cur_y = math.sin(math.radians(angle)) * max_move + cur_y
 
         #  Adjust if the cur_x and cur_y are out of range
         if out_of_bounds(cur_x, cur_y, 0, 0, self.width, self.height):
@@ -511,13 +507,13 @@ class Space(Composite):
                 if cur_y < 0:
                     return (cur_x, 0)
                 else:
-                    return (cur_x, self.height - 1)
+                    return (cur_x, self.height)
 
             if cur_y == prev_y:
                 if cur_x < 0:
                     return (0, cur_y)
                 else:
-                    return (self.width - 1, cur_y)
+                    return (self.width, cur_y)
 
             if cur_x != prev_x and cur_y != prev_y:
                 slope = float((cur_y - prev_y) / (cur_x - prev_x))
@@ -527,9 +523,9 @@ class Space(Composite):
                 x_intercept = float(y_intercept / slope) * (-1)
 
                 # Calculate the intersection of the vector and grid axes
-                x_vertical = self.width - 1
+                x_vertical = self.width
                 y_vertical = float(slope * x_vertical) + y_intercept
-                y_horizontal = self.height - 1
+                y_horizontal = self.height
                 x_horizontal = float((y_horizontal - y_intercept) / slope)
 
             #  Adjust the out of bound coordinates

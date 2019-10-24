@@ -1,0 +1,43 @@
+.carousel {
+  display: block;
+  width: 100%;
+  align-items: center;
+}
+
+.error-message {
+  color: red;
+  font-size: 12px;
+}
+
+.header {
+  text-align: center;
+  font-weight: 200;
+}
+
+.margin-bottom-80 {
+  margin-bottom: 80px;
+}
+
+.margin-bottom-100 {
+  margin-bottom: 100px;
+}
+
+.margin-top-60 {
+  margin-top: 60px;
+}
+
+.model-status {
+  float: right;
+  width: 18rem;
+  height: 18rem;
+}
+
+.number-input {
+  width: 30px;
+  height: 30px;
+}
+
+.small-header {
+  font-size: 16px;
+  font-weight: 400;
+}

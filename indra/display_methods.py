@@ -220,6 +220,7 @@ class LineGraph():
     thing to graph.
     data_points is the length of the x-axis.
     """
+
     def __init__(self, title, varieties, data_points, attrs,
                  anim=False, data_func=None, is_headless=False):
         global anim_func

@@ -9,8 +9,6 @@ else
     export capture="--nocapture"
 fi
 
-export INDRA_HOME="./test_data"
-
 echo "INDRA_HOME: $INDRA_HOME"
 nosetests --ignore-files=$ignores --exe --verbose --with-coverage --cover-package=APIServer $capture
 

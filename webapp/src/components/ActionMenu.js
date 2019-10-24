@@ -1,284 +1,287 @@
-import React, {Component} from 'react';
-import {Loader, Dimmer } from 'semantic-ui-react';
-import {Link} from 'react-router-dom';
+import React, { Component } from 'react';
+import ListGroup from 'react-bootstrap/ListGroup';
 import axios from 'axios';
-import PopulationGraph from './PopulationGraph.js';
-import ScatterPlot from './ScatterPlot.js';
-import Debugger from './Debugger.js';
-import PreFormTextBox from './PreFormTextBox.js';
-
+import PageLoader from './PageLoader';
+import PopulationGraph from './PopulationGraph';
+import ScatterPlot from './ScatterPlot';
+import Debugger from './Debugger';
+import PreFormTextBox from './PreFormTextBox';
 
 const POP = 2;
 const SCATTER = 3;
 const DATA = 4;
 const SOURCE = 5;
+const API_SERVER = 'https://indrasnet.pythonanywhere.com/models/menu/';
 
 class ActionMenu extends Component {
-    api_server = 'https://indrasnet.pythonanywhere.com/models/menu/';
+  constructor(props) {
+    super(props);
+    this.state = {
+      msg: '',
+      menu: {},
+      loadingData: false,
+      env_file: {},
+      modelId: 0,
+      actionId: 0,
+      showComponent: false,
+      periodNum: 10,
+      errorMessage: '',
+      disabledButton: false,
+      loadingPopulation: false,
+      loadingScatter: false,
+      loadingDebugger: false,
+    };
+  }
 
-    state = {
-        msg: '',
-        menu: {},
-        loadingData: false,
-        env_file: {},
-        model_id: 0,
-        action_id: 0,
-        show_component: false,
-        period_num: 10,
+  async componentDidMount() {
+    document.title = 'Indra | Menu';
+    const m = await axios.get(API_SERVER);
+    console.log(API_SERVER);
+    this.setState({
+      menu: m.data,
+      name: localStorage.getItem('name'),
+      modelId: localStorage.getItem('menu_id'),
+      source: localStorage.getItem('source'),
+      env_file: JSON.parse(localStorage.getItem('env_file')),
+      msg: JSON.parse(localStorage.getItem('env_file')).user.user_msgs,
+    });
+    console.log(this.state);
+  }
+
+  viewSource = () => {
+    window.open(localStorage.getItem('source'));
+  };
+
+  onClick = () => {
+    this.setState({
+      showComponent: true,
+    });
+  };
+
+  goback = () => {
+    const { history } = this.props;
+    history.goBack();
+  }
+
+  handleRunPeriod = (e) => {
+    this.setState({
+      periodNum: e.target.value,
+    });
+
+    const valid = this.checkValidity(e.target.value);
+    if (valid === 0) {
+      this.setState({
+        errorMessage: '**Please input an integer',
+        disabledButton: true,
+      });
+    } else {
+      this.setState({
         errorMessage: '',
-        disabled_button: false,
-        loading_population: false,
-        loading_scatter: false,
-        loading_debugger: false,
-    };
-
-    async componentDidMount () {
-        document.title = 'Indra | Menu';
-        const m = await axios.get (this.api_server);
-        console.log (this.api_server);
-        this.setState ({
-            menu: m.data,
-            name: localStorage.getItem ('name'),
-            model_id: localStorage.getItem ('menu_id'),
-            source: localStorage.getItem ('source'),
-            env_file: JSON.parse(localStorage.getItem('env_file')),
-            msg: JSON.parse(localStorage.getItem('env_file'))["user"]["user_msgs"]
-        });
-        console.log(this.state)
+        disabledButton: false,
+      });
     }
+  };
 
-    viewSource = () => {
-        var source = localStorage.getItem ('source');
-        window.open (source);
-    };
-
-    onClick = () => {
-        this.setState ({
-            show_component: true,
-        });
-    };
-
-    handleRunPeriod = e => {
-        this.setState ({
-            period_num: e.target.value,
-        });
-
-        let valid = this.checkValidity (e.target.value);
-        if (valid === 0) {
-            this.setState ({errorMessage: '**Please input an integer'});
-            this.setState ({disabled_button: true});
-        } else {
-            this.setState ({errorMessage: ''});
-            this.setState ({disabled_button: false});
-        }
-    };
-
-    checkValidity = data => {
-        let remainder = data % 1;
-        if (remainder === 0) {
-            return 1;
-        } else return 0;
-    };
-
-    handleClick = e => {
-        console.log("e = " + String(e))
-        this.setState ({loadingData: false});
-        this.setState ({loading_population: false});
-        this.setState ({loading_scatter: false});
-        this.setState({loading_debugger: false})
-        this.setState ({action_id: e});
-        switch (e) {
-            case POP:
-                this.setState ({loading_population: true});
-                break;
-            case SCATTER:
-                this.setState ({loading_scatter: true});
-                break;
-            case DATA:
-                this.setState ({loading_debugger: true});
-                break;
-            case SOURCE:
-                this.viewSource ();
-                break;
-            default:
-                break;
-        }
-    };
-
-    sendNumPeriods = async() => {
-        console.log(this.api_server + 'run/' + String(this.state.period_num))
-        this.setState({loadingData:true})
-        try { 
-            const res = await axios.put(
-            this.api_server + 'run/' + String(this.state.period_num),
-            this.state.env_file,
-            this.state.period_num
-        )
-
-        this.setState({env_file: res.data,
-                            loadingData:false,
-                            msg: res.data["user"]["user_msgs"]})
-        console.log(res.data)
-        } catch(e) {
-            console.log(e.message)
-        }
-
-    };
-
-    renderHeader = () => {
-        return <h1 style={{textAlign: 'center', fontWeight: '200'}}>
-            {this.state.name}
-        </h1>
+  checkValidity = (data) => {
+    if (data % 1 === 0) {
+      return 1;
     }
+    return 0;
+  };
 
-
-    MenuItem = (i, action, text) => {
-        return (
-        <a className="w-50 p-3 list-group-item list-group-item-action" key={i}>
-            <Link className="text-primary"
-                onClick={() => this.handleClick(action)}>
-                { text }
-            </Link>
-        </a>
-        );
+  handleClick = (e) => {
+    console.log(`e = ${String(e)}`);
+    this.setState({
+      loadingData: false,
+      loadingPopulation: false,
+      loadingScatter: false,
+      loadingDebugger: false,
+      actionId: e,
+    });
+    switch (e) {
+      case POP:
+        this.setState({ loadingPopulation: true });
+        break;
+      case SCATTER:
+        this.setState({ loadingScatter: true });
+        break;
+      case DATA:
+        this.setState({ loadingDebugger: true });
+        break;
+      case SOURCE:
+        this.viewSource();
+        break;
+      default:
+        break;
     }
+  };
 
-    renderModelStatus = () => {
-        return (
+  sendNumPeriods = async () => {
+    const { periodNum, env_file } = this.state;
+    console.log(`${API_SERVER}run/${String(periodNum)}`);
+    this.setState({ loadingData: true });
+    try {
+      const res = await axios.put(
+        `${API_SERVER}run/${String(periodNum)}`,
+        env_file,
+        periodNum,
+      );
+
+      this.setState({
+        env_file: res.data,
+        loadingData: false,
+        msg: res.data.user.user_msgs,
+      });
+      console.log(res.data);
+    } catch (e) {
+      console.log(e.message);
+    }
+  };
+
+  renderHeader = () => {
+    const { name } = this.state;
+    return (
+      <h1 className="header">
+        {name}
+      </h1>
+    );
+  }
+
+  MenuItem = (i, action, text, key) => (
+    <ListGroup.Item
+      className="w-50 text-primary p-3 list-group-item list-group-item-action"
+      key={key}
+      onClick={() => this.handleClick(action)}
+    >
+      { text }
+    </ListGroup.Item>
+  );
+
+  renderModelStatus = () => {
+    const { msg } = this.state;
+    return (
+      <div>
+        <div
+          className="card w-50 overflow-auto model-status"
+        >
+          { PreFormTextBox('Model Status', msg) }
+        </div>
+      </div>
+    );
+  }
+
+  renderMenuItem = () => {
+    const {
+      loadingPopulation,
+      env_file,
+      modelId,
+      loadingDebugger,
+      loadingScatter,
+    } = this.state;
+    return (
+      <div>
+        <PopulationGraph
+          loadingData={loadingPopulation}
+          env_file={env_file}
+          id={modelId}
+        />
+
+        <ScatterPlot
+          loadingData={loadingScatter}
+          env_file={env_file}
+          id={modelId}
+        />
+
+        <Debugger
+          loadingData={loadingDebugger}
+          env_file={env_file}
+        />
+      </div>
+    );
+  }
+
+  renderRunButton = () => {
+    const { disabledButton, errorMessage } = this.state;
+    return (
+      <div>
+        <button
+          type="button"
+          disabled={disabledButton}
+          onClick={!disabledButton ? this.sendNumPeriods : null}
+          className="btn btn-success m-2"
+        >
+          {'  '}
+          Run
+          {'  '}
+        </button>
+        {' '}
+        <span>model for</span>
+        {' '}
+        <input
+          type="INT"
+          className="from-control m-2 number-input"
+          placeholder="10"
+          onChange={this.handleRunPeriod}
+        />
+        {' '}
+        periods.
+        <span className="error-message">
+          {errorMessage}
+        </span>
+      </div>
+    );
+  }
+
+  renderMapItem = () => {
+    const { menu } = this.state;
+    return (
+      <div className="row margin-bottom-80">
+        <div className="col">
+          <ListGroup>
+            {
+              Object.keys(menu).map((item, i) => (
+                menu[item].id > 1
+                  ? this.MenuItem(
+                    i,
+                    menu[item].id,
+                    menu[item].question,
+                    menu[item].func,
+                  )
+                  : null
+              ))
+            }
+          </ListGroup>
+        </div>
+      </div>
+    );
+  }
+
+  render() {
+    const { loadingData } = this.state;
+    if (loadingData) {
+      return (
+        <PageLoader />
+      );
+    }
+    return (
+      <div>
+        <br />
+        <button type="button" className="btn btn-light m-2" onClick={this.goback}>Back</button>
+        {this.renderHeader()}
+        {this.renderModelStatus()}
+        <ul className="list-group">
+          <div className="row">
             <div>
-                <div className="card w-50 overflow-auto"
-                    style={{float:'right', width:"18rem", height:"18rem"}}>
-                    { PreFormTextBox("Model Status", this.state.msg) } 
-                </div>
+              {this.renderRunButton()}
+              <h3 className="margin-top-60 mb-5">Model Analysis:</h3>
             </div>
-        );
-    }
-
-    renderDimmer = () => {
-        return (
-            <Dimmer active inverted>
-            <Loader size="massive">Loading...</Loader>
-            </Dimmer>
-        );
-    }
-
-    renderMenuItem = () => {
-        return (
-            <div>
-                <PopulationGraph
-                loadingData={this.state.loading_population}
-                env_file={this.state.env_file}
-                id={this.state.model_id}
-                />
-
-                <ScatterPlot
-                loadingData={this.state.loading_scatter}
-                env_file={this.state.env_file}
-                id={this.state.model_id}
-                />
-
-                <Debugger
-                loadingData={this.state.loading_debugger}
-                env_file={this.state.env_file}
-                />
-            </div>
-        )
-    }
-
-    renderRunButton = () => {
-        return (
-            <div>
-                <button 
-                    disabled={this.state.disabled_button}
-                    onClick={
-                    !this.state.disabled_button ? this.sendNumPeriods : null
-                    }
-                    className="btn btn-success m-2"
-                    >
-                    {'  '}Run{'  '}
-                </button>
-                {' '}
-                <span>model for</span>
-                    {' '}
-                    <input
-                        style={{width: 30, height: 30}}
-                        type="INT"
-                        className="from-control m-2"
-                        placeholder="10"
-                        onChange={this.handleRunPeriod}
-                    />
-                    {' '}
-                    periods.
-                    <span style={{color: 'red', fontSize: 12}}>
-                    {this.state.errorMessage}
-                </span>
-            </div>
-        );
-    }
-
-    renderMapItem = () => {
-        return (
-            <div className="row">
-                <div className="col">
-                {
-                    Object.keys (this.state.menu).map ((item, i) => (
-                        <div key={i}>
-                            {
-                                this.state.menu[item]['id'] > 1 ?
-                                this.MenuItem(i,
-                                this.state.menu[item]['id'],
-                                this.state.menu[item]['question'])
-                                : null
-                            }
-                        </div>
-                        )
-                    )
-                }
-                </div>
-            </div>
-        )
-    }
-    
-    render () {
-        if (this.state.loadingData) {
-            return (
-                <div className="container-fluid" style={{height:600}}>
-                    <div className="row text-center" style={{height:'100%'}} >
-                        <div className="col-12" style={{display: "flex",justifyContent: "center", alignItems: "center"}}>
-                            <div className="spinner-border" role="status">
-                                <span className="sr-only">Loading...</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-        }
-        else {
-            return (
-                <div>
-                    <br/>
-                    {this.renderHeader()}
-                    <br/><br/>
-                    {this.renderModelStatus()}
-                    <ul className="list-group">
-                        <div className="row">
-                            <div>
-                                {this.renderRunButton()}
-                                <br/><br/>
-                                <h3>Model Analysis:</h3>
-                                <br/>
-                            </div>
-                        </div>
-                        {this.renderMapItem()}
-                    </ul>
-                    <br/><br/>
-                    <br/><br/>
-                    {this.renderMenuItem()}
-                </div>
-            );
-        }
-    }
-
+          </div>
+          {this.renderMapItem()}
+        </ul>
+        {this.renderMenuItem()}
+      </div>
+    );
+  }
 }
 
 export default ActionMenu;

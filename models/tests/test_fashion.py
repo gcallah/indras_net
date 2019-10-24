@@ -58,7 +58,8 @@ class FashionTestCase(TestCase):
         self.assertFalse(env_unfavorable(RED_SIN, RED_SIN, lt, gt))
         self.assertFalse(env_unfavorable(RED_SIN, NEUTRAL, lt, gt))
         self.assertTrue(env_unfavorable(RED_SIN, NEUTRAL - BIG_ENOUGH, lt, gt))
-        self.assertTrue(env_unfavorable(BLUE_SIN, NEUTRAL + BIG_ENOUGH, lt, gt))
+        self.assertTrue(env_unfavorable(
+            BLUE_SIN, NEUTRAL + BIG_ENOUGH, lt, gt))
 
     def test_new_color_pref(self):
         """
@@ -77,10 +78,10 @@ class FashionTestCase(TestCase):
     def test_create_tsetter(self):
         new_agent = create_tsetter(TSETTER_PRENM, 2, RED_SIN)
 
-        self.assertEqual(new_agent.name, TSETTER_PRENM +str(2))
+        self.assertEqual(new_agent.name, TSETTER_PRENM + str(2))
 
     def test_create_follower(self):
-        new_follower = create_follower(FOLLOWER_PRENM, 2 , BLUE_SIN)
+        new_follower = create_follower(FOLLOWER_PRENM, 2, BLUE_SIN)
         self.assertEqual(new_follower.name, FOLLOWER_PRENM + str(2))
 
     def test_follower_action(self):

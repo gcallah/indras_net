@@ -42,7 +42,7 @@ def apply_live_rules(agent):
     num_live_neighbors = 0
     for neighbor in agent.neighbors:
         if (agent.neighbors[neighbor].primary_group() == groups[0]
-           and agent.neighbors[neighbor].get_pos() != agent.get_pos()):
+                and agent.neighbors[neighbor].get_pos() != agent.get_pos()):
             num_live_neighbors += 1
     if (num_live_neighbors != 2 and num_live_neighbors != 3):
         return True
@@ -51,6 +51,11 @@ def apply_live_rules(agent):
 
 
 def apply_dead_rules(curr_x, curr_y, x1, x2, y1, y2):
+    """
+    Apply the rules for dead agents.
+    The agent passed in should be alive, meaning its color should be white.
+    """
+
     global groups
 
     num_live_neighbors = 0
@@ -58,7 +63,7 @@ def apply_dead_rules(curr_x, curr_y, x1, x2, y1, y2):
         for y in range(y1, y2 + 1):
             neighbor = gameoflife_env.get_agent_at(x, y)
             if (neighbor is not None and neighbor.primary_group() == groups[0]
-               and (curr_x != x or curr_y != y)):
+                    and (curr_x != x or curr_y != y)):
                 num_live_neighbors += 1
     if num_live_neighbors == 3:
         return True

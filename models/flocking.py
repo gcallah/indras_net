@@ -2,7 +2,6 @@
     This is the flocking model written in indra.
 """
 import math
-import random
 
 from indra.utils import get_props
 from indra.agent import Agent, X, Y
@@ -31,13 +30,6 @@ def invert_direction(angle):
     Inverts the current angle.
     """
     return (angle + HALF_CIRCLE) % FULL_CIRCLE
-
-
-def random_direction():
-    """
-    Returns a random angle of direction.
-    """
-    return random.randint(0, FULL_CIRCLE)
 
 
 def calc_angle(agent1, agent2):
@@ -69,8 +61,7 @@ def bird_action(this_bird):
                   " is ", curr_distance)
         if abs(curr_distance - DEF_DESIRED_DISTANCE) < (DEF_DESIRED_DISTANCE
                                                         * ACCEPTABLE_DEV):
-            return True  # True return means agent is ok don't move!
-
+            return True
         this_bird["angle"] = calc_angle(this_bird, nearest_bird)
         if DEBUG:
             print(this_bird.name, "'s angle rel. to ", nearest_bird.name,
