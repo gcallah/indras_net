@@ -1,13 +1,13 @@
 {
   "grid_height": {
-    "val": 20,
+    "val": 4,
     "question": "What is the grid height?",
     "atype": "INT",
     "hival": 100,
     "lowval": 2
   },
   "grid_width": {
-    "val": 20,
+    "val": 4,
     "question": "What is the grid width?",
     "atype": "INT",
     "hival": 100,
@@ -26,6 +26,13 @@
     "atype": "INT",
     "hival": 100,
     "lowval": 1
+  },
+  "entr_starting_cash": {
+    "val": 10000,
+    "question": "How much cash should entrepreneurs start with?",
+    "atype": "INT",
+    "hival": 100000,
+    "lowval": 100
   },
   "use_line": {
     "val": 0,

@@ -98,20 +98,26 @@ def record_exchanges(pop_hist):
 
 
 def exchange(coop_env):
-    global coop_members
-    global last_period_exchanges
 
-    # sitters = coop_members.subset(wants_to_sit)
-    # going_out = coop_members.subset(wants_to_go_out)
-    # exchanges = min(len(sitters), len(going_out))
-    exchanges = 0
+    global last_period_exchanges
+    global coop_members
+    # sitters = groups[BSIT_INDEX].subset(wants_to_sit)
+    # going_out = coop_members.members.subset(wants_to_go_out)
+    sitters = groups[BSIT_INDEX]
+    going_out = groups[GO_OUT_INDEX]
+    exchanges = min(len(sitters), len(going_out))
 
     for i in range(exchanges):
         # going out agent gives one coupon to babysitting agent
-        pass
+        sitter = sitters['Babysitters' + str(i + 1)]
+        sitter['sitting'] = False
+        sitter['coupons'] += 1
+        going_outer = going_out['Babysitters' + str(i + 1)]
+        going_outer['goint_out'] = False
+        going_outer['coupons'] -= 1
 
     # record exchanges in population history
-    last_period_exchanges = exchanges
+    # last_period_exchanges = exchanges
 
 
 def distribute_coupons(agent):
@@ -227,6 +233,8 @@ def set_up(props=None):
     # There are 4 groups: group of babysitters, group of people going out,
     # group of people who want to babysit but cannot,
     # group of people who want to go out but cannot.
+
+    # groups.append(Composite("COOP_MEMBERS"))
 
     groups.append(Composite("BBSIT", {"color": BLUE}))
     groups.append(Composite("GO_OUT", {"color": RED}))

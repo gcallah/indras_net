@@ -34,13 +34,16 @@ class HelloWorld(Resource):
 
 
 group_fields = api.model("group", {
-    "group_name": fields.List(fields.String)
+    "group_name": fields.String,
+    "num_of_agents": fields.Integer,
+    "color": fields.String,
 })
 
+# env_width/height must be >0 when adding agents
 create_model_spec = api.model("model_specification", {
     "model_name": fields.String("Enter model name."),
-    "env_width": fields.Integer("Enter enviornment width."),  # can't be 0
-    "env_height": fields.Integer("Enter enviornment height."),  # can't be 0
+    "env_width": fields.Integer("Enter enviornment width."),
+    "env_height": fields.Integer("Enter enviornment height."),
     "groups": fields.List(fields.Nested(group_fields)),
 })
 
