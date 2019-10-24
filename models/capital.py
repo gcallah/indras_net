@@ -15,8 +15,8 @@ MODEL_NAME = "capital"
 DEBUG = False  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
-DEF_NUM_BLUE = 10
-DEF_NUM_RED = 10
+DEF_NUM_ENTR = 10
+DEF_NUM_RHOLDER = 10
 
 DEF_ENTR_CASH = 10000
 DEF_RHOLDER_CASH = 0
@@ -37,7 +37,7 @@ def entr_action(agent):
 
             # update cash for the two groups
             agent["cash"] -= DEF_K_PRICE
-            resource_holders[nearby_rholder]["cash"] += DEF_K_PRICE
+            resource_holders[str(nearby_rholder)]["cash"] += DEF_K_PRICE
 
             print("I'm " + agent.name + " and I will buy resources from "
                   + str(nearby_rholder) + ". I have "
@@ -63,8 +63,13 @@ def create_entr(name, i, props=None):
     """
     Create an agent.
     """
+    starting_cash = DEF_ENTR_CASH
+    if props is not None:
+        starting_cash = props.get('entr_starting_cash',
+                                  DEF_ENTR_CASH)
+
     return Agent(name + str(i), action=entr_action,
-                 attrs={"cash": DEF_ENTR_CASH})
+                 attrs={"cash": starting_cash})
 
 
 def create_rholder(name, i, props=None):
@@ -87,12 +92,14 @@ def set_up(props=None):
     pa = get_props(MODEL_NAME, props)
     entrepreneurs = Composite("Entrepreneurs", {"color": BLUE},
                               member_creator=create_entr,
-                              num_members=pa.get('num_blue',
-                                                 DEF_NUM_BLUE))
+                              props=pa,
+                              num_members=pa.get('num_entr',
+                                                 DEF_NUM_ENTR))
     resource_holders = Composite("Resource_holders", {"color": RED},
                                  member_creator=create_rholder,
-                                 num_members=pa.get('num_red',
-                                                    DEF_NUM_RED))
+                                 props=pa,
+                                 num_members=pa.get('num_rholder',
+                                                    DEF_NUM_RHOLDER))
 
     market = Env("neighborhood",
                  height=pa.get('grid_height', DEF_HEIGHT),

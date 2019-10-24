@@ -113,9 +113,8 @@ class Composite(Agent):
 
     def __getitem__(self, key):
         """
-        In contrast to agent, which returns a double val
-        for getitem, for composites, we are going to return
-        the 'key'th member.
+        We are going to return the 'key'th member
+        of our member dictionary.
         """
         return self.members[key]
 
