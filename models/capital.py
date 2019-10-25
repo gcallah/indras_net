@@ -45,14 +45,15 @@ def entr_action(agent):
                         agent["have"][cap] = 0
                     if nearby_rholder["resources"][cap] >= agent["wants"][cap]:
                         nearby_rholder["resources"][cap] -= agent["wants"][cap]
-                        print(agent["wants"][cap], agent["have"][cap])
                         agent["have"][cap] += agent["wants"][cap]
                         agent["wants"][cap] = 0
+                        print("1111111")
                     else:
                         # rholder resources < entr wants
                         agent["wants"][cap] -= nearby_rholder["resources"][cap]
                         nearby_rholder["resources"][cap] = 0
                         agent["have"][cap] = nearby_rholder["resources"][cap]
+                        print("2222222")
 
                     if agent["wants"][cap] == 0:
                         agent["wants"].pop(cap)
@@ -60,8 +61,9 @@ def entr_action(agent):
                         nearby_rholder["resources"].pop(cap)
 
                     # update cash for the two groups
-                    agent["cash"] -= DEF_K_PRICE
-                    nearby_rholder["cash"] += DEF_K_PRICE
+                    price = nearby_rholder["price"]
+                    agent["cash"] -= price
+                    nearby_rholder["cash"] += price
                     break
 
             if agent["wants"] and agent["have"]:
@@ -124,9 +126,15 @@ def create_rholder(name, i, props=None):
     """
     Create an agent.
     """
+    k_price = DEF_K_PRICE
+    if props is not None:
+        k_price = props.get('cap_price',
+                            DEF_K_PRICE)
+
     return Agent(name + str(i), action=rholder_action,
                  attrs={"cash": DEF_RHOLDER_CASH,
-                        "resources": copy.deepcopy(DEF_RESOURCE_HOLD)})
+                        "resources": copy.deepcopy(DEF_RESOURCE_HOLD),
+                        "price": k_price})
 
 
 def set_up(props=None):

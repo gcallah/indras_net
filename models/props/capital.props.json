@@ -27,8 +27,15 @@
     "hival": 100,
     "lowval": 1
   },
+  "cap_price": {
+    "val": 100,
+    "question": "How much does each capital cost?",
+    "atype": "INT",
+    "hival": 1000,
+    "lowval": 100
+  },
   "entr_starting_cash": {
-    "val": 10000,
+    "val": 1000,
     "question": "How much cash should entrepreneurs start with?",
     "atype": "INT",
     "hival": 100000,
