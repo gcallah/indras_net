@@ -22,6 +22,7 @@ DEF_ENTR_CASH = 10000
 DEF_RHOLDER_CASH = 0
 DEF_K_PRICE = 1000
 
+
 DEF_RESOURCE_HOLD = {"land": 1000, "truck": 500, "labor": 200}
 DEF_CAP_WANTED = {"land": 1000, "truck": 500, "labor": 200}
 
@@ -131,8 +132,22 @@ def create_rholder(name, i, props=None):
         k_price = props.get('cap_price',
                             DEF_K_PRICE)
 
+    starting_cash = DEF_RHOLDER_CASH
+    if props is not None:
+        starting_cash = props.get('rholder_starting_cash',
+                                  DEF_RHOLDER_CASH)
+
+    resources = DEF_RESOURCE_HOLD
+    if props is not None:
+        resources["land"] = props.get('rholder_starting_resource_land',
+                                      DEF_RESOURCE_HOLD)
+        resources["truck"] = props.get('rholder_starting_resource_truck',
+                                       DEF_K_PRICE)
+        resources["labor"] = props.get('rholder_starting_resource_labor',
+                                       DEF_K_PRICE)
+
     return Agent(name + str(i), action=rholder_action,
-                 attrs={"cash": DEF_RHOLDER_CASH,
+                 attrs={"cash": starting_cash,
                         "resources": copy.deepcopy(DEF_RESOURCE_HOLD),
                         "price": k_price})
 

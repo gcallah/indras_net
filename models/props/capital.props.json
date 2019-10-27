@@ -41,6 +41,34 @@
     "hival": 100000,
     "lowval": 100
   },
+  "rholder_starting_cash": {
+    "val": 0,
+    "question": "How much cash should resource holder start with?",
+    "atype": "INT",
+    "hival": 1000,
+    "lowval": 0
+  },
+  "rholder_starting_resource_land": {
+    "val": 1000,
+    "question": "How many land should each resource holder occupy?",
+    "atype": "INT",
+    "hival": 10000,
+    "lowval": 0
+  },
+   "rholder_starting_resource_truck": {
+    "val": 500,
+    "question": "How many truck should each resource holder own?",
+    "atype": "INT",
+    "hival": 10000,
+    "lowval": 0
+  },
+   "rholder_starting_resource_labor": {
+    "val": 200,
+    "question": "How many labor should each resource holder occupy?",
+    "atype": "INT",
+    "hival": 10000,
+    "lowval": 0
+  },
   "use_line": {
     "val": 0,
     "atype": "BOOL"
