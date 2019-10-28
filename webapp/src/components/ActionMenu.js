@@ -48,8 +48,13 @@ class ActionMenu extends Component {
     console.log(this.state);
   }
 
-  viewSource = () => {
-    window.open(localStorage.getItem('source'));
+  viewSource = async() => {
+    const splitSource = localStorage.getItem('source').split('/')
+    const filename = splitSource[splitSource.length - 1]
+    const res = await axios.get(
+      `https://api.github.com/repos/gcallah/indras_net/contents/models/${filename}`
+    );
+    console.log(res.data.download_url);
   };
 
   onClick = () => {
