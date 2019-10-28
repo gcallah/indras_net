@@ -6,6 +6,7 @@ import PopulationGraph from './PopulationGraph';
 import ScatterPlot from './ScatterPlot';
 import Debugger from './Debugger';
 import PreFormTextBox from './PreFormTextBox';
+import ModelStatusBox from './ModelStatusBox';
 
 const POP = 2;
 const SCATTER = 3;
@@ -158,13 +159,12 @@ class ActionMenu extends Component {
   );
 
   renderModelStatus = () => {
-    const { msg } = this.state;
     return (
+      
       <div>
-        <div
-          className="card w-50 overflow-auto model-status"
-        >
-          { PreFormTextBox('Model Status', msg) }
+        <div className="card w-50 overflow-auto model-status">
+      
+          { PreFormTextBox('Model Status', this.state.msg) }
         </div>
       </div>
     );
@@ -257,21 +257,26 @@ class ActionMenu extends Component {
   }
 
   render() {
-    const { loadingData } = this.state;
-    if (loadingData) {
+    const { loadingDatam } = this.state;
+    
+    if (loadingDatam) {
       return (
         <PageLoader />
       );
     }
     return (
+     
       <div>
         <br />
         <button type="button" className="btn btn-light m-2" onClick={this.goback}>Back</button>
         {this.renderHeader()}
-        {this.renderModelStatus()}
+        <div>
+        <ModelStatusBox title='Model Status' msg={this.state.msg}/>
+        </div>
         <ul className="list-group">
           <div className="row">
             <div>
+            
               {this.renderRunButton()}
               <h3 className="margin-top-60 mb-5">Model Analysis:</h3>
             </div>
