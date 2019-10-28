@@ -37,6 +37,7 @@ group_fields = api.model("group", {
     "group_name": fields.String,
     "num_of_agents": fields.Integer,
     "color": fields.String,
+    "group_actions": fields.List(fields.String),
 })
 
 # env_width/height must be >0 when adding agents
