@@ -37,6 +37,7 @@ class ActionMenu extends Component {
 
   async componentDidMount() {
     document.title = 'Indra | Menu';
+    const code = await this.viewSource();
     const m = await axios.get(API_SERVER);
     console.log(API_SERVER);
     this.setState({
@@ -46,6 +47,7 @@ class ActionMenu extends Component {
       source: localStorage.getItem('source'),
       env_file: JSON.parse(localStorage.getItem('env_file')),
       msg: JSON.parse(localStorage.getItem('env_file')).user.user_msgs,
+      sourceCode: code,
     });
     console.log(this.state);
   }
@@ -56,7 +58,7 @@ class ActionMenu extends Component {
     const res = await axios.get(
       `https://raw.githubusercontent.com/gcallah/indras_net/master/models/${filename}`
     );
-    console.log(res.data);
+    return res.data;
   };
 
   onClick = () => {
@@ -117,8 +119,8 @@ class ActionMenu extends Component {
         this.setState({ loadingDebugger: true });
         break;
       case SOURCE:
-          this.setState({ loadingSourceCode: true });
-        this.viewSource();
+        this.setState({ loadingSourceCode: true });
+        
         break;
       default:
         break;
@@ -186,6 +188,8 @@ class ActionMenu extends Component {
       modelId,
       loadingDebugger,
       loadingScatter,
+      loadingSourceCode,
+      sourceCode
     } = this.state;
     return (
       <div>
@@ -204,6 +208,11 @@ class ActionMenu extends Component {
         <Debugger
           loadingData={loadingDebugger}
           env_file={env_file}
+        />
+
+        <SourceCodeViewer
+          loadingData={loadingSourceCode}
+          code={sourceCode}
         />
       </div>
     );
