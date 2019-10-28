@@ -23,6 +23,7 @@
     "react-router-dom": "^5.0.0",
     "react-scripts": "^3.2.0",
     "react-slick": "^0.25.2",
+    "react-syntax-highlighter": "^11.0.2",
     "react-test-renderer": "^16.8.6",
     "react-tree-graph": "^4.0.0",
     "reactstrap": "^8.0.1",
