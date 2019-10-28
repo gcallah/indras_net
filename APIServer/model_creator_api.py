@@ -13,13 +13,23 @@ class AgentTypes(fields.Raw):
 
 
 class CreateGroups(fields.Raw):
-    def addAgents(self, agent_name, agent_num):
+    def generateFunc(self, actions):
+        for action in actions:
+            if action == "Test":
+                print("Just testing the actions!!")
+        return False
+
+
+    def addAgents(self, agent_name, agent_num, agent_actions):
         agentsArr = []
         i = 0
         while i < agent_num:
-            agentsArr.append(Agent(agent_name + str(i + 1)))
+            agentsArr.append(Agent(agent_name + str(i + 1),
+                                   action=generateFunc(agent_actions),
+                                   ))
             i = i + 1
         return agentsArr
+
 
     def put(self, group_list):
         groupsArr = []
@@ -28,7 +38,8 @@ class CreateGroups(fields.Raw):
             # add agents to the current group
             if group["num_of_agents"] > 0:  # want to add agents to the group
                 agentsArr = self.addAgents(group["group_name"],
-                                           group["num_of_agents"])
+                                           group["num_of_agents"],
+                                           group["group_actions"])
             # create the group
             groupsArr.append(Composite(group["group_name"],
                                        members=agentsArr,))
