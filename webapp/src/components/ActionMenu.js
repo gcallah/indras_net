@@ -4,6 +4,7 @@ import axios from 'axios';
 import PageLoader from './PageLoader';
 import PopulationGraph from './PopulationGraph';
 import ScatterPlot from './ScatterPlot';
+import SourceCodeViewer from './SourceCodeViewer';
 import Debugger from './Debugger';
 import PreFormTextBox from './PreFormTextBox';
 
@@ -30,6 +31,7 @@ class ActionMenu extends Component {
       loadingPopulation: false,
       loadingScatter: false,
       loadingDebugger: false,
+      loadingSourceCode: false,
     };
   }
 
@@ -52,9 +54,9 @@ class ActionMenu extends Component {
     const splitSource = localStorage.getItem('source').split('/')
     const filename = splitSource[splitSource.length - 1]
     const res = await axios.get(
-      `https://api.github.com/repos/gcallah/indras_net/contents/models/${filename}`
+      `https://raw.githubusercontent.com/gcallah/indras_net/master/models/${filename}`
     );
-    console.log(res.data.download_url);
+    console.log(res.data);
   };
 
   onClick = () => {
@@ -101,6 +103,7 @@ class ActionMenu extends Component {
       loadingPopulation: false,
       loadingScatter: false,
       loadingDebugger: false,
+      loadingSourceCode: false,
       actionId: e,
     });
     switch (e) {
@@ -114,6 +117,7 @@ class ActionMenu extends Component {
         this.setState({ loadingDebugger: true });
         break;
       case SOURCE:
+          this.setState({ loadingSourceCode: true });
         this.viewSource();
         break;
       default:
