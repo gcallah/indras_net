@@ -48,16 +48,16 @@ def entr_action(agent):
                         nearby_rholder["resources"][cap] -= agent["wants"][cap]
                         agent["have"][cap] += agent["wants"][cap]
                         agent["wants"][cap] = 0
-                        print("1111111")
                     else:
                         # rholder resources < entr wants
                         agent["wants"][cap] -= nearby_rholder["resources"][cap]
-                        nearby_rholder["resources"][cap] = 0
                         agent["have"][cap] = nearby_rholder["resources"][cap]
-                        print("2222222")
+                        nearby_rholder["resources"][cap] = 0
 
                     if agent["wants"][cap] == 0:
                         agent["wants"].pop(cap)
+                    if agent["have"][cap] == 0:
+                        agent["have"].pop(cap)
                     if nearby_rholder["resources"][cap] == 0:
                         nearby_rholder["resources"].pop(cap)
 
@@ -117,9 +117,18 @@ def create_entr(name, i, props=None):
         starting_cash = props.get('entr_starting_cash',
                                   DEF_ENTR_CASH)
 
+    resources = copy.deepcopy(DEF_CAP_WANTED)
+    if props is not None:
+        resources["land"] = props.get('entr_starting_resource_land',
+                                      DEF_RESOURCE_HOLD)
+        resources["truck"] = props.get('entr_starting_resource_truck',
+                                       DEF_K_PRICE)
+        resources["labor"] = props.get('entr_starting_resource_labor',
+                                       DEF_K_PRICE)
+
     return Agent(name + str(i), action=entr_action,
                  attrs={"cash": starting_cash,
-                        "wants": copy.deepcopy(DEF_CAP_WANTED),
+                        "wants": resources,
                         "have": {}})
 
 
@@ -137,7 +146,7 @@ def create_rholder(name, i, props=None):
         starting_cash = props.get('rholder_starting_cash',
                                   DEF_RHOLDER_CASH)
 
-    resources = DEF_RESOURCE_HOLD
+    resources = copy.deepcopy(DEF_RESOURCE_HOLD)
     if props is not None:
         resources["land"] = props.get('rholder_starting_resource_land',
                                       DEF_RESOURCE_HOLD)
@@ -148,7 +157,7 @@ def create_rholder(name, i, props=None):
 
     return Agent(name + str(i), action=rholder_action,
                  attrs={"cash": starting_cash,
-                        "resources": copy.deepcopy(DEF_RESOURCE_HOLD),
+                        "resources": resources,
                         "price": k_price})
 
 

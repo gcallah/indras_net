@@ -1,13 +1,13 @@
 {
   "grid_height": {
-    "val": 4,
+    "val": 3,
     "question": "What is the grid height?",
     "atype": "INT",
     "hival": 100,
     "lowval": 2
   },
   "grid_width": {
-    "val": 4,
+    "val": 3,
     "question": "What is the grid width?",
     "atype": "INT",
     "hival": 100,
@@ -65,6 +65,27 @@
    "rholder_starting_resource_labor": {
     "val": 200,
     "question": "How many labor should each resource holder occupy?",
+    "atype": "INT",
+    "hival": 10000,
+    "lowval": 0
+  },
+   "entr_starting_resource_land": {
+    "val": 1000,
+    "question": "How many land should each entrepreneur occupy?",
+    "atype": "INT",
+    "hival": 10000,
+    "lowval": 0
+  },
+   "entr_starting_resource_truck": {
+    "val": 500,
+    "question": "How many truck should each entrepreneur own?",
+    "atype": "INT",
+    "hival": 10000,
+    "lowval": 0
+  },
+   "entr_starting_resource_labor": {
+    "val": 200,
+    "question": "How many labor should each entrepreneur occupy?",
     "atype": "INT",
     "hival": 10000,
     "lowval": 0
