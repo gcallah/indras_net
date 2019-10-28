@@ -22,8 +22,9 @@ DEF_ENTR_CASH = 10000
 DEF_RHOLDER_CASH = 0
 DEF_K_PRICE = 1000
 
-DEF_RESOURCE_HOLD = ["land", "track", "labor"]
-DEF_CAP_WANTED = ["land", "track", "labor"]
+
+DEF_RESOURCE_HOLD = {"land": 1000, "truck": 500, "labor": 200}
+DEF_CAP_WANTED = {"land": 1000, "truck": 500, "labor": 200}
 
 resource_holders = None  # list of resource holders
 entrepreneurs = None  # list of entrepreneur
@@ -37,19 +38,33 @@ def entr_action(agent):
     if nearby_rholder is not None:
         if agent["cash"] > 0:
             # try to buy a resource if you have cash
-            for need in agent["wants"]:
+            for cap in agent["wants"].keys():
                 # if find the resources entr want
-                if need in nearby_rholder["resources"]:
+                if cap in nearby_rholder["resources"].keys():
                     # update resources for the two groups
-                    # print(agent.name,agent["wants"])
-                    agent["wants"].remove(need)
-                    # print(agent.name,agent["wants"])
-                    agent["have"].append(need)
-                    nearby_rholder["resources"].remove(need)
+                    if cap not in agent["have"].keys():
+                        agent["have"][cap] = 0
+                    if nearby_rholder["resources"][cap] >= agent["wants"][cap]:
+                        nearby_rholder["resources"][cap] -= agent["wants"][cap]
+                        agent["have"][cap] += agent["wants"][cap]
+                        agent["wants"][cap] = 0
+                    else:
+                        # rholder resources < entr wants
+                        agent["wants"][cap] -= nearby_rholder["resources"][cap]
+                        agent["have"][cap] = nearby_rholder["resources"][cap]
+                        nearby_rholder["resources"][cap] = 0
+
+                    if agent["wants"][cap] == 0:
+                        agent["wants"].pop(cap)
+                    if agent["have"][cap] == 0:
+                        agent["have"].pop(cap)
+                    if nearby_rholder["resources"][cap] == 0:
+                        nearby_rholder["resources"].pop(cap)
 
                     # update cash for the two groups
-                    agent["cash"] -= DEF_K_PRICE
-                    nearby_rholder["cash"] += DEF_K_PRICE
+                    price = nearby_rholder["price"]
+                    agent["cash"] -= price
+                    nearby_rholder["cash"] += price
                     break
 
             if agent["wants"] and agent["have"]:
@@ -102,19 +117,48 @@ def create_entr(name, i, props=None):
         starting_cash = props.get('entr_starting_cash',
                                   DEF_ENTR_CASH)
 
+    resources = copy.deepcopy(DEF_CAP_WANTED)
+    if props is not None:
+        resources["land"] = props.get('entr_starting_resource_land',
+                                      DEF_RESOURCE_HOLD)
+        resources["truck"] = props.get('entr_starting_resource_truck',
+                                       DEF_K_PRICE)
+        resources["labor"] = props.get('entr_starting_resource_labor',
+                                       DEF_K_PRICE)
+
     return Agent(name + str(i), action=entr_action,
                  attrs={"cash": starting_cash,
-                        "wants": copy.deepcopy(DEF_CAP_WANTED),
-                        "have": []})
+                        "wants": resources,
+                        "have": {}})
 
 
 def create_rholder(name, i, props=None):
     """
     Create an agent.
     """
+    k_price = DEF_K_PRICE
+    if props is not None:
+        k_price = props.get('cap_price',
+                            DEF_K_PRICE)
+
+    starting_cash = DEF_RHOLDER_CASH
+    if props is not None:
+        starting_cash = props.get('rholder_starting_cash',
+                                  DEF_RHOLDER_CASH)
+
+    resources = copy.deepcopy(DEF_RESOURCE_HOLD)
+    if props is not None:
+        resources["land"] = props.get('rholder_starting_resource_land',
+                                      DEF_RESOURCE_HOLD)
+        resources["truck"] = props.get('rholder_starting_resource_truck',
+                                       DEF_K_PRICE)
+        resources["labor"] = props.get('rholder_starting_resource_labor',
+                                       DEF_K_PRICE)
+
     return Agent(name + str(i), action=rholder_action,
-                 attrs={"cash": DEF_RHOLDER_CASH,
-                        "resources": copy.deepcopy(DEF_RESOURCE_HOLD)})
+                 attrs={"cash": starting_cash,
+                        "resources": resources,
+                        "price": k_price})
 
 
 def set_up(props=None):

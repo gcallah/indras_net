@@ -10,7 +10,6 @@ from propargs.propargs import PropArgs as pa
 
 # import logging
 import indra.display_methods as disp
-from indra.agent import is_space
 from indra.agent import join, switch, Agent, AgentEncoder
 from indra.space import Space
 from indra.user import TEST, TestUser, USER_EXIT, APIUser
@@ -89,14 +88,14 @@ class Env(Space):
                          random_placing=random_placing, serial_obj=serial_obj,
                          **kwargs)
 
+        self.props = props
+        self.census_func = census
+        self.pop_hist_setup = pop_hist_setup
+        self.pop_hist_func = pop_hist_func
         if serial_obj is not None:
-            # are we restoring props?
+            # are we restoring env from json?
             self.restore_env(serial_obj)
         else:
-            self.props = props
-            self.census_func = census
-            self.pop_hist_setup = pop_hist_setup
-            self.pop_hist_func = pop_hist_func
             self.pop_hist = PopHist()  # this will record pops across time
             # Make sure varieties are present in the history
             if self.pop_hist_setup is None:
@@ -145,6 +144,8 @@ class Env(Space):
         self.user = APIUser(nm, self)
         self.user.tell(msg)
         self.name = serial_obj["name"]
+
+        # the next 4 lines are all wrong:
         self.womb = serial_obj["womb"]
         self.switches = serial_obj["switches"]
         self.census_func = serial_obj["census_func"]
@@ -152,13 +153,14 @@ class Env(Space):
 
         self.registry[self.name] = self
         # construct self.groups
+        # right now, every group is added to env
+        # that ain't right: we should read grp list of env.
         for nm in self.registry:
             if len(self.registry[nm].groups) != 0:
                 for gnm in self.registry[nm].groups:
                     if gnm in self.registry:
                         self.registry[nm].add_group(self.registry[gnm])
-        # set up self.locator
-        for nm in self.registry:
+        # set up each agent's locator
             if nm != self.name and self.registry[nm].type == "agent":
                 self.registry[nm].locator = self
 
@@ -177,12 +179,6 @@ class Env(Space):
         rep["switches"] = self.switches
         rep["census_func"] = None
         rep["data_func"] = None
-        rep["registry"] = {}
-        for elem in self.registry:
-            if is_space(self.registry[elem]):
-                rep["registry"][elem] = self.registry[elem].name
-            else:
-                rep["registry"][elem] = self.registry[elem]
         return rep
 
     def __repr__(self):

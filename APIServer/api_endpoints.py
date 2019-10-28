@@ -90,9 +90,14 @@ class ModelMenu(Resource):
         return user()
 
 
+env = api.model("env", {
+    "env": fields.String("Should be json rep of env.")
+})
+
+
 @api.route("/models/menu/run/<int:run_time>")
 class RunModel(Resource):
-    @api.expect(props)
+    @api.expect(env)
     def put(self, run_time):
         return run_model_put(api.payload, run_time)
 
