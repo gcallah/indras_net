@@ -19,7 +19,6 @@ class CreateGroups(fields.Raw):
                 print("Just testing the actions!!")
         return False
 
-
     def addAgents(self, agent_name, agent_num, agent_actions):
         agentsArr = []
         i = 0
@@ -29,7 +28,6 @@ class CreateGroups(fields.Raw):
                                    ))
             i = i + 1
         return agentsArr
-
 
     def put(self, group_list):
         groupsArr = []
@@ -44,7 +42,6 @@ class CreateGroups(fields.Raw):
             groupsArr.append(Composite(group["group_name"],
                                        members=agentsArr,))
         return groupsArr
-
 
 def get_model_creator():
     return {'feature_name':
