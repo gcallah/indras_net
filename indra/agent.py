@@ -2,6 +2,7 @@
 This file defines an Agent.
 """
 import json
+import logging
 import sys
 from collections import OrderedDict
 from math import pi, sin
@@ -81,8 +82,8 @@ def join(agent1, agent2):
     Create connection between agent1 and agent2.
     """
     if not is_composite(agent1):
-        print("Attempt to place " + str(agent2)
-              + " in non-group " + str(agent1))
+        logging.error("[Error] Attempt to place " + str(agent2)
+                      + " in non-group " + str(agent1))
     else:
         agent1.add_member(agent2)
         agent2.add_group(agent1)
@@ -93,8 +94,8 @@ def split(agent1, agent2):
     Break connection between agent1 and agent2.
     """
     if not is_composite(agent1):
-        print("Attempt to remove " + str(agent2)
-              + " from non-group " + str(agent1))
+        logging.error("[Error] Attempt to remove " + str(agent2)
+                      + " from non-group " + str(agent1))
     else:
         agent1.del_member(agent2)
         agent2.del_group(agent1)
@@ -226,7 +227,7 @@ class Agent(object):
         # print("We are at primary_group FUNCTION: ", self.prim_group)
         return self.prim_group
 
-    def islocated(self):
+    def is_located(self):
         return self.pos is not None
 
     def set_pos(self, locator, x, y):
@@ -343,7 +344,7 @@ class Agent(object):
         Move this agent to a random pos within max_move
         of its current pos.
         """
-        if (self.islocated() and self.locator is not None
+        if (self.is_located() and self.locator is not None
                 and not self.locator.is_full()):
             if angle is not None:
                 if DEBUG:
@@ -354,7 +355,7 @@ class Agent(object):
             else:
                 self.locator.place_member(self, max_move)
 
-    def isactive(self):
+    def is_active(self):
         return self.active
 
     def die(self):

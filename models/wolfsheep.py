@@ -1,12 +1,12 @@
 """
     This is wolf-sheep re-written in indra.
 """
-from indra.utils import get_props
 from indra.agent import Agent
 from indra.composite import Composite
-from indra.space import in_hood
-from indra.env import Env
 from indra.display_methods import TAN, GRAY
+from indra.env import Env
+from indra.space import in_hood
+from indra.utils import get_props
 
 MODEL_NAME = "wolfsheep"
 DEBUG = False  # turns debugging code on or off
@@ -50,7 +50,7 @@ def isactive(agent, *args):
     """
     See if what wolf is going to eat is alive!
     """
-    return agent.isactive()
+    return agent.is_active()
 
 
 def live_and_close(agent, *args):

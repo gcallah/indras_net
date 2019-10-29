@@ -2,16 +2,15 @@
 This is the test suite for space.py.
 """
 
-from propargs.propargs import PropArgs
-from unittest import TestCase, main
-from indra.agent import Agent
+from unittest import TestCase
+
+import models.wolfsheep as ws
 from indra.utils import get_props
-from models.wolfsheep import create_sheep, create_wolf, set_up, wolf_action, sheep_action
 from models.wolfsheep import AGT_WOLF_NAME, AGT_SHEEP_NAME
 from models.wolfsheep import WOLF_LIFESPAN, SHEEP_LIFESPAN, SHEEP_REPRO_PERIOD
-from models.wolfsheep import WOLF_REPRO_PERIOD, get_prey, eat, reproduce
+from models.wolfsheep import WOLF_REPRO_PERIOD, eat, reproduce
+from models.wolfsheep import create_sheep, create_wolf, set_up, wolf_action, sheep_action
 from models.wolfsheep import isactive, wolves_created
-import models.wolfsheep as ws
 
 TEST_SNUM = 3
 TEST_WNUM = 3
@@ -77,7 +76,7 @@ class WolfsheepTestCase(TestCase):
 
     def test_isactive(self):
         """
-        Test to see if isactive returns  correct values for alive and dead
+        Test to see if is_active returns  correct values for alive and dead
         agents.
         """
         self.assertEqual(True, isactive(self.sheep))
