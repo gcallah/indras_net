@@ -13,6 +13,7 @@ WORKDIR /home/
 RUN git clone https://github.com/gcallah/$repo.git
 
 ENV PYTHONPATH "/home/$repo:${PYTHONPATH}"
+ENV INDRA_HOME /home/$repo
 
 WORKDIR /home/$repo/
 

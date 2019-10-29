@@ -259,6 +259,13 @@ class Env(Space):
                 join(group, agent)
             del self.womb[:]
 
+    def handle_switches(self):
+        if self.switches is not None:
+            for (agent, from_grp, to_grp) in self.switches:
+                switch(agent, from_grp, to_grp)
+                self.num_switches += 1
+            del self.switches[:]
+
     def runN(self, periods=DEF_TIME):
         """
             Run our model for N periods.
@@ -267,11 +274,7 @@ class Env(Space):
         num_acts = 0
         for i in range(periods):
             self.handle_womb()
-            if self.switches is not None:
-                for (agent, from_grp, to_grp) in self.switches:
-                    switch(agent, from_grp, to_grp)
-                    self.num_switches += 1
-                del self.switches[:]
+            self.handle_switches()
 
             self.pop_hist.add_period()
             if self.pop_hist_func is None:

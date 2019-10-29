@@ -239,7 +239,7 @@ def set_up(props=None):
     return (market, value_investors, trend_followers, market_maker)
 
 
-def fm_unrestorable(env):
+def restore_globals(env):
     global trend_followers
     global value_investors
     global market_maker

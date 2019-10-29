@@ -173,7 +173,7 @@ def set_up(props=None):
     return (petri_dish, toxins, nutrients, bacteria)
 
 
-def bt_unrestorable(env):
+def restore_globals(env):
     global toxins
     global nutrients
     global bacteria

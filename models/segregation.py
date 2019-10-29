@@ -166,12 +166,9 @@ def set_up(props=None):
     return (city, blue_agents, red_agents)
 
 
-def sg_unrestorable(env):
+def restore_globals(env):
     """
-    This handles are unrestorable from JSON data.
-    BUT... this absolutely should NOT be in the model!
-    The right thing to do is to handle unrestorables at the library
-    level!
+    This restore unserializable and globals from JSON nsdata.
     """
     global blue_agents
     global red_agents

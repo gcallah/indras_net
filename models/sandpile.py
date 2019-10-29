@@ -124,7 +124,7 @@ def set_up(props=None):
     return (sandpile_env, groups, group_indices)
 
 
-def sp_unrestorable(env):
+def restore_globals(env):
     global groups
     global group_indices
     global sandpile_env
