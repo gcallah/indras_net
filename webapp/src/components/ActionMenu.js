@@ -7,6 +7,7 @@ import ScatterPlot from './ScatterPlot';
 import Debugger from './Debugger';
 import PreFormTextBox from './PreFormTextBox';
 import ModelStatusBox from './ModelStatusBox';
+import SourceCodeViewer from './SourceCodeViewer';
 
 const POP = 2;
 const SCATTER = 3;
@@ -37,6 +38,7 @@ class ActionMenu extends Component {
   async componentDidMount() {
     document.title = 'Indra | Menu';
     const m = await axios.get(API_SERVER);
+    const code = await this.viewSource();
     console.log(API_SERVER);
     this.setState({
       menu: m.data,
@@ -45,14 +47,24 @@ class ActionMenu extends Component {
       source: localStorage.getItem('source'),
       env_file: JSON.parse(localStorage.getItem('env_file')),
       msg: JSON.parse(localStorage.getItem('env_file')).user.user_msgs,
+      sourceCode: code,
     });
     console.log(this.state);
   }
 
-  viewSource = () => {
-    window.open(localStorage.getItem('source'));
+  viewSource = async() => {
+    try {
+      const splitSource = localStorage.getItem('source').split('/')
+      const filename = splitSource[splitSource.length - 1]
+      const res = await axios.get(
+        `https://raw.githubusercontent.com/gcallah/indras_net/master/models/${filename}`
+      );
+      console.log(res.data);
+      return res.data;
+    } catch(e) {
+      console.log(e);
+    }
   };
-
   onClick = () => {
     this.setState({
       showComponent: true,
@@ -110,7 +122,7 @@ class ActionMenu extends Component {
         this.setState({ loadingDebugger: true });
         break;
       case SOURCE:
-        this.viewSource();
+        this.setState({ loadingSourceCode: true });
         break;
       default:
         break;
@@ -177,6 +189,8 @@ class ActionMenu extends Component {
       modelId,
       loadingDebugger,
       loadingScatter,
+      loadingSourceCode,
+      sourceCode
     } = this.state;
     return (
       <div>
@@ -195,6 +209,11 @@ class ActionMenu extends Component {
         <Debugger
           loadingData={loadingDebugger}
           env_file={env_file}
+        />
+
+        <SourceCodeViewer
+          loadingData={loadingSourceCode}
+          code={sourceCode}
         />
       </div>
     );
