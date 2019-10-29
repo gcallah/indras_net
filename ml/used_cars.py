@@ -29,7 +29,7 @@ MAX_BAD_CAR_LIFE = 4
 MIN_GOOD_CAR_LIFE = 2
 MAX_CAR_LIFE = 5
 
-MATURE_BOUND = 50
+MATURE_BOUND = 100
 
 MEDIUM_CAR_LIFE = (MIN_CAR_LIFE + MAX_CAR_LIFE) // 2
 
@@ -117,6 +117,16 @@ def is_mature_buyer(agent):
     return num_interaction > MATURE_BOUND
 
 
+def cal_avg_life(agent):
+    assoc = agent["emoji_carlife_assoc"]
+    emo_life_avg = agent["emoji_life_avg"]
+    for key in assoc:
+        num = len(assoc[key])
+        avg = sum(assoc[key])/num
+        emo_life_avg[key] = avg
+    print("Car life avg:", emo_life_avg)
+
+
 def update_buyer(agent, my_dealer):
     agent["has_car"] = True
     agent["dealer_his"].append(my_dealer)
@@ -131,6 +141,8 @@ def update_buyer(agent, my_dealer):
         assoc[rec_emoji] = [rec_carlife]
     else:
         assoc[rec_emoji].append(rec_carlife)
+    print("My emoji car association:", assoc)
+    cal_avg_life(agent)
     update_dealer_sale(my_dealer, rec_carlife)
     print(bought_info(agent, my_dealer))
 
@@ -182,7 +194,9 @@ def create_buyer(name, i, props=None):
                         "car_life": None,
                         "interaction_res": None,
                         "dealer_his": [],
-                        "emoji_carlife_assoc": {}})
+                        "emoji_carlife_assoc": {},
+                        "emoji_life_avg": {},
+                        "emoji_indicator": {}})
 
 
 def set_up(props=None):
