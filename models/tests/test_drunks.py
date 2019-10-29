@@ -3,11 +3,9 @@ This is the test suite for drunks.py.
 """
 
 from unittest import TestCase, main
-from operator import gt, lt
-from indra.agent import switch
-from indra.env import Env
-from models.drunks import set_up
+
 import models.drunks as drunks
+from models.drunks import set_up
 
 
 class DrunksTestCase(TestCase):

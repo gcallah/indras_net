@@ -4,16 +4,18 @@ Author: Gene Callahan
 A collection of convenience functions
 for using matplotlib.
 """
-from functools import wraps
-from math import ceil
+import io
 # import numpy as np
 # import pandas as pd
 # import seaborn as sns
 # import networkx as nx
 import logging
-import io
 import os
+from functools import wraps
+from math import ceil
+
 from indra.user import TERMINAL, API
+
 plt_present = True
 plt_present_error_message = ""
 

@@ -3,8 +3,9 @@ This is the test suite for flocking.py.
 """
 
 from unittest import TestCase, main
+
 from propargs.propargs import PropArgs
-from indra.env import Env
+
 from models.flocking import set_up
 
 

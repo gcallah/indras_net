@@ -3,14 +3,15 @@ This is the model that stimulates the behavior
 of bacterias according to toxin and nutrients level.
 """
 
+import sys
+from random import randint
+
 from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import RED, GREEN, YELLOW
 from indra.env import Env
 from indra.space import DEF_HEIGHT, DEF_WIDTH, distance
 from indra.utils import get_props
-from random import randint
-import sys
 
 MODEL_NAME = "bacteria"
 DEBUG = False  # turns debugging code on or off
