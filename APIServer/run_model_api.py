@@ -8,38 +8,34 @@ from indra.env import Env
 from models.sandpile import sp_unrestorable
 from models.bacteria import bt_unrestorable
 from models.bigbox import bb_unrestorable
-from models.fashion import fs_unrestorable
+import models.fashion as fashion
 from models.flocking import fl_unrestorable
 from models.fmarket import fm_unrestorable
 from models.segregation import sg_unrestorable
 from models.wolfsheep import ws_unrestorable
 from models.gameoflife import gl_unrestorable
 
+# this dictionary should be keyed on model id
+restore_globals_dict = {
+    "Sandpile": sp_unrestorable,
+    "Petrie dish": bt_unrestorable,
+    "Town": bb_unrestorable,
+    "Society": fashion.restore_globals,
+    "the_sky": fl_unrestorable,
+    "fmarket": fm_unrestorable,
+    "A city": sg_unrestorable,
+    "meadow": ws_unrestorable,
+    "Game of Life": gl_unrestorable,
+}
+
 
 def run_model_put(payload, run_time):
     env = Env(name='API env', serial_obj=payload)
-    # this should be dictionary lookup not if elif statements!
-    # furthermore, lookup should be on model id, not env name!
-    if env.name == "Sandpile":
-        sp_unrestorable(env)
-    elif env.name == "Petrie dish":
-        bt_unrestorable(env)
-    elif env.name == "Town":
-        bb_unrestorable(env)
-    elif env.name == "Society":
-        fs_unrestorable(env)
-    elif env.name == "the_sky":
-        fl_unrestorable(env)
-    elif env.name == "fmarket":
-        fm_unrestorable(env)
-    elif env.name == "A city":
-        sg_unrestorable(env)
-    elif env.name == "meadow":
-        ws_unrestorable(env)
-    elif env.name == "Game of Life":
-        gl_unrestorable(env)
-    else:
+    # lookup should be on model id, not env name!
+    if env.name not in restore_globals_dict:
         err_return("Model env not found.")
+    else:
+        restore_globals_dict[env.name](env)
 
     env.runN(periods=run_time)
     return json_converter(env)
