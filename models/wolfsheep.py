@@ -183,7 +183,7 @@ def set_up(props=None):
     return (meadow, wolves, sheep)
 
 
-def ws_unrestorable(env):
+def restore_globals(env):
     global wolves
     global sheep
     global meadow

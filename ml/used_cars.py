@@ -29,6 +29,8 @@ MAX_BAD_CAR_LIFE = 4
 MIN_GOOD_CAR_LIFE = 2
 MAX_CAR_LIFE = 5
 
+MATURE_BOUND = 50
+
 MEDIUM_CAR_LIFE = (MIN_CAR_LIFE + MAX_CAR_LIFE) // 2
 
 # categorized emojis reflects trend of dealer's respond
@@ -108,6 +110,31 @@ def check_credibility(dealer):
             or dealer["avg_car_life_sold"] >= MEDIUM_CAR_LIFE)
 
 
+def is_mature_buyer(agent):
+    # check if buyer has enough experience
+    # to make its own decision
+    num_interaction = len(agent["dealer_his"])
+    return num_interaction > MATURE_BOUND
+
+
+def update_buyer(agent, my_dealer):
+    agent["has_car"] = True
+    agent["dealer_his"].append(my_dealer)
+    rec_carlife = get_car_life(my_dealer)
+    agent["car_life"] = rec_carlife
+    rec_emoji = my_dealer["emoji_used"]
+    agent["interaction_res"] = rec_emoji
+    # map each emoji associate with different
+    # car lives for ML prediction
+    assoc = agent["emoji_carlife_assoc"]
+    if rec_emoji not in assoc:
+        assoc[rec_emoji] = [rec_carlife]
+    else:
+        assoc[rec_emoji].append(rec_carlife)
+    update_dealer_sale(my_dealer, rec_carlife)
+    print(bought_info(agent, my_dealer))
+
+
 def buyer_action(agent):
     print("_" * 20)
     print("Agent: " + agent.name)
@@ -116,22 +143,7 @@ def buyer_action(agent):
                                                       dealer_grp,
                                                       hood_size=1)
         if my_dealer is not None and check_credibility(my_dealer):
-            # refactor code needed heres
-            agent["has_car"] = True
-            agent["dealer_his"].append(my_dealer)
-            rec_carlife = get_car_life(my_dealer)
-            agent["car_life"] = rec_carlife
-            rec_emoji = my_dealer["emoji_used"]
-            agent["interaction_res"] = rec_emoji
-            # map each emoji associate with different
-            # car lives for ML prediction
-            assoc = agent["emoji_carlife_assoc"]
-            if rec_emoji not in assoc:
-                assoc[rec_emoji] = [rec_carlife]
-            else:
-                assoc[rec_emoji].append(rec_carlife)
-            update_dealer_sale(my_dealer, rec_carlife)
-            print(bought_info(agent, my_dealer))
+            update_buyer(agent, my_dealer)
         else:
             print("No dealers nearby.")
     else:

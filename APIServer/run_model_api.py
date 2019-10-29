@@ -5,27 +5,27 @@ from indra.env import Env
 # (Otherwise why bother?)
 # also, keep name constant and preface with model name, e.g.,
 # fashion[unserializable()]
-from models.bacteria import bt_unrestorable
-from models.bigbox import bb_unrestorable
+import models.bacteria as bacteria
+import models.bigbox as bigbox
 import models.fashion as fashion
-from models.flocking import fl_unrestorable
-from models.fmarket import fm_unrestorable
-from models.gameoflife import gl_unrestorable
-from models.sandpile import sp_unrestorable
-from models.segregation import sg_unrestorable
-from models.wolfsheep import ws_unrestorable
+import models.flocking as flocking
+import models.fmarket as fmarket
+import models.gameoflife as gameoflife
+import models.sandpile as sandpile
+import models.segregation as segregation
+import models.wolfsheep as wolfsheep
 
 # this dictionary should be keyed on model id
 restore_globals_dict = {
-    "Sandpile": sp_unrestorable,
-    "Petrie dish": bt_unrestorable,
-    "Town": bb_unrestorable,
-    "Society": fashion.restore_globals,
-    "the_sky": fl_unrestorable,
-    "fmarket": fm_unrestorable,
-    "A city": sg_unrestorable,
-    "meadow": ws_unrestorable,
-    "Game of Life": gl_unrestorable,
+    "Sandpile": sandpile,
+    "Petrie dish": bacteria,
+    "Town": bigbox,
+    "Society": fashion,
+    "the_sky": flocking,
+    "fmarket": fmarket,
+    "A city": segregation,
+    "meadow": wolfsheep,
+    "Game of Life": gameoflife,
 }
 
 
@@ -35,7 +35,7 @@ def run_model_put(payload, run_time):
     if env.name not in restore_globals_dict:
         err_return("Model env not found.")
     else:
-        restore_globals_dict[env.name](env)
+        restore_globals_dict[env.name].restore_globals(env)
 
     env.runN(periods=run_time)
     return json_converter(env)
