@@ -4,14 +4,14 @@ Places two groups of agents in the environment randomly
 and moves them around randomly.
 """
 
-from indra.utils import get_props
+import random
+
 from indra.agent import Agent
 from indra.composite import Composite
-from indra.space import DEF_HEIGHT, DEF_WIDTH
-from indra.env import Env
 from indra.display_methods import RED, BLUE
-
-import random
+from indra.env import Env
+from indra.space import DEF_HEIGHT, DEF_WIDTH
+from indra.utils import get_props
 
 MODEL_NAME = "ex_boyfriend"
 DEBUG = True  # turns debugging code on or off
