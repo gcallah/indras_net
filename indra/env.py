@@ -88,6 +88,7 @@ class Env(Space):
                          random_placing=random_placing, serial_obj=serial_obj,
                          **kwargs)
 
+        self.user_type = os.getenv("user_type", TERMINAL)
         self.props = props
         self.census_func = census
         self.pop_hist_setup = pop_hist_setup
@@ -111,14 +112,7 @@ class Env(Space):
             self.exclude_member = exclude_member
             self.womb = []  # for agents waiting to be born
             self.switches = []  # for agents waiting to switch groups
-            self.user_type = os.getenv("user_type", TERMINAL)
-            if self.user_type == TERMINAL:
-                self.user = TermUser(getpass.getuser(), self)
-                self.user.tell("Welcome to Indra, " + str(self.user) + "!")
-            elif self.user_type == TEST:
-                self.user = TestUser(getpass.getuser(), self)
-            elif self.user_type == API:
-                self.user = APIUser(getpass.getuser(), self)
+            self.handle_user_type()
 
         self.type = "env"
         self.num_acts = 0
@@ -129,6 +123,15 @@ class Env(Space):
                 self.exclude_menu_item("line_graph")
             if not self.props.get('use_scatter', True):
                 self.exclude_menu_item("scatter_plot")
+
+    def handle_user_type(self):
+        if self.user_type == TERMINAL:
+            self.user = TermUser(getpass.getuser(), self)
+            self.user.tell("Welcome to Indra, " + str(self.user) + "!")
+        elif self.user_type == TEST:
+            self.user = TestUser(getpass.getuser(), self)
+        elif self.user_type == API:
+            self.user = APIUser(getpass.getuser(), self)
 
     def from_json(self, serial_obj):
         super().from_json(serial_obj)
@@ -160,7 +163,7 @@ class Env(Space):
                 for gnm in self.registry[nm].groups:
                     if gnm in self.registry:
                         self.registry[nm].add_group(self.registry[gnm])
-        # set up each agent's locator
+            # set up each agent's locator
             if nm != self.name and self.registry[nm].type == "agent":
                 self.registry[nm].locator = self
 
