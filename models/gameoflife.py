@@ -328,7 +328,7 @@ def set_up(props=None):
     return (gameoflife_env, groups)
 
 
-def gl_unrestorable(env):
+def restore_globals(env):
     global groups
     global gameoflife_env
     gameoflife_env = env

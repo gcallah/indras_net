@@ -101,7 +101,7 @@ def set_up(props=None):
     return (the_sky, flock)
 
 
-def fl_unrestorable(env):
+def restore_globals(env):
     global flock
     global the_sky
     the_sky = env

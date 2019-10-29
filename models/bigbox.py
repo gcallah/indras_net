@@ -244,7 +244,7 @@ def set_up(props=None):
     return (town, groups)
 
 
-def bb_unrestorable(env):
+def restore_globals(env):
     global town
     global groups
     global mp_pref
