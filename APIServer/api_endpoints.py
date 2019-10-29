@@ -17,7 +17,7 @@ api = Api(app)
 
 user = APIUser("Dennis", None)
 
-indra_dir = os.getenv("INDRA_HOME", "/home/indras_net")
+indra_dir = os.getenv("INDRA_HOME", "/home/indrasnet")
 
 
 @api.route('/hello')
