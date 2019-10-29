@@ -13,7 +13,7 @@ def get_models(indra_dir):
     try:
         models_db = load_models(indra_dir)
     except FileNotFoundError:
-        return {"ERROR": "Model file not found."}
+        return {"ERROR": "Model file not found: indra dir is " + indra_dir}
 
     models_response = []
     for model in models_db:
