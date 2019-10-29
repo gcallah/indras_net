@@ -100,7 +100,6 @@ class Env(Space):
         else:
             self.set_initial_mbr_vals(line_data_func, exclude_member)
 
-        self.num_acts = 0
         self.num_moves = 0
         self.num_switches = 0
         if self.props is not None:
@@ -252,6 +251,14 @@ class Env(Space):
         switch(agent, from_grp, to_grp)
         self.num_switches += 1
 
+    def handle_womb(self):
+        if self.womb is not None:
+            for (agent, group) in self.womb:
+                # add the agent into the registry
+                self.registry[agent.name] = agent
+                join(group, agent)
+            del self.womb[:]
+
     def runN(self, periods=DEF_TIME):
         """
             Run our model for N periods.
@@ -259,16 +266,7 @@ class Env(Space):
         """
         num_acts = 0
         for i in range(periods):
-            # before members act, give birth to new agents
-            # we will have tuple of agent and group
-            # do group += agent
-            # self.user.tell("In period ", i)
-            if self.womb is not None:
-                for (agent, group) in self.womb:
-                    # add the agent into the registry
-                    self.registry[agent.name] = agent
-                    join(group, agent)
-                del self.womb[:]
+            self.handle_womb()
             if self.switches is not None:
                 for (agent, from_grp, to_grp) in self.switches:
                     switch(agent, from_grp, to_grp)
@@ -290,7 +288,6 @@ class Env(Space):
             self.num_moves += m
             census_rpt = self.get_census()
             self.user.tell(census_rpt)
-            self.num_acts = 0
             self.num_moves = 0
             self.num_switches = 0
         return num_acts
