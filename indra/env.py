@@ -94,17 +94,20 @@ class Env(Space):
         self.census_func = census
         self.pop_hist_setup = pop_hist_setup
         self.pop_hist_func = pop_hist_func
+        self.num_switches = 0
         if serial_obj is not None:
             # are we restoring env from json?
             self.restore_env(serial_obj)
         else:
             self.set_initial_mbr_vals(line_data_func, exclude_member)
 
-        self.num_switches = 0
         if self.props is not None:
-            if not self.props.get('use_line', True):
+            self.set_menu_excludes(self.props)
+
+    def set_menu_excludes(self, props):
+            if not props.get('use_line', True):
                 self.exclude_menu_item("line_graph")
-            if not self.props.get('use_scatter', True):
+            if not props.get('use_scatter', True):
                 self.exclude_menu_item("scatter_plot")
 
     def set_initial_mbr_vals(self, line_data_func=None, exclude_member=None):
