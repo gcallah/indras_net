@@ -1,11 +1,8 @@
-from unittest import TestCase, main
-from indra.agent import Agent
-from indra.composite import Composite
-from indra.space import Space
-from indra.env import Env
-from models.sandpile import set_up, create_agent, add_grain, topple, sandpile_action
-from models.sandpile import NUM_GROUPS
+from unittest import TestCase
+
 import models.sandpile as sp
+from indra.composite import Composite
+from models.sandpile import set_up, create_agent, add_grain, topple, sandpile_action
 
 TEST_X = 1
 TEST_Y = 1

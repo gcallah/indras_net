@@ -2,17 +2,18 @@
 This is the test suite for segregation.py.
 """
 
+from unittest import TestCase
+
 from propargs.propargs import PropArgs
-from unittest import TestCase, main
-from indra.agent import Agent
+
+import models.segregation as seg
 from indra.composite import Composite
 from indra.env import Env
-from models.segregation import set_up, create_agent, RED_TEAM, BLUE_TEAM
-from models.segregation import env_favorable, seg_agent_action
-from models.segregation import group_names, seg_agent_action, my_group_index
-from models.segregation import other_group_index, get_tolerance
 from models.segregation import DEF_TOLERANCE, DEF_SIGMA
-import models.segregation as seg
+from models.segregation import env_favorable
+from models.segregation import group_names, my_group_index
+from models.segregation import other_group_index, get_tolerance
+from models.segregation import set_up, create_agent, RED_TEAM, BLUE_TEAM
 
 TEST_ANUM = 999999
 

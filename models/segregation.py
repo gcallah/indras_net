@@ -3,12 +3,13 @@ Schelling's segregation model.
 """
 
 import random
-from indra.utils import get_props
+
 from indra.agent import Agent
 from indra.composite import Composite
+from indra.display_methods import RED, BLUE
 # from indra.space import in_hood
 from indra.env import Env
-from indra.display_methods import RED, BLUE
+from indra.utils import get_props
 
 MODEL_NAME = "segregation"
 DEBUG = True  # Turns debugging code on or off

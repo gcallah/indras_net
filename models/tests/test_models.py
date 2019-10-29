@@ -1,8 +1,7 @@
-import sys
-from unittest import TestCase, main
-from pydoc import locate
-
 import json
+import sys
+from pydoc import locate
+from unittest import TestCase
 
 
 class TestAllModels(TestCase):

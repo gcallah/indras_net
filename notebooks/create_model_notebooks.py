@@ -3,8 +3,9 @@ Program that creates jupyter notebooks of models passed as
 input_file parameter
 """
 
-import nbformat as nbf
 import sys
+
+import nbformat as nbf
 
 
 def skip_comments(fp, line):

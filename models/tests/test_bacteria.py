@@ -2,12 +2,14 @@
 This is the test suite for space.py.
 """
 
-from propargs.propargs import PropArgs
 from unittest import TestCase, main
-from indra.env import Env
-from indra.composite import Composite
-from models.bacteria import set_up, create_bacterium, create_toxin, create_nutrient, bacterium_action, calc_nutrient, calc_toxin, DEF_THRESHOLD
+
+from propargs.propargs import PropArgs
+
 import models.bacteria as ba
+from indra.composite import Composite
+from models.bacteria import set_up, create_bacterium, create_toxin, create_nutrient, bacterium_action, calc_nutrient, \
+    calc_toxin
 
 TEST_BAC_NUM = 3
 TEST_TOX_NUM = 3

@@ -1,10 +1,9 @@
-from unittest import TestCase, main
-from indra.agent import Agent
-from indra.composite import Composite
-from indra.env import Env
-from models.wolfram import set_up, W, B
-from models.wolfram import create_agent, get_color, get_rule, next_color, wolfram_action
+from unittest import TestCase
+
 import models.wolfram as wolf
+from indra.composite import Composite
+from models.wolfram import create_agent, get_color, get_rule, next_color
+from models.wolfram import set_up, W, B
 
 TEST_ANUM = 999999
 

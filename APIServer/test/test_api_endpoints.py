@@ -1,15 +1,16 @@
 """
 """
-from unittest import TestCase, main, skip
 import json
 import random
-from flask_restplus import Resource, Api, fields
+from unittest import TestCase, main, skip
 
-from APIServer.api_endpoints import app, HelloWorld, Models
+from flask_restplus import Resource
+
 from APIServer.api_endpoints import Props, ModelMenu, RunModel
+from APIServer.api_endpoints import app, HelloWorld, Models
 from APIServer.api_endpoints import indra_dir
-from APIServer.models_api import load_models
 from APIServer.api_utils import err_return
+from APIServer.models_api import load_models
 
 menu = [{"val": 0, "func": "run", "question": "Run for N periods"},
         {"val": 1, "func": "line_graph", "question": "Display a population graph."},
