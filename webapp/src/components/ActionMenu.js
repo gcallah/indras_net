@@ -4,9 +4,9 @@ import axios from 'axios';
 import PageLoader from './PageLoader';
 import PopulationGraph from './PopulationGraph';
 import ScatterPlot from './ScatterPlot';
-import SourceCodeViewer from './SourceCodeViewer';
 import Debugger from './Debugger';
 import PreFormTextBox from './PreFormTextBox';
+import ModelStatusBox from './ModelStatusBox';
 
 const POP = 2;
 const SCATTER = 3;
@@ -18,7 +18,7 @@ class ActionMenu extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      msg: '',
+      msg: 'Please run model in order to retrieve data',
       menu: {},
       loadingData: false,
       env_file: {},
@@ -31,13 +31,11 @@ class ActionMenu extends Component {
       loadingPopulation: false,
       loadingScatter: false,
       loadingDebugger: false,
-      loadingSourceCode: false,
     };
   }
 
   async componentDidMount() {
     document.title = 'Indra | Menu';
-    const code = await this.viewSource();
     const m = await axios.get(API_SERVER);
     console.log(API_SERVER);
     this.setState({
@@ -47,18 +45,12 @@ class ActionMenu extends Component {
       source: localStorage.getItem('source'),
       env_file: JSON.parse(localStorage.getItem('env_file')),
       msg: JSON.parse(localStorage.getItem('env_file')).user.user_msgs,
-      sourceCode: code,
     });
     console.log(this.state);
   }
 
-  viewSource = async() => {
-    const splitSource = localStorage.getItem('source').split('/')
-    const filename = splitSource[splitSource.length - 1]
-    const res = await axios.get(
-      `https://raw.githubusercontent.com/gcallah/indras_net/master/models/${filename}`
-    );
-    return res.data;
+  viewSource = () => {
+    window.open(localStorage.getItem('source'));
   };
 
   onClick = () => {
@@ -105,7 +97,6 @@ class ActionMenu extends Component {
       loadingPopulation: false,
       loadingScatter: false,
       loadingDebugger: false,
-      loadingSourceCode: false,
       actionId: e,
     });
     switch (e) {
@@ -119,8 +110,7 @@ class ActionMenu extends Component {
         this.setState({ loadingDebugger: true });
         break;
       case SOURCE:
-        this.setState({ loadingSourceCode: true });
-        
+        this.viewSource();
         break;
       default:
         break;
@@ -169,13 +159,12 @@ class ActionMenu extends Component {
   );
 
   renderModelStatus = () => {
-    const { msg } = this.state;
     return (
+      
       <div>
-        <div
-          className="card w-50 overflow-auto model-status"
-        >
-          { PreFormTextBox('Model Status', msg) }
+        <div className="card w-50 overflow-auto model-status">
+      
+          { PreFormTextBox('Model Status', this.state.msg) }
         </div>
       </div>
     );
@@ -188,8 +177,6 @@ class ActionMenu extends Component {
       modelId,
       loadingDebugger,
       loadingScatter,
-      loadingSourceCode,
-      sourceCode
     } = this.state;
     return (
       <div>
@@ -208,11 +195,6 @@ class ActionMenu extends Component {
         <Debugger
           loadingData={loadingDebugger}
           env_file={env_file}
-        />
-
-        <SourceCodeViewer
-          loadingData={loadingSourceCode}
-          code={sourceCode}
         />
       </div>
     );
@@ -275,21 +257,26 @@ class ActionMenu extends Component {
   }
 
   render() {
-    const { loadingData } = this.state;
-    if (loadingData) {
+    const { loadingDatam } = this.state;
+    
+    if (loadingDatam) {
       return (
         <PageLoader />
       );
     }
     return (
+     
       <div>
         <br />
         <button type="button" className="btn btn-light m-2" onClick={this.goback}>Back</button>
         {this.renderHeader()}
-        {this.renderModelStatus()}
+        <div>
+        <ModelStatusBox title='Model Status' msg={this.state.msg}/>
+        </div>
         <ul className="list-group">
           <div className="row">
             <div>
+            
               {this.renderRunButton()}
               <h3 className="margin-top-60 mb-5">Model Analysis:</h3>
             </div>

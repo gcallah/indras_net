@@ -3604,11 +3604,11 @@ is_row_half_empty	indraV1/schelling/auditorium.py	/^    def is_row_half_empty(se
 is_sitting	indraV1/models/standing_ovation.py	/^    def is_sitting(self):$/;"	m	class:Member
 is_space	indra/agent.py	/^def is_space(thing):$/;"	f
 is_vn_close	indra/space.py	/^def is_vn_close(x1, x2, y1, y2):$/;"	f
-isactive	indra/agent.py	/^    def isactive(self):$/;"	m	class:Agent
-isactive	indra/composite.py	/^    def isactive(self):$/;"	m	class:Composite
-isactive	models/tests/test_wolfsheep.py	/^from models.wolfsheep import isactive, wolves_created$/;"	i
-isactive	models/wolfsheep.py	/^def isactive(agent, *args):$/;"	f
-islocated	indra/agent.py	/^    def islocated(self):$/;"	m	class:Agent
+is_active	indra/agent.py	/^    def is_active(self):$/;"	m	class:Agent
+is_active	indra/composite.py	/^    def is_active(self):$/;"	m	class:Composite
+is_active	models/tests/test_wolfsheep.py	/^from models.wolfsheep import is_active, wolves_created$/;"	i
+is_active	models/wolfsheep.py	/^def is_active(agent, *args):$/;"	f
+is_located	indra/agent.py	/^    def is_located(self):$/;"	m	class:Agent
 items	indraV1/indra/prop_args.py	/^    def items(self):$/;"	m	class:PropArgs
 items	indraV1/indra/prop_args2.py	/^    def items(self):$/;"	m	class:PropArgs
 itertools	build/lib/indra/agent_pop.py	/^import itertools$/;"	i
@@ -5429,7 +5429,7 @@ wolfram	indraV1/wolfram/wolfram_run.py	/^    import wolfram.wolfram as wm$/;"	i
 wolfsheep_run	build/lib/models/__main__.py	/^import models.wolfsheep_run$/;"	i
 wolfsheep_run	indraV1/models/__main__.py	/^import models.wolfsheep_run$/;"	i
 wolves	models/wolfsheep.py	/^wolves = None$/;"	v
-wolves_created	models/tests/test_wolfsheep.py	/^from models.wolfsheep import isactive, wolves_created$/;"	i
+wolves_created	models/tests/test_wolfsheep.py	/^from models.wolfsheep import is_active, wolves_created$/;"	i
 wolves_created	models/wolfsheep.py	/^wolves_created = 0$/;"	v
 wrapper	indra/display_methods.py	/^    def wrapper(*args, **kwargs):$/;"	f	function:expects_plt
 wrapper	indraV1/indra/display_methods.py	/^    def wrapper(*args, **kwargs):$/;"	f	function:expects_plt

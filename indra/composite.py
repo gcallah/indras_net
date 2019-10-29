@@ -5,8 +5,8 @@ of one or more Agents (see agent.py).
 """
 import json
 from collections import OrderedDict
-from random import choice
 from copy import copy
+from random import choice
 
 from indra.agent import Agent, join, INF, is_composite, AgentEncoder
 
@@ -161,7 +161,7 @@ class Composite(Agent):
                 self.action(self, **kwargs)
 
             for (key, member) in self.members.items():
-                if member.isactive():
+                if member.is_active():
                     (acted, moved) = member(**kwargs)
                     total_acts += acted
                     total_moves += moved
@@ -294,7 +294,7 @@ class Composite(Agent):
                 new_dict[mbr] = self[mbr]
         return grp_from_nm_dict(name, new_dict)
 
-    def isactive(self):
+    def is_active(self):
         """
         For now, composites just stay active.
         """
@@ -303,7 +303,7 @@ class Composite(Agent):
         # but the problem is it will block pending
         # actions like deleting dead members from the group.
         #        for member in self.members.values():
-        #            if member.isactive():
+        #            if member.is_active():
         #                return True
         #        return False
 

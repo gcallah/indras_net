@@ -4,9 +4,9 @@ This is the test suite for space.py.
 
 from unittest import TestCase, main, skip
 
-from indra.space import Space, distance, out_of_bounds
-from indra.space import DEF_HEIGHT, DEF_WIDTH, DEF_MAX_MOVE
 from indra.agent import Agent
+from indra.space import DEF_HEIGHT, DEF_WIDTH
+from indra.space import Space, distance
 from indra.tests.test_agent import create_newton, create_hardy, create_leibniz
 from indra.tests.test_agent import create_ramanujan
 
@@ -89,7 +89,7 @@ class SpaceTestCase(TestCase):
         when done.
         """
         for agent in self.space:
-            self.assertTrue(self.space[agent].islocated())
+            self.assertTrue(self.space[agent].is_located())
 
     def test_place_member_xy(self):
         """

@@ -1,14 +1,8 @@
-from unittest import TestCase, main
-from indra.agent import Agent
-from indra.composite import Composite
-from indra.space import Space
-from indra.env import Env
-from models.bigbox import create_consumer, create_bb, create_mp, set_up
-from models.bigbox import calc_util, transaction, town_action
-from models.bigbox import consumer_action, mp_action, bb_action, bb_capital
-from models.bigbox import MP_PREF, HOOD_SIZE, CONSUMER_INDX, groups
-from models.bigbox import BB_INDX, sells_good, get_util, MULTIPLIER
+from unittest import TestCase
+
 import models.bigbox as bb
+from models.bigbox import BB_INDX
+from models.bigbox import set_up
 
 TEST_WIDTH=4
 TEST_HEIGHT=4
@@ -83,7 +77,7 @@ class BigBoxTestCase(TestCase):
         self.assertEqual(True, bb.mp_action(mp))
         bb.mp_action(mp)
         self.assertEqual(mp["capital"], capital - 2*expense)
-        self.assertEqual(mp.isactive(), False)
+        self.assertEqual(mp.is_active(), False)
 
     def test_bb_action(self):
         """
@@ -95,7 +89,7 @@ class BigBoxTestCase(TestCase):
         self.assertEqual(True, bb.bb_action(bigbox))
         bb.bb_action(bigbox)
         self.assertEqual(bigbox["capital"], capital - 2*expense)
-        self.assertEqual(bigbox.isactive(), True)
+        self.assertEqual(bigbox.is_active(), True)
 
 
     # def test_consumer_action(self):
