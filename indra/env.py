@@ -100,7 +100,6 @@ class Env(Space):
         else:
             self.set_initial_mbr_vals(line_data_func, exclude_member)
 
-        self.num_moves = 0
         self.num_switches = 0
         if self.props is not None:
             if not self.props.get('use_line', True):
@@ -266,36 +265,38 @@ class Env(Space):
                 self.num_switches += 1
             del self.switches[:]
 
+    def handle_pop_hist(self):
+        self.pop_hist.add_period()
+        if self.pop_hist_func is None:
+            for mbr in self.pop_hist.pops:
+                if mbr in self.members and self.is_mbr_comp(mbr):
+                    self.pop_hist.record_pop(mbr, self.pop_count(mbr))
+                else:
+                    self.pop_hist.record_pop(mbr, 0)
+        else:
+            self.pop_hist_func(self.pop_hist)
+
     def runN(self, periods=DEF_TIME):
         """
             Run our model for N periods.
             Return the total number of actions taken.
         """
         num_acts = 0
+        num_moves = 0
         for i in range(periods):
             self.handle_womb()
             self.handle_switches()
-
-            self.pop_hist.add_period()
-            if self.pop_hist_func is None:
-                for mbr in self.pop_hist.pops:
-                    if mbr in self.members and self.is_mbr_comp(mbr):
-                        self.pop_hist.record_pop(mbr, self.pop_count(mbr))
-                    else:
-                        self.pop_hist.record_pop(mbr, 0)
-            else:
-                self.pop_hist_func(self.pop_hist)
+            self.handle_pop_hist()
 
             (a, m) = super().__call__()
             num_acts += a
-            self.num_moves += m
-            census_rpt = self.get_census()
+            num_moves += m
+            census_rpt = self.get_census(num_moves)
             self.user.tell(census_rpt)
-            self.num_moves = 0
             self.num_switches = 0
         return num_acts
 
-    def get_census(self):
+    def get_census(self, num_moves):
         """
         Gets the census data for all the agents stored
         in the member dictionary.
@@ -324,7 +325,7 @@ class Env(Space):
                            + "Agent census:\n"
                            + "==================\n"
                            + "  Total agents moved: "
-                           + str(self.num_moves) + "\n"
+                           + str(num_moves) + "\n"
                            + "  Total agents who switched groups: "
                            + str(self.num_switches))
         return census_str
