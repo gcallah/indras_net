@@ -44,6 +44,7 @@ class CreateGroups(fields.Raw):
                                         members=agents_arr, ))
         return groups_arr
 
+
 def get_model_creator():
     return {'feature_name': 'This is the URL for the model creator: '
                             + 'it is used with a PUT request.'}

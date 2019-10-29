@@ -5,15 +5,15 @@ from indra.env import Env
 # (Otherwise why bother?)
 # also, keep name constant and preface with model name, e.g.,
 # fashion[unserializable()]
-from models.sandpile import sp_unrestorable
 from models.bacteria import bt_unrestorable
 from models.bigbox import bb_unrestorable
 from models.fashion import restore_globals
 from models.flocking import fl_unrestorable
 from models.fmarket import fm_unrestorable
+from models.gameoflife import gl_unrestorable
+from models.sandpile import sp_unrestorable
 from models.segregation import sg_unrestorable
 from models.wolfsheep import ws_unrestorable
-from models.gameoflife import gl_unrestorable
 
 restore_fucntion_dictionary = {
     "Sandpile": sp_unrestorable,
@@ -26,6 +26,8 @@ restore_fucntion_dictionary = {
     "meadow": ws_unrestorable,
     "Game of Life": gl_unrestorable
 }
+
+
 def run_model_put(payload, run_time):
     env = Env(name='API env', serial_obj=payload)
     # this should be dictionary lookup not if elif statements!
