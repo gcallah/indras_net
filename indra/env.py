@@ -105,10 +105,10 @@ class Env(Space):
             self.set_menu_excludes(self.props)
 
     def set_menu_excludes(self, props):
-            if not props.get('use_line', True):
-                self.exclude_menu_item("line_graph")
-            if not props.get('use_scatter', True):
-                self.exclude_menu_item("scatter_plot")
+        if not props.get('use_line', True):
+            self.exclude_menu_item("line_graph")
+        if not props.get('use_scatter', True):
+            self.exclude_menu_item("scatter_plot")
 
     def set_initial_mbr_vals(self, line_data_func=None, exclude_member=None):
         self.pop_hist = PopHist()  # this will record pops across time
