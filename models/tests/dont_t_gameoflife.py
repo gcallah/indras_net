@@ -1,18 +1,13 @@
-import sys
-from unittest import TestCase, main
+from unittest import TestCase
+
 from propargs.propargs import PropArgs
-from indra.agent import Agent
-from indra.composite import Composite
-from indra.space import Space
-from indra.env import Env
-from models.gameoflife import set_up, create_agent
-from models.gameoflife import apply_live_rules, apply_dead_rules_composite, check_for_new_agents
-from models.gameoflife import gameoflife_action, game_agent_action
-from models.gameoflife import populate_board_glider, populate_board_exploder, populate_board_small_exploder
-from models.gameoflife import populate_board_n_horizontal_row, populate_board_n_vertical_row
-from models.gameoflife import populate_board_lightweight_spaceship, populate_board_tumbler
-from models.gameoflife import DEF_HEIGHT, DEF_WIDTH
+
 import models.gameoflife as g
+from indra.composite import Composite
+from indra.env import Env
+from models.gameoflife import DEF_HEIGHT, DEF_WIDTH
+from models.gameoflife import apply_live_rules, apply_dead_rules_composite, check_for_new_agents
+from models.gameoflife import set_up, create_agent
 
 TEST_X = 1
 TEST_Y = 1

@@ -2,16 +2,17 @@
 This is the test suite for space.py.
 """
 
-from unittest import TestCase, main
 from operator import gt, lt
+from unittest import TestCase, main
+
+import models.fashion as fshn
 from indra.agent import switch
-from models.fashion import set_up, DEBUG, DEBUG2, create_follower
+from models.fashion import BLUE_FOLLOWERS, RED_SIN, NEUTRAL, BIG_ENOUGH
+from models.fashion import BLUE_SIN, TSETTER_PRENM
+from models.fashion import FOLLOWER_PRENM, RED_FOLLOWERS, env_unfavorable
 from models.fashion import change_color, create_tsetter
 from models.fashion import follower_action, tsetter_action, new_color_pref
-from models.fashion import FOLLOWER_PRENM, RED_FOLLOWERS, env_unfavorable
-from models.fashion import BLUE_FOLLOWERS, RED_SIN, NEUTRAL, BIG_ENOUGH
-from models.fashion import BLUE_SIN, TSETTER_PRENM, BLUE_TSETTERS, RED_TSETTERS
-import models.fashion as fshn
+from models.fashion import set_up, create_follower
 
 TEST_FNUM = 999
 TEST_TNUM = 998

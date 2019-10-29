@@ -2,17 +2,18 @@
 This is the test suite for space.py.
 """
 
-from propargs.propargs import PropArgs
 from unittest import TestCase, main
-from indra.env import Env
-from indra.composite import Composite
-from models.fmarket import set_up, create_market_maker, create_trend_follower
-from models.fmarket import create_value_investor, DEF_PRICE, trend_direction
-from models.fmarket import trend_follower_action, DEF_REAL_VALUE, DEF_PERIODS, value_investor_action, DEF_MIN_PRICE_MOVE, DEF_MAX_PRICE_MOVE
-from models.fmarket import market_maker_action, calc_price_change, buy, sell
-from models.fmarket import DEF_NUM_ASSET, market_report, DEF_DISCOUNT, DEF_SIGMA, gaussian_distribution
+
+from propargs.propargs import PropArgs
+
 import models.fmarket as fm
-import random
+from indra.composite import Composite
+from indra.env import Env
+from models.fmarket import DEF_NUM_ASSET, market_report, DEF_SIGMA, gaussian_distribution
+from models.fmarket import create_value_investor, DEF_PRICE, trend_direction
+from models.fmarket import market_maker_action, calc_price_change, buy, sell
+from models.fmarket import set_up, create_market_maker, create_trend_follower
+from models.fmarket import trend_follower_action, DEF_REAL_VALUE, DEF_PERIODS
 
 TEST_INVESTOR_NUM = 3
 TEST_FOLLOWER_NUM = 3

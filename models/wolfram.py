@@ -4,12 +4,12 @@ Wolfram's cellular automata model.
 
 import ast
 
-from indra.utils import get_props
 from indra.agent import Agent
 from indra.composite import Composite
-from indra.space import DEF_WIDTH
-from indra.env import Env
 from indra.display_methods import BLACK, WHITE, SQUARE
+from indra.env import Env
+from indra.space import DEF_WIDTH
+from indra.utils import get_props
 
 MODEL_NAME = "wolfram"
 DEBUG = False  # Turns debugging code on or off

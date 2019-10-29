@@ -1,11 +1,13 @@
 """
 This file defines User, which represents a user in our system.
 """
-import os
 import json
+import os
 import sys
-from indra.agent import Agent
+
 from IPython import embed
+
+from indra.agent import Agent
 
 TERMINAL = "terminal"
 TEST = "test"

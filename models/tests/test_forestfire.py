@@ -2,13 +2,12 @@
 This is the test suite for forestfire.py.
 """
 
-from unittest import TestCase, main
-from indra.agent import Agent, possible_trans
-from indra.composite import Composite
-from indra.env import Env
-from models.forestfire import NUM_STATES, plant_tree
-from models.forestfire import is_healthy, OF, set_up, STATE_TRANS, TREE_PREFIX
+from unittest import TestCase
+
 import models.forestfire as ff
+from indra.agent import possible_trans
+from models.forestfire import is_healthy, OF, set_up, STATE_TRANS, TREE_PREFIX
+from models.forestfire import plant_tree
 
 TEST_ANUM = 999999
 

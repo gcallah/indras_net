@@ -5,10 +5,10 @@ This is the test suite for env.py.
 from unittest import TestCase, main
 
 from indra.env import Env
-from indra.user import not_impl, NOT_IMPL, TermUser, TestUser, run, CANT_ASK_TEST
-from indra.user import line_graph, scatter_plot, DEF_STEPS, get_menu_json
 from indra.tests.test_agent import create_newton
 from indra.tests.test_env import GRP1, GRP2
+from indra.user import line_graph, scatter_plot, DEF_STEPS, get_menu_json
+from indra.user import not_impl, NOT_IMPL, TermUser, TestUser, run, CANT_ASK_TEST
 
 MSG = "Hello world"
 
