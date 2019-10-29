@@ -88,6 +88,7 @@ class Env(Space):
                          random_placing=random_placing, serial_obj=serial_obj,
                          **kwargs)
 
+        self.type = "env"
         self.user_type = os.getenv("user_type", TERMINAL)
         self.props = props
         self.census_func = census
@@ -97,24 +98,8 @@ class Env(Space):
             # are we restoring env from json?
             self.restore_env(serial_obj)
         else:
-            self.pop_hist = PopHist()  # this will record pops across time
-            # Make sure varieties are present in the history
-            if self.pop_hist_setup is None:
-                for mbr in self.members:
-                    self.pop_hist.record_pop(mbr, self.pop_count(mbr))
-            else:
-                self.pop_hist_setup(self.pop_hist)
+            self.set_initial_mbr_vals(line_data_func, exclude_member)
 
-            # Attributes for plotting
-            self.plot_title = self.name
-            self.user = None
-            self.line_data_func = line_data_func
-            self.exclude_member = exclude_member
-            self.womb = []  # for agents waiting to be born
-            self.switches = []  # for agents waiting to switch groups
-            self.handle_user_type()
-
-        self.type = "env"
         self.num_acts = 0
         self.num_moves = 0
         self.num_switches = 0
@@ -123,6 +108,24 @@ class Env(Space):
                 self.exclude_menu_item("line_graph")
             if not self.props.get('use_scatter', True):
                 self.exclude_menu_item("scatter_plot")
+
+    def set_initial_mbr_vals(self, line_data_func=None, exclude_member=None):
+        self.pop_hist = PopHist()  # this will record pops across time
+        # Make sure varieties are present in the history
+        if self.pop_hist_setup is None:
+            for mbr in self.members:
+                self.pop_hist.record_pop(mbr, self.pop_count(mbr))
+        else:
+            self.pop_hist_setup(self.pop_hist)
+
+        # Attributes for plotting
+        self.plot_title = self.name
+        self.user = None
+        self.line_data_func = line_data_func
+        self.exclude_member = exclude_member
+        self.womb = []  # for agents waiting to be born
+        self.switches = []  # for agents waiting to switch groups
+        self.handle_user_type()
 
     def handle_user_type(self):
         if self.user_type == TERMINAL:
@@ -403,7 +406,7 @@ class Env(Space):
         if self.exclude_member is not None:
             exclude = self.exclude_member
         else:
-            exclude = -1 * UNLIMITED
+            exclude = None
         if self.line_data_func is None:
             data = {}
             for var in self.pop_hist.pops:

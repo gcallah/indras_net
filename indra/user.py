@@ -51,10 +51,6 @@ def leave(user):
 
 
 def scatter_plot(user, update=False):
-    if update:
-        user.tell("Updating the scatter plot.")
-    else:
-        user.tell("Drawing a scatter plot.")
     return user.env.scatter_graph()
 
 
