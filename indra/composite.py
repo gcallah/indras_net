@@ -72,13 +72,13 @@ class Composite(Agent):
 
     def from_json(self, serial_obj):
         super().from_json(serial_obj)
+        # we loop through the members of this composite
         for nm in serial_obj["members"]:
-            if serial_obj["members"][nm]["type"] == "agent":
-                ret = Agent(name=nm, serial_obj=serial_obj["members"][nm])
-                self.members[nm] = ret
-            elif serial_obj["members"][nm]["type"] == "composite":
-                ret = Composite(name=nm, serial_obj=serial_obj["members"][nm])
-                self.members[nm] = ret
+            member = serial_obj["members"][nm]
+            if member["type"] == "agent":
+                self.members[nm] = Agent(name=nm, serial_obj=member)
+            elif member["type"] == "composite":
+                self.members[nm] = Composite(name=nm, serial_obj=member)
 
         # construct self.registry
         self.registry = {}
