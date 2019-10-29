@@ -29,6 +29,8 @@ MAX_BAD_CAR_LIFE = 4
 MIN_GOOD_CAR_LIFE = 2
 MAX_CAR_LIFE = 5
 
+MATURE_BOUND = 50
+
 MEDIUM_CAR_LIFE = (MIN_CAR_LIFE + MAX_CAR_LIFE) // 2
 
 # categorized emojis reflects trend of dealer's respond
@@ -106,6 +108,13 @@ def check_credibility(dealer):
     # and have several crediable jobs
     return (dealer["avg_car_life_sold"] is None
             or dealer["avg_car_life_sold"] >= MEDIUM_CAR_LIFE)
+
+
+def is_mature_buyer(agent):
+    # check if buyer has enough experience
+    # to make its own decision
+    num_interaction = len(agent["dealer_his"])
+    return num_interaction > MATURE_BOUND
 
 
 def buyer_action(agent):
