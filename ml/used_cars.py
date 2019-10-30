@@ -56,23 +56,23 @@ def bought_info(agent, dealer):
     return msg
 
 
-def is_dealer(agent):
+def is_dealer(agent, dealer_grp):  # testcase done
     return dealer_grp.ismember(agent)
 
 
-def get_car_life(dealer):
+def get_car_life(dealer):  # testcase done
     print("Getting car from dealer", dealer)
     return dealer["curr_car_life"]
 
 
-def get_dealer_car(dealer_characteristc):
+def get_dealer_car(dealer_characteristc):  # testcase done
     if dealer_characteristc == "good":
         return random.randint(MIN_GOOD_CAR_LIFE, MAX_CAR_LIFE)
     else:  # dealer characteristic == bad
         return random.randint(MIN_CAR_LIFE, MAX_BAD_CAR_LIFE)
 
 
-def dealer_action(agent):  # this is more for buyer to see
+def dealer_action(agent):
     car_market.user.tell("I'm " + agent.name + " and I'm a dealer.")
     dealer_characteristic = get_dealer_characteristic()
     agent["dealer_characteristic"] = dealer_characteristic
@@ -147,7 +147,7 @@ def update_buyer(agent, my_dealer):
     print(bought_info(agent, my_dealer))
 
 
-def buyer_action(agent):
+def buyer_action(agent):  # how to write this testcase
     print("_" * 20)
     print("Agent: " + agent.name)
     if not agent["has_car"]:
@@ -167,7 +167,7 @@ def buyer_action(agent):
     return False
 
 
-def create_dealer(name, i, props=None):
+def create_dealer(name, i, props=None):  # testcase done
     """
     Create an agent.
     """
@@ -184,7 +184,7 @@ def create_dealer(name, i, props=None):
                         "dealer_characteristic": None})
 
 
-def create_buyer(name, i, props=None):
+def create_buyer(name, i, props=None):  # testcase done
     """
     Create an agent.
     """
@@ -199,12 +199,12 @@ def create_buyer(name, i, props=None):
                         "emoji_indicator": {}})
 
 
-def set_up(props=None):
+def set_up(props=None):  # testcase done
     """
     A func to set up run that can also be used by test code.
     """
     pa = get_props(MODEL_NAME, props)
-    dealer_grp = Composite(DEALERS, {"color": BLUE},
+    dealer_grp = Composite("Dealers", {"color": BLUE},
                            member_creator=create_dealer,
                            num_members=pa.get('num_sellers', DEF_NUM_BLUE))
     buyer_grp = Composite("Buyers", {"color": RED},
