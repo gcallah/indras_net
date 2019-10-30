@@ -70,15 +70,15 @@ def classify_goal(coop_env):
 
 
 def classify_group(b_group, g_group):
-    classify_agent_group(b_group, BSIT_INDEX)
-    classify_agent_group(g_group, GO_OUT_INDEX)
-
-
-def classify_agent_group(group, index):
-    for agent in group:
+    for agent in b_group:
         if agent.primary_group() is not None:
             index = group_indices[agent.primary_group().name]
-            coop_env.now_switch(agent, groups[index], groups[index])
+            coop_env.now_switch(agent, groups[index], groups[BSIT_INDEX])
+
+    for agent in g_group:
+        if agent.primary_group() is not None:
+            index = group_indices[agent.primary_group().name]
+            coop_env.now_switch(agent, groups[index], groups[GO_OUT_INDEX])
 
 
 def initial_exchanges(pop_hist):
