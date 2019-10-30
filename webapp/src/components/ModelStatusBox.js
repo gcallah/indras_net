@@ -9,17 +9,23 @@ export default class ModelStatusBox extends React.Component {
             title:this.props.title
         };
     }
-
+  componentWillReceiveProps(nextProps){
+    console.log("inside  modelbox ", this.state.msg);
+    console.log('component will receive props', nextProps);
+    if(nextProps.msg!==""){
+      this.setState({msg:nextProps.msg});
+    }
+  }
+  
   render() {
+    
     return (
         <div>
         <h5 style={{textAlign: 'center', "fontSize": 16}}className="card-header bg-primary text-white">
         { this.state.title }
         </h5>
         <div className="card-body">
-        <p class="card-text">
         {this.state.msg}
-        </p>
         </div>
     </div>
     );

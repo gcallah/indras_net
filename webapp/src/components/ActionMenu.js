@@ -7,6 +7,7 @@ import ScatterPlot from './ScatterPlot';
 import Debugger from './Debugger';
 import PreFormTextBox from './PreFormTextBox';
 import ModelStatusBox from './ModelStatusBox';
+import autoBind from 'react-autobind';
 
 const POP = 2;
 const SCATTER = 3;
@@ -14,9 +15,10 @@ const DATA = 4;
 const SOURCE = 5;
 const API_SERVER = 'https://indrasnet.pythonanywhere.com/models/menu/';
 
-class ActionMenu extends Component {
+class ActionMenu extends React.Component {
   constructor(props) {
     super(props);
+    autoBind(this);
     this.state = {
       msg: 'Please run model in order to retrieve data',
       menu: {},
@@ -31,6 +33,7 @@ class ActionMenu extends Component {
       loadingPopulation: false,
       loadingScatter: false,
       loadingDebugger: false,
+      
     };
   }
 
@@ -134,6 +137,7 @@ class ActionMenu extends Component {
         msg: res.data.user.user_msgs,
       });
       console.log(res.data);
+      console.log("message is ", this.state.msg)
     } catch (e) {
       console.log(e.message);
     }
@@ -271,7 +275,7 @@ class ActionMenu extends Component {
         <button type="button" className="btn btn-light m-2" onClick={this.goback}>Back</button>
         {this.renderHeader()}
         <div>
-        <ModelStatusBox title='Model Status' msg={this.state.msg}/>
+        <ModelStatusBox title='Model Status' msg={this.state.msg} ref={this.modelStatusBoxElement}/>
         </div>
         <ul className="list-group">
           <div className="row">
