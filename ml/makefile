@@ -11,10 +11,8 @@ prod: tests
 
 lint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
 
-pytests: $(PYTHONFILES)
-	./pytests.sh
 
-tests: pytests lint
+tests: test_used_cars lint
 
 %.pylint:
 	$(PYLINT) $(PYLINTFLAGS) $*.py

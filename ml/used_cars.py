@@ -122,7 +122,7 @@ def cal_avg_life(agent):
     emo_life_avg = agent["emoji_life_avg"]
     for key in assoc:
         num = len(assoc[key])
-        avg = sum(assoc[key])/num
+        avg = sum(assoc[key]) / num
         emo_life_avg[key] = avg
     print("Car life avg:", emo_life_avg)
 
