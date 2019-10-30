@@ -17,6 +17,8 @@ api = Api(app)
 
 user = APIUser("Dennis", None)
 
+# the hard-coded dir is needed for Python Anywhere, until
+# we figure out how to get the env var set there.
 indra_dir = os.getenv("INDRA_HOME", "/home/indrasnet/indras_net")
 
 
