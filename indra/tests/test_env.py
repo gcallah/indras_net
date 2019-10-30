@@ -2,22 +2,18 @@
 This is the test suite for env.py.
 """
 import os
-
 from unittest import TestCase, main
 
 import indra.display_methods as disp
-
-from indra.env import Env, PopHist, POP_HIST_HDR, POP_SEP
-from indra.user import TEST, API
-from indra.agent import Agent
+from APIServer.test.test_env_json import env_json_bacteria, env_json_flocking
+from APIServer.test.test_env_json import env_json_basic, env_json_fashion, env_json_sandpile
+from APIServer.test.test_env_json import env_json_bigbox, env_json_gameoflife
+from APIServer.test.test_env_json import env_json_segregation, env_json_wolfsheep, env_json_fmarket
 from indra.composite import Composite
+from indra.env import Env, PopHist, POP_HIST_HDR, POP_SEP
 from indra.tests.test_agent import create_newton
 from indra.tests.test_composite import create_calcguys, create_cambguys
-
-from APIServer.test.test_env_json import env_json_basic, env_json_fashion, env_json_sandpile
-from APIServer.test.test_env_json import env_json_bacteria, env_json_scheduler, env_json_flocking
-from APIServer.test.test_env_json import env_json_segregation, env_json_wolfsheep, env_json_fmarket
-from APIServer.test.test_env_json import env_json_bigbox, env_json_gameoflife
+from indra.user import TEST, API
 
 travis = False
 

@@ -131,8 +131,8 @@ def consumer_action(consumer):
     max_util = 0.0
     for neighbors in nearby_neighbors:
         neighbor = nearby_neighbors[neighbors]
-        if (neighbor.isactive() and (neighbor.primary_group()
-                                     != groups[CONSUMER_INDX])):
+        if (neighbor.is_active() and (neighbor.primary_group()
+                                      != groups[CONSUMER_INDX])):
             if sells_good(neighbor, consumer, groups):
                 curr_store_util = get_util(neighbor)
                 if curr_store_util > max_util:
@@ -244,7 +244,7 @@ def set_up(props=None):
     return (town, groups)
 
 
-def bb_unrestorable(env):
+def restore_globals(env):
     global town
     global groups
     global mp_pref

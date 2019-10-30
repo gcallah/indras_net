@@ -5,41 +5,37 @@ from indra.env import Env
 # (Otherwise why bother?)
 # also, keep name constant and preface with model name, e.g.,
 # fashion[unserializable()]
-from models.sandpile import sp_unrestorable
-from models.bacteria import bt_unrestorable
-from models.bigbox import bb_unrestorable
-from models.fashion import fs_unrestorable
-from models.flocking import fl_unrestorable
-from models.fmarket import fm_unrestorable
-from models.segregation import sg_unrestorable
-from models.wolfsheep import ws_unrestorable
-from models.gameoflife import gl_unrestorable
+import models.bacteria as bacteria
+import models.bigbox as bigbox
+import models.fashion as fashion
+import models.flocking as flocking
+import models.fmarket as fmarket
+import models.gameoflife as gameoflife
+import models.sandpile as sandpile
+import models.segregation as segregation
+import models.wolfsheep as wolfsheep
+
+# this dictionary should be keyed on model id
+restore_globals_dict = {
+    "Sandpile": sandpile,
+    "Petrie dish": bacteria,
+    "Town": bigbox,
+    "Society": fashion,
+    "the_sky": flocking,
+    "fmarket": fmarket,
+    "A city": segregation,
+    "meadow": wolfsheep,
+    "Game of Life": gameoflife,
+}
 
 
 def run_model_put(payload, run_time):
     env = Env(name='API env', serial_obj=payload)
-    # this should be dictionary lookup not if elif statements!
-    # furthermore, lookup should be on model id, not env name!
-    if env.name == "Sandpile":
-        sp_unrestorable(env)
-    elif env.name == "Petrie dish":
-        bt_unrestorable(env)
-    elif env.name == "Town":
-        bb_unrestorable(env)
-    elif env.name == "Society":
-        fs_unrestorable(env)
-    elif env.name == "the_sky":
-        fl_unrestorable(env)
-    elif env.name == "fmarket":
-        fm_unrestorable(env)
-    elif env.name == "A city":
-        sg_unrestorable(env)
-    elif env.name == "meadow":
-        ws_unrestorable(env)
-    elif env.name == "Game of Life":
-        gl_unrestorable(env)
-    else:
+    # lookup should be on model id, not env name!
+    if env.name not in restore_globals_dict:
         err_return("Model env not found.")
+    else:
+        restore_globals_dict[env.name].restore_globals(env)
 
     env.runN(periods=run_time)
     return json_converter(env)

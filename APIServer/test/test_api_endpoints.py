@@ -1,16 +1,16 @@
 """
 """
-from unittest import TestCase, main, skip
 import json
 import random
-from flask_restplus import Resource, Api, fields
+from unittest import TestCase, main, skip
 
-from APIServer.api_endpoints import app, HelloWorld, Models
+from flask_restplus import Resource
+
 from APIServer.api_endpoints import Props, ModelMenu, RunModel
-from APIServer.api_endpoints import load_menu
+from APIServer.api_endpoints import app, HelloWorld, Models
 from APIServer.api_endpoints import indra_dir
-from APIServer.models_api import load_models
 from APIServer.api_utils import err_return
+from APIServer.models_api import load_models
 
 menu = [{"val": 0, "func": "run", "question": "Run for N periods"},
         {"val": 1, "func": "line_graph", "question": "Display a population graph."},
@@ -30,7 +30,6 @@ class Test(TestCase):
         self.model_menu = ModelMenu(Resource)
         self.run = RunModel(Resource)
         self.models = load_models(indra_dir)
-        self.load_menu = load_menu()
 
     def test_load_models(self):
         """
@@ -40,16 +39,6 @@ class Test(TestCase):
         test_model_file = indra_dir + "/models/models.json"
         with open(test_model_file) as file:
             test_rv = json.loads(file.read())["models_database"]
-        self.assertEqual(rv, test_rv)
-
-    def test_load_menu(self):
-        """
-        See if the menu can be loaded.
-        """
-        rv = self.load_menu
-        test_menu_file = indra_dir + "/indra/menu.json"
-        with open(test_menu_file) as file:
-            test_rv = json.loads(file.read())["menu_database"]
         self.assertEqual(rv, test_rv)
 
     def test_hello_world(self):

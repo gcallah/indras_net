@@ -4,12 +4,12 @@
 
 from math import isclose
 
-from indra.utils import get_props
 from indra.agent import Agent
 from indra.composite import Composite
-from indra.env import Env, UNLIMITED
 from indra.display_methods import BLUE, RED
+from indra.env import Env, UNLIMITED
 from indra.space import gaussian_distribution
+from indra.utils import get_props
 
 MODEL_NAME = "fmarket"
 DEF_NUM_TREND_FOLLOWER = 10
@@ -239,7 +239,7 @@ def set_up(props=None):
     return (market, value_investors, trend_followers, market_maker)
 
 
-def fm_unrestorable(env):
+def restore_globals(env):
     global trend_followers
     global value_investors
     global market_maker

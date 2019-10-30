@@ -29,6 +29,8 @@ MAX_BAD_CAR_LIFE = 4
 MIN_GOOD_CAR_LIFE = 2
 MAX_CAR_LIFE = 5
 
+MATURE_BOUND = 100
+
 MEDIUM_CAR_LIFE = (MIN_CAR_LIFE + MAX_CAR_LIFE) // 2
 
 # categorized emojis reflects trend of dealer's respond
@@ -54,23 +56,23 @@ def bought_info(agent, dealer):
     return msg
 
 
-def is_dealer(agent):
+def is_dealer(agent, dealer_grp):  # testcase done
     return dealer_grp.ismember(agent)
 
 
-def get_car_life(dealer):
+def get_car_life(dealer):  # testcase done
     print("Getting car from dealer", dealer)
     return dealer["curr_car_life"]
 
 
-def get_dealer_car(dealer_characteristc):
+def get_dealer_car(dealer_characteristc):  # testcase done
     if dealer_characteristc == "good":
         return random.randint(MIN_GOOD_CAR_LIFE, MAX_CAR_LIFE)
     else:  # dealer characteristic == bad
         return random.randint(MIN_CAR_LIFE, MAX_BAD_CAR_LIFE)
 
 
-def dealer_action(agent):  # this is more for buyer to see
+def dealer_action(agent):
     car_market.user.tell("I'm " + agent.name + " and I'm a dealer.")
     dealer_characteristic = get_dealer_characteristic()
     agent["dealer_characteristic"] = dealer_characteristic
@@ -108,7 +110,44 @@ def check_credibility(dealer):
             or dealer["avg_car_life_sold"] >= MEDIUM_CAR_LIFE)
 
 
-def buyer_action(agent):
+def is_mature_buyer(agent):
+    # check if buyer has enough experience
+    # to make its own decision
+    num_interaction = len(agent["dealer_his"])
+    return num_interaction > MATURE_BOUND
+
+
+def cal_avg_life(agent):
+    assoc = agent["emoji_carlife_assoc"]
+    emo_life_avg = agent["emoji_life_avg"]
+    for key in assoc:
+        num = len(assoc[key])
+        avg = sum(assoc[key]) / num
+        emo_life_avg[key] = avg
+    print("Car life avg:", emo_life_avg)
+
+
+def update_buyer(agent, my_dealer):
+    agent["has_car"] = True
+    agent["dealer_his"].append(my_dealer)
+    rec_carlife = get_car_life(my_dealer)
+    agent["car_life"] = rec_carlife
+    rec_emoji = my_dealer["emoji_used"]
+    agent["interaction_res"] = rec_emoji
+    # map each emoji associate with different
+    # car lives for ML prediction
+    assoc = agent["emoji_carlife_assoc"]
+    if rec_emoji not in assoc:
+        assoc[rec_emoji] = [rec_carlife]
+    else:
+        assoc[rec_emoji].append(rec_carlife)
+    print("My emoji car association:", assoc)
+    cal_avg_life(agent)
+    update_dealer_sale(my_dealer, rec_carlife)
+    print(bought_info(agent, my_dealer))
+
+
+def buyer_action(agent):  # how to write this testcase
     print("_" * 20)
     print("Agent: " + agent.name)
     if not agent["has_car"]:
@@ -116,22 +155,7 @@ def buyer_action(agent):
                                                       dealer_grp,
                                                       hood_size=1)
         if my_dealer is not None and check_credibility(my_dealer):
-            # refactor code needed heres
-            agent["has_car"] = True
-            agent["dealer_his"].append(my_dealer)
-            rec_carlife = get_car_life(my_dealer)
-            agent["car_life"] = rec_carlife
-            rec_emoji = my_dealer["emoji_used"]
-            agent["interaction_res"] = rec_emoji
-            # map each emoji associate with different
-            # car lives for ML prediction
-            assoc = agent["emoji_carlife_assoc"]
-            if rec_emoji not in assoc:
-                assoc[rec_emoji] = [rec_carlife]
-            else:
-                assoc[rec_emoji].append(rec_carlife)
-            update_dealer_sale(my_dealer, rec_carlife)
-            print(bought_info(agent, my_dealer))
+            update_buyer(agent, my_dealer)
         else:
             print("No dealers nearby.")
     else:
@@ -143,7 +167,7 @@ def buyer_action(agent):
     return False
 
 
-def create_dealer(name, i, props=None):
+def create_dealer(name, i, props=None):  # testcase done
     """
     Create an agent.
     """
@@ -160,7 +184,7 @@ def create_dealer(name, i, props=None):
                         "dealer_characteristic": None})
 
 
-def create_buyer(name, i, props=None):
+def create_buyer(name, i, props=None):  # testcase done
     """
     Create an agent.
     """
@@ -170,15 +194,17 @@ def create_buyer(name, i, props=None):
                         "car_life": None,
                         "interaction_res": None,
                         "dealer_his": [],
-                        "emoji_carlife_assoc": {}})
+                        "emoji_carlife_assoc": {},
+                        "emoji_life_avg": {},
+                        "emoji_indicator": {}})
 
 
-def set_up(props=None):
+def set_up(props=None):  # testcase done
     """
     A func to set up run that can also be used by test code.
     """
     pa = get_props(MODEL_NAME, props)
-    dealer_grp = Composite(DEALERS, {"color": BLUE},
+    dealer_grp = Composite("Dealers", {"color": BLUE},
                            member_creator=create_dealer,
                            num_members=pa.get('num_sellers', DEF_NUM_BLUE))
     buyer_grp = Composite("Buyers", {"color": RED},

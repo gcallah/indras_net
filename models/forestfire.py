@@ -2,12 +2,12 @@
 A model to simulate the spread of fire in a forest.
 """
 
-from indra.utils import get_props
-from indra.agent import prob_state_trans
 from indra.agent import Agent
+from indra.agent import prob_state_trans
 from indra.composite import Composite
-from indra.env import Env
 from indra.display_methods import RED, GREEN, BLACK, SPRINGGREEN, TOMATO, TREE
+from indra.env import Env
+from indra.utils import get_props
 
 MODEL_NAME = "forestfire"
 DEBUG = False  # turns debugging code on or off

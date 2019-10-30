@@ -2,17 +2,17 @@
 This is the test suite for space.py.
 """
 
-from propargs.propargs import PropArgs
 from unittest import TestCase, main
-from indra.env import Env
-from indra.composite import Composite
-from models.coop import set_up, create_babysitter, create_central_bank
-from models.coop import classify_goal, classify_group, exchange
-from models.coop import distribute_coupons, coop_action, act, DEF_COUPON
-from models.coop import DEF_SIGMA, DEF_DISTRIBUTING_COUPON, DEF_PERCENT, G_HOME
-from models.coop import babysitter_action, central_bank_action, CENTRAL_BANK
+
+from propargs.propargs import PropArgs
+
 import models.coop as coop
-import random
+from indra.composite import Composite
+from models.coop import DEF_SIGMA, DEF_DISTRIBUTING_COUPON, G_HOME
+from models.coop import babysitter_action, central_bank_action, CENTRAL_BANK
+from models.coop import classify_goal, classify_group
+from models.coop import distribute_coupons, coop_action, act, DEF_COUPON
+from models.coop import set_up, create_babysitter, create_central_bank
 
 TEST_BABYSITTER_NUM = 3
 TEST_CENTRAL_BANK_NUM = 3

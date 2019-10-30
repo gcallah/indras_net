@@ -70,15 +70,15 @@ def classify_goal(coop_env):
 
 
 def classify_group(b_group, g_group):
-    classify_agent_group(b_group, BSIT_INDEX)
-    classify_agent_group(g_group, GO_OUT_INDEX)
-
-
-def classify_agent_group(group, index):
-    for agent in group:
+    for agent in b_group:
         if agent.primary_group() is not None:
             index = group_indices[agent.primary_group().name]
-            coop_env.now_switch(agent, groups[index], groups[index])
+            coop_env.now_switch(agent, groups[index], groups[BSIT_INDEX])
+
+    for agent in g_group:
+        if agent.primary_group() is not None:
+            index = group_indices[agent.primary_group().name]
+            coop_env.now_switch(agent, groups[index], groups[GO_OUT_INDEX])
 
 
 def initial_exchanges(pop_hist):
@@ -116,6 +116,22 @@ def exchange(coop_env):
         going_outer['goint_out'] = False
         going_outer['coupons'] -= 1
 
+    cur_index = -1
+    action = ""
+    if len(sitters) > exchanges:
+        cur_index = 0
+        action = "sitting"
+    else:
+        cur_index = 1
+        action = "going_out"
+
+    swiches = []
+    for agent in groups[cur_index]:
+        if groups[cur_index][agent][action] is True:
+            swiches.append(groups[cur_index][agent])
+
+    for agent in swiches:
+        coop_env.now_switch(agent, groups[cur_index], groups[2 + cur_index])
     # record exchanges in population history
     # last_period_exchanges = exchanges
 
