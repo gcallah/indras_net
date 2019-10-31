@@ -7,9 +7,11 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.env import Env
 
+
 class AgentTypes(fields.Raw):
     def put(self, name):
         return Composite(name)
+
 
 def generateFunc(agent):
     print("Just testing the actions for " + agent.name + "!!")
