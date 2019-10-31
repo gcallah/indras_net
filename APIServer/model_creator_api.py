@@ -7,25 +7,22 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.env import Env
 
-
 class AgentTypes(fields.Raw):
     def put(self, name):
         return Composite(name)
 
+def generateFunc(agent):
+    print("Just testing the actions for " + agent.name + "!!")
+    return False
+
 
 class CreateGroups(fields.Raw):
-    def generateFunc(self, actions):
-        for action in actions:
-            if action == "Test":
-                print("Just testing the actions!!")
-        return False
-
     def addAgents(self, agent_name, agent_num, agent_actions):
         agents_arr = []
         i = 0
         while i < agent_num:
             agents_arr.append(Agent(agent_name + str(i + 1),
-                                    action=self.generateFunc(agent_actions),
+                                    action=generateFunc,
                                     ))
             i = i + 1
         return agents_arr
