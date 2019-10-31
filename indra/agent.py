@@ -224,7 +224,6 @@ class Agent(object):
         return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
 
     def primary_group(self):
-        # print("We are at primary_group FUNCTION: ", self.prim_group)
         return self.prim_group
 
     def is_located(self):

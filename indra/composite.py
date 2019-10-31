@@ -51,8 +51,13 @@ class Composite(Agent):
             if members is not None:
                 for member in members:
                     join(self, member)
+            if num_members is None:
+                num_members = 1  # A default if they forgot to pass this.
             if member_creator is not None:
+                # If we have a member creator function, call it
+                # `num_members` times to create group members.
                 for i in range(num_members):
+                    # += adds members
                     self += member_creator(name, i, props=props, **kwargs)
 
     def restore_composite(self, serial_obj):

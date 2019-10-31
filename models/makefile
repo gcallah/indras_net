@@ -22,12 +22,20 @@ tests: pytests lint
 test_models:
 	nosetests tests.test_models
 
+test_bigbox:
+	nosetests tests.test_bigboxV2 --nocapture
+
+test_coop:
+	$(PYLINT) $(PYLINTFLAGS) coop.py
+	nosetests tests.test_coop --nocapture
+
 test_drunks:
 	$(PYLINT) $(PYLINTFLAGS) drunks.py
 	nosetests tests.test_drunks --nocapture
 
-test_bigbox:
-	nosetests tests.test_bigboxV2 --nocapture
+test_forestfire:
+	$(PYLINT) $(PYLINTFLAGS) drunks.py
+	nosetests tests.test_forestfire --nocapture
 
 test_seg:
 	nosetests tests.test_segregation --nocapture
@@ -47,9 +55,6 @@ test_wolfram:
 
 test_wolfsheep:
 	nosetests tests.test_wolfsheep --nocapture
-
-test_forestfire:
-	nosetests tests.test_forestfire --nocapture
 
 nocrud:
 	-rm *~

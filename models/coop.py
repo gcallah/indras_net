@@ -5,7 +5,6 @@ import random
 
 from indra.agent import Agent
 from indra.composite import Composite
-from indra.display_methods import BLUE, ORANGE, RED, PURPLE, BLACK
 from indra.env import Env, UNLIMITED
 from indra.space import gaussian_distribution
 from indra.utils import get_props
@@ -30,11 +29,8 @@ BABYSIT = "BABYSITTING"
 GO_OUT = "GOING_OUT"
 
 
-groups = None
-group_indices = None
-coop_env = None
-
 coop_members = None
+coop_env = None
 
 last_period_exchanges = 0
 
@@ -53,34 +49,6 @@ def wants_to_go_out(agent, *args):
     return agent["goal"] == GO_OUT
 
 
-def classify_goal(coop_env):
-    b_group = []
-    g_group = []
-    for i in range(NUM_OF_GROUPS):
-        for agent in groups[i]:
-            if groups[i][agent]["goal"] == BABYSIT:
-                groups[i][agent]["sitting"] = True
-                groups[i][agent]["goal"] = None
-                b_group.append(groups[i][agent])
-            elif groups[i][agent]["goal"] == GO_OUT:
-                groups[i][agent]["going_out"] = True
-                groups[i][agent]["goal"] = None
-                g_group.append(groups[i][agent])
-    return (b_group, g_group)
-
-
-def classify_group(b_group, g_group):
-    for agent in b_group:
-        if agent.primary_group() is not None:
-            index = group_indices[agent.primary_group().name]
-            coop_env.now_switch(agent, groups[index], groups[BSIT_INDEX])
-
-    for agent in g_group:
-        if agent.primary_group() is not None:
-            index = group_indices[agent.primary_group().name]
-            coop_env.now_switch(agent, groups[index], groups[GO_OUT_INDEX])
-
-
 def initial_exchanges(pop_hist):
     """
     Set up our pop hist object to record exchanges per period.
@@ -97,14 +65,19 @@ def record_exchanges(pop_hist):
     pop_hist.record_pop("Exchanges", last_period_exchanges)
 
 
-def exchange(coop_env):
+def get_sitters(coop_members):
+    return coop_members.subset(wants_to_sit)
 
+
+def get_going_out(coop_members):
+    return coop_members.subset(wants_to_go_out)
+
+
+def exchange(coop_env):
     global last_period_exchanges
     global coop_members
-    # sitters = groups[BSIT_INDEX].subset(wants_to_sit)
-    # going_out = coop_members.members.subset(wants_to_go_out)
-    sitters = groups[BSIT_INDEX]
-    going_out = groups[GO_OUT_INDEX]
+    sitters = get_sitters(coop_members)
+    going_out = get_going_out(coop_members)
     exchanges = min(len(sitters), len(going_out))
 
     for i in range(exchanges):
@@ -116,22 +89,12 @@ def exchange(coop_env):
         going_outer['goint_out'] = False
         going_outer['coupons'] -= 1
 
-    cur_index = -1
     action = ""
     if len(sitters) > exchanges:
-        cur_index = 0
-        action = "sitting"
+        action = "sitting"  # noqa F841
     else:
-        cur_index = 1
-        action = "going_out"
+        action = "going_out"  # noqa F841
 
-    swiches = []
-    for agent in groups[cur_index]:
-        if groups[cur_index][agent][action] is True:
-            swiches.append(groups[cur_index][agent])
-
-    for agent in swiches:
-        coop_env.now_switch(agent, groups[cur_index], groups[2 + cur_index])
     # record exchanges in population history
     # last_period_exchanges = exchanges
 
@@ -141,26 +104,20 @@ def distribute_coupons(agent):
     Distribute coupons from central bank randomly to each babysitter.
     Coupons are gaussian distributed based on extra_coupons and extra_dev.
     """
-
-    for i in range(NUM_OF_GROUPS):
-        for bbsit in groups[i]:
-            groups[i][bbsit]["coupons"] += int(gaussian_distribution(
-                agent["extra_coupons"], agent["extra_dev"]))
+    pass
+    # for i in range(NUM_OF_GROUPS):
+    #     for bbsit in groups[i]:
+    #         groups[i][bbsit]["coupons"] += int(gaussian_distribution(
+    #             agent["extra_coupons"], agent["extra_dev"]))
 
 
 def coop_action(coop_env):
-    (b_group, g_group) = classify_goal(coop_env)
-    classify_group(b_group, g_group)
     exchange(coop_env)
 
 
 def coop_report(coop_env):
-    num_babysitter = len(groups[BSIT_INDEX])
-    return 'Number of babysitters is: ' + str(num_babysitter) \
-           + ', number of people staying home_B is: ' \
-           + str(len(groups[B_HOME])) \
-           + ', number of people staying home_G is: ' \
-           + str(len(groups[G_HOME])) + '\n'
+    num_babysitter = len(get_sitters(coop_members))
+    return 'Number of babysitters is: ' + str(num_babysitter) + '\n'
 
 
 def act(agent):
@@ -193,15 +150,11 @@ def babysitter_action(agent):
 
 
 def central_bank_action(agent):
-    num_home = len(groups[G_HOME]) + len(groups[B_HOME])
-    hist = groups[CENTRAL_BANK]["CENTRAL_BANK"]["num_hist"]
-    if len(hist) > 0:
-        prev_num_home = hist[-1]
-        if prev_num_home != 0:
-            if ((num_home / prev_num_home * 100)
-                    >= groups[CENTRAL_BANK]["CENTRAL_BANK"]["percent_change"]):
-                distribute_coupons(agent)
-    groups[CENTRAL_BANK]["CENTRAL_BANK"]["num_hist"].append(num_home)
+    """
+    If exchanges are down "enough", distribute coupons!
+    Enough is a parameter.
+    """
+    pass
 
 
 def create_babysitter(name, i, props=None):
@@ -237,60 +190,35 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     global coop_env
-    global groups
-    global group_indices
+    global coop_members
     pa = get_props(MODEL_NAME, props)
 
-    groups = []
-    group_indices = {}
-
     num_members = pa.get('num_babysitter', DEF_BABYSITTER)
+    coop_members = Composite("Coop_members", num_members=num_members,
+                             member_creator=create_babysitter,
+                             props=pa)
 
-    # There are 4 groups: group of babysitters, group of people going out,
-    # group of people who want to babysit but cannot,
-    # group of people who want to go out but cannot.
+    # the central bank is out for now!
+    # groups.append(Composite("CENTRAL_BANK", {"color": BLACK},
+    #                         props=pa,
+    #                         member_creator=create_central_bank,
+    #                         num_members=1))
 
-    # groups.append(Composite("COOP_MEMBERS"))
-
-    groups.append(Composite("BBSIT", {"color": BLUE}))
-    groups.append(Composite("GO_OUT", {"color": RED}))
-    groups.append(Composite("B_HOME", {"color": PURPLE}))
-    groups.append(Composite("G_HOME", {"color": ORANGE}))
-    groups.append(Composite("CENTRAL_BANK", {"color": BLACK},
-                            props=pa,
-                            member_creator=create_central_bank,
-                            num_members=1))
-
-    for i in range(NUM_OF_GROUPS):
-        group_indices[groups[i].name] = i
-
-    for i in range(num_members):
-        groups[BSIT_INDEX] += create_babysitter('Babysitters', i, pa)
-        i += 1
-        if i < num_members:
-            groups[GO_OUT_INDEX] += create_babysitter('Babysitters', i, pa)
-
-    coop_env = Env('coop_env', members=groups,
+    coop_env = Env('coop_env', members=[coop_members],
                    action=coop_action, width=UNLIMITED,
                    height=UNLIMITED,
                    census=coop_report,
                    props=pa,
                    pop_hist_setup=initial_exchanges,
-                   pop_hist_func=record_exchanges,
-                   exclude_member="CENTRAL_BANK")
-
-    return (coop_env, groups, group_indices)
+                   pop_hist_func=record_exchanges)
+    return (coop_env, coop_members)
 
 
 def main():
-    global groups
-    global group_indices
-    global central_bank
     global coop_env
     global coop_members
 
-    (coop_env, groups, group_indices) = set_up()
-    coop_members = groups[BSIT_INDEX]
+    (coop_env, coop_members) = set_up()
 
     coop_env()
     return 0
