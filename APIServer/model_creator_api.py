@@ -23,7 +23,7 @@ class CreateGroups(fields.Raw):
         agents_arr = []
         i = 0
         while i < agent_num:
-            agents_arr.append(Agent(agent_name + str(i + 1),
+            agents_arr.append(Agent(agent_name + "_agent" + str(i + 1),
                                     action=generateFunc,
                                     ))
             i = i + 1
