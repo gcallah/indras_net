@@ -21,6 +21,14 @@ class usedCarTestCase(TestCase):
     def tearDown(self):
         (self.car_market, self.dealers, self.buyers) = (None, None, None)
 
+    def test_is_mature(self):
+        buyer = create_buyer("Buyer", 0, None)
+        buyer["age"] = 0
+        buyer["mature"] = 40
+        self.assertFalse(is_mature(buyer))
+        buyer["age"] = 90
+        self.assertTrue(is_mature(buyer))
+
     def test_get_dealer_car(self):
         result = get_dealer_car("good")
         self.assertTrue(result >= MIN_GOOD_CAR_LIFE)
@@ -28,7 +36,7 @@ class usedCarTestCase(TestCase):
         result = get_dealer_car("bad")
         self.assertTrue(result >= MIN_CAR_LIFE)
         self.assertTrue(result <= MAX_BAD_CAR_LIFE)
-        
+
     def test_create_buyer(self):
         buyer = create_buyer("Buyer", 0, None)
         self.assertTrue(buyer["has_car"]is False)
@@ -38,7 +46,7 @@ class usedCarTestCase(TestCase):
         self.assertTrue(buyer["emoji_carlife_assoc"] == {})
         self.assertTrue(buyer["emoji_life_avg"] == {})  
         self.assertTrue(buyer["emoji_indicator"] == {})
-        
+
     def test_create_dealer(self):
         dealer = create_dealer("Dealer", 0, None)
         self.assertTrue(dealer["num_sales"]== 0)

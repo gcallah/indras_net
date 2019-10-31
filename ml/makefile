@@ -18,6 +18,7 @@ tests: test_used_cars lint
 	$(PYLINT) $(PYLINTFLAGS) $*.py
 
 test_used_cars:
+	$(PYLINT) $(PYLINTFLAGS) used_cars.py
 	nosetests tests.test_used_cars --nocapture
 
 nocrud:

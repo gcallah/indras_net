@@ -17,7 +17,7 @@ from indra.env import Env
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import get_props
 
-MODEL_NAME = "used cars"
+MODEL_NAME = "used_cars"
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
@@ -76,7 +76,7 @@ def dealer_action(agent):
     car_market.user.tell("I'm " + agent.name + " and I'm a dealer.")
     dealer_characteristic = get_dealer_characteristic()
     agent["dealer_characteristic"] = dealer_characteristic
-    agent["emoji_used"] = get_dearler_emoji(dealer_characteristic)
+    agent["emoji_used"] = get_dealer_emoji(dealer_characteristic)
     agent["curr_car_life"] = get_dealer_car(dealer_characteristic)
     # return False means to move
     return False
@@ -86,7 +86,7 @@ def get_dealer_characteristic():
     return CHARACTERISTIC[random.randint(0, 1)]
 
 
-def get_dearler_emoji(dealer_characteristic):
+def get_dealer_emoji(dealer_characteristic):
     if dealer_characteristic == "good":
         return POS_EMOJIS[random.randint(0, 3)]
     else:  # dealer characteristic == bad
@@ -103,11 +103,19 @@ def update_dealer_sale(dealer, new_car_life):
         dealer["avg_car_life_sold"] = round(avg_car_life, 2)
 
 
-def check_credibility(dealer):
+def is_mature(buyer):
+    return buyer["age"] >= buyer["mature"]
+
+
+def is_credible(dealer, buyer):
     # scenario that none of the seller had already
     # and have several crediable jobs
-    return (dealer["avg_car_life_sold"] is None
-            or dealer["avg_car_life_sold"] >= MEDIUM_CAR_LIFE)
+    if is_mature(buyer):
+        return (dealer["avg_car_life_sold"] is None
+                or dealer["avg_car_life_sold"] >= MEDIUM_CAR_LIFE)
+    else:
+        # immature buyers are gullible!
+        return True
 
 
 def is_mature_buyer(agent):
@@ -150,14 +158,17 @@ def update_buyer(agent, my_dealer):
 def buyer_action(agent):  # how to write this testcase
     print("_" * 20)
     print("Agent: " + agent.name)
+    agent["age"] += 1
     if not agent["has_car"]:
         my_dealer = car_market.get_neighbor_of_groupX(agent,
                                                       dealer_grp,
-                                                      hood_size=1)
-        if my_dealer is not None and check_credibility(my_dealer):
+                                                      hood_size=4)
+        if my_dealer is None:
+            print("No dealers nearby.")
+        elif is_credible(agent, my_dealer):
             update_buyer(agent, my_dealer)
         else:
-            print("No dealers nearby.")
+            print("I found a rotten dealer: ", str(my_dealer))
     else:
         print("I have a car!")
         agent["car_life"] -= 1
@@ -193,6 +204,8 @@ def create_buyer(name, i, props=None):  # testcase done
                  attrs={"has_car": False,
                         "car_life": None,
                         "interaction_res": None,
+                        "age": 0,
+                        "mature": 40,
                         "dealer_his": [],
                         "emoji_carlife_assoc": {},
                         "emoji_life_avg": {},
@@ -203,7 +216,7 @@ def set_up(props=None):  # testcase done
     """
     A func to set up run that can also be used by test code.
     """
-    pa = get_props(MODEL_NAME, props)
+    pa = get_props(MODEL_NAME, props, model_dir="ml")
     dealer_grp = Composite("Dealers", {"color": BLUE},
                            member_creator=create_dealer,
                            num_members=pa.get('num_sellers', DEF_NUM_BLUE))
