@@ -27,6 +27,13 @@
     "hival": 100,
     "lowval": 1
   },
+  "buyer_maturity": {
+    "val": 40,
+    "question": "How many periods does it take a buyer to mature?",
+    "atype": "INT",
+    "hival": 400,
+    "lowval": 10
+  },
   "use_line": {
     "val": 0,
     "atype": "BOOL"

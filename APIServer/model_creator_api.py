@@ -2,7 +2,7 @@
 
 from flask_restplus import fields
 
-from APIServer.api_utils import json_converter
+from APIServer.api_utils import json_converter, ENDPOINT_DESCR
 from indra.agent import Agent
 from indra.composite import Composite
 from indra.env import Env
@@ -13,8 +13,9 @@ class AgentTypes(fields.Raw):
         return Composite(name)
 
 
-def generateFunc(agent):
-    print("Just testing the actions for " + agent.name + "!!")
+def generate_func(agent):
+    # if agent.env is not None:
+    agent.env.user.tell("Just testing the actions for " + agent.name + "!!")
     return False
 
 
@@ -24,7 +25,7 @@ class CreateGroups(fields.Raw):
         i = 0
         while i < agent_num:
             agents_arr.append(Agent(agent_name + "_agent" + str(i + 1),
-                                    action=generateFunc,
+                                    action=generate_func,
                                     ))
             i = i + 1
         return agents_arr
@@ -45,8 +46,7 @@ class CreateGroups(fields.Raw):
 
 
 def get_model_creator():
-    return {'feature_name': 'This is the URL for the model creator: '
-                            + 'it is used with a PUT request.'}
+    return {ENDPOINT_DESCR: ' create a new model.'}
 
 
 def put_model_creator(model_features):

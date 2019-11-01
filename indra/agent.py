@@ -198,6 +198,7 @@ class Agent(object):
                 }
 
     def from_json(self, serial_agent):
+        self.env = None
         from models.run_dict_helper import action_dict
         self.action = None
         if serial_agent["action_key"] is not None:
@@ -231,6 +232,8 @@ class Agent(object):
 
     def set_pos(self, locator, x, y):
         self.locator = locator  # whoever sets my pos is my locator!
+        if self.env is None:
+            self.env = locator
         self.pos = (x, y)
 
     def get_pos(self):
@@ -386,8 +389,12 @@ class Agent(object):
 
             if is_space(group):
                 self.locator = group
+                if self.env is None:
+                    self.env = group
 
             pg = self.prim_group
+            # Why do we do line 395? And if we need to, why not just
+            # isinstance(pg, str) ?
             if (not pg) or str(type(pg)) == "<class 'str'>":
                 self.prim_group = group
 

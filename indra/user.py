@@ -4,6 +4,7 @@ This file defines User, which represents a user in our system.
 import json
 import os
 import sys
+from abc import abstractmethod
 
 from IPython import embed
 
@@ -94,6 +95,7 @@ def get_menu_json():
 class User(Agent):
     """
     A representation of the user in the system.
+    It is an abstract class!
     """
 
     def __init__(self, name, env, **kwargs):
@@ -124,12 +126,14 @@ class User(Agent):
         if to_del >= 0:
             del self.menu[to_del]
 
+    @abstractmethod
     def tell(self, msg, end='\n'):
         """
         How to tell the user something.
         """
         pass
 
+    @abstractmethod
     def ask(self, msg, default=None):
         """
         How to ask the user something.
