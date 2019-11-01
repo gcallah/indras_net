@@ -17,6 +17,9 @@ class TestModelCreator(TestCase):
         pass
 
     def test_get_model_creator(self):
+        """
+        This tests the get endpoint for the model creator.
+        """
         ret_dict = get_model_creator()
         self.assertTrue(ENDPOINT_DESCR in ret_dict)
 
