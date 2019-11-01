@@ -21,7 +21,7 @@ DEF_NUM_RHOLDER = 10
 
 DEF_ENTR_CASH = 10000
 DEF_RHOLDER_CASH = 0
-DEF_K_PRICE = 1000
+DEF_K_PRICE = 1
 
 
 DEF_RESOURCE_HOLD = {"land": 1000, "truck": 500, "labor": 200}
@@ -33,78 +33,75 @@ market = None
 
 
 def entr_action(agent):
-    nearby_rholder = market.get_neighbor_of_groupX(agent,
-                                                   resource_holders,
-                                                   hood_size=4)
-    if nearby_rholder is not None:
-        if agent["cash"] > 0:
+    if agent["cash"] > 0:
+        nearby_rholder = market.get_neighbor_of_groupX(agent,
+                                                       resource_holders,
+                                                       hood_size=4)
+        if nearby_rholder is not None:
             # try to buy a resource if you have cash
-            for cap in agent["wants"].keys():
+            for good in agent["wants"].keys():
+                price = nearby_rholder["price"]
+                entr_max_buy = min(agent["cash"], agent["wants"][good] * price)
                 # if find the resources entr want
-                if cap in nearby_rholder["resources"].keys():
+                if good in nearby_rholder["resources"].keys():
+                    trade_amt = min(entr_max_buy,
+                                    nearby_rholder["resources"][good])
                     # update resources for the two groups
-                    if cap not in agent["have"].keys():
-                        agent["have"][cap] = 0
-                    if nearby_rholder["resources"][cap] >= agent["wants"][cap]:
-                        nearby_rholder["resources"][cap] -= agent["wants"][cap]
-                        agent["have"][cap] += agent["wants"][cap]
-                        agent["wants"][cap] = 0
-                    else:
-                        # rholder resources < entr wants
-                        agent["wants"][cap] -= nearby_rholder["resources"][cap]
-                        agent["have"][cap] = nearby_rholder["resources"][cap]
-                        nearby_rholder["resources"][cap] = 0
-
-                    if agent["wants"][cap] == 0:
-                        agent["wants"].pop(cap)
-                    if agent["have"][cap] == 0:
-                        agent["have"].pop(cap)
-                    if nearby_rholder["resources"][cap] == 0:
-                        nearby_rholder["resources"].pop(cap)
-
-                    # update cash for the two groups
-                    price = nearby_rholder["price"]
-                    agent["cash"] -= price
-                    nearby_rholder["cash"] += price
+                    if good not in agent["have"].keys():
+                        agent["have"][good] = trade_amt
+                    agent["have"][good] += trade_amt
+                    agent["wants"][good] -= trade_amt
+                    nearby_rholder["resources"][good] -= trade_amt
+                    nearby_rholder["cash"] += trade_amt * price
+                    agent["cash"] -= trade_amt * price
+                    if agent["wants"][good] == 0:
+                        agent["wants"].pop(good)
+                    if nearby_rholder["resources"][good] == 0:
+                        nearby_rholder["resources"].pop(good)
                     break
 
             if agent["wants"] and agent["have"]:
-                print("I'm " + agent.name + " and I will buy resources from "
-                      + str(nearby_rholder) + ". I have "
-                      + str(agent["cash"]) + " dollars left."
-                      + " I want " + str(agent["wants"])
-                      + ", and I have " + str(agent["have"]) + ".")
+                market.user.tell("I'm " + agent.name
+                                 + " and I will buy resources from "
+                                 + str(nearby_rholder) + ". I have "
+                                 + str(agent["cash"]) + " dollars left."
+                                 + " I want " + str(agent["wants"])
+                                 + ", and I have " + str(agent["have"]) + ".")
             elif agent["wants"]:
-                print("I'm " + agent.name + " and I will buy resources from "
-                      + str(nearby_rholder) + ". I have "
-                      + str(agent["cash"]) + " dollars left."
-                      + " I want " + str(agent["wants"])
-                      + ", and I don't have any capital.")
+                market.user.tell("I'm " + agent.name
+                                 + " and I will buy resources from "
+                                 + str(nearby_rholder) + ". I have "
+                                 + str(agent["cash"]) + " dollars left."
+                                 + " I want " + str(agent["wants"])
+                                 + ", and I don't have any capital.")
             elif agent["have"]:
-                print("I'm " + agent.name + " and I will buy resources from "
-                      + str(nearby_rholder) + ". I have "
-                      + str(agent["cash"]) + " dollars left."
-                      + " I got all I need, and I have "
-                      + str(agent["have"]) + "!")
+                market.user.tell("I'm " + agent.name
+                                 + " and I will buy resources from "
+                                 + str(nearby_rholder) + ". I have "
+                                 + str(agent["cash"]) + " dollars left."
+                                 + " I got all I need, and I have "
+                                 + str(agent["have"]) + "!")
             return False
             # move to find resource holder
 
         else:
-            print("I'm " + agent.name + " and I'm broke!")
+            market.user.tell("I'm " + agent.name + " and I'm broke!")
     else:
-        print("I'm " + agent.name + " and I can't find resources.")
+        market.user.tell("I'm " + agent.name + " and I can't find resources.")
     return True
 
 
 def rholder_action(agent):
     if agent["resources"]:
-        print("I'm " + agent.name + " and I've got resources. I have "
-              + str(agent["cash"]) + " dollors now."
-              + " I have " + str(agent["resources"]) + ".")
+        market.user.tell("I'm " + agent.name
+                         + " and I've got resources. I have "
+                         + str(agent["cash"]) + " dollors now."
+                         + " I have " + str(agent["resources"]) + ".")
     else:
-        print("I'm " + agent.name + " and I've got resources. I have "
-              + str(agent["cash"]) + " dollors now."
-              + " I ran out of resources!")
+        market.user.tell("I'm " + agent.name
+                         + " and I've got resources. I have "
+                         + str(agent["cash"]) + " dollors now."
+                         + " I ran out of resources!")
     # resource holder dont move
     return True
 
@@ -200,7 +197,7 @@ def main():
     (market, blue_group, red_group) = set_up()
 
     if DEBUG2:
-        print(market.__repr__())
+        market.user.tell(market.__repr__())
 
     market()
     return 0

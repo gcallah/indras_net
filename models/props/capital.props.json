@@ -28,7 +28,7 @@
     "lowval": 1
   },
   "cap_price": {
-    "val": 100,
+    "val": 1,
     "question": "How much does each capital cost?",
     "atype": "INT",
     "hival": 1000,
