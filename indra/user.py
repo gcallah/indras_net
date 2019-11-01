@@ -1,11 +1,13 @@
 """
 This file defines User, which represents a user in our system.
 """
-import os
 import json
+import os
 import sys
-from indra.agent import Agent
+
 from IPython import embed
+
+from indra.agent import Agent
 
 TERMINAL = "terminal"
 TEST = "test"
@@ -49,10 +51,6 @@ def leave(user):
 
 
 def scatter_plot(user, update=False):
-    if update:
-        user.tell("Updating the scatter plot.")
-    else:
-        user.tell("Drawing a scatter plot.")
     return user.env.scatter_graph()
 
 

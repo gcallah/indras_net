@@ -2,14 +2,15 @@
 This file defines Space, which is a collection
 of agents related spatially.
 """
-from functools import wraps
-from random import randint
-import random
-from math import sqrt
-from indra.agent import is_composite, AgentEncoder
-from indra.composite import Composite
 import json
 import math
+import random
+from functools import wraps
+from math import sqrt
+from random import randint
+
+from indra.agent import is_composite, AgentEncoder
+from indra.composite import Composite
 
 DEF_WIDTH = 10
 DEF_HEIGHT = 10
@@ -41,7 +42,7 @@ def distance(a1, a2):
     is easy if they are both located in space, but what if one of them is
     not? For now, we will return 0, but is that right?
     """
-    if (not a1.islocated()) or (not a2.islocated()):
+    if (not a1.is_located()) or (not a2.is_located()):
         return 0.0
     else:
         return sqrt(
@@ -238,7 +239,7 @@ class Space(Composite):
         high_x = self.width
         low_y = 0
         high_y = self.height
-        if max_move is not None and mbr.islocated():
+        if max_move is not None and mbr.is_located():
             low_x = self.constrain_x(mbr.get_x() - max_move)
             high_x = self.constrain_x(mbr.get_x() + max_move)
             low_y = self.constrain_y(mbr.get_y() - max_move)
@@ -280,7 +281,7 @@ class Space(Composite):
             else:
                 (x, y) = self.gen_new_pos(mbr, max_move)
             if self.is_empty(x, y):
-                if mbr.islocated():
+                if mbr.is_located():
                     self.move_location(x, y, mbr.get_x(), mbr.get_y())
                 else:
                     self.add_location(x, y, mbr)

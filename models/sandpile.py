@@ -2,12 +2,12 @@
 Abelian sandpile model.
 """
 
-from indra.utils import get_props
 from indra.agent import Agent
 from indra.composite import Composite
-from indra.space import DEF_HEIGHT, DEF_WIDTH
-from indra.env import Env
 from indra.display_methods import CIRCLE
+from indra.env import Env
+from indra.space import DEF_HEIGHT, DEF_WIDTH
+from indra.utils import get_props
 
 MODEL_NAME = "sandpile"
 DEBUG = False  # Turns debugging code on or off
@@ -124,7 +124,7 @@ def set_up(props=None):
     return (sandpile_env, groups, group_indices)
 
 
-def sp_unrestorable(env):
+def restore_globals(env):
     global groups
     global group_indices
     global sandpile_env

@@ -88,47 +88,54 @@ class Env(Space):
                          random_placing=random_placing, serial_obj=serial_obj,
                          **kwargs)
 
+        self.type = "env"
+        self.user_type = os.getenv("user_type", TERMINAL)
         self.props = props
         self.census_func = census
         self.pop_hist_setup = pop_hist_setup
         self.pop_hist_func = pop_hist_func
+        self.num_switches = 0
         if serial_obj is not None:
             # are we restoring env from json?
             self.restore_env(serial_obj)
         else:
-            self.pop_hist = PopHist()  # this will record pops across time
-            # Make sure varieties are present in the history
-            if self.pop_hist_setup is None:
-                for mbr in self.members:
-                    self.pop_hist.record_pop(mbr, self.pop_count(mbr))
-            else:
-                self.pop_hist_setup(self.pop_hist)
+            self.set_initial_mbr_vals(line_data_func, exclude_member)
 
-            # Attributes for plotting
-            self.plot_title = self.name
-            self.user = None
-            self.line_data_func = line_data_func
-            self.exclude_member = exclude_member
-            self.womb = []  # for agents waiting to be born
-            self.switches = []  # for agents waiting to switch groups
-            self.user_type = os.getenv("user_type", TERMINAL)
-            if self.user_type == TERMINAL:
-                self.user = TermUser(getpass.getuser(), self)
-                self.user.tell("Welcome to Indra, " + str(self.user) + "!")
-            elif self.user_type == TEST:
-                self.user = TestUser(getpass.getuser(), self)
-            elif self.user_type == API:
-                self.user = APIUser(getpass.getuser(), self)
-
-        self.type = "env"
-        self.num_acts = 0
-        self.num_moves = 0
-        self.num_switches = 0
         if self.props is not None:
-            if not self.props.get('use_line', True):
-                self.exclude_menu_item("line_graph")
-            if not self.props.get('use_scatter', True):
-                self.exclude_menu_item("scatter_plot")
+            self.set_menu_excludes(self.props)
+
+    def set_menu_excludes(self, props):
+        if not props.get('use_line', True):
+            self.exclude_menu_item("line_graph")
+        if not props.get('use_scatter', True):
+            self.exclude_menu_item("scatter_plot")
+
+    def set_initial_mbr_vals(self, line_data_func=None, exclude_member=None):
+        self.pop_hist = PopHist()  # this will record pops across time
+        # Make sure varieties are present in the history
+        if self.pop_hist_setup is None:
+            for mbr in self.members:
+                self.pop_hist.record_pop(mbr, self.pop_count(mbr))
+        else:
+            self.pop_hist_setup(self.pop_hist)
+
+        # Attributes for plotting
+        self.plot_title = self.name
+        self.user = None
+        self.line_data_func = line_data_func
+        self.exclude_member = exclude_member
+        self.womb = []  # for agents waiting to be born
+        self.switches = []  # for agents waiting to switch groups
+        self.handle_user_type()
+
+    def handle_user_type(self):
+        if self.user_type == TERMINAL:
+            self.user = TermUser(getpass.getuser(), self)
+            self.user.tell("Welcome to Indra, " + str(self.user) + "!")
+        elif self.user_type == TEST:
+            self.user = TestUser(getpass.getuser(), self)
+        elif self.user_type == API:
+            self.user = APIUser(getpass.getuser(), self)
 
     def from_json(self, serial_obj):
         super().from_json(serial_obj)
@@ -160,7 +167,7 @@ class Env(Space):
                 for gnm in self.registry[nm].groups:
                     if gnm in self.registry:
                         self.registry[nm].add_group(self.registry[gnm])
-        # set up each agent's locator
+            # set up each agent's locator
             if nm != self.name and self.registry[nm].type == "agent":
                 self.registry[nm].locator = self
 
@@ -246,50 +253,53 @@ class Env(Space):
         switch(agent, from_grp, to_grp)
         self.num_switches += 1
 
+    def handle_womb(self):
+        if self.womb is not None:
+            for (agent, group) in self.womb:
+                # add the agent into the registry
+                self.registry[agent.name] = agent
+                join(group, agent)
+            del self.womb[:]
+
+    def handle_switches(self):
+        if self.switches is not None:
+            for (agent, from_grp, to_grp) in self.switches:
+                switch(agent, from_grp, to_grp)
+                self.num_switches += 1
+            del self.switches[:]
+
+    def handle_pop_hist(self):
+        self.pop_hist.add_period()
+        if self.pop_hist_func is None:
+            for mbr in self.pop_hist.pops:
+                if mbr in self.members and self.is_mbr_comp(mbr):
+                    self.pop_hist.record_pop(mbr, self.pop_count(mbr))
+                else:
+                    self.pop_hist.record_pop(mbr, 0)
+        else:
+            self.pop_hist_func(self.pop_hist)
+
     def runN(self, periods=DEF_TIME):
         """
             Run our model for N periods.
             Return the total number of actions taken.
         """
         num_acts = 0
+        num_moves = 0
         for i in range(periods):
-            # before members act, give birth to new agents
-            # we will have tuple of agent and group
-            # do group += agent
-            # self.user.tell("In period ", i)
-            if self.womb is not None:
-                for (agent, group) in self.womb:
-                    # add the agent into the registry
-                    self.registry[agent.name] = agent
-                    join(group, agent)
-                del self.womb[:]
-            if self.switches is not None:
-                for (agent, from_grp, to_grp) in self.switches:
-                    switch(agent, from_grp, to_grp)
-                    self.num_switches += 1
-                del self.switches[:]
-
-            self.pop_hist.add_period()
-            if self.pop_hist_func is None:
-                for mbr in self.pop_hist.pops:
-                    if mbr in self.members and self.is_mbr_comp(mbr):
-                        self.pop_hist.record_pop(mbr, self.pop_count(mbr))
-                    else:
-                        self.pop_hist.record_pop(mbr, 0)
-            else:
-                self.pop_hist_func(self.pop_hist)
+            self.handle_womb()
+            self.handle_switches()
+            self.handle_pop_hist()
 
             (a, m) = super().__call__()
             num_acts += a
-            self.num_moves += m
-            census_rpt = self.get_census()
+            num_moves += m
+            census_rpt = self.get_census(num_moves)
             self.user.tell(census_rpt)
-            self.num_acts = 0
-            self.num_moves = 0
             self.num_switches = 0
         return num_acts
 
-    def get_census(self):
+    def get_census(self, num_moves):
         """
         Gets the census data for all the agents stored
         in the member dictionary.
@@ -318,7 +328,7 @@ class Env(Space):
                            + "Agent census:\n"
                            + "==================\n"
                            + "  Total agents moved: "
-                           + str(self.num_moves) + "\n"
+                           + str(num_moves) + "\n"
                            + "  Total agents who switched groups: "
                            + str(self.num_switches))
         return census_str
@@ -400,7 +410,7 @@ class Env(Space):
         if self.exclude_member is not None:
             exclude = self.exclude_member
         else:
-            exclude = -1 * UNLIMITED
+            exclude = None
         if self.line_data_func is None:
             data = {}
             for var in self.pop_hist.pops:

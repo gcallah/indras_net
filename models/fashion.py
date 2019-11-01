@@ -190,7 +190,7 @@ def set_up(props=None):
             red_followers, opp_group)
 
 
-def fs_unrestorable(env):
+def restore_globals(env):
     global red_tsetters
     global blue_tsetters
     global red_followers

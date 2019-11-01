@@ -3,12 +3,13 @@
 """
 import math
 
-from indra.utils import get_props
 from indra.agent import Agent, X, Y
 from indra.composite import Composite
-from indra.space import DEF_HEIGHT, DEF_WIDTH, distance
-from indra.env import Env
 from indra.display_methods import BLUE, TREE
+from indra.env import Env
+from indra.space import DEF_HEIGHT, DEF_WIDTH, distance
+from indra.utils import get_props
+
 MODEL_NAME = "flocking"
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
@@ -100,7 +101,7 @@ def set_up(props=None):
     return (the_sky, flock)
 
 
-def fl_unrestorable(env):
+def restore_globals(env):
     global flock
     global the_sky
     the_sky = env

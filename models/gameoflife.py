@@ -2,11 +2,11 @@
 Conway's Game of Life model.
 """
 
-from indra.utils import get_props
 from indra.agent import Agent
 from indra.composite import Composite
-from indra.env import Env
 from indra.display_methods import BLACK, SQUARE
+from indra.env import Env
+from indra.utils import get_props
 
 MODEL_NAME = "gameoflife"
 DEBUG = False  # Turns debugging code on or off
@@ -328,7 +328,7 @@ def set_up(props=None):
     return (gameoflife_env, groups)
 
 
-def gl_unrestorable(env):
+def restore_globals(env):
     global groups
     global gameoflife_env
     gameoflife_env = env

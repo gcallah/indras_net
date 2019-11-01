@@ -1,16 +1,15 @@
 # Indra API server
 import os
-from flask import Flask
-from flask_restplus import Resource, Api, fields
-from flask_cors import CORS
-import json
-from indra.user import APIUser
-from APIServer.props_api import get_props, put_props
-from APIServer.models_api import get_models
-from APIServer.run_model_api import run_model_put
-from APIServer.model_creator_api import put_model_creator
-from APIServer.model_creator_api import get_model_creator
 
+from flask import Flask
+from flask_cors import CORS
+from flask_restplus import Resource, Api, fields
+from indra.user import APIUser
+from APIServer.model_creator_api import get_model_creator
+from APIServer.model_creator_api import put_model_creator
+from APIServer.models_api import get_models
+from APIServer.props_api import get_props, put_props
+from APIServer.run_model_api import run_model_put
 
 app = Flask(__name__)
 CORS(app)
@@ -18,13 +17,9 @@ api = Api(app)
 
 user = APIUser("Dennis", None)
 
+# the hard-coded dir is needed for Python Anywhere, until
+# we figure out how to get the env var set there.
 indra_dir = os.getenv("INDRA_HOME", "/home/indrasnet/indras_net")
-
-
-def load_menu():
-    menu_file = indra_dir + "/indra/menu.json"
-    with open(menu_file) as file:
-        return json.loads(file.read())["menu_database"]
 
 
 @api.route('/hello')
@@ -37,6 +32,7 @@ group_fields = api.model("group", {
     "group_name": fields.String,
     "num_of_agents": fields.Integer,
     "color": fields.String,
+    "group_actions": fields.List(fields.String),
 })
 
 # env_width/height must be >0 when adding agents

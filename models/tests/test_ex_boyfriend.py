@@ -3,12 +3,11 @@ This is the test suite for ex-boyfriend.py.
 """
 
 from unittest import TestCase, main
+
 from propargs.propargs import PropArgs
-from operator import gt, lt
-from indra.agent import switch
-from indra.env import Env
-from models.ex_boyfriend import set_up
+
 import models.ex_boyfriend as ex_boyfriend
+from models.ex_boyfriend import set_up
 
 
 class ExBoyfriendTestCase(TestCase):

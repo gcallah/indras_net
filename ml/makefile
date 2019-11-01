@@ -11,15 +11,14 @@ prod: tests
 
 lint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
 
-pytests: $(PYTHONFILES)
-	./pytests.sh
 
-tests: pytests lint
+tests: test_used_cars lint
 
 %.pylint:
 	$(PYLINT) $(PYLINTFLAGS) $*.py
 
 test_used_cars:
+	$(PYLINT) $(PYLINTFLAGS) used_cars.py
 	nosetests tests.test_used_cars --nocapture
 
 nocrud:
