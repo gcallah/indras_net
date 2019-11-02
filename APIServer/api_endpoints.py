@@ -1,5 +1,6 @@
 # Indra API server
 import os
+import sys
 
 from flask import Flask
 from flask_cors import CORS
@@ -98,4 +99,5 @@ class RunModel(Resource):
 
 
 if __name__ == "__main__":
+    print("Warning: you should use api.sh to run the server.", file=sys.stderr)
     app.run(host="127.0.0.1", port=8000, debug=True)
