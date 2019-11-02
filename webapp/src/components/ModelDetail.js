@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import ModelInputField from "./ModelInputField";
 import PageLoader from "./PageLoader";
 import axios from "axios";
+import './styles.css';
 
 const api_server = "https://indrasnet.pythonanywhere.com/models/props/";
 
@@ -135,7 +136,7 @@ class ModelDetail extends Component {
     }
 
     renderHeader = () => {
-        return <h1 style={{ "textAlign": "center", "fontWeight": "200" }}>Please set the parameters for the {localStorage.getItem("name")} model</h1>
+        return <h1 className="header" style={{ "textAlign": "center", "fontWeight": "200" }}> Please set the parameters for the {localStorage.getItem("name")} model</h1>
     }
 
     renderSubmitButton = () => {
@@ -158,7 +159,8 @@ class ModelDetail extends Component {
 
         return (
             <div>
-                {this.renderHeader()}
+                <h1 className= "margin-top-60"> </h1> 
+                {this.renderHeader()} 
                 <br /><br />
                 <form>
                     <div className="container">

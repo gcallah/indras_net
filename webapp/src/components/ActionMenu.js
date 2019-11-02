@@ -23,7 +23,6 @@ class ActionMenu extends React.Component {
     super(props);
     autoBind(this);
     this.state = {
-      msg: 'Please run model in order to retrieve data',
       menu: {},
       loadingData: false,
       env_file: {},
@@ -261,7 +260,7 @@ class ActionMenu extends React.Component {
     const { menu } = this.state;
     return (
       <div className="row margin-bottom-80">
-        <div className="col">
+        <div className="col w-25">
           <ListGroup>
             {
               Object.keys(menu).map((item, i) => (
