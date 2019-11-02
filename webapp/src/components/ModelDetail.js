@@ -158,9 +158,6 @@ class ModelDetail extends Component {
 
         return (
             <div>
-                <br />
-                <button className="btn btn-light m-2" onClick={this.goback}>Back</button>
-                <br />
                 {this.renderHeader()}
                 <br /><br />
                 <form>

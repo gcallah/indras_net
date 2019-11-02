@@ -9,6 +9,7 @@ import PreFormTextBox from './PreFormTextBox';
 import ModelStatusBox from './ModelStatusBox';
 import autoBind from 'react-autobind';
 import SourceCodeViewer from './SourceCodeViewer';
+import './styles.css';
 
 
 const POP = 2;
@@ -292,7 +293,6 @@ class ActionMenu extends React.Component {
      
       <div>
         <br />
-        <button type="button" className="btn btn-light m-2" onClick={this.goback}>Back</button>
         {this.renderHeader()}
         <div>
         <ModelStatusBox title='Model Status' msg={this.state.msg} ref={this.modelStatusBoxElement}/>
