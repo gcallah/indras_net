@@ -93,6 +93,7 @@ tests: FORCE
 	cd APIServer; make tests
 	cd indra; make tests
 	cd models; make tests
+	cd webapp; make tests
 
 lint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
 
