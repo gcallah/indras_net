@@ -6,6 +6,7 @@ tests: jstests lint
 lint: $(patsubst %.js,%.jslint,$(JSFILES))
 
 jstests: $(JSFILES)
+	npm build
 	npm test
 
 %.jslint:
