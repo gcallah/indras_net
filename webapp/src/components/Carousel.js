@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Slider from 'react-slick';
-import propTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 class Carousel extends Component {
   renderImage = () => {
@@ -50,10 +50,13 @@ class Carousel extends Component {
 }
 
 Carousel.propTypes = {
-  dots: propTypes.bool,
-  speed: propTypes.number,
-  autoplay: propTypes.bool,
-  data: propTypes.arrayOf,
+  dots: PropTypes.bool,
+  speed: PropTypes.number,
+  autoplay: PropTypes.bool,
+  data: PropTypes.arrayOf(PropTypes.shape({
+    image: PropTypes.string,
+    title: PropTypes.string,
+  })),
 };
 
 Carousel.defaultProps = {
