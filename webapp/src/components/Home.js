@@ -1,3 +1,5 @@
+/* eslint-disable import/no-unresolved */
+
 import React, { Component } from 'react';
 import { Loader, Dimmer } from 'semantic-ui-react';
 import ListGroup from 'react-bootstrap/ListGroup';
