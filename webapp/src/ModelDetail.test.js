@@ -33,7 +33,7 @@ import ModelDetail from './components/ModelDetail';
 
 
 // it('renders input', () => {
-//   const wrapper = mount(<input type="item_type" defaultValue="default_value" name="item_name" />);
+//   const wrapper = mount(<input type="item_type" defaultValue="default_value" name="item_name"/>);
 //   const input = wrapper.find('input');
 //   expect(input).toHaveLength(1);
 //   expect(input.prop('type')).toEqual('item_type');
