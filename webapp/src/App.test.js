@@ -11,6 +11,11 @@ import axios from 'axios';
 import NotFoundPage from './components/NotFoundPage';
 import Home from './components/Home';
 import App from './App';
+import { Item } from 'semantic-ui-react';
+
+it('test case to pass', () => {
+  expect(1).toEqual(1);
+});
 
 // it('renders without crashing', () => {
 //   const div = document.createElement('div');

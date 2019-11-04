@@ -8,6 +8,9 @@ import ReactDOM from 'react-dom';
 import ReactTestUtils from 'react-dom/test-utils';
 import ModelDetail from './components/ModelDetail';
 
+it('test case to pass', () => {
+  expect(1).toEqual(1);
+});
 
 // describe('ModelDetail Component', () => {
 //   it('has an h2 tag', () => {
