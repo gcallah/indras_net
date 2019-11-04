@@ -1,13 +1,13 @@
 JSLINT = ./node_modules/.bin/eslint
-JSFILES = $(shell ls -R *.js)
+JSFILES = src
 
-tests: jstests lint
+tests: lint install jstests
 
-lint: $(patsubst %.js,%.jslint,$(JSFILES))
+lint:
+	$(JSLINT) $(JSFILES)
 
-jstests: $(JSFILES)
+install:
 	npm install
-	npm test
 
-%.jslint:
-	$(JSLINT) $*.js
+jstests:
+	npm test
