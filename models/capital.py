@@ -4,6 +4,7 @@ Places two groups of agents in the enviornment randomly
 and moves them around randomly.
 """
 import copy
+import random
 
 from indra.agent import Agent
 from indra.composite import Composite
@@ -18,6 +19,7 @@ DEBUG2 = False  # turns deeper debugging code on or off
 
 DEF_NUM_ENTR = 10
 DEF_NUM_RHOLDER = 10
+DEF_TOTAL_RESOURCES_ENTR_WANT = 3000
 
 DEF_ENTR_CASH = 10000
 DEF_RHOLDER_CASH = 0
@@ -117,12 +119,12 @@ def create_entr(name, i, props=None):
 
     resources = copy.deepcopy(DEF_CAP_WANTED)
     if props is not None:
-        resources["land"] = props.get('entr_starting_resource_land',
-                                      DEF_RESOURCE_HOLD)
-        resources["truck"] = props.get('entr_starting_resource_truck',
-                                       DEF_K_PRICE)
-        resources["building"] = props.get('entr_starting_resource_building',
-                                          DEF_K_PRICE)
+        total_resources = props.get('entr_starting_resource_total',
+                                    DEF_TOTAL_RESOURCES_ENTR_WANT)
+        num_resources = len(resources)
+        for k in resources.keys():
+            resources[k] = int((total_resources * 2)
+                               * (random.random() / num_resources))
 
     return Agent(name + str(i), action=entr_action,
                  attrs={"cash": starting_cash,
