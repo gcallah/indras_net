@@ -14,7 +14,7 @@ class ModelDetail extends Component {
             model_details: {},
             loadingData: false,
             disabled_button: false,
-            env_file:{},
+            envFile:{},
         }
     }
 
@@ -123,10 +123,10 @@ class ModelDetail extends Component {
         try{
             const res = await axios.put(api_server + localStorage.getItem("menu_id"), this.state.model_details)
             var item_id = localStorage.getItem("menu_id")
-            this.setState({env_file: res.data})
-            localStorage.setItem("env_file", JSON.stringify(this.state.env_file))
+            this.setState({envFile: res.data})
+            localStorage.setItem("envFile", JSON.stringify(this.state.envFile))
             this.props.history.push({pathname:"/models/menu/" + (item_id.toString(10)) ,state: {
-            env_file: this.state.env_file,
+            envFile: this.state.envFile,
             }});
         }
         catch(e){

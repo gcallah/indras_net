@@ -4,11 +4,11 @@ import 'chart.js';
 
 const FMARKET = 10;
 function ScatterPlot(props) {
-  const {loadingData, env_file, id} = props;
+  const {loadingData, envFile, id} = props;
   if (loadingData && id !== FMARKET) {
-    const env = env_file.members;
-    const WIDTH = env_file.props.grid_height.val;
-    const HEIGHT = env_file.props.grid_width.val;
+    const env = envFile.members;
+    const WIDTH = envFile.props.grid_height.val;
+    const HEIGHT = envFile.props.grid_width.val;
     console.log(HEIGHT);
     console.log(WIDTH);
     console.log(env);
