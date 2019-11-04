@@ -41,3 +41,6 @@
   font-size: 16px;
   font-weight: 400;
 }
+.col {
+  cursor: pointer;
+}

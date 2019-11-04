@@ -33,7 +33,7 @@ from models.wolfram import wolfram_action, wfagent_action
 from models.wolfsheep import main as wsmain
 from models.wolfsheep import set_up as wsset_up
 from models.wolfsheep import sheep_action, wolf_action
-from APIServer.model_creator_api import generateFunc
+from APIServer.model_creator_api import generate_func
 
 rdict = {
     "basic": bamain,
@@ -89,5 +89,5 @@ action_dict = {
     "trend_follower_action": trend_follower_action,
     "value_investor_action": value_investor_action,
     "bird_action": bird_action,
-    "generateFunc": generateFunc
+    "generate_func": generate_func
 }

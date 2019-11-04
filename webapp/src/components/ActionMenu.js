@@ -1,14 +1,16 @@
+/* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import ListGroup from 'react-bootstrap/ListGroup';
 import axios from 'axios';
+import autoBind from 'react-autobind';
 import PageLoader from './PageLoader';
 import PopulationGraph from './PopulationGraph';
 import ScatterPlot from './ScatterPlot';
 import Debugger from './Debugger';
 import PreFormTextBox from './PreFormTextBox';
 import ModelStatusBox from './ModelStatusBox';
-import autoBind from 'react-autobind';
 import SourceCodeViewer from './SourceCodeViewer';
+import './styles.css';
 
 
 const POP = 2;
@@ -17,15 +19,14 @@ const DATA = 4;
 const SOURCE = 5;
 const API_SERVER = 'https://indrasnet.pythonanywhere.com/models/menu/';
 
-class ActionMenu extends React.Component {
+class ActionMenu extends Component {
   constructor(props) {
     super(props);
     autoBind(this);
     this.state = {
-      msg: 'Please run model in order to retrieve data',
       menu: {},
       loadingData: false,
-      env_file: {},
+      envFile: {},
       modelId: 0,
       actionId: 0,
       showComponent: false,
@@ -35,7 +36,7 @@ class ActionMenu extends React.Component {
       loadingPopulation: false,
       loadingScatter: false,
       loadingDebugger: false,
-      
+
     };
   }
 
@@ -49,26 +50,28 @@ class ActionMenu extends React.Component {
       name: localStorage.getItem('name'),
       modelId: localStorage.getItem('menu_id'),
       source: localStorage.getItem('source'),
-      env_file: JSON.parse(localStorage.getItem('env_file')),
-      msg: JSON.parse(localStorage.getItem('env_file')).user.user_msgs,
+      envFile: JSON.parse(localStorage.getItem('envFile')),
+      msg: JSON.parse(localStorage.getItem('envFile')).user.user_msgs,
       sourceCode: code,
     });
     console.log(this.state);
   }
 
-  viewSource = async() => {
+  viewSource = async () => {
     try {
-      const splitSource = localStorage.getItem('source').split('/')
-      const filename = splitSource[splitSource.length - 1]
+      const splitSource = localStorage.getItem('source').split('/');
+      const filename = splitSource[splitSource.length - 1];
       const res = await axios.get(
-        `https://raw.githubusercontent.com/gcallah/indras_net/master/models/${filename}`
+        `https://raw.githubusercontent.com/gcallah/indras_net/master/models/${filename}`,
       );
       console.log(res.data);
       return res.data;
-    } catch(e) {
+    } catch (e) {
       console.log(e);
+      return false;
     }
   };
+
   onClick = () => {
     this.setState({
       showComponent: true,
@@ -134,23 +137,23 @@ class ActionMenu extends React.Component {
   };
 
   sendNumPeriods = async () => {
-    const { periodNum, env_file } = this.state;
+    const { periodNum, envFile, msg } = this.state;
     console.log(`${API_SERVER}run/${String(periodNum)}`);
     this.setState({ loadingData: true });
     try {
       const res = await axios.put(
         `${API_SERVER}run/${String(periodNum)}`,
-        env_file,
+        envFile,
         periodNum,
       );
 
       this.setState({
-        env_file: res.data,
+        envFile: res.data,
         loadingData: false,
         msg: res.data.user.user_msgs,
       });
       console.log(res.data);
-      console.log("message is ", this.state.msg)
+      console.log('message is ', msg);
     } catch (e) {
       console.log(e.message);
     }
@@ -176,12 +179,11 @@ class ActionMenu extends React.Component {
   );
 
   renderModelStatus = () => {
+    const { msg } = this.state;
     return (
-      
       <div>
         <div className="card w-50 overflow-auto model-status">
-      
-          { PreFormTextBox('Model Status', this.state.msg) }
+          { PreFormTextBox('Model Status', msg) }
         </div>
       </div>
     );
@@ -190,30 +192,30 @@ class ActionMenu extends React.Component {
   renderMenuItem = () => {
     const {
       loadingPopulation,
-      env_file,
+      envFile,
       modelId,
       loadingDebugger,
       loadingScatter,
       loadingSourceCode,
-      sourceCode
+      sourceCode,
     } = this.state;
     return (
       <div>
         <PopulationGraph
           loadingData={loadingPopulation}
-          env_file={env_file}
+          envFile={envFile}
           id={modelId}
         />
 
         <ScatterPlot
           loadingData={loadingScatter}
-          env_file={env_file}
+          envFile={envFile}
           id={modelId}
         />
 
         <Debugger
           loadingData={loadingDebugger}
-          env_file={env_file}
+          envFile={envFile}
         />
 
         <SourceCodeViewer
@@ -260,7 +262,7 @@ class ActionMenu extends React.Component {
     const { menu } = this.state;
     return (
       <div className="row margin-bottom-80">
-        <div className="col">
+        <div className="col w-25">
           <ListGroup>
             {
               Object.keys(menu).map((item, i) => (
@@ -281,26 +283,23 @@ class ActionMenu extends React.Component {
   }
 
   render() {
-    const { loadingDatam } = this.state;
-    
+    const { loadingDatam, msg } = this.state;
+
     if (loadingDatam) {
       return (
         <PageLoader />
       );
     }
     return (
-     
       <div>
         <br />
-        <button type="button" className="btn btn-light m-2" onClick={this.goback}>Back</button>
         {this.renderHeader()}
         <div>
-        <ModelStatusBox title='Model Status' msg={this.state.msg} ref={this.modelStatusBoxElement}/>
+          <ModelStatusBox title="Model Status" msg={msg} ref={this.modelStatusBoxElement} />
         </div>
         <ul className="list-group">
           <div className="row">
             <div>
-            
               {this.renderRunButton()}
               <h3 className="margin-top-60 mb-5">Model Analysis:</h3>
             </div>

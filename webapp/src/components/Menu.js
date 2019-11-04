@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-function Menu(props){
-    return(
-        <ul class="list-group">
-            <div class="row">
-                <div class="col">
-                    
-                </div>
-            </div>
-        </ul>
-    )
+function Menu() {
+  return (
+    <ul className="list-group">
+      <div className="row">
+        <div className="col" />
+      </div>
+    </ul>
+  );
 }
+
+export default Menu;

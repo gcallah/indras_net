@@ -1,19 +1,19 @@
-import React from "react";
-import ReactJson from 'react-json-view'
+/* eslint-disable react/prop-types */
+import React from 'react';
+import ReactJson from 'react-json-view';
 
 
-function Debugger(props){
-    let data = props.env_file
-    console.log(data)
-    if (props.loadingData){
-        console.log("inside Debugger")
-        return(
-        <ReactJson src={data} />
-        )
-    }
-    else {
-        return (null)
-    }
+function Debugger(props) {
+  const { envFile, loadingData } = props;
+  const data = envFile;
+  console.log(data);
+  if (loadingData) {
+    console.log('inside Debugger');
+    return (
+      <ReactJson src={data} />
+    );
+  }
+  return (null);
 }
 
 export default Debugger;

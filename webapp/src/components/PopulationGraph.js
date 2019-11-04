@@ -10,13 +10,13 @@ function PopulationGraph(props) {
     // if not Financial Market
     if (props.id !== FMARKET) {
       // ["pop_hist"]["pops"] == group == agent name
-      const env = props.env_file.pop_hist.pops;
+      const env = props.envFile.pop_hist.pops;
       Object.keys(env).map((group, i_group) => {
         // populate 'data' array with members of 'pops' with their respective values
         return (
           data.push({
             name: group,
-            color: props.env_file.members[group].attrs.color,
+            color: props.envFile.members[group].attrs.color,
             data: {}
           }),
           // modify 'data' dictionary of each pops member by copying 'pops' data
@@ -26,9 +26,9 @@ function PopulationGraph(props) {
       });
     // if Financial Market
     } else {
-      const period = props.env_file.pop_hist.periods;
+      const period = props.envFile.pop_hist.periods;
       const data_hist =
-        props.env_file.members.market_maker.attrs.price_hist;
+        props.envFile.members.market_maker.attrs.price_hist;
       let i;
       data.push({ name: 'price history', data: {} });
       for (i = 0; i < period; i++) {

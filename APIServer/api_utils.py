@@ -4,6 +4,8 @@ from indra.agent import AgentEncoder
 
 ERROR = "Error:"
 
+ENDPOINT_DESCR = "Put to this endpoint to "
+
 
 def err_return(s):
     return {ERROR: s}

@@ -21,7 +21,7 @@ export default class ModelStatusBox extends React.Component {
     
     return (
         <div>
-        <h5 style={{textAlign: 'center', "fontSize": 16}}className="card-header bg-primary text-white">
+        <h5 style={{textAlign: 'center', width: '18rem', height: '18rem', fontSize: 16, float:'right'}} className="card-header bg-primary text-white w-50">
         { this.state.title }
         </h5>
         <div className="card-body">
