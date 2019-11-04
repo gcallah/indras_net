@@ -24,8 +24,8 @@ DEF_RHOLDER_CASH = 0
 DEF_K_PRICE = 1
 
 
-DEF_RESOURCE_HOLD = {"land": 1000, "truck": 500, "labor": 200}
-DEF_CAP_WANTED = {"land": 1000, "truck": 500, "labor": 200}
+DEF_RESOURCE_HOLD = {"land": 1000, "truck": 500, "building": 200}
+DEF_CAP_WANTED = {"land": 1000, "truck": 500, "building": 200}
 
 resource_holders = None  # list of resource holders
 entrepreneurs = None  # list of entrepreneur
@@ -121,8 +121,8 @@ def create_entr(name, i, props=None):
                                       DEF_RESOURCE_HOLD)
         resources["truck"] = props.get('entr_starting_resource_truck',
                                        DEF_K_PRICE)
-        resources["labor"] = props.get('entr_starting_resource_labor',
-                                       DEF_K_PRICE)
+        resources["building"] = props.get('entr_starting_resource_building',
+                                          DEF_K_PRICE)
 
     return Agent(name + str(i), action=entr_action,
                  attrs={"cash": starting_cash,
@@ -150,8 +150,8 @@ def create_rholder(name, i, props=None):
                                       DEF_RESOURCE_HOLD)
         resources["truck"] = props.get('rholder_starting_resource_truck',
                                        DEF_K_PRICE)
-        resources["labor"] = props.get('rholder_starting_resource_labor',
-                                       DEF_K_PRICE)
+        resources["building"] = props.get('rholder_starting_resource_building',
+                                          DEF_K_PRICE)
 
     return Agent(name + str(i), action=rholder_action,
                  attrs={"cash": starting_cash,
