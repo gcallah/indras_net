@@ -1,17 +1,13 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-class MenuContainer extends Component {
-    render() { 
-        return (
-            <ul class="list-group">
-            <div class="row">
-                <div class="col">
-
-                </div>
-            </div>
-        </ul>
-          );
-    }
+function MenuContainer() {
+  return (
+    <ul className="list-group">
+      <div className="row">
+        <div className="col" />
+      </div>
+    </ul>
+  );
 }
- 
+
 export default MenuContainer;
