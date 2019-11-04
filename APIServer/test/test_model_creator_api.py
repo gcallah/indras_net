@@ -1,13 +1,10 @@
 """
 """
-import json
-import random
-from unittest import TestCase, main, skip
-
-from flask_restplus import Resource
+from unittest import TestCase, main
 
 from APIServer.model_creator_api import get_model_creator
-from APIServer.api_utils import  ENDPOINT_DESCR
+from APIServer.api_utils import ENDPOINT_DESCR
+
 
 class TestModelCreator(TestCase):
     def setUp(self):
@@ -22,6 +19,7 @@ class TestModelCreator(TestCase):
         """
         ret_dict = get_model_creator()
         self.assertTrue(ENDPOINT_DESCR in ret_dict)
+
 
 if __name__ == "__main__":
     main()
