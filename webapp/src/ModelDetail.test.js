@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import { shallow, mount } from 'enzyme';
 import { create } from 'react-test-renderer';
