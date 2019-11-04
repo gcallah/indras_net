@@ -13,8 +13,10 @@ from APIServer.api_utils import err_return
 from APIServer.models_api import load_models
 
 menu = [{"val": 0, "func": "run", "question": "Run for N periods"},
-        {"val": 1, "func": "line_graph", "question": "Display a population graph."},
-        {"val": 2, "func": "scatter_plot", "question": "Display a scatter plot."},
+        {"val": 1, "func": "line_graph", "question":
+            "Display a population graph."},
+        {"val": 2, "func": "scatter_plot", "question":
+            "Display a scatter plot."},
         {"val": 3, "func": "ipython", "question":
             "Leave menu for interactive python session."},
         {"val": 4, "func": "leave", "question": "Quit)."}
