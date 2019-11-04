@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-unused-vars */
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { shallow, mount } from 'enzyme';
@@ -10,8 +11,8 @@ import { create } from 'react-test-renderer';
 import axios from 'axios';
 import { Item } from 'semantic-ui-react';
 import NotFoundPage from './components/NotFoundPage';
-import Home from './components/Home';
-import App from './App';
+// import Home from './components/Home';
+// import App from './App';
 
 it('test case to pass', () => {
   expect(1).toEqual(1);
