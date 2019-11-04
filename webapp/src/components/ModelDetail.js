@@ -1,3 +1,9 @@
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable react/button-has-type */
+/* eslint-disable react/prop-types */
+/* eslint-disable camelcase */
+/* eslint-disable react/no-access-state-in-setstate */
+/* eslint-disable react/destructuring-assignment */
 import React, { Component } from 'react';
 import axios from 'axios';
 import ModelInputField from './ModelInputField';
@@ -95,93 +101,110 @@ class ModelDetail extends Component {
     }
 
 
-    checkValidity = (name,value) => {
-        if (value <= this.state.modelDetails[name]['hival']
-                && value >= this.state.modelDetails[name]['lowval']){
-            if (this.state.modelDetails[name]['atype'] === 'INT'
-                && !!(value%1) === false) {
-                return 1
-            }
-            else if(this.state.modelDetails[name]['atype'] === 'DBL'){
-                return 1
-            }
-            else {
-                return -1
-            }
+    checkValidity = (name, value) => {
+      if (value <= this.state.modelDetails[name].hival
+                && value >= this.state.modelDetails[name].lowval) {
+        if (this.state.modelDetails[name].atype === 'INT'
+                && !!(value % 1) === false) {
+          return 1;
         }
-        else return 0
+        if (this.state.modelDetails[name].atype === 'DBL') {
+          return 1;
+        }
+
+        return -1;
+      }
+      return 0;
     }
 
 
-    handleSubmit = async(event) => {
-        event.preventDefault();
-        console.log(this.state.modelDetails)
-        try{
-            const res = await axios.put(apiServer + localStorage.getItem('menu_id'), this.state.modelDetails)
-            var item_id = localStorage.getItem('menu_id')
-            this.setState({envFile: res.data})
-            localStorage.setItem('envFile', JSON.stringify(this.state.envFile))
-            this.props.history.push({pathname:'/models/menu/' + (item_id.toString(10)) ,state: {
+    handleSubmit = async (event) => {
+      event.preventDefault();
+      console.log(this.state.modelDetails);
+      try {
+        const res = await axios.put(apiServer + localStorage.getItem('menu_id'), this.state.modelDetails);
+        const item_id = localStorage.getItem('menu_id');
+        this.setState({ envFile: res.data });
+        localStorage.setItem('envFile', JSON.stringify(this.state.envFile));
+        this.props.history.push({
+          pathname: `/models/menu/${item_id.toString(10)}`,
+          state: {
             envFile: this.state.envFile,
-            }});
-        }
-        catch(e){
-            console.log(e.message)
-            this.props.history.push('/errorCatching')
-        }
+          },
+        });
+      } catch (e) {
+        console.log(e.message);
+        this.props.history.push('/errorCatching');
+      }
     }
 
-    renderHeader = () => {
-        return <h1 className='header' style={{ 'textAlign': 'center', 'fontWeight': '200' }}> Please set the parameters for the {localStorage.getItem('name')} model</h1>
-    }
+    renderHeader = () => (
+      <h1 className="header" style={{ textAlign: 'center', fontWeight: '200' }}>
+        {' '}
+Please set the parameters for the
+        {' '}
+        {localStorage.getItem('name')}
+        {' '}
+model
+      </h1>
+    )
 
     renderSubmitButton = () => {
-        const { disabledButton } = this.state;
-        return <button disabled={disabledButton} onClick={!disabledButton ? this.handleSubmit : null}
-        className='btn btn-primary m-2'>Submit</button>
+      const { disabledButton } = this.state;
+      return (
+        <button
+          disabled={disabledButton}
+          onClick={!disabledButton ? this.handleSubmit : null}
+          className="btn btn-primary m-2"
+        >
+Submit
+
+        </button>
+      );
     }
 
-    goback=()=>{
-        this.props.history.goBack();
+    goback=() => {
+      this.props.history.goBack();
     }
 
     render() {
-
-        if (this.state.loadingData) {
-            return ( 
-                <PageLoader />
-            );
-        }
-
+      if (this.state.loadingData) {
         return (
-            <div>
-                <h1 className= 'margin-top-60'> </h1> 
-                {this.renderHeader()} 
-                <br /><br />
-                <form>
-                    <div className='container'>
-                    {Object.keys(this.state.modelDetails).map((item,i)=> {
-                        if ('question' in this.state.modelDetails[item]){
-                            return(
-                                <ModelInputField
-                                    label={this.state.modelDetails[item]['question']}
-                                    type={this.state.modelDetails[item]['atype']}
-                                    placeholder={this.state.modelDetails[item]['val']}
-                                    error={this.state.modelDetails[item]['errorMessage']}
-                                    propChange={this.propChanged}
-                                    name={item}
-                                    key={i}
-                                />
-                            )}
-                        return null;
-                        })
-                    }
-                    </div>
-                </form>
-                <br /><br />
-                {this.renderSubmitButton()}
-            </div>
+          <PageLoader />
         );
+      }
+
+      return (
+        <div>
+          <h1 className="margin-top-60"> </h1>
+          {this.renderHeader()}
+          <br />
+          <br />
+          <form>
+            <div className="container">
+              {Object.keys(this.state.modelDetails).map((item, i) => {
+                if ('question' in this.state.modelDetails[item]) {
+                  return (
+                    <ModelInputField
+                      label={this.state.modelDetails[item].question}
+                      type={this.state.modelDetails[item].atype}
+                      placeholder={this.state.modelDetails[item].val}
+                      error={this.state.modelDetails[item].errorMessage}
+                      propChange={this.propChanged}
+                      name={item}
+                      key={i}
+                    />
+                  );
+                }
+                return null;
+              })}
+            </div>
+          </form>
+          <br />
+          <br />
+          {this.renderSubmitButton()}
+        </div>
+      );
     }
 }
 
