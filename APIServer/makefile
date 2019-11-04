@@ -1,6 +1,6 @@
 PYLINT = flake8
 PYLINTFLAGS = --ignore=E741,W503 --exclude=interactive.py,__main__.py
-PYTHONFILES = $(shell ls *.py)
+PYTHONFILES = $(shell find . -type f -iname '*.py')
 
 tests: pytests lint
 
