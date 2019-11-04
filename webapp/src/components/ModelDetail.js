@@ -1,112 +1,108 @@
-import React, { Component } from "react";
-import ModelInputField from "./ModelInputField";
-import PageLoader from "./PageLoader";
-import axios from "axios";
+import React, { Component } from 'react';
+import axios from 'axios';
+import ModelInputField from './ModelInputField';
+import PageLoader from './PageLoader';
 import './styles.css';
 
-const api_server = "https://indrasnet.pythonanywhere.com/models/props/";
+const apiServer = 'https://indrasnet.pythonanywhere.com/models/props/';
 
 class ModelDetail extends Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.state = {
-            model_details: {},
-            loadingData: false,
-            disabled_button: false,
-            envFile:{},
-        }
+    this.state = {
+      modelDetails: {},
+      loadingData: false,
+      disabledButton: false,
+      envFile: {},
+    };
+  }
+
+  async componentDidMount() {
+    const { modelDetails } = this.state;
+    try {
+      document.title = 'Indra | Property';
+      this.setState({ loadingData: true });
+      console.log(`${apiServer}${localStorage.getItem('menu_id')}`);
+      const properties = await axios.get(`${apiServer}${localStorage.getItem('menu_id')}`);
+      this.setState({ modelDetails: properties.data });
+      console.log('modelDetail json', modelDetails);
+      this.states(properties.data);
+      this.errors(properties.data);
+      this.setState({ loadingData: false });
+    } catch (e) {
+      console.log(e.message);
     }
-
-    async componentDidMount() {
-        try{
-            document.title = "Indra | Property";
-            this.setState({ loadingData: true });
-            console.log(api_server
-                + `${localStorage.getItem("menu_id")}`)
-            const properties = await axios.get(api_server
-                + `${localStorage.getItem("menu_id")}`);
-            this.setState({ model_details: properties.data });
-            console.log("model_detail json",this.state.model_details)
-            this.states(properties.data);
-            this.errors(properties.data);
-            this.setState({ loadingData: false });
-        } catch(e) {
-            console.log(e.message);
-        }
-
-    }
+  }
 
 
-    states = data => {
-        //loop over objects in data and create object in this.state
-        console.log(this.state);
-        Object.keys(this.state.model_details).forEach(item => 
-            this.setState({[item]: data[item]}), console.log(this.state)
-        );
+    states = (data) => {
+      const { modelDetails } = this.state;
+      // loop over objects in data and create object in this.state
+      console.log(this.state);
+      Object.keys(modelDetails).forEach((item) => this.setState({ [item]: data[item] }));
     }
 
 
-    errors = data => {
-        Object.keys(this.state.model_details).forEach(item => 
-            this.setState(prevState => ({
-                model_details: {
-                    ...prevState.model_details,          
-                    [item]:{                     
-                    ...prevState.model_details[item],  
-                    errorMessage: "",
-                    disabledButton: false,       
-                    } 
-                }
-            })
-        ))
+    errors = () => {
+      const { modelDetails } = this.state;
+      Object.keys(modelDetails).forEach((item) => this.setState((prevState) => ({
+        modelDetails: {
+          ...prevState.modelDetails,
+          [item]: {
+            ...prevState.modelDetails[item],
+            errorMessage: '',
+            disabledButton: false,
+          },
+        },
+      })));
     }
 
 
-    errorSubmit = () =>{
-        let ans = false
-        Object.keys(this.state.model_details).forEach(item => 
-            ans = ans || this.state.model_details[item]["disabledButton"])
-        return ans
+    errorSubmit = () => {
+      const { modelDetails } = this.state;
+      let ans = false;
+      Object.keys(modelDetails).forEach((item) => {
+        ans = ans || modelDetails[item].disabledButton;
+      });
+      return ans;
     }
 
-    propChanged = e =>{ 
-        let model_detail = this.state.model_details;
-        const {name,value} = e.target
-        let valid = this.checkValidity(name,value)
-        model_detail[name]["disabledButton"]=true
+    propChanged = (e) => {
+      const { modelDetails } = this.state;
+      const modelDetail = modelDetails;
+      const { name, value } = e.target;
+      const valid = this.checkValidity(name, value);
+      modelDetail[name].disabledButton = true;
 
-        if (valid === 1) {
-            model_detail[name]["val"]= value
-            model_detail[name]["errorMessage"]=""
-            model_detail[name]["disabledButton"]=false
-            this.setState({model_details:model_detail})
+      if (valid === 1) {
+        modelDetail[name].val = value;
+        modelDetail[name].errorMessage = '';
+        modelDetail[name].disabledButton = false;
+        this.setState({ modelDetails: modelDetail });
+      } else if (valid === -1) {
+        modelDetail[name].errorMessage = '**Wrong Input Type';
+        modelDetail[name].val = this.state[name].val;
+        this.setState({ modelDetails: modelDetail });
+        console.log(modelDetails[name]);
+      } else {
+        modelDetail[name].errorMessage = `**Please input a number between ${this.state[name].lowval} and ${this.state[name].hival}.`;
+        modelDetail[name].val = this.state[name].val;
+        this.setState({ modelDetails: modelDetail });
+      }
 
-        } else if(valid === -1) {
-            model_detail[name]["errorMessage"]="**Wrong Input Type"
-            model_detail[name]["val"]= this.state[name]["val"]
-            this.setState({model_details:model_detail})
-            console.log(this.state.model_details[name])
-
-        } else {
-            model_detail[name]["errorMessage"] 
-                = `**Please input a number between ${this.state[name]["lowval"]} and ${this.state[name]["hival"]}.`
-            model_detail[name]["val"] = this.state[name]["val"]
-            this.setState({model_details:model_detail})
-        }  
-
-        this.setState({disabled_button: this.errorSubmit()}) 
+      this.setState({ disabledButton: this.errorSubmit() });
     }
 
 
     checkValidity = (name,value) => {
-        if (value <= this.state.model_details[name]["hival"]
-                && value >= this.state.model_details[name]["lowval"]){
-            if (this.state.model_details[name]["atype"] === "INT"
+        if (value <= this.state.modelDetails[name]['hival']
+                && value >= this.state.modelDetails[name]['lowval']){
+            if (this.state.modelDetails[name]['atype'] === 'INT'
                 && !!(value%1) === false) {
                 return 1
             }
-            else if(this.state.model_details[name]["atype"] === "DBL"){
+            else if(this.state.modelDetails[name]['atype'] === 'DBL'){
                 return 1
             }
             else {
@@ -119,30 +115,30 @@ class ModelDetail extends Component {
 
     handleSubmit = async(event) => {
         event.preventDefault();
-        console.log(this.state.model_details)
+        console.log(this.state.modelDetails)
         try{
-            const res = await axios.put(api_server + localStorage.getItem("menu_id"), this.state.model_details)
-            var item_id = localStorage.getItem("menu_id")
+            const res = await axios.put(apiServer + localStorage.getItem('menu_id'), this.state.modelDetails)
+            var item_id = localStorage.getItem('menu_id')
             this.setState({envFile: res.data})
-            localStorage.setItem("envFile", JSON.stringify(this.state.envFile))
-            this.props.history.push({pathname:"/models/menu/" + (item_id.toString(10)) ,state: {
+            localStorage.setItem('envFile', JSON.stringify(this.state.envFile))
+            this.props.history.push({pathname:'/models/menu/' + (item_id.toString(10)) ,state: {
             envFile: this.state.envFile,
             }});
         }
         catch(e){
             console.log(e.message)
-            this.props.history.push("/errorCatching")
+            this.props.history.push('/errorCatching')
         }
     }
 
     renderHeader = () => {
-        return <h1 className="header" style={{ "textAlign": "center", "fontWeight": "200" }}> Please set the parameters for the {localStorage.getItem("name")} model</h1>
+        return <h1 className='header' style={{ 'textAlign': 'center', 'fontWeight': '200' }}> Please set the parameters for the {localStorage.getItem('name')} model</h1>
     }
 
     renderSubmitButton = () => {
-        const { disabled_button } = this.state;
-        return <button disabled={disabled_button} onClick={!disabled_button ? this.handleSubmit : null}
-        className="btn btn-primary m-2">Submit</button>
+        const { disabledButton } = this.state;
+        return <button disabled={disabledButton} onClick={!disabledButton ? this.handleSubmit : null}
+        className='btn btn-primary m-2'>Submit</button>
     }
 
     goback=()=>{
@@ -159,19 +155,19 @@ class ModelDetail extends Component {
 
         return (
             <div>
-                <h1 className= "margin-top-60"> </h1> 
+                <h1 className= 'margin-top-60'> </h1> 
                 {this.renderHeader()} 
                 <br /><br />
                 <form>
-                    <div className="container">
-                    {Object.keys(this.state.model_details).map((item,i)=> {
-                        if ("question" in this.state.model_details[item]){
+                    <div className='container'>
+                    {Object.keys(this.state.modelDetails).map((item,i)=> {
+                        if ('question' in this.state.modelDetails[item]){
                             return(
                                 <ModelInputField
-                                    label={this.state.model_details[item]["question"]}
-                                    type={this.state.model_details[item]["atype"]}
-                                    placeholder={this.state.model_details[item]["val"]}
-                                    error={this.state.model_details[item]["errorMessage"]}
+                                    label={this.state.modelDetails[item]['question']}
+                                    type={this.state.modelDetails[item]['atype']}
+                                    placeholder={this.state.modelDetails[item]['val']}
+                                    error={this.state.modelDetails[item]['errorMessage']}
                                     propChange={this.propChanged}
                                     name={item}
                                     key={i}
