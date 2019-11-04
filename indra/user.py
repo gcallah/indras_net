@@ -103,10 +103,12 @@ class User(Agent):
         self.env = env  # this class needs this all the time, we think
         self.menu = get_menu_json()
         self.user_msgs = ''
+        self.debug = ''
         self.error_message = {}
 
     def to_json(self):
         return {"user_msgs": self.user_msgs,
+                "debug": self.debug,
                 "name": self.name}
 
     def from_json(self):
@@ -165,6 +167,10 @@ class TermUser(User):
         How to tell the user something.
         """
         print(msg, end=end)
+        return msg
+
+    def debug(self, msg, end='\n'):
+        self.tell(msg, end)
         return msg
 
     def ask(self, msg, default=None):
@@ -258,9 +264,16 @@ class APIUser(User):
     def tell(self, msg, end='\n'):
         """
         Tell the user something by showing it on the web page
-        The below code is just a possible way to implement this!
         """
         self.user_msgs += (msg + end)
+        return msg
+
+    def debug(self, msg, end='\n'):
+        """
+        Tell the user some debug info.
+        """
+        self.debug += (msg + end)
+        return msg
 
     def ask(self, msg, default=None):
         """
