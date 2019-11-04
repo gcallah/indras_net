@@ -1,10 +1,13 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable camelcase */
+/* eslint-disable react/prop-types */
 import React from 'react';
 import { ScatterChart } from 'react-chartkick';
 import 'chart.js';
 
 const FMARKET = 10;
 function ScatterPlot(props) {
-  const {loadingData, envFile, id} = props;
+  const { loadingData, envFile, id } = props;
   if (loadingData && id !== FMARKET) {
     const env = envFile.members;
     const WIDTH = envFile.props.grid_height.val;
@@ -14,18 +17,18 @@ function ScatterPlot(props) {
     console.log(env);
     const data = [];
     Object.keys(env).forEach((group, i_group) => {
-      data.push({ 
+      data.push({
         name: env[group].name,
         color: env[group].attrs.color,
         data: [],
-      })
+      });
       Object.keys(env[group].members).forEach((member, i_member) => {
         if (env[group].members[member].pos !== null) {
           data[i_group].data.push(
             env[group].members[member].pos,
           );
-        } 
-      })
+        }
+      });
     });
     console.log(data);
     return (
