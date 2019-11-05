@@ -2,11 +2,11 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable camelcase */
-/* eslint-disable react/prop-types */
 /* eslint-disable react/destructuring-assignment */
 import React from 'react';
 import { LineChart } from 'react-chartkick';
 import 'chart.js';
+import PropType from 'prop-types';
 
 const FMARKET = 5;
 
@@ -44,5 +44,17 @@ function PopulationGraph(props) {
   }
   return null;
 }
+
+PopulationGraph.propTypes = {
+  loadingData: PropType.bool,
+  id: PropType.number,
+  envFile: PropType.shape(),
+};
+
+PopulationGraph.defaultProps = {
+  loadingData: true,
+  id: 0,
+  envFile: {},
+};
 
 export default PopulationGraph;

@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -53,6 +52,7 @@ Carousel.propTypes = {
   dots: PropTypes.bool,
   speed: PropTypes.number,
   autoplay: PropTypes.bool,
+  className: PropTypes.string,
   data: PropTypes.arrayOf(PropTypes.shape({
     image: PropTypes.string,
     title: PropTypes.string,
@@ -63,6 +63,7 @@ Carousel.defaultProps = {
   dots: false,
   speed: 1000,
   autoplay: false,
+  className: '',
   data: [],
 };
 
