@@ -506,8 +506,8 @@ class Space(Composite):
         (prev_x, prev_y) = xy
         (cur_x, cur_y) = xy
         #  Calculate the coordinates
-        cur_x = math.cos(math.radians(angle)) * max_move + cur_x
-        cur_y = math.sin(math.radians(angle)) * max_move + cur_y
+        cur_x += math.cos(math.radians(angle)) * max_move
+        cur_y += math.sin(math.radians(angle)) * max_move
 
         #  Adjust if the cur_x and cur_y are out of range
         if out_of_bounds(cur_x, cur_y, 0, 0, self.width, self.height):
