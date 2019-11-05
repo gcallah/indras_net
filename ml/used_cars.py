@@ -103,8 +103,11 @@ def update_dealer_sale(dealer, new_car_life):
         dealer["avg_car_life_sold"] = round(avg_car_life, 2)
 
 
-def is_mature(buyer):
-    return buyer["age"] >= buyer["mature"]
+def is_mature(agent):
+    # check if buyer has enough experience
+    # to make its own decision
+    num_interaction = len(agent["dealer_his"])
+    return num_interaction > MATURE_BOUND
 
 
 def is_credible(dealer, buyer):
@@ -116,13 +119,6 @@ def is_credible(dealer, buyer):
     else:
         # immature buyers are gullible!
         return True
-
-
-def is_mature_buyer(agent):
-    # check if buyer has enough experience
-    # to make its own decision
-    num_interaction = len(agent["dealer_his"])
-    return num_interaction > MATURE_BOUND
 
 
 def cal_avg_life(agent):
@@ -165,7 +161,7 @@ def buyer_action(agent):  # how to write this testcase
                                                       hood_size=4)
         if my_dealer is None:
             print("No dealers nearby.")
-        elif is_credible(agent, my_dealer):
+        elif is_credible(my_dealer, agent):
             update_buyer(agent, my_dealer)
         else:
             print("I found a rotten dealer: ", str(my_dealer))
@@ -192,7 +188,8 @@ def create_dealer(name, i, props=None):  # testcase done
                         "respond_rate": 0,
                         "num_completed_services": 0,
                         "emoji_used": None,
-                        "dealer_characteristic": None})
+                        "dealer_characteristic": None
+                        })
 
 
 def create_buyer(name, i, props=None):  # testcase done
@@ -205,7 +202,7 @@ def create_buyer(name, i, props=None):  # testcase done
                         "car_life": None,
                         "interaction_res": None,
                         "age": 0,
-                        "mature": 40,
+                        "mature": 50,
                         "dealer_his": [],
                         "emoji_carlife_assoc": {},
                         "emoji_life_avg": {},
