@@ -15,8 +15,7 @@ export default class ModelStatusBox extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('inside  modelbox ', this.state.msg);
-    console.log('component will receive props', nextProps);
+    console.log("message is : ", this.state.msg)
     if (nextProps.msg !== '') {
       this.setState({ msg: nextProps.msg });
     }
