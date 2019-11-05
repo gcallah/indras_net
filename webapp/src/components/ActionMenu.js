@@ -7,7 +7,6 @@ import PageLoader from './PageLoader';
 import PopulationGraph from './PopulationGraph';
 import ScatterPlot from './ScatterPlot';
 import Debugger from './Debugger';
-import PreFormTextBox from './PreFormTextBox';
 import ModelStatusBox from './ModelStatusBox';
 import SourceCodeViewer from './SourceCodeViewer';
 import './styles.css';
@@ -177,17 +176,6 @@ class ActionMenu extends Component {
       { text }
     </ListGroup.Item>
   );
-
-  renderModelStatus = () => {
-    const { msg } = this.state;
-    return (
-      <div>
-        <div className="card w-50 overflow-auto model-status">
-          { PreFormTextBox('Model Status', msg) }
-        </div>
-      </div>
-    );
-  }
 
   renderMenuItem = () => {
     const {

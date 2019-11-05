@@ -25,16 +25,18 @@ export default class ModelStatusBox extends React.Component {
   render() {
     return (
       <div>
-        <h5
-          style={{
-            textAlign: 'center', width: '18rem', height: '18rem', fontSize: 16, float: 'right',
-          }}
-          className="card-header bg-primary text-white w-50"
-        >
-          { this.state.title }
-        </h5>
-        <div className="card-body">
-          {this.state.msg}
+        <div className="card w-50 overflow-auto model-status">
+          <h5
+            style={{ textAlign: 'center', fontSize: 16 }}
+            className="card-header bg-primary text-white"
+          >
+            { this.state.title }
+          </h5>
+          <div className="card-body">
+            <p className="card-text">
+              { this.state.msg } 
+            </p>
+          </div>
         </div>
       </div>
     );
