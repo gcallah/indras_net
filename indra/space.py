@@ -83,6 +83,19 @@ def use_saved_hood(hood_func):
     return wrapper
 
 
+def fill_neighbor_coords(agent, height, include_self):
+    agent_x = agent.get_x()
+    agent_y = agent.get_y()
+    neighbor_y_coords = []
+    for i in range(-height, 0):
+        neighbor_y_coords.append(i)
+    if include_self:
+        neighbor_y_coords.append(0)
+    for i in range(1, height + 1):
+        neighbor_y_coords.append(i)
+    return agent_x, agent_y, neighbor_y_coords
+
+
 class Space(Composite):
     """
     A collection of entities that share a space.
@@ -299,7 +312,7 @@ class Space(Composite):
                     self.add_location(x, y, mbr)
                 # if I am setting pos, I am agent's locator!
                 mbr.set_pos(self, x, y)
-                return (x, y)
+                return x, y
             elif (max_move is None) and (xy is None):
                 # if the random position is already taken,x
                 # find the member a new position
@@ -347,10 +360,10 @@ class Space(Composite):
         if row_num < 0 or row_num >= self.height:
             return None
         else:
-            row_hood = Composite("Row neighbors")
             agent = self.get_agent_at(self.width // 2, row_num)
             row_hood = self.get_x_hood(agent, self.width - 1,
                                        include_self=True)
+            row_hood.name = "Row neighbors"
             return row_hood
 
     @use_saved_hood
@@ -364,15 +377,10 @@ class Space(Composite):
         """
         if agent is not None:
             x_hood = Composite("x neighbors")
-            agent_x = agent.get_x()
-            agent_y = agent.get_y()
-            neighbor_x_coords = []
-            for i in range(-width, 0):
-                neighbor_x_coords.append(i)
-            if include_self:
-                neighbor_x_coords.append(0)
-            for i in range(1, width + 1):
-                neighbor_x_coords.append(i)
+            agent_x, agent_y, neighbor_x_coords \
+                = fill_neighbor_coords(agent,
+                                       width,
+                                       include_self)
             for i in neighbor_x_coords:
                 neighbor_x = agent_x + i
                 if not out_of_bounds(neighbor_x, agent_y, 0, 0,
@@ -392,15 +400,10 @@ class Space(Composite):
         get_y_hood would return (0, -1) and (0, 1).
         """
         y_hood = Composite("y neighbors")
-        agent_x = agent.get_x()
-        agent_y = agent.get_y()
-        neighbor_y_coords = []
-        for i in range(-height, 0):
-            neighbor_y_coords.append(i)
-        if include_self:
-            neighbor_y_coords.append(0)
-        for i in range(1, height + 1):
-            neighbor_y_coords.append(i)
+        agent_x, agent_y, neighbor_y_coords \
+            = fill_neighbor_coords(agent,
+                                   height,
+                                   include_self)
         for i in neighbor_y_coords:
             neighbor_y = agent_y + i
             if not out_of_bounds(agent_x, neighbor_y, 0, 0,
@@ -498,13 +501,13 @@ class Space(Composite):
         the other end -- if off grid, pull it back onto the
         grid.
         """
-        y_intercept, x_intercept, x_horizontal, y_horizontal, \
-            y_vertical, x_vertical = None, None, None, None, None, None
+        y_intercept, x_intercept, x_horizontal, y_horizontal, y_vertical, \
+            x_vertical = None, None, None, None, None, None
         (prev_x, prev_y) = xy
         (cur_x, cur_y) = xy
         #  Calculate the coordinates
-        cur_x = math.cos(math.radians(angle)) * max_move + cur_x
-        cur_y = math.sin(math.radians(angle)) * max_move + cur_y
+        cur_x += math.cos(math.radians(angle)) * max_move
+        cur_y += math.sin(math.radians(angle)) * max_move
 
         #  Adjust if the cur_x and cur_y are out of range
         if out_of_bounds(cur_x, cur_y, 0, 0, self.width, self.height):

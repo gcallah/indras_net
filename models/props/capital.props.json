@@ -48,35 +48,20 @@
     "hival": 1000,
     "lowval": 0
   },
-  "rholder_starting_resource_land": {
+  "rholder_starting_resource_total": {
     "val": 3000,
-    "question": "How many land should each resource holder occupy?",
+    "question": "How many resources in total should each resource holder occupy?",
     "atype": "INT",
     "hival": 10000,
     "lowval": 0
   },
-  "rholder_starting_resource_truck": {
-    "val": 500,
-    "question": "How many trucks should each resource holder own?",
-    "atype": "INT",
-    "hival": 10000,
-    "lowval": 0
-  },
-   "rholder_starting_resource_building": {
-    "val": 200,
-    "question": "How many buildings should each resource holder occupy?",
-    "atype": "INT",
-    "hival": 10000,
-    "lowval": 0
-  },
-   "entr_starting_resource_total": {
+   "entr_want_resource_total": {
     "val": 2000,
     "question": "How many resources in total should each entrepreneur want?",
     "atype": "INT",
     "hival": 10000,
     "lowval": 0
   },
-
   "use_line": {
     "val": 0,
     "atype": "BOOL"
