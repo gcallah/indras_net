@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Loader, Dimmer } from 'semantic-ui-react';
 import ListGroup from 'react-bootstrap/ListGroup';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-import Tooltip from 'react-bootstrap/ToolTip';
+import Tooltip from 'react-bootstrap/Tooltip';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import Carousel from './Carousel';

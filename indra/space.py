@@ -28,8 +28,8 @@ def out_of_bounds(x, y, x1, y1, x2, y2):
     """
     Is point x, y off the grid defined by x1, y1, x2, y2?
     """
-    return(x < x1 or x >= x2
-           or y < y1 or y >= y2)
+    return (x < x1 or x >= x2
+            or y < y1 or y >= y2)
 
 
 def bound(point, lower, upper):
@@ -69,6 +69,31 @@ def gaussian_distribution(default_target, sigma):
     if new_target < 0:
         new_target *= -1
     return new_target
+
+
+def use_saved_hood(hood_func):
+    @wraps(hood_func)
+    def wrapper(*args, **kwargs):
+        agent = args[1]
+        if (agent.get("save_neighbors", False) and agent.neighbors is not
+                None):
+            return agent.neighbors
+        return hood_func(*args, **kwargs)
+
+    return wrapper
+
+
+def fill_neighbor_coords(agent, height, include_self):
+    agent_x = agent.get_x()
+    agent_y = agent.get_y()
+    neighbor_y_coords = []
+    for i in range(-height, 0):
+        neighbor_y_coords.append(i)
+    if include_self:
+        neighbor_y_coords.append(0)
+    for i in range(1, height + 1):
+        neighbor_y_coords.append(i)
+    return agent_x, agent_y, neighbor_y_coords
 
 
 class Space(Composite):
@@ -246,7 +271,7 @@ class Space(Composite):
             high_y = self.constrain_y(mbr.get_y() + max_move)
         x = self.rand_x(low_x, high_x)
         y = self.rand_y(low_y, high_y)
-        return (x, y)
+        return x, y
 
     def is_empty(self, x, y):
         """
@@ -287,7 +312,7 @@ class Space(Composite):
                     self.add_location(x, y, mbr)
                 # if I am setting pos, I am agent's locator!
                 mbr.set_pos(self, x, y)
-                return (x, y)
+                return x, y
             elif (max_move is None) and (xy is None):
                 # if the random position is already taken,x
                 # find the member a new position
@@ -327,16 +352,6 @@ class Space(Composite):
         """
         del self.locations[(x, y)]
 
-    def use_saved_hood(hood_func):
-        @wraps(hood_func)
-        def wrapper(*args, **kwargs):
-            agent = args[1]
-            if (agent.get("save_neighbors", False) and agent.neighbors is not
-                    None):
-                return agent.neighbors
-            return hood_func(*args, **kwargs)
-        return wrapper
-
     def get_row_hood(self, row_num, pred=None, save_neighbors=False):
         """
         Collects all agents in row `row_num` into a Composite
@@ -362,15 +377,10 @@ class Space(Composite):
         """
         if agent is not None:
             x_hood = Composite("x neighbors")
-            agent_x = agent.get_x()
-            agent_y = agent.get_y()
-            neighbor_x_coords = []
-            for i in range(-width, 0):
-                neighbor_x_coords.append(i)
-            if (include_self):
-                neighbor_x_coords.append(0)
-            for i in range(1, width + 1):
-                neighbor_x_coords.append(i)
+            agent_x, agent_y, neighbor_x_coords \
+                = fill_neighbor_coords(agent,
+                                       width,
+                                       include_self)
             for i in neighbor_x_coords:
                 neighbor_x = agent_x + i
                 if not out_of_bounds(neighbor_x, agent_y, 0, 0,
@@ -390,15 +400,10 @@ class Space(Composite):
         get_y_hood would return (0, -1) and (0, 1).
         """
         y_hood = Composite("y neighbors")
-        agent_x = agent.get_x()
-        agent_y = agent.get_y()
-        neighbor_y_coords = []
-        for i in range(-height, 0):
-            neighbor_y_coords.append(i)
-        if include_self:
-            neighbor_y_coords.append(0)
-        for i in range(1, height + 1):
-            neighbor_y_coords.append(i)
+        agent_x, agent_y, neighbor_y_coords \
+            = fill_neighbor_coords(agent,
+                                   height,
+                                   include_self)
         for i in neighbor_y_coords:
             neighbor_y = agent_y + i
             if not out_of_bounds(agent_x, neighbor_y, 0, 0,
@@ -496,6 +501,8 @@ class Space(Composite):
         the other end -- if off grid, pull it back onto the
         grid.
         """
+        y_intercept, x_intercept, x_horizontal, y_horizontal, y_vertical, \
+            x_vertical = None, None, None, None, None, None
         (prev_x, prev_y) = xy
         (cur_x, cur_y) = xy
         #  Calculate the coordinates
@@ -506,15 +513,15 @@ class Space(Composite):
         if out_of_bounds(cur_x, cur_y, 0, 0, self.width, self.height):
             if cur_x == prev_x:
                 if cur_y < 0:
-                    return (cur_x, 0)
+                    return cur_x, 0
                 else:
-                    return (cur_x, self.height)
+                    return cur_x, self.height
 
             if cur_y == prev_y:
                 if cur_x < 0:
-                    return (0, cur_y)
+                    return 0, cur_y
                 else:
-                    return (self.width, cur_y)
+                    return self.width, cur_y
 
             if cur_x != prev_x and cur_y != prev_y:
                 slope = float((cur_y - prev_y) / (cur_x - prev_x))
@@ -537,9 +544,9 @@ class Space(Composite):
 
             if cur_y < 0 and cur_x < 0:
                 if x_intercept > 0:
-                    return (x_intercept, 0)
+                    return x_intercept, 0
                 else:
-                    return (0, y_intercept)
+                    return 0, y_intercept
 
             elif cur_y >= self.height and cur_x >= self.width:
                 if x_horizontal < self.width:
@@ -548,7 +555,7 @@ class Space(Composite):
                 else:
                     cur_x = x_vertical
                     cur_y = y_vertical
-                return (cur_x, cur_y)
+                return cur_x, cur_y
 
             elif cur_y * cur_x < 0:
                 if cur_x < 0:
@@ -557,7 +564,7 @@ class Space(Composite):
                 else:
                     cur_y = 0
                     cur_x = x_intercept
-                return (cur_x, cur_y)
+                return cur_x, cur_y
 
             elif cur_x >= self.width or cur_y >= self.height:
                 if cur_x >= self.width:
@@ -566,6 +573,6 @@ class Space(Composite):
                 else:
                     cur_x = x_horizontal
                     cur_y = y_horizontal
-                return (cur_x, cur_y)
+                return cur_x, cur_y
         else:
-            return (cur_x, cur_y)
+            return cur_x, cur_y

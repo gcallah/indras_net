@@ -7,7 +7,6 @@ import PageLoader from './PageLoader';
 import PopulationGraph from './PopulationGraph';
 import ScatterPlot from './ScatterPlot';
 import Debugger from './Debugger';
-import PreFormTextBox from './PreFormTextBox';
 import ModelStatusBox from './ModelStatusBox';
 import SourceCodeViewer from './SourceCodeViewer';
 import './styles.css';
@@ -178,17 +177,6 @@ class ActionMenu extends Component {
     </ListGroup.Item>
   );
 
-  renderModelStatus = () => {
-    const { msg } = this.state;
-    return (
-      <div>
-        <div className="card w-50 overflow-auto model-status">
-          { PreFormTextBox('Model Status', msg) }
-        </div>
-      </div>
-    );
-  }
-
   renderMenuItem = () => {
     const {
       loadingPopulation,
@@ -283,9 +271,9 @@ class ActionMenu extends Component {
   }
 
   render() {
-    const { loadingDatam, msg } = this.state;
+    const { loadingData, msg } = this.state;
 
-    if (loadingDatam) {
+    if (loadingData) {
       return (
         <PageLoader />
       );

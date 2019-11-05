@@ -1,3 +1,9 @@
+/* eslint-disable no-plusplus */
+/* eslint-disable no-return-assign */
+/* eslint-disable implicit-arrow-linebreak */
+/* eslint-disable camelcase */
+/* eslint-disable react/prop-types */
+/* eslint-disable react/destructuring-assignment */
 import React from 'react';
 import { LineChart } from 'react-chartkick';
 import 'chart.js';
@@ -7,28 +13,23 @@ const FMARKET = 5;
 function PopulationGraph(props) {
   if (props.loadingData) {
     const data = [];
-    // if not Financial Market
     if (props.id !== FMARKET) {
-      // ["pop_hist"]["pops"] == group == agent name
       const env = props.envFile.pop_hist.pops;
-      Object.keys(env).map((group, i_group) => {
-        // populate 'data' array with members of 'pops' with their respective values
-        return (
-          data.push({
-            name: group,
-            color: props.envFile.members[group].attrs.color,
-            data: {}
-          }),
-          // modify 'data' dictionary of each pops member by copying 'pops' data
-          Object.keys(env[group]).map((member, i_member) => 
-            (data[i_group].data[member] = env[group][i_member]))
-        );
+      // populate 'data' array with groups from 'pops' and their respective values
+      Object.keys(env).forEach((group, i_group) => {
+        data.push({
+          name: group,
+          color: props.envFile.members[group].attrs.color,
+          data: {},
+        });
+        // modify individual 'data' dictionary of each pops group by copying over value
+        Object.keys(env[group]).forEach((member, i_member) => {
+          data[i_group].data[member] = env[group][i_member];
+        });
       });
-    // if Financial Market
     } else {
       const period = props.envFile.pop_hist.periods;
-      const data_hist =
-        props.envFile.members.market_maker.attrs.price_hist;
+      const data_hist = props.envFile.members.market_maker.attrs.price_hist;
       let i;
       data.push({ name: 'price history', data: {} });
       for (i = 0; i < period; i++) {
