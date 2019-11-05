@@ -34,7 +34,7 @@ export default class ModelStatusBox extends React.Component {
           </h5>
           <div className="card-body overflow-auto">
             <p className="card-text">
-              { this.state.msg } 
+              { this.state.msg }
             </p>
           </div>
         </div>
