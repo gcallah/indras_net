@@ -28,8 +28,8 @@ def out_of_bounds(x, y, x1, y1, x2, y2):
     """
     Is point x, y off the grid defined by x1, y1, x2, y2?
     """
-    return(x < x1 or x >= x2
-           or y < y1 or y >= y2)
+    return (x < x1 or x >= x2
+            or y < y1 or y >= y2)
 
 
 def bound(point, lower, upper):
@@ -335,6 +335,7 @@ class Space(Composite):
                     None):
                 return agent.neighbors
             return hood_func(*args, **kwargs)
+
         return wrapper
 
     def get_row_hood(self, row_num, pred=None, save_neighbors=False):
@@ -496,6 +497,8 @@ class Space(Composite):
         the other end -- if off grid, pull it back onto the
         grid.
         """
+        y_intercept, x_intercept, x_horizontal, y_horizontal, \
+            y_vertical, x_vertical = None, None, None, None, None, None
         (prev_x, prev_y) = xy
         (cur_x, cur_y) = xy
         #  Calculate the coordinates
@@ -506,15 +509,15 @@ class Space(Composite):
         if out_of_bounds(cur_x, cur_y, 0, 0, self.width, self.height):
             if cur_x == prev_x:
                 if cur_y < 0:
-                    return (cur_x, 0)
+                    return cur_x, 0
                 else:
-                    return (cur_x, self.height)
+                    return cur_x, self.height
 
             if cur_y == prev_y:
                 if cur_x < 0:
-                    return (0, cur_y)
+                    return 0, cur_y
                 else:
-                    return (self.width, cur_y)
+                    return self.width, cur_y
 
             if cur_x != prev_x and cur_y != prev_y:
                 slope = float((cur_y - prev_y) / (cur_x - prev_x))
@@ -537,9 +540,9 @@ class Space(Composite):
 
             if cur_y < 0 and cur_x < 0:
                 if x_intercept > 0:
-                    return (x_intercept, 0)
+                    return x_intercept, 0
                 else:
-                    return (0, y_intercept)
+                    return 0, y_intercept
 
             elif cur_y >= self.height and cur_x >= self.width:
                 if x_horizontal < self.width:
@@ -548,7 +551,7 @@ class Space(Composite):
                 else:
                     cur_x = x_vertical
                     cur_y = y_vertical
-                return (cur_x, cur_y)
+                return cur_x, cur_y
 
             elif cur_y * cur_x < 0:
                 if cur_x < 0:
@@ -557,7 +560,7 @@ class Space(Composite):
                 else:
                     cur_y = 0
                     cur_x = x_intercept
-                return (cur_x, cur_y)
+                return cur_x, cur_y
 
             elif cur_x >= self.width or cur_y >= self.height:
                 if cur_x >= self.width:
@@ -566,6 +569,6 @@ class Space(Composite):
                 else:
                     cur_x = x_horizontal
                     cur_y = y_horizontal
-                return (cur_x, cur_y)
+                return cur_x, cur_y
         else:
-            return (cur_x, cur_y)
+            return cur_x, cur_y
