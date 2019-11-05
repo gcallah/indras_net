@@ -283,9 +283,9 @@ class ActionMenu extends Component {
   }
 
   render() {
-    const { loadingDatam, msg } = this.state;
+    const { loadingData, msg } = this.state;
 
-    if (loadingDatam) {
+    if (loadingData) {
       return (
         <PageLoader />
       );
