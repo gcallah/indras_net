@@ -511,6 +511,9 @@ class Space(Composite):
 
         #  Adjust if the cur_x and cur_y are out of range
         if out_of_bounds(cur_x, cur_y, 0, 0, self.width, self.height):
+            # we should call a new func `bring_in_bounds(x, y, 0, 0,
+            # self.width, self.height)`
+            # *That* func should just find the nearest point on the rectangle.
             if cur_x == prev_x:
                 if cur_y < 0:
                     return cur_x, 0
