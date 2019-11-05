@@ -122,9 +122,8 @@ def is_credible(dealer, buyer):
     if is_mature(buyer):
         return (dealer["avg_car_life_sold"] is None
                 or dealer["avg_car_life_sold"] >= MEDIUM_CAR_LIFE)
-    else:
-        # immature buyers are gullible!
-        return True
+    # immature buyers are gullible!
+    return True
 
 
 def cal_avg_life(agent):
@@ -190,7 +189,9 @@ def create_dealer(name, i, props=None):  # testcase done
                         "curr_car_life": 0,
                         "num_completed_services": 0,
                         "emoji_used": None,
-                        "dealer_characteristic": None
+                        "dealer_characteristic": None,
+                        "respond_to_return": False,
+                        "return_rate": 0
                         })
 
 
@@ -208,7 +209,9 @@ def create_buyer(name, i, props=None):  # testcase done
                         "dealer_his": [],
                         "emoji_carlife_assoc": {},
                         "emoji_life_avg": {},
-                        "emoji_indicator": {}})
+                        "emoji_indicator": {},
+                        "want_to_return": False
+                        })
 
 
 def set_up(props=None):  # testcase done
