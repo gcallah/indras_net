@@ -71,6 +71,18 @@ def gaussian_distribution(default_target, sigma):
     return new_target
 
 
+def use_saved_hood(hood_func):
+    @wraps(hood_func)
+    def wrapper(*args, **kwargs):
+        agent = args[1]
+        if (agent.get("save_neighbors", False) and agent.neighbors is not
+                None):
+            return agent.neighbors
+        return hood_func(*args, **kwargs)
+
+    return wrapper
+
+
 class Space(Composite):
     """
     A collection of entities that share a space.
@@ -246,7 +258,7 @@ class Space(Composite):
             high_y = self.constrain_y(mbr.get_y() + max_move)
         x = self.rand_x(low_x, high_x)
         y = self.rand_y(low_y, high_y)
-        return (x, y)
+        return x, y
 
     def is_empty(self, x, y):
         """
@@ -327,17 +339,6 @@ class Space(Composite):
         """
         del self.locations[(x, y)]
 
-    def use_saved_hood(hood_func):
-        @wraps(hood_func)
-        def wrapper(*args, **kwargs):
-            agent = args[1]
-            if (agent.get("save_neighbors", False) and agent.neighbors is not
-                    None):
-                return agent.neighbors
-            return hood_func(*args, **kwargs)
-
-        return wrapper
-
     def get_row_hood(self, row_num, pred=None, save_neighbors=False):
         """
         Collects all agents in row `row_num` into a Composite
@@ -368,7 +369,7 @@ class Space(Composite):
             neighbor_x_coords = []
             for i in range(-width, 0):
                 neighbor_x_coords.append(i)
-            if (include_self):
+            if include_self:
                 neighbor_x_coords.append(0)
             for i in range(1, width + 1):
                 neighbor_x_coords.append(i)
