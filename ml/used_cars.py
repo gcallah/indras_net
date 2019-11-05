@@ -93,6 +93,12 @@ def get_dealer_emoji(dealer_characteristic):
         return NEG_EMOJIS[random.randint(0, 3)]
 
 
+def get_dealer_completions(dealer):
+    # this factor influences credibility
+    # add more conditions to this
+    return dealer[num_completed_services]
+
+
 def update_dealer_sale(dealer, new_car_life):
     dealer["num_sales"] += 1
     if dealer["avg_car_life_sold"] is None:
@@ -128,7 +134,6 @@ def cal_avg_life(agent):
         num = len(assoc[key])
         avg = sum(assoc[key]) / num
         emo_life_avg[key] = avg
-    print("Car life avg:", emo_life_avg)
 
 
 def update_buyer(agent, my_dealer):
@@ -181,11 +186,8 @@ def create_dealer(name, i, props=None):  # testcase done
     return Agent(name + str(i),
                  action=dealer_action,
                  attrs={"num_sales": 0,
-                        "num_returns": 0,
                         "avg_car_life_sold": None,
                         "curr_car_life": 0,
-                        "return_rate": 0,
-                        "respond_rate": 0,
                         "num_completed_services": 0,
                         "emoji_used": None,
                         "dealer_characteristic": None
