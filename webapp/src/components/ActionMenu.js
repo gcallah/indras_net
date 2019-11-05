@@ -137,7 +137,7 @@ class ActionMenu extends Component {
   };
 
   sendNumPeriods = async () => {
-    const { periodNum, envFile, msg } = this.state;
+    const { periodNum, envFile } = this.state;
     console.log(`${API_SERVER}run/${String(periodNum)}`);
     this.setState({ loadingData: true });
     try {
@@ -213,6 +213,7 @@ class ActionMenu extends Component {
       </div>
     );
   }
+
   renderMapItem = () => {
     const { menu } = this.state;
     return (
@@ -238,7 +239,12 @@ class ActionMenu extends Component {
   }
 
   render() {
-    const { loadingData, msg } = this.state;
+    const {
+      loadingData,
+      msg,
+      disabledButton,
+      errorMessage,
+    } = this.state;
 
     if (loadingData) {
       return (
@@ -255,7 +261,11 @@ class ActionMenu extends Component {
         <ul className="list-group">
           <div className="row">
             <div>
-              <RunModelButton disabledButton={this.state.disabledButton} errorMessage={this.state.errorMessage} sendNumPeriods={this.sendNumPeriods} handleRunPeriod={this.handleRunPeriod} 
+              <RunModelButton
+                disabledButton={disabledButton}
+                errorMessage={errorMessage}
+                sendNumPeriods={this.sendNumPeriods}
+                handleRunPeriod={this.handleRunPeriod}
               />
               <h3 className="margin-top-60 mb-5">Model Analysis:</h3>
             </div>

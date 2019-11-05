@@ -15,7 +15,6 @@ export default class ModelStatusBox extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log("message is : ", this.state.msg)
     if (nextProps.msg !== '') {
       this.setState({ msg: nextProps.msg });
     }
