@@ -89,6 +89,8 @@ prod1: tests
 	- git pull origin master
 	git push origin master
 
+tests: pytests jstests
+
 pytests: FORCE
 	cd APIServer; make tests
 	cd indra; make tests
