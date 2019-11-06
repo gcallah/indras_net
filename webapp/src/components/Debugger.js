@@ -8,7 +8,7 @@ function Debugger(props) {
   const data = envFile;
   console.log(data);
   if (loadingData) {
-    console.log('inside Debugger');
+    console.log('inside Debugger, the envFile is :', envFile.user);
     return (
       <ReactJson src={data} />
     );

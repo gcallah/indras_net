@@ -138,7 +138,6 @@ class ActionMenu extends Component {
 
   sendNumPeriods = async () => {
     const { periodNum, envFile } = this.state;
-    console.log(`${API_SERVER}run/${String(periodNum)}`);
     this.setState({ loadingData: true });
     try {
       const res = await axios.put(
