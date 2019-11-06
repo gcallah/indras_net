@@ -397,7 +397,7 @@ class Space(Composite):
         Takes in an agent and returns a Composite
         of its y neighbors.
         For example, if the agent is located at (0, 0),
-        get_y_hood would return (0, -1) and (0, 1).
+        get_y_hood would return agents at (0, 2) and (0, 1).
         """
         y_hood = Composite("y neighbors")
         agent_x, agent_y, neighbor_y_coords \
@@ -501,81 +501,9 @@ class Space(Composite):
         the other end -- if off grid, pull it back onto the
         grid.
         """
-        y_intercept, x_intercept, x_horizontal, y_horizontal, y_vertical, \
-            x_vertical = None, None, None, None, None, None
         (prev_x, prev_y) = xy
-        (cur_x, cur_y) = xy
-        #  Calculate the coordinates
-        cur_x += math.cos(math.radians(angle)) * max_move
-        cur_y += math.sin(math.radians(angle)) * max_move
-
-        #  Adjust if the cur_x and cur_y are out of range
-        if out_of_bounds(cur_x, cur_y, 0, 0, self.width, self.height):
-            # we should call a new func `bring_in_bounds(x, y, 0, 0,
-            # self.width, self.height)`
-            # *That* func should just find the nearest point on the rectangle.
-            if cur_x == prev_x:
-                if cur_y < 0:
-                    return cur_x, 0
-                else:
-                    return cur_x, self.height
-
-            if cur_y == prev_y:
-                if cur_x < 0:
-                    return 0, cur_y
-                else:
-                    return self.width, cur_y
-
-            if cur_x != prev_x and cur_y != prev_y:
-                slope = float((cur_y - prev_y) / (cur_x - prev_x))
-
-                # Calculate the intersection of the vector and Ox and Oy axes
-                y_intercept = float(cur_y - slope * cur_x)
-                x_intercept = float(y_intercept / slope) * (-1)
-
-                # Calculate the intersection of the vector and grid axes
-                x_vertical = self.width
-                y_vertical = float(slope * x_vertical) + y_intercept
-                y_horizontal = self.height
-                x_horizontal = float((y_horizontal - y_intercept) / slope)
-
-            #  Adjust the out of bound coordinates
-            #  1. If both coordinates < 0
-            #  2. If both coordinates > grid size
-            #  3. If only one coordinate < 0
-            #  4. If only one coordinate > grid size
-
-            if cur_y < 0 and cur_x < 0:
-                if x_intercept > 0:
-                    return x_intercept, 0
-                else:
-                    return 0, y_intercept
-
-            elif cur_y >= self.height and cur_x >= self.width:
-                if x_horizontal < self.width:
-                    cur_x = x_horizontal
-                    cur_y = y_horizontal
-                else:
-                    cur_x = x_vertical
-                    cur_y = y_vertical
-                return cur_x, cur_y
-
-            elif cur_y * cur_x < 0:
-                if cur_x < 0:
-                    cur_x = 0
-                    cur_y = y_intercept
-                else:
-                    cur_y = 0
-                    cur_x = x_intercept
-                return cur_x, cur_y
-
-            elif cur_x >= self.width or cur_y >= self.height:
-                if cur_x >= self.width:
-                    cur_x = x_vertical
-                    cur_y = y_vertical
-                else:
-                    cur_x = x_horizontal
-                    cur_y = y_horizontal
-                return cur_x, cur_y
-        else:
-            return cur_x, cur_y
+        (new_x, new_y) = xy
+        #  Calculate the new coordinates
+        new_x += math.cos(math.radians(angle)) * max_move
+        new_y += math.sin(math.radians(angle)) * max_move
+        return (self.constrain_x(new_x), self.constrain_y(new_y))

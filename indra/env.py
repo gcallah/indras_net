@@ -148,10 +148,8 @@ class Env(Space):
         self.plot_title = serial_obj["plot_title"]
         nm = serial_obj["user"]["name"]
         msg = serial_obj["user"]["user_msgs"]
-        debug= serial_obj["user"["debug"]]
         self.user = APIUser(nm, self)
         self.user.tell(msg)
-        self.user.tell(debug)
         self.name = serial_obj["name"]
 
         # the next 4 lines are all wrong:

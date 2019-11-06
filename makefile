@@ -79,7 +79,7 @@ submods:
 	cd utils; git pull origin master
 
 # run tests then commit all, then push
-prod: local tests
+prod: local pytests jstests
 	- git commit -a
 	- git pull origin master
 	git push origin master
@@ -89,10 +89,12 @@ prod1: tests
 	- git pull origin master
 	git push origin master
 
-tests: FORCE
+pytests: FORCE
 	cd APIServer; make tests
 	cd indra; make tests
 	cd models; make tests
+
+jstests: FORCE
 	cd webapp; make tests
 
 lint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
