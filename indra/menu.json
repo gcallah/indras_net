@@ -1,5 +1,5 @@
 {
-    "menu_database": [
+    "menu_database" : [
         {
             "id": 1,
             "func": "run",
@@ -24,6 +24,11 @@
             "id": 5,
             "func": "source",
             "question": "View the source code"
+        },
+        {
+          "id": 6,
+          "func": "debug_model",
+          "question": "Debug model data"
         },
         {
             "id": 0,
