@@ -79,7 +79,7 @@ submods:
 	cd utils; git pull origin master
 
 # run tests then commit all, then push
-prod: local pytests jstests
+prod: local python js
 
 # run tests then push just what is already committed:
 prod1: tests
