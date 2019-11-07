@@ -93,6 +93,12 @@ def get_dealer_emoji(dealer_characteristic):
         return NEG_EMOJIS[random.randint(0, 3)]
 
 
+def get_dealer_completions(dealer):
+    # this factor influences credibility
+    # add more conditions to this
+    return dealer[num_completed_services]
+
+
 def update_dealer_sale(dealer, new_car_life):
     dealer["num_sales"] += 1
     if dealer["avg_car_life_sold"] is None:
@@ -103,8 +109,11 @@ def update_dealer_sale(dealer, new_car_life):
         dealer["avg_car_life_sold"] = round(avg_car_life, 2)
 
 
-def is_mature(buyer):
-    return buyer["age"] >= buyer["mature"]
+def is_mature(agent):
+    # check if buyer has enough experience
+    # to make its own decision
+    num_interaction = len(agent["dealer_his"])
+    return num_interaction > MATURE_BOUND
 
 
 def is_credible(dealer, buyer):
@@ -113,16 +122,8 @@ def is_credible(dealer, buyer):
     if is_mature(buyer):
         return (dealer["avg_car_life_sold"] is None
                 or dealer["avg_car_life_sold"] >= MEDIUM_CAR_LIFE)
-    else:
-        # immature buyers are gullible!
-        return True
-
-
-def is_mature_buyer(agent):
-    # check if buyer has enough experience
-    # to make its own decision
-    num_interaction = len(agent["dealer_his"])
-    return num_interaction > MATURE_BOUND
+    # immature buyers are gullible!
+    return True
 
 
 def cal_avg_life(agent):
@@ -132,7 +133,6 @@ def cal_avg_life(agent):
         num = len(assoc[key])
         avg = sum(assoc[key]) / num
         emo_life_avg[key] = avg
-    print("Car life avg:", emo_life_avg)
 
 
 def update_buyer(agent, my_dealer):
@@ -165,7 +165,7 @@ def buyer_action(agent):  # how to write this testcase
                                                       hood_size=4)
         if my_dealer is None:
             print("No dealers nearby.")
-        elif is_credible(agent, my_dealer):
+        elif is_credible(my_dealer, agent):
             update_buyer(agent, my_dealer)
         else:
             print("I found a rotten dealer: ", str(my_dealer))
@@ -185,14 +185,14 @@ def create_dealer(name, i, props=None):  # testcase done
     return Agent(name + str(i),
                  action=dealer_action,
                  attrs={"num_sales": 0,
-                        "num_returns": 0,
                         "avg_car_life_sold": None,
                         "curr_car_life": 0,
-                        "return_rate": 0,
-                        "respond_rate": 0,
                         "num_completed_services": 0,
                         "emoji_used": None,
-                        "dealer_characteristic": None})
+                        "dealer_characteristic": None,
+                        "respond_to_return": False,
+                        "return_rate": 0
+                        })
 
 
 def create_buyer(name, i, props=None):  # testcase done
@@ -205,11 +205,13 @@ def create_buyer(name, i, props=None):  # testcase done
                         "car_life": None,
                         "interaction_res": None,
                         "age": 0,
-                        "mature": 40,
+                        "mature": 50,
                         "dealer_his": [],
                         "emoji_carlife_assoc": {},
                         "emoji_life_avg": {},
-                        "emoji_indicator": {}})
+                        "emoji_indicator": {},
+                        "want_to_return": False
+                        })
 
 
 def set_up(props=None):  # testcase done

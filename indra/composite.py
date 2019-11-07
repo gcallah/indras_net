@@ -13,9 +13,9 @@ from indra.agent import Agent, join, INF, is_composite, AgentEncoder
 DEBUG = False
 
 
-def grp_from_nm_dict(nm, dict):
+def grp_from_nm_dict(nm, dictionary):
     grp = Composite(nm)
-    grp.members = dict
+    grp.members = dictionary
     return grp
 
 

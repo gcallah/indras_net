@@ -1,14 +1,15 @@
-/* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import ListGroup from 'react-bootstrap/ListGroup';
 import axios from 'axios';
 import autoBind from 'react-autobind';
+import PropType from 'prop-types';
 import PageLoader from './PageLoader';
 import PopulationGraph from './PopulationGraph';
 import ScatterPlot from './ScatterPlot';
 import Debugger from './Debugger';
 import ModelStatusBox from './ModelStatusBox';
 import SourceCodeViewer from './SourceCodeViewer';
+import RunModelButton from './RunModelButton';
 import './styles.css';
 
 
@@ -47,7 +48,7 @@ class ActionMenu extends Component {
     this.setState({
       menu: m.data,
       name: localStorage.getItem('name'),
-      modelId: localStorage.getItem('menu_id'),
+      modelId: parseInt(localStorage.getItem('menu_id'), 10),
       source: localStorage.getItem('source'),
       envFile: JSON.parse(localStorage.getItem('envFile')),
       msg: JSON.parse(localStorage.getItem('envFile')).user.user_msgs,
@@ -136,8 +137,7 @@ class ActionMenu extends Component {
   };
 
   sendNumPeriods = async () => {
-    const { periodNum, envFile, msg } = this.state;
-    console.log(`${API_SERVER}run/${String(periodNum)}`);
+    const { periodNum, envFile } = this.state;
     this.setState({ loadingData: true });
     try {
       const res = await axios.put(
@@ -151,8 +151,6 @@ class ActionMenu extends Component {
         loadingData: false,
         msg: res.data.user.user_msgs,
       });
-      console.log(res.data);
-      console.log('message is ', msg);
     } catch (e) {
       console.log(e.message);
     }
@@ -187,6 +185,7 @@ class ActionMenu extends Component {
       loadingSourceCode,
       sourceCode,
     } = this.state;
+    console.log(typeof modelId);
     return (
       <div>
         <PopulationGraph
@@ -210,38 +209,6 @@ class ActionMenu extends Component {
           loadingData={loadingSourceCode}
           code={sourceCode}
         />
-      </div>
-    );
-  }
-
-  renderRunButton = () => {
-    const { disabledButton, errorMessage } = this.state;
-    return (
-      <div>
-        <button
-          type="button"
-          disabled={disabledButton}
-          onClick={!disabledButton ? this.sendNumPeriods : null}
-          className="btn btn-success m-2"
-        >
-          {'  '}
-          Run
-          {'  '}
-        </button>
-        {' '}
-        <span>model for</span>
-        {' '}
-        <input
-          type="INT"
-          className="from-control m-2 number-input"
-          placeholder="10"
-          onChange={this.handleRunPeriod}
-        />
-        {' '}
-        periods.
-        <span className="error-message">
-          {errorMessage}
-        </span>
       </div>
     );
   }
@@ -271,7 +238,12 @@ class ActionMenu extends Component {
   }
 
   render() {
-    const { loadingData, msg } = this.state;
+    const {
+      loadingData,
+      msg,
+      disabledButton,
+      errorMessage,
+    } = this.state;
 
     if (loadingData) {
       return (
@@ -288,7 +260,12 @@ class ActionMenu extends Component {
         <ul className="list-group">
           <div className="row">
             <div>
-              {this.renderRunButton()}
+              <RunModelButton
+                disabledButton={disabledButton}
+                errorMessage={errorMessage}
+                sendNumPeriods={this.sendNumPeriods}
+                handleRunPeriod={this.handleRunPeriod}
+              />
               <h3 className="margin-top-60 mb-5">Model Analysis:</h3>
             </div>
           </div>
@@ -299,5 +276,13 @@ class ActionMenu extends Component {
     );
   }
 }
+
+ActionMenu.propTypes = {
+  history: PropType.shape(),
+};
+
+ActionMenu.defaultProps = {
+  history: {},
+};
 
 export default ActionMenu;

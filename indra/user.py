@@ -292,4 +292,6 @@ class APIUser(User):
 
     def to_json(self):
         return {"user_msgs": self.user_msgs,
-                "name": self.name}
+                "name": self.name,
+                "debug": self.debug
+                }
