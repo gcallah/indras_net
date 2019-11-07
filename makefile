@@ -80,9 +80,6 @@ submods:
 
 # run tests then commit all, then push
 prod: local pytests jstests
-	- git commit -a
-	- git pull origin master
-	git push origin master
 
 # run tests then push just what is already committed:
 prod1: tests
@@ -91,6 +88,10 @@ prod1: tests
 
 tests: pytests jstests
 
+python: pytests github
+
+js: jstests github
+
 pytests: FORCE
 	cd APIServer; make tests
 	cd indra; make tests
@@ -98,6 +99,11 @@ pytests: FORCE
 
 jstests: FORCE
 	cd webapp; make tests
+
+github:
+	- git commit -a
+	- git pull origin master
+	git push origin master
 
 lint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
 
