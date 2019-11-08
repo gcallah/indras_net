@@ -29,6 +29,7 @@ DEF_K_PRICE = 1
 
 DEF_RESOURCE_HOLD = {"land": 1000, "truck": 500, "building": 200}
 DEF_CAP_WANTED = {"land": 1000, "truck": 500, "building": 200}
+DEF_EACH_CAP_PRICE = {"land": 1, "truck": 1, "building": 1}
 
 resource_holders = None  # list of resource holders
 entrepreneurs = None  # list of entrepreneur
@@ -138,20 +139,26 @@ def create_rholder(name, i, props=None):
     Create an agent.
     """
     k_price = DEF_K_PRICE
+    resources = copy.deepcopy(DEF_CAP_WANTED)
+    num_resources = len(resources)
+
+    price_list = copy.deepcopy(DEF_EACH_CAP_PRICE)
     if props is not None:
         k_price = props.get('cap_price',
                             DEF_K_PRICE)
+        for k in price_list.keys():
+            price_list[k] = "{0:.2f}".format(float(k_price
+                                                   * random.uniform(0.5, 1.5)))
+        print(price_list)
 
     starting_cash = DEF_RHOLDER_CASH
     if props is not None:
         starting_cash = props.get('rholder_starting_cash',
                                   DEF_RHOLDER_CASH)
 
-    resources = copy.deepcopy(DEF_CAP_WANTED)
     if props is not None:
         total_resources = props.get('rholder_starting_resource_total',
                                     DEF_TOTAL_RESOURCES_RHOLDER_HAVE)
-        num_resources = len(resources)
         for k in resources.keys():
             resources[k] = int((total_resources * 2)
                                * (random.random() / num_resources))

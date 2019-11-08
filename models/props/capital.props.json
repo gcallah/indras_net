@@ -29,7 +29,7 @@
   },
   "cap_price": {
     "val": 1,
-    "question": "How much does each capital cost?",
+    "question": "How much roughly does each capital cost?",
     "atype": "INT",
     "hival": 1000,
     "lowval": 100
