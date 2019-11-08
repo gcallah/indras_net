@@ -19,10 +19,10 @@ DEBUG2 = False  # turns deeper debugging code on or off
 
 DEF_NUM_ENTR = 10
 DEF_NUM_RHOLDER = 10
-DEF_TOTAL_RESOURCES_ENTR_WANT = 2000
-DEF_TOTAL_RESOURCES_RHOLDER_HAVE = 3000
+DEF_TOTAL_RESOURCES_ENTR_WANT = 20000
+DEF_TOTAL_RESOURCES_RHOLDER_HAVE = 30000
 
-DEF_ENTR_CASH = 10000
+DEF_ENTR_CASH = 100000
 DEF_RHOLDER_CASH = 0
 DEF_K_PRICE = 1
 
@@ -44,7 +44,7 @@ def entr_action(agent):
         if nearby_rholder is not None:
             # try to buy a resource if you have cash
             for good in agent["wants"].keys():
-                price = nearby_rholder["price"]
+                price = nearby_rholder["price"][good]
                 entr_max_buy = min(agent["cash"], agent["wants"][good] * price)
                 # if find the resources entr want
                 if good in nearby_rholder["resources"].keys():
@@ -58,9 +58,9 @@ def entr_action(agent):
                     nearby_rholder["resources"][good] -= trade_amt
                     nearby_rholder["cash"] += trade_amt * price
                     agent["cash"] -= trade_amt * price
-                    if agent["wants"][good] == 0:
+                    if agent["wants"][good] <= 0:
                         agent["wants"].pop(good)
-                    if nearby_rholder["resources"][good] == 0:
+                    if nearby_rholder["resources"][good] <= 0:
                         nearby_rholder["resources"].pop(good)
                     break
 
@@ -147,8 +147,9 @@ def create_rholder(name, i, props=None):
         k_price = props.get('cap_price',
                             DEF_K_PRICE)
         for k in price_list.keys():
-            price_list[k] = "{0:.2f}".format(float(k_price
-                                                   * random.uniform(0.5, 1.5)))
+            price_list[k] = float("{0:.2f}".format(float(k_price
+                                                   * random.uniform(0.5,
+                                                                    1.5))))
         print(price_list)
 
     starting_cash = DEF_RHOLDER_CASH
@@ -166,7 +167,7 @@ def create_rholder(name, i, props=None):
     return Agent(name + str(i), action=rholder_action,
                  attrs={"cash": starting_cash,
                         "resources": resources,
-                        "price": k_price})
+                        "price": price_list})
 
 
 def set_up(props=None):

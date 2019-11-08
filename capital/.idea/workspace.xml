@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="336c1a49-8df5-425a-8d4e-0f58134fd3ca" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../models/capital.py" beforeDir="false" afterPath="$PROJECT_DIR$/../models/capital.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../models/props/capital.props.json" beforeDir="false" afterPath="$PROJECT_DIR$/../models/props/capital.props.json" afterDir="false" />
     </list>
