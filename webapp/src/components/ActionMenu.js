@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React, { Component } from 'react';
 import ListGroup from 'react-bootstrap/ListGroup';
 import axios from 'axios';
@@ -29,23 +28,19 @@ class ActionMenu extends Component {
       loadingData: false,
       envFile: {},
       modelId: 0,
-      actionId: 0,
-      showComponent: false,
+      source: '',
       periodNum: 10,
       errorMessage: '',
       disabledButton: false,
       loadingPopulation: false,
       loadingScatter: false,
       loadingDebugger: false,
-
     };
   }
 
   async componentDidMount() {
     document.title = 'Indra | Menu';
     const m = await axios.get(API_SERVER);
-    const code = await this.viewSource();
-    console.log(API_SERVER);
     this.setState({
       menu: m.data,
       name: localStorage.getItem('name'),
@@ -53,30 +48,25 @@ class ActionMenu extends Component {
       source: localStorage.getItem('source'),
       envFile: JSON.parse(localStorage.getItem('envFile')),
       msg: JSON.parse(localStorage.getItem('envFile')).user.user_msgs,
+    });
+    const code = await this.viewSource();
+    this.setState({
       sourceCode: code,
     });
-    console.log(this.state);
   }
 
   viewSource = async () => {
     try {
-      const splitSource = localStorage.getItem('source').split('/');
+      const { source } = this.state;
+      const splitSource = source.split('/');
       const filename = splitSource[splitSource.length - 1];
       const res = await axios.get(
         `https://raw.githubusercontent.com/gcallah/indras_net/master/models/${filename}`,
       );
-      console.log(res.data);
       return res.data;
-    } catch (e) {
-      console.log(e);
-      return false;
+    } catch (error) {
+      return 'Something has gone wrong.';
     }
-  };
-
-  onClick = () => {
-    this.setState({
-      showComponent: true,
-    });
   };
 
   goback = () => {
@@ -111,13 +101,11 @@ class ActionMenu extends Component {
   };
 
   handleClick = (e) => {
-    console.log(`e = ${String(e)}`);
     this.setState({
       loadingData: false,
       loadingPopulation: false,
       loadingScatter: false,
       loadingDebugger: false,
-      actionId: e,
     });
     switch (e) {
       case POP:
@@ -152,8 +140,9 @@ class ActionMenu extends Component {
         loadingData: false,
         msg: res.data.user.user_msgs,
       });
+      return true;
     } catch (e) {
-      console.log(e.message);
+      return false;
     }
   };
 
@@ -186,7 +175,6 @@ class ActionMenu extends Component {
       loadingSourceCode,
       sourceCode,
     } = this.state;
-    console.log(typeof modelId);
     return (
       <div>
         <PopulationGraph
