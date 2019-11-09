@@ -1,7 +1,5 @@
 /* eslint-disable no-console */
-/* eslint-disable react/no-array-index-key */
 /* eslint-disable react/button-has-type */
-/* eslint-disable camelcase */
 /* eslint-disable react/no-access-state-in-setstate */
 /* eslint-disable react/destructuring-assignment */
 import React, { Component } from 'react';
@@ -124,11 +122,11 @@ class ModelDetail extends Component {
       console.log(this.state.modelDetails);
       try {
         const res = await axios.put(apiServer + localStorage.getItem('menu_id'), this.state.modelDetails);
-        const item_id = localStorage.getItem('menu_id');
+        const itemId = localStorage.getItem('menu_id');
         this.setState({ envFile: res.data });
         localStorage.setItem('envFile', JSON.stringify(this.state.envFile));
         this.props.history.push({
-          pathname: `/models/menu/${item_id.toString(10)}`,
+          pathname: `/models/menu/${itemId.toString(10)}`,
           state: {
             envFile: this.state.envFile,
           },
@@ -183,7 +181,7 @@ Submit
           <br />
           <form>
             <div className="container">
-              {Object.keys(this.state.modelDetails).map((item, i) => {
+              {Object.keys(this.state.modelDetails).map((item) => {
                 if ('question' in this.state.modelDetails[item]) {
                   return (
                     <ModelInputField
@@ -193,7 +191,7 @@ Submit
                       error={this.state.modelDetails[item].errorMessage}
                       propChange={this.propChanged}
                       name={item}
-                      key={i}
+                      key={item}
                     />
                   );
                 }
