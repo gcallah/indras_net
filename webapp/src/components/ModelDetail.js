@@ -1,12 +1,12 @@
 /* eslint-disable no-console */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable react/button-has-type */
-/* eslint-disable react/prop-types */
 /* eslint-disable camelcase */
 /* eslint-disable react/no-access-state-in-setstate */
 /* eslint-disable react/destructuring-assignment */
 import React, { Component } from 'react';
 import axios from 'axios';
+import PropTypes from 'prop-types';
 import ModelInputField from './ModelInputField';
 import PageLoader from './PageLoader';
 import './styles.css';
@@ -208,5 +208,13 @@ Submit
       );
     }
 }
+
+ModelDetail.propTypes = {
+  history: PropTypes.shape(),
+};
+
+ModelDetail.defaultProps = {
+  history: {},
+};
 
 export default ModelDetail;
