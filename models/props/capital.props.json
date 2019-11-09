@@ -29,16 +29,16 @@
   },
   "cap_price": {
     "val": 1,
-    "question": "How much does each capital cost?",
+    "question": "How much roughly does each capital cost?",
     "atype": "INT",
     "hival": 1000,
     "lowval": 100
   },
   "entr_starting_cash": {
-    "val": 1000,
+    "val": 100000,
     "question": "How much cash should entrepreneurs start with?",
     "atype": "INT",
-    "hival": 100000,
+    "hival": 1000000,
     "lowval": 100
   },
   "rholder_starting_cash": {
@@ -49,14 +49,14 @@
     "lowval": 0
   },
   "rholder_starting_resource_total": {
-    "val": 3000,
+    "val": 30000,
     "question": "How many resources in total should each resource holder occupy?",
     "atype": "INT",
     "hival": 10000,
     "lowval": 0
   },
    "entr_want_resource_total": {
-    "val": 2000,
+    "val": 20000,
     "question": "How many resources in total should each entrepreneur want?",
     "atype": "INT",
     "hival": 10000,

@@ -19,16 +19,17 @@ DEBUG2 = False  # turns deeper debugging code on or off
 
 DEF_NUM_ENTR = 10
 DEF_NUM_RHOLDER = 10
-DEF_TOTAL_RESOURCES_ENTR_WANT = 2000
-DEF_TOTAL_RESOURCES_RHOLDER_HAVE = 3000
+DEF_TOTAL_RESOURCES_ENTR_WANT = 20000
+DEF_TOTAL_RESOURCES_RHOLDER_HAVE = 30000
 
-DEF_ENTR_CASH = 10000
+DEF_ENTR_CASH = 100000
 DEF_RHOLDER_CASH = 0
 DEF_K_PRICE = 1
 
 
 DEF_RESOURCE_HOLD = {"land": 1000, "truck": 500, "building": 200}
 DEF_CAP_WANTED = {"land": 1000, "truck": 500, "building": 200}
+DEF_EACH_CAP_PRICE = {"land": 1, "truck": 1, "building": 1}
 
 resource_holders = None  # list of resource holders
 entrepreneurs = None  # list of entrepreneur
@@ -43,7 +44,7 @@ def entr_action(agent):
         if nearby_rholder is not None:
             # try to buy a resource if you have cash
             for good in agent["wants"].keys():
-                price = nearby_rholder["price"]
+                price = nearby_rholder["price"][good]
                 entr_max_buy = min(agent["cash"], agent["wants"][good] * price)
                 # if find the resources entr want
                 if good in nearby_rholder["resources"].keys():
@@ -57,9 +58,9 @@ def entr_action(agent):
                     nearby_rholder["resources"][good] -= trade_amt
                     nearby_rholder["cash"] += trade_amt * price
                     agent["cash"] -= trade_amt * price
-                    if agent["wants"][good] == 0:
+                    if agent["wants"][good] <= 0:
                         agent["wants"].pop(good)
-                    if nearby_rholder["resources"][good] == 0:
+                    if nearby_rholder["resources"][good] <= 0:
                         nearby_rholder["resources"].pop(good)
                     break
 
@@ -138,20 +139,27 @@ def create_rholder(name, i, props=None):
     Create an agent.
     """
     k_price = DEF_K_PRICE
+    resources = copy.deepcopy(DEF_CAP_WANTED)
+    num_resources = len(resources)
+
+    price_list = copy.deepcopy(DEF_EACH_CAP_PRICE)
     if props is not None:
         k_price = props.get('cap_price',
                             DEF_K_PRICE)
+        for k in price_list.keys():
+            price_list[k] = float("{0:.2f}".format(float(k_price
+                                                   * random.uniform(0.5,
+                                                                    1.5))))
+        print(price_list)
 
     starting_cash = DEF_RHOLDER_CASH
     if props is not None:
         starting_cash = props.get('rholder_starting_cash',
                                   DEF_RHOLDER_CASH)
 
-    resources = copy.deepcopy(DEF_CAP_WANTED)
     if props is not None:
         total_resources = props.get('rholder_starting_resource_total',
                                     DEF_TOTAL_RESOURCES_RHOLDER_HAVE)
-        num_resources = len(resources)
         for k in resources.keys():
             resources[k] = int((total_resources * 2)
                                * (random.random() / num_resources))
@@ -159,7 +167,7 @@ def create_rholder(name, i, props=None):
     return Agent(name + str(i), action=rholder_action,
                  attrs={"cash": starting_cash,
                         "resources": resources,
-                        "price": k_price})
+                        "price": price_list})
 
 
 def set_up(props=None):
