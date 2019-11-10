@@ -29,11 +29,18 @@ DEF_K_PRICE = 1
 
 DEF_RESOURCE_HOLD = {"land": 1000, "truck": 500, "building": 200}
 DEF_CAP_WANTED = {"land": 1000, "truck": 500, "building": 200}
-DEF_EACH_CAP_PRICE = {"land": 1, "truck": 1, "building": 1}
+DEF_EACH_CAP_PRICE = {"land": 1,
+                      "truck": 1,
+                      "building": 1}
 
 resource_holders = None  # list of resource holders
 entrepreneurs = None  # list of entrepreneur
 market = None
+
+
+def dict_to_string(dict):
+    return " ".join(good + " {0:.2f}".format(amt)
+                    for good, amt in dict.items())
 
 
 def entr_action(agent):
@@ -68,23 +75,27 @@ def entr_action(agent):
                 market.user.tell("I'm " + agent.name
                                  + " and I will buy resources from "
                                  + str(nearby_rholder) + ". I have "
-                                 + str(agent["cash"]) + " dollars left."
-                                 + " I want " + str(agent["wants"])
-                                 + ", and I have " + str(agent["have"]) + ".")
+                                 + "{0:.2f}".format(agent["cash"])
+                                 + " dollars left."
+                                 + " I want " + dict_to_string(agent["wants"])
+                                 + ", and I have "
+                                 + dict_to_string(agent["have"]) + ".")
             elif agent["wants"]:
                 market.user.tell("I'm " + agent.name
                                  + " and I will buy resources from "
                                  + str(nearby_rholder) + ". I have "
-                                 + str(agent["cash"]) + " dollars left."
-                                 + " I want " + str(agent["wants"])
+                                 + "{0:.2f}".format(agent["cash"])
+                                 + " dollars left."
+                                 + " I want " + dict_to_string(agent["wants"])
                                  + ", and I don't have any capital.")
             elif agent["have"]:
                 market.user.tell("I'm " + agent.name
                                  + " and I will buy resources from "
                                  + str(nearby_rholder) + ". I have "
-                                 + str(agent["cash"]) + " dollars left."
+                                 + "{0:.2f}".format(agent["cash"])
+                                 + " dollars left."
                                  + " I got all I need, and I have "
-                                 + str(agent["have"]) + "!")
+                                 + dict_to_string(agent["have"]) + "!")
             return False
             # move to find resource holder
 
@@ -150,7 +161,6 @@ def create_rholder(name, i, props=None):
             price_list[k] = float("{0:.2f}".format(float(k_price
                                                    * random.uniform(0.5,
                                                                     1.5))))
-        print(price_list)
 
     starting_cash = DEF_RHOLDER_CASH
     if props is not None:
