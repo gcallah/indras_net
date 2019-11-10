@@ -1,7 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable react/button-has-type */
-/* eslint-disable react/no-access-state-in-setstate */
-/* eslint-disable react/destructuring-assignment */
 import React, { Component } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
@@ -24,19 +20,17 @@ class ModelDetail extends Component {
   }
 
   async componentDidMount() {
-    const { modelDetails } = this.state;
+    const { history } = this.props;
     try {
       document.title = 'Indra | Property';
       this.setState({ loadingData: true });
-      console.log(`${apiServer}${localStorage.getItem('menu_id')}`);
       const properties = await axios.get(`${apiServer}${localStorage.getItem('menu_id')}`);
       this.setState({ modelDetails: properties.data });
-      console.log('modelDetail json', modelDetails);
       this.states(properties.data);
       this.errors(properties.data);
       this.setState({ loadingData: false });
     } catch (e) {
-      console.log(e.message);
+      history.push('/errorCatching');
     }
   }
 
@@ -44,8 +38,18 @@ class ModelDetail extends Component {
     states = (data) => {
       const { modelDetails } = this.state;
       // loop over objects in data and create object in this.state
-      console.log(this.state);
-      Object.keys(modelDetails).forEach((item) => this.setState({ [item]: data[item] }));
+      Object.keys(modelDetails).forEach((detailName) => {
+        this.setState((prevState) => ({
+          modelDetails: {
+            ...prevState.modelDetails,
+            [detailName]: {
+              ...prevState.modelDetails[detailName],
+              defaultVal: data[detailName].val,
+            },
+          },
+        }));
+        // Object.keys(modelDetails).forEach((item) => this.setState({ [item]: data[item] }));
+      });
     }
 
 
@@ -75,25 +79,23 @@ class ModelDetail extends Component {
 
     propChanged = (e) => {
       const { modelDetails } = this.state;
-      const modelDetail = modelDetails;
       const { name, value } = e.target;
       const valid = this.checkValidity(name, value);
-      modelDetail[name].disabledButton = true;
+      modelDetails[name].disabledButton = true;
 
       if (valid === 1) {
-        modelDetail[name].val = value;
-        modelDetail[name].errorMessage = '';
-        modelDetail[name].disabledButton = false;
-        this.setState({ modelDetails: modelDetail });
+        modelDetails[name].val = parseInt(value, 10);
+        modelDetails[name].errorMessage = '';
+        modelDetails[name].disabledButton = false;
+        this.setState({ modelDetails });
       } else if (valid === -1) {
-        modelDetail[name].errorMessage = '**Wrong Input Type';
-        modelDetail[name].val = this.state[name].val;
-        this.setState({ modelDetails: modelDetail });
-        console.log(modelDetails[name]);
+        modelDetails[name].errorMessage = '**Wrong Input Type';
+        modelDetails[name].val = modelDetails[name].defaultVal;
+        this.setState({ modelDetails });
       } else {
-        modelDetail[name].errorMessage = `**Please input a number between ${this.state[name].lowval} and ${this.state[name].hival}.`;
-        modelDetail[name].val = this.state[name].val;
-        this.setState({ modelDetails: modelDetail });
+        modelDetails[name].errorMessage = `**Please input a number between ${modelDetails[name].lowval} and ${modelDetails[name].hival}.`;
+        modelDetails[name].val = modelDetails[name].defaultVal;
+        this.setState({ modelDetails });
       }
 
       this.setState({ disabledButton: this.errorSubmit() });
@@ -101,13 +103,14 @@ class ModelDetail extends Component {
 
 
     checkValidity = (name, value) => {
-      if (value <= this.state.modelDetails[name].hival
-                && value >= this.state.modelDetails[name].lowval) {
-        if (this.state.modelDetails[name].atype === 'INT'
+      const { modelDetails } = this.state;
+      if (value <= modelDetails[name].hival
+                && value >= modelDetails[name].lowval) {
+        if (modelDetails[name].atype === 'INT'
                 && !!(value % 1) === false) {
           return 1;
         }
-        if (this.state.modelDetails[name].atype === 'DBL') {
+        if (modelDetails[name].atype === 'DBL') {
           return 1;
         }
 
@@ -119,21 +122,22 @@ class ModelDetail extends Component {
 
     handleSubmit = async (event) => {
       event.preventDefault();
-      console.log(this.state.modelDetails);
+      const { modelDetails } = this.state;
+      const { history } = this.props;
       try {
-        const res = await axios.put(apiServer + localStorage.getItem('menu_id'), this.state.modelDetails);
+        const res = await axios.put(apiServer + localStorage.getItem('menu_id'), modelDetails);
         const itemId = localStorage.getItem('menu_id');
         this.setState({ envFile: res.data });
-        localStorage.setItem('envFile', JSON.stringify(this.state.envFile));
-        this.props.history.push({
+        const { envFile } = this.state;
+        localStorage.setItem('envFile', JSON.stringify(envFile));
+        history.push({
           pathname: `/models/menu/${itemId.toString(10)}`,
           state: {
-            envFile: this.state.envFile,
+            envFile,
           },
         });
       } catch (e) {
-        console.log(e.message);
-        this.props.history.push('/errorCatching');
+        history.push('/errorCatching');
       }
     }
 
@@ -152,6 +156,7 @@ model
       const { disabledButton } = this.state;
       return (
         <button
+          type="button"
           disabled={disabledButton}
           onClick={!disabledButton ? this.handleSubmit : null}
           className="btn btn-primary m-2"
@@ -163,16 +168,17 @@ Submit
     }
 
     goback=() => {
-      this.props.history.goBack();
+      const { history } = this.props;
+      history.goBack();
     }
 
     render() {
-      if (this.state.loadingData) {
+      const { loadingData, modelDetails } = this.state;
+      if (loadingData) {
         return (
           <PageLoader />
         );
       }
-
       return (
         <div>
           <h1 className="margin-top-60"> </h1>
@@ -181,14 +187,14 @@ Submit
           <br />
           <form>
             <div className="container">
-              {Object.keys(this.state.modelDetails).map((item) => {
-                if ('question' in this.state.modelDetails[item]) {
+              {Object.keys(modelDetails).map((item) => {
+                if ('question' in modelDetails[item]) {
                   return (
                     <ModelInputField
-                      label={this.state.modelDetails[item].question}
-                      type={this.state.modelDetails[item].atype}
-                      placeholder={this.state.modelDetails[item].val}
-                      error={this.state.modelDetails[item].errorMessage}
+                      label={modelDetails[item].question}
+                      type={modelDetails[item].atype}
+                      placeholder={modelDetails[item].val}
+                      error={modelDetails[item].errorMessage}
                       propChange={this.propChanged}
                       name={item}
                       key={item}
