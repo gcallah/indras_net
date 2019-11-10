@@ -104,10 +104,8 @@ class ModelDetail extends Component {
 
     checkValidity = (name, value) => {
       const { modelDetails } = this.state;
-      if (value <= modelDetails[name].hival
-                && value >= modelDetails[name].lowval) {
-        if (modelDetails[name].atype === 'INT'
-                && !!(value % 1) === false) {
+      if (value <= modelDetails[name].hival && value >= modelDetails[name].lowval) {
+        if (modelDetails[name].atype === 'INT' && !!(value % 1) === false) {
           return 1;
         }
         if (modelDetails[name].atype === 'DBL') {
@@ -143,12 +141,7 @@ class ModelDetail extends Component {
 
     renderHeader = () => (
       <h1 className="header" style={{ textAlign: 'center', fontWeight: '200' }}>
-        {' '}
-Please set the parameters for the
-        {' '}
-        {localStorage.getItem('name')}
-        {' '}
-model
+        {`Please set the parameters for the ${localStorage.getItem('name')} model`}
       </h1>
     )
 
@@ -161,8 +154,7 @@ model
           onClick={!disabledButton ? this.handleSubmit : null}
           className="btn btn-primary m-2"
         >
-Submit
-
+          Submit
         </button>
       );
     }
