@@ -29,9 +29,9 @@ DEF_K_PRICE = 1
 
 DEF_RESOURCE_HOLD = {"land": 1000, "truck": 500, "building": 200}
 DEF_CAP_WANTED = {"land": 1000, "truck": 500, "building": 200}
-DEF_EACH_CAP_PRICE = {"land": 1,
-                      "truck": 1,
-                      "building": 1}
+DEF_EACH_CAP_PRICE = {"land": DEF_K_PRICE,
+                      "truck": DEF_K_PRICE,
+                      "building": DEF_K_PRICE}
 
 resource_holders = None  # list of resource holders
 entrepreneurs = None  # list of entrepreneur
