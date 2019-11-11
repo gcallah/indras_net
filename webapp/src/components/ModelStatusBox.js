@@ -1,4 +1,3 @@
-/* eslint-disable react/no-deprecated */
 /* eslint-disable react/prop-types */
 /* eslint-disable react/destructuring-assignment */
 import React from 'react';
@@ -14,10 +13,17 @@ export default class ModelStatusBox extends React.Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.msg !== '') {
-      this.setState({ msg: nextProps.msg });
+  // componentWillReceiveProps(nextProps) {
+  //   if (nextProps.msg !== '') {
+  //     this.setState({ msg: nextProps.msg });
+  //   }
+  // }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.msg !== prevState.msg) {
+      return { msg: nextProps.msg };
     }
+    return null;
   }
 
   render() {
