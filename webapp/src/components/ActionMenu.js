@@ -48,6 +48,7 @@ class ActionMenu extends Component {
       source: localStorage.getItem('source'),
       envFile: JSON.parse(localStorage.getItem('envFile')),
       msg: JSON.parse(localStorage.getItem('envFile')).user.user_msgs,
+      loadingScatter: true,
     });
     const code = await this.viewSource();
     this.setState({
