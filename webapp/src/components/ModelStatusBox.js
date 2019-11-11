@@ -1,23 +1,17 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable react/destructuring-assignment */
 import React from 'react';
 import autoBind from 'react-autobind';
+import PropTypes from 'prop-types';
 
 export default class ModelStatusBox extends React.Component {
   constructor(props) {
     super(props);
     autoBind(this);
+    const { msg, title } = this.props;
     this.state = {
-      msg: this.props.msg,
-      title: this.props.title,
+      msg,
+      title,
     };
   }
-
-  // componentWillReceiveProps(nextProps) {
-  //   if (nextProps.msg !== '') {
-  //     this.setState({ msg: nextProps.msg });
-  //   }
-  // }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.msg !== prevState.msg) {
@@ -27,6 +21,7 @@ export default class ModelStatusBox extends React.Component {
   }
 
   render() {
+    const { msg, title } = this.state;
     return (
       <div>
         <div className="card w-50 model-status">
@@ -34,11 +29,11 @@ export default class ModelStatusBox extends React.Component {
             style={{ textAlign: 'center', fontSize: 16 }}
             className="card-header bg-primary text-white"
           >
-            { this.state.title }
+            { title }
           </h5>
           <div className="card-body overflow-auto">
             <pre className="card-text">
-              { this.state.msg }
+              { msg }
             </pre>
           </div>
         </div>
@@ -46,3 +41,13 @@ export default class ModelStatusBox extends React.Component {
     );
   }
 }
+
+ModelStatusBox.propTypes = {
+  msg: PropTypes.string,
+  title: PropTypes.string,
+};
+
+ModelStatusBox.defaultProps = {
+  msg: '',
+  title: '',
+};
