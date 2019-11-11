@@ -26,7 +26,26 @@ indra_dir = os.getenv("INDRA_HOME", "/home/indrasnet/indras_net")
 @api.route('/hello')
 class HelloWorld(Resource):
     def get(self):
+        """
+        A trivial endpoint just to see if we are running at all.
+        """
         return {'hello': 'world'}
+
+
+@api.route('/endpoints')
+class Endpoints(Resource):
+    def get(self):
+        """
+        List our endpoints.
+        """
+        return {'Available endpoints':
+                [
+                    '/hello',
+                    '/model_creator',
+                    '/models',
+                    '/models/props/<int:model_id>',
+                    '/models/menu/run/<int:run_time>',
+                ]}
 
 
 group_fields = api.model("group", {
@@ -48,16 +67,25 @@ create_model_spec = api.model("model_specification", {
 @api.route('/model_creator')
 class ModelCreator(Resource):
     def get(self):
+        """
+        Returns a description of the model creator interface.
+        """
         return get_model_creator()
 
     @api.expect(create_model_spec)
     def put(self):
+        """
+        Put a model creation description to create a new model.
+        """
         return put_model_creator(api.payload)
 
 
 @api.route('/models')
 class Models(Resource):
     def get(self):
+        """
+        Get a list of pre-existing models available through the API.
+        """
         return get_models(indra_dir)
 
 
@@ -71,18 +99,28 @@ class Props(Resource):
     global indra_dir
 
     def get(self, model_id):
+        """
+        Get the list of properties (parameters) for a model.
+        """
         return get_props(model_id, indra_dir)
 
     @api.expect(props)
     def put(self, model_id):
+        """
+        Put a revised list of properties (parameters) for a model
+        back to the server.
+        """
         return put_props(model_id, api.payload, indra_dir)
 
 
-@api.route("/models/menu/")
+@api.route('/models/menu/')
 class ModelMenu(Resource):
     global user
 
     def get(self):
+        """
+        Get the menu used once into a model.
+        """
         return user()
 
 
@@ -91,10 +129,13 @@ env = api.model("env", {
 })
 
 
-@api.route("/models/menu/run/<int:run_time>")
+@api.route('/models/menu/run/<int:run_time>')
 class RunModel(Resource):
     @api.expect(env)
     def put(self, run_time):
+        """
+        Put a model env to the server and run it `run_time` periods.
+        """
         return run_model_put(api.payload, run_time)
 
 
