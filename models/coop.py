@@ -77,6 +77,7 @@ def exchange(coop_env):
     # get exchange numbers
     global last_period_exchanges
     global coop_members
+    print("last_period_exchanges: ", last_period_exchanges)
     sitters = get_sitters(coop_members)
     going_out = get_going_out(coop_members)
     print("num_babysitter:" + str(len(sitters)))
@@ -103,7 +104,7 @@ def exchange(coop_env):
             break
 
     # record exchanges in population history
-    # last_period_exchanges = exchanges
+    last_period_exchanges = exchanges
 
 
 def distribute_coupons(agent):
@@ -134,13 +135,13 @@ def act(agent):
     if their holding coupons are less than desired cash balance, they babysit,
     or there is a 50-50 chance for them to go out.
     """
-    print(str(agent), "coupons = ", agent['coupons'],
-          "desired = ", agent['desired_cash'])
+    # print(str(agent), "coupons = ", agent['coupons'],
+    #       "desired = ", agent['desired_cash'])
     if agent['coupons'] <= agent['desired_cash']:
         agent['goal'] = "BABYSITTING"
         agent['sitting'] = True
     else:
-        print(str(agent), "is not in first if!")
+        # print(str(agent), "is not in first if!")
         if random.random() > .5:
             agent['goal'] = "GOING_OUT"
             agent['sitting'] = True
@@ -162,6 +163,7 @@ def central_bank_action(agent):
     If exchanges are down "enough", distribute coupons!
     Enough is a parameter.
     """
+    print("last_period_exchanges: ", last_period_exchanges)
     pass
 
 
