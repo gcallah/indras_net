@@ -110,8 +110,10 @@ def update_dealer_sale(dealer, new_car_life):
 
 
 def is_mature(agent):
-    # check if buyer has enough experience
-    # to make its own decision
+    '''
+    check if buyer has enough experience
+    to make its own decision
+    '''
     num_interaction = len(agent["dealer_his"])
     return num_interaction > MATURE_BOUND
 
@@ -122,9 +124,12 @@ def is_credible(dealer, buyer):
     mature buyers.
     """
     if is_mature(buyer):
-        # this should look at emojis, not actual car lifespan
-        return (dealer["avg_car_life_sold"] is None
-                or dealer["avg_car_life_sold"] >= MEDIUM_CAR_LIFE)
+        # judge base on buyer's own past experience
+        emoji_life = buyer["emoji_life_avg"]
+        received_emoji = dealer["emoji_used"]
+        return emoji_life[received_emoji]
+        #(dealer["avg_car_life_sold"] is None
+        #       or dealer["avg_car_life_sold"] >= MEDIUM_CAR_LIFE)
     # immature buyers are gullible!
     return True
 
