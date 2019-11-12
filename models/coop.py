@@ -77,7 +77,9 @@ def exchange(coop_env):
     global last_period_exchanges
     global coop_members
     sitters = get_sitters(coop_members)
+    print("sitters : " + str(len(sitters)))
     going_out = get_going_out(coop_members)
+    print("going_out : " + str(len(going_out)))
     exchanges = min(len(sitters), len(going_out))
 
     for i in range(exchanges):
