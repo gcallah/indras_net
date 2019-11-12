@@ -38,14 +38,8 @@ class Endpoints(Resource):
         """
         List our endpoints.
         """
-        return {'Available endpoints':
-                [
-                    '/hello',
-                    '/model_creator',
-                    '/models',
-                    '/models/props/<int:model_id>',
-                    '/models/menu/run/<int:run_time>',
-                ]}
+        endpoints = sorted(rule.rule for rule in api.app.url_map.iter_rules())
+        return {"Available endpoints": endpoints}
 
 
 group_fields = api.model("group", {
