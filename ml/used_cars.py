@@ -153,8 +153,6 @@ def is_credible(dealer, buyer):
         emoji_life = buyer["emoji_life_avg"]
         received_emoji = dealer["emoji_used"]
         return emoji_life[received_emoji]
-        #(dealer["avg_car_life_sold"] is None
-        #       or dealer["avg_car_life_sold"] >= MEDIUM_CAR_LIFE)
     # immature buyers are gullible!
     return True
 
@@ -198,6 +196,10 @@ def buy_from_dealer(agent, my_dealer):
 
 
 def buyer_action(agent):  # how to write this testcase
+    '''
+    This functions lets buyer
+    to decides whether wants to buy a car or not
+    '''
     print("_" * 20)
     print("Agent: " + agent.name)
     agent["age"] += 1
