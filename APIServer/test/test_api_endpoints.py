@@ -7,7 +7,7 @@ from unittest import TestCase, main, skip
 from flask_restplus import Resource
 
 from APIServer.api_endpoints import Props, ModelMenu, RunModel
-from APIServer.api_endpoints import app, HelloWorld, Models
+from APIServer.api_endpoints import app, HelloWorld, Endpoints, Models
 from APIServer.api_endpoints import indra_dir
 from APIServer.api_utils import err_return
 from APIServer.models_api import load_models
@@ -27,6 +27,7 @@ class Test(TestCase):
     def setUp(self):
         # none of the object's members names should have caps!
         self.hello_world = HelloWorld(Resource)
+        self.endpoints = Endpoints(Resource)
         self.model = Models(Resource)
         self.props = Props(Resource)
         self.model_menu = ModelMenu(Resource)
@@ -49,6 +50,19 @@ class Test(TestCase):
         """
         rv = self.hello_world.get()
         self.assertEqual(rv, {'hello': 'world'})
+
+    def test_endpoints(self):
+        '''
+        Check that /endpoints lists these endpoints.
+        '''
+        rv = self.endpoints.get()
+        test_rv = {"Available endpoints":
+                   ["/hello",
+                    "/model_creator",
+                    "/models",
+                    "/models/props/<int:model_id>",
+                    "/models/menu/run/<int:run_time>"]}
+        self.assertEqual(rv, test_rv)
 
     def test_get_model(self):
         """
