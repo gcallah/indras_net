@@ -20,7 +20,7 @@ class coopTestCase(TestCase):
     def setUp(self):
         self.pa = PropArgs.create_props('coop_props',
                                         ds_file='props/coop.props.json')
-        (coop.coop_env, coop.coop_members) = set_up()
+        (coop.coop_env, coop.coop_members, central_bank) = set_up()
 
     def tearDown(self):
         coop.coop_env = None

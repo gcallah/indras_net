@@ -77,7 +77,6 @@ def exchange(coop_env):
     # get exchange numbers
     global last_period_exchanges
     global coop_members
-    print("last_period_exchanges: ", last_period_exchanges)
     sitters = get_sitters(coop_members)
     going_out = get_going_out(coop_members)
     print("num_babysitter:" + str(len(sitters)))
@@ -207,28 +206,26 @@ def set_up(props=None):
     coop_members = Composite("Coop_members", num_members=num_members,
                              member_creator=create_babysitter,
                              props=pa)
-    # home_members = Composite("Home_members")
-    # the central bank is out for now!
-    # groups.append(Composite("CENTRAL_BANK", {"color": BLACK},
-    #                         props=pa,
-    #                         member_creator=create_central_bank,
-    #                         num_members=1))
+    central_bank = Composite("central_bank", num_members=1,
+                             member_creator=create_central_bank,
+                             props=pa)
 
-    coop_env = Env('coop_env', members=[coop_members],
+    coop_env = Env('coop_env', members=[coop_members, central_bank],
                    action=coop_action, width=UNLIMITED,
                    height=UNLIMITED,
                    census=coop_report,
                    props=pa,
                    pop_hist_setup=initial_exchanges,
                    pop_hist_func=record_exchanges)
-    return (coop_env, coop_members)
+    return (coop_env, coop_members, central_bank)
 
 
 def main():
     global coop_env
     global coop_members
+    global central_bank
 
-    (coop_env, coop_members) = set_up()
+    (coop_env, coop_members, central_bank) = set_up()
 
     coop_env()
     return 0
