@@ -112,11 +112,10 @@ def distribute_coupons(agent):
     Distribute coupons from central bank randomly to each babysitter.
     Coupons are gaussian distributed based on extra_coupons and extra_dev.
     """
-    pass
-    # for i in range(NUM_OF_GROUPS):
-    #     for bbsit in groups[i]:
-    #         groups[i][bbsit]["coupons"] += int(gaussian_distribution(
-    #             agent["extra_coupons"], agent["extra_dev"]))
+    global coop_members
+    for bbsit in coop_members:
+        coop_members[bbsit]['coupons'] += int(gaussian_distribution(
+            agent["extra_coupons"], agent["extra_dev"]))
 
 
 def coop_action(coop_env):
@@ -124,8 +123,8 @@ def coop_action(coop_env):
 
 
 def coop_report(coop_env):
-    # num_babysitter = len(get_sitters(coop_members))
-    # return 'Number of babysitters is: ' + str(num_babysitter) + '\n'
+    num_babysitter = len(get_sitters(coop_members))
+    return 'Number of babysitters is: ' + str(num_babysitter) + '\n'
     pass
 
 
@@ -135,8 +134,8 @@ def act(agent):
     if their holding coupons are less than desired cash balance, they babysit,
     or there is a 50-50 chance for them to go out.
     """
-    # print(str(agent), "coupons = ", agent['coupons'],
-    #       "desired = ", agent['desired_cash'])
+    print(str(agent), "coupons = ", agent['coupons'],
+          "desired = ", agent['desired_cash'])
     if agent['coupons'] <= agent['desired_cash']:
         agent['goal'] = "BABYSITTING"
         agent['sitting'] = True
@@ -163,9 +162,8 @@ def central_bank_action(agent):
     If exchanges are down "enough", distribute coupons!
     Enough is a parameter.
     """
-    # print("last_period_exchanges: ", last_period_exchanges)
-    print('distribute_threshold', agent['distribute_threshold'])
-    pass
+    if last_period_exchanges <= agent['distribute_threshold']:
+        distribute_coupons(agent)
 
 
 def create_babysitter(name, i, props=None):
