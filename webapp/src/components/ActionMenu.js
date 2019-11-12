@@ -35,6 +35,7 @@ class ActionMenu extends Component {
       disabledButton: false,
       loadingPopulation: false,
       loadingScatter: false,
+      loadingSourceCode: false,
       loadingDebugger: false,
     };
   }
@@ -107,6 +108,7 @@ class ActionMenu extends Component {
       loadingData: false,
       loadingPopulation: false,
       loadingScatter: false,
+      loadingSourceCode: false,
       loadingDebugger: false,
     });
     switch (e) {
