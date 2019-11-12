@@ -78,6 +78,8 @@ def exchange(coop_env):
     # get exchange numbers
     global last_period_exchanges
     global coop_members
+    global num_members
+
     sitters = get_sitters(coop_members)
     going_out = get_going_out(coop_members)
     print("num_babysitter:" + str(len(sitters)))
@@ -85,6 +87,9 @@ def exchange(coop_env):
     exchanges = min(len(sitters), len(going_out))
 
     # do exchange
+    print("num_members: ", num_members)
+    # index = random.randint(1,num_members)
+
     cnt_0 = 0
     cnt_1 = 0
     for agent in sitters:
@@ -201,6 +206,7 @@ def set_up(props=None):
     """
     global coop_env
     global coop_members
+    global num_members
     pa = get_props(MODEL_NAME, props)
 
     num_members = pa.get('num_babysitter', DEF_BABYSITTER)
@@ -225,6 +231,7 @@ def main():
     global coop_env
     global coop_members
     global central_bank
+    global num_members
 
     (coop_env, coop_members, central_bank) = set_up()
 
