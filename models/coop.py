@@ -74,28 +74,33 @@ def get_going_out(coop_members):
 
 
 def exchange(coop_env):
+    # get exchange numbers
     global last_period_exchanges
     global coop_members
     sitters = get_sitters(coop_members)
-    print("sitters : " + str(len(sitters)))
     going_out = get_going_out(coop_members)
-    print("going_out : " + str(len(going_out)))
+    print("num_babysitter:" + str(len(sitters)))
+    print("num_going_out:" + str(len(going_out)))
     exchanges = min(len(sitters), len(going_out))
 
-    for i in range(exchanges):
-        # going out agent gives one coupon to babysitting agent
-        sitter = sitters['Babysitters' + str(i + 1)]
-        sitter['sitting'] = False
-        sitter['coupons'] += 1
-        going_outer = going_out['Babysitters' + str(i + 1)]
-        going_outer['goint_out'] = False
-        going_outer['coupons'] -= 1
+    # do exchange
+    cnt_0 = 0
+    cnt_1 = 0
+    for agent in sitters:
+        if cnt_0 < exchanges:
+            cnt_0 += 1
+            sitters[agent]['sitting'] = False
+            sitters[agent]['coupons'] += 1
+        else:
+            break
 
-    action = ""
-    if len(sitters) > exchanges:
-        action = "sitting"  # noqa F841
-    else:
-        action = "going_out"  # noqa F841
+    for agent in going_out:
+        if cnt_1 < exchanges:
+            cnt_1 += 1
+            going_out[agent]['going_out'] = False
+            going_out[agent]['coupons'] -= 1
+        else:
+            break
 
     # record exchanges in population history
     # last_period_exchanges = exchanges
@@ -118,8 +123,9 @@ def coop_action(coop_env):
 
 
 def coop_report(coop_env):
-    num_babysitter = len(get_sitters(coop_members))
-    return 'Number of babysitters is: ' + str(num_babysitter) + '\n'
+    # num_babysitter = len(get_sitters(coop_members))
+    # return 'Number of babysitters is: ' + str(num_babysitter) + '\n'
+    pass
 
 
 def act(agent):
@@ -199,7 +205,7 @@ def set_up(props=None):
     coop_members = Composite("Coop_members", num_members=num_members,
                              member_creator=create_babysitter,
                              props=pa)
-
+    # home_members = Composite("Home_members")
     # the central bank is out for now!
     # groups.append(Composite("CENTRAL_BANK", {"color": BLACK},
     #                         props=pa,
