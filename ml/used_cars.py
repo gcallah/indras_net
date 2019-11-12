@@ -110,18 +110,26 @@ def update_dealer_sale(dealer, new_car_life):
 
 
 def is_mature(agent):
-    # check if buyer has enough experience
-    # to make its own decision
+    '''
+    check if buyer has enough experience
+    to make its own decision
+    '''
     num_interaction = len(agent["dealer_his"])
     return num_interaction > MATURE_BOUND
 
 
 def is_credible(dealer, buyer):
-    # scenario that none of the seller had already
-    # and have several crediable jobs
+    """
+    See if this dealer looks good... right now, only useful for 
+    mature buyers.
+    """
     if is_mature(buyer):
-        return (dealer["avg_car_life_sold"] is None
-                or dealer["avg_car_life_sold"] >= MEDIUM_CAR_LIFE)
+        # judge base on buyer's own past experience
+        emoji_life = buyer["emoji_life_avg"]
+        received_emoji = dealer["emoji_used"]
+        return emoji_life[received_emoji]
+        #(dealer["avg_car_life_sold"] is None
+        #       or dealer["avg_car_life_sold"] >= MEDIUM_CAR_LIFE)
     # immature buyers are gullible!
     return True
 
@@ -135,7 +143,7 @@ def cal_avg_life(agent):
         emo_life_avg[key] = avg
 
 
-def update_buyer(agent, my_dealer):
+def buy_from_dealer(agent, my_dealer):
     agent["has_car"] = True
     agent["dealer_his"].append(my_dealer)
     rec_carlife = get_car_life(my_dealer)
@@ -166,7 +174,7 @@ def buyer_action(agent):  # how to write this testcase
         if my_dealer is None:
             print("No dealers nearby.")
         elif is_credible(my_dealer, agent):
-            update_buyer(agent, my_dealer)
+            buy_from_dealer(agent, my_dealer)
         else:
             print("I found a rotten dealer: ", str(my_dealer))
     else:

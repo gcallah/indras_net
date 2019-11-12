@@ -10,6 +10,7 @@ import Debugger from './Debugger';
 import ModelStatusBox from './ModelStatusBox';
 import SourceCodeViewer from './SourceCodeViewer';
 import RunModelButton from './RunModelButton';
+import BackHomeButton from './BackHomeButton';
 import './styles.css';
 
 
@@ -234,7 +235,6 @@ class ActionMenu extends Component {
       disabledButton,
       errorMessage,
     } = this.state;
-
     if (loadingData) {
       return (
         <PageLoader />
@@ -242,6 +242,9 @@ class ActionMenu extends Component {
     }
     return (
       <div>
+        <div className="mt-4" style={{ float: 'right' }}>
+          <BackHomeButton />
+        </div>
         <br />
         {this.renderHeader()}
         <div>
