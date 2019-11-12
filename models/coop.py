@@ -17,6 +17,7 @@ DEF_COUPON = 2
 DEF_DISTRIBUTING_COUPON = 2
 DEF_SIGMA = 0.2
 DEF_PERCENT = 10
+DEF_DISTRIBUTE_THRESHOLD = 5
 
 BSIT_INDEX = 0
 GO_OUT_INDEX = 1
@@ -162,7 +163,8 @@ def central_bank_action(agent):
     If exchanges are down "enough", distribute coupons!
     Enough is a parameter.
     """
-    print("last_period_exchanges: ", last_period_exchanges)
+    # print("last_period_exchanges: ", last_period_exchanges)
+    print('distribute_threshold', agent['distribute_threshold'])
     pass
 
 
@@ -190,6 +192,7 @@ def create_central_bank(name, i, props=None):
     central_bank["percent_change"] = props.get("percent_change", DEF_PERCENT)
     central_bank["extra_coupons"] = props.get("extra_coupons", DEF_COUPON)
     central_bank["extra_dev"] = props.get("extra_deviation", DEF_SIGMA)
+    central_bank["distribute_threshold"] = props.get("distribute_threshold", DEF_DISTRIBUTE_THRESHOLD)  # noqa: E501
     central_bank["num_hist"] = []
     return central_bank
 
