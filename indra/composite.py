@@ -9,6 +9,7 @@ from copy import copy
 from random import choice
 
 from indra.agent import Agent, join, INF, is_composite, AgentEncoder
+from indra.registry import Registry
 
 DEBUG = False
 
@@ -35,19 +36,20 @@ class Composite(Agent):
 
     def __init__(self, name, attrs=None, members=None,
                  duration=INF, action=None, member_creator=None,
-                 num_members=None, serial_obj=None, props=None,
+                 num_members=None, serial_obj=None, props=None, register=False,
                  **kwargs):
 
         self.members = OrderedDict()
         super().__init__(name, attrs=attrs, duration=duration,
-                         action=action, serial_obj=serial_obj)
+                         action=action, serial_obj=serial_obj,
+                         register=register)
 
         self.type = "composite"
 
         if serial_obj is not None:
             self.restore_composite(serial_obj)
         else:
-            self.registry = {}
+            self.registry = Registry()
             if members is not None:
                 for member in members:
                     join(self, member)
@@ -86,7 +88,7 @@ class Composite(Agent):
                 self.members[nm] = Composite(name=nm, serial_obj=member)
 
         # construct self.registry
-        self.registry = {}
+        self.registry = Registry()
         for nm in self.members:
             self.add_mbr_to_regis(self.members[nm])
 

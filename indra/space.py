@@ -105,9 +105,10 @@ class Space(Composite):
 
     def __init__(self, name, width=DEF_WIDTH, height=DEF_HEIGHT,
                  attrs=None, members=None, action=None,
-                 random_placing=True, serial_obj=None):
+                 random_placing=True, serial_obj=None, register=False):
         super().__init__(name, attrs=attrs, members=members,
-                         action=action, serial_obj=serial_obj)
+                         action=action, serial_obj=serial_obj,
+                         register=register)
 
         self.type = "space"
 
