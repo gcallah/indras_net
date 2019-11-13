@@ -55,8 +55,8 @@ def initial_exchanges(pop_hist):
     Set up our pop hist object to record exchanges per period.
     """
     pop_hist.record_pop("Exchanges", 0)
-    # pop_hist.record_pop("Babysitters", 0)
-    # pop_hist.record_pop("Going_out", 0)
+    pop_hist.record_pop("Babysitters", 0)
+    pop_hist.record_pop("Going_out", 0)
 
 
 def record_exchanges(pop_hist):
@@ -66,8 +66,8 @@ def record_exchanges(pop_hist):
     """
     global last_period_exchanges
     pop_hist.record_pop("Exchanges", last_period_exchanges)
-    # pop_hist.record_pop("Babysitters", len(get_sitters(coop_members)))
-    # pop_hist.record_pop("Going_out", len(get_going_out(coop_members)))
+    pop_hist.record_pop("Babysitters", len(get_sitters(coop_members)))
+    pop_hist.record_pop("Going_out", len(get_going_out(coop_members)))
 
 
 def get_sitters(coop_members):
