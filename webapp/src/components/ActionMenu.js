@@ -278,7 +278,7 @@ class ActionMenu extends Component {
                 sendNumPeriods={this.sendNumPeriods}
                 handleRunPeriod={this.handleRunPeriod}
               />
-              <h3 className="margin-top-60 mb-5">Model Analysis:</h3>
+              <h3 className="margin-top-50 mb-4">Model Analysis:</h3>
             </div>
           </div>
           {this.renderMapItem()}
