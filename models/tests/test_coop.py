@@ -33,8 +33,8 @@ class coopTestCase(TestCase):
         """
         new_babysitter = create_babysitter("babysitters", 0, self.pa)
         self.assertTrue(new_babysitter["desired_cash"] >= 0)
-        self.assertTrue(new_babysitter["sitting"] is False)
-        self.assertTrue(new_babysitter["going_out"] >= 0)
+        # self.assertTrue(new_babysitter["sitting"] is False)
+        # self.assertTrue(new_babysitter["going_out"] >= 0)
         self.assertTrue(new_babysitter["goal"] is None)
         self.assertTrue(new_babysitter["coupons"] > 0)
 
@@ -58,7 +58,7 @@ class coopTestCase(TestCase):
         new_babysitter0["desired_cash"] = DEF_COUPON
         act(new_babysitter0)
         self.assertEqual(new_babysitter0["goal"], "BABYSITTING")
-        self.assertTrue(new_babysitter0["sitting"])
+        # self.assertTrue(new_babysitter0["sitting"])
 
     def test_coup_action(self):
         pass
@@ -70,8 +70,8 @@ class coopTestCase(TestCase):
         new_babysitter0 = create_babysitter("babysitters", 0, self.pa)
         new_babysitter0["coupons"] = 0
         babysitter_action(new_babysitter0)
-        self.assertTrue(new_babysitter0["sitting"] == True)
-        self.assertTrue(new_babysitter0["going_out"] == False)
+        # self.assertTrue(new_babysitter0["sitting"] == True)
+        # self.assertTrue(new_babysitter0["going_out"] == False)
 
 
     def test_central_bank_action(self):
