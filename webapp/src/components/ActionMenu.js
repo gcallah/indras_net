@@ -19,6 +19,14 @@ const SCATTER = 3;
 const DATA = 4;
 const SOURCE = 5;
 const API_SERVER = 'https://indrasnet.pythonanywhere.com/models/menu/';
+const GRAPH_DICT = {
+  Basic: 'scatter',
+  Bacteria: 'scatter',
+  'Adam Smith\'s Fashion Model': 'scatter',
+  'Schelling\'s Segregation Model': 'scatter',
+  'Predator-Prey Model': 'scatter',
+  'Financial Market': 'scatter',
+};
 
 class ActionMenu extends Component {
   constructor(props) {
@@ -50,8 +58,17 @@ class ActionMenu extends Component {
       source: localStorage.getItem('source'),
       envFile: JSON.parse(localStorage.getItem('envFile')),
       msg: JSON.parse(localStorage.getItem('envFile')).user.user_msgs,
-      loadingScatter: true,
     });
+    const defaultGraph = GRAPH_DICT[localStorage.getItem('name')];
+    if (defaultGraph === 'scatter') {
+      this.setState({
+        loadingScatter: true,
+      });
+    } else {
+      this.setState({
+        loadingPopulation: true,
+      });
+    }
     const code = await this.viewSource();
     this.setState({
       sourceCode: code,
