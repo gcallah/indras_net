@@ -4,6 +4,8 @@ from APIServer.api_utils import json_converter, err_return
 from APIServer.models_api import load_models
 from models.run_dict_helper import setup_dict
 
+ENV_INSTANCE = 0
+
 
 def get_props(model_id, indra_dir):
     try:
@@ -21,6 +23,5 @@ def put_props(model_id, payload, indra_dir):
     models_db = load_models(indra_dir)
     ret = setup_dict[models_db[model_id]["run"]](props=payload)
     # Every setup function returns the Env instance as the first element
-    ENV_INSTANCE = 0
     env = ret[ENV_INSTANCE]
     return json_converter(env)

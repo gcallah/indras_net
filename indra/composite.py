@@ -35,12 +35,13 @@ class Composite(Agent):
 
     def __init__(self, name, attrs=None, members=None,
                  duration=INF, action=None, member_creator=None,
-                 num_members=None, serial_obj=None, props=None,
+                 num_members=None, serial_obj=None, props=None, register=False,
                  **kwargs):
 
         self.members = OrderedDict()
         super().__init__(name, attrs=attrs, duration=duration,
-                         action=action, serial_obj=serial_obj)
+                         action=action, serial_obj=serial_obj,
+                         register=register)
 
         self.type = "composite"
 
