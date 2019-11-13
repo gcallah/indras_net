@@ -285,6 +285,17 @@ def populate_board_tumbler(width, height):
         gameoflife_env.place_member(agent, xy=loc)
 
 
+populate_board_dict = {
+    0: populate_board_glider,
+    1: populate_board_small_exploder,
+    2: populate_board_exploder,
+    3: populate_board_n_horizontal_row,
+    4: populate_board_n_vertical_row,
+    5: populate_board_lightweight_spaceship,
+    6: populate_board_tumbler
+}
+
+
 def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
@@ -311,21 +322,10 @@ def set_up(props=None):
                                 "hide_legend": True},
                          random_placing=False,
                          props=pa)
-    if simulation == 0:
-        populate_board_glider(width, height)
-    elif simulation == 1:
-        populate_board_small_exploder(width, height)
-    elif simulation == 2:
-        populate_board_exploder(width, height)
-    elif simulation == 3:
-        populate_board_n_horizontal_row(width, height)
-    elif simulation == 4:
-        populate_board_n_vertical_row(width, height)
-    elif simulation == 5:
-        populate_board_lightweight_spaceship(width, height)
-    elif simulation == 6:
-        populate_board_tumbler(width, height)
-    return (gameoflife_env, groups)
+
+    populate_board_dict[simulation](width, height)
+
+    return gameoflife_env, groups
 
 
 def restore_globals(env):
