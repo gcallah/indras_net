@@ -81,8 +81,6 @@ def exchange(coop_env):
 
     sitters = get_sitters(coop_members)
     going_out = get_going_out(coop_members)
-    print("num_babysitter:" + str(len(sitters)))
-    print("num_going_out:" + str(len(going_out)))
     exchanges = min(len(sitters), len(going_out))
     sitter_agents = [agent for agent in sitters]
     going_out_agents = [agent for agent in going_out]
