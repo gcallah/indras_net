@@ -189,7 +189,7 @@ def set_up(props=None):
     global entrepreneurs
     global market
 
-    pa = get_props(MODEL_NAME, props)
+    pa = get_props(MODEL_NAME, props, model_dir="capital")
     entrepreneurs = Composite("Entrepreneurs", {"color": BLUE},
                               member_creator=create_entr,
                               props=pa,
