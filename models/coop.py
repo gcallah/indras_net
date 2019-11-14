@@ -93,9 +93,7 @@ def exchange(coop_env):
 
     for i in range(exchanges):
         sitter, outer = sitter_agents[i], going_out_agents[i]
-        # sitters[sitter]['sitting'] = False
         sitters[sitter]['coupons'] += 1
-        # going_out[outer]['going_out'] = False
         going_out[outer]['coupons'] -= 1
 
     # record exchanges in population history
@@ -142,12 +140,9 @@ def act(agent):
 
         else:
             agent['goal'] = "BABYSITTING"
-            # agent['going_out'] = True
 
 
 def babysitter_action(agent):
-    # agent['sitting'] = False
-    # agent['going_out'] = False
     act(agent)
     return False
 
@@ -168,8 +163,6 @@ def create_babysitter(name, i, props=None):
     babysitter = Agent(name + str(i), action=babysitter_action)
     mean_coupons = props.get("average_coupons", DEF_COUPON)
     dev = props.get("deviation", DEF_SIGMA)
-    # babysitter['sitting'] = False
-    # babysitter['going_out'] = False
     babysitter["goal"] = None
     babysitter['coupons'] = int(gaussian_distribution(mean_coupons, dev))
     babysitter['desired_cash'] = props.get("desired_cash",
@@ -185,7 +178,8 @@ def create_central_bank(name, i, props=None):
     central_bank["percent_change"] = props.get("percent_change", DEF_PERCENT)
     central_bank["extra_coupons"] = props.get("extra_coupons", DEF_COUPON)
     central_bank["extra_dev"] = props.get("extra_deviation", DEF_SIGMA)
-    central_bank["distribute_threshold"] = props.get("distribute_threshold", DEF_DISTRIBUTE_THRESHOLD)  # noqa: E501
+    central_bank["distribute_threshold"] = props.get("distribute_threshold",
+                                                     DEF_DISTRIBUTE_THRESHOLD)
     central_bank["num_hist"] = []
     return central_bank
 
