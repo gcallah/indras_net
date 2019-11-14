@@ -3,7 +3,6 @@
 import React from 'react';
 import { HashRouter, Route, Switch } from 'react-router-dom';
 import styled, { withTheme } from 'styled-components';
-import { Switch as Switch2 } from '@material-ui/core';
 import Layout from './components/Layout';
 import Home from './components/Home';
 import WIP from './components/WIP';
@@ -11,7 +10,6 @@ import ModelDetail from './components/ModelDetail';
 import ActionMenu from './components/ActionMenu';
 import NotFoundPage from './components/NotFoundPage';
 import ErrorCatching from './components/ErrorCatching';
-import { useTheme } from './darkTheme/ThemeContext';
 
 const Wrapper = styled('div')`
   background: ${props => props.theme.background};
@@ -24,18 +22,8 @@ const Wrapper = styled('div')`
 `;
 
 function App() {
-  const themeState = useTheme();
   return (
     <Wrapper>
-      <div>
-        <Switch2
-          defaultChecked
-          value="checkedF"
-          color="default"
-          inputProps={{ 'aria-label': 'checkbox with default color' }}
-          onClick={() => themeState.toggle()}
-        />
-      </div>
       <HashRouter>
         <Layout>
           <Switch>

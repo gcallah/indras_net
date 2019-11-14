@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.css": "/indras_net/static/css/main.0e028eff.chunk.css",
-    "main.js": "/indras_net/static/js/main.d8e377da.chunk.js",
-    "main.js.map": "/indras_net/static/js/main.d8e377da.chunk.js.map",
+    "main.css": "/indras_net/static/css/main.a6a54065.chunk.css",
+    "main.js": "/indras_net/static/js/main.913ce6cb.chunk.js",
+    "main.js.map": "/indras_net/static/js/main.913ce6cb.chunk.js.map",
     "runtime-main.js": "/indras_net/static/js/runtime-main.f17cb719.js",
     "runtime-main.js.map": "/indras_net/static/js/runtime-main.f17cb719.js.map",
-    "static/css/2.2c46b2e3.chunk.css": "/indras_net/static/css/2.2c46b2e3.chunk.css",
-    "static/js/2.bce57f28.chunk.js": "/indras_net/static/js/2.bce57f28.chunk.js",
-    "static/js/2.bce57f28.chunk.js.map": "/indras_net/static/js/2.bce57f28.chunk.js.map",
+    "static/css/2.1056786b.chunk.css": "/indras_net/static/css/2.1056786b.chunk.css",
+    "static/js/2.28337d61.chunk.js": "/indras_net/static/js/2.28337d61.chunk.js",
+    "static/js/2.28337d61.chunk.js.map": "/indras_net/static/js/2.28337d61.chunk.js.map",
     "index.html": "/indras_net/index.html",
-    "precache-manifest.5909c80cdf631074db68a8c2c638ea33.js": "/indras_net/precache-manifest.5909c80cdf631074db68a8c2c638ea33.js",
+    "precache-manifest.97932ca91d03a49ef212ec44f2157290.js": "/indras_net/precache-manifest.97932ca91d03a49ef212ec44f2157290.js",
     "service-worker.js": "/indras_net/service-worker.js",
-    "static/css/2.2c46b2e3.chunk.css.map": "/indras_net/static/css/2.2c46b2e3.chunk.css.map",
-    "static/css/main.0e028eff.chunk.css.map": "/indras_net/static/css/main.0e028eff.chunk.css.map",
+    "static/css/2.1056786b.chunk.css.map": "/indras_net/static/css/2.1056786b.chunk.css.map",
+    "static/css/main.a6a54065.chunk.css.map": "/indras_net/static/css/main.a6a54065.chunk.css.map",
     "static/media/Sandpile.jpg": "/indras_net/static/media/Sandpile.090bc1a0.jpg",
     "static/media/mendelobrot_sq.jpg": "/indras_net/static/media/mendelobrot_sq.875dd8b8.jpg",
     "static/media/sandpile_2.png": "/indras_net/static/media/sandpile_2.d38b3fb1.png",
@@ -20,9 +20,9 @@
   },
   "entrypoints": [
     "static/js/runtime-main.f17cb719.js",
-    "static/css/2.2c46b2e3.chunk.css",
-    "static/js/2.bce57f28.chunk.js",
-    "static/css/main.0e028eff.chunk.css",
-    "static/js/main.d8e377da.chunk.js"
+    "static/css/2.1056786b.chunk.css",
+    "static/js/2.28337d61.chunk.js",
+    "static/css/main.a6a54065.chunk.css",
+    "static/js/main.913ce6cb.chunk.js"
   ]
 }
