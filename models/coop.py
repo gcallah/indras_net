@@ -131,7 +131,6 @@ def act(agent):
           "desired = ", agent['desired_cash'])
     if agent['coupons'] <= agent['desired_cash']:
         agent['goal'] = "BABYSITTING"
-        # agent['sitting'] = True
     else:
         # print(str(agent), "is not in first if!")
         if random.random() > .5:
