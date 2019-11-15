@@ -10,7 +10,7 @@ from random import random
 
 import numpy as np
 
-from indra.registry import Registry
+# from indra.registry import registry
 
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
@@ -165,8 +165,6 @@ class Agent(object):
                 self.groups[str(self.prim_group)] = self.prim_group
                 if is_space(self.prim_group):
                     self.locator = self.prim_group
-            if register is True:
-                self.registry = Registry()
 
     def restore_agent(self, serial_obj):
         self.from_json(serial_obj)

@@ -1,0 +1,69 @@
+{
+  "grid_height": {
+    "val": 3,
+    "question": "What is the grid height?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 2
+  },
+  "grid_width": {
+    "val": 3,
+    "question": "What is the grid width?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 2
+  },
+  "num_entr": {
+    "val": 2,
+    "question": "How many entrepreneurs do you want?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 1
+  },
+  "num_rholder": {
+    "val": 2,
+    "question": "How many resource owners do you want?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 1
+  },
+  "cap_price": {
+    "val": 1,
+    "question": "How much roughly does each capital cost?",
+    "atype": "INT",
+    "hival": 1000,
+    "lowval": 100
+  },
+  "entr_starting_cash": {
+    "val": 100000,
+    "question": "How much cash should entrepreneurs start with?",
+    "atype": "INT",
+    "hival": 1000000,
+    "lowval": 100
+  },
+  "rholder_starting_cash": {
+    "val": 0,
+    "question": "How much cash should resource holder start with?",
+    "atype": "INT",
+    "hival": 1000,
+    "lowval": 0
+  },
+  "rholder_starting_resource_total": {
+    "val": 30000,
+    "question": "How many resources in total should each resource holder occupy?",
+    "atype": "INT",
+    "hival": 10000,
+    "lowval": 0
+  },
+   "entr_want_resource_total": {
+    "val": 20000,
+    "question": "How many resources in total should each entrepreneur want?",
+    "atype": "INT",
+    "hival": 10000,
+    "lowval": 0
+  },
+  "use_line": {
+    "val": 0,
+    "atype": "BOOL"
+  }
+}

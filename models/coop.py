@@ -55,8 +55,6 @@ def initial_exchanges(pop_hist):
     Set up our pop hist object to record exchanges per period.
     """
     pop_hist.record_pop("Exchanges", 0)
-    pop_hist.record_pop("Babysitters", 0)
-    pop_hist.record_pop("Going_out", 0)
 
 
 def record_exchanges(pop_hist):
@@ -66,8 +64,6 @@ def record_exchanges(pop_hist):
     """
     global last_period_exchanges
     pop_hist.record_pop("Exchanges", last_period_exchanges)
-    pop_hist.record_pop("Babysitters", len(get_sitters(coop_members)))
-    pop_hist.record_pop("Going_out", len(get_going_out(coop_members)))
 
 
 def get_sitters(coop_members):
@@ -85,17 +81,13 @@ def exchange(coop_env):
 
     sitters = get_sitters(coop_members)
     going_out = get_going_out(coop_members)
-    print("num_babysitter:" + str(len(sitters)))
-    print("num_going_out:" + str(len(going_out)))
     exchanges = min(len(sitters), len(going_out))
     sitter_agents = [agent for agent in sitters]
     going_out_agents = [agent for agent in going_out]
 
     for i in range(exchanges):
         sitter, outer = sitter_agents[i], going_out_agents[i]
-        # sitters[sitter]['sitting'] = False
         sitters[sitter]['coupons'] += 1
-        # going_out[outer]['going_out'] = False
         going_out[outer]['coupons'] -= 1
 
     # record exchanges in population history
@@ -133,21 +125,15 @@ def act(agent):
           "desired = ", agent['desired_cash'])
     if agent['coupons'] <= agent['desired_cash']:
         agent['goal'] = "BABYSITTING"
-        # agent['sitting'] = True
     else:
         # print(str(agent), "is not in first if!")
         if random.random() > .5:
             agent['goal'] = "GOING_OUT"
-            # agent['sitting'] = True
-
         else:
             agent['goal'] = "BABYSITTING"
-            # agent['going_out'] = True
 
 
 def babysitter_action(agent):
-    # agent['sitting'] = False
-    # agent['going_out'] = False
     act(agent)
     return False
 
@@ -168,8 +154,6 @@ def create_babysitter(name, i, props=None):
     babysitter = Agent(name + str(i), action=babysitter_action)
     mean_coupons = props.get("average_coupons", DEF_COUPON)
     dev = props.get("deviation", DEF_SIGMA)
-    # babysitter['sitting'] = False
-    # babysitter['going_out'] = False
     babysitter["goal"] = None
     babysitter['coupons'] = int(gaussian_distribution(mean_coupons, dev))
     babysitter['desired_cash'] = props.get("desired_cash",
@@ -185,7 +169,8 @@ def create_central_bank(name, i, props=None):
     central_bank["percent_change"] = props.get("percent_change", DEF_PERCENT)
     central_bank["extra_coupons"] = props.get("extra_coupons", DEF_COUPON)
     central_bank["extra_dev"] = props.get("extra_deviation", DEF_SIGMA)
-    central_bank["distribute_threshold"] = props.get("distribute_threshold", DEF_DISTRIBUTE_THRESHOLD)  # noqa: E501
+    central_bank["distribute_threshold"] = props.get("distribute_threshold",
+                                                     DEF_DISTRIBUTE_THRESHOLD)
     central_bank["num_hist"] = []
     return central_bank
 
