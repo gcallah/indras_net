@@ -84,9 +84,11 @@ class Env(Space):
                  line_data_func=None, exclude_member=None,
                  pop_hist_setup=None,
                  pop_hist_func=None,
+                 register=False,
                  **kwargs):
         super().__init__(name, action=action,
                          random_placing=random_placing, serial_obj=serial_obj,
+                         register=register,
                          **kwargs)
 
         self.type = "env"

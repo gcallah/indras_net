@@ -1,8 +1,6 @@
-/* eslint-disable react/no-unescaped-entities */
-/* eslint-disable react/prop-types */
-/* eslint-disable import/no-extraneous-dependencies */
 import React from 'react';
 import { Route } from 'react-router';
+import PropTypes from 'prop-types';
 
 import './NotFoundPage.css';
 
@@ -19,7 +17,7 @@ const NotFoundPage = () => (
   <Status code={404}>
     <div className="NotFoundPage">
       <h1>Oops!</h1>
-      <div>Looks like you're lost...</div>
+      <div>Looks like you&apos;re lost...</div>
       <div className="action">
         <a className="btn btn-primary" href="/">
                 Guide me to the right path!
@@ -28,4 +26,15 @@ const NotFoundPage = () => (
     </div>
   </Status>
 );
+
+Status.propTypes = {
+  code: PropTypes.number,
+  children: PropTypes.shape(),
+};
+
+Status.defaultProps = {
+  code: 0,
+  children: {},
+};
+
 export default NotFoundPage;

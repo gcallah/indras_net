@@ -25,10 +25,12 @@ To build the Docker container with the development environment, run
 To run the Docker container with the development environment, run
 `./dev_cont.sh`.
 
-To run tests, run `make tests`. This can be done inside or outside the Docker
-container. Optionally, you can first `cd` into [APIServer](APIServer),
-[indra](indra), or [models](models) before running `make tests` to run only the
-tests for that directory.
+To run tests on Python code, run `make pytests`. To run tests on JavaScript
+code, run `make jstests`. To run tests on both Python and JavaScript code,
+run `make tests`. These can be run inside or outside the Docker container.
+Optionally, you can first `cd` into [APIServer](APIServer), [indra](indra),
+[models](models), or [webapp](webapp) before running `make tests` to run only
+the tests for that directory.
 
 To test the APIServer with the front end locally:
 - Front end:

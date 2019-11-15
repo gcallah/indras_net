@@ -10,4 +10,4 @@ lint:
 	$(JSLINT) $(JSFILES)
 
 jstests:
-	npm test
+	./node_modules/.bin/cross-env CI=true npm test

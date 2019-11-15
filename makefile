@@ -79,7 +79,7 @@ submods:
 	cd utils; git pull origin master
 
 # run tests then commit all, then push
-prod: local python js
+prod: local python js notebooks
 
 # run tests then push just what is already committed:
 prod1: tests
@@ -96,6 +96,9 @@ pytests: FORCE
 	cd APIServer; make tests
 	cd indra; make tests
 	cd models; make tests
+	cd ml; make tests
+	# capital needs makefile
+	# cd capital; make tests
 
 jstests: FORCE
 	cd webapp; make tests

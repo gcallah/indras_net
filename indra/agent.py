@@ -138,7 +138,7 @@ class Agent(object):
     """
 
     def __init__(self, name, attrs=None, action=None, duration=INF,
-                 prim_group=None, serial_obj=None, env=None):
+                 prim_group=None, serial_obj=None, env=None, register=True):
         if serial_obj is not None:
             self.restore_agent(serial_obj)
         else:

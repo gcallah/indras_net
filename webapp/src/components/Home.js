@@ -5,6 +5,7 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import Carousel from './Carousel';
 import sandpileImg from './images/Sandpile.jpg';
 import sandpile1Img from './images/sandpile_2.png';
@@ -28,13 +29,14 @@ class Home extends Component {
   }
 
   async componentDidMount() {
+    const { history } = this.props;
     try {
       this.setState({ loadingData: true });
       document.title = 'Indra | Home';
       const res = await axios.get(`${this.api_server}models`);
       this.setState({ allItems: res.data, loadingData: false });
     } catch (e) {
-      this.setState({ apiFailed: true });
+      history.push('/errorCatching');
     }
   }
 
@@ -131,5 +133,13 @@ class Home extends Component {
     );
   }
 }
+
+Home.propTypes = {
+  history: PropTypes.shape(),
+};
+
+Home.defaultProps = {
+  history: {},
+};
 
 export default Home;
