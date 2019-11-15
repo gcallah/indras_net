@@ -47,3 +47,6 @@ class Registry(object):
     def to_json(self):
         return {REGISTRY:
                 {"agents": str(self.agents)}}
+
+
+registry = Registry()

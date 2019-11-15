@@ -10,6 +10,8 @@ from random import random
 
 import numpy as np
 
+# from indra.registry import registry
+
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
