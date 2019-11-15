@@ -16,6 +16,7 @@ class AgentTypes(fields.Raw):
 def generate_func(agent):
     # if agent.env is not None:
     agent.env.user.tell("Just testing the actions for " + agent.name + "!!")
+    agent.env.user.tell("attrs['John'] = ", agent.attrs["John"])
     return False
 
 
@@ -26,7 +27,7 @@ class CreateGroups(fields.Raw):
         while i < agent_num:
             agents_arr.append(Agent(agent_name + "_agent" + str(i + 1),
                                     action=generate_func,
-                                    ))
+                                    attrs={"John": "Knox"}))
             i = i + 1
         return agents_arr
 
