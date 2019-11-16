@@ -11,6 +11,7 @@ from propargs.propargs import PropArgs as pa
 # import logging
 import indra.display_methods as disp
 from indra.agent import join, switch, Agent, AgentEncoder
+# from indra.registry import registry
 from indra.space import Space
 from indra.user import TEST, TestUser, USER_EXIT, APIUser
 from indra.user import TermUser, TERMINAL, API
