@@ -11,7 +11,7 @@ from propargs.propargs import PropArgs as pa
 # import logging
 import indra.display_methods as disp
 from indra.agent import join, switch, Agent, AgentEncoder
-# from indra.registry import registry
+from indra.registry import register
 from indra.space import Space
 from indra.user import TEST, TestUser, USER_EXIT, APIUser
 from indra.user import TermUser, TERMINAL, API
@@ -68,8 +68,7 @@ class PopHist:
         self.pops = pop_data['pops']
 
     def to_json(self):
-        rep = {"periods": self.periods, "pops": self.pops}
-        return rep
+        return {"periods": self.periods, "pops": self.pops}
 
 
 class Env(Space):
@@ -83,13 +82,12 @@ class Env(Space):
                  props=None, serial_obj=None, census=None,
                  line_data_func=None, exclude_member=None,
                  pop_hist_setup=None,
-                 pop_hist_func=None,
-                 register=False,
+                 pop_hist_func=None, members=None,
+                 reg=True,
                  **kwargs):
         super().__init__(name, action=action,
                          random_placing=random_placing, serial_obj=serial_obj,
-                         register=register,
-                         **kwargs)
+                         reg=False, members=members, **kwargs)
 
         self.type = "env"
         self.user_type = os.getenv("user_type", TERMINAL)
@@ -102,10 +100,12 @@ class Env(Space):
             # are we restoring env from json?
             self.restore_env(serial_obj)
         else:
-            self.set_initial_mbr_vals(line_data_func, exclude_member)
+            self.construct_anew(line_data_func, exclude_member)
 
         if self.props is not None:
             self.set_menu_excludes(self.props)
+        if reg:
+            register(self.name, self)
 
     def set_menu_excludes(self, props):
         if not props.get('use_line', True):
@@ -113,7 +113,7 @@ class Env(Space):
         if not props.get('use_scatter', True):
             self.exclude_menu_item("scatter_plot")
 
-    def set_initial_mbr_vals(self, line_data_func=None, exclude_member=None):
+    def construct_anew(self, line_data_func=None, exclude_member=None):
         self.pop_hist = PopHist()  # this will record pops across time
         # Make sure varieties are present in the history
         if self.pop_hist_setup is None:

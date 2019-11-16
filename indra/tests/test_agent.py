@@ -144,13 +144,6 @@ class AgentTestCase(TestCase):
         s = "place"
         self.assertTrue(s in ent)
 
-    def test_type(self):
-        l1 = create_leibniz()
-        l2 = create_other_leibniz()
-        n = create_newton()
-        self.assertTrue(l1.same_type(l2))
-        self.assertFalse(l1.same_type(n))
-
     def test_iter(self):
         l1 = create_leibniz()
         s = ''
