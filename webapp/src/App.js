@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { HashRouter, Route, Switch } from 'react-router-dom';
 import Layout from './components/Layout';
 import Home from './components/Home';
@@ -23,6 +23,6 @@ function App() {
       </Layout>
     </HashRouter>
   );
-};
+}
 
 export default App;
