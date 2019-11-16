@@ -12,6 +12,7 @@
 .header {
   text-align: center;
   font-weight: 200;
+  margin-bottom: 24px;
 }
 
 .margin-bottom-80 {
@@ -28,7 +29,7 @@
 
 .model-status {
   float: right;
-  width: 18rem;
+  width: 28rem;
   height: 28rem;
 }
 
@@ -41,6 +42,7 @@
   font-size: 16px;
   font-weight: 400;
 }
-.col {
+
+.list-group-item {
   cursor: pointer;
 }

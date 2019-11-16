@@ -11,6 +11,7 @@ from random import randint
 
 from indra.agent import is_composite, AgentEncoder
 from indra.composite import Composite
+from indra.registry import register
 
 DEF_WIDTH = 10
 DEF_HEIGHT = 10
@@ -105,28 +106,31 @@ class Space(Composite):
 
     def __init__(self, name, width=DEF_WIDTH, height=DEF_HEIGHT,
                  attrs=None, members=None, action=None,
-                 random_placing=True, serial_obj=None):
+                 random_placing=True, serial_obj=None, reg=True):
         super().__init__(name, attrs=attrs, members=members,
-                         action=action, serial_obj=serial_obj)
+                         action=action, serial_obj=serial_obj,
+                         reg=False)
 
+        # get rid of these type fields!
         self.type = "space"
 
         if serial_obj is not None:
-            self.restore_space(serial_obj)
+            self.restore(serial_obj)
         else:
             self.width = width
             self.height = height
             # the location of members in the space {(tuple):Agent}
             self.locations = {}
-
             # by making two class methods for rand_place_members and
             # place_member, we allow two places to override
             if random_placing:
                 self.rand_place_members(self.members)
             else:
                 self.consec_place_members(self.members)
+        if reg:
+            register(self.name, self)
 
-    def restore_space(self, serial_obj):
+    def restore(self, serial_obj):
         self.from_json(serial_obj)
 
     def to_json(self):

@@ -7,7 +7,7 @@
     "lowval": 1
   },
   "average_coupons":{
-    "val": 5,
+    "val": 8,
     "question": "What is the average number of coupons each member should receive?",
     "atype": "INT",
     "hival": 100,
@@ -21,7 +21,7 @@
     "lowval": 0.001
   },
   "desired_cash": {
-    "val": 10,
+    "val": 7,
     "question": "What is the average desired cash balance?",
     "atype": "INT",
     "hival": 100,
@@ -48,6 +48,13 @@
     "atype": "DBL",
     "hival": 0.5,
     "lowval": 0.001
+  },
+  "distribute_threshold":{
+    "val": 5,
+    "question": "What is the threshold of that distribution when exchanges are down enough?",
+    "atype": "INT",
+    "hival": 50,
+    "lowval": 1
   },
   "use_line": {
     "val": 1,

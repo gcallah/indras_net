@@ -2,8 +2,8 @@
 """
 from unittest import TestCase, main
 
-from APIServer.model_creator_api import get_model_creator
 from APIServer.api_utils import ENDPOINT_DESCR
+from APIServer.model_creator_api import get_model_creator
 
 
 class TestModelCreator(TestCase):

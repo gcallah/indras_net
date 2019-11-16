@@ -10,6 +10,9 @@ from random import choice
 
 from indra.agent import Agent, join, INF, is_composite, AgentEncoder
 
+from indra.registry import Registry
+from indra.registry import register
+
 DEBUG = False
 
 
@@ -36,18 +39,23 @@ class Composite(Agent):
     def __init__(self, name, attrs=None, members=None,
                  duration=INF, action=None, member_creator=None,
                  num_members=None, serial_obj=None, props=None,
-                 **kwargs):
+                 reg=True, **kwargs):
 
         self.members = OrderedDict()
         super().__init__(name, attrs=attrs, duration=duration,
-                         action=action, serial_obj=serial_obj)
+                         action=action, serial_obj=serial_obj,
+                         reg=False)
 
+        # this should be expunged:
+        self.registry = Registry()
+
+        # we need to get rid of these uses of type!!!
+        # (but carefully, of course)
         self.type = "composite"
 
         if serial_obj is not None:
-            self.restore_composite(serial_obj)
+            self.restore(serial_obj)
         else:
-            self.registry = {}
             if members is not None:
                 for member in members:
                     join(self, member)
@@ -58,9 +66,12 @@ class Composite(Agent):
                 # `num_members` times to create group members.
                 for i in range(num_members):
                     # += adds members
-                    self += member_creator(name, i, props=props, **kwargs)
+                    self += member_creator(self.name, i,
+                                           props=props, **kwargs)
+        if reg:
+            register(self.name, self)
 
-    def restore_composite(self, serial_obj):
+    def restore(self, serial_obj):
         """
         Here we restore a composite from a serialized object.
         """
@@ -86,7 +97,7 @@ class Composite(Agent):
                 self.members[nm] = Composite(name=nm, serial_obj=member)
 
         # construct self.registry
-        self.registry = {}
+        self.registry = Registry()
         for nm in self.members:
             self.add_mbr_to_regis(self.members[nm])
 

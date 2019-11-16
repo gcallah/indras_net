@@ -46,6 +46,9 @@ car_market = None
 
 
 def bought_info(agent, dealer):
+    '''
+    Debug messages to show dealer's informationsss
+    '''
     msg = "My dealer is: " + dealer.name
     msg += "\nReceived a car with a life of " + str(agent["car_life"])
     msg += "\nMy dealer " + dealer.name
@@ -61,11 +64,20 @@ def is_dealer(agent, dealer_grp):  # testcase done
 
 
 def get_car_life(dealer):  # testcase done
+    '''
+    Display dealer's information and car
+    for debug purpose
+    '''
     print("Getting car from dealer", dealer)
     return dealer["curr_car_life"]
 
 
 def get_dealer_car(dealer_characteristc):  # testcase done
+    '''
+    Based on dealer's characteristics
+    this function returns a random car life to dealer object
+    to sell to the buyer
+    '''
     if dealer_characteristc == "good":
         return random.randint(MIN_GOOD_CAR_LIFE, MAX_CAR_LIFE)
     else:  # dealer characteristic == bad
@@ -73,6 +85,9 @@ def get_dealer_car(dealer_characteristc):  # testcase done
 
 
 def dealer_action(agent):
+    '''
+    Display debug statements
+    '''
     car_market.user.tell("I'm " + agent.name + " and I'm a dealer.")
     dealer_characteristic = get_dealer_characteristic()
     agent["dealer_characteristic"] = dealer_characteristic
@@ -87,19 +102,21 @@ def get_dealer_characteristic():
 
 
 def get_dealer_emoji(dealer_characteristic):
+    '''
+    This function returns a random emoji based on
+    dealer's characteristics
+    '''
     if dealer_characteristic == "good":
         return POS_EMOJIS[random.randint(0, 3)]
     else:  # dealer characteristic == bad
         return NEG_EMOJIS[random.randint(0, 3)]
 
 
-def get_dealer_completions(dealer):
-    # this factor influences credibility
-    # add more conditions to this
-    return dealer[num_completed_services]
-
-
 def update_dealer_sale(dealer, new_car_life):
+    '''
+    A helper function to update attributes in dealer agent
+    When buyer and dealer interaction happens
+    '''
     dealer["num_sales"] += 1
     if dealer["avg_car_life_sold"] is None:
         dealer["avg_car_life_sold"] = new_car_life
@@ -114,27 +131,29 @@ def is_mature(agent):
     check if buyer has enough experience
     to make its own decision
     '''
-    num_interaction = len(agent["dealer_his"])
-    return num_interaction > MATURE_BOUND
+    return MATURE_BOUND <= len(agent["dealer_hist"])
 
 
 def is_credible(dealer, buyer):
-    """
-    See if this dealer looks good... right now, only useful for 
+    '''
+    See if this dealer looks good... right now, only useful for
     mature buyers.
-    """
+    '''
     if is_mature(buyer):
         # judge base on buyer's own past experience
         emoji_life = buyer["emoji_life_avg"]
         received_emoji = dealer["emoji_used"]
         return emoji_life[received_emoji]
-        #(dealer["avg_car_life_sold"] is None
-        #       or dealer["avg_car_life_sold"] >= MEDIUM_CAR_LIFE)
     # immature buyers are gullible!
     return True
 
 
 def cal_avg_life(agent):
+    '''
+    Each emoji associate with list of car lifes
+    this function calculates average car life of a emoji
+    and map it to the corresponding emoji
+    '''
     assoc = agent["emoji_carlife_assoc"]
     emo_life_avg = agent["emoji_life_avg"]
     for key in assoc:
@@ -144,8 +163,12 @@ def cal_avg_life(agent):
 
 
 def buy_from_dealer(agent, my_dealer):
+    '''
+    When buyer buys a car from the dealer
+    Update all dealer and buyer's attributes
+    '''
     agent["has_car"] = True
-    agent["dealer_his"].append(my_dealer)
+    agent["dealer_hist"].append(my_dealer)
     rec_carlife = get_car_life(my_dealer)
     agent["car_life"] = rec_carlife
     rec_emoji = my_dealer["emoji_used"]
@@ -164,6 +187,10 @@ def buy_from_dealer(agent, my_dealer):
 
 
 def buyer_action(agent):  # how to write this testcase
+    '''
+    This functions lets buyer
+    to decides whether wants to buy a car or not
+    '''
     print("_" * 20)
     print("Agent: " + agent.name)
     agent["age"] += 1
@@ -213,8 +240,7 @@ def create_buyer(name, i, props=None):  # testcase done
                         "car_life": None,
                         "interaction_res": None,
                         "age": 0,
-                        "mature": 50,
-                        "dealer_his": [],
+                        "dealer_hist": [],
                         "emoji_carlife_assoc": {},
                         "emoji_life_avg": {},
                         "emoji_indicator": {},

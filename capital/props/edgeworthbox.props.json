@@ -1,0 +1,44 @@
+{
+  "grid_height": {
+    "val": 4,
+    "question": "What is the grid height?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 2
+  },
+  "grid_width": {
+    "val": 4,
+    "question": "What is the grid width?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 2
+  },
+  "num_cagents": {
+    "val": 1,
+    "question": "How many blue agents do you want?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 1
+  },
+  "num_wagents": {
+    "val": 1,
+    "question": "How many red agents do you want?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 1
+  },
+  "start_wine": {
+    "val": 10,
+    "question": "How many wine do you want your wine holder start with?",
+    "atype": "INT",
+    "hival": 200,
+    "lowval": 1
+  },
+  "start_cheese": {
+    "val": 10,
+    "question": "How many cheese do you want your cheese holder start with?",
+    "atype": "INT",
+    "hival": 200,
+    "lowval": 1
+  }
+}

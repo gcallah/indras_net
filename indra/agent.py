@@ -10,6 +10,11 @@ from random import random
 
 import numpy as np
 
+# registry not used yet!
+# from indra.registry import registry, register
+from indra.registry import register
+
+
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
@@ -136,23 +141,22 @@ class Agent(object):
     """
 
     def __init__(self, name, attrs=None, action=None, duration=INF,
-                 prim_group=None, serial_obj=None, env=None):
+                 prim_group=None, serial_obj=None, env=None, reg=True):
         if serial_obj is not None:
-            self.restore_agent(serial_obj)
+            self.restore(serial_obj)
         else:
+            # self.type gotta go!
             self.type = "agent"
             self.name = name
             self.action_key = None
             self.action = action
             if action is not None:
                 self.action_key = action.__name__
-
             self.duration = duration
             self.attrs = OrderedDict()
             self.neighbors = None
             if attrs is not None:
                 self.attrs = attrs
-            self.type_sig = type_hash(self)
             self.active = True
             self.groups = {}
             self.pos = None
@@ -164,7 +168,10 @@ class Agent(object):
                 if is_space(self.prim_group):
                     self.locator = self.prim_group
 
-    def restore_agent(self, serial_obj):
+        if reg:
+            register(self.name, self)
+
+    def restore(self, serial_obj):
         self.from_json(serial_obj)
 
     def to_json(self):
@@ -190,7 +197,6 @@ class Agent(object):
                 "attrs": self.attrs_to_dict(),
                 "groups": grp_nms,
                 "active": self.active,
-                "type_sig": self.type_sig,
                 "prim_group": pg,
                 "locator": loc,
                 "neighbors": nb,
@@ -204,7 +210,6 @@ class Agent(object):
         if serial_agent["action_key"] is not None:
             self.action = action_dict[serial_agent["action_key"]]
         self.action_key = serial_agent["action_key"]
-        self.type_sig = serial_agent["type_sig"]
         self.active = serial_agent["active"]
         self.attrs = OrderedDict(serial_agent["attrs"])
         if not serial_agent["pos"]:
@@ -369,9 +374,6 @@ class Agent(object):
         Now attrs ARE a dict, so just return 'em.
         """
         return self.attrs
-
-    def same_type(self, other):
-        return self.type_sig == other.type_sig
 
     def del_group(self, group):
         if str(group) in self.groups:

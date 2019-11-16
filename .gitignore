@@ -49,3 +49,4 @@ indras_net.egg-info/*
 !/webapp/*json
 APIServer/.coverage
 /venv/
+/.vscode
