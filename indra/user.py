@@ -3,7 +3,6 @@ This file defines User, which represents a user in our system.
 """
 import json
 import os
-import sys
 from abc import abstractmethod
 
 from IPython import embed
@@ -23,6 +22,16 @@ USER_EXIT = -999
 menu_dir = os.getenv("INDRA_HOME", "/home/indrasnet/indras_net") + "/indra"
 menu_file = "menu.json"
 menu_src = menu_dir + "/" + menu_file
+
+glob_user = None
+
+
+def user_tell(msg):
+    return glob_user.tell(msg)
+
+
+def user_debug(msg):
+    return glob_user.debug(msg)
 
 
 def not_impl(user):
@@ -68,10 +77,6 @@ def debug(user):
     return 0
 
 
-def tell_debug(msg, end='\n'):
-    print("DEBUG: " + msg, file=sys.stderr, end=end)
-
-
 menu_functions = {
     "run": run,
     "leave": leave,
@@ -103,12 +108,14 @@ class User(Agent):
         self.env = env  # this class needs this all the time, we think
         self.menu = get_menu_json()
         self.user_msgs = ''
-        self.debug = ''
+        self.debug_msg = ''
         self.error_message = {}
+        global glob_user
+        glob_user = self
 
     def to_json(self):
         return {"user_msgs": self.user_msgs,
-                "debug": self.debug,
+                "debug": self.debug_msg,
                 "name": self.name}
 
     def from_json(self):
@@ -272,7 +279,7 @@ class APIUser(User):
         """
         Tell the user some debug info.
         """
-        self.debug += (msg + end)
+        self.debug_msg += (msg + end)
         return msg
 
     def ask(self, msg, default=None):
@@ -293,5 +300,5 @@ class APIUser(User):
     def to_json(self):
         return {"user_msgs": self.user_msgs,
                 "name": self.name,
-                "debug": self.debug
+                "debug": self.debug_msg
                 }

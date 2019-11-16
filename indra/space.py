@@ -12,6 +12,7 @@ from random import randint
 from indra.agent import is_composite, AgentEncoder
 from indra.composite import Composite
 from indra.registry import register
+from indra.user import user_debug
 
 DEF_WIDTH = 10
 DEF_HEIGHT = 10
@@ -345,9 +346,10 @@ class Space(Composite):
         Move a member to a new position, if that position
         is not already occupied.
         """
-        if (nx, ny) not in self.locations:
+        if (ox, oy) not in self.locations:
+            user_debug("Trying to move unlocated agent.")
+        elif (nx, ny) not in self.locations:
             self.locations[(nx, ny)] = self.locations[(ox, oy)]
-
             del self.locations[(ox, oy)]
 
     def remove_location(self, x, y):

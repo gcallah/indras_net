@@ -64,6 +64,7 @@ class EnvTestCase(TestCase):
         """
         num_periods = 10
         self.env += self.newton
+        print(self.env)
         acts = self.env.runN(num_periods)
         self.assertEqual(acts, num_periods)
 

@@ -65,3 +65,7 @@ registry = Registry()
 
 def register(key, val):
     registry[key] = val
+
+
+def get_registration(key):
+    return registry[key]
