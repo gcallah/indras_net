@@ -45,8 +45,14 @@ class Registry(object):
         return iter(self.agents)
 
     def to_json(self):
-        return {REGISTRY:
-                {"agents": str(self.agents)}}
+        """
+        For right now, just list what keys are in the registry.
+        """
+        return {"Registry": str(self.agents.keys())}
 
 
 registry = Registry()
+
+
+def register(key, val):
+    registry[key] = val
