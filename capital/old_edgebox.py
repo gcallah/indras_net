@@ -46,7 +46,7 @@ class EdgeboxAgent(ga.GridAgent):
         in the base framework
         """
         super().survey_env()
-        for trader in self.neighbor_iter(view=self.my_view):
+        for trader shin self.neighbor_iter(view=self.my_view):
             for g in self.goods:
                 amt = 1
                 while self.goods[g]["endow"] >= amt:

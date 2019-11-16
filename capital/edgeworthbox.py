@@ -23,8 +23,24 @@ cheese_group = None
 env = None
 
 
+def until_func(qty):
+    return 10 - 0.5 * qty
+
+
 def seek_a_trade(agent):
-    print("I'm " + agent.name + " and I'm acting.")
+    if agent.name[0:4] == "Wine":
+        nearby_agent = env.get_neighbor_of_groupX(agent,
+                                                  cheese_group,
+                                                  hood_size=4)
+    else:
+        nearby_agent = env.get_neighbor_of_groupX(agent,
+                                                  wine_group,
+                                                  hood_size=4)
+    if nearby_agent is not None:
+        env.user.tell("I'm " + agent.name + " and I find "
+                      + nearby_agent.name)
+
+    env.user.tell("I'm " + agent.name + " and I'm acting.")
     # return False means to move
     return False
 
@@ -51,11 +67,13 @@ def set_up(props=None):
     """
     pa = get_props(MODEL_NAME, props)
     cheese_group = Composite("Cheese holders", {"color": BLUE},
-                           member_creator=create_cagent,
-                           num_members=pa.get('num_cagents', DEF_NUM_CAGENTS))
+                             member_creator=create_cagent,
+                             num_members=pa.get('num_cagents',
+                                                DEF_NUM_CAGENTS))
     wine_group = Composite("Wine holders", {"color": RED},
-                          member_creator=create_wagent,
-                          num_members=pa.get('num_wagents', DEF_NUM_WAGENTS))
+                           member_creator=create_wagent,
+                           num_members=pa.get('num_wagents',
+                                              DEF_NUM_WAGENTS))
 
     env = Env("env",
               height=pa.get('grid_height', DEF_HEIGHT),
@@ -74,7 +92,7 @@ def main():
     (env, cheese_group, wine_group) = set_up()
 
     if DEBUG2:
-        print(env.__repr__())
+        env.user.tell(env.__repr__())
 
     env()
     return 0

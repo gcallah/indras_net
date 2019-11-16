@@ -5,8 +5,9 @@ This class will appear as a dictionary, but with the right sort of default
 behaviors that we need for our registry.
 """
 import json
+import warnings
 
-REGISTRY = "registry"
+REGISTRY = "Registry"
 
 
 class Registry(object):
@@ -37,6 +38,14 @@ class Registry(object):
     def __setitem__(self, key, value):
         if key not in self.agents or self.agents[key] is None:
             self.agents[key] = value
+            if value is None:
+                warnings.warn("Trying to set the value of key {} to None.".
+                              format(key), RuntimeWarning)
+        else:
+            pass
+            # this fails the tests at the moment, so we need to debug
+            # raise KeyError("The key \"{}\" already exists in the registry"
+            #                .format(key))
 
     def __contains__(self, item):
         return item in self.agents
@@ -48,7 +57,7 @@ class Registry(object):
         """
         For right now, just list what keys are in the registry.
         """
-        return {"Registry": str(self.agents.keys())}
+        return {REGISTRY: str(self.agents.keys())}
 
 
 registry = Registry()
