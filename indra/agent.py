@@ -149,7 +149,6 @@ class Agent(object):
             self.type = "agent"
             self.name = name
             # cut locator over to a property
-            self._locator = None
             self.action_key = None
             self.action = action
             if action is not None:
@@ -160,10 +159,14 @@ class Agent(object):
             if attrs is not None:
                 self.attrs = attrs
             self.active = True
-            self.groups = {}
             self.pos = None
+
+            # some thing we will fetch from registry:
+            # for these, we only store the name but look up object
+            self._locator = None
+            self._env = None if env is None else env.name
             self.prim_group = prim_group
-            self.env = env
+            self.groups = {}
             if self.prim_group is not None:
                 self.groups[str(self.prim_group)] = self.prim_group
                 if is_space(self.prim_group):
@@ -171,6 +174,28 @@ class Agent(object):
 
         if reg:
             register(self.name, self)
+
+    @property
+    def env(self):
+        """
+        This is the locator property.
+        We use the string _locator to look up the
+        locator object in the registry.
+        """
+        return get_registration(self._env)
+
+    @env.setter
+    def env(self, val):
+        """
+        Set our locator: if passed an agent, store its name.
+        Else, it must be a string, and just store that.
+        Don't try to register the val! Agents register themselves
+        when constructed.
+        """
+        if isinstance(val, Agent):
+            self._env = val.name
+        elif isinstance(val, str):
+            self._env = val
 
     @property
     def locator(self):
@@ -218,12 +243,12 @@ class Agent(object):
                 "active": self.active,
                 "prim_group": pg,
                 "locator": self._locator,
+                "env": self._env,
                 "neighbors": nb,
                 "action_key": self.action_key
                 }
 
     def from_json(self, serial_agent):
-        self.env = None
         from models.run_dict_helper import action_dict
         self.action = None
         if serial_agent["action_key"] is not None:
@@ -243,6 +268,7 @@ class Agent(object):
         self.prim_group = serial_agent["prim_group"]
         self.neighbors = serial_agent["neighbors"]
         self._locator = serial_agent["locator"]
+        self._env = serial_agent["env"]
         self.type = serial_agent["type"]
 
     def __repr__(self):
@@ -258,7 +284,7 @@ class Agent(object):
         self.locator = locator  # whoever sets my pos is my locator!
         # and my env, if I don't have one:
         if self.env is None:
-            self.env = locator
+            self.env = self.locator
         self.pos = (x, y)
 
     def get_pos(self):
