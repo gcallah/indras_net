@@ -23,11 +23,11 @@ GRP2 = "Group2"
 X = 0
 Y = 1
 
+ENV_ACT_RET = 10
+
 
 def env_action(env):
-    print("Calling action for env")
-    env.name = "Monjur"
-    return True
+    env.duration = ENV_ACT_RET
 
 
 class EnvTestCase(TestCase):
@@ -62,10 +62,10 @@ class EnvTestCase(TestCase):
         """
         Test running for N turns.
         """
+        new_env = Env("Test1 env", action=env_action,
+                      members=[self.newton])
         num_periods = 10
-        self.env += self.newton
-        print(self.env)
-        acts = self.env.runN(num_periods)
+        acts = new_env.runN(num_periods)
         self.assertEqual(acts, num_periods)
 
     def test_str_pop(self):
@@ -130,7 +130,7 @@ class EnvTestCase(TestCase):
 
     def test_env_action(self):
         self.env()
-        self.assertEqual(self.env.name, "Monjur")
+        self.assertEqual(self.env.duration, ENV_ACT_RET)
 
     def test_restore_env(self):
         tests_env = env_json_basic.ret()
@@ -139,11 +139,14 @@ class EnvTestCase(TestCase):
 
     def test_from_json(self):
         """
-        These tests are too tied to particular models!
+        Test restoring particular envs from json.
         """
         self.maxDiff = None
-        test_env_collection = [env_json_basic.ret(), env_json_fashion.ret(), env_json_sandpile.ret(),
-                               env_json_bacteria.ret(), env_json_flocking.ret(), env_json_segregation.ret(),
+        test_env_collection = [env_json_basic.ret(),
+                               env_json_fashion.ret(),
+                               env_json_sandpile.ret(),
+                               env_json_bacteria.ret(),
+                               env_json_flocking.ret(), env_json_segregation.ret(),
                                env_json_wolfsheep.ret(), env_json_fmarket.ret(),
                                env_json_bigbox.ret(), env_json_gameoflife.ret()]
         for tests_env in test_env_collection:

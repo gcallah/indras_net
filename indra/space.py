@@ -332,6 +332,7 @@ class Space(Composite):
 
     def __iadd__(self, other):
         super().__iadd__(other)
+        print("Placing member ", other.name)
         self.place_member(other)
         return self
 
