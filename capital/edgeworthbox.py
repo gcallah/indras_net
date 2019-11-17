@@ -47,13 +47,16 @@ def seek_a_trade(agent):
     if nearby_agent is not None:
         env.user.tell("I'm " + agent.name + " and I find "
                       + nearby_agent.name)
-        wine_amt = agent["wine"]
-        cheese_amt = agent["cheese"]
-        if wine_amt != 0:
-            gain_util = util_func(cheese_amt + 1)
-            loss_util = util_func(wine_amt - 1)
-            marginal_util = gain_util + loss_util
-            if marginal_util > 0:
+        has_amt = agent[has]
+        want_amt = agent[want]
+
+        if (has_amt-1) >= 0:
+            gain_util = util_func(want_amt + 1)
+            loss_util = util_func(has_amt - 1)
+            marginal_util = gain_util - loss_util
+
+            # checking marginal utility grester than 0
+            if marginal_util >= 0:
                 agent[has] -= 1
                 agent[want] += 1
                 nearby_agent[has] += 1
@@ -80,7 +83,6 @@ def create_cagent(name, i, props=None):
     if props is not None:
         start_cheese = props.get('start_cheese',
                                  DEF_NUM_CHEESE)
-        print(start_cheese)
     return Agent(name + str(i), action=seek_a_trade,
                  attrs={"wine": 0, "cheese": start_cheese})
 
