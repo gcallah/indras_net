@@ -163,17 +163,39 @@ class Agent(object):
 
             # some thing we will fetch from registry:
             # for these, we only store the name but look up object
-            self._locator = None
             self._env = None if env is None else env.name
-            self.prim_group = prim_group
+            self._locator = None if self._env is None else self._env
+            self._prim_group = None if prim_group is None else prim_group.name
             self.groups = {}
-            if self.prim_group is not None:
-                self.groups[str(self.prim_group)] = self.prim_group
-                if is_space(self.prim_group):
-                    self.locator = self.prim_group
+            if prim_group is not None:
+                self.groups[str(prim_group)] = prim_group
+                if is_space(prim_group):
+                    self.locator = prim_group
 
         if reg:
             register(self.name, self)
+
+    @property
+    def prim_group(self):
+        """
+        This is the locator property.
+        We use the string _locator to look up the
+        locator object in the registry.
+        """
+        return get_registration(self._prim_group)
+
+    @prim_group.setter
+    def prim_group(self, val):
+        """
+        Set our locator: if passed an agent, store its name.
+        Else, it must be a string, and just store that.
+        Don't try to register the val! Agents register themselves
+        when constructed.
+        """
+        if isinstance(val, Agent):
+            self._prim_group = val.name
+        elif isinstance(val, str):
+            self._prim_group = val
 
     @property
     def env(self):
@@ -226,10 +248,6 @@ class Agent(object):
         grp_nms = []
         for grp in self.groups:
             grp_nms.append(grp)
-        if self.prim_group is None:
-            pg = self.prim_group
-        else:
-            pg = str(self.prim_group)
         if not self.neighbors:
             nb = None
         else:
@@ -241,7 +259,7 @@ class Agent(object):
                 "attrs": self.attrs_to_dict(),
                 "groups": grp_nms,
                 "active": self.active,
-                "prim_group": pg,
+                "prim_group": self.prim_group,
                 "locator": self._locator,
                 "env": self._env,
                 "neighbors": nb,
@@ -265,8 +283,8 @@ class Agent(object):
         self.groups = {}
         for gnm in serial_agent["groups"]:
             self.groups[gnm] = None
-        self.prim_group = serial_agent["prim_group"]
         self.neighbors = serial_agent["neighbors"]
+        self._prim_group = serial_agent["prim_group"]
         self._locator = serial_agent["locator"]
         self._env = serial_agent["env"]
         self.type = serial_agent["type"]
@@ -438,12 +456,8 @@ class Agent(object):
                 self.locator = group
                 if self.env is None:
                     self.env = group
-
-            pg = self.prim_group
-            # Why do we do line 395? And if we need to, why not just
-            # isinstance(pg, str) ?
-            if (not pg) or str(type(pg)) == "<class 'str'>":
-                self.prim_group = group
+        if self.prim_group is None:
+            pass
 
     def switch_groups(self, g1, g2):
         self.del_group(g1)

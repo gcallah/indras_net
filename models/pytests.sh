@@ -1,6 +1,6 @@
 export user_type="test"
 export test_dir="tests"
-export ignores="scheduler"
+export ignores="scheduler, sandpile"
 
 if [ -z $1 ]
 then
