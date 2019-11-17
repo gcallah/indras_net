@@ -1,8 +1,3 @@
-/* eslint-disable no-plusplus */
-/* eslint-disable no-return-assign */
-/* eslint-disable implicit-arrow-linebreak */
-/* eslint-disable camelcase */
-/* eslint-disable react/destructuring-assignment */
 import React from 'react';
 import { LineChart } from 'react-chartkick';
 import 'chart.js';
@@ -11,29 +6,30 @@ import PropType from 'prop-types';
 const FMARKET = 5;
 
 function PopulationGraph(props) {
-  if (props.loadingData) {
+  const { loadingData } = props;
+  if (loadingData) {
     const data = [];
     if (props.id !== FMARKET) {
       const env = props.envFile.pop_hist.pops;
       // populate 'data' array with groups from 'pops' and their respective values
-      Object.keys(env).forEach((group, i_group) => {
+      Object.keys(env).forEach((group, iGroup) => {
         data.push({
           name: group,
           color: props.envFile.members[group].attrs.color,
           data: {},
         });
         // modify individual 'data' dictionary of each pops group by copying over value
-        Object.keys(env[group]).forEach((member, i_member) => {
-          data[i_group].data[member] = env[group][i_member];
+        Object.keys(env[group]).forEach((member, iMember) => {
+          data[iGroup].data[member] = env[group][iMember];
         });
       });
     } else {
       const period = props.envFile.pop_hist.periods;
-      const data_hist = props.envFile.members.market_maker.attrs.price_hist;
+      const dataHist = props.envFile.members.market_maker.attrs.price_hist;
       let i;
       data.push({ name: 'price history', data: {} });
-      for (i = 0; i < period; i++) {
-        data[0].data[i] = data_hist[i];
+      for (i = 0; i < period; i += 1) {
+        data[0].data[i] = dataHist[i];
       }
     }
     return (

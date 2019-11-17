@@ -1,37 +1,32 @@
-/* eslint-disable no-console */
 /* eslint-disable no-unused-vars */
-/* eslint-disable camelcase */
-/* eslint-disable react/prop-types */
 import React from 'react';
 import { ScatterChart } from 'react-chartkick';
 import 'chart.js';
+import PropTypes from 'prop-types';
 
 const FMARKET = 10;
 function ScatterPlot(props) {
   const { loadingData, envFile, id } = props;
   if (loadingData && id !== FMARKET) {
     const env = envFile.members;
+    // TODO: width and height are set but never used
     const WIDTH = envFile.props.grid_height.val;
     const HEIGHT = envFile.props.grid_width.val;
-    console.log(HEIGHT);
-    console.log(WIDTH);
-    console.log(env);
     const data = [];
-    Object.keys(env).forEach((group, i_group) => {
+    Object.keys(env).forEach((group, iGroup) => {
       data.push({
         name: env[group].name,
         color: env[group].attrs.color,
         data: [],
       });
-      Object.keys(env[group].members).forEach((member, i_member) => {
+      Object.keys(env[group].members).forEach((member) => {
         if (env[group].members[member].pos !== null) {
-          data[i_group].data.push(
+          data[iGroup].data.push(
             env[group].members[member].pos,
           );
         }
       });
     });
-    console.log(data);
     return (
       <div>
         <ScatterChart
@@ -47,5 +42,17 @@ function ScatterPlot(props) {
   }
   return null;
 }
+
+ScatterPlot.propTypes = {
+  loadingData: PropTypes.bool,
+  envFile: PropTypes.shape(),
+  id: PropTypes.number,
+};
+
+ScatterPlot.defaultProps = {
+  loadingData: true,
+  envFile: {},
+  id: 0,
+};
 
 export default ScatterPlot;
