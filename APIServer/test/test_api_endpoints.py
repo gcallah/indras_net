@@ -56,11 +56,13 @@ class Test(TestCase):
         Check that /endpoints lists these endpoints.
         '''
         endpoints = set(self.endpoints.get()["Available endpoints"])
-        test_endpoints = ["/hello",
+        test_endpoints = ["/endpoints",
+                          "/hello",
                           "/model_creator",
                           "/models",
-                          "/models/props/<int:model_id>",
-                          "/models/menu/run/<int:run_time>"]
+                          "/models/menu/",
+                          "/models/menu/run/<int:run_time>",
+                          "/models/props/<int:model_id>"]
         for test_endpoint in test_endpoints:
             # While we could just convert test_endpoints into a set and then
             # check for set equality, this allows the output to show which
