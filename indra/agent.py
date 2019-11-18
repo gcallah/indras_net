@@ -14,7 +14,6 @@ import numpy as np
 # from indra.registry import registry, register
 from indra.registry import register, get_registration
 
-
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
@@ -178,8 +177,8 @@ class Agent(object):
     @property
     def prim_group(self):
         """
-        This is the locator property.
-        We use the string _locator to look up the
+        This is the prim_group property.
+        We use the string _prim_group to look up the
         locator object in the registry.
         """
         return get_registration(self._prim_group)
@@ -187,7 +186,7 @@ class Agent(object):
     @prim_group.setter
     def prim_group(self, val):
         """
-        Set our locator: if passed an agent, store its name.
+        Set our prim_group: if passed an agent, store its name.
         Else, it must be a string, and just store that.
         Don't try to register the val! Agents register themselves
         when constructed.
@@ -200,8 +199,8 @@ class Agent(object):
     @property
     def env(self):
         """
-        This is the locator property.
-        We use the string _locator to look up the
+        This is the env property.
+        We use the string _env to look up the
         locator object in the registry.
         """
         return get_registration(self._env)
@@ -209,7 +208,7 @@ class Agent(object):
     @env.setter
     def env(self, val):
         """
-        Set our locator: if passed an agent, store its name.
+        Set our env: if passed an agent, store its name.
         Else, it must be a string, and just store that.
         Don't try to register the val! Agents register themselves
         when constructed.
