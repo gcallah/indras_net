@@ -110,7 +110,7 @@ class Test(TestCase):
             self.assertEqual(group_name, composite["name"])
             self.assertIn(model_name, composite["groups"])
             composite_members = composite["members"]
-            for agent_index in range(group["num_of_agents"]):
+            for agent_index in range(group["num_of_agents"] - 1):
                 agent_name = group_name + "_agent" + str(agent_index + 1)
                 self.assertIn(agent_name, composite_members)
                 agent = composite_members[agent_name]
