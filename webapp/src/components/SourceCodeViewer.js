@@ -1,18 +1,27 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable react/destructuring-assignment */
 import React from 'react';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import PropTypes from 'prop-types';
 
-const SourceCodeViewer = (props) => {
-  if (props.loadingData) {
+const SourceCodeViewer = ({ loadingData, code }) => {
+  if (loadingData) {
     return (
       <SyntaxHighlighter language="python" style={docco}>
-        {props.code}
+        {code}
       </SyntaxHighlighter>
     );
   }
   return null;
+};
+
+SourceCodeViewer.propTypes = {
+  loadingData: PropTypes.bool,
+  code: PropTypes.string,
+};
+
+SourceCodeViewer.defaultProps = {
+  loadingData: true,
+  code: '',
 };
 
 export default SourceCodeViewer;

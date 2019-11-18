@@ -11,19 +11,21 @@ from indra.env import Env
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import get_props
 
-MODEL_NAME = "basic"
+MODEL_NAME = "edgeworthbox"
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
 DEF_NUM_CAGENTS = 1
 DEF_NUM_WAGENTS = 1
+DEF_NUM_CHEESE = 10
+DEF_NUM_WINE = 10
 
 wine_group = None
 cheese_group = None
 env = None
 
 
-def until_func(qty):
+def util_func(qty):
     return 10 - 0.5 * qty
 
 
@@ -32,46 +34,72 @@ def seek_a_trade(agent):
         nearby_agent = env.get_neighbor_of_groupX(agent,
                                                   cheese_group,
                                                   hood_size=4)
+        has = "wine"
+        want = "cheese"
+
     else:
         nearby_agent = env.get_neighbor_of_groupX(agent,
                                                   wine_group,
                                                   hood_size=4)
+        want = "cheese"
+        has = "wine"
+
     if nearby_agent is not None:
         env.user.tell("I'm " + agent.name + " and I find "
                       + nearby_agent.name)
+        has_amt = agent[has]
+        want_amt = agent[want]
 
-    env.user.tell("I'm " + agent.name + " and I'm acting.")
+        if (has_amt-1) >= 0:
+            gain_util = util_func(want_amt + 1)
+            loss_util = util_func(has_amt - 1)
+            marginal_util = gain_util - loss_util
+
+            # checking marginal utility grester than 0
+            if marginal_util >= 0:
+                agent[has] -= 1
+                agent[want] += 1
+                nearby_agent[has] += 1
+                nearby_agent[want] -= 1
+
+    env.user.tell("I'm " + agent.name
+                  + ". I have " + str(agent["wine"]) + " wine and "
+                  + str(agent["cheese"]) + " cheese.")
     # return False means to move
     return False
 
 
 def create_wagent(name, i, props=None):
-    """
-    Create an agent.
-    """
+    start_wine = DEF_NUM_WINE
+    if props is not None:
+        start_wine = props.get('start_wine',
+                               DEF_NUM_WINE)
     return Agent(name + str(i), action=seek_a_trade,
-                 attrs={"wine": 20, "cheese": 0})
+                 attrs={"wine": start_wine, "cheese": 0})
 
 
 def create_cagent(name, i, props=None):
-    """
-    Create an agent.
-    """
+    start_cheese = DEF_NUM_CHEESE
+    if props is not None:
+        start_cheese = props.get('start_cheese',
+                                 DEF_NUM_CHEESE)
     return Agent(name + str(i), action=seek_a_trade,
-                 attrs={"wine": 0, "cheese": 20})
+                 attrs={"wine": 0, "cheese": start_cheese})
 
 
 def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    pa = get_props(MODEL_NAME, props)
+    pa = get_props(MODEL_NAME, props, model_dir="capital")
     cheese_group = Composite("Cheese holders", {"color": BLUE},
                              member_creator=create_cagent,
+                             props=pa,
                              num_members=pa.get('num_cagents',
                                                 DEF_NUM_CAGENTS))
     wine_group = Composite("Wine holders", {"color": RED},
                            member_creator=create_wagent,
+                           props=pa,
                            num_members=pa.get('num_wagents',
                                               DEF_NUM_WAGENTS))
 

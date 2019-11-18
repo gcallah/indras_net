@@ -8,7 +8,7 @@
     "axios": "^0.19.0",
     "bootstrap": "^4.3.1",
     "chart.js": "^2.8.0",
-    "chartkick": "^3.1.0",
+    "chartkick": "^3.2.0",
     "create-react-app": "^3.2.0",
     "cross-env": "^6.0.3",
     "enzyme": "^3.10.0",
@@ -46,7 +46,8 @@
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.16.0",
-    "eslint-plugin-react-hooks": "^1.7.0"
+    "eslint-plugin-react-hooks": "^1.7.0",
+    "gh-pages": "^2.1.1"
   },
   "scripts": {
     "start": "react-scripts start",

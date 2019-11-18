@@ -93,9 +93,9 @@ python: pytests github
 js: jstests github
 
 pytests: FORCE
+	cd models; make tests
 	cd APIServer; make tests
 	cd indra; make tests
-	cd models; make tests
 	cd ml; make tests
 	# capital needs makefile
 	# cd capital; make tests

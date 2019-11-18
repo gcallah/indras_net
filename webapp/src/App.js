@@ -1,5 +1,3 @@
-/* eslint-disable react/prefer-stateless-function */
-/* eslint-disable arrow-parens */
 import React from 'react';
 import { HashRouter, Route, Switch } from 'react-router-dom';
 import styled, { withTheme } from 'styled-components';
@@ -12,12 +10,12 @@ import NotFoundPage from './components/NotFoundPage';
 import ErrorCatching from './components/ErrorCatching';
 
 const Wrapper = styled('div')`
-  background: ${props => props.theme.background};
+  background: ${(props) => props.theme.background};
   width: 100vw;
   height: 100vh;
   font-family: -apple-stem, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen";
   h1 {
-    color: ${props => props.theme.body};
+    color: ${(props) => props.theme.body};
   }
 `;
 

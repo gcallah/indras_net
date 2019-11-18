@@ -50,3 +50,4 @@ indras_net.egg-info/*
 APIServer/.coverage
 /venv/
 /.vscode
+precache-manifest.*

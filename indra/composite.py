@@ -46,9 +46,6 @@ class Composite(Agent):
                          action=action, serial_obj=serial_obj,
                          reg=False)
 
-        # this should be expunged:
-        self.registry = Registry()
-
         # we need to get rid of these uses of type!!!
         # (but carefully, of course)
         self.type = "composite"
