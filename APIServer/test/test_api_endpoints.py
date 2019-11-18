@@ -2,6 +2,7 @@
 """
 import json
 import random
+import string
 from unittest import TestCase, main, skip
 
 from flask_restplus import Resource
@@ -10,6 +11,7 @@ from APIServer.api_endpoints import Props, ModelMenu, RunModel
 from APIServer.api_endpoints import app, HelloWorld, Endpoints, Models
 from APIServer.api_endpoints import indra_dir
 from APIServer.api_utils import err_return
+from APIServer.model_creator_api import put_model_creator
 from APIServer.models_api import load_models
 
 menu = [{"val": 0, "func": "run", "question": "Run for N periods"},
@@ -22,6 +24,9 @@ menu = [{"val": 0, "func": "run", "question": "Run for N periods"},
         {"val": 4, "func": "leave", "question": "Quit)."}
         ]
 
+def random_name():
+    return "".join(random.choices(string.ascii_letters,
+                                  k=random.randrange(1, 10)))
 
 class Test(TestCase):
     def setUp(self):
@@ -56,17 +61,63 @@ class Test(TestCase):
         Check that /endpoints lists these endpoints.
         '''
         endpoints = set(self.endpoints.get()["Available endpoints"])
-        test_endpoints = ["/hello",
+        test_endpoints = ["/endpoints",
+                          "/hello",
                           "/model_creator",
                           "/models",
-                          "/models/props/<int:model_id>",
-                          "/models/menu/run/<int:run_time>"]
+                          "/models/menu/",
+                          "/models/menu/run/<int:run_time>",
+                          "/models/props/<int:model_id>"]
         for test_endpoint in test_endpoints:
             # While we could just convert test_endpoints into a set and then
             # check for set equality, this allows the output to show which
             # endpoint was missing.
             with self.subTest(test_endpoint=test_endpoint):
                 self.assertIn(test_endpoint, endpoints)
+
+    def test_put_model_creator(self):
+        '''
+        Test the model creator API.
+        '''
+        model_name = random_name()
+        env_width = random.randrange(1000)
+        env_height = random.randrange(1000)
+        groups = []
+        for _ in range(random.randrange(100)):
+            groups.append({"group_name": random_name(),
+                           "num_of_agents": random.randrange(100),
+                           "color": "",
+                           "group_actions": []})
+            # There's no point in testing color and group_actions because
+            # APIServer.model_creator_api.CreateGroups.put doesn't do anything
+            # with them anyway.
+        model_features = {"model_name": model_name,
+                          "env_width": env_width,
+                          "env_height": env_height,
+                          "groups": groups}
+        rv = put_model_creator(model_features)
+        self.assertEqual(rv["type"], "env")
+        self.assertEqual(model_name, rv["name"])
+        self.assertEqual(model_name, rv["plot_title"])
+        self.assertEqual(env_width, rv["width"])
+        self.assertEqual(env_height, rv["height"])
+        rv_members = rv["members"]
+        for group in groups:
+            group_name = group["group_name"]
+            self.assertIn(group_name, rv_members)
+            composite = rv_members[group_name]
+            self.assertEqual(composite["type"], "composite")
+            self.assertEqual(group_name, composite["name"])
+            self.assertIn(model_name, composite["groups"])
+            composite_members = composite["members"]
+            for agent_index in range(group["num_of_agents"] - 1):
+                agent_name = group_name + "_agent" + str(agent_index + 1)
+                self.assertIn(agent_name, composite_members)
+                agent = composite_members[agent_name]
+                self.assertEqual(agent["type"], "agent")
+                self.assertEqual(agent_name, agent["name"])
+                self.assertIn(group_name, agent["groups"])
+                self.assertEqual(model_name, agent["locator"])
 
     def test_get_model(self):
         """

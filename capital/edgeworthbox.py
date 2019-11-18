@@ -25,7 +25,7 @@ cheese_group = None
 env = None
 
 
-def until_func(qty):
+def util_func(qty):
     return 10 - 0.5 * qty
 
 
@@ -34,13 +34,33 @@ def seek_a_trade(agent):
         nearby_agent = env.get_neighbor_of_groupX(agent,
                                                   cheese_group,
                                                   hood_size=4)
+        has = "wine"
+        want = "cheese"
+
     else:
         nearby_agent = env.get_neighbor_of_groupX(agent,
                                                   wine_group,
                                                   hood_size=4)
+        want = "cheese"
+        has = "wine"
+
     if nearby_agent is not None:
         env.user.tell("I'm " + agent.name + " and I find "
                       + nearby_agent.name)
+        has_amt = agent[has]
+        want_amt = agent[want]
+
+        if (has_amt-1) >= 0:
+            gain_util = util_func(want_amt + 1)
+            loss_util = util_func(has_amt - 1)
+            marginal_util = gain_util - loss_util
+
+            # checking marginal utility grester than 0
+            if marginal_util >= 0:
+                agent[has] -= 1
+                agent[want] += 1
+                nearby_agent[has] += 1
+                nearby_agent[want] -= 1
 
     env.user.tell("I'm " + agent.name
                   + ". I have " + str(agent["wine"]) + " wine and "
@@ -63,7 +83,6 @@ def create_cagent(name, i, props=None):
     if props is not None:
         start_cheese = props.get('start_cheese',
                                  DEF_NUM_CHEESE)
-        print(start_cheese)
     return Agent(name + str(i), action=seek_a_trade,
                  attrs={"wine": 0, "cheese": start_cheese})
 

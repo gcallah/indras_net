@@ -12,8 +12,7 @@ import numpy as np
 
 # registry not used yet!
 # from indra.registry import registry, register
-from indra.registry import register
-
+from indra.registry import register, get_registration
 
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
@@ -148,6 +147,7 @@ class Agent(object):
             # self.type gotta go!
             self.type = "agent"
             self.name = name
+            # cut locator over to a property
             self.action_key = None
             self.action = action
             if action is not None:
@@ -158,18 +158,87 @@ class Agent(object):
             if attrs is not None:
                 self.attrs = attrs
             self.active = True
-            self.groups = {}
             self.pos = None
-            self.locator = None
-            self.prim_group = prim_group
-            self.env = env
-            if self.prim_group is not None:
-                self.groups[str(self.prim_group)] = self.prim_group
-                if is_space(self.prim_group):
-                    self.locator = self.prim_group
+
+            # some thing we will fetch from registry:
+            # for these, we only store the name but look up object
+            self._env = None if env is None else env.name
+            self._locator = None if self._env is None else self._env
+            self._prim_group = None if prim_group is None else prim_group.name
+            self.groups = {}
+            if prim_group is not None:
+                self.groups[str(prim_group)] = prim_group
+                if is_space(prim_group):
+                    self.locator = prim_group
 
         if reg:
             register(self.name, self)
+
+    @property
+    def prim_group(self):
+        """
+        This is the prim_group property.
+        We use the string _prim_group to look up the
+        locator object in the registry.
+        """
+        return get_registration(self._prim_group)
+
+    @prim_group.setter
+    def prim_group(self, val):
+        """
+        Set our prim_group: if passed an agent, store its name.
+        Else, it must be a string, and just store that.
+        Don't try to register the val! Agents register themselves
+        when constructed.
+        """
+        if isinstance(val, Agent):
+            self._prim_group = val.name
+        elif isinstance(val, str):
+            self._prim_group = val
+
+    @property
+    def env(self):
+        """
+        This is the env property.
+        We use the string _env to look up the
+        locator object in the registry.
+        """
+        return get_registration(self._env)
+
+    @env.setter
+    def env(self, val):
+        """
+        Set our env: if passed an agent, store its name.
+        Else, it must be a string, and just store that.
+        Don't try to register the val! Agents register themselves
+        when constructed.
+        """
+        if isinstance(val, Agent):
+            self._env = val.name
+        elif isinstance(val, str):
+            self._env = val
+
+    @property
+    def locator(self):
+        """
+        This is the locator property.
+        We use the string _locator to look up the
+        locator object in the registry.
+        """
+        return get_registration(self._locator)
+
+    @locator.setter
+    def locator(self, val):
+        """
+        Set our locator: if passed an agent, store its name.
+        Else, it must be a string, and just store that.
+        Don't try to register the val! Agents register themselves
+        when constructed.
+        """
+        if isinstance(val, Agent):
+            self._locator = val.name
+        elif isinstance(val, str):
+            self._locator = val
 
     def restore(self, serial_obj):
         self.from_json(serial_obj)
@@ -178,14 +247,6 @@ class Agent(object):
         grp_nms = []
         for grp in self.groups:
             grp_nms.append(grp)
-        if not self.locator:
-            loc = self.locator
-        else:
-            loc = str(self.locator)
-        if self.prim_group is None:
-            pg = self.prim_group
-        else:
-            pg = str(self.prim_group)
         if not self.neighbors:
             nb = None
         else:
@@ -197,14 +258,14 @@ class Agent(object):
                 "attrs": self.attrs_to_dict(),
                 "groups": grp_nms,
                 "active": self.active,
-                "prim_group": pg,
-                "locator": loc,
+                "prim_group": self.prim_group,
+                "locator": self._locator,
+                "env": self._env,
                 "neighbors": nb,
                 "action_key": self.action_key
                 }
 
     def from_json(self, serial_agent):
-        self.env = None
         from models.run_dict_helper import action_dict
         self.action = None
         if serial_agent["action_key"] is not None:
@@ -221,9 +282,10 @@ class Agent(object):
         self.groups = {}
         for gnm in serial_agent["groups"]:
             self.groups[gnm] = None
-        self.prim_group = serial_agent["prim_group"]
         self.neighbors = serial_agent["neighbors"]
-        self.locator = None
+        self._prim_group = serial_agent["prim_group"]
+        self._locator = serial_agent["locator"]
+        self._env = serial_agent["env"]
         self.type = serial_agent["type"]
 
     def __repr__(self):
@@ -237,8 +299,9 @@ class Agent(object):
 
     def set_pos(self, locator, x, y):
         self.locator = locator  # whoever sets my pos is my locator!
+        # and my env, if I don't have one:
         if self.env is None:
-            self.env = locator
+            self.env = self.locator
         self.pos = (x, y)
 
     def get_pos(self):
@@ -353,14 +416,13 @@ class Agent(object):
         """
         if (self.is_located() and self.locator is not None
                 and not self.locator.is_full()):
+            new_xy = None
             if angle is not None:
                 if DEBUG:
                     print("Using angled move")
                 new_xy = self.locator.point_from_vector(angle,
                                                         max_move, self.pos)
-                self.locator.place_member(self, max_move, new_xy)
-            else:
-                self.locator.place_member(self, max_move)
+            self.locator.place_member(self, max_move=max_move, xy=new_xy)
 
     def is_active(self):
         return self.active
@@ -393,12 +455,8 @@ class Agent(object):
                 self.locator = group
                 if self.env is None:
                     self.env = group
-
-            pg = self.prim_group
-            # Why do we do line 395? And if we need to, why not just
-            # isinstance(pg, str) ?
-            if (not pg) or str(type(pg)) == "<class 'str'>":
-                self.prim_group = group
+        if self.prim_group is None:
+            pass
 
     def switch_groups(self, g1, g2):
         self.del_group(g1)

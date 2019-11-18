@@ -44,6 +44,7 @@ class Registry(object):
         else:
             pass
             # this fails the tests at the moment, so we need to debug
+            # it is the tests that have a problem!
             # raise KeyError("The key \"{}\" already exists in the registry"
             #                .format(key))
 
@@ -65,3 +66,10 @@ registry = Registry()
 
 def register(key, val):
     registry[key] = val
+
+
+def get_registration(key):
+    if key in registry:
+        return registry[key]
+    else:
+        return None

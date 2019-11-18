@@ -1,4 +1,4 @@
-from unittest import TestCase
+from unittest import TestCase, skip
 
 import models.sandpile as sp
 from indra.composite import Composite
