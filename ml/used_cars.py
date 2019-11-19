@@ -153,10 +153,12 @@ def is_credible(dealer, buyer):
     mature buyers.
     '''
     if is_mature(buyer):
+        set_emoji_indicator(buyer)
         # judge base on buyer's own past experience
-        emoji_life = buyer["emoji_life_avg"]
         received_emoji = dealer["emoji_used"]
-        return emoji_life[received_emoji]
+        past_exp = buyer["emoji_indicator"]
+        if buyer[received_emoji] == "good":
+            return emoji_life[received_emoji]
     # immature buyers are gullible!
     return True
 
