@@ -457,7 +457,7 @@ class Agent(object):
                     self.env = group
 
         if self.prim_group is None:
-            self.prim_group = group
+            pass
 
     def switch_groups(self, g1, g2):
         self.del_group(g1)
