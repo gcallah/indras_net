@@ -56,8 +56,6 @@ class Home extends Component {
     localStorage.setItem('source', source);
   }
 
-  renderHeader = () => <h1 className="text-center">Indra Agent-Based Modeling System</h1>;
-
   renderChooseModelProp = () => (
     <h1 className="small-header">
       Please choose a model:
@@ -83,7 +81,9 @@ class Home extends Component {
     }
     return (
       <div className="container">
-        <div className="margin-bottom-100">{this.renderHeader()}</div>
+        <div className="margin-bottom-100">
+          <h1 className="text-left">The Agent-Based Modeling System</h1>
+        </div>
         <div className="row">
           <div className="col-6">
             {this.renderChooseModelProp()}
@@ -117,7 +117,6 @@ class Home extends Component {
                 </OverlayTrigger>
               ))}
             </ListGroup>
-            {this.renderShowDescription()}
           </div>
           <div className="col-6">
             <Carousel
@@ -126,6 +125,9 @@ class Home extends Component {
               className="col-12"
               data={dataForCarousel}
             />
+          </div>
+          <div className="desc-link">
+            {this.renderShowDescription()}
           </div>
         </div>
       </div>
