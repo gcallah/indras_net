@@ -114,7 +114,6 @@ def set_emoji_indicator(agent):
             agent["emoji_indicator"] = "bad"
 
 
-
 def get_dealer_emoji(dealer_characteristic):
     '''
     This function returns a random emoji based on
