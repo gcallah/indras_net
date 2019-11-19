@@ -81,7 +81,7 @@ class Home extends Component {
     }
     return (
       <div className="container">
-        <div className="margin-bottom-100">
+        <div className="margin-bottom-80">
           <h1 className="text-left">The Agent-Based Modeling System</h1>
         </div>
         <div className="row">
