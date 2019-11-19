@@ -15,14 +15,24 @@
 }
 
 .header {
+  display: flex;
   text-align: left;
-  margin-bottom: 24px;
+  margin-bottom: 36px;
+}
+
+.header-items {
+  padding: 0;
+  margin: 0;
+}
+
+.header-item {
+  display: inline-block;
+  margin: 0 20px;
 }
 
 .indra-name {
   font-size: 32px;
   text-align: center;
-  width: 140px;
 }
 
 .margin-bottom-80 {

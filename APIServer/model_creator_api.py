@@ -8,26 +8,20 @@ from indra.composite import Composite
 from indra.env import Env
 
 
-class AgentTypes(fields.Raw):
-    def put(self, name):
-        return Composite(name)
-
-
 def generate_func(agent):
-    # if agent.env is not None:
     agent.env.user.tell("Just testing the actions for " + agent.name + "!!")
     agent.env.user.tell("attrs['John'] = ", agent.attrs["John"])
     return False
 
 
 class CreateGroups(fields.Raw):
-    def addAgents(self, agent_name, agent_num, agent_actions):
+    def addAgents(self, agent_name, agent_num):
         agents_arr = []
         i = 0
         while i < agent_num:
             agents_arr.append(Agent(agent_name + "_agent" + str(i + 1),
                                     action=generate_func,
-                                    attrs={"John": "Knox"}))
+                                    attrs={"John": "Knox"},))
             i = i + 1
         return agents_arr
 
@@ -38,8 +32,7 @@ class CreateGroups(fields.Raw):
             # add agents to the current group
             if group["num_of_agents"] > 0:  # want to add agents to the group
                 agents_arr = self.addAgents(group["group_name"],
-                                            group["num_of_agents"],
-                                            group["group_actions"])
+                                            group["num_of_agents"])
             # create the group
             groups_arr.append(Composite(group["group_name"],
                                         members=agents_arr, ))
@@ -51,11 +44,7 @@ def get_model_creator():
 
 
 def put_model_creator(model_features):
-    # allMembers = []
     all_groups = CreateGroups().put(model_features["groups"])
-    # Loop to add composite(s) to membersList
-    # for mem in model_features["agent_names"]:
-    # (in for loop)allMembers.append(AgentTypes().put(mem))
 
     return json_converter(Env(model_features["model_name"],
                               members=all_groups,

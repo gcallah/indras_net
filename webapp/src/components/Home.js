@@ -40,16 +40,6 @@ class Home extends Component {
     }
   }
 
-  renderShowDescription = () => (
-    <h1 className="small-header">
-      <a href="https://gcallah.github.io/indras_net/index.html" className="text-primary m-2" target="_blank" rel="noopener noreferrer">
-        View Project Description
-        {' '}
-      </a>
-      {' '}
-    </h1>
-  );
-
   handleClick = (id, name, source) => {
     localStorage.setItem('menu_id', id);
     localStorage.setItem('name', name);
@@ -81,7 +71,7 @@ class Home extends Component {
     }
     return (
       <div className="container">
-        <div className="margin-bottom-100">
+        <div className="margin-bottom-80">
           <h1 className="text-left">The Agent-Based Modeling System</h1>
         </div>
         <div className="row">
@@ -125,9 +115,6 @@ class Home extends Component {
               className="col-12"
               data={dataForCarousel}
             />
-          </div>
-          <div className="desc-link">
-            {this.renderShowDescription()}
           </div>
         </div>
       </div>

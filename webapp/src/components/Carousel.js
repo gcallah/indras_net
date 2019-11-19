@@ -10,6 +10,7 @@ class Carousel extends Component {
       dots, speed, autoplay, className, data,
     } = this.props;
     const settings = {
+      arrows: false,
       dots,
       infinite: true,
       speed,
