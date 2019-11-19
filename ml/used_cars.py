@@ -104,7 +104,8 @@ def get_dealer_characteristic():
 def set_emoji_indicator(agent):
     '''
     when a buyer becomes mature
-    he/she can judge based on their past buying experience
+    he/she can judge based on their
+     past buying experience
     '''
     mp = agent["emoji_life_avg"]
     for i in mp:
@@ -157,7 +158,7 @@ def is_credible(dealer, buyer):
         # judge base on buyer's own past experience
         received_emoji = dealer["emoji_used"]
         past_exp = buyer["emoji_indicator"]
-        if buyer[received_emoji] == "good":
+        if past_exp[received_emoji] == "good":
             return emoji_life[received_emoji]
     # immature buyers are gullible!
     return True
