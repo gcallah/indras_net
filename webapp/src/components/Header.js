@@ -5,7 +5,11 @@ import { Link } from 'react-router-dom';
 function Header() {
   return (
     <div className="header">
-      <p className="indra-name">Indra</p>
+      <Link to="/">
+        <div className="indra-name">
+          <p>Indra</p>
+        </div>
+      </Link>
     </div>
   );
 }
