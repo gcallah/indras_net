@@ -4,13 +4,12 @@ import { Link } from 'react-router-dom';
 
 function Header() {
   return (
-    <div>
-      <Menu.Item><Link to="/" /></Menu.Item>
-      <Menu.Menu position="right">
-        <Menu.Item>
-          <Link to="/" />
-        </Menu.Item>
-      </Menu.Menu>
+    <div className="header">
+      <Link to="/">
+        <div className="indra-name">
+          <p>Indra</p>
+        </div>
+      </Link>
     </div>
   );
 }

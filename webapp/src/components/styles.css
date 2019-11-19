@@ -10,9 +10,15 @@
 }
 
 .header {
-  text-align: center;
-  font-weight: 200;
+  text-align: left;
   margin-bottom: 24px;
+}
+
+.indra-name {
+  font-weight: bold;
+  font-size: 24px;
+  text-align: center;
+  width: 140px;
 }
 
 .margin-bottom-80 {

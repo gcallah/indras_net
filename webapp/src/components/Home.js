@@ -83,7 +83,6 @@ class Home extends Component {
     }
     return (
       <div className="container">
-        <h1 className="margin-top-60"> </h1>
         <div className="margin-bottom-100">{this.renderHeader()}</div>
         <div className="row">
           <div className="col-6">
