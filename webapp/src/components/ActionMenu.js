@@ -89,11 +89,6 @@ class ActionMenu extends Component {
     }
   };
 
-  goback = () => {
-    const { history } = this.props;
-    history.goBack();
-  }
-
   handleRunPeriod = (e) => {
     this.setState({
       periodNum: e.target.value,
