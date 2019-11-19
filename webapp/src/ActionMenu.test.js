@@ -7,7 +7,6 @@ describe('Mounted ActionMenu', () => {
   it('should render Population Graph on Click', () => {
     // const button = wrapper.find('btn-success').first();
     // button.simulate('click');
-    console.log(wrapper.debug());
     const state = wrapper.state('loadingSourceCode');
     expect(state).toEqual(false);
   });
