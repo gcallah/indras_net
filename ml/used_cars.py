@@ -26,7 +26,7 @@ DEF_NUM_RED = 10
 
 MIN_CAR_LIFE = 1
 MAX_BAD_CAR_LIFE = 4
-MIN_GOOD_CAR_LIFE = 2
+MIN_GOOD_CAR_LIFE = 5
 MAX_CAR_LIFE = 5
 
 MATURE_BOUND = 100
@@ -99,6 +99,19 @@ def dealer_action(agent):
 
 def get_dealer_characteristic():
     return CHARACTERISTIC[random.randint(0, 1)]
+
+
+def set_emoji_indicator(agent):
+    '''
+    when a buyer becomes mature
+    he/she can judge based on their past buying experience
+    '''
+    mp = agent["emoji_life_avg"]
+    for i in mp:
+        if mp[i] >= MIN_GOOD_CAR_LIFE:
+            agent["emoji_indicator"] = "good"
+        else:
+            agent["emoji_indicator"] = "bad"
 
 
 def get_dealer_emoji(dealer_characteristic):
