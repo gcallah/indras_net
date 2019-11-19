@@ -10,9 +10,8 @@ from random import random
 
 import numpy as np
 
-# registry not used yet!
-# from indra.registry import registry, register
 from indra.registry import register, get_registration
+from indra.user import debug
 
 
 DEBUG = True  # turns debugging code on or off
@@ -178,16 +177,16 @@ class Agent(object):
     @property
     def prim_group(self):
         """
-        This is the locator property.
-        We use the string _locator to look up the
-        locator object in the registry.
+        This is the prim_group property.
+        We use the string _prim_group to look up the
+        prim_group object in the registry.
         """
         return get_registration(self._prim_group)
 
     @prim_group.setter
     def prim_group(self, val):
         """
-        Set our locator: if passed an agent, store its name.
+        Set our prim_group: if passed an agent, store its name.
         Else, it must be a string, and just store that.
         Don't try to register the val! Agents register themselves
         when constructed.
@@ -196,20 +195,22 @@ class Agent(object):
             self._prim_group = val.name
         elif isinstance(val, str):
             self._prim_group = val
+        else:
+            debug("Bad type passed to prim_group:", str(val))
 
     @property
     def env(self):
         """
-        This is the locator property.
-        We use the string _locator to look up the
-        locator object in the registry.
+        This is the env property.
+        We use the string _env to look up the
+        env object in the registry.
         """
         return get_registration(self._env)
 
     @env.setter
     def env(self, val):
         """
-        Set our locator: if passed an agent, store its name.
+        Set our env: if passed an agent, store its name.
         Else, it must be a string, and just store that.
         Don't try to register the val! Agents register themselves
         when constructed.
@@ -218,6 +219,8 @@ class Agent(object):
             self._env = val.name
         elif isinstance(val, str):
             self._env = val
+        else:
+            debug("Bad type passed to env:", str(val))
 
     @property
     def locator(self):
@@ -240,6 +243,8 @@ class Agent(object):
             self._locator = val.name
         elif isinstance(val, str):
             self._locator = val
+        else:
+            debug("Bad type passed to locator:", str(val))
 
     def restore(self, serial_obj):
         self.from_json(serial_obj)
