@@ -74,6 +74,9 @@
   "jest": {
     "transformIgnorePatterns": [
       "node_modules/docco"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}"
     ]
   }
 }
