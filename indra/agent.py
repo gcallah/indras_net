@@ -455,6 +455,7 @@ class Agent(object):
                 self.locator = group
                 if self.env is None:
                     self.env = group
+
         if self.prim_group is None:
             pass
 

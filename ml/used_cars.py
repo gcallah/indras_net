@@ -26,7 +26,7 @@ DEF_NUM_RED = 10
 
 MIN_CAR_LIFE = 1
 MAX_BAD_CAR_LIFE = 4
-MIN_GOOD_CAR_LIFE = 2
+MIN_GOOD_CAR_LIFE = 5
 MAX_CAR_LIFE = 5
 
 MATURE_BOUND = 100
@@ -101,6 +101,20 @@ def get_dealer_characteristic():
     return CHARACTERISTIC[random.randint(0, 1)]
 
 
+def set_emoji_indicator(agent):
+    '''
+    when a buyer becomes mature
+    he/she can judge based on their
+     past buying experience
+    '''
+    mp = agent["emoji_life_avg"]
+    for i in mp:
+        if mp[i] >= MIN_GOOD_CAR_LIFE:
+            agent["emoji_indicator"] = "good"
+        else:
+            agent["emoji_indicator"] = "bad"
+
+
 def get_dealer_emoji(dealer_characteristic):
     '''
     This function returns a random emoji based on
@@ -140,10 +154,11 @@ def is_credible(dealer, buyer):
     mature buyers.
     '''
     if is_mature(buyer):
+        set_emoji_indicator(buyer)
         # judge base on buyer's own past experience
-        emoji_life = buyer["emoji_life_avg"]
         received_emoji = dealer["emoji_used"]
-        return emoji_life[received_emoji]
+        past_exp = buyer["emoji_indicator"]
+        return past_exp[received_emoji] == "good"
     # immature buyers are gullible!
     return True
 
