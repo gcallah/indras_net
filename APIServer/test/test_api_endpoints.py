@@ -11,7 +11,7 @@ from APIServer.api_endpoints import Props, ModelMenu, RunModel
 from APIServer.api_endpoints import app, HelloWorld, Endpoints, Models
 from APIServer.api_endpoints import indra_dir
 from APIServer.api_utils import err_return
-from APIServer.model_creator_api import put_model_creator
+#from APIServer.model_creator_api import put_model_creator
 from APIServer.models_api import load_models
 
 menu = [{"val": 0, "func": "run", "question": "Run for N periods"},
@@ -75,9 +75,13 @@ class Test(TestCase):
             with self.subTest(test_endpoint=test_endpoint):
                 self.assertIn(test_endpoint, endpoints)
 
+    @skip("The test_put_model_creator() must be completely re-written.")
     def test_put_model_creator(self):
         '''
         Test the model creator API.
+        This test is not good: first of all, it's about 20 tests packed into 1.
+        Secondly, it is way too specifically tied to the details of
+        the return.
         '''
         model_name = random_name()
         env_width = random.randrange(1000)
