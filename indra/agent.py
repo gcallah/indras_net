@@ -11,7 +11,6 @@ from random import random
 import numpy as np
 
 from indra.registry import register, get_registration
-from indra.user import debug
 
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
@@ -195,7 +194,8 @@ class Agent(object):
         elif isinstance(val, str):
             self._prim_group = val
         else:
-            debug("Bad type passed to prim_group:", str(val))
+            # we must set up logging to handle these better:
+            print("Bad type passed to prim_group:", str(val))
 
     @property
     def env(self):
@@ -218,8 +218,11 @@ class Agent(object):
             self._env = val.name
         elif isinstance(val, str):
             self._env = val
+        elif val is None:
+            self._env = None
         else:
-            debug("Bad type passed to env:", str(val))
+            # we must set up logging to handle these better:
+            print("Bad type passed to env:", str(val))
 
     @property
     def locator(self):
@@ -243,7 +246,8 @@ class Agent(object):
         elif isinstance(val, str):
             self._locator = val
         else:
-            debug("Bad type passed to locator:", str(val))
+            # we must set up logging to handle these better:
+            print("Bad type passed to locator:", str(val))
 
     def restore(self, serial_obj):
         self.from_json(serial_obj)
