@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import ListGroup from 'react-bootstrap/ListGroup';
 import axios from 'axios';
 import autoBind from 'react-autobind';
-import PropType from 'prop-types';
 import PageLoader from './PageLoader';
 import PopulationGraph from './PopulationGraph';
 import ScatterPlot from './ScatterPlot';
@@ -285,7 +284,6 @@ class ActionMenu extends Component {
 }
 
 ActionMenu.propTypes = {
-  history: PropType.shape(),
 };
 
 ActionMenu.defaultProps = {
