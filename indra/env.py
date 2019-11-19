@@ -170,9 +170,6 @@ class Env(Space):
                 for gnm in self.registry[nm].groups:
                     if gnm in self.registry:
                         self.registry[nm].add_group(self.registry[gnm])
-            # set up each agent's locator
-            if nm != self.name and self.registry[nm].type == "agent":
-                self.registry[nm].locator = self
 
     def to_json(self):
         rep = super().to_json()

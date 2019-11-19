@@ -163,11 +163,8 @@ class Agent(object):
             self._env = None if env is None else env.name
             self._locator = None if self._env is None else self._env
             self._prim_group = None if prim_group is None else prim_group.name
-            self.groups = {}
-            if prim_group is not None:
-                self.groups[str(prim_group)] = prim_group
-                if is_space(prim_group):
-                    self.locator = prim_group
+            if prim_group is not None and is_space(prim_group):
+                self.locator = prim_group
 
         if reg:
             register(self.name, self)
@@ -178,6 +175,9 @@ class Agent(object):
         This is the prim_group property.
         We use the string _prim_group to look up the
         prim_group object in the registry.
+        An agent may be in multiple groups: it appears in
+        the groups `members` list. But it can have only
+        one primary group.
         """
         return get_registration(self._prim_group)
 
@@ -253,9 +253,6 @@ class Agent(object):
         self.from_json(serial_obj)
 
     def to_json(self):
-        grp_nms = []
-        for grp in self.groups:
-            grp_nms.append(grp)
         if not self.neighbors:
             nb = None
         else:
@@ -265,7 +262,6 @@ class Agent(object):
                 "duration": str(self.duration),
                 "pos": self.pos,
                 "attrs": self.attrs_to_dict(),
-                "groups": grp_nms,
                 "active": self.active,
                 "prim_group": self.prim_group,
                 "locator": self._locator,
@@ -288,9 +284,6 @@ class Agent(object):
             self.pos = tuple(serial_agent["pos"])
         self.duration = int(serial_agent["duration"])
         self.name = serial_agent["name"]
-        self.groups = {}
-        for gnm in serial_agent["groups"]:
-            self.groups[gnm] = None
         self.neighbors = serial_agent["neighbors"]
         self._prim_group = serial_agent["prim_group"]
         self._locator = serial_agent["locator"]
@@ -447,26 +440,14 @@ class Agent(object):
         return self.attrs
 
     def del_group(self, group):
-        if str(group) in self.groups:
-            del self.groups[str(group)]
-
         if group == self.prim_group:
             self.prim_group = None
 
     def add_group(self, group):
-        if str(group) not in self.groups or self.groups[str(group)] is None:
-            if DEBUG2:
-                print("Join group being called on " + str(self.pos)
-                      + " to join group: " + group.name)
-            self.groups[group.name] = group
-
-            if is_space(group):
-                self.locator = group
-                if self.env is None:
-                    self.env = group
-
+        if is_space(group):
+            self.locator = group
         if self.prim_group is None:
-            pass
+            self.prim_group = group
 
     def switch_groups(self, g1, g2):
         self.del_group(g1)
