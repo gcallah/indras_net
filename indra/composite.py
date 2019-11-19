@@ -63,9 +63,8 @@ class Composite(Agent):
                 # `num_members` times to create group members.
                 for i in range(num_members):
                     # += adds members
-                    join(
-                        self,
-                        member_creator(self.name, i, props=props, **kwargs))
+                    self += member_creator(self.name, i,
+                                           props=props, **kwargs)
         if reg:
             register(self.name, self)
 
