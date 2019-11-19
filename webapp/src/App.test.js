@@ -11,7 +11,7 @@ import { create } from 'react-test-renderer';
 import axios from 'axios';
 import { Item } from 'semantic-ui-react';
 import NotFoundPage from './components/NotFoundPage';
-// import Home from './components/Home';
+import Home from './components/Home';
 // import App from './App';
 
 it('test case to pass', () => {

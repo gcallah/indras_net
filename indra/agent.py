@@ -13,7 +13,6 @@ import numpy as np
 from indra.registry import register, get_registration
 from indra.user import debug
 
-
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
@@ -461,6 +460,7 @@ class Agent(object):
                 self.locator = group
                 if self.env is None:
                     self.env = group
+
         if self.prim_group is None:
             pass
 
