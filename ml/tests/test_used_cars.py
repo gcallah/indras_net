@@ -85,7 +85,35 @@ class UsedCarTestCase(TestCase):
         buyer["dealer_hist"] = [1] * MATURE_BOUND
         buyer["dealer_hist"].append(1)
         self.assertTrue(is_mature(buyer))
-
+        
+    def test_is_credible(self):
+        buyer = create_buyer("Buyer", 0, None)
+        dealer = create_dealer("Dealer", 0, None)
+        self.assertTrue(is_credible(dealer,buyer))
+        emoji = (POS_EMOJIS + NEG_EMOJIS)[random.randint(0,6)]
+        score = random.randint(1,5)
+        buyer["emoji_life_avg"] = {emoji:score}
+        buyer["dealer_hist"] = [1] * (MATURE_BOUND+1)
+        dealer["emoji_used"] = emoji        
+        if score >= MIN_GOOD_CAR_LIFE:
+            self.assertTrue(is_credible(dealer, buyer))
+        else:
+            self.assertFalse(is_credible(dealer, buyer))
+            
+    def test_cal_avg_life(self):
+        buyer = create_buyer("Buyer", 0, None)
+        num = random.randint(0,10)
+        emoji_carlife_lst1 = [num for i in range(10)]
+        emoji1 = (POS_EMOJIS + NEG_EMOJIS)[random.randint(0,6)]
+        emoji_carlife_lst2 = [num for i in range(10)]
+        emoji2 = (POS_EMOJIS + NEG_EMOJIS)[random.randint(0,6)]
+        buyer["emoji_carlife_assoc"]={emoji1: emoji_carlife_lst1,
+                                      emoji2: emoji_carlife_lst2}
+        buyer["emoji_life_avg"] = {emoji1: 0, emoji2: 0}
+        cal_avg_life(buyer)
+        for key in buyer["emoji_life_avg"]:
+            self.assertEqual(buyer["emoji_life_avg"][key], round(num,2))
+        
     def test_create_dealer(self):
         dealer = create_dealer("Dealer", 0, None)
         self.assertEqual(dealer["num_sales"], 0)
@@ -105,10 +133,6 @@ class UsedCarTestCase(TestCase):
         self.assertEqual(buyer["emoji_carlife_assoc"], {})
         self.assertEqual(buyer["emoji_life_avg"], {})  
         self.assertEqual(buyer["emoji_indicator"], {})
-
-
-
-
     
     if __name__ == '__main__':
         main()
