@@ -35,6 +35,13 @@ def marginal_util(has_amt, want_amt):
     return gain_util - loss_util
 
 
+def trade(agent1, agent2, has, want, amt):
+    agent1[has] -= amt
+    agent1[want] += amt
+    agent2[has] += amt
+    agent2[want] -= amt
+
+
 def seek_a_trade(agent):
     if agent.name[0:4] == "Wine":
         nearby_agent = env.get_neighbor_of_groupX(agent,
@@ -68,10 +75,7 @@ def seek_a_trade(agent):
 
             # checking marginal utility of two agent grester than 0
             if agent_marginal_util >= 0 and nearby_agent_marginal_util >= 0:
-                agent[has] -= 1
-                agent[want] += 1
-                nearby_agent[has] += 1
-                nearby_agent[want] -= 1
+                trade(agent, nearby_agent, has, want, 1)
 
     env.user.tell("I'm " + agent.name
                   + ". I have " + str(agent["wine"]) + " wine and "
