@@ -29,6 +29,12 @@ def util_func(qty):
     return 10 - 0.5 * qty
 
 
+def marginal_util(has_amt, want_amt):
+    gain_util = util_func(want_amt + 1)
+    loss_util = util_func(has_amt - 1)
+    return gain_util - loss_util
+
+
 def seek_a_trade(agent):
     if agent.name[0:4] == "Wine":
         nearby_agent = env.get_neighbor_of_groupX(agent,
@@ -47,16 +53,21 @@ def seek_a_trade(agent):
     if nearby_agent is not None:
         env.user.tell("I'm " + agent.name + " and I find "
                       + nearby_agent.name)
-        has_amt = agent[has]
-        want_amt = agent[want]
 
-        if (has_amt-1) >= 0:
-            gain_util = util_func(want_amt + 1)
-            loss_util = util_func(has_amt - 1)
-            marginal_util = gain_util - loss_util
+        # agent has is what nearby agent want
+        agent_has_amt = agent[has]
+        agent_want_amt = agent[want]
+        nearby_agent_has_amt = nearby_agent[want]
+        nearby_agent_want_amt = nearby_agent[has]
 
-            # checking marginal utility grester than 0
-            if marginal_util >= 0:
+        # if agent has something to trade --> calculate marginal util
+        if (agent_has_amt - 1) >= 0 and (nearby_agent_has_amt - 1) >= 0:
+            agent_marginal_util = marginal_util(agent_has_amt, agent_want_amt)
+            nearby_agent_marginal_util = marginal_util(nearby_agent_has_amt,
+                                                       nearby_agent_want_amt)
+
+            # checking marginal utility of two agent grester than 0
+            if agent_marginal_util >= 0 and nearby_agent_marginal_util >= 0:
                 agent[has] -= 1
                 agent[want] += 1
                 nearby_agent[has] += 1
