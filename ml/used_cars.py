@@ -45,7 +45,7 @@ dealer_grp = None
 car_market = None
 
 
-def bought_info(agent, dealer):
+def bought_info(agent, dealer):  # testcase??
     '''
     Debug messages to show dealer's informationsss
     '''
@@ -84,7 +84,7 @@ def get_dealer_car(dealer_characteristc):  # testcase done
         return random.randint(MIN_CAR_LIFE, MAX_BAD_CAR_LIFE)
 
 
-def dealer_action(agent):
+def dealer_action(agent):  # testcase??
     '''
     Display debug statements
     '''
@@ -97,32 +97,32 @@ def dealer_action(agent):
     return False
 
 
-def get_dealer_characteristic():
+def get_dealer_characteristic():  # testcase done
     return CHARACTERISTIC[random.randint(0, 1)]
 
 
-def set_emoji_indicator(agent):
+def set_emoji_indicator(agent):  # testcase done
     '''
     when a buyer becomes mature
     he/she can judge based on their
      past buying experience
     '''
     mp = agent["emoji_life_avg"]
-    for i in mp:
-        if mp[i] >= MIN_GOOD_CAR_LIFE:
-            agent["emoji_indicator"] = "good"
+    for key in mp:
+        if mp[key] >= MIN_GOOD_CAR_LIFE:
+            agent["emoji_indicator"][key] = "good"
         else:
-            agent["emoji_indicator"] = "bad"
+            agent["emoji_indicator"][key] = "bad"
 
 
-def get_dealer_emoji(dealer_characteristic):
+def get_dealer_emoji(dealer_characteristic):  # testcase done
     '''
     This function returns a random emoji based on
     dealer's characteristics
     '''
     if dealer_characteristic == "good":
         return POS_EMOJIS[random.randint(0, 3)]
-    else:  # dealer characteristic == bad
+    else:
         return NEG_EMOJIS[random.randint(0, 3)]
 
 
