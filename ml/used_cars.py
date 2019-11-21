@@ -45,17 +45,17 @@ dealer_grp = None
 car_market = None
 
 
-def bought_info(agent, dealer):
+def bought_info(buyer, dealer):  # testcase??
     '''
     Debug messages to show dealer's informationsss
     '''
     msg = "My dealer is: " + dealer.name
-    msg += "\nReceived a car with a life of " + str(agent["car_life"])
+    msg += "\nReceived a car with a life of " + str(buyer["car_life"])
     msg += "\nMy dealer " + dealer.name
     msg += " has an avg car life of " + str(dealer["avg_car_life_sold"])
     msg += ". And he/she sold " + str(dealer["num_sales"]) + " cars."
     msg += "\nMy dealer " + dealer.name
-    msg += " shows an emoji of " + agent["interaction_res"]
+    msg += " shows an emoji of " + buyer["interaction_res"]
     return msg
 
 
@@ -84,49 +84,49 @@ def get_dealer_car(dealer_characteristc):  # testcase done
         return random.randint(MIN_CAR_LIFE, MAX_BAD_CAR_LIFE)
 
 
-def dealer_action(agent):
+def dealer_action(dealer):  # testcase??
     '''
     Display debug statements
     '''
-    car_market.user.tell("I'm " + agent.name + " and I'm a dealer.")
+    car_market.user.tell("I'm " + dealer.name + " and I'm a dealer.")
     dealer_characteristic = get_dealer_characteristic()
-    agent["dealer_characteristic"] = dealer_characteristic
-    agent["emoji_used"] = get_dealer_emoji(dealer_characteristic)
-    agent["curr_car_life"] = get_dealer_car(dealer_characteristic)
+    dealer["dealer_characteristic"] = dealer_characteristic
+    dealer["emoji_used"] = get_dealer_emoji(dealer_characteristic)
+    dealer["curr_car_life"] = get_dealer_car(dealer_characteristic)
     # return False means to move
     return False
 
 
-def get_dealer_characteristic():
+def get_dealer_characteristic():  # testcase done
     return CHARACTERISTIC[random.randint(0, 1)]
 
 
-def set_emoji_indicator(agent):
+def set_emoji_indicator(buyer):  # testcase done
     '''
     when a buyer becomes mature
     he/she can judge based on their
      past buying experience
     '''
-    mp = agent["emoji_life_avg"]
-    for i in mp:
-        if mp[i] >= MIN_GOOD_CAR_LIFE:
-            agent["emoji_indicator"] = "good"
+    mp = buyer["emoji_life_avg"]
+    for key in mp:
+        if mp[key] >= MIN_GOOD_CAR_LIFE:
+            buyer["emoji_indicator"][key] = "good"
         else:
-            agent["emoji_indicator"] = "bad"
+            buyer["emoji_indicator"][key] = "bad"
 
 
-def get_dealer_emoji(dealer_characteristic):
+def get_dealer_emoji(dealer_characteristic):  # testcase done
     '''
     This function returns a random emoji based on
     dealer's characteristics
     '''
     if dealer_characteristic == "good":
         return POS_EMOJIS[random.randint(0, 3)]
-    else:  # dealer characteristic == bad
+    else:
         return NEG_EMOJIS[random.randint(0, 3)]
 
 
-def update_dealer_sale(dealer, new_car_life):
+def update_dealer_sale(dealer, new_car_life):  # testcase done
     '''
     A helper function to update attributes in dealer agent
     When buyer and dealer interaction happens
@@ -140,15 +140,15 @@ def update_dealer_sale(dealer, new_car_life):
         dealer["avg_car_life_sold"] = round(avg_car_life, 2)
 
 
-def is_mature(agent):
+def is_mature(buyer):  # testcase done
     '''
     check if buyer has enough experience
     to make its own decision
     '''
-    return MATURE_BOUND <= len(agent["dealer_hist"])
+    return MATURE_BOUND <= len(buyer["dealer_hist"])
 
 
-def is_credible(dealer, buyer):
+def is_credible(dealer, buyer):  # testcase done
     '''
     See if this dealer looks good... right now, only useful for
     mature buyers.
@@ -163,17 +163,17 @@ def is_credible(dealer, buyer):
     return True
 
 
-def cal_avg_life(agent):
+def cal_avg_life(buyer):  # testcase done
     '''
     Each emoji associate with list of car lifes
     this function calculates average car life of a emoji
     and map it to the corresponding emoji
     '''
-    assoc = agent["emoji_carlife_assoc"]
-    emo_life_avg = agent["emoji_life_avg"]
+    assoc = buyer["emoji_carlife_assoc"]
+    emo_life_avg = buyer["emoji_life_avg"]
     for key in assoc:
         num = len(assoc[key])
-        avg = sum(assoc[key]) / num
+        avg = round(sum(assoc[key]) / num, 2)
         emo_life_avg[key] = avg
 
 
@@ -263,7 +263,7 @@ def create_buyer(name, i, props=None):  # testcase done
                         })
 
 
-def set_up(props=None):  # testcase done
+def set_up(props=None):  # testcase???
     """
     A func to set up run that can also be used by test code.
     """
