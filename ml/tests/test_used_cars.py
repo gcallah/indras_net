@@ -7,7 +7,7 @@ from propargs.propargs import PropArgs
 from indra.env import Env
 from ml.used_cars import *
 from ml.used_cars import MIN_GOOD_CAR_LIFE, MAX_CAR_LIFE
-from ml.used_cars import MIN_CAR_LIFE, MAX_BAD_CAR_LIFE
+
 
 TEST_RAND_AMT = 20
 
@@ -16,24 +16,24 @@ class UsedCarTestCase(TestCase):
     def setUp(self):
         self.pa = PropArgs.create_props('used_car_props',
                                         ds_file='props/used_cars.props.json')
-        (self.car_market, self.dealers, self.buyers) = set_up()
+        (self.car_market, self.dealers, self.buyers) = set_up()  # noqa: F405
 
     def tearDown(self):
         (self.car_market, self.dealers, self.buyers) = (None, None, None)
 
     def test_is_dealer(self):
         dealer = create_dealer("Dealers", 1, None)
-        buyer = create_buyer("Buyers",0, None)
-        self.assertTrue(is_dealer(buyer,self.dealers) is False)
-        self.assertTrue(is_dealer(dealer,self.dealers) is True)
-        
+        buyer = create_buyer("Buyers", 0, None)
+        self.assertTrue(is_dealer(buyer, self.dealers) is False)
+        self.assertTrue(is_dealer(dealer, self.dealers) is True)
+
     def test_get_car_life(self):
         dealer = create_dealer("Dealers", 0, None)
         feed_car_life= random.randint(0,5)
         dealer["curr_car_life"] = feed_car_life
         car_life = get_car_life(dealer)
         self.assertEqual(car_life, feed_car_life)
-    
+
     def test_get_dealer_car(self):
         result = get_dealer_car("good")
         self.assertGreaterEqual(result, MIN_GOOD_CAR_LIFE)
@@ -41,16 +41,16 @@ class UsedCarTestCase(TestCase):
         result = get_dealer_car("bad")
         self.assertGreaterEqual(result, MIN_CAR_LIFE)
         self.assertLessEqual(result, MAX_BAD_CAR_LIFE)
-        
+
     def test_get_dealer_characteristic(self):
         charac = get_dealer_characteristic()
         self.assertTrue(charac == "good" or charac == "bad")
-        
+
     def test_set_emoji_indicator(self):
         buyer1 = create_buyer("Buyers",0, None)
         buyer2 = create_buyer("Buyers",1, None)
-        buyer1["emoji_life_avg"] = {"unnatural":1}
-        buyer2["emoji_life_avg"] = {"relaxing":5}
+        buyer1["emoji_life_avg"] = {"unnatural": 1}
+        buyer2["emoji_life_avg"] = {"relaxing": 5}
         set_emoji_indicator(buyer1)
         set_emoji_indicator(buyer2)
         self.assertEqual(buyer1["emoji_indicator"]["unnatural"], "bad")
@@ -133,9 +133,6 @@ class UsedCarTestCase(TestCase):
         self.assertEqual(buyer["emoji_carlife_assoc"], {})
         self.assertEqual(buyer["emoji_life_avg"], {})  
         self.assertEqual(buyer["emoji_indicator"], {})
-    
+
     if __name__ == '__main__':
         main()
-    
-
-        

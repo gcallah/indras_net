@@ -52,7 +52,7 @@ def bought_info(buyer, dealer):  # testcase??
     msg = "My dealer is: " + dealer.name
     msg += "\nReceived a car with a life of " + str(buyer["car_life"])
     msg += "\nMy dealer " + dealer.name
-    msg += " has an avg car life of " + str(dealer["avg_car_life_sold"])
+    msg += " has an average car life of " + str(dealer["avg_car_life_sold"])
     msg += ". And he/she sold " + str(dealer["num_sales"]) + " cars."
     msg += "\nMy dealer " + dealer.name
     msg += " shows an emoji of " + buyer["interaction_res"]
