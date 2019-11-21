@@ -90,7 +90,7 @@ class UsedCarTestCase(TestCase):
         buyer = create_buyer("Buyer", 0, None)
         dealer = create_dealer("Dealer", 0, None)
         self.assertTrue(is_credible(dealer,buyer))
-        emoji = (POS_EMOJIS + NEG_EMOJIS)[random.randint(0,6)]
+        emoji = random.choice(POS_EMOJIS + NEG_EMOJIS)
         score = random.randint(1,5)
         buyer["emoji_life_avg"] = {emoji:score}
         buyer["dealer_hist"] = [1] * (MATURE_BOUND+1)
@@ -104,9 +104,9 @@ class UsedCarTestCase(TestCase):
         buyer = create_buyer("Buyer", 0, None)
         num = random.randint(0,10)
         emoji_carlife_lst1 = [num for i in range(10)]
-        emoji1 = (POS_EMOJIS + NEG_EMOJIS)[random.randint(0,6)]
+        emoji1 = random.choice(POS_EMOJIS + NEG_EMOJIS)
         emoji_carlife_lst2 = [num for i in range(10)]
-        emoji2 = (POS_EMOJIS + NEG_EMOJIS)[random.randint(0,6)]
+        emoji2 = random.choice(POS_EMOJIS + NEG_EMOJIS)
         buyer["emoji_carlife_assoc"]={emoji1: emoji_carlife_lst1,
                                       emoji2: emoji_carlife_lst2}
         buyer["emoji_life_avg"] = {emoji1: 0, emoji2: 0}
