@@ -108,9 +108,9 @@ def switch(agent_nm, grp1_nm, grp2_nm):
     Move agent from grp1 to grp2.
     We first must recover agent objects from the registry.
     """
-    agent = get_registration(agent_nm) 
-    grp1 = get_registration(grp1_nm) 
-    grp2 = get_registration(grp2_nm) 
+    agent = get_registration(agent_nm)
+    grp1 = get_registration(grp1_nm)
+    grp2 = get_registration(grp2_nm)
     if agent is None or grp1 is None or grp2 is None:
         print("Could not find an agent for a switch",
               agent_nm, grp1_nm, grp2_nm)
@@ -270,11 +270,11 @@ class Agent(object):
             nb = self.neighbors.name
         return {"name": self.name,
                 "type": self.type,
-                "duration": str(self.duration),
+                "duration": self.duration,
                 "pos": self.pos,
                 "attrs": self.attrs_to_dict(),
                 "active": self.active,
-                "prim_group": self.prim_group,
+                "prim_group": self._prim_group,
                 "locator": self._locator,
                 "env": self._env,
                 "neighbors": nb,

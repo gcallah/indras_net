@@ -86,7 +86,8 @@ class EnvTestCase(TestCase):
 
     def test_add_switch(self):
         self.env.add_switch(self.newton, self.calcs, self.cambs)
-        self.assertIn((self.newton, self.calcs, self.cambs), self.env.switches)
+        self.assertIn((self.newton.name, self.calcs.name, self.cambs.name),
+                      self.env.switches)
 
     def test_has_disp(self):
         if not disp.plt_present:
