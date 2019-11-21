@@ -11,13 +11,13 @@ from indra.space import in_hood
 groups_arr = []
 agents_arr = []
 
+
 def generate_func(agent):
     global agents_arr
     global groups_arr
 
     withinHood = groups_arr[0].subset(in_hood, agent, 3, name="hood")
-        
-    
+
     print("There are ", len(withinHood), "agents within range")
     return False
 
