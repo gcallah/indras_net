@@ -58,14 +58,18 @@ class Composite(Agent):
                     join(self, member)
             if num_members is None:
                 num_members = 1  # A default if they forgot to pass this.
+            self.num_members_ever = num_members
+            self.member_creator = None
             if member_creator is not None:
+                self.member_creator = member_creator
                 # If we have a member creator function, call it
                 # `num_members` times to create group members.
                 for i in range(num_members):
                     # += adds members
                     join(
                         self,
-                        member_creator(self.name, i, props=props, **kwargs))
+                        member_creator(self.name, i, props=props,
+                                       **kwargs))
         if reg:
             register(self.name, self)
 

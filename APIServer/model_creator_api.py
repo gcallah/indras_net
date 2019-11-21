@@ -6,11 +6,19 @@ from APIServer.api_utils import json_converter, ENDPOINT_DESCR
 from indra.agent import Agent
 from indra.composite import Composite
 from indra.env import Env
+from indra.space import in_hood
+
+groups_arr = []
+agents_arr = []
 
 
 def generate_func(agent):
-    agent.env.user.tell("Just testing the actions for " + agent.name + "!!")
-    agent.env.user.tell("attrs['John'] = ", agent.attrs["John"])
+    global agents_arr
+    global groups_arr
+
+    withinHood = groups_arr[0].subset(in_hood, agent, 3, name="hood")
+
+    print("There are ", len(withinHood), "agents within range")
     return False
 
 
@@ -24,8 +32,8 @@ class CreateGroups(fields.Raw):
         return agents_arr
 
     def put(self, group_list):
-        groups_arr = []
-        agents_arr = []
+        global groups_arr
+        global agents_arr
         for group in group_list:
             # add agents to the current group
             if group["num_of_agents"] > 0:  # want to add agents to the group

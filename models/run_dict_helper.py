@@ -91,3 +91,9 @@ action_dict = {
     "bird_action": bird_action,
     "generate_func": generate_func
 }
+
+creators_dict = {
+}
+
+aux_funcs_dict = {
+}
