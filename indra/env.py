@@ -158,13 +158,11 @@ class Env(Space):
         self.name = serial_obj["name"]
 
         self.switches = serial_obj["switches"]
-
-        # the next 3 lines are all wrong:
-        # but maybe we can make them right with the
-        # "store names, not objects" rule!
         self.womb = serial_obj["womb"]
-        self.census_func = serial_obj["census_func"]
-        self.line_data_func = serial_obj["data_func"]
+
+        # We need to look up these funcs in registry.
+        self.census_func = serial_obj["census_func"].__name__
+        self.line_data_func = serial_obj["data_func"].__name__
 
     def to_json(self):
         rep = super().to_json()
