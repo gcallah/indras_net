@@ -11,7 +11,7 @@ from propargs.propargs import PropArgs as pa
 # import logging
 import indra.display_methods as disp
 from indra.agent import join, switch, Agent, AgentEncoder
-from indra.registry import register
+from indra.registry import register, get_registration
 from indra.space import Space
 from indra.user import TEST, TestUser, USER_EXIT, APIUser
 from indra.user import TermUser, TERMINAL, API
@@ -157,11 +157,12 @@ class Env(Space):
         self.user.tell(msg)
         self.name = serial_obj["name"]
 
-        # the next 4 lines are all wrong:
+        self.switches = serial_obj["switches"]
+
+        # the next 3 lines are all wrong:
         # but maybe we can make them right with the
         # "store names, not objects" rule!
         self.womb = serial_obj["womb"]
-        self.switches = serial_obj["switches"]
         self.census_func = serial_obj["census_func"]
         self.line_data_func = serial_obj["data_func"]
 
@@ -218,16 +219,15 @@ class Env(Space):
         super().add_member(member)
         # self.registry[member.name] = member
 
-    def add_child(self, agent, group):
+    def add_child(self, group):
         """
         Put a child agent in the womb.
         agent: child to add
         group: which group child will join
         """
-        self.womb.append((agent, group))
+        self.womb.append(group.name)
         if DEBUG:
-            self.user.tell("{} added to the womb".format(agent.name))
-        # do we need to connect agent to env (self)?
+            self.user.tell("{} added to the womb".format(group.name))
 
     def add_switch(self, agent, from_grp, to_grp):
         """
@@ -247,11 +247,22 @@ class Env(Space):
         self.num_switches += 1
 
     def handle_womb(self):
+        """
+        The womb just contains group names -- they will be repeated
+        as many times as that group needs to add members.
+        We name the new members in the `member_creator()` method.
+        This should be re-written as dict with:
+            {"group_name": #agents_to_create}
+        """
         if self.womb is not None:
-            for (agent, group) in self.womb:
-                # add the agent into the registry
-                self.registry[agent.name] = agent
-                join(group, agent)
+            for group_nm in self.womb:
+                group = get_registration(group_nm)
+                if group is not None and group.member_creator is not None:
+                    group.num_members_ever += 1
+                    agent = group.member_creator("", group.num_members_ever)
+                    agent.env = group.env
+                    register(agent.name, agent)
+                    join(group, agent)
             del self.womb[:]
 
     def handle_switches(self):

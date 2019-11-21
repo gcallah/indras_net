@@ -85,12 +85,8 @@ def reproduce(agent, create_func, num_created, group):
     """
     Agents reproduce when "time_to_repr" reaches 0
     """
-    name_prefix = AGT_SHEEP_NAME
-    if str(agent) in wolves:
-        name_prefix = AGT_WOLF_NAME
     if agent["time_to_repr"] == 0:
-        meadow.add_child(create_func(name_prefix, num_created),
-                         group)
+        meadow.add_child(group)
         agent["time_to_repr"] = agent["orig_repr_time"]
         return True
     else:
