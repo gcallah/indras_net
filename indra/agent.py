@@ -103,10 +103,17 @@ def split(agent1, agent2):
         agent2.del_group(agent1)
 
 
-def switch(agent, grp1, grp2):
+def switch(agent_nm, grp1_nm, grp2_nm):
     """
     Move agent from grp1 to grp2.
+    We first must recover agent objects from the registry.
     """
+    agent = get_registration(agent_nm) 
+    grp1 = get_registration(grp1_nm) 
+    grp2 = get_registration(grp2_nm) 
+    if agent is None or grp1 is None or grp2 is None:
+        print("Could not find an agent for a switch",
+              agent_nm, grp1_nm, grp2_nm)
     split(grp1, agent)
     join(grp2, agent)
 
@@ -193,6 +200,8 @@ class Agent(object):
             self._prim_group = val.name
         elif isinstance(val, str):
             self._prim_group = val
+        elif val is None:
+            self._prim_group = ""
         else:
             # we must set up logging to handle these better:
             print("Bad type passed to prim_group:", str(val))
@@ -245,6 +254,8 @@ class Agent(object):
             self._locator = val.name
         elif isinstance(val, str):
             self._locator = val
+        elif val is None:
+            self._prim_group = ""
         else:
             # we must set up logging to handle these better:
             print("Bad type passed to locator:", str(val))

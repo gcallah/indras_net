@@ -92,9 +92,11 @@ class Env(Space):
         self.type = "env"
         self.user_type = os.getenv("user_type", TERMINAL)
         self.props = props
+        # these funcs all must be restored from the function registry:
         self.census_func = census
         self.pop_hist_setup = pop_hist_setup
         self.pop_hist_func = pop_hist_func
+
         self.num_switches = 0
         if serial_obj is not None:
             # are we restoring env from json?
@@ -156,20 +158,12 @@ class Env(Space):
         self.name = serial_obj["name"]
 
         # the next 4 lines are all wrong:
+        # but maybe we can make them right with the
+        # "store names, not objects" rule!
         self.womb = serial_obj["womb"]
         self.switches = serial_obj["switches"]
         self.census_func = serial_obj["census_func"]
         self.line_data_func = serial_obj["data_func"]
-
-        self.registry[self.name] = self
-        # construct self.groups
-        # right now, every group is added to env
-        # that ain't right: we should read grp list of env.
-        for nm in self.registry:
-            if len(self.registry[nm].groups) != 0:
-                for gnm in self.registry[nm].groups:
-                    if gnm in self.registry:
-                        self.registry[nm].add_group(self.registry[gnm])
 
     def to_json(self):
         rep = super().to_json()
@@ -241,8 +235,7 @@ class Env(Space):
         agent: child to add
         group: which group child will join
         """
-        self.switches.append((agent, from_grp, to_grp))
-        # do we need to connect agent to env (self)?
+        self.switches.append((agent.name, from_grp.name, to_grp.name))
 
     def now_switch(self, agent, from_grp, to_grp):
         """
@@ -250,7 +243,7 @@ class Env(Space):
         instead of at the end of period
         unlike add_switch.
         """
-        switch(agent, from_grp, to_grp)
+        switch(agent.name, from_grp.name, to_grp.name)
         self.num_switches += 1
 
     def handle_womb(self):
@@ -263,8 +256,8 @@ class Env(Space):
 
     def handle_switches(self):
         if self.switches is not None:
-            for (agent, from_grp, to_grp) in self.switches:
-                switch(agent, from_grp, to_grp)
+            for (agent_nm, from_grp_nm, to_grp_nm) in self.switches:
+                switch(agent_nm, from_grp_nm, to_grp_nm)
                 self.num_switches += 1
             del self.switches[:]
 

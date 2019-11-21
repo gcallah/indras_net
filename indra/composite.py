@@ -283,6 +283,8 @@ class Composite(Agent):
         Should be called by join()
         """
         self.members[str(member)] = member
+        if member.prim_group is None:
+            member.prim_group = self
 
     def del_member(self, member):
         """
@@ -290,6 +292,8 @@ class Composite(Agent):
         """
         if str(member) in self.members:
             del self.members[str(member)]
+            if member.prim_group is self:
+                member.prim_group = None
 
     def rand_member(self):
         if len(self) > 0:
