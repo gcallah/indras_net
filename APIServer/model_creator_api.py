@@ -17,12 +17,10 @@ def generate_func(agent):
 class CreateGroups(fields.Raw):
     def addAgents(self, agent_name, agent_num):
         agents_arr = []
-        i = 0
-        while i < agent_num:
+        for i in range(agent_num):
             agents_arr.append(Agent(agent_name + "_agent" + str(i + 1),
                                     action=generate_func,
                                     attrs={"John": "Knox"},))
-            i = i + 1
         return agents_arr
 
     def put(self, group_list):
