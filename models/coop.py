@@ -83,8 +83,7 @@ def exchange(coop_env):
 
     sitters = get_sitters(coop_members)
     going_out = get_going_out(coop_members)
-    print("num_of_bbsitter", str(len(sitters)))
-    print("num_of_outers", str(len(going_out)))
+
     exchanges = min(len(sitters), len(going_out))
     sitter_agents = [agent for agent in sitters]
     going_out_agents = [agent for agent in going_out]
@@ -94,10 +93,8 @@ def exchange(coop_env):
         sitters[sitter]['coupons'] += 1
         going_out[outer]['coupons'] -= 1
 
-    # record exchanges in population history
     last_period_exchanges = exchanges
     last_period_unemployed = max(len(sitters), len(going_out)) - exchanges
-    print("last_period_umemployed: ", last_period_unemployed)
 
 
 def distribute_coupons(agent):
@@ -151,12 +148,9 @@ def central_bank_action(agent):
     """
     global coop_members
     unemployment_rates = last_period_unemployed / len(coop_members) * 100
-    print(unemployment_rates)
     unemployment_threshold = agent["percent_change"]
     if unemployment_rates >= unemployment_threshold:
         distribute_coupons(agent)
-    # if last_period_exchanges <= agent['distribute_threshold']:
-    #     distribute_coupons(agent)
 
 
 def create_babysitter(name, i, props=None):
@@ -183,7 +177,6 @@ def create_central_bank(name, i, props=None):
     central_bank["extra_dev"] = props.get("extra_deviation", DEF_SIGMA)
     central_bank["distribute_threshold"] = props.get("distribute_threshold",
                                                      DEF_DISTRIBUTE_THRESHOLD)
-    central_bank["num_hist"] = []
     return central_bank
 
 
