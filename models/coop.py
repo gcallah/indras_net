@@ -34,6 +34,7 @@ coop_members = None
 coop_env = None
 
 last_period_exchanges = 0
+last_period_unemployed = 0
 
 
 def wants_to_sit(agent, *args):
@@ -77,10 +78,13 @@ def get_going_out(coop_members):
 def exchange(coop_env):
     # get exchange numbers
     global last_period_exchanges
+    global last_period_unemployed
     global coop_members
 
     sitters = get_sitters(coop_members)
     going_out = get_going_out(coop_members)
+    print("num_of_bbsitter", str(len(sitters)))
+    print("num_of_outers", str(len(going_out)))
     exchanges = min(len(sitters), len(going_out))
     sitter_agents = [agent for agent in sitters]
     going_out_agents = [agent for agent in going_out]
@@ -92,6 +96,8 @@ def exchange(coop_env):
 
     # record exchanges in population history
     last_period_exchanges = exchanges
+    last_period_unemployed = max(len(sitters), len(going_out)) - exchanges
+    print("last_period_umemployed: ", last_period_unemployed)
 
 
 def distribute_coupons(agent):
