@@ -40,7 +40,6 @@
     "atype": "INT",
     "hival": 50,
     "lowval": 1
-
   },
   "extra_deviation":{
     "val": 0.05,
