@@ -149,8 +149,14 @@ def central_bank_action(agent):
     If exchanges are down "enough", distribute coupons!
     Enough is a parameter.
     """
-    if last_period_exchanges <= agent['distribute_threshold']:
+    global coop_members
+    unemployment_rates = last_period_unemployed / len(coop_members) * 100
+    print(unemployment_rates)
+    unemployment_threshold = agent["percent_change"]
+    if unemployment_rates >= unemployment_threshold:
         distribute_coupons(agent)
+    # if last_period_exchanges <= agent['distribute_threshold']:
+    #     distribute_coupons(agent)
 
 
 def create_babysitter(name, i, props=None):
