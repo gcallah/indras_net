@@ -17,7 +17,7 @@ DEF_COUPON = 2
 DEF_DISTRIBUTING_COUPON = 2
 DEF_SIGMA = 0.2
 DEF_PERCENT = 10
-DEF_DISTRIBUTE_THRESHOLD = 5
+# DEF_DISTRIBUTE_THRESHOLD = 5
 
 BSIT_INDEX = 0
 GO_OUT_INDEX = 1
@@ -34,6 +34,7 @@ coop_members = None
 coop_env = None
 
 last_period_exchanges = 0
+last_period_unemployed = 0
 
 
 def wants_to_sit(agent, *args):
@@ -77,10 +78,12 @@ def get_going_out(coop_members):
 def exchange(coop_env):
     # get exchange numbers
     global last_period_exchanges
+    global last_period_unemployed
     global coop_members
 
     sitters = get_sitters(coop_members)
     going_out = get_going_out(coop_members)
+
     exchanges = min(len(sitters), len(going_out))
     sitter_agents = [agent for agent in sitters]
     going_out_agents = [agent for agent in going_out]
@@ -90,8 +93,8 @@ def exchange(coop_env):
         sitters[sitter]['coupons'] += 1
         going_out[outer]['coupons'] -= 1
 
-    # record exchanges in population history
     last_period_exchanges = exchanges
+    last_period_unemployed = max(len(sitters), len(going_out)) - exchanges
 
 
 def distribute_coupons(agent):
@@ -143,7 +146,10 @@ def central_bank_action(agent):
     If exchanges are down "enough", distribute coupons!
     Enough is a parameter.
     """
-    if last_period_exchanges <= agent['distribute_threshold']:
+    global coop_members
+    unemployment_rates = last_period_unemployed / len(coop_members) * 100
+    unemployment_threshold = agent["percent_change"]
+    if unemployment_rates >= unemployment_threshold:
         distribute_coupons(agent)
 
 
@@ -169,9 +175,8 @@ def create_central_bank(name, i, props=None):
     central_bank["percent_change"] = props.get("percent_change", DEF_PERCENT)
     central_bank["extra_coupons"] = props.get("extra_coupons", DEF_COUPON)
     central_bank["extra_dev"] = props.get("extra_deviation", DEF_SIGMA)
-    central_bank["distribute_threshold"] = props.get("distribute_threshold",
-                                                     DEF_DISTRIBUTE_THRESHOLD)
-    central_bank["num_hist"] = []
+    # central_bank["distribute_threshold"] = props.get("distribute_threshold",
+    #                                                  DEF_DISTRIBUTE_THRESHOLD)
     return central_bank
 
 

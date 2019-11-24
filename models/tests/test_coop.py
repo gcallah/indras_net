@@ -46,7 +46,6 @@ class coopTestCase(TestCase):
         self.assertTrue(new_central_bank["percent_change"] >= 0)
         self.assertTrue(new_central_bank["extra_coupons"] >= 0)
         self.assertTrue(new_central_bank["extra_dev"] >= 0)
-        self.assertTrue(new_central_bank["num_hist"] == [])
 
     def test_exchange(self):
         pass

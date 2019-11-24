@@ -103,6 +103,9 @@ pytests: FORCE
 jstests: FORCE
 	cd webapp; make tests
 
+test_docker:
+	docker build -t gcallah/$(REPO) docker/
+
 github:
 	- git commit -a
 	- git pull origin master
