@@ -79,7 +79,7 @@ submods:
 	cd utils; git pull origin master
 
 # run tests then commit all, then push
-prod: local python js
+prod: local python js notebooks
 
 # run tests then push just what is already committed:
 prod1: tests
@@ -93,12 +93,18 @@ python: pytests github
 js: jstests github
 
 pytests: FORCE
+	cd models; make tests
 	cd APIServer; make tests
 	cd indra; make tests
-	cd models; make tests
+	cd ml; make tests
+	# capital needs makefile
+	# cd capital; make tests
 
 jstests: FORCE
 	cd webapp; make tests
+
+test_docker:
+	docker build -t gcallah/$(REPO) docker/
 
 github:
 	- git commit -a

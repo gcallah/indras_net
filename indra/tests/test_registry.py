@@ -18,12 +18,5 @@ class RegisteryTestCase(TestCase):
     def tearDown(self):
         self.reg = None
 
-    def test_repr(self):
-        """
-        Test our registry representation.
-        """
-        s = repr(self.reg)
-        self.assertTrue(REGISTRY in s)
-
     def test_get_item(self):
         self.assertEqual(TEST_VAL, self.reg[TEST_VAL_STR])

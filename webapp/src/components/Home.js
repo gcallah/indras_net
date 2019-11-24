@@ -4,7 +4,12 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import axios from 'axios';
+<<<<<<< HEAD
 import {Link} from 'react-router-dom';
+=======
+import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
+>>>>>>> 65895954962dcf16b51cbefcf854e6b554891476
 import Carousel from './Carousel';
 import sandpileImg from './images/Sandpile.jpg';
 import sandpile1Img from './images/sandpile_2.png';
@@ -27,13 +32,19 @@ class Home extends Component {
     this.api_server = 'https://indrasnet.pythonanywhere.com/';
   }
 
+<<<<<<< HEAD
   async componentDidMount () {
+=======
+  async componentDidMount() {
+    const { history } = this.props;
+>>>>>>> 65895954962dcf16b51cbefcf854e6b554891476
     try {
       this.setState ({loadingData: true});
       document.title = 'Indra | Home';
       const res = await axios.get (`${this.api_server}models`);
       this.setState ({allItems: res.data, loadingData: false});
     } catch (e) {
+<<<<<<< HEAD
       this.setState ({apiFailed: true});
     }
   }
@@ -53,16 +64,25 @@ class Home extends Component {
     </h1>
   );
 
+=======
+      history.push('/errorCatching');
+    }
+  }
+
+>>>>>>> 65895954962dcf16b51cbefcf854e6b554891476
   handleClick = (id, name, source) => {
     localStorage.setItem ('menu_id', id);
     localStorage.setItem ('name', name);
     localStorage.setItem ('source', source);
   };
 
+<<<<<<< HEAD
   renderHeader = () => (
     <h1 className="text-center">Indra Agent-Based Modeling System</h1>
   );
 
+=======
+>>>>>>> 65895954962dcf16b51cbefcf854e6b554891476
   renderChooseModelProp = () => (
     <h1 className="small-header">
       Please choose a model:
@@ -84,8 +104,14 @@ class Home extends Component {
     }
     return (
       <div className="container">
+<<<<<<< HEAD
         <h1 className="margin-top-60"> </h1>
         <div className="margin-bottom-100">{this.renderHeader ()}</div>
+=======
+        <div className="margin-bottom-80">
+          <h1 className="text-left">The Agent-Based Modeling System</h1>
+        </div>
+>>>>>>> 65895954962dcf16b51cbefcf854e6b554891476
         <div className="row">
           <div className="col-6">
             {this.renderChooseModelProp ()}
@@ -104,7 +130,11 @@ class Home extends Component {
                     to={{
                       pathname: `/models/props/${allItems[item]['model ID']}`,
                     }}
+<<<<<<< HEAD
                     className="text-primary w-75 p-3 list-group-item list-group-item-action borderless"
+=======
+                    className="text-primary w-75 p-3 list-group-item list-group-item-action link"
+>>>>>>> 65895954962dcf16b51cbefcf854e6b554891476
                     key={allItems[item].name}
                     onClick={() =>
                       this.handleClick (
@@ -118,7 +148,10 @@ class Home extends Component {
                 </OverlayTrigger>
               ))}
             </ListGroup>
+<<<<<<< HEAD
             {this.renderShowDescription ()}
+=======
+>>>>>>> 65895954962dcf16b51cbefcf854e6b554891476
           </div>
           <div className="col-6">
             <Carousel
@@ -133,5 +166,13 @@ class Home extends Component {
     );
   }
 }
+
+Home.propTypes = {
+  history: PropTypes.shape(),
+};
+
+Home.defaultProps = {
+  history: {},
+};
 
 export default Home;

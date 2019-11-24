@@ -12,7 +12,7 @@ prod: tests
 lint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
 
 pytests: $(PYTHONFILES)
-	./pytests.sh
+	./pytests.sh capture
 
 tests: pytests lint
 

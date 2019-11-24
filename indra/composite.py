@@ -10,6 +10,9 @@ from random import choice
 
 from indra.agent import Agent, join, INF, is_composite, AgentEncoder
 
+from indra.registry import Registry
+from indra.registry import register
+
 DEBUG = False
 
 
@@ -36,31 +39,41 @@ class Composite(Agent):
     def __init__(self, name, attrs=None, members=None,
                  duration=INF, action=None, member_creator=None,
                  num_members=None, serial_obj=None, props=None,
-                 **kwargs):
+                 reg=True, **kwargs):
 
         self.members = OrderedDict()
         super().__init__(name, attrs=attrs, duration=duration,
-                         action=action, serial_obj=serial_obj)
+                         action=action, serial_obj=serial_obj,
+                         reg=False)
 
+        # we need to get rid of these uses of type!!!
+        # (but carefully, of course)
         self.type = "composite"
 
         if serial_obj is not None:
-            self.restore_composite(serial_obj)
+            self.restore(serial_obj)
         else:
-            self.registry = {}
             if members is not None:
                 for member in members:
                     join(self, member)
             if num_members is None:
                 num_members = 1  # A default if they forgot to pass this.
+            self.num_members_ever = num_members
+            self.member_creator = None
             if member_creator is not None:
+                self.member_creator = member_creator
                 # If we have a member creator function, call it
                 # `num_members` times to create group members.
                 for i in range(num_members):
                     # += adds members
-                    self += member_creator(name, i, props=props, **kwargs)
+                    join(
+                        self,
+                        member_creator(self.name, i, props=props,
+                                       **kwargs))
+        if reg:
+            register(self.name, self)
 
-    def restore_composite(self, serial_obj):
+    def restore(self, serial_obj):
         """
         Here we restore a composite from a serialized object.
         """
@@ -86,7 +99,7 @@ class Composite(Agent):
                 self.members[nm] = Composite(name=nm, serial_obj=member)
 
         # construct self.registry
-        self.registry = {}
+        self.registry = Registry()
         for nm in self.members:
             self.add_mbr_to_regis(self.members[nm])
 
@@ -275,6 +288,8 @@ class Composite(Agent):
         Should be called by join()
         """
         self.members[str(member)] = member
+        if member.prim_group is None:
+            member.prim_group = self
 
     def del_member(self, member):
         """
@@ -282,6 +297,8 @@ class Composite(Agent):
         """
         if str(member) in self.members:
             del self.members[str(member)]
+            if member.prim_group is self:
+                member.prim_group = None
 
     def rand_member(self):
         if len(self) > 0:

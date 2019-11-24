@@ -17,14 +17,6 @@
       "source": "https://github.com/gcallah/indras_net/blob/master/models/bacteria.py"
     },
     {
-      "model ID": 2,
-      "name": "Adam Smith's Fashion Model",
-      "run": "fashion",
-      "props": "models/props/fashion.props.json",
-      "doc": "A model of trendsetters and followers in the world of fashion.",
-      "source": "https://github.com/gcallah/indras_net/blob/master/models/fashion.py"
-    },
-    {
       "model ID": 3,
       "name": "Schelling's Segregation Model",
       "run": "segregation",

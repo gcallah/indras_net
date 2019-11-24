@@ -5,10 +5,6 @@ A collection of convenience functions
 for using matplotlib.
 """
 import io
-# import numpy as np
-# import pandas as pd
-# import seaborn as sns
-# import networkx as nx
 import logging
 import os
 from functools import wraps

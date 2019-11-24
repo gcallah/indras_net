@@ -19,6 +19,9 @@ pytests: $(PYTHONFILES)
 test_agent:
 	nosetests tests.test_agent --nocapture
 
+test_composite:
+	nosetests tests.test_composite --nocapture
+
 test_env:
 	nosetests tests.test_env --nocapture
 

@@ -11,6 +11,7 @@ from propargs.propargs import PropArgs as pa
 # import logging
 import indra.display_methods as disp
 from indra.agent import join, switch, Agent, AgentEncoder
+from indra.registry import register, get_registration
 from indra.space import Space
 from indra.user import TEST, TestUser, USER_EXIT, APIUser
 from indra.user import TermUser, TERMINAL, API
@@ -67,8 +68,7 @@ class PopHist:
         self.pops = pop_data['pops']
 
     def to_json(self):
-        rep = {"periods": self.periods, "pops": self.pops}
-        return rep
+        return {"periods": self.periods, "pops": self.pops}
 
 
 class Env(Space):
@@ -82,27 +82,32 @@ class Env(Space):
                  props=None, serial_obj=None, census=None,
                  line_data_func=None, exclude_member=None,
                  pop_hist_setup=None,
-                 pop_hist_func=None,
+                 pop_hist_func=None, members=None,
+                 reg=True,
                  **kwargs):
         super().__init__(name, action=action,
                          random_placing=random_placing, serial_obj=serial_obj,
-                         **kwargs)
+                         reg=False, members=members, **kwargs)
 
         self.type = "env"
         self.user_type = os.getenv("user_type", TERMINAL)
         self.props = props
+        # these funcs all must be restored from the function registry:
         self.census_func = census
         self.pop_hist_setup = pop_hist_setup
         self.pop_hist_func = pop_hist_func
+
         self.num_switches = 0
         if serial_obj is not None:
             # are we restoring env from json?
             self.restore_env(serial_obj)
         else:
-            self.set_initial_mbr_vals(line_data_func, exclude_member)
+            self.construct_anew(line_data_func, exclude_member)
 
         if self.props is not None:
             self.set_menu_excludes(self.props)
+        if reg:
+            register(self.name, self)
 
     def set_menu_excludes(self, props):
         if not props.get('use_line', True):
@@ -110,7 +115,7 @@ class Env(Space):
         if not props.get('use_scatter', True):
             self.exclude_menu_item("scatter_plot")
 
-    def set_initial_mbr_vals(self, line_data_func=None, exclude_member=None):
+    def construct_anew(self, line_data_func=None, exclude_member=None):
         self.pop_hist = PopHist()  # this will record pops across time
         # Make sure varieties are present in the history
         if self.pop_hist_setup is None:
@@ -152,24 +157,12 @@ class Env(Space):
         self.user.tell(msg)
         self.name = serial_obj["name"]
 
-        # the next 4 lines are all wrong:
-        self.womb = serial_obj["womb"]
         self.switches = serial_obj["switches"]
-        self.census_func = serial_obj["census_func"]
-        self.line_data_func = serial_obj["data_func"]
+        self.womb = serial_obj["womb"]
 
-        self.registry[self.name] = self
-        # construct self.groups
-        # right now, every group is added to env
-        # that ain't right: we should read grp list of env.
-        for nm in self.registry:
-            if len(self.registry[nm].groups) != 0:
-                for gnm in self.registry[nm].groups:
-                    if gnm in self.registry:
-                        self.registry[nm].add_group(self.registry[gnm])
-            # set up each agent's locator
-            if nm != self.name and self.registry[nm].type == "agent":
-                self.registry[nm].locator = self
+        # We need to look up these funcs in registry.
+        self.census_func = serial_obj["census_func"].__name__
+        self.line_data_func = serial_obj["data_func"].__name__
 
     def to_json(self):
         rep = super().to_json()
@@ -224,16 +217,15 @@ class Env(Space):
         super().add_member(member)
         # self.registry[member.name] = member
 
-    def add_child(self, agent, group):
+    def add_child(self, group):
         """
         Put a child agent in the womb.
         agent: child to add
         group: which group child will join
         """
-        self.womb.append((agent, group))
+        self.womb.append(group.name)
         if DEBUG:
-            self.user.tell("{} added to the womb".format(agent.name))
-        # do we need to connect agent to env (self)?
+            self.user.tell("{} added to the womb".format(group.name))
 
     def add_switch(self, agent, from_grp, to_grp):
         """
@@ -241,8 +233,7 @@ class Env(Space):
         agent: child to add
         group: which group child will join
         """
-        self.switches.append((agent, from_grp, to_grp))
-        # do we need to connect agent to env (self)?
+        self.switches.append((agent.name, from_grp.name, to_grp.name))
 
     def now_switch(self, agent, from_grp, to_grp):
         """
@@ -250,21 +241,32 @@ class Env(Space):
         instead of at the end of period
         unlike add_switch.
         """
-        switch(agent, from_grp, to_grp)
+        switch(agent.name, from_grp.name, to_grp.name)
         self.num_switches += 1
 
     def handle_womb(self):
+        """
+        The womb just contains group names -- they will be repeated
+        as many times as that group needs to add members.
+        We name the new members in the `member_creator()` method.
+        This should be re-written as dict with:
+            {"group_name": #agents_to_create}
+        """
         if self.womb is not None:
-            for (agent, group) in self.womb:
-                # add the agent into the registry
-                self.registry[agent.name] = agent
-                join(group, agent)
+            for group_nm in self.womb:
+                group = get_registration(group_nm)
+                if group is not None and group.member_creator is not None:
+                    group.num_members_ever += 1
+                    agent = group.member_creator("", group.num_members_ever)
+                    agent.env = group.env
+                    register(agent.name, agent)
+                    join(group, agent)
             del self.womb[:]
 
     def handle_switches(self):
         if self.switches is not None:
-            for (agent, from_grp, to_grp) in self.switches:
-                switch(agent, from_grp, to_grp)
+            for (agent_nm, from_grp_nm, to_grp_nm) in self.switches:
+                switch(agent_nm, from_grp_nm, to_grp_nm)
                 self.num_switches += 1
             del self.switches[:]
 

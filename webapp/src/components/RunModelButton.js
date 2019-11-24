@@ -1,8 +1,6 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable react/destructuring-assignment */
-/* eslint no-trailing-spaces: "error" */
 import React from 'react';
 import autoBind from 'react-autobind';
+import PropTypes from 'prop-types';
 
 export default class RunModelButton extends React.Component {
   constructor(props) {
@@ -18,12 +16,15 @@ export default class RunModelButton extends React.Component {
   }
 
   render() {
+    const {
+      disabledButton, sendNumPeriods, handleRunPeriod, errorMessage,
+    } = this.state;
     return (
       <div>
         <button
           type="button"
-          disabled={this.state.disabledButton}
-          onClick={!this.state.disabledButton ? this.state.sendNumPeriods : null}
+          disabled={disabledButton}
+          onClick={!disabledButton ? sendNumPeriods : null}
           className="btn btn-success m-2"
         >
           {'  '}
@@ -37,14 +38,28 @@ export default class RunModelButton extends React.Component {
           type="INT"
           className="from-control m-2 number-input"
           placeholder="10"
-          onChange={this.state.handleRunPeriod}
+          onChange={handleRunPeriod}
         />
         {' '}
         periods.
         <span className="error-message">
-          {this.state.errorMessage}
+          {errorMessage}
         </span>
       </div>
     );
   }
 }
+
+RunModelButton.propTypes = {
+  disabledButton: PropTypes.bool,
+  errorMessage: PropTypes.string,
+  sendNumPeriods: PropTypes.func,
+  handleRunPeriod: PropTypes.func,
+};
+
+RunModelButton.defaultProps = {
+  disabledButton: true,
+  errorMessage: '',
+  sendNumPeriods() {},
+  handleRunPeriod() {},
+};

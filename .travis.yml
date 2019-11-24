@@ -17,6 +17,7 @@ env:
 
 script:
     - make tests
+    - make test_docker
 
 after_success:
     - ./deploy.sh

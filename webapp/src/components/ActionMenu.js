@@ -1,9 +1,7 @@
-/* eslint-disable no-console */
 import React, { Component } from 'react';
 import ListGroup from 'react-bootstrap/ListGroup';
 import axios from 'axios';
 import autoBind from 'react-autobind';
-import PropType from 'prop-types';
 import PageLoader from './PageLoader';
 import PopulationGraph from './PopulationGraph';
 import ScatterPlot from './ScatterPlot';
@@ -11,6 +9,7 @@ import Debugger from './Debugger';
 import ModelStatusBox from './ModelStatusBox';
 import SourceCodeViewer from './SourceCodeViewer';
 import RunModelButton from './RunModelButton';
+import BackHomeButton from './BackHomeButton';
 import './styles.css';
 
 
@@ -19,6 +18,14 @@ const SCATTER = 3;
 const DATA = 4;
 const SOURCE = 5;
 const API_SERVER = 'https://indrasnet.pythonanywhere.com/models/menu/';
+const GRAPH_DICT = {
+  Basic: 'scatter',
+  Bacteria: 'scatter',
+  'Adam Smith\'s Fashion Model': 'scatter',
+  'Schelling\'s Segregation Model': 'scatter',
+  'Predator-Prey Model': 'scatter',
+  'Financial Market': 'scatter',
+};
 
 class ActionMenu extends Component {
   constructor(props) {
@@ -29,23 +36,20 @@ class ActionMenu extends Component {
       loadingData: false,
       envFile: {},
       modelId: 0,
-      actionId: 0,
-      showComponent: false,
+      source: '',
       periodNum: 10,
       errorMessage: '',
       disabledButton: false,
       loadingPopulation: false,
       loadingScatter: false,
+      loadingSourceCode: false,
       loadingDebugger: false,
-
     };
   }
 
   async componentDidMount() {
     document.title = 'Indra | Menu';
     const m = await axios.get(API_SERVER);
-    const code = await this.viewSource();
-    console.log(API_SERVER);
     this.setState({
       menu: m.data,
       name: localStorage.getItem('name'),
@@ -53,36 +57,36 @@ class ActionMenu extends Component {
       source: localStorage.getItem('source'),
       envFile: JSON.parse(localStorage.getItem('envFile')),
       msg: JSON.parse(localStorage.getItem('envFile')).user.user_msgs,
+    });
+    const defaultGraph = GRAPH_DICT[localStorage.getItem('name')];
+    if (defaultGraph === 'scatter') {
+      this.setState({
+        loadingScatter: true,
+      });
+    } else {
+      this.setState({
+        loadingPopulation: true,
+      });
+    }
+    const code = await this.viewSource();
+    this.setState({
       sourceCode: code,
     });
-    console.log(this.state);
   }
 
   viewSource = async () => {
     try {
-      const splitSource = localStorage.getItem('source').split('/');
+      const { source } = this.state;
+      const splitSource = source.split('/');
       const filename = splitSource[splitSource.length - 1];
       const res = await axios.get(
         `https://raw.githubusercontent.com/gcallah/indras_net/master/models/${filename}`,
       );
-      console.log(res.data);
       return res.data;
-    } catch (e) {
-      console.log(e);
-      return false;
+    } catch (error) {
+      return 'Something has gone wrong.';
     }
   };
-
-  onClick = () => {
-    this.setState({
-      showComponent: true,
-    });
-  };
-
-  goback = () => {
-    const { history } = this.props;
-    history.goBack();
-  }
 
   handleRunPeriod = (e) => {
     this.setState({
@@ -111,13 +115,12 @@ class ActionMenu extends Component {
   };
 
   handleClick = (e) => {
-    console.log(`e = ${String(e)}`);
     this.setState({
       loadingData: false,
       loadingPopulation: false,
       loadingScatter: false,
+      loadingSourceCode: false,
       loadingDebugger: false,
-      actionId: e,
     });
     switch (e) {
       case POP:
@@ -152,8 +155,9 @@ class ActionMenu extends Component {
         loadingData: false,
         msg: res.data.user.user_msgs,
       });
+      return true;
     } catch (e) {
-      console.log(e.message);
+      return false;
     }
   };
 
@@ -186,7 +190,6 @@ class ActionMenu extends Component {
       loadingSourceCode,
       sourceCode,
     } = this.state;
-    console.log(typeof modelId);
     return (
       <div>
         <PopulationGraph
@@ -245,7 +248,6 @@ class ActionMenu extends Component {
       disabledButton,
       errorMessage,
     } = this.state;
-
     if (loadingData) {
       return (
         <PageLoader />
@@ -253,6 +255,9 @@ class ActionMenu extends Component {
     }
     return (
       <div>
+        <div className="mt-4" style={{ float: 'right' }}>
+          <BackHomeButton />
+        </div>
         <br />
         {this.renderHeader()}
         <div>
@@ -267,7 +272,7 @@ class ActionMenu extends Component {
                 sendNumPeriods={this.sendNumPeriods}
                 handleRunPeriod={this.handleRunPeriod}
               />
-              <h3 className="margin-top-60 mb-5">Model Analysis:</h3>
+              <h3 className="margin-top-50 mb-4">Model Analysis:</h3>
             </div>
           </div>
           {this.renderMapItem()}
@@ -279,7 +284,6 @@ class ActionMenu extends Component {
 }
 
 ActionMenu.propTypes = {
-  history: PropType.shape(),
 };
 
 ActionMenu.defaultProps = {
