@@ -104,7 +104,7 @@ class Home extends Component {
                         allItems[item]['model ID']
                       }`,
                     }}
-                    className="text-primary w-75 p-3 list-group-item list-group-item-action"
+                    className="text-primary w-75 p-3 list-group-item list-group-item-action link"
                     key={allItems[item].name}
                     onClick={() => this.handleClick(
                       allItems[item]['model ID'],

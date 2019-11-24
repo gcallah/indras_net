@@ -56,3 +56,7 @@
 .list-group-item {
   cursor: pointer;
 }
+
+.link {
+  word-wrap: break-word;
+}
