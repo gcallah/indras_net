@@ -51,3 +51,4 @@ APIServer/.coverage
 /venv/
 /.vscode
 precache-manifest.*
+/webapp/coverage/*
