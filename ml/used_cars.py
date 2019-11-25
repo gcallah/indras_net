@@ -149,13 +149,21 @@ def set_emoji_indicator(buyer):  # testcase done
 
 def get_dealer_emoji(dealer_characteristic):  # testcase done
     '''
-    This function returns a random emoji based on
-    dealer's characteristics
+    return random emojis from two categories.
+    depending on dealer characteristics
     '''
     if dealer_characteristic == "good":
         return POS_EMOJIS[random.randint(0, 3)]
     else:
         return NEG_EMOJIS[random.randint(0, 3)]
+
+
+def get_emoji_json(object):
+    '''
+    This function returns a emoji associated with the dealer
+    from json file. Currently using hardcode testcase to build code
+    '''
+    pass
 
 
 def update_dealer_sale(dealer, new_car_life):  # testcase done
