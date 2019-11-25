@@ -29,6 +29,38 @@ MAX_BAD_CAR_LIFE = 4
 MIN_GOOD_CAR_LIFE = 3
 MAX_CAR_LIFE = 5
 
+testcase = {
+    '''
+    Dealer Number:{
+    Emoji:{
+    car life associated:
+    [Gaussian distribution around
+     the associated car life]
+    }
+    }
+    '''
+    "Dealer1": {
+        "smiley": {
+            4.3: [3.9, 4.0, 4.3, 4.6, 4.7]
+        }
+    },
+    "Dealer2": {
+        "wink": {
+            4.0: [3.9, 3.8, 4.0, 4.1, 4.2]
+        }
+    },
+    "Dealer3": {
+        "hesitate": {
+            1.0: [0.9, 0.3, 1.2, 1.3, 1.0]
+        }
+    },
+    "Dealer4": {
+        "unnatural": {
+            2.0: [1.9, 2.1, 1.8, 2.2, 2.0]
+        }
+    }
+}
+
 MATURE_BOUND = 100
 
 MEDIUM_CAR_LIFE = (MIN_CAR_LIFE + MAX_CAR_LIFE) // 2
@@ -117,13 +149,21 @@ def set_emoji_indicator(buyer):  # testcase done
 
 def get_dealer_emoji(dealer_characteristic):  # testcase done
     '''
-    This function returns a random emoji based on
-    dealer's characteristics
+    return random emojis from two categories.
+    depending on dealer characteristics
     '''
     if dealer_characteristic == "good":
         return POS_EMOJIS[random.randint(0, 3)]
     else:
         return NEG_EMOJIS[random.randint(0, 3)]
+
+
+def get_emoji_json(object):
+    '''
+    This function returns a emoji associated with the dealer
+    from json file. Currently using hardcode testcase to build code
+    '''
+    pass
 
 
 def update_dealer_sale(dealer, new_car_life):  # testcase done

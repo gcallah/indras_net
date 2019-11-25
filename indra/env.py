@@ -161,8 +161,8 @@ class Env(Space):
         self.womb = serial_obj["womb"]
 
         # We need to look up these funcs in registry.
-        self.census_func = serial_obj["census_func"].__name__
-        self.line_data_func = serial_obj["data_func"].__name__
+        self.census_func = serial_obj["census_func"]
+        self.line_data_func = serial_obj["data_func"]
 
     def to_json(self):
         rep = super().to_json()
@@ -177,8 +177,8 @@ class Env(Space):
         rep["pop_hist"] = self.pop_hist.to_json()
         rep["womb"] = self.womb
         rep["switches"] = self.switches
-        rep["census_func"] = None
-        rep["data_func"] = None
+        rep["census_func"] = self.census_func.__name__
+        rep["data_func"] = self.line_data_func.__name__
         return rep
 
     def __repr__(self):
