@@ -27,8 +27,8 @@
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/edgeworthbox.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="669">
-                  <caret line="97" column="43" selection-start-line="97" selection-start-column="43" selection-end-line="97" selection-end-column="43" />
+                <state relative-caret-position="464">
+                  <caret line="50" column="60" selection-start-line="50" selection-start-column="60" selection-end-line="50" selection-end-column="60" />
                   <folding>
                     <element signature="e#0#110#1" />
                   </folding>
@@ -53,7 +53,7 @@
             <entry file="file://$PROJECT_DIR$/edgeworthbox.py">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="1125">
-                  <caret line="121" column="39" selection-start-line="121" selection-start-column="39" selection-end-line="121" selection-end-column="39" />
+                  <caret line="145" column="39" selection-start-line="145" selection-start-column="39" selection-end-line="145" selection-end-column="39" />
                   <folding>
                     <element signature="e#0#110#1" />
                   </folding>
@@ -64,8 +64,8 @@
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/old_edgebox.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="70">
-                  <caret line="176" column="19" selection-start-line="176" selection-start-column="19" selection-end-line="176" selection-end-column="19" />
+                <state relative-caret-position="968">
+                  <caret line="83" column="55" selection-start-line="83" selection-start-column="43" selection-end-line="83" selection-end-column="55" />
                   <folding>
                     <element signature="e#0#77#1" />
                   </folding>
@@ -218,12 +218,12 @@
       <workItem from="1573860073457" duration="14684000" />
       <workItem from="1574281883564" duration="494000" />
       <workItem from="1574352814375" duration="598000" />
-      <workItem from="1574663486802" duration="7321000" />
+      <workItem from="1574663486802" duration="9299000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="37672000" />
+    <option name="totallyTimeSpent" value="39650000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1920" height="1057" extended-state="0" />
@@ -314,8 +314,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/old_edgebox.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="70">
-          <caret line="176" column="19" selection-start-line="176" selection-start-column="19" selection-end-line="176" selection-end-column="19" />
+        <state relative-caret-position="968">
+          <caret line="83" column="55" selection-start-line="83" selection-start-column="43" selection-end-line="83" selection-end-column="55" />
           <folding>
             <element signature="e#0#77#1" />
           </folding>
@@ -324,8 +324,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/edgeworthbox.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="669">
-          <caret line="97" column="43" selection-start-line="97" selection-start-column="43" selection-end-line="97" selection-end-column="43" />
+        <state relative-caret-position="464">
+          <caret line="50" column="60" selection-start-line="50" selection-start-column="60" selection-end-line="50" selection-end-column="60" />
           <folding>
             <element signature="e#0#110#1" />
           </folding>
