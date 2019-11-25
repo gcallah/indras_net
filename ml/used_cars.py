@@ -29,6 +29,38 @@ MAX_BAD_CAR_LIFE = 4
 MIN_GOOD_CAR_LIFE = 3
 MAX_CAR_LIFE = 5
 
+testcase = {
+    '''
+    Dealer Number:{
+    Emoji:{
+    car life associated:
+    [Gaussian distribution around
+     the associated car life]
+    }
+    }
+    '''
+    "Dealer1":{
+    "smiley":{
+    4.3: [3.9, 4.0, 4.3, 4.6, 4.7]
+    }
+    },
+    "Dealer2":{
+    "wink":{
+    4.0: [3.9, 3.8, 4.0, 4.1, 4.2]
+    }
+    },
+    "Dealer3":{
+    "hesitate":{
+    1.0: [0.9, 0.3, 1.2, 1.3, 1.0]
+    }
+    },
+    "Dealer4":{
+    "unnatural":{
+    2.0: [1.9, 2.1, 1.8, 2.2, 2.0]
+    }
+    }
+}
+
 MATURE_BOUND = 100
 
 MEDIUM_CAR_LIFE = (MIN_CAR_LIFE + MAX_CAR_LIFE) // 2
