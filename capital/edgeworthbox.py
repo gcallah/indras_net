@@ -29,6 +29,23 @@ INADEQ = 0
 REJECT = -1
 
 
+# take a goods dict to string
+def toString(goods):
+    string = ' ,'.join([str(goods[k]["endow"]) + " " + str(k)
+                       for k in goods.keys()])
+    return string
+
+
+# convert integer value of ans to string
+def int_to_str(ans):
+    str_ans = "reject"
+    if ans == 1:
+        str_ans = "accept"
+    elif ans == 0:
+        str_ans = "'m indifferent about"
+    return str_ans
+
+
 def gen_util_func(qty):
     return 10 - 0.5 * qty
 
@@ -39,6 +56,12 @@ def seek_a_trade(agent):
                                               cheese_group,
                                               hood_size=4)
 
+    if "cheese" not in agent["goods"].keys():
+        add_good(agent, "cheese")
+
+    if "wine" not in agent["goods"].keys():
+        add_good(agent, "wine")
+
     if nearby_agent is not None:
         env.user.tell("I'm " + agent.name + " and I find "
                       + nearby_agent.name)
@@ -48,18 +71,13 @@ def seek_a_trade(agent):
             while agent["goods"][this_good]["endow"] >= amt:
                 ans = rec_offer(agent, this_good, amt, nearby_agent)
                 env.user.tell("I'm " + agent.name
-                              + ", my answer is " + str(ans))
+                              + ", I " + int_to_str(ans) + " this offer")
                 if ans == ACCEPT or ans == REJECT:
                     break
                 amt += 1
 
-    # if "cheese" not in agent["goods"].keys():
-    #     add_good(agent, "cheese")
-    # if "wine" not in agent["goods"].keys():
-    #     add_good(agent, "wine")
-
     env.user.tell("I'm " + agent.name
-                  + ". I have " + str(agent["goods"]))
+                  + ". I have " + toString(agent["goods"]))
 
     # return False means to move
     return False
@@ -77,7 +95,8 @@ def rec_offer(agent, his_good, his_amt, counterparty):
     my_amt = 1
     gain = marginal_util(agent, his_good, his_amt)
     for my_good in agent["goods"]:
-        if my_good != his_good and agent["goods"]["endow"] > 0:
+        print(my_good, his_good, agent["goods"][my_good])
+        if my_good != his_good and agent["goods"][my_good]["endow"] > 0:
             loss = -marginal_util(agent, my_good, -my_amt)
             if gain > loss:
                 # still need to have conterparty to rely
@@ -102,7 +121,7 @@ def util_gain(agent):
 
 def marginal_util(agent, good, amt):
 
-    return
+    return 0
 
 
 def add_good(agent, good):
