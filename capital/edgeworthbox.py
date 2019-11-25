@@ -25,63 +25,66 @@ cheese_group = None
 env = None
 
 
-def util_func(qty):
+def gen_util_func(qty):
     return 10 - 0.5 * qty
 
 
-def marginal_util(has_amt, want_amt):
-    gain_util = util_func(want_amt + 1)
-    loss_util = util_func(has_amt - 1)
-    return gain_util - loss_util
-
-
-def trade(agent1, agent2, has, want, amt):
-    agent1[has] -= amt
-    agent1[want] += amt
-    agent2[has] += amt
-    agent2[want] -= amt
-
-
 def seek_a_trade(agent):
-    if agent.name[0:4] == "Wine":
-        nearby_agent = env.get_neighbor_of_groupX(agent,
-                                                  cheese_group,
-                                                  hood_size=4)
-        has = "wine"
-        want = "cheese"
 
-    else:
-        nearby_agent = env.get_neighbor_of_groupX(agent,
-                                                  wine_group,
-                                                  hood_size=4)
-        want = "cheese"
-        has = "wine"
+    nearby_agent = env.get_neighbor_of_groupX(agent,
+                                              cheese_group,
+                                              hood_size=4)
 
     if nearby_agent is not None:
         env.user.tell("I'm " + agent.name + " and I find "
                       + nearby_agent.name)
 
-        # agent has is what nearby agent want
-        agent_has_amt = agent[has]
-        agent_want_amt = agent[want]
-        nearby_agent_has_amt = nearby_agent[want]
-        nearby_agent_want_amt = nearby_agent[has]
-
-        # if agent has something to trade --> calculate marginal util
-        if (agent_has_amt - 1) >= 0 and (nearby_agent_has_amt - 1) >= 0:
-            agent_marginal_util = marginal_util(agent_has_amt, agent_want_amt)
-            nearby_agent_marginal_util = marginal_util(nearby_agent_has_amt,
-                                                       nearby_agent_want_amt)
-
-            # checking marginal utility of two agent grester than 0
-            if agent_marginal_util >= 0 and nearby_agent_marginal_util >= 0:
-                trade(agent, nearby_agent, has, want, 1)
+    if "cheese" not in agent["goods"].keys():
+        add_good(agent, "cheese")
+    if "wine" not in agent["goods"].keys():
+        add_good(agent, "wine")
 
     env.user.tell("I'm " + agent.name
-                  + ". I have " + str(agent["wine"]) + " wine and "
-                  + str(agent["cheese"]) + " cheese.")
+                  + ". I have " + str(agent["goods"]["wine"]["endow"])
+                  + " wine and "
+                  + str(agent["goods"]["cheese"]["endow"]) + " cheese.")
+
     # return False means to move
     return False
+
+
+def endow(agent, good, new_endow, util_func=None):
+    return
+
+
+def incr_util(agent, good, incr):
+    return
+
+
+def rec_offer(agent, good, amt, counterparty):
+    return
+
+
+def rec_reply(agent, my_good, my_amt, his_good, his_amt):
+    return
+
+
+def trade(agent, my_good, my_amt, counterparty, his_good, his_amt):
+    return
+
+
+def util_gain(agent):
+    return
+
+
+def marginal_util(agent, good, amt):
+    return
+
+
+def add_good(agent, good):
+    agent["goods"][good] = {"endow": 0,
+                            "util_func": gen_util_func,
+                            "incr": 0.0}
 
 
 def create_wagent(name, i, props=None):
@@ -90,7 +93,9 @@ def create_wagent(name, i, props=None):
         start_wine = props.get('start_wine',
                                DEF_NUM_WINE)
     return Agent(name + str(i), action=seek_a_trade,
-                 attrs={"wine": start_wine, "cheese": 0})
+                 attrs={"goods": {"wine": {"endow": start_wine,
+                                           "util_func": gen_util_func,
+                                           "incr": 0}}})
 
 
 def create_cagent(name, i, props=None):
@@ -99,7 +104,9 @@ def create_cagent(name, i, props=None):
         start_cheese = props.get('start_cheese',
                                  DEF_NUM_CHEESE)
     return Agent(name + str(i), action=seek_a_trade,
-                 attrs={"wine": 0, "cheese": start_cheese})
+                 attrs={"goods": {"cheese": {"endow": start_cheese,
+                                             "util_func": gen_util_func,
+                                             "incr": 0}}})
 
 
 def set_up(props=None):
