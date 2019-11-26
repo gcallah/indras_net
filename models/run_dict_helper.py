@@ -37,12 +37,15 @@ from models.fmarket import value_investor_action
 from models.forestfire import main as ffmain
 from models.forestfire import set_up as ffset_up
 from models.forestfire import tree_action
+from models.gameoflife import create_game_cell
 from models.gameoflife import gameoflife_action, game_agent_action
 from models.gameoflife import main as gamemain
 from models.gameoflife import set_up as gset_up
+from models.sandpile import create_grain
 from models.sandpile import main as spmain
 from models.sandpile import sandpile_action, spagent_action
 from models.sandpile import set_up as spset_up
+from models.segregation import create_resident
 from models.segregation import main as semain
 from models.segregation import seg_agent_action
 from models.segregation import set_up as seset_up
@@ -116,6 +119,9 @@ action_dict = {
 # Need to figure out what keys should be assigned to
 # create_agent() in different models
 creators_dict = {
+    "create_resident": create_resident,
+    "create_grain": create_grain,
+    "create_game_cell": create_game_cell,
     "create_consumer": create_consumer,
     "create_sheep": create_sheep,
     "create_wolf": create_wolf,
