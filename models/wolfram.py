@@ -26,7 +26,7 @@ curr_row = None
 rule_num = None
 
 
-def create_agent(x, y):
+def create_wolf_cell(x, y):
     """
     Create an agent with the passed x, y value as its name.
     """
@@ -147,7 +147,7 @@ def set_up(props=None):
     groups.append(black)
     for y in range(height):
         for x in range(width):
-            groups[W] += create_agent(x, y)
+            groups[W] += create_wolf_cell(x, y)
     wolfram_env = Env("Wolfram Model",
                       action=wolfram_action,
                       height=height,

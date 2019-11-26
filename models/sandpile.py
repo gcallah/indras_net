@@ -19,7 +19,7 @@ groups = None
 group_indices = None
 
 
-def create_agent(x, y):
+def create_grain(x, y):
     """
     Create an agent with the passed x, y value as its name.
     """
@@ -108,7 +108,7 @@ def set_up(props=None):
         group_indices[groups[i].name] = i
     for y in range(height):
         for x in range(width):
-            groups[0] += create_agent(x, y)
+            groups[0] += create_grain(x, y)
     sandpile_env = Env("Sandpile",
                        action=sandpile_action,
                        height=height,

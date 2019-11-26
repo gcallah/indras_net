@@ -2,7 +2,7 @@ from unittest import TestCase
 
 import models.wolfram as wolf
 from indra.composite import Composite
-from models.wolfram import create_agent, get_color, get_rule, next_color
+from models.wolfram import create_wolf_cell, get_color, get_rule, next_color
 from models.wolfram import set_up, W, B
 
 TEST_ANUM = 999999
@@ -21,7 +21,7 @@ class WolframTestCase(TestCase):
         Creates an agent and checks that it has the correct name,
         which is its (x, y) corrdinates.
         """
-        a = create_agent(0, 0)
+        a = create_wolf_cell(0, 0)
         self.assertEqual(a.name, '(0,0)')
 
     def test_get_color(self):

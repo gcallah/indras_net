@@ -7,7 +7,7 @@ from indra.composite import Composite
 from indra.env import Env
 from models.gameoflife import DEF_HEIGHT, DEF_WIDTH
 from models.gameoflife import apply_live_rules, check_for_new_agents
-from models.gameoflife import set_up, create_agent
+from models.gameoflife import set_up, create_game_cell
 
 TEST_X = 1
 TEST_Y = 1
@@ -29,7 +29,7 @@ class GameOfLifeTestCase(TestCase):
         Creates an agent and checks that it has the correct name,
         which is its (x, y) corrdinates.
         """
-        agent = create_agent(TEST_X, TEST_Y)
+        agent = create_game_cell(TEST_X, TEST_Y)
         test_name = "(" + str(TEST_X) + "," + str(TEST_Y) + ")"
         self.assertEqual(agent.name, test_name)
 
@@ -42,9 +42,9 @@ class GameOfLifeTestCase(TestCase):
         Add another agent to be their neighbors,
         and check if apply_live_rules returns False.
         """
-        a = create_agent(TEST_X, TEST_Y)
-        b = create_agent(TEST_X - 1, TEST_Y)
-        c = create_agent(TEST_X + 1, TEST_Y)
+        a = create_game_cell(TEST_X, TEST_Y)
+        b = create_game_cell(TEST_X - 1, TEST_Y)
+        c = create_game_cell(TEST_X + 1, TEST_Y)
         g.groups = []
         g.groups.append(Composite("black"))
         g.groups[0] += a
@@ -68,11 +68,11 @@ class GameOfLifeTestCase(TestCase):
         """
         # g.groups = []
         # g.groups.append(Composite("black"))
-        # g.groups[0] += create_agent(TEST_X, TEST_Y)
-        # g.groups[0] += create_agent(TEST_X - 1, TEST_Y)
-        # g.groups[0] += create_agent(TEST_X + 1, TEST_Y)
+        # g.groups[0] += create_grain(TEST_X, TEST_Y)
+        # g.groups[0] += create_grain(TEST_X - 1, TEST_Y)
+        # g.groups[0] += create_grain(TEST_X + 1, TEST_Y)
         # self.assertEqual(apply_dead_rules(TEST_X, TEST_Y, TEST_X + 1, TEST_X - 1, TEST_Y - 1, TEST_Y + 1), True)
-        # g.groups[0] += create_agent(TEST_X + 2, TEST_Y)
+        # g.groups[0] += create_grain(TEST_X + 2, TEST_Y)
         # self.assertEqual(apply_dead_rules(TEST_X, TEST_Y, TEST_X + 1, TEST_X - 1, TEST_Y - 1, TEST_Y + 1), False)
         pass
 
@@ -81,7 +81,7 @@ class GameOfLifeTestCase(TestCase):
         Create an agent and run it thorugh check_for_new_agent, which should return an empty list
         because there is only one agent in the enviornment.
         """
-        a = create_agent(TEST_X, TEST_Y)
+        a = create_game_cell(TEST_X, TEST_Y)
         g.gameoflife_env.place_member(a, xy=(TEST_X, TEST_Y))
         g.groups = []
         g.groups.append(Composite("black"))

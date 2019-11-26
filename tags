@@ -200,7 +200,7 @@ BLUE_PRE	indraV1/schelling/segregation.py	/^BLUE_PRE = vs.VectorSpace.Y_PRE$/;"	
 BLUE_SIN	models/fashion.py	/^BLUE_SIN = 0.0$/;"	v
 BLUE_SIN	models/tests/test_fashion.py	/^from models.fashion import BLUE_SIN, TSETTER_PRENM, BLUE_TSETTERS, RED_TSETTERS$/;"	i
 BLUE_TEAM	models/segregation.py	/^BLUE_TEAM = 0$/;"	v
-BLUE_TEAM	models/tests/test_segregation.py	/^from models.segregation import set_up, create_agent, RED_TEAM, BLUE_TEAM$/;"	i
+BLUE_TEAM	models/tests/test_segregation.py	/^from models.segregation import set_up, create_grain, RED_TEAM, BLUE_TEAM$/;"	i
 BLUE_TSETTERS	models/fashion.py	/^BLUE_TSETTERS = "Blue Trendsetters"$/;"	v
 BLUE_TSETTERS	models/tests/test_fashion.py	/^from models.fashion import BLUE_SIN, TSETTER_PRENM, BLUE_TSETTERS, RED_TSETTERS$/;"	i
 BLUE_VEC	models/fashion.py	/^BLUE_VEC = X_VEC$/;"	v
@@ -1246,7 +1246,7 @@ RED_PRE	indraV1/schelling/segregation.py	/^RED_PRE = vs.VectorSpace.X_PRE$/;"	v
 RED_SIN	models/fashion.py	/^RED_SIN = 1.0$/;"	v
 RED_SIN	models/tests/test_fashion.py	/^from models.fashion import BLUE_FOLLOWERS, RED_SIN, NEUTRAL, BIG_ENOUGH$/;"	i
 RED_TEAM	models/segregation.py	/^RED_TEAM = 1$/;"	v
-RED_TEAM	models/tests/test_segregation.py	/^from models.segregation import set_up, create_agent, RED_TEAM, BLUE_TEAM$/;"	i
+RED_TEAM	models/tests/test_segregation.py	/^from models.segregation import set_up, create_grain, RED_TEAM, BLUE_TEAM$/;"	i
 RED_TSETTERS	models/fashion.py	/^RED_TSETTERS = "Red Trendsetters"$/;"	v
 RED_TSETTERS	models/tests/test_fashion.py	/^from models.fashion import BLUE_SIN, TSETTER_PRENM, BLUE_TSETTERS, RED_TSETTERS$/;"	i
 RED_VEC	models/fashion.py	/^RED_VEC = Y_VEC$/;"	v
@@ -2474,11 +2474,11 @@ couple	indraV1/models/hiv.py	/^    def couple(self):$/;"	m	class:Person
 createFxNow	indraV1/mysite/static/admin/js/vendor/jquery/jquery.js	/^function createFxNow() {$/;"	f
 createOptions	indraV1/mysite/static/admin/js/vendor/jquery/jquery.js	/^function createOptions( options ) {$/;"	f
 createTween	indraV1/mysite/static/admin/js/vendor/jquery/jquery.js	/^function createTween( value, prop, animation ) {$/;"	f
-create_agent	models/basic.py	/^def create_agent(color, i):$/;"	f
-create_agent	models/sandpile.py	/^def create_agent(i):$/;"	f
-create_agent	models/segregation.py	/^def create_agent(i, mean_tol, dev, color):$/;"	f
-create_agent	models/tests/test_sandpile.py	/^from models.sandpile import set_up, create_agent, next_group, topple$/;"	i
-create_agent	models/tests/test_segregation.py	/^from models.segregation import set_up, create_agent, RED_TEAM, BLUE_TEAM$/;"	i
+create_grain	models/basic.py	/^def create_grain(color, i):$/;"	f
+create_grain	models/sandpile.py	/^def create_grain(i):$/;"	f
+create_grain	models/segregation.py	/^def create_grain(i, mean_tol, dev, color):$/;"	f
+create_grain	models/tests/test_sandpile.py	/^from models.sandpile import set_up, create_grain, next_group, topple$/;"	i
+create_grain	models/tests/test_segregation.py	/^from models.segregation import set_up, create_grain, RED_TEAM, BLUE_TEAM$/;"	i
 create_calcguys	indra/tests/test_composite.py	/^def create_calcguys():$/;"	f
 create_calcguys	indra/tests/test_env.py	/^from indra.tests.test_composite import create_calcguys, create_cambguys$/;"	i
 create_cambguys	indra/tests/test_composite.py	/^def create_cambguys():$/;"	f
@@ -4051,7 +4051,7 @@ new_name	indraV1/IndrasNet/migrations/0011_auto_20181013_0303.py	/^            n
 newt_action	indra/tests/test_agent.py	/^def newt_action(agent):$/;"	f
 newton	indra/interactive.py	/^newton = create_newton()$/;"	v
 next_group	models/sandpile.py	/^def next_group(curr_group_idx):$/;"	f
-next_group	models/tests/test_sandpile.py	/^from models.sandpile import set_up, create_agent, next_group, topple$/;"	i
+next_group	models/tests/test_sandpile.py	/^from models.sandpile import set_up, create_grain, next_group, topple$/;"	i
 node	build/lib/indra/agent_pop.py	/^import indra.node as node$/;"	i
 node	build/lib/indra/entity.py	/^import indra.node as node$/;"	i
 node	build/lib/indra/env.py	/^import indra.node as node$/;"	i
@@ -4783,8 +4783,8 @@ set_up	models/sandpile.py	/^def set_up():$/;"	f
 set_up	models/segregation.py	/^def set_up():$/;"	f
 set_up	models/tests/test_fashion.py	/^from models.fashion import set_up, DEBUG, DEBUG2, create_follower$/;"	i
 set_up	models/tests/test_forestfire.py	/^from models.forestfire import is_healthy, OF, set_up, STATE_TRANS$/;"	i
-set_up	models/tests/test_sandpile.py	/^from models.sandpile import set_up, create_agent, next_group, topple$/;"	i
-set_up	models/tests/test_segregation.py	/^from models.segregation import set_up, create_agent, RED_TEAM, BLUE_TEAM$/;"	i
+set_up	models/tests/test_sandpile.py	/^from models.sandpile import set_up, create_grain, next_group, topple$/;"	i
+set_up	models/tests/test_segregation.py	/^from models.segregation import set_up, create_grain, RED_TEAM, BLUE_TEAM$/;"	i
 set_up	models/tests/test_wolfsheep.py	/^from models.wolfsheep import create_sheep, create_wolf, set_up, wolf_action, sheep_action$/;"	i
 set_up	models/wolfsheep.py	/^def set_up():$/;"	f
 set_var_color	build/lib/indra/agent_pop.py	/^    def set_var_color(self, var, color):$/;"	m	class:AgentPop
@@ -5233,7 +5233,7 @@ todayMonth	indraV1/mysite/static/admin/js/calendar.js	/^            var todayMon
 todayYear	indraV1/mysite/static/admin/js/calendar.js	/^            var todayYear = today.getFullYear();$/;"	v
 today_link	indraV1/mysite/static/admin/js/admin/DateTimeShortcuts.js	/^            var today_link = document.createElement('a');$/;"	v
 topple	models/sandpile.py	/^def topple(sandpile, agent):$/;"	f
-topple	models/tests/test_sandpile.py	/^from models.sandpile import set_up, create_agent, next_group, topple$/;"	i
+topple	models/tests/test_sandpile.py	/^from models.sandpile import set_up, create_grain, next_group, topple$/;"	i
 torus	indraV1/models/markov_attempts/two_pop_markov_run.py	/^                 torus=False,)$/;"	v
 torus_adj	build/lib/indra/grid_env.py	/^    def torus_adj(self, coord, dim_len):$/;"	m	class:GridEnv
 torus_adj	indraV1/indra/grid_env.py	/^    def torus_adj(self, coord, dim_len):$/;"	m	class:GridEnv

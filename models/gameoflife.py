@@ -22,7 +22,7 @@ to_die = []
 DEBUG = False
 
 
-def create_agent(x, y):
+def create_game_cell(x, y):
     """
     Create an agent with the passed x, y value as its name.
     """
@@ -105,7 +105,7 @@ def gameoflife_action(gameoflife_env):
         if DEBUG:
             print("Agent at", agent_pos, "will come alive")
         if gameoflife_env.get_agent_at(agent_pos[0], agent_pos[1]) is None:
-            agent = create_agent(agent_pos[0], agent_pos[1])
+            agent = create_game_cell(agent_pos[0], agent_pos[1])
             groups[0] += agent
             gameoflife_env.place_member(agent, xy=(agent_pos[0], agent_pos[1]))
     for agent in to_die:
@@ -155,7 +155,7 @@ def populate_board_glider(width, height):
     agent_loc.append((center[0] + 1, center[1]))
     agent_loc.append((center[0], center[1] - 1))
     for loc in agent_loc:
-        agent = create_agent(loc[0], loc[1])
+        agent = create_game_cell(loc[0], loc[1])
         groups[0] += agent
         gameoflife_env.place_member(agent, xy=loc)
 
@@ -174,7 +174,7 @@ def populate_board_small_exploder(width, height):
     agent_loc.append((center[0] + 1, center[1] - 1))
     agent_loc.append((center[0], center[1] - 2))
     for loc in agent_loc:
-        agent = create_agent(loc[0], loc[1])
+        agent = create_game_cell(loc[0], loc[1])
         groups[0] += agent
         gameoflife_env.place_member(agent, xy=loc)
 
@@ -190,7 +190,7 @@ def populate_board_exploder(width, height):
         agent_loc.append((center[0] - 2, center[1] - i))
         agent_loc.append((center[0] + 2, center[1] - i))
     for loc in agent_loc:
-        agent = create_agent(loc[0], loc[1])
+        agent = create_game_cell(loc[0], loc[1])
         groups[0] += agent
         gameoflife_env.place_member(agent, xy=loc)
 
@@ -207,7 +207,7 @@ def populate_board_n_horizontal_row(width, height, n=10):
     for l in range(1, left):
         agent_loc.append((center[0] - l, center[1]))
     for loc in agent_loc:
-        agent = create_agent(loc[0], loc[1])
+        agent = create_game_cell(loc[0], loc[1])
         groups[0] += agent
         gameoflife_env.place_member(agent, xy=loc)
 
@@ -224,7 +224,7 @@ def populate_board_n_vertical_row(width, height, n=10):
     for b in range(1, bottom):
         agent_loc.append((center[0], center[1] - b))
     for loc in agent_loc:
-        agent = create_agent(loc[0], loc[1])
+        agent = create_game_cell(loc[0], loc[1])
         groups[0] += agent
         gameoflife_env.place_member(agent, xy=loc)
 
@@ -244,7 +244,7 @@ def populate_board_lightweight_spaceship(width, height):
     agent_loc.append((center[0] - 1, center[1] - 3))
     agent_loc.append((center[0] - 4, center[1] - 3))
     for loc in agent_loc:
-        agent = create_agent(loc[0], loc[1])
+        agent = create_game_cell(loc[0], loc[1])
         groups[0] += agent
         gameoflife_env.place_member(agent, xy=loc)
 
@@ -280,7 +280,7 @@ def populate_board_tumbler(width, height):
     agent_loc.append((center[0] + 3, center[1] - 5))
     agent_loc.append((center[0] + 2, center[1] - 5))
     for loc in agent_loc:
-        agent = create_agent(loc[0], loc[1])
+        agent = create_game_cell(loc[0], loc[1])
         groups[0] += agent
         gameoflife_env.place_member(agent, xy=loc)
 

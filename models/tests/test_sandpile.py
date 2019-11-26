@@ -1,8 +1,9 @@
-from unittest import TestCase, skip
+from unittest import TestCase
 
 import models.sandpile as sp
 from indra.composite import Composite
-from models.sandpile import set_up, create_agent, add_grain, topple, sandpile_action
+from models.sandpile import set_up, create_grain, add_grain, topple, \
+    sandpile_action
 
 TEST_X = 1
 TEST_Y = 1
@@ -28,7 +29,7 @@ class SandpileTestCase(TestCase):
         Creates an agent and checks that it has the correct name,
         which is its (x, y) corrdinates.
         """
-        agent = create_agent(TEST_X, TEST_Y)
+        agent = create_grain(TEST_X, TEST_Y)
         test_name = "(" + str(TEST_X) + "," + str(TEST_Y) + ")"
         self.assertEqual(agent.name, test_name)
 
@@ -37,7 +38,7 @@ class SandpileTestCase(TestCase):
         Creates an agent, assign it to Group0,
         and checks if add_grain changed the agent to Group1.
         """
-        a = create_agent(TEST_X, TEST_Y)
+        a = create_grain(TEST_X, TEST_Y)
         sp.groups = []
         sp.groups.append(Composite("Group" + str(0)))
         sp.groups.append(Composite("Group" + str(1)))
@@ -52,9 +53,9 @@ class SandpileTestCase(TestCase):
         which should topple and spill over to the two agents in Group0.
         Checks that the neighbors have grains added to them.
         """
-        a = create_agent(TEST_X, TEST_Y)
-        b = create_agent(TEST_X - 1, TEST_Y)
-        c = create_agent(TEST_X + 1, TEST_Y)
+        a = create_grain(TEST_X, TEST_Y)
+        b = create_grain(TEST_X - 1, TEST_Y)
+        c = create_grain(TEST_X + 1, TEST_Y)
         sp.groups = []
         sp.groups.append(Composite("Group" + str(0)))
         sp.groups.append(Composite("Group" + str(1)))
