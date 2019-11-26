@@ -29,28 +29,6 @@ MAX_BAD_CAR_LIFE = 4
 MIN_GOOD_CAR_LIFE = 3
 MAX_CAR_LIFE = 5
 
-testcase = {
-    '''
-    Dealer Number:{
-    Emoji:{
-    car life associated:
-    [Gaussian distribution around
-     the associated car life]
-    }
-    }
-    "Dealer1": {
-        "smiley": {
-            4.3: [3.9, 4.0, 4.3, 4.6, 4.7]
-        }
-    },
-    "Dealer3": {
-        "hesitate": {
-            1.0: [0.9, 0.3, 1.2, 1.3, 1.0]
-        }
-    }
-    '''
-}
-
 MATURE_BOUND = 100
 
 MEDIUM_CAR_LIFE = (MIN_CAR_LIFE + MAX_CAR_LIFE) // 2
@@ -89,18 +67,15 @@ def get_emoji_json(json_file, dealer_name):  # testcase needed!
     return selected_emoji
 
 
-def bought_info(buyer, dealer):  # testcase??
+def judge_dealer_credit(agent, dealer_name):
     '''
-    Debug messages to show dealer's informationsss
+    To be worked on.
+    Judge the dealer's credibility based on
+    emoji and car life received from the json file
+    If is not true, make mature buyer inmature
+    and learn another 50 datasets
     '''
-    msg = "My dealer is: " + dealer.name
-    msg += "\nReceived a car with a life of " + str(buyer["car_life"])
-    msg += "\nMy dealer " + dealer.name
-    msg += " has an average car life of " + str(dealer["avg_car_life_sold"])
-    msg += ". And he/she sold " + str(dealer["num_sales"]) + " cars."
-    msg += "\nMy dealer " + dealer.name
-    msg += " shows an emoji of " + buyer["interaction_res"]
-    return msg
+    pass
 
 
 def is_dealer(agent, dealer_grp):  # testcase done
@@ -242,7 +217,6 @@ def buy_from_dealer(agent, my_dealer):
     print("My emoji car association:", assoc)
     cal_avg_life(agent)
     update_dealer_sale(my_dealer, rec_carlife)
-    print(bought_info(agent, my_dealer))
 
 
 def buyer_action(agent):  # how to write this testcase
