@@ -67,6 +67,28 @@ dealer_grp = None
 car_market = None
 
 
+def get_car_life_json(json_file, dealer_name):  # testcase needed!
+    '''
+    get car life randomly from a json file
+    '''
+    emoji_dic = json_file[dealer_name]
+    selected_emoji = list(emoji_dic.keys())[0]
+    avg_life = emoji_dic[selected_emoji]
+    selected_avg_life = list(avg_life.keys())[0]
+    life_lst = avg_life[selected_avg_life]
+    selected_index = random.randint(0, len(life_lst) - 1)
+    return life_lst[selected_index]
+
+
+def get_emoji_json(json_file, dealer_name):  # testcase needed!
+    '''
+    get dealer's from a json file
+    '''
+    emoji_dic = json_file[dealer_name]
+    selected_emoji = list(emoji_dic.keys())[0]
+    return selected_emoji
+
+
 def bought_info(buyer, dealer):  # testcase??
     '''
     Debug messages to show dealer's informationsss
@@ -146,14 +168,6 @@ def get_dealer_emoji(dealer_characteristic):  # testcase done
         return POS_EMOJIS[random.randint(0, 3)]
     else:
         return NEG_EMOJIS[random.randint(0, 3)]
-
-
-def get_emoji_json(object):
-    '''
-    This function returns a emoji associated with the dealer
-    from json file. Currently using hardcode testcase to build code
-    '''
-    pass
 
 
 def update_dealer_sale(dealer, new_car_life):  # testcase done
