@@ -10,6 +10,7 @@ import Carousel from './Carousel';
 import sandpileImg from './images/Sandpile.jpg';
 import sandpile1Img from './images/sandpile_2.png';
 import mandelobrotImg from './images/mendelobrot_sq.jpg';
+import CreateModelButton from './CreateModelButton';
 import './styles.css';
 
 class Home extends Component {
@@ -107,6 +108,9 @@ class Home extends Component {
                 </OverlayTrigger>
               ))}
             </ListGroup>
+            <div className="mt-4">
+              <CreateModelButton />
+            </div>
           </div>
           <div className="col-6">
             <Carousel
