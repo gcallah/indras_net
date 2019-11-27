@@ -96,8 +96,8 @@ def rec_offer(agent, his_good, his_amt, counterparty):
     for my_good in agent["goods"]:
         if my_good != his_good and agent["goods"][my_good]["endow"] > 0:
             loss = -marginal_util(agent, my_good, -my_amt)
-            print("my:", my_good, "his:", his_good,
-                  "gain:", gain, "loss:", loss, agent["goods"][my_good])
+            env.user.tell("my good: " + my_good + " his good: " + his_good
+                          + ", I gain:" + str(gain) + " loss: " + str(loss))
             if gain > loss:
                 if rec_reply(counterparty, his_good, his_amt, my_good, my_amt):
                     return ACCEPT
@@ -124,7 +124,22 @@ def util_gain(agent):
 
 
 def marginal_util(agent, good, amt):
-    return 0
+    if good not in agent["goods"].keys():
+        curr_good = {"endow": 0, "util_func": gen_util_func, "incr": 0}
+    else:
+        curr_good = agent["goods"][good]
+    curr_amt = curr_good["endow"]
+    if amt < 0:
+        u1 = 1
+        u2 = 0
+    else:
+        u1 = 0
+        u2 = 1
+    util_1 = curr_good["util_func"](curr_amt + u1) + curr_good["incr"]
+    util_2 = curr_good["util_func"](curr_amt + u2 + amt) + curr_good["incr"]
+    avg_util = (util_1 + util_2) / 2
+    env.user.tell("util_1 = " + str(util_1) + ", util_2 = " + str(util_2))
+    return avg_util * amt
 
 
 def add_good(agent, good):
