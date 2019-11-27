@@ -27,7 +27,7 @@ from models.fashion import main as famain
 from models.fashion import set_up as faset_up
 from models.flocking import bird_action
 from models.flocking import create_bird
-from models.fmarket import create_market_maker
+from models.fmarket import create_market_maker, plot_asset_price
 from models.fmarket import create_trend_follower
 from models.fmarket import create_value_investor
 from models.fmarket import main as fmmain
@@ -145,4 +145,5 @@ creators_dict = {
 }
 
 aux_funcs_dict = {
+    "plot_asset_price": plot_asset_price,
 }
