@@ -1,6 +1,6 @@
 TESTDIR = tests
 PYLINT = flake8
-PYLINTFLAGS = --ignore=E741,W503 --exclude=interactive.py,__main__.py,scheduler.py
+PYLINTFLAGS = --exclude=old_edgebox.py
 PYTHONFILES = $(shell ls *.py)
 TEST_FILES = $(shell ls $(TESTDIR)/test_*.py)
 export user_type = test
@@ -11,15 +11,13 @@ prod: tests
 
 lint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
 
+tests: pytests lint
 
-tests: test_used_cars lint
+pytests: $(PYTHONFILES)
+	nosetests --exe --with-coverage --cover-package=capital
 
 %.pylint:
 	$(PYLINT) $(PYLINTFLAGS) $*.py
-
-test_used_cars:
-	$(PYLINT) $(PYLINTFLAGS) used_cars.py
-	nosetests tests.test_used_cars --nocapture
 
 nocrud:
 	-rm *~

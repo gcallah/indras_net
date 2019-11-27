@@ -23,7 +23,7 @@ def gen_util_func(qty):
     """
     A default util func: we can pass in others
     """
-    return 10 - .5 * qty
+    return 4 - qty
 
 
 class EdgeboxAgent(ga.GridAgent):

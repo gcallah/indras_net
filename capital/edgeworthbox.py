@@ -21,6 +21,8 @@ DEF_NUM_WAGENTS = 1
 DEF_NUM_CHEESE = 10
 DEF_NUM_WINE = 10
 
+DEF_MAX_UTIL = 4
+
 wine_group = None
 cheese_group = None
 env = None
@@ -29,16 +31,23 @@ ACCEPT = 1
 INADEQ = 0
 REJECT = -1
 
+answer_dict = {
+    1: " accept",
+    0: "'m indifferent about",
+    -1: " reject"
+}
+
 
 # take a goods dict to string
-def toString(goods):
-    string = ' ,'.join([str(goods[k]["endow"]) + " " + str(k)
+def goods_to_str(goods):
+    string = ', '.join([str(goods[k]["endow"]) + " " + str(k)
                        for k in goods.keys()])
     return string
 
 
 # convert integer value of ans to string
 def int_to_str(ans):
+    # return answer_dict[ans]
     str_ans = "reject"
     if ans == 1:
         str_ans = "accept"
@@ -48,7 +57,7 @@ def int_to_str(ans):
 
 
 def gen_util_func(qty):
-    return 10 - 0.5 * qty
+    return DEF_MAX_UTIL - qty
 
 
 def seek_a_trade(agent):
@@ -59,6 +68,8 @@ def seek_a_trade(agent):
         env.user.tell("I'm " + agent.name + " and I find "
                       + nearby_agent.name)
         # this_good is a dict
+        # better to just give each agent at least 0
+        # of every good to start
         goods = copy.deepcopy(agent["goods"])
         for this_good in goods:
             amt = 1
@@ -71,20 +82,26 @@ def seek_a_trade(agent):
                 amt += 1
 
     env.user.tell("I'm " + agent.name
-                  + ". I have " + toString(agent["goods"]))
+                  + ". I have " + goods_to_str(agent["goods"]))
 
     # return False means to move
     return False
 
 
 def rec_offer(agent, his_good, his_amt, counterparty):
+    """
+    Receive an offer: we don't need to ever change my_amt
+    in this function, because if the counter-party can't bid enough
+    for a single unit, no trade is possible.
+    """
     my_amt = 1
-    gain = marginal_util(agent, his_good, his_amt)
+    gain = utility_delta(agent, his_good, his_amt)
     for my_good in agent["goods"]:
         if my_good != his_good and agent["goods"][my_good]["endow"] > 0:
-            loss = -marginal_util(agent, my_good, -my_amt)
-            env.user.tell("my good: " + my_good + " his good: " + his_good
-                          + ", I gain:" + str(gain) + " loss: " + str(loss))
+            loss = -utility_delta(agent, my_good, -my_amt)
+            env.user.tell("my good: " + my_good + "; his good: " + his_good
+                          + ", I gain: " + str(gain) +
+                          " and lose: " + str(loss))
             if gain > loss:
                 if rec_reply(counterparty, his_good, his_amt, my_good, my_amt):
                     trade(agent, my_good, my_amt,
@@ -96,9 +113,11 @@ def rec_offer(agent, his_good, his_amt, counterparty):
 
 
 def rec_reply(agent, my_good, my_amt, his_good, his_amt):
-    gain = marginal_util(agent, his_good, his_amt)
-    loss = marginal_util(agent, my_good, -my_amt)
-    if gain > loss:
+    gain = utility_delta(agent, his_good, his_amt)
+    loss = utility_delta(agent, my_good, -my_amt)
+    print(agent.name, "receiving a reply: gain = ",
+          gain, "and loss =", loss)
+    if gain > abs(loss):
         return ACCEPT
     else:
         return INADEQ
@@ -111,23 +130,19 @@ def trade(agent, my_good, my_amt, counterparty, his_good, his_amt):
     adj_add_good(counterparty, my_good, my_amt)
 
 
-def marginal_util(agent, good, amt):
+def utility_delta(agent, good, change):
+    """
+    We are going to determine the utility of goods gained
+    (amt is positive) or lost (amt is negative).
+    """
     if good not in agent["goods"].keys():
         curr_good = {"endow": 0, "util_func": gen_util_func, "incr": 0}
     else:
         curr_good = agent["goods"][good]
     curr_amt = curr_good["endow"]
-    if amt < 0:
-        u1 = 1
-        u2 = 0
-    else:
-        u1 = 0
-        u2 = 1
-    util_1 = curr_good["util_func"](curr_amt + u1) + curr_good["incr"]
-    util_2 = curr_good["util_func"](curr_amt + u2 + amt) + curr_good["incr"]
-    avg_util = (util_1 + util_2) / 2
-    env.user.tell("util_1 = " + str(util_1) + ", util_2 = " + str(util_2))
-    return avg_util * amt
+    curr_util = curr_good["util_func"](curr_amt)
+    new_util = curr_good["util_func"](curr_amt + change)
+    return ((new_util + curr_util) / 2) * change
 
 
 def add_good(agent, good):
@@ -139,7 +154,7 @@ def add_good(agent, good):
 def adj_add_good(agent, good, amt):
     if good not in agent["goods"].keys():
         add_good(agent, good)
-    agent["util"] += marginal_util(agent, good, amt)
+    agent["util"] += utility_delta(agent, good, amt)
     agent["goods"][good]["endow"] += amt
 
 
