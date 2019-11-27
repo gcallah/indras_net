@@ -10,8 +10,8 @@ from random import choice
 
 from indra.agent import Agent, join, INF, is_composite, AgentEncoder
 
-from indra.registry import Registry
 from indra.registry import register
+from indra.utils import get_func_name
 
 DEBUG = False
 
@@ -78,6 +78,8 @@ class Composite(Agent):
         Here we restore a composite from a serialized object.
         """
         self.from_json(serial_obj)
+        # now look up member_creator func by name in the
+        # function dictionary
 
     def to_json(self):
         """
@@ -86,6 +88,7 @@ class Composite(Agent):
         rep = super().to_json()
         rep["type"] = self.type
         rep["members"] = self.members
+        rep["member_creator"] = get_func_name(self.member_creator)
         return rep
 
     def from_json(self, serial_obj):
@@ -97,19 +100,8 @@ class Composite(Agent):
                 self.members[nm] = Agent(name=nm, serial_obj=member)
             elif member["type"] == "composite":
                 self.members[nm] = Composite(name=nm, serial_obj=member)
-
-        # construct self.registry
-        self.registry = Registry()
-        for nm in self.members:
-            self.add_mbr_to_regis(self.members[nm])
-
-    def add_mbr_to_regis(self, member):
-        if member.type == "agent":
-            self.registry[member.name] = member
-        else:
-            self.registry[member.name] = member
-            for mbrnm in member.members:
-                self.add_mbr_to_regis(member.members[mbrnm])
+        # the following line restores the *name* of the creator func:
+        self.member_creator = serial_obj["member_creator"]
 
     def __repr__(self):
         return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)

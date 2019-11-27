@@ -6,6 +6,13 @@ import os
 from propargs.propargs import PropArgs
 
 
+def get_func_name(f):
+    if f is not None:
+        return f.__name__
+    else:
+        return ""
+
+
 def get_prop_path(model_name, model_dir="models"):
     ihome = os.getenv("INDRA_HOME", " ")
     return ihome + "/" + model_dir + "/props/" + model_name + ".props.json"
