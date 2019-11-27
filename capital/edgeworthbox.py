@@ -51,16 +51,15 @@ def gen_util_func(qty):
 
 
 def seek_a_trade(agent):
-
     nearby_agent = env.get_neighbor_of_groupX(agent,
                                               cheese_group,
                                               hood_size=4)
 
-    if "cheese" not in agent["goods"].keys():
-        add_good(agent, "cheese")
-
-    if "wine" not in agent["goods"].keys():
-        add_good(agent, "wine")
+    # if "cheese" not in agent["goods"].keys():
+    #     add_good(agent, "cheese")
+    #
+    # if "wine" not in agent["goods"].keys():
+    #     add_good(agent, "wine")
 
     if nearby_agent is not None:
         env.user.tell("I'm " + agent.name + " and I find "
@@ -69,7 +68,7 @@ def seek_a_trade(agent):
         for this_good in agent["goods"]:
             amt = 1
             while agent["goods"][this_good]["endow"] >= amt:
-                ans = rec_offer(agent, this_good, amt, nearby_agent)
+                ans = rec_offer(nearby_agent, this_good, amt, agent)
                 env.user.tell("I'm " + agent.name
                               + ", I " + int_to_str(ans) + " this offer")
                 if ans == ACCEPT or ans == REJECT:
@@ -95,20 +94,25 @@ def rec_offer(agent, his_good, his_amt, counterparty):
     my_amt = 1
     gain = marginal_util(agent, his_good, his_amt)
     for my_good in agent["goods"]:
-        print(my_good, his_good, agent["goods"][my_good])
         if my_good != his_good and agent["goods"][my_good]["endow"] > 0:
             loss = -marginal_util(agent, my_good, -my_amt)
+            print("my:", my_good, "his:", his_good,
+                  "gain:", gain, "loss:", loss, agent["goods"][my_good])
             if gain > loss:
-                # still need to have conterparty to rely
-                # if conterparty also accept then we trade
-                return ACCEPT
-            elif gain == loss:
-                return INADEQ
+                if rec_reply(counterparty, his_good, his_amt, my_good, my_amt):
+                    return ACCEPT
+                else:
+                    return INADEQ
     return REJECT
 
 
 def rec_reply(agent, my_good, my_amt, his_good, his_amt):
-    return
+    gain = marginal_util(agent, his_good, his_amt)
+    loss = marginal_util(agent, my_good, -my_amt)
+    if gain > loss:
+        return ACCEPT
+    else:
+        return INADEQ
 
 
 def trade(agent, my_good, my_amt, counterparty, his_good, his_amt):
@@ -120,7 +124,6 @@ def util_gain(agent):
 
 
 def marginal_util(agent, good, amt):
-
     return 0
 
 
