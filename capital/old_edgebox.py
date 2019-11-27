@@ -62,6 +62,7 @@ class EdgeboxAgent(ga.GridAgent):
         """
         Endow an agent with some amount of some good.
         """
+
         if good not in self.goods:
             self.__add_good(good)
 
