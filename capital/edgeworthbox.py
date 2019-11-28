@@ -10,7 +10,6 @@ from indra.display_methods import RED, BLUE
 from indra.env import Env
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import get_props
-import copy
 
 MODEL_NAME = "edgeworthbox"
 DEBUG = True  # turns debugging code on or off
@@ -47,13 +46,7 @@ def goods_to_str(goods):
 
 # convert integer value of ans to string
 def int_to_str(ans):
-    # return answer_dict[ans]
-    str_ans = "reject"
-    if ans == 1:
-        str_ans = "accept"
-    elif ans == 0:
-        str_ans = "'m indifferent about"
-    return str_ans
+    return answer_dict[ans]
 
 
 def gen_util_func(qty):
@@ -70,8 +63,7 @@ def seek_a_trade(agent):
         # this_good is a dict
         # better to just give each agent at least 0
         # of every good to start
-        goods = copy.deepcopy(agent["goods"])
-        for this_good in goods:
+        for this_good in agent["goods"]:
             amt = 1
             while agent["goods"][this_good]["endow"] >= amt:
                 ans = rec_offer(nearby_agent, this_good, amt, agent)
@@ -135,25 +127,14 @@ def utility_delta(agent, good, change):
     We are going to determine the utility of goods gained
     (amt is positive) or lost (amt is negative).
     """
-    if good not in agent["goods"].keys():
-        curr_good = {"endow": 0, "util_func": gen_util_func, "incr": 0}
-    else:
-        curr_good = agent["goods"][good]
+    curr_good = agent["goods"][good]
     curr_amt = curr_good["endow"]
     curr_util = curr_good["util_func"](curr_amt)
     new_util = curr_good["util_func"](curr_amt + change)
     return ((new_util + curr_util) / 2) * change
 
 
-def add_good(agent, good):
-    agent["goods"][good] = {"endow": 0,
-                            "util_func": gen_util_func,
-                            "incr": 0.0}
-
-
 def adj_add_good(agent, good, amt):
-    if good not in agent["goods"].keys():
-        add_good(agent, good)
     agent["util"] += utility_delta(agent, good, amt)
     agent["goods"][good]["endow"] += amt
 
@@ -166,7 +147,11 @@ def create_wagent(name, i, props=None):
     return Agent(name + str(i), action=seek_a_trade,
                  attrs={"goods": {"wine": {"endow": start_wine,
                                            "util_func": gen_util_func,
-                                           "incr": 0}},
+                                           "incr": 0},
+                                  "cheese": {"endow": 0,
+                                             "util_func": gen_util_func,
+                                             "incr": 0}
+                                  },
                         "util": 0,
                         "pre_trade_util": 0})
 
@@ -179,7 +164,10 @@ def create_cagent(name, i, props=None):
     return Agent(name + str(i), action=seek_a_trade,
                  attrs={"goods": {"cheese": {"endow": start_cheese,
                                              "util_func": gen_util_func,
-                                             "incr": 0}},
+                                             "incr": 0},
+                                  "wine": {"endow": 0,
+                                           "util_func": gen_util_func,
+                                           "incr": 0}},
                         "util": 0,
                         "pre_trade_util": 0})
 
