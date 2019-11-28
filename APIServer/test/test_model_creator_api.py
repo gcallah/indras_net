@@ -1,8 +1,8 @@
 """
+Tests for the model_creator_api module.
 """
 from unittest import TestCase, main
 
-# from APIServer.api_utils import ENDPOINT_DESCR
 from APIServer.model_creator_api import get_model_creator
 
 

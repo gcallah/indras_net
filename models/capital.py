@@ -19,20 +19,28 @@ DEBUG2 = False  # turns deeper debugging code on or off
 
 DEF_NUM_ENTR = 10
 DEF_NUM_RHOLDER = 10
-DEF_TOTAL_RESOURCES_ENTR_WANT = 2000
-DEF_TOTAL_RESOURCES_RHOLDER_HAVE = 3000
+DEF_TOTAL_RESOURCES_ENTR_WANT = 20000
+DEF_TOTAL_RESOURCES_RHOLDER_HAVE = 30000
 
-DEF_ENTR_CASH = 10000
+DEF_ENTR_CASH = 100000
 DEF_RHOLDER_CASH = 0
 DEF_K_PRICE = 1
 
 
 DEF_RESOURCE_HOLD = {"land": 1000, "truck": 500, "building": 200}
 DEF_CAP_WANTED = {"land": 1000, "truck": 500, "building": 200}
+DEF_EACH_CAP_PRICE = {"land": DEF_K_PRICE,
+                      "truck": DEF_K_PRICE,
+                      "building": DEF_K_PRICE}
 
 resource_holders = None  # list of resource holders
 entrepreneurs = None  # list of entrepreneur
 market = None
+
+
+def dict_to_string(dict):
+    return " ".join(good + " {0:.2f}".format(amt)
+                    for good, amt in dict.items())
 
 
 def entr_action(agent):
@@ -43,7 +51,7 @@ def entr_action(agent):
         if nearby_rholder is not None:
             # try to buy a resource if you have cash
             for good in agent["wants"].keys():
-                price = nearby_rholder["price"]
+                price = nearby_rholder["price"][good]
                 entr_max_buy = min(agent["cash"], agent["wants"][good] * price)
                 # if find the resources entr want
                 if good in nearby_rholder["resources"].keys():
@@ -57,9 +65,9 @@ def entr_action(agent):
                     nearby_rholder["resources"][good] -= trade_amt
                     nearby_rholder["cash"] += trade_amt * price
                     agent["cash"] -= trade_amt * price
-                    if agent["wants"][good] == 0:
+                    if agent["wants"][good] <= 0:
                         agent["wants"].pop(good)
-                    if nearby_rholder["resources"][good] == 0:
+                    if nearby_rholder["resources"][good] <= 0:
                         nearby_rholder["resources"].pop(good)
                     break
 
@@ -67,23 +75,27 @@ def entr_action(agent):
                 market.user.tell("I'm " + agent.name
                                  + " and I will buy resources from "
                                  + str(nearby_rholder) + ". I have "
-                                 + str(agent["cash"]) + " dollars left."
-                                 + " I want " + str(agent["wants"])
-                                 + ", and I have " + str(agent["have"]) + ".")
+                                 + "{0:.2f}".format(agent["cash"])
+                                 + " dollars left."
+                                 + " I want " + dict_to_string(agent["wants"])
+                                 + ", and I have "
+                                 + dict_to_string(agent["have"]) + ".")
             elif agent["wants"]:
                 market.user.tell("I'm " + agent.name
                                  + " and I will buy resources from "
                                  + str(nearby_rholder) + ". I have "
-                                 + str(agent["cash"]) + " dollars left."
-                                 + " I want " + str(agent["wants"])
+                                 + "{0:.2f}".format(agent["cash"])
+                                 + " dollars left."
+                                 + " I want " + dict_to_string(agent["wants"])
                                  + ", and I don't have any capital.")
             elif agent["have"]:
                 market.user.tell("I'm " + agent.name
                                  + " and I will buy resources from "
                                  + str(nearby_rholder) + ". I have "
-                                 + str(agent["cash"]) + " dollars left."
+                                 + "{0:.2f}".format(agent["cash"])
+                                 + " dollars left."
                                  + " I got all I need, and I have "
-                                 + str(agent["have"]) + "!")
+                                 + dict_to_string(agent["have"]) + "!")
             return False
             # move to find resource holder
 
@@ -138,20 +150,26 @@ def create_rholder(name, i, props=None):
     Create an agent.
     """
     k_price = DEF_K_PRICE
+    resources = copy.deepcopy(DEF_CAP_WANTED)
+    num_resources = len(resources)
+
+    price_list = copy.deepcopy(DEF_EACH_CAP_PRICE)
     if props is not None:
         k_price = props.get('cap_price',
                             DEF_K_PRICE)
+        for k in price_list.keys():
+            price_list[k] = float("{0:.2f}".format(float(k_price
+                                                   * random.uniform(0.5,
+                                                                    1.5))))
 
     starting_cash = DEF_RHOLDER_CASH
     if props is not None:
         starting_cash = props.get('rholder_starting_cash',
                                   DEF_RHOLDER_CASH)
 
-    resources = copy.deepcopy(DEF_CAP_WANTED)
     if props is not None:
         total_resources = props.get('rholder_starting_resource_total',
                                     DEF_TOTAL_RESOURCES_RHOLDER_HAVE)
-        num_resources = len(resources)
         for k in resources.keys():
             resources[k] = int((total_resources * 2)
                                * (random.random() / num_resources))
@@ -159,7 +177,7 @@ def create_rholder(name, i, props=None):
     return Agent(name + str(i), action=rholder_action,
                  attrs={"cash": starting_cash,
                         "resources": resources,
-                        "price": k_price})
+                        "price": price_list})
 
 
 def set_up(props=None):
@@ -171,7 +189,7 @@ def set_up(props=None):
     global entrepreneurs
     global market
 
-    pa = get_props(MODEL_NAME, props)
+    pa = get_props(MODEL_NAME, props, model_dir="capital")
     entrepreneurs = Composite("Entrepreneurs", {"color": BLUE},
                               member_creator=create_entr,
                               props=pa,
