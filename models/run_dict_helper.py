@@ -12,8 +12,8 @@ from models.bigbox import create_consumer
 from models.bigbox import main as bbmain
 from models.bigbox import set_up as bbset_up
 from models.bigbox import town_action, consumer_action, mp_action, bb_action
-from models.capital import create_entr
-from models.capital import create_rholder
+from capital.capital import create_entr
+from capital.capital import create_rholder
 from models.coop import create_babysitter
 from models.coop import create_central_bank
 from models.drunks import create_drinker
