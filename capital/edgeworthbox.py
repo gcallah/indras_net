@@ -17,14 +17,15 @@ DEBUG2 = False  # turns deeper debugging code on or off
 
 DEF_NUM_CAGENTS = 1
 DEF_NUM_WAGENTS = 1
-DEF_NUM_CHEESE = 10
-DEF_NUM_WINE = 10
+DEF_NUM_CHEESE = 4
+DEF_NUM_WINE = 4
 
-DEF_MAX_UTIL = 4
+DEF_MAX_UTIL = max(DEF_NUM_CHEESE, DEF_NUM_WINE)
 
 wine_group = None
 cheese_group = None
 env = None
+max_util = DEF_MAX_UTIL
 
 ACCEPT = 1
 INADEQ = 0
@@ -50,7 +51,7 @@ def int_to_str(ans):
 
 
 def gen_util_func(qty):
-    return DEF_MAX_UTIL - qty
+    return max_util - qty
 
 
 def seek_a_trade(agent):
@@ -194,15 +195,28 @@ def set_up(props=None):
               members=[cheese_group, wine_group],
               props=pa)
 
-    return (env, cheese_group, wine_group)
+    start_cheese = 0
+    start_wine = 0
+    if pa is not None:
+        start_cheese = pa.get('start_cheese',
+                              DEF_NUM_CHEESE)
+        start_wine = pa.get('start_wine',
+                            DEF_NUM_WINE)
+        max_util = max(start_cheese, start_wine)
+    else:
+        props_max_util = max(start_cheese, start_wine)
+        max_util = max(props_max_util, DEF_MAX_UTIL)
+
+    return (env, cheese_group, wine_group, max_util)
 
 
 def main():
     global wine_group
     global cheese_group
     global env
+    global max_util
 
-    (env, cheese_group, wine_group) = set_up()
+    (env, cheese_group, wine_group, max_util) = set_up()
 
     if DEBUG2:
         env.user.tell(env.__repr__())
