@@ -8,15 +8,18 @@ import capital.edgeworthbox as edge
 
 
 class EdgeworthboxTestCase(TestCase):
-    def setUp(self):
-        pass
+    def setUp(self, props=None):
+        self.pa = edge.get_props("edgeworthbox", props, model_dir="capital")
+        (edge.env, edge.cheese_group, edge.wine_group, edge.max_util) = edge.set_up()
+
 
     def tearDown(self):
-        pass
+        (edge.env, edge.cheese_group, edge.wine_group, edge.max_util) = (None, None, None, None)
 
     def test_gen_util_func(self):
         util = edge.gen_util_func(0)
         self.assertEqual(util, edge.DEF_MAX_UTIL)
+
 
     def test_trade(self):
         agent1 = edge.create_wagent('Wine holders', 0)
@@ -27,12 +30,16 @@ class EdgeworthboxTestCase(TestCase):
 
 
     def test_rec_offer(self):
-        pass
+        agent1 = edge.create_wagent('Wine holders', 0)
+        agent2 = edge.create_cagent('Cheese holders', 0)
+        ans = edge.rec_offer(agent1, "cheese", 1, agent2)
+        self.assertEqual(agent1["goods"]["cheese"]["endow"], 1)
+        self.assertEqual(agent2["goods"]["wine"]["endow"], 1)
 
 
     def test_utility_delta(self):
         agent = edge.create_cagent('Cheese holders', 0)
-        test_case = 4
+        test_case = edge.DEF_NUM_CHEESE
         agent["goods"]["cheese"]["endow"] = test_case
         change = edge.utility_delta(agent, "cheese", 1)
         check = (edge.DEF_MAX_UTIL - test_case + edge.DEF_MAX_UTIL - (test_case + 1)) / 2
@@ -40,7 +47,9 @@ class EdgeworthboxTestCase(TestCase):
 
 
     def test_adj_add_good(self):
-        pass
+        agent = edge.create_cagent('Cheese holders', 0)
+        edge.adj_add_good(agent, "cheese", -edge.DEF_NUM_CHEESE)
+        self.assertEqual(agent["goods"]["cheese"]["endow"], 0)
 
 
     def test_create_wagent(self):
