@@ -19,7 +19,11 @@ class EdgeworthboxTestCase(TestCase):
         self.assertEqual(util, edge.DEF_MAX_UTIL)
 
     def test_trade(self):
-        pass
+        agent1 = edge.create_wagent('Wine holders', 0)
+        agent2 = edge.create_cagent('Cheese holders', 0)
+        edge.trade(agent1, "wine", edge.DEF_NUM_WINE, agent2, "cheese", edge.DEF_NUM_CHEESE)
+        self.assertEqual(agent1["goods"]["wine"]["endow"], 0)
+        self.assertEqual(agent2["goods"]["cheese"]["endow"], 0)
 
 
     def test_rec_offer(self):
