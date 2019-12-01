@@ -1,5 +1,5 @@
 """
-A basic model.
+A edgeworthbox model.
 Places two groups of agents in the enviornment randomly
 and moves them around randomly.
 """

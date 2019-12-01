@@ -1,5 +1,5 @@
 """
-This is the test suite for drunks.py.
+This is the test suite for edgeworthbox.py.
 """
 
 from unittest import TestCase, main
