@@ -14,6 +14,7 @@ MODEL_NAME = "flocking"
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
+COMP_BIRD_NAME = "Birds"
 DEF_NUM_BIRDS = 2
 DEF_DESIRED_DISTANCE = 2
 ACCEPTABLE_DEV = .05
@@ -90,7 +91,7 @@ def set_up(props=None):
     """
     pa = get_props(MODEL_NAME, props)
 
-    flock = Composite("Birds", {"color": BLUE, "marker": TREE},
+    flock = Composite(COMP_BIRD_NAME, {"color": BLUE, "marker": TREE},
                       member_creator=create_bird,
                       num_members=pa.get('num_birds', DEF_NUM_BIRDS))
 
