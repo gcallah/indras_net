@@ -38,5 +38,7 @@ To test the APIServer with the front end locally:
     - `cd` into [APIServer](APIServer) and run `./api.sh` to start the server.
 - Front end:
     - Run `make setup_react` to install all modules listed as dependencies.
-    - Find and replace the `https://indrasnet.pythonanywhere.com/` under `webapp/src/components/` to your server's address (such as `http://127.0.0.1:8000`)
+    - Within each file in `webapp/src/components/`, find and replace
+      `https://indrasnet.pythonanywhere.com/` with your server's address (which
+      should be `http://127.0.0.1:8000` if you ran `api.sh` above).
     - `cd` into [webapp](webapp) and run `npm run start`.
