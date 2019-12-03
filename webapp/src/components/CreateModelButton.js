@@ -4,7 +4,7 @@ import { Button } from 'react-bootstrap';
 
 const CreateModelButton = () => (
   <Router>
-    <Link to="/">
+    <Link to="modelcreator">
       <Button variant="outline-primary">Create a new model</Button>
     </Link>
   </Router>
