@@ -33,9 +33,12 @@ Optionally, you can first `cd` into [APIServer](APIServer), [indra](indra),
 the tests for that directory.
 
 To test the APIServer with the front end locally:
-- Front end:
-    - run `make setup_react` to install all modules listed as dependencies.
-    - Find and replace the `https://indrasnet.pythonanywhere.com/` under `webapp/src/components/` to your server's address (such as `http://127.0.0.1:8000`)
-    - `cd` into `webapp` and run `npm run start` 
+
 - Back end:
-    - `cd` into [APIServer](APIServer), then run `./api.sh` to start your server
+    - `cd` into [APIServer](APIServer) and run `./api.sh` to start the server.
+- Front end:
+    - Run `make setup_react` to install all modules listed as dependencies.
+    - Within each file in `webapp/src/components/`, find and replace
+      `https://indrasnet.pythonanywhere.com/` with your server's address (which
+      should be `http://127.0.0.1:8000` if you ran `api.sh` above).
+    - `cd` into [webapp](webapp) and run `npm run start`.

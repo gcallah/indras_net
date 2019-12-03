@@ -8,6 +8,7 @@ import ModelDetail from './components/ModelDetail';
 import ActionMenu from './components/ActionMenu';
 import NotFoundPage from './components/NotFoundPage';
 import ErrorCatching from './components/ErrorCatching';
+import ModelBuilder from './components/ModelBuilder';
 
 const Wrapper = styled('div')`
   background: ${(props) => props.theme.background};
@@ -31,6 +32,7 @@ function App() {
             <Route exact path="/models/menu/:id" component={ActionMenu} />
             <Route exact path="/errorCatching" component={ErrorCatching} />
             <Route component={NotFoundPage} />
+            <Route exact path="/modelcreator" component={ModelBuilder} />
           </Switch>
         </Layout>
       </HashRouter>
