@@ -205,7 +205,8 @@ def set_up(props=None):
                    census=coop_report,
                    props=pa,
                    pop_hist_setup=initial_exchanges,
-                   pop_hist_func=record_exchanges)
+                   pop_hist_func=record_exchanges,
+                   attrs={"show_special_points": True})
     return (coop_env, coop_members, central_bank)
 
 
