@@ -28,7 +28,8 @@ NUM_OF_GROUPS = 4
 
 BABYSIT = "BABYSITTING"
 GO_OUT = "GOING_OUT"
-
+CB_intervention_points = []
+# num_of_rounds = 0
 
 coop_members = None
 coop_env = None
@@ -147,12 +148,17 @@ def central_bank_action(agent):
     Enough is a parameter.
     """
     global coop_members
+    global num_of_rounds
+    # num_of_rounds += 1
+    # print("num_of_rounds: ", str(num_of_rounds))
     unemployment_rates = last_period_unemployed / len(coop_members) * 100
     unemployment_threshold = agent["percent_change"]
-    if unemployment_rates <= unemployment_threshold:
-        print("Unemployment has down to ", str(unemployment_rates),
-              "less than default value " + str(unemployment_threshold),
+    if unemployment_rates >= unemployment_threshold:
+        print("Unemployment has up to ", str(unemployment_rates),
+              "more than default value " + str(unemployment_threshold),
               " CB Intervened")
+        CB_intervention_points.append(last_period_exchanges)
+        print(CB_intervention_points)
         distribute_coupons(agent)
 
 
@@ -214,6 +220,7 @@ def main():
     global coop_env
     global coop_members
     global central_bank
+    # global num_of_rounds
 
     (coop_env, coop_members, central_bank) = set_up()
 
