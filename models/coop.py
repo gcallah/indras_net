@@ -29,7 +29,7 @@ NUM_OF_GROUPS = 4
 BABYSIT = "BABYSITTING"
 GO_OUT = "GOING_OUT"
 CB_intervention_points = []
-num_of_rounds = 0
+num_of_rounds = 1
 
 coop_members = None
 coop_env = None

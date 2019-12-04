@@ -265,8 +265,8 @@ class LineGraph():
             Shows legend.
             """
             if "show_special_points" in attrs:
-                cb_intervention_points = attrs["show_special_points"]
-                for point in cb_intervention_points:
+                special_points = attrs["show_special_points"]
+                for point in special_points:
                     plt.plot(point[0], point[1], 'ro')
             if "show_xy_labels" not in attrs:
                 ax.set_xlabel('')
