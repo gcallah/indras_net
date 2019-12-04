@@ -29,7 +29,7 @@ NUM_OF_GROUPS = 4
 BABYSIT = "BABYSITTING"
 GO_OUT = "GOING_OUT"
 CB_intervention_points = []
-# num_of_rounds = 0
+num_of_rounds = 0
 
 coop_members = None
 coop_env = None
@@ -149,7 +149,7 @@ def central_bank_action(agent):
     """
     global coop_members
     global num_of_rounds
-    # num_of_rounds += 1
+    num_of_rounds += 1
     # print("num_of_rounds: ", str(num_of_rounds))
     unemployment_rates = last_period_unemployed / len(coop_members) * 100
     unemployment_threshold = agent["percent_change"]
@@ -220,7 +220,7 @@ def main():
     global coop_env
     global coop_members
     global central_bank
-    # global num_of_rounds
+    global num_of_rounds
 
     (coop_env, coop_members, central_bank) = set_up()
 
