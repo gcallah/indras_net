@@ -120,7 +120,7 @@ def get_dealer_characteristic():  # testcase done
     return CHARACTERISTIC[random.randint(0, 1)]
 
 
-def set_emoji_indicator(buyer):  # testcase done
+def set_emoji_indicator(buyer):
     '''
     when a buyer becomes mature
     he/she can judge based on their
@@ -164,7 +164,14 @@ def is_mature(buyer):  # testcase done
     check if buyer has enough experience
     to make its own decision
     '''
-    return MATURE_BOUND <= len(buyer["dealer_hist"])
+    if not buyer["can_mature"]:
+        if MATURE_BOUND <= len(buyer["dealer_hist"]):
+            buyer["can_mature"] = True
+            return True
+        else:
+            return False
+    else:
+        return True
 
 
 def is_credible(dealer, buyer):  # testcase done
@@ -277,7 +284,7 @@ def create_buyer(name, i, props=None):  # testcase done
                         "emoji_carlife_assoc": {},
                         "emoji_life_avg": {},
                         "emoji_indicator": {},
-                        "want_to_return": False
+                        "can_mature": False
                         })
 
 
