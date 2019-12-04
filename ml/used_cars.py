@@ -67,7 +67,7 @@ def get_emoji_json(json_file, dealer_name):  # testcase needed!
     return selected_emoji
 
 
-def map_json_to_attributes(json_file, dealer_name): # testcase needed!
+def map_json_to_attributes(json_file, dealer_name):
     '''
     map every information from json file to a dealer's
     existing attributes
