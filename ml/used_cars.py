@@ -184,7 +184,12 @@ def is_credible(dealer, buyer):  # testcase done
         # judge base on buyer's own past experience
         received_emoji = dealer["emoji_used"]
         past_exp = buyer["emoji_indicator"]
-        return past_exp[received_emoji] == "good"
+        judgement = past_exp[received_emoji]
+        # if buyer's judgement is not good
+        # make him immature and learn more data
+        if judgement != dealer["dealer_characteristic"]:
+            buyer["can_mature"] = False
+        return judgement == "good"
     # immature buyers are gullible!
     return True
 
