@@ -67,15 +67,25 @@ def get_emoji_json(json_file, dealer_name):  # testcase needed!
     return selected_emoji
 
 
-def judge_dealer_credit(agent, dealer_name):
+def map_json_to_attributes(json_file, dealer_name): # testcase needed!
     '''
-    To be worked on.
-    Judge the dealer's credibility based on
-    emoji and car life received from the json file
-    If is not true, make mature buyer inmature
-    and learn another 50 datasets
+    map every information from json file to a dealer's
+    existing attributes
     '''
-    pass
+    emoji_dic = json_file[dealer_name]
+    selected_emoji = list(emoji_dic.keys())[0]
+    # need to be verified here: Is dealer_name an agent
+    if selected_emoji in POS_EMOJIS:
+        dealer_name["dealer_characteristic"] = "good"
+    else:
+        dealer_name["dealer_characteristic"] = "bad"
+    dealer_name["emoji_used"] = selected_emoji
+    avg_life = emoji_dic[selected_emoji]
+    selected_avg_life = list(avg_life.keys())[0]
+    # need to be verified
+    dealer_name["avg_car_life_sold"] = selected_avg_life
+    life_lst = avg_life[selected_avg_life]
+    dealer_name["num_sales"] = len(life_lst)
 
 
 def is_dealer(agent, dealer_grp):  # testcase done
