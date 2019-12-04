@@ -213,7 +213,8 @@ def set_up(props=None):
                    props=pa,
                    pop_hist_setup=initial_exchanges,
                    pop_hist_func=record_exchanges,
-                   attrs={"show_special_points": CB_intervention_points})
+                   attrs={"show_special_points": CB_intervention_points,
+                          "special_points_name": "CB intervention points"})
     return (coop_env, coop_members, central_bank)
 
 
