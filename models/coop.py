@@ -149,6 +149,7 @@ def central_bank_action(agent):
     """
     global coop_members
     global num_of_rounds
+    global CB_intervention_points
     num_of_rounds += 1
     # print("num_of_rounds: ", str(num_of_rounds))
     unemployment_rates = last_period_unemployed / len(coop_members) * 100
@@ -157,7 +158,7 @@ def central_bank_action(agent):
         print("Unemployment has up to ", str(unemployment_rates),
               "more than default value " + str(unemployment_threshold),
               " CB Intervened")
-        CB_intervention_points.append(last_period_exchanges)
+        CB_intervention_points.append([num_of_rounds, last_period_exchanges])
         print(CB_intervention_points)
         distribute_coupons(agent)
 
@@ -212,7 +213,7 @@ def set_up(props=None):
                    props=pa,
                    pop_hist_setup=initial_exchanges,
                    pop_hist_func=record_exchanges,
-                   attrs={"show_special_points": True})
+                   attrs={"show_special_points": CB_intervention_points})
     return (coop_env, coop_members, central_bank)
 
 
@@ -221,6 +222,7 @@ def main():
     global coop_members
     global central_bank
     global num_of_rounds
+    global CB_intervention_points
 
     (coop_env, coop_members, central_bank) = set_up()
 

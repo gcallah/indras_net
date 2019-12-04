@@ -264,8 +264,6 @@ class LineGraph():
             Legend is located on top left.
             Shows legend.
             """
-            # if "show_special_points" in attrs:
-            #     plt.plot(5, 5, 'ro')
             if "show_xy_labels" not in attrs:
                 ax.set_xlabel('')
                 ax.set_ylabel('')
