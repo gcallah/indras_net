@@ -149,7 +149,10 @@ def central_bank_action(agent):
     global coop_members
     unemployment_rates = last_period_unemployed / len(coop_members) * 100
     unemployment_threshold = agent["percent_change"]
-    if unemployment_rates >= unemployment_threshold:
+    if unemployment_rates <= unemployment_threshold:
+        print("Unemployment has down to ", str(unemployment_rates),
+              "less than default value " + str(unemployment_threshold),
+              " CB Intervened")
         distribute_coupons(agent)
 
 
