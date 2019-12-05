@@ -12,68 +12,56 @@ from indra.registry import registry
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import get_props
 
-# import capital.edgeworthbox as edge
+import edgeworthbox as edge
 
-MODEL_NAME = "basic"
+MODEL_NAME = "trade"
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
-DEF_NUM_BLUE = 10
+DEF_NUM_CAGENTS = 1
+DEF_NUM_WAGENTS = 1
+DEF_NUM_CHEESE = 4
+DEF_NUM_WINE = 4
 
+DEF_MAX_UTIL = max(DEF_NUM_CHEESE, DEF_NUM_WINE)
 
-DEF_NUM_RED = 10
-
-red_group = None
-blue_group = None
+wine_group = None
+cheese_group = None
 env = None
+max_util = DEF_MAX_UTIL
 
 
-def agent_action(agent):
-    print("I'm " + agent.name + " and I'm acting.")
-    # return False means to move
-    return False
+def trade(agent):
+    pass
 
 
-def create_agent(name, i, props=None):
-    """
-    Create an agent.
-    """
-    return Agent(name + str(i), action=agent_action)
+def create_wagent(name, i, props=None):
+    return edge.create_wagent(name, i, props=None)
+
+
+def create_cagent(name, i, props=None):
+    return edge.create_cagent(name, i, props=None)
 
 
 def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    pa = get_props(MODEL_NAME, props)
-    blue_group = Composite("Blues", {"color": BLUE},
-                           member_creator=create_agent,
-                           num_members=pa.get('num_blue', DEF_NUM_BLUE))
-    red_group = Composite("Reds", {"color": RED},
-                          member_creator=create_agent,
-                          num_members=pa.get('num_red', DEF_NUM_RED))
-
-    env = Env("env",
-              height=pa.get('grid_height', DEF_HEIGHT),
-              width=pa.get('grid_width', DEF_WIDTH),
-              members=[blue_group, red_group],
-              props=pa)
-
-    return (env, blue_group, red_group)
+    return edge.set_up(props=None)
 
 
 def main():
-    global red_group
-    global blue_group
+    global wine_group
+    global cheese_group
     global env
+    global max_util
 
-    (env, blue_group, red_group) = set_up()
+    (env, cheese_group, wine_group, max_util) = set_up()
 
     if DEBUG2:
-        print(env.__repr__())
+        env.user.tell(env.__repr__())
 
     env()
-    print(registry)
     return 0
 
 
