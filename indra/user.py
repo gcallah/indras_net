@@ -23,15 +23,15 @@ menu_dir = os.getenv("INDRA_HOME", "/home/indrasnet/indras_net") + "/indra"
 menu_file = "menu.json"
 menu_src = menu_dir + "/" + menu_file
 
-glob_user = None
+the_user = None  # this is a singleton, so global should be ok
 
 
 def user_tell(msg):
-    return glob_user.tell(msg)
+    return the_user.tell(msg)
 
 
 def user_debug(msg):
-    return glob_user.debug(msg)
+    return the_user.debug(msg)
 
 
 def not_impl(user):
@@ -110,8 +110,8 @@ class User(Agent):
         self.user_msgs = ''
         self.debug_msg = ''
         self.error_message = {}
-        global glob_user
-        glob_user = self
+        global the_user
+        the_user = self
 
     def to_json(self):
         return {"user_msgs": self.user_msgs,

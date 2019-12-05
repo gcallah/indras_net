@@ -4,13 +4,13 @@ Places two groups of agents in the enviornment randomly
 and moves them around randomly.
 """
 
-from indra.agent import Agent
-from indra.composite import Composite
-from indra.display_methods import RED, BLUE
-from indra.env import Env
-from indra.registry import registry
-from indra.space import DEF_HEIGHT, DEF_WIDTH
-from indra.utils import get_props
+# from indra.agent import Agent
+# from indra.composite import Composite
+# from indra.display_methods import RED, BLUE
+# from indra.env import Env
+# from indra.registry import registry
+# from indra.space import DEF_HEIGHT, DEF_WIDTH
+# from indra.utils import get_props
 
 import edgeworthbox as edge
 

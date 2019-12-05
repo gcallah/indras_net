@@ -11,7 +11,7 @@ from random import randint
 
 from indra.agent import is_composite, AgentEncoder
 from indra.composite import Composite
-from indra.registry import register
+from indra.registry import register, get_registration
 from indra.user import user_debug
 
 DEF_WIDTH = 10
@@ -476,9 +476,16 @@ class Space(Composite):
         """
         If the agent has any neighbors in group X, return the first one
         encountered.
+        We may get the groupX object itself, or we may get passed
+        its name.
         """
         hood = self.get_square_hood(agent, save_neighbors=save_neighbors,
                                     hood_size=hood_size)
+        if isinstance(group, str):
+            # lookup group by name
+            group = get_registration(group)
+            if group is None:
+                return None
         for agent_name in hood:
             if group.ismember(agent_name):
                 return group[agent_name]

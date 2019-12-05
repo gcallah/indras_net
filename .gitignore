@@ -44,6 +44,7 @@ indras_net.egg-info/*
 /indra2/.idea/vcs.xml
 /indra2/.idea/workspace.xml
 /models/.coverage
+/capital/.coverage
 .ds_store
 !/APIServer/data/*.json
 !/webapp/*json
