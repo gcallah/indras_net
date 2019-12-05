@@ -10,7 +10,7 @@ from indra.display_methods import RED, BLUE
 from indra.env import Env
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import get_props
-from trade_utils import seek_a_trade, gen_util_func
+from trade_utils import seek_a_trade, gen_util_func, max_util  # noqa F401
 import trade_utils as tu
 
 MODEL_NAME = "edgeworthbox"
@@ -27,7 +27,6 @@ DEF_MAX_UTIL = max(DEF_NUM_CHEESE, DEF_NUM_WINE)
 wine_group = None
 cheese_group = None
 market = None
-tu.max_util = DEF_MAX_UTIL
 
 
 def create_wagent(name, i, props=None):
@@ -71,6 +70,7 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
+    global max_util
     pa = get_props(MODEL_NAME, props, model_dir="capital")
     cheese_group = Composite("Cheese holders", {"color": BLUE},
                              member_creator=create_cagent,
@@ -97,20 +97,21 @@ def set_up(props=None):
                               DEF_NUM_CHEESE)
         start_wine = pa.get('start_wine',
                             DEF_NUM_WINE)
-        tu.max_util = max(start_cheese, start_wine)
+        max_util = max(start_cheese, start_wine)
     else:
         props_max_util = max(start_cheese, start_wine)
-        tu.max_util = max(props_max_util, DEF_MAX_UTIL)
+        max_util = max(props_max_util, DEF_MAX_UTIL)
 
-    return (market, cheese_group, wine_group, tu.max_util)
+    return (market, cheese_group, wine_group, max_util)
 
 
 def main():
     global wine_group
     global cheese_group
     global market
+    global max_util
 
-    (market, cheese_group, wine_group, tu.max_util) = set_up()
+    (market, cheese_group, wine_group, max_util) = set_up()
 
     if DEBUG2:
         market.user.tell(market.__repr__())

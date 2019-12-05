@@ -14,10 +14,10 @@ answer_dict = {
     -1: "I reject"
 }
 
-MAX_UTIL = 20  # this should be set by the models that use this module
+DEF_MAX_UTIL = 20  # this should be set by the models that use this module
 
 env = None
-max_util = MAX_UTIL
+max_util = DEF_MAX_UTIL
 
 
 # take a goods dict to string
