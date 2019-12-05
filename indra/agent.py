@@ -11,6 +11,7 @@ from random import random
 import numpy as np
 
 from indra.registry import register, get_registration
+from indra.utils import get_func_name
 
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
@@ -156,7 +157,7 @@ class Agent(object):
             self.action_key = None
             self.action = action
             if action is not None:
-                self.action_key = action.__name__
+                self.action_key = get_func_name(action)
             self.duration = duration
             self.attrs = OrderedDict()
             self.neighbors = None

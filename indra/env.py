@@ -15,8 +15,8 @@ from indra.registry import register, get_registration
 from indra.space import Space
 from indra.user import TEST, TestUser, USER_EXIT, APIUser
 from indra.user import TermUser, TERMINAL, API
-
 # from indra.display_methods import CIRCLE
+from indra.utils import get_func_name
 
 DEBUG = False
 DEBUG2 = False
@@ -177,8 +177,8 @@ class Env(Space):
         rep["pop_hist"] = self.pop_hist.to_json()
         rep["womb"] = self.womb
         rep["switches"] = self.switches
-        rep["census_func"] = self.census_func.__name__
-        rep["data_func"] = self.line_data_func.__name__
+        rep["census_func"] = get_func_name(self.census_func)
+        rep["data_func"] = get_func_name(self.line_data_func)
         return rep
 
     def __repr__(self):

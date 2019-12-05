@@ -67,15 +67,25 @@ def get_emoji_json(json_file, dealer_name):  # testcase needed!
     return selected_emoji
 
 
-def judge_dealer_credit(agent, dealer_name):
+def map_json_to_attributes(json_file, dealer_name):
     '''
-    To be worked on.
-    Judge the dealer's credibility based on
-    emoji and car life received from the json file
-    If is not true, make mature buyer inmature
-    and learn another 50 datasets
+    map every information from json file to a dealer's
+    existing attributes
     '''
-    pass
+    emoji_dic = json_file[dealer_name]
+    selected_emoji = list(emoji_dic.keys())[0]
+    # need to be verified here: Is dealer_name an agent
+    if selected_emoji in POS_EMOJIS:
+        dealer_name["dealer_characteristic"] = "good"
+    else:
+        dealer_name["dealer_characteristic"] = "bad"
+    dealer_name["emoji_used"] = selected_emoji
+    avg_life = emoji_dic[selected_emoji]
+    selected_avg_life = list(avg_life.keys())[0]
+    # need to be verified
+    dealer_name["avg_car_life_sold"] = selected_avg_life
+    life_lst = avg_life[selected_avg_life]
+    dealer_name["num_sales"] = len(life_lst)
 
 
 def is_dealer(agent, dealer_grp):  # testcase done
@@ -120,7 +130,7 @@ def get_dealer_characteristic():  # testcase done
     return CHARACTERISTIC[random.randint(0, 1)]
 
 
-def set_emoji_indicator(buyer):  # testcase done
+def set_emoji_indicator(buyer):
     '''
     when a buyer becomes mature
     he/she can judge based on their
@@ -164,7 +174,14 @@ def is_mature(buyer):  # testcase done
     check if buyer has enough experience
     to make its own decision
     '''
-    return MATURE_BOUND <= len(buyer["dealer_hist"])
+    if not buyer["can_mature"]:
+        if MATURE_BOUND <= len(buyer["dealer_hist"]):
+            buyer["can_mature"] = True
+            return True
+        else:
+            return False
+    else:
+        return True
 
 
 def is_credible(dealer, buyer):  # testcase done
@@ -177,7 +194,12 @@ def is_credible(dealer, buyer):  # testcase done
         # judge base on buyer's own past experience
         received_emoji = dealer["emoji_used"]
         past_exp = buyer["emoji_indicator"]
-        return past_exp[received_emoji] == "good"
+        judgement = past_exp[received_emoji]
+        # if buyer's judgement is not good
+        # make him immature and learn more data
+        if judgement != dealer["dealer_characteristic"]:
+            buyer["can_mature"] = False
+        return judgement == "good"
     # immature buyers are gullible!
     return True
 
@@ -277,7 +299,7 @@ def create_buyer(name, i, props=None):  # testcase done
                         "emoji_carlife_assoc": {},
                         "emoji_life_avg": {},
                         "emoji_indicator": {},
-                        "want_to_return": False
+                        "can_mature": False
                         })
 
 
