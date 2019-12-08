@@ -7,7 +7,7 @@ from unittest import TestCase, main
 import capital.trade as td
 
 
-class tdworthboxTestCase(TestCase):
+class tradeTestCase(TestCase):
     def setUp(self, props=None):
         pass
 
