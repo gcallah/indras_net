@@ -60,7 +60,7 @@ def create_trader(name, i, props=None):
                                   },
                         "util": 0,
                         "pre_trade_util": 0,
-                        "trades_with": "Cheese holders"})
+                        "trades_with": "trader"})
 
 
 def set_up(props=None):
