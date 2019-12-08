@@ -12,20 +12,21 @@ import RunModelButton from './RunModelButton';
 import BackHomeButton from './BackHomeButton';
 import './styles.css';
 
-
 const POP = 2;
 const SCATTER = 3;
 const DATA = 4;
 const SOURCE = 5;
 const API_SERVER = 'https://indrasnet.pythonanywhere.com/models/menu/';
+/*
 const GRAPH_DICT = {
   Basic: 'scatter',
   Bacteria: 'scatter',
-  'Adam Smith\'s Fashion Model': 'scatter',
-  'Schelling\'s Segregation Model': 'scatter',
+  "Adam Smith's Fashion Model": 'scatter',
+  "Schelling's Segregation Model": 'scatter',
   'Predator-Prey Model': 'scatter',
   'Financial Market': 'scatter',
 };
+*/
 
 class ActionMenu extends Component {
   constructor(props) {
@@ -58,7 +59,8 @@ class ActionMenu extends Component {
       envFile: JSON.parse(localStorage.getItem('envFile')),
       msg: JSON.parse(localStorage.getItem('envFile')).user.user_msgs,
     });
-    const defaultGraph = GRAPH_DICT[localStorage.getItem('name')];
+    // const defaultGraph = GRAPH_DICT[localStorage.getItem('name')];
+    const defaultGraph = localStorage.getItem('graph');
     if (defaultGraph === 'scatter') {
       this.setState({
         loadingScatter: true,
@@ -163,12 +165,8 @@ class ActionMenu extends Component {
 
   renderHeader = () => {
     const { name } = this.state;
-    return (
-      <h1 className="header">
-        {name}
-      </h1>
-    );
-  }
+    return <h1 className="header">{name}</h1>;
+  };
 
   MenuItem = (i, action, text, key) => (
     <ListGroup.Item
@@ -176,7 +174,7 @@ class ActionMenu extends Component {
       key={key}
       onClick={() => this.handleClick(action)}
     >
-      { text }
+      {text}
     </ListGroup.Item>
   );
 
@@ -204,18 +202,12 @@ class ActionMenu extends Component {
           id={modelId}
         />
 
-        <Debugger
-          loadingData={loadingDebugger}
-          envFile={envFile}
-        />
+        <Debugger loadingData={loadingDebugger} envFile={envFile} />
 
-        <SourceCodeViewer
-          loadingData={loadingSourceCode}
-          code={sourceCode}
-        />
+        <SourceCodeViewer loadingData={loadingSourceCode} code={sourceCode} />
       </div>
     );
-  }
+  };
 
   renderMapItem = () => {
     const { menu } = this.state;
@@ -223,35 +215,26 @@ class ActionMenu extends Component {
       <div className="row margin-bottom-80">
         <div className="col w-25">
           <ListGroup>
-            {
-              Object.keys(menu).map((item, i) => (
-                menu[item].id > 1
-                  ? this.MenuItem(
-                    i,
-                    menu[item].id,
-                    menu[item].question,
-                    menu[item].func,
-                  )
-                  : null
-              ))
-            }
+            {Object.keys(menu).map((item, i) => (menu[item].id > 1
+              ? this.MenuItem(
+                i,
+                menu[item].id,
+                menu[item].question,
+                menu[item].func,
+              )
+              : null))}
           </ListGroup>
         </div>
       </div>
     );
-  }
+  };
 
   render() {
     const {
-      loadingData,
-      msg,
-      disabledButton,
-      errorMessage,
+      loadingData, msg, disabledButton, errorMessage,
     } = this.state;
     if (loadingData) {
-      return (
-        <PageLoader />
-      );
+      return <PageLoader />;
     }
     return (
       <div>
@@ -261,7 +244,11 @@ class ActionMenu extends Component {
         <br />
         {this.renderHeader()}
         <div>
-          <ModelStatusBox title="Model Status" msg={msg} ref={this.modelStatusBoxElement} />
+          <ModelStatusBox
+            title="Model Status"
+            msg={msg}
+            ref={this.modelStatusBoxElement}
+          />
         </div>
         <ul className="list-group">
           <div className="row">
@@ -283,8 +270,7 @@ class ActionMenu extends Component {
   }
 }
 
-ActionMenu.propTypes = {
-};
+ActionMenu.propTypes = {};
 
 ActionMenu.defaultProps = {
   history: {},

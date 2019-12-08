@@ -23,7 +23,7 @@ class Home extends Component {
       dataForCarousel: [
         { image: sandpileImg, title: 'by Seth Terashima' },
         { image: sandpile1Img, title: 'by Colt Browninga' },
-        { image: mandelobrotImg, title: 'by Adam majewski' },
+        { image: mandelobrotImg, title: 'by Adam Majewski' },
       ],
     };
     this.api_server = 'https://indrasnet.pythonanywhere.com/';
@@ -41,17 +41,15 @@ class Home extends Component {
     }
   }
 
-  handleClick = (id, name, source) => {
+  handleClick = (id, name, source, graph) => {
     localStorage.setItem('menu_id', id);
     localStorage.setItem('name', name);
     localStorage.setItem('source', source);
-  }
+    localStorage.setItem('graph', graph);
+  };
 
   renderChooseModelProp = () => (
-    <h1 className="small-header">
-      Please choose a model:
-      {' '}
-    </h1>
+    <h1 className="small-header">Please choose a model: </h1>
   );
 
   render() {
@@ -59,9 +57,7 @@ class Home extends Component {
       loadingData, dataForCarousel, allItems, apiFailed,
     } = this.state;
     if (apiFailed) {
-      return (
-        <h1>404 Error</h1>
-      );
+      return <h1>404 Error</h1>;
     }
     if (loadingData) {
       return (
@@ -83,17 +79,11 @@ class Home extends Component {
                 <OverlayTrigger
                   key={`${allItems[item].name}-tooltip`}
                   placement="right"
-                  overlay={(
-                    <Tooltip>
-                      {allItems[item].doc}
-                    </Tooltip>
-                  )}
+                  overlay={<Tooltip>{allItems[item].doc}</Tooltip>}
                 >
                   <Link
                     to={{
-                      pathname: `/models/props/${
-                        allItems[item]['model ID']
-                      }`,
+                      pathname: `/models/props/${allItems[item]['model ID']}`,
                     }}
                     className="text-primary w-75 p-3 list-group-item list-group-item-action link"
                     key={allItems[item].name}
@@ -101,6 +91,7 @@ class Home extends Component {
                       allItems[item]['model ID'],
                       allItems[item].name,
                       allItems[item].source,
+                      allItems[item].graph,
                     )}
                   >
                     {allItems[item].name}
