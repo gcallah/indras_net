@@ -17,8 +17,8 @@
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/trade.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="444">
-                  <caret line="51" column="69" lean-forward="true" selection-start-line="51" selection-start-column="69" selection-end-line="51" selection-end-column="69" />
+                <state relative-caret-position="278">
+                  <caret line="33" column="22" selection-start-line="33" selection-start-column="22" selection-end-line="33" selection-end-column="22" />
                   <folding>
                     <element signature="e#112#141#0" expanded="true" />
                   </folding>
@@ -222,12 +222,12 @@
       <workItem from="1575695994359" duration="276000" />
       <workItem from="1575696548234" duration="463000" />
       <workItem from="1575774242822" duration="3237000" />
-      <workItem from="1575843996606" duration="3114000" />
+      <workItem from="1575843996606" duration="3735000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="77442000" />
+    <option name="totallyTimeSpent" value="78063000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1920" height="1057" extended-state="6" />
@@ -421,8 +421,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/trade.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="444">
-          <caret line="51" column="69" lean-forward="true" selection-start-line="51" selection-start-column="69" selection-end-line="51" selection-end-column="69" />
+        <state relative-caret-position="278">
+          <caret line="33" column="22" selection-start-line="33" selection-start-column="22" selection-end-line="33" selection-end-column="22" />
           <folding>
             <element signature="e#112#141#0" expanded="true" />
           </folding>

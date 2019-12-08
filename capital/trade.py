@@ -24,10 +24,16 @@ DEF_NUM_RESOURCES_TYPE = 4
 trader_group = None
 market = None
 
-def random_generate_resources(total_type, total_resources, num_trader):
+def random_generate_resources(i,total_type, total_resources, num_trader):
     r = []
     for k in range(total_type):
-        r.append(int((total_resources * 2) * (random.random() / num_trader)))
+        # r.append(int((total_resources * 2) * (random.random() / num_trader)))
+        if i == 0 and k < 2:
+            r.append(4)
+        elif i ==1 and k > 1:
+            r.append(4)
+        else:
+            r.append(0)
     return r
 
 
@@ -42,7 +48,7 @@ def create_trader(name, i, props=None):
                                DEF_NUM_RESOURCES_TYPE)
         num_trader = props.get('num_traders',
                                DEF_NUM_TRADER)
-    resources = random_generate_resources(num_r_type, num_r, num_trader)
+    resources = random_generate_resources(i,num_r_type, num_r, num_trader)
     return Agent(name + str(i), action=seek_a_trade,
                  env=market,
                  attrs={"goods": {"penguin": {"endow": resources[0],
