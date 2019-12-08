@@ -86,7 +86,7 @@ prod1: tests
 	- git pull origin master
 	git push origin master
 
-tests: pytests jstests
+tests: pytests jstests dockertests
 
 python: pytests github
 
@@ -102,7 +102,7 @@ pytests: FORCE
 jstests: FORCE
 	cd webapp; make tests
 
-test_docker:
+dockertests:
 	docker build -t gcallah/$(REPO) docker/
 
 github:
