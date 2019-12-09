@@ -28,10 +28,10 @@ def random_generate_resources(i,total_type, total_resources, num_trader):
     r = []
     for k in range(total_type):
         # r.append(int((total_resources * 2) * (random.random() / num_trader)))
-        if i == 0 and k < 2:
-            r.append(4)
-        elif i ==1 and k > 1:
-            r.append(4)
+        if i % 2 == 0 and k < total_type/2:
+            r.append(total_resources)
+        elif i % 2 == 1 and k > total_type/2-1:
+            r.append(total_resources)
         else:
             r.append(0)
     return r
