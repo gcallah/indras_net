@@ -19,21 +19,29 @@ MODEL_NAME = "trade"
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 DEF_NUM_TRADER = 2
-DEF_NUM_RESOURCES = 4
+DEF_NUM_RESOURCES = 20
 DEF_NUM_RESOURCES_TYPE = 4
 trader_group = None
 market = None
 
-def random_generate_resources(i,total_type, total_resources, num_trader):
+# max_utility = tu.max_util
+max_utility = 0
+
+def random_generate_resources(i,total_type, total_resources):
     r = []
+    global max_utility
     for k in range(total_type):
-        # r.append(int((total_resources * 2) * (random.random() / num_trader)))
-        if i % 2 == 0 and k < total_type/2:
-            r.append(total_resources)
-        elif i % 2 == 1 and k > total_type/2-1:
-            r.append(total_resources)
+        # total resources is the amt of resource that each resource holder have
+        num_resource = int((total_resources * 2) * (random.random() / total_type * 2))
+        if num_resource > max_utility:
+            max_utility = num_resource
+        if i % 2 == 0 and k < total_type// 2:
+            r.append(num_resource)
+        elif i % 2 == 1 and k > total_type// 2 - 1:
+            r.append(num_resource)
         else:
             r.append(0)
+
     return r
 
 
@@ -48,7 +56,7 @@ def create_trader(name, i, props=None):
                                DEF_NUM_RESOURCES_TYPE)
         num_trader = props.get('num_traders',
                                DEF_NUM_TRADER)
-    resources = random_generate_resources(i,num_r_type, num_r, num_trader)
+    resources = random_generate_resources(i,num_r_type, num_r)
     return Agent(name + str(i), action=seek_a_trade,
                  env=market,
                  attrs={"goods": {"penguin": {"endow": resources[0],
@@ -73,7 +81,7 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    global max_util
+    global max_utility
     pa = get_props(MODEL_NAME, props, model_dir="capital")
     trader_group = Composite("trader", {"color": BLUE},
                              member_creator=create_trader,
@@ -87,14 +95,15 @@ def set_up(props=None):
                  members=[trader_group],
                  props=pa)
     tu.env = market  # we have to find a better way to handle this!
-    return (market, trader_group)
+    return (market, trader_group, max_utility)
 
 
 def main():
     global trader_group
     global market
+    global max_utility
 
-    (market, trader_group) = set_up()
+    (market, trader_group, max_utility) = set_up()
 
     if DEBUG2:
         market.user.tell(market.__repr__())
