@@ -99,6 +99,7 @@ class Composite(Agent):
             elif member["type"] == "composite":
                 self.members[nm] = Composite(name=nm, serial_obj=member)
         # the following line restores the *name* of the creator func:
+        # we await future design to restore the actual func.
         self.member_creator = serial_obj["member_creator"]
 
     def __repr__(self):

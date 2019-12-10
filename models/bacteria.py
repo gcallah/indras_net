@@ -10,6 +10,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import BLUE, GREEN, RED
 from indra.env import Env
+from indra.registry import get_registration
 from indra.space import DEF_HEIGHT, DEF_WIDTH, distance
 from indra.utils import get_props
 
@@ -179,9 +180,9 @@ def restore_globals(env):
     global bacteria
     global petri_dish
     petri_dish = env
-    toxins = env.registry["Toxins"]
-    bacteria = env.registry["Bacteria"]
-    nutrients = env.registry["Nutrients"]
+    toxins = get_registration("Toxins")
+    bacteria = get_registration("Bacteria")
+    nutrients = get_registration("Nutrients")
 
 
 def main():
