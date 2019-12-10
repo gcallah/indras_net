@@ -8,8 +8,10 @@ from propargs.propargs import PropArgs
 from indra.space import distance
 from indra.agent import Agent, X, Y
 from indra.composite import Composite
-from models.flocking import set_up, create_bird, bird_action, calc_angle
+from models.flocking import set_up, create_bird, bird_action, calc_angle, invert_direction
 from models.flocking import COMP_BIRD_NAME
+from indra.env import Env
+from indra.display_methods import BLUE, TREE
 
 
 TEST_BNAME = "Birds"
@@ -26,6 +28,7 @@ class FlockingTestCase(TestCase):
         self.bird_a = create_bird(TEST_BNAME, TEST_BNUM1, props=self.pa)
         self.bird_b = create_bird(TEST_BNAME, TEST_BNUM2, props=self.pa)
 
+
     def tearDown(self):
         (self.the_sky, self.flock) = (None, None)
 
@@ -40,16 +43,18 @@ class FlockingTestCase(TestCase):
         """
         Test to see if birds flock properly **WIP**
         """
-        #Current problem is locator object is Nonetype
+        # Current problem is locator object is Nonetype when we try to call bird_action here. Why? This also applies
+        # to other flocking functions that we call that alter the properties of the flocking agents. 
+
         #previous_angle = self.bird_a["angle"]
         #curr_distance = distance(self.bird_a, self.bird_b)
         #if abs(curr_distance - TEST_DESIRED_DISTANCE) < (TEST_DESIRED_DISTANCE * TEST_ACCEPTABLE_DEV):
-            #self.assertTrue(bird_action(self.flock[0]))
+            #self.assertTrue(bird_action(self.bird_a))
         #self.bird_a["angle"] = calc_angle(self.bird_a, self.bird_b)
         #if curr_distance < DEF_DESIRED_DISTANCE:
             #bird_action(self.bird_a)
             #self.assertEqual(self.bird_a["angle"], invert_direction(previous_angle))
 
-
+    
     if __name__ == '__main__':
         main()
