@@ -12,9 +12,11 @@ from APIServer.test.test_env_json import env_json_segregation
 from APIServer.test.test_env_json import env_json_wolfsheep, env_json_fmarket
 from indra.composite import Composite
 from indra.env import Env, PopHist, POP_HIST_HDR, POP_SEP
+from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.tests.test_agent import create_newton
 from indra.tests.test_composite import create_calcguys, create_cambguys
 from indra.user import TEST, API
+from indra.utils import get_props
 
 travis = False
 
@@ -169,6 +171,19 @@ class EnvTestCase(TestCase):
             self.env = Env(name='Test env', serial_obj=tests_env)
             self.assertEqual(str(type(self.env)), "<class 'indra.env.Env'>")
 
+    def test_env_json_plot_title(self):
+        """
+        Testing the preservation of Env after a round-trip to and from JSON.
+        This test is one of several that is intended to replace test_from_json.
+        """
+        pa = get_props("bacteria", props=None, skip_user_questions=True)
+        before_json = Env("Petrie dish",
+                          height=pa.get("grid_height", DEF_HEIGHT),
+                          width=pa.get("grid_width", DEF_WIDTH),
+                          members=[],
+                          props=pa)
+        after_json = Env("Overwrite this", serial_obj=before_json.to_json())
+        self.assertEqual(before_json.plot_title, after_json.plot_title)
 
 if __name__ == '__main__':
     main()
