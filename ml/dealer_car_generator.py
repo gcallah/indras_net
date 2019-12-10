@@ -9,18 +9,24 @@ import json
 import random
 from numpy import random as np_random
 
+from indra.utils import get_props
+
+MODEL_NAME = "dealer_car_generator"
+
 MIN_CAR_LIFE = .2
 POS_EMOJIS = ["smiley", "laughing", "relaxing", "wink"]
 NEG_EMOJIS = ["unnatural", "ambiguous", "hesitate", "eye rolling"]
 MEAN_SCORE = 3
+
 dealers = {}
-dealer_num = int(input("Enter the number of dealers: "))
-round_num = int(input("Enter the number of cars each dealer prepared: "))
+pa = get_props(MODEL_NAME, None, model_dir="ml")
+dealer_num = pa.get("num_dealers", 10)   # Selina should make a constant
+car_num = pa.get("num_cars", 40)  # make default constant
 for i in range(dealer_num):
     center_score = np_random.uniform(1, 5)
     lst = [max(round(random.gauss(center_score, 0.7), 1),
                MIN_CAR_LIFE)
-           for i in range(round_num)]
+           for i in range(car_num)]
     dealer = {}
     dealer_name = "dealer" + str(i)
     if center_score >= MEAN_SCORE:

@@ -19,15 +19,15 @@
     "lowval": 1
   },
   "total_resources": {
-    "val": 4,
-    "question": "How many total resources do you want?",
+    "val": 20,
+    "question": "How many total resources do you want each resource holder have?",
     "atype": "INT",
     "hival": 200,
     "lowval": 1
   },
   "total_type": {
     "val": 4,
-    "question": "How many total resources do you want?",
+    "question": "How many type resources do you want?",
     "atype": "INT",
     "hival": 200,
     "lowval": 1
