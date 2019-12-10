@@ -18,12 +18,15 @@ def get_prop_path(model_name, model_dir="models"):
     return ihome + "/" + model_dir + "/props/" + model_name + ".props.json"
 
 
-def get_props(model_nm, props=None, model_dir="models"):
+def get_props(model_nm, props=None, model_dir="models",
+              skip_user_questions=False):
     props_file = get_prop_path(model_nm, model_dir=model_dir)
     if props is None:
         pa = PropArgs.create_props(model_nm,
-                                   ds_file=props_file)
+                                   ds_file=props_file,
+                                   skip_user_questions=skip_user_questions)
     else:
         pa = PropArgs.create_props(model_nm,
-                                   prop_dict=props)
+                                   prop_dict=props,
+                                   skip_user_questions=skip_user_questions)
     return pa
