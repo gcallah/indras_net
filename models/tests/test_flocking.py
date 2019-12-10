@@ -40,12 +40,13 @@ class FlockingTestCase(TestCase):
         """
         Test to see if birds flock properly **WIP**
         """
-        # Current problem is locator object is Nonetype when we try to call bird_action here. Why? This also applies
+        # Current problem is the locator attribute is Nonetype when we try to call bird_action here. Why? This also applies
         # to other flocking functions that we call that access the properties of the flocking agents. 
-        # The other problem, which is related, is when calc_angle is called, and on line 45 in flocking.py, it tries to subtract the coordinates 
-        # of the agents and fails because get_pos() returns Nonetype on lines 43 and 44 in flocking.py
+        # When calc_angle is called, on line 45 in flocking.py, it tries to subtract the coordinates 
+        # of the agents and fails because get_pos() returns Nonetype on lines 43 and 44 in flocking.py. 
 
-        self.assertFalse(self.the_sky()) # the_sky() should return a Nonetype. 
+        self.assertFalse(self.the_sky()) # the_sky() should return a Nonetype.(?) By calling an env object through the test script, __call__ will run runN(), 
+        # which returns the number of actions taken. Ideally, I would like to show this in the test case, or have this returned.
 
         # this solution isn't really elegant, but this will show 10 periods as defined in env.py(DEF_TIME), demonstrating
         # that the agents are actually calling bird_action().  Until I can figure out why the problem with the commented code below is occuring, 
