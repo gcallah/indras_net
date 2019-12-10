@@ -34,6 +34,10 @@ def user_debug(msg):
     return the_user.debug(msg)
 
 
+def user_log(msg):
+    return the_user.log(msg)
+
+
 def not_impl(user):
     return user.tell(NOT_IMPL)
 
@@ -148,6 +152,12 @@ class User(Agent):
         How to ask the user something.
         """
         pass
+
+    def log(self, msg):
+        """
+        By default log just does whatever tell() does.
+        """
+        self.tell(msg)
 
     def tell_err(self, msg, end='\n'):
         self.tell("ERROR: " + msg, end)

@@ -12,7 +12,7 @@ from random import randint
 from indra.agent import is_composite, AgentEncoder
 from indra.composite import Composite
 from indra.registry import register, get_registration
-from indra.user import user_debug
+from indra.user import user_debug, user_log
 
 DEF_WIDTH = 10
 DEF_HEIGHT = 10
@@ -139,9 +139,7 @@ class Space(Composite):
         rep["type"] = self.type
         rep["width"] = self.width
         rep["height"] = self.height
-        rep["locations"] = {}
-        for loc in self.locations:
-            rep["locations"][self.locations[loc].name] = loc
+        rep["locations"] = self.locations
 
         return rep
 
@@ -149,17 +147,7 @@ class Space(Composite):
         super().from_json(serial_space)
         self.width = serial_space["width"]
         self.height = serial_space["height"]
-        # construct self.location
-        self.locations = {}
-        for nm in self.registry:
-            if self.registry[nm].type == "agent":
-                self.locations[self.registry[nm].pos] = self.registry[nm]
-
-        # set up self.neighbors
-        for nm in self.registry:
-            s = self.registry[nm].neighbors
-            if not s and s in self.registry:
-                self.registry[nm].neighbors = self.registry[s]
+        self.locations = serial_space["locations"]
 
     def __repr__(self):
         return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
@@ -291,7 +279,8 @@ class Space(Composite):
         """
         if self.is_empty(x, y):
             return None
-        return self.locations[(x, y)]
+        agent_nm = self.locations[(x, y)]
+        return get_registration(agent_nm)
 
     def place_member(self, mbr, max_move=None, xy=None):
         """
@@ -300,10 +289,8 @@ class Space(Composite):
         Setting `xy` picks a particular spot to place member.
         `xy` must be a tuple!
         """
-
         if self.is_full():
-            print("     is_full")
-            self.user.log("Can't fit no more folks in this space!")
+            user_log("Can't fit no more folks in this space!")
             return None
         if not is_composite(mbr):
             if xy is not None:
@@ -332,15 +319,15 @@ class Space(Composite):
 
     def __iadd__(self, other):
         super().__iadd__(other)
-        print("Placing member ", other.name)
         self.place_member(other)
         return self
 
     def add_location(self, x, y, member):
         """
         Add a new member to the locations of positions of members.
+        locations{} stores agents by name, to look up in registry.
         """
-        self.locations[(x, y)] = member
+        self.locations[(x, y)] = member.name
 
     def move_location(self, nx, ny, ox, oy):
         """
@@ -497,8 +484,9 @@ class Space(Composite):
         """
         closest = None
         min_distance_seen = MAX_WIDTH * MAX_HEIGHT
-        for key, other in self.locations.items():
-            if other is agent:
+        for key, other_nm in self.locations.items():
+            other = get_registration(other_nm)
+            if other is agent or other is None:
                 continue
             d = distance(agent, other)
             if d < min_distance_seen:
