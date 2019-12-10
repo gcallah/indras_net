@@ -1,5 +1,5 @@
 """
-This file contains miscelenious .
+This file contains miscellaneous.
 """
 import os
 
@@ -7,10 +7,13 @@ from propargs.propargs import PropArgs
 
 
 def get_func_name(f):
+    # Until Agent.restore and Env.to_json can restore functions from function
+    # names, strings will be returned as-is.
+    if isinstance(f, str):
+        return f
     if f is not None:
         return f.__name__
-    else:
-        return ""
+    return ""
 
 
 def get_prop_path(model_name, model_dir="models"):
