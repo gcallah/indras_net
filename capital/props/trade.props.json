@@ -11,28 +11,23 @@
     "hival": 100,
     "lowval": 2
   },
-  "num_cagents": {
-    "val": 1,
+  "num_traders": {
+    "val": 2,
+    "question": "How many traders do you want?",
     "atype": "INT",
     "hival": 100,
     "lowval": 1
   },
-  "num_wagents": {
-    "val": 1,
-    "atype": "INT",
-    "hival": 100,
-    "lowval": 1
-  },
-  "start_wine": {
-    "val": 4,
-    "question": "How many wine do you want your wine holder start with?",
+  "total_resources": {
+    "val": 20,
+    "question": "How many total resources do you want each resource holder have?",
     "atype": "INT",
     "hival": 200,
     "lowval": 1
   },
-  "start_cheese": {
+  "total_type": {
     "val": 4,
-    "question": "How many cheese do you want your cheese holder start with?",
+    "question": "How many type resources do you want?",
     "atype": "INT",
     "hival": 200,
     "lowval": 1

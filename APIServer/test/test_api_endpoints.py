@@ -140,7 +140,8 @@ class Test(TestCase):
             test_models_response.append({"model ID": model["model ID"],
                                          "name": model["name"],
                                          "doc": doc,
-                                         "source": model["source"]})
+                                         "source": model["source"],
+                                         "graph": model["graph"]})
 
         self.assertEqual(rv, test_models_response)
 

@@ -4,64 +4,111 @@ Places two groups of agents in the enviornment randomly
 and moves them around randomly.
 """
 
-# from indra.agent import Agent
-# from indra.composite import Composite
-# from indra.display_methods import RED, BLUE
-# from indra.env import Env
+from indra.agent import Agent
+from indra.composite import Composite
+from indra.display_methods import BLUE
+from indra.env import Env
 # from indra.registry import registry
-# from indra.space import DEF_HEIGHT, DEF_WIDTH
-# from indra.utils import get_props
-
-import edgeworthbox as edge
+from indra.space import DEF_HEIGHT, DEF_WIDTH
+from indra.utils import get_props
+from trade_utils import seek_a_trade, gen_util_func, max_util  # noqa F401
+import trade_utils as tu
+import random
 
 MODEL_NAME = "trade"
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
+DEF_NUM_TRADER = 2
+DEF_NUM_RESOURCES = 20
+DEF_NUM_RESOURCES_TYPE = 4
+trader_group = None
+market = None
 
-DEF_NUM_CAGENTS = 1
-DEF_NUM_WAGENTS = 1
-DEF_NUM_CHEESE = 4
-DEF_NUM_WINE = 4
+# max_utility = tu.max_util
+max_utility = 0
 
-DEF_MAX_UTIL = max(DEF_NUM_CHEESE, DEF_NUM_WINE)
+def random_generate_resources(i,total_type, total_resources):
+    r = []
+    global max_utility
+    for k in range(total_type):
+        # total resources is the amt of resource that each resource holder have
+        num_resource = int((total_resources * 2) * (random.random() / total_type * 2))
+        if num_resource > max_utility:
+            max_utility = num_resource
+        if i % 2 == 0 and k < total_type// 2:
+            r.append(num_resource)
+        elif i % 2 == 1 and k > total_type// 2 - 1:
+            r.append(num_resource)
+        else:
+            r.append(0)
 
-wine_group = None
-cheese_group = None
-env = None
-max_util = DEF_MAX_UTIL
+    return r
 
 
-def trade(agent):
-    pass
-
-
-def create_wagent(name, i, props=None):
-    return edge.create_wagent(name, i, props=None)
-
-
-def create_cagent(name, i, props=None):
-    return edge.create_cagent(name, i, props=None)
+def create_trader(name, i, props=None):
+    num_r = DEF_NUM_RESOURCES
+    num_r_type = DEF_NUM_RESOURCES_TYPE
+    num_trader = DEF_NUM_TRADER
+    if props is not None:
+        num_r = props.get('total_resources',
+                          DEF_NUM_RESOURCES)
+        num_r_type = props.get('total_type',
+                               DEF_NUM_RESOURCES_TYPE)
+        num_trader = props.get('num_traders',
+                               DEF_NUM_TRADER)
+    resources = random_generate_resources(i,num_r_type, num_r)
+    return Agent(name + str(i), action=seek_a_trade,
+                 env=market,
+                 attrs={"goods": {"penguin": {"endow": resources[0],
+                                              "util_func": gen_util_func,
+                                              "incr": 0},
+                                  "cat": {"endow": resources[1],
+                                          "util_func": gen_util_func,
+                                          "incr": 0},
+                                  "bear": {"endow": resources[2],
+                                           "util_func": gen_util_func,
+                                           "incr": 0},
+                                  "pet food": {"endow": resources[3],
+                                               "util_func": gen_util_func,
+                                               "incr": 0}
+                                  },
+                        "util": 0,
+                        "pre_trade_util": 0,
+                        "trades_with": "trader"})
 
 
 def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    return edge.set_up(props=None)
+    global max_utility
+    pa = get_props(MODEL_NAME, props, model_dir="capital")
+    trader_group = Composite("trader", {"color": BLUE},
+                             member_creator=create_trader,
+                             props=pa,
+                             num_members=pa.get('num_traders',
+                                                DEF_NUM_TRADER))
+
+    market = Env("env",
+                 height=pa.get('grid_height', DEF_HEIGHT),
+                 width=pa.get('grid_width', DEF_WIDTH),
+                 members=[trader_group],
+                 props=pa)
+    tu.env = market  # we have to find a better way to handle this!
+    return (market, trader_group, max_utility)
 
 
 def main():
-    global wine_group
-    global cheese_group
-    global env
-    global max_util
+    global trader_group
+    global market
+    global max_utility
 
-    (env, cheese_group, wine_group, max_util) = set_up()
+    (market, trader_group, max_utility) = set_up()
 
     if DEBUG2:
-        env.user.tell(env.__repr__())
+        market.user.tell(market.__repr__())
 
-    env()
+    market()
     return 0
 
 
