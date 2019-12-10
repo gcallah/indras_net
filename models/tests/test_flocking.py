@@ -11,12 +11,11 @@ from indra.composite import Composite
 from models.flocking import set_up, create_bird, bird_action, calc_angle, invert_direction
 from models.flocking import BIRD_GROUP
 from indra.env import Env
-from indra.display_methods import BLUE, TREE
 
 
 TEST_BNAME = "Birds"
-# TEST_BNUM1 = 5
-# TEST_BNUM2 = 6
+TEST_BNUM1 = 5
+TEST_BNUM2 = 6
 # TEST_DESIRED_DISTANCE = 2
 # TEST_ACCEPTABLE_DEV = .05
 
@@ -25,6 +24,8 @@ class FlockingTestCase(TestCase):
         self.pa = PropArgs.create_props('flocking_props',
                                         ds_file='props/flocking.props.json')
         (self.the_sky,  self.flock) = set_up()
+        self.bird_a = create_bird(TEST_BNAME, TEST_BNUM1, props=self.pa)
+        self.bird_b = create_bird(TEST_BNAME, TEST_BNUM2, props=self.pa)
 
     def tearDown(self):
         (self.the_sky, self.flock) = (None, None)
