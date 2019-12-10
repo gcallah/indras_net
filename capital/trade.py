@@ -8,7 +8,6 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import BLUE
 from indra.env import Env
-# from indra.registry import registry
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import get_props
 from trade_utils import seek_a_trade, gen_util_func, max_util  # noqa F401
@@ -27,17 +26,19 @@ market = None
 # max_utility = tu.max_util
 max_utility = 0
 
-def random_generate_resources(i,total_type, total_resources):
+
+def random_generate_resources(i, total_type, total_resources):
     r = []
     global max_utility
     for k in range(total_type):
         # total resources is the amt of resource that each resource holder have
-        num_resource = int((total_resources * 2) * (random.random() / total_type * 2))
+        num_resource = int((total_resources * 2)
+                           * (random.random() / total_type * 2))
         if num_resource > max_utility:
             max_utility = num_resource
-        if i % 2 == 0 and k < total_type// 2:
+        if i % 2 == 0 and k < total_type // 2:
             r.append(num_resource)
-        elif i % 2 == 1 and k > total_type// 2 - 1:
+        elif i % 2 == 1 and k > total_type // 2 - 1:
             r.append(num_resource)
         else:
             r.append(0)
@@ -48,15 +49,15 @@ def random_generate_resources(i,total_type, total_resources):
 def create_trader(name, i, props=None):
     num_r = DEF_NUM_RESOURCES
     num_r_type = DEF_NUM_RESOURCES_TYPE
-    num_trader = DEF_NUM_TRADER
+    # num_trader = DEF_NUM_TRADER
     if props is not None:
         num_r = props.get('total_resources',
                           DEF_NUM_RESOURCES)
         num_r_type = props.get('total_type',
                                DEF_NUM_RESOURCES_TYPE)
-        num_trader = props.get('num_traders',
-                               DEF_NUM_TRADER)
-    resources = random_generate_resources(i,num_r_type, num_r)
+        # num_trader = props.get('num_traders',
+        #                        DEF_NUM_TRADER)
+    resources = random_generate_resources(i, num_r_type, num_r)
     return Agent(name + str(i), action=seek_a_trade,
                  env=market,
                  attrs={"goods": {"penguin": {"endow": resources[0],
