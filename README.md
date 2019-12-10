@@ -42,3 +42,8 @@ To test the APIServer with the front end locally:
       `https://indrasnet.pythonanywhere.com/` with your server's address (which
       should be `http://127.0.0.1:8000` if you ran `api.sh` above).
     - `cd` into [webapp](webapp) and run `npm run start`.
+
+Work in Progress
+----------------
+
+Trying to get all the models working from the API server. 
