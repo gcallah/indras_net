@@ -20,7 +20,6 @@ A used cars model Documentation
 1.7 Constrains
 
 1.8 Future Goals
-
 """
 
 import random
@@ -147,7 +146,7 @@ def get_dealer_characteristic():  # testcase done
     return CHARACTERISTIC[random.randint(0, 1)]
 
 
-def set_emoji_indicator(buyer):  # testcase done
+def set_emoji_indicator(buyer):
     '''
     when a buyer becomes mature
     he/she can judge based on their
@@ -235,7 +234,7 @@ def cal_avg_life(buyer):  # testcase done
         emo_life_avg[key] = avg
 
 
-def buy_from_dealer(agent, my_dealer):  # testcase done
+def buy_from_dealer(agent, my_dealer):
     '''
     When buyer buys a car from the dealer
     Update all dealer and buyer's attributes
@@ -297,7 +296,8 @@ def create_dealer(name, i, props=None):  # testcase done
                         "num_completed_services": 0,
                         "emoji_used": None,
                         "dealer_characteristic": None,
-                        "respond_to_return": False
+                        "respond_to_return": False,
+                        "return_rate": 0
                         })
 
 
