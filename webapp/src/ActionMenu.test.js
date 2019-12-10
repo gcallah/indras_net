@@ -10,10 +10,4 @@ describe('Mounted ActionMenu', () => {
     const state = wrapper.state('loadingSourceCode');
     expect(state).toEqual(false);
   });
-  it('should return home on home button click', () => {
-    global.window = { location: { pathname: null } };
-    const button = wrapper.find('BackHomeButton').first();
-    button.simulate('click');
-    expect(global.window.location.pathname).toEqual('/');
-  });
 });
