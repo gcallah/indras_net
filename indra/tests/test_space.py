@@ -4,7 +4,7 @@ This is the test suite for space.py.
 
 from unittest import TestCase, main, skip
 
-from indra.agent import Agent
+from indra.agent import Agent, X, Y
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.space import Space, distance
 from indra.tests.test_agent import create_newton, create_hardy, create_leibniz
@@ -165,7 +165,7 @@ class SpaceTestCase(TestCase):
         """
         n = create_newton()
         self.space += n
-        self.assertTrue(self.space.locations[n.pos] == n)
+        self.assertTrue(self.space.get_agent_at(n.pos[X], n.pos[Y]) == n)
 
     def test_add_location(self):
         """
@@ -177,8 +177,9 @@ class SpaceTestCase(TestCase):
             if (x, y) not in self.space.locations:
                 self.newton.set_pos(self.space, x, y)
                 self.space.add_location(x, y, self.newton)
-                self.assertTrue(self.space.locations[self.newton.pos] ==
-                                self.newton)
+                self.assertTrue(self.space.get_agent_at(self.newton.pos[X],
+                                                        self.newton.pos[Y])
+                                == self.newton)
 
     # def test_move_location(self):
     #     """
