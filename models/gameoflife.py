@@ -332,7 +332,8 @@ def restore_globals(env):
     global groups
     global gameoflife_env
     gameoflife_env = env
-    groups = [env.registry["Black"]]
+    # this model needs to be totally revisited anyway, so:
+    # groups = [env.registry["Black"]]
 
 
 def main():

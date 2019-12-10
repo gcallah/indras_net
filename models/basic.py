@@ -8,7 +8,8 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import RED, BLUE
 from indra.env import Env
-from indra.registry import registry
+# likely needed soon:
+# from indra.registry import get_registration
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import get_props
 
@@ -71,7 +72,6 @@ def main():
         print(env.__repr__())
 
     env()
-    print(registry)
     return 0
 
 

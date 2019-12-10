@@ -8,6 +8,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import BLUE, RED
 from indra.env import Env, UNLIMITED
+from indra.registry import get_registration
 from indra.space import gaussian_distribution
 from indra.utils import get_props
 
@@ -246,9 +247,9 @@ def restore_globals(env):
     global market
     market = env
     market.exclude_menu_item("scatter_plot")
-    trend_followers = env.registry["trend_followers"]
-    value_investors = env.registry["value_investors"]
-    market_maker = env.registry["market_maker"]
+    trend_followers = get_registration("trend_followers")
+    value_investors = get_registration("value_investors")
+    market_maker = get_registration("market_maker")
 
 
 def main():

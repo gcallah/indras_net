@@ -215,7 +215,6 @@ class Env(Space):
 
     def add_member(self, member):
         super().add_member(member)
-        # self.registry[member.name] = member
 
     def add_child(self, group):
         """

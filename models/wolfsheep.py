@@ -5,6 +5,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import TAN, GRAY
 from indra.env import Env
+from indra.registry import get_registration
 from indra.space import in_hood
 from indra.utils import get_props
 
@@ -184,8 +185,8 @@ def restore_globals(env):
     global sheep
     global meadow
     meadow = env
-    wolves = env.registry[COMP_WOLF_NAME]
-    sheep = env.registry[COMP_SHEEP_NAME]
+    wolves = get_registration(COMP_WOLF_NAME)
+    sheep = get_registration(COMP_SHEEP_NAME)
 
 
 def main():

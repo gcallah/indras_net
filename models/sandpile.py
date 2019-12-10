@@ -131,9 +131,10 @@ def restore_globals(env):
     sandpile_env = env
     groups = []
     group_indices = {}
-    for i in range(NUM_GROUPS):
-        groups.append(env.registry["Group" + str(i)])
-        group_indices[groups[i].name] = i
+    # this model needs to be fundamentally revisited, so:
+    # for i in range(NUM_GROUPS):
+    #     groups.append(env.registry["Group" + str(i)])
+    #     group_indices[groups[i].name] = i
     env.attrs["center_agent"] = env.get_agent_at(env.height // 2,
                                                  env.width // 2)
 

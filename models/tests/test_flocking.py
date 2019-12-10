@@ -9,7 +9,7 @@ from indra.space import distance
 from indra.agent import Agent, X, Y
 from indra.composite import Composite
 from models.flocking import set_up, create_bird, bird_action, calc_angle, invert_direction
-from models.flocking import COMP_BIRD_NAME
+from models.flocking import BIRD_GROUP
 from indra.env import Env
 from indra.display_methods import BLUE, TREE
 
@@ -37,7 +37,7 @@ class FlockingTestCase(TestCase):
         Test to see if bird is created
         """
         new_bird = create_bird(TEST_BNAME, 1, props=self.pa)
-        self.assertEqual(new_bird.name, COMP_BIRD_NAME + str(1))
+        self.assertEqual(new_bird.name, BIRD_GROUP + str(1))
     
     def test_bird_action(self):
         """

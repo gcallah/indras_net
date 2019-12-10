@@ -7,8 +7,8 @@ import random
 from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import RED, BLUE
-# from indra.space import in_hood
 from indra.env import Env
+from indra.registry import get_registration
 from indra.utils import get_props
 
 MODEL_NAME = "segregation"
@@ -174,8 +174,8 @@ def restore_globals(env):
     global red_agents
     global city
     city = env
-    blue_agents = env.registry[group_names[BLUE_TEAM] + group_suffix]
-    red_agents = env.registry[group_names[RED_TEAM] + group_suffix]
+    blue_agents = get_registration(group_names[BLUE_TEAM] + group_suffix)
+    red_agents = get_registration(group_names[RED_TEAM] + group_suffix)
 
 
 def main():
