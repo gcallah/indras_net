@@ -124,9 +124,11 @@ class UsedCarTestCase(TestCase):
         self.assertIsNone(dealer["emoji_used"])
         self.assertIsNone(dealer["dealer_characteristic"])
 
-'''
-    # Will fix this test case later
-    def test_buy_from_dealer(self):
+    def test_create_buyer(self):
+        """
+        # Will fix this test case later
+        # kept here for temp storage
+        def test_buy_from_dealer(self):
         buyer = create_buyer("Buyer", 0, None)
         dealer = create_dealer("Dealer", 0, None)
         orig_assoc_length = len(buyer["emoji_carlife_assoc"])
@@ -139,9 +141,7 @@ class UsedCarTestCase(TestCase):
         self.assertEqual(is_deal_hist, True)
         self.assertEqual(buyer["interaction_res"], dealer_emoji)
         self.assertEqual(is_assoc_added, True)
-'''
-
-    def test_create_buyer(self):
+        """
         buyer = create_buyer("Buyer", 0, None)
         self.assertFalse(buyer["has_car"])
         self.assertIsNone(buyer["car_life"])
