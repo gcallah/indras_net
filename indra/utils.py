@@ -11,9 +11,10 @@ def get_func_name(f):
     # names, strings will be returned as-is.
     if isinstance(f, str):
         return f
-    if f is not None:
+    elif f is not None:
         return f.__name__
-    return ""
+    else:
+        return ""
 
 
 def get_prop_path(model_name, model_dir="models"):

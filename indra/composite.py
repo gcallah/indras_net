@@ -78,8 +78,6 @@ class Composite(Agent):
         Here we restore a composite from a serialized object.
         """
         self.from_json(serial_obj)
-        # now look up member_creator func by name in the
-        # function dictionary
 
     def to_json(self):
         """

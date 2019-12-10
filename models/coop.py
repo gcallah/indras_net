@@ -8,6 +8,7 @@ from indra.composite import Composite
 from indra.env import Env, UNLIMITED
 from indra.space import gaussian_distribution
 from indra.utils import get_props
+from indra.user import user_tell
 
 MODEL_NAME = 'coop'
 
@@ -125,12 +126,9 @@ def act(agent):
     if their holding coupons are less than desired cash balance, they babysit,
     or there is a 50-50 chance for them to go out.
     """
-    print(str(agent), "coupons = ", agent['coupons'],
-          "desired = ", agent['desired_cash'])
     if agent['coupons'] <= agent['desired_cash']:
         agent['goal'] = "BABYSITTING"
     else:
-        # print(str(agent), "is not in first if!")
         if random.random() > .5:
             agent['goal'] = "GOING_OUT"
         else:
@@ -151,15 +149,16 @@ def central_bank_action(agent):
     global num_of_rounds
     global CB_intervention_points
     num_of_rounds += 1
-    # print("num_of_rounds: ", str(num_of_rounds))
     unemployment_rates = last_period_unemployed / len(coop_members) * 100
     unemployment_threshold = agent["percent_change"]
     if unemployment_rates >= unemployment_threshold:
-        print("Unemployment has up to ", str(unemployment_rates),
-              "more than default value " + str(unemployment_threshold),
-              " CB Intervened")
+        user_tell("Unemployment has risen to "
+                  + str(unemployment_rates)
+                  + " more than default value "
+                  + str(unemployment_threshold)
+                  + " CB Intervened")
         CB_intervention_points.append([num_of_rounds, last_period_exchanges])
-        print(CB_intervention_points)
+        user_tell(CB_intervention_points)
         distribute_coupons(agent)
 
 
