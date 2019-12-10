@@ -1,11 +1,26 @@
 """
-A used cars model.
-Places two groups of agents in the enviornment randomly
-and moves them around randomly.
-Stage 1
-Two goals:
-1. Associate Emoji with car life buyer get
-2. Associate buyer with all past interaction with particular dealer
+Indra Models - Machine Learning
+
+A used cars model Documentation
+
+1.0 Introduction
+
+1.1 Purpose
+
+1.2 Background
+
+1.3 Scope
+
+1.4 Methodology
+
+1.5 Current Process
+
+1.6 Proposed Process
+
+1.7 Constrains
+
+1.8 Future Goals
+
 """
 
 import random
@@ -132,7 +147,7 @@ def get_dealer_characteristic():  # testcase done
     return CHARACTERISTIC[random.randint(0, 1)]
 
 
-def set_emoji_indicator(buyer):
+def set_emoji_indicator(buyer):  # testcase done
     '''
     when a buyer becomes mature
     he/she can judge based on their
@@ -220,7 +235,7 @@ def cal_avg_life(buyer):  # testcase done
         emo_life_avg[key] = avg
 
 
-def buy_from_dealer(agent, my_dealer):
+def buy_from_dealer(agent, my_dealer):  # testcase done
     '''
     When buyer buys a car from the dealer
     Update all dealer and buyer's attributes
@@ -282,8 +297,7 @@ def create_dealer(name, i, props=None):  # testcase done
                         "num_completed_services": 0,
                         "emoji_used": None,
                         "dealer_characteristic": None,
-                        "respond_to_return": False,
-                        "return_rate": 0
+                        "respond_to_return": False
                         })
 
 

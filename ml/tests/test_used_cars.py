@@ -113,7 +113,21 @@ class UsedCarTestCase(TestCase):
         cal_avg_life(buyer)
         for key in buyer["emoji_life_avg"]:
             self.assertEqual(buyer["emoji_life_avg"][key], round(num,2))
-        
+    
+    def test_buy_from_dealer(self):
+        buyer = create_buyer("Buyer", 0, None)
+        dealer = create_dealer("Dealer", 0, None)
+        orig_assoc_length = len(buyer["emoji_carlife_assoc"])
+        buy_from_dealer(buyer, dealer)
+        is_deal_hist = len(buyer["dealer_hist"]) > 0
+        dealer_emoji = dealer["emoji_used"]
+        updated_assoc_length = len(buyer["emoji_carlife_assoc"])
+        is_assoc_added = updated_assoc_length > orig_assoc_length
+        self.assertEqual(buyer["has_car"], True)
+        self.assertEqual(is_deal_hist, True)
+        self.assertEqual(buyer["interaction_res"], dealer_emoji)
+        self.assertEqual(is_assoc_added, True)
+
     def test_create_dealer(self):
         dealer = create_dealer("Dealer", 0, None)
         self.assertEqual(dealer["num_sales"], 0)
