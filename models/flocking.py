@@ -12,7 +12,7 @@ from indra.space import DEF_HEIGHT, DEF_WIDTH, distance
 from indra.utils import get_props
 
 MODEL_NAME = "flocking"
-DEBUG = True  # turns debugging code on or off
+DEBUG = False  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
 BIRD_GROUP = "Birds"
