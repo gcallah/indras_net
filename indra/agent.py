@@ -13,7 +13,7 @@ import numpy as np
 from indra.registry import register, get_registration
 from indra.utils import get_func_name
 
-DEBUG = True  # turns debugging code on or off
+DEBUG = False  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
 # x and y indices

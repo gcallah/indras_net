@@ -10,8 +10,9 @@ from indra.display_methods import BLUE
 from indra.env import Env
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import get_props
-from trade_utils import seek_a_trade, gen_util_func, max_util  # noqa F401
-import trade_utils as tu
+from capital.trade_utils import seek_a_trade, gen_util_func# noqa F401
+from capital.trade_utils import max_util  # noqa F401
+import capital.trade_utils as tu
 import random
 
 MODEL_NAME = "trade"
