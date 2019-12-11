@@ -12,7 +12,7 @@ from APIServer.api_endpoints import app, HelloWorld, Endpoints, Models
 from APIServer.api_endpoints import indra_dir
 from APIServer.api_utils import err_return
 from APIServer.models_api import load_models
-from model_creator_api import put_model_creator
+# from model_creator_api import put_model_creator
 
 menu = [{"val": 0, "func": "run", "question": "Run for N periods"},
         {"val": 1, "func": "line_graph", "question":
