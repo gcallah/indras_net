@@ -424,7 +424,7 @@ class AgentPopTestCase(TestCase):
                     for agent2 in json_input_dic['vars'][var]["agents"]:
                         if agent2['name'] == agent.name and agent2['graph']==agent.graph and agent2['ntype']==agent.ntype:
                             report = True
-                    if report == False:
+                    if not report:
                         break
 
             else:

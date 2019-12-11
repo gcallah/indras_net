@@ -79,7 +79,7 @@ class BasicTestCase(TestCase):
             props_written = json.load(f)
         if len(props_written) != len(self.env.props.props):
             report = False
-        if report == True:
+        if report:
             for key in props_written:
                 if key not in self.env.props.props:
                     report = False
@@ -130,7 +130,7 @@ class BasicTestCase(TestCase):
             if i not in dic_for_reference:
                 report = False
                 break
-        if report == True:
+        if report:
             dic_for_check = {}
             for i in head_list:
                 dic_for_check[i] = []
@@ -146,7 +146,7 @@ class BasicTestCase(TestCase):
                     break
             # print("check4!!!!!!!", dic_for_check)
 
-        if report == True:
+        if report:
             if len(dic_for_check) != len(dic_for_reference):
                 report = False
             if report is True:
@@ -229,7 +229,7 @@ class BasicTestCase(TestCase):
         first_line = first_line.split(" ")
         if logfile_name != first_line[-1]:
             report = False
-        if report == True:
+        if report:
             for i, line in enumerate(f):
                 if list_for_reference[i] != line:
                     report = False

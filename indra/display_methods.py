@@ -425,10 +425,10 @@ class ScatterPlot():
             self.legend.append(var)
             (x_array, y_array) = self.get_arrays(varieties, var)
             if len(x_array) <= 0:  # no data to graph!
-                next
+                next()
             elif len(x_array) != len(y_array):
                 logging.debug("Array length mismatch in scatter plot")
-                next
+                next()
             color = get_color(varieties[var], i)
             marker = get_marker(varieties[var], i)
             scat = pd.DataFrame({"x": pd.Series(x_array),
