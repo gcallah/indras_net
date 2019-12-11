@@ -127,7 +127,7 @@ def expects_plt(fn):
     return wrapper
 
 
-def hierarchy_pos(graph, root, width=1., vert_gap=0.2, vert_loc=0,
+def hierarchy_pos(graph, root, width=1., vert_gap=0.2, vert_loc=0.,
                   xcenter=0.5, pos=None, parent=None):
     """
     This is an attempt to get a tree graph from networkx.

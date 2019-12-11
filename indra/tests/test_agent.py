@@ -30,29 +30,29 @@ def ram_action(agent):
 
 def create_leibniz():
     return Agent("Leibniz",
-                  attrs={"place": 0.0, "time": LEIBBYEAR},
-                  action=leib_action,
-                  duration=20)
+                 attrs={"place": 0.0, "time": LEIBBYEAR},
+                 action=leib_action,
+                 duration=20)
 
 
 def create_other_leibniz():
     return Agent("Leibniz",
-                  attrs={"place": 1.0, "time": LEIBBYEAR},
-                  action=leib_action,
-                  duration=20)
+                 attrs={"place": 1.0, "time": LEIBBYEAR},
+                 action=leib_action,
+                 duration=20)
 
 
 def create_newton():
     return Agent("Newton",
-                  attrs={"place": 0.0, "time": 1658.0, "achieve": 43.9},
-                  action=newt_action,
-                  duration=30)
+                 attrs={"place": 0.0, "time": 1658.0, "achieve": 43.9},
+                 action=newt_action,
+                 duration=30)
 
 
 def create_hardy():
     return Agent("Hardy",
-                  attrs={ANM: AGE},
-                  duration=10)
+                 attrs={ANM: AGE},
+                 duration=10)
 
 
 def create_ramanujan():

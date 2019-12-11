@@ -185,5 +185,6 @@ class EnvTestCase(TestCase):
         after_json = Env("Overwrite this", serial_obj=before_json.to_json())
         self.assertEqual(before_json.plot_title, after_json.plot_title)
 
+
 if __name__ == '__main__':
     main()

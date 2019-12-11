@@ -21,6 +21,7 @@ def create_space():
     space += create_leibniz()
     return (space, newton)
 
+
 def create_teeny_space():
     """
     This space should be full!
@@ -172,7 +173,7 @@ class SpaceTestCase(TestCase):
         Can we add an agent to a location?
         """
         for i in range(REP_RAND_TESTS):
-            #test with different random positions
+            # test with different random positions
             x, y = self.space.rand_x(), self.space.rand_y()
             if (x, y) not in self.space.locations:
                 self.newton.set_pos(self.space, x, y)
@@ -187,14 +188,14 @@ class SpaceTestCase(TestCase):
     #     This test sometimes fails: we need to explore!
     #     """
     #     for i in range(REP_RAND_TESTS):
-            #test with different random positions
-            # print("Trying a new location: ", i, "th iteration")
-            # print("Previous newton is at ", self.newton.get_x(), self.newton.get_y())
-            # x, y = self.space.rand_x(), self.space.rand_y()
-            # print("new x, y = ", x, y)
-            # self.space.move_location(x, y, self.newton.get_x(), self.newton.get_y())
-            # print("Now newton is at ", self.newton.get_x(), self.newton.get_y())
-            # self.assertTrue(self.space.locations[(x, y)] == self.newton)
+    # test with different random positions
+    # print("Trying a new location: ", i, "th iteration")
+    # print("Previous newton is at ", self.newton.get_x(), self.newton.get_y())
+    # x, y = self.space.rand_x(), self.space.rand_y()
+    # print("new x, y = ", x, y)
+    # self.space.move_location(x, y, self.newton.get_x(), self.newton.get_y())
+    # print("Now newton is at ", self.newton.get_x(), self.newton.get_y())
+    # self.assertTrue(self.space.locations[(x, y)] == self.newton)
 
     def test_remove_location(self):
         """

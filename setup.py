@@ -11,8 +11,8 @@ setup(name='indras_net',
     packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*",
                                  "tests"]),
     install_requires=[
-          "networkx",
-          "numpy",
+        "networkx",
+        "numpy", 'propargs', 'matplotlib'
     ],
     test_suite="",
     entry_points={
