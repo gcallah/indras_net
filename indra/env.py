@@ -407,7 +407,6 @@ class Env(Space):
 
     def line_data(self):
         period = None
-        data = None
         if self.exclude_member is not None:
             exclude = self.exclude_member
         else:

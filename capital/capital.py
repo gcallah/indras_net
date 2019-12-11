@@ -207,7 +207,7 @@ def set_up(props=None):
                  members=[resource_holders, entrepreneurs],
                  props=pa)
 
-    return (market, resource_holders, entrepreneurs)
+    return market, resource_holders, entrepreneurs
 
 
 def main():

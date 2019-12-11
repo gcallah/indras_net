@@ -43,8 +43,8 @@ def not_impl(user):
 
 
 def run(user, test_run=False):
-    steps = 0
-    acts = 0
+    # steps = 0
+    # acts = 0
     if not test_run:
         steps = user.ask("How many periods?")
         if steps is None or steps == "" or steps.isspace():

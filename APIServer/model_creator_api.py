@@ -16,9 +16,9 @@ def generate_func(agent):
     global agents_arr
     global groups_arr
 
-    withinHood = groups_arr[0].subset(in_hood, agent, 3, name="hood")
+    within_hood = groups_arr[0].subset(in_hood, agent, 3, name="hood")
 
-    print("There are ", len(withinHood), "agents within range")
+    print("There are ", len(within_hood), "agents within range")
     return False
 
 
