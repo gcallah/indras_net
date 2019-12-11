@@ -55,9 +55,9 @@ class BacteriaTestCase(TestCase):
         self.assertTrue(new_bacterium["angle"] is None)
 
     def test_calc_toxin(self):
-        '''
+        """
         Test if we get proper toxin level
-        '''
+        """
         toxins_group = Composite("Toxins")
         bacterium = create_bacterium("Bacteria", 0, self.pa)
         for i in range(TEST_TOX_NUM):
@@ -66,9 +66,9 @@ class BacteriaTestCase(TestCase):
         self.assertTrue(toxin_strength < 0)
 
     def test_calc_nutrient(self):
-        '''
+        """
         Test if we get proper nutrient level
-        '''
+        """
         nutrients_group = Composite("nutrients")
         bacterium = create_bacterium("Bacteria", 0, self.pa)
         for i in range(TEST_NUTRI_NUM):
@@ -77,10 +77,10 @@ class BacteriaTestCase(TestCase):
         self.assertTrue(nutrient_strength > 0)
 
     def test_bacterium_action(self):
-        '''
-        Test if the previous nutricity and toxicity of the bacterium 
+        """
+        Test if the previous nutricity and toxicity of the bacterium
         change when the function is called
-        '''
+        """
         bacterium = create_bacterium("Bacteria", 0, self.pa)
         bacterium["prev_toxicity"] = 0
         bacterium["prev_nutricity"] = 0

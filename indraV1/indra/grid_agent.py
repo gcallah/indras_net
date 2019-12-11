@@ -88,11 +88,7 @@ class GridView():
         return self.filter_view(lambda x: not x.is_empty())
     
     def to_json(self):
-        safe_fields = {}
-        safe_fields["x1"] = self.x1
-        safe_fields["x2"] = self.x2
-        safe_fields["y1"] = self.y1
-        safe_fields["y2"] = self.y2
+        safe_fields = {"x1": self.x1, "x2": self.x2, "y1": self.y1, "y2": self.y2}
         return safe_fields
 
 class GridAgent(sa.SpatialAgent):

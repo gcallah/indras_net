@@ -62,9 +62,9 @@ car_market = None
 
 
 def get_car_life_json(json_file, dealer_name):  # testcase needed!
-    '''
+    """
     get car life randomly from a json file
-    '''
+    """
     emoji_dic = json_file[dealer_name]
     selected_emoji = list(emoji_dic.keys())[0]
     avg_life = emoji_dic[selected_emoji]
@@ -75,19 +75,19 @@ def get_car_life_json(json_file, dealer_name):  # testcase needed!
 
 
 def get_emoji_json(json_file, dealer_name):  # testcase needed!
-    '''
+    """
     get dealer's from a json file
-    '''
+    """
     emoji_dic = json_file[dealer_name]
     selected_emoji = list(emoji_dic.keys())[0]
     return selected_emoji
 
 
 def map_json_to_attributes(json_file, dealer_name):
-    '''
+    """
     map every information from json file to a dealer's
     existing attributes
-    '''
+    """
     emoji_dic = json_file[dealer_name]
     selected_emoji = list(emoji_dic.keys())[0]
     # need to be verified here: Is dealer_name an agent
@@ -109,20 +109,20 @@ def is_dealer(agent, dealer_grp):  # testcase done
 
 
 def get_car_life(dealer):  # testcase done
-    '''
+    """
     Display dealer's information and car
     for debug purpose
-    '''
+    """
     print("Getting car from dealer", dealer)
     return dealer["curr_car_life"]
 
 
 def get_dealer_car(dealer_characteristc):  # testcase done
-    '''
+    """
     Based on dealer's characteristics
     this function returns a random car life to dealer object
     to sell to the buyer
-    '''
+    """
     if dealer_characteristc == "good":
         return random.randint(MIN_GOOD_CAR_LIFE, MAX_CAR_LIFE)
     else:  # dealer characteristic == bad
@@ -130,9 +130,9 @@ def get_dealer_car(dealer_characteristc):  # testcase done
 
 
 def dealer_action(dealer):  # testcase??
-    '''
+    """
     Display debug statements
-    '''
+    """
     car_market.user.tell("I'm " + dealer.name + " and I'm a dealer.")
     dealer_characteristic = get_dealer_characteristic()
     dealer["dealer_characteristic"] = dealer_characteristic
@@ -147,11 +147,11 @@ def get_dealer_characteristic():  # testcase done
 
 
 def set_emoji_indicator(buyer):
-    '''
+    """
     when a buyer becomes mature
     he/she can judge based on their
      past buying experience
-    '''
+    """
     mp = buyer["emoji_life_avg"]
     for key in mp:
         if mp[key] >= MIN_GOOD_CAR_LIFE:
@@ -161,10 +161,10 @@ def set_emoji_indicator(buyer):
 
 
 def get_dealer_emoji(dealer_characteristic):  # testcase done
-    '''
+    """
     return random emojis from two categories.
     depending on dealer characteristics
-    '''
+    """
     if dealer_characteristic == "good":
         return POS_EMOJIS[random.randint(0, 3)]
     else:
@@ -172,10 +172,10 @@ def get_dealer_emoji(dealer_characteristic):  # testcase done
 
 
 def update_dealer_sale(dealer, new_car_life):  # testcase done
-    '''
+    """
     A helper function to update attributes in dealer agent
     When buyer and dealer interaction happens
-    '''
+    """
     dealer["num_sales"] += 1
     if dealer["avg_car_life_sold"] is None:
         dealer["avg_car_life_sold"] = new_car_life
@@ -186,10 +186,10 @@ def update_dealer_sale(dealer, new_car_life):  # testcase done
 
 
 def is_mature(buyer):  # testcase done
-    '''
+    """
     check if buyer has enough experience
     to make its own decision
-    '''
+    """
     if not buyer["can_mature"]:
         if MATURE_BOUND <= len(buyer["dealer_hist"]):
             buyer["can_mature"] = True
@@ -201,10 +201,10 @@ def is_mature(buyer):  # testcase done
 
 
 def is_credible(dealer, buyer):  # testcase done
-    '''
+    """
     See if this dealer looks good... right now, only useful for
     mature buyers.
-    '''
+    """
     if is_mature(buyer):
         set_emoji_indicator(buyer)
         # judge base on buyer's own past experience
@@ -221,11 +221,11 @@ def is_credible(dealer, buyer):  # testcase done
 
 
 def cal_avg_life(buyer):  # testcase done
-    '''
+    """
     Each emoji associate with list of car lifes
     this function calculates average car life of a emoji
     and map it to the corresponding emoji
-    '''
+    """
     assoc = buyer["emoji_carlife_assoc"]
     emo_life_avg = buyer["emoji_life_avg"]
     for key in assoc:
@@ -235,10 +235,10 @@ def cal_avg_life(buyer):  # testcase done
 
 
 def buy_from_dealer(agent, my_dealer):
-    '''
+    """
     When buyer buys a car from the dealer
     Update all dealer and buyer's attributes
-    '''
+    """
     agent["has_car"] = True
     agent["dealer_hist"].append(my_dealer)
     rec_carlife = get_car_life(my_dealer)
@@ -258,10 +258,10 @@ def buy_from_dealer(agent, my_dealer):
 
 
 def buyer_action(agent):  # how to write this testcase
-    '''
+    """
     This functions lets buyer
     to decides whether wants to buy a car or not
-    '''
+    """
     print("_" * 20)
     print("Agent: " + agent.name)
     agent["age"] += 1

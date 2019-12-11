@@ -21,6 +21,7 @@ class HeightAgent(ent.Agent):
     An agent who reproduces and has offspring with
     a deviation around its height.
     """
+
     def __init__(self, name, height, parent_height):
         super().__init__(name, REPRODUCE)
         self.height = height
@@ -85,7 +86,7 @@ class HeightEnv(env.Environment):
 
     def __init__(self, model_nm=None, props=None):
         super().__init__("Height Environment", model_nm=model_nm, preact=True,
-                        props=props)
+                         props=props)
         self.avg_height = {}
         self.runt_height = 0
 

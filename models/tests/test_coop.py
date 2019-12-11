@@ -62,9 +62,9 @@ class coopTestCase(TestCase):
         pass
 
     def test_babysitter_action(self):
-        '''
+        """
         Test the babysitter action
-        '''
+        """
         new_babysitter0 = create_babysitter("babysitters", 0, self.pa)
         new_babysitter0["coupons"] = 0
         babysitter_action(new_babysitter0)
@@ -72,9 +72,9 @@ class coopTestCase(TestCase):
         # self.assertTrue(new_babysitter0["going_out"] == False)
 
     def test_central_bank_action(self):
-        '''
+        """
         Test the central bank action
-        '''
+        """
         pass
 
     if __name__ == '__main__':
