@@ -36,8 +36,6 @@ ERR_MSG = "Invalid agent name"
 wolves = None
 sheep = None
 meadow = None
-create_wolf = None
-create_sheep = None
 wolves_created = 0
 sheep_created = 0
 
