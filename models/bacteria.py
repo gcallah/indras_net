@@ -30,6 +30,7 @@ bacteria = None
 toxins = None
 nutrients = None
 petri_dish = None
+env = None
 
 
 def calc_toxin(group, agent):

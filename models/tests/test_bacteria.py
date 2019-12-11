@@ -48,9 +48,9 @@ class BacteriaTestCase(TestCase):
         Test to see if bacterium is created
         """
         new_bacterium = create_bacterium("Bacteria", 0, self.pa)
-        self.assertTrue(new_bacterium["prev_toxicity"] == None)
-        self.assertTrue(new_bacterium["prev_nutricity"] == None)
-        self.assertTrue(new_bacterium["angle"] == None)
+        self.assertTrue(new_bacterium["prev_toxicity"] is None)
+        self.assertTrue(new_bacterium["prev_nutricity"] is None)
+        self.assertTrue(new_bacterium["angle"] is None)
 
     def test_calc_toxin(self):
         '''

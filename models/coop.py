@@ -7,8 +7,8 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.env import Env, UNLIMITED
 from indra.space import gaussian_distribution
-from indra.utils import get_props
 from indra.user import user_tell
+from indra.utils import get_props
 
 MODEL_NAME = 'coop'
 
@@ -38,6 +38,7 @@ coop_env = None
 last_period_exchanges = 0
 last_period_unemployed = 0
 
+central_bank = None
 
 def wants_to_sit(agent, *args):
     """

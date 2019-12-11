@@ -29,6 +29,7 @@ DEF_SIGMA = .8
 trend_followers = None
 value_investors = None
 market_maker = None
+market = None
 
 
 def trend_direction(agent, cur_price, price_hist):
@@ -74,7 +75,7 @@ def sell(agent):
 def market_report(env):
     global market_maker
     return "Asset price on the market: " \
-        + str(round(market_maker["asset_price"], 4)) + "\n"
+           + str(round(market_maker["asset_price"], 4)) + "\n"
 
 
 def calc_price_change(ratio, min_price_move=DEF_MIN_PRICE_MOVE,
