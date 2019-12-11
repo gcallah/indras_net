@@ -43,6 +43,8 @@ To test the APIServer with the front end locally:
       should be `http://127.0.0.1:8000` if you ran `api.sh` above).
     - `cd` into [webapp](webapp) and run `npm run start`.
 
+If `ImportError: bad magic number in 'config': b'\x03\xf3\r\n'` occurs, please try to run `find . -name \*.pyc -delete` .
+
 Work in Progress
 ----------------
 
