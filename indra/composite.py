@@ -182,7 +182,7 @@ class Composite(Agent):
                         del_list.append(key)
         for key in del_list:
             del self.members[key]
-        return (total_acts, total_moves)
+        return total_acts, total_moves
 
     def __add__(self, other):
         """

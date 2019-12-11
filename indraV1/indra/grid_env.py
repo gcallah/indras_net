@@ -85,7 +85,7 @@ class Cell(node.Node):
         """
         if item == self.contents:
             self.contents = None
-            
+
     def to_json(self):
         """
         We're going to make a dictionary of the 'safe' parts of the object to
@@ -179,9 +179,9 @@ class GridEnv(se.SpatialEnv):
 
         self.torus = torus
         self.num_cells = width * height
-        
+
         self.__init_unrestorables()
-            
+
     def __init_unrestorables(self):
         self.grid = []
         self.empties = []
@@ -192,7 +192,7 @@ class GridEnv(se.SpatialEnv):
                 row.append(cell)
                 self.empties.append(cell)
             self.grid.append(row)
-        
+
         self.set_agent_color()
 
     def __iter__(self):
@@ -311,7 +311,8 @@ class GridEnv(se.SpatialEnv):
         Return a list of neighbors within a certain purview.
 
         Args:
-            x, y: Coordinates for the neighborhood to get.
+            x: X coordinates for the neighborhood to get.
+            y: Y coordinates for the neighborhood to get.
             distance: distance, in cells, of neighborhood to get.
             view: we may already have a view we are working with.
 
@@ -348,7 +349,7 @@ class GridEnv(se.SpatialEnv):
             logging.error("Agent could not move because no cells are empty")
         else:
             self._move_item(agent, empty_cell)
-    
+
     #Functions by JacEkko (John Knox)====================================================
     def get_angle(self, agent1, agent2, grid_view=None):
         """
@@ -364,7 +365,7 @@ class GridEnv(se.SpatialEnv):
             rad = math.atan(dy / dx)
             angle = rad * (180 / math.pi)
             return angle
-        
+
     def move_to_agent(self, tar_agent, dest_agent, steps, grid_view=None):
         print("MTA Tar: ", tar_agent.pos[X], ",", tar_agent.pos[Y])
         print("MTA Dest: ", dest_agent.pos[X], ",", dest_agent.pos[Y])
@@ -391,7 +392,7 @@ class GridEnv(se.SpatialEnv):
         if(tar_agent.pos[Y] == dest_agent.pos[Y]):
             if(tar_agent.pos[X] == dest_agent.pos[X]):
                 print("target at the destination")
-            
+
     def move_from_agent(self, tar_agent, dest_agent, steps, grid_view=None):
         print("MFA Tar: ",tar_agent.pos[X], ",", tar_agent.pos[Y])
         print("MFA Dest: ",tar_agent.pos[X], ",", tar_agent.pos[Y])
@@ -412,7 +413,7 @@ class GridEnv(se.SpatialEnv):
                              tar_agent.pos[Y] - steps):
                 tar_agent.pos[Y] -= steps
     #=====================================================================================
-        
+
     def find_empty(self, grid_view=None):
         """
         Return a random, empty cell.
@@ -489,7 +490,7 @@ class GridEnv(se.SpatialEnv):
             return False
         else:
             return self._get_contents(x, y) is None
-        
+
     def dist(self, agent1, agent2):
         """
         Arguments:
@@ -498,7 +499,7 @@ class GridEnv(se.SpatialEnv):
         Returns:
             The Euclidian distance between the two
         agents. There isn't numerical ill-conditioning
-        with this because the positions are integers. If 
+        with this because the positions are integers. If
         there are any applications where positions are given
         by nonintegral values, use caution.
         """
@@ -508,7 +509,7 @@ class GridEnv(se.SpatialEnv):
     def free_spot_near(self, agent):
         """
         Looks for an empty cell near agent. If the grid is full,
-        returns None. 
+        returns None.
 
         Argument:
             The agent whose nearest empty cell we look for.
@@ -527,7 +528,7 @@ class GridEnv(se.SpatialEnv):
                     return cell.coords
 
         return None
-    
+
     def to_json(self):
         """
         We're going to make a dictionary of the 'safe' parts of the object to
@@ -537,28 +538,28 @@ class GridEnv(se.SpatialEnv):
         safe_fields = super().to_json()
         safe_fields["torus"] = self.torus
         safe_fields["num_cells"] = self.num_cells
-        
+
         return safe_fields
-    
+
     def from_json(self, json_input):
         super().from_json(json_input)
         self.__init_unrestorables()
         self.torus = json_input["torus"]
         self.num_cells = json_input["num_cells"]
-    
-    def restore_agent(self, agent_json):            
-        new_agent = ta.TestGridAgent(agent_json["name"], 
+
+    def restore_agent(self, agent_json):
+        new_agent = ta.TestGridAgent(agent_json["name"],
                                      agent_json["goal"],
-                                     agent_json["max_move"], 
+                                     agent_json["max_move"],
                                      agent_json["max_detect"])
         self.add_agent_to_grid(new_agent, agent_json)
-        
+
     def add_agent_to_grid(self, agent, agent_json):
         x, y = agent_json["cell"]["coordx"], agent_json["cell"]["coordy"]
         agent.from_json_preadd(agent_json)
         self.add_agent(agent, x, y, True)
         agent.from_json_postadd(agent_json)
-            
+
     def print_env(self):
         msg = ""
         for row in self.grid:
