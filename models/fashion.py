@@ -62,13 +62,13 @@ society = None
 opp_group = None
 
 
-def change_color(agent, society, opp_group):
+def change_color(agent, _society, _opp_group):
     """
     change agent's DISPLAY_COLOR to its opposite color
     """
     agent[DISPLAY_COLOR] = not agent[DISPLAY_COLOR]
-    society.add_switch(agent, agent.prim_group,
-                       opp_group[str(agent.prim_group)])
+    _society.add_switch(agent, agent.prim_group,
+                        _opp_group[str(agent.prim_group)])
 
 
 def new_color_pref(old_pref, env_color):

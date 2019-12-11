@@ -41,10 +41,10 @@ class SegregationTestCase(TestCase):
         """
         Test that our tolerance function gets a good distribution.
         """
-        sum = 0
+        sum_of_tolerance = 0
         for i in range(REP_RAND_TESTS):
-            sum += get_tolerance(DEF_TOLERANCE, DEF_SIGMA)
-        avg = sum / REP_RAND_TESTS
+            sum_of_tolerance += get_tolerance(DEF_TOLERANCE, DEF_SIGMA)
+        avg = sum_of_tolerance / REP_RAND_TESTS
         self.assertLess(DEF_TOLERANCE - .2, avg)
         self.assertGreater(DEF_TOLERANCE + .2, avg)
 

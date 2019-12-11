@@ -19,7 +19,6 @@ groups = None
 reset_lists = False
 to_come_alive = []
 to_die = []
-DEBUG = False
 
 
 def create_game_cell(x, y):
