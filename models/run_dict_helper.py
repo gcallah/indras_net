@@ -1,4 +1,3 @@
-
 """
 1. The name of this file is terrible: what is a `run_dict_helper`?
    It should be `function_registry`.
@@ -23,9 +22,9 @@ from models.fashion import follower_action, common_action, tsetter_action
 from models.fashion import main as famain
 from models.fashion import set_up as faset_up
 from models.flocking import bird_action
-from models.fmarket import plot_asset_price
 from models.fmarket import main as fmmain
 from models.fmarket import market_maker_action, trend_follower_action
+from models.fmarket import plot_asset_price
 from models.fmarket import set_up as fmset_up
 from models.fmarket import value_investor_action
 from models.forestfire import main as ffmain

@@ -12,6 +12,7 @@ from models.gameoflife import set_up, create_game_cell
 TEST_X = 1
 TEST_Y = 1
 
+
 class GameOfLifeTestCase(TestCase):
     def setUp(self):
         self.pa = PropArgs.create_props('gameoflife_props',
@@ -92,12 +93,12 @@ class GameOfLifeTestCase(TestCase):
         black = Composite("black")
         g.groups = []
         g.groups.append(black)
-        g.gameoflife_env=Env("Game of Life",
-                             action=g.gameoflife_action,
-                             height=DEF_HEIGHT,
-                             width=DEF_WIDTH,
-                             members=g.groups,
-                             random_placing=False)
+        g.gameoflife_env = Env("Game of Life",
+                               action=g.gameoflife_action,
+                               height=DEF_HEIGHT,
+                               width=DEF_WIDTH,
+                               members=g.groups,
+                               random_placing=False)
         g.populate_board_glider(DEF_WIDTH, DEF_HEIGHT)
         self.assertEqual(len(g.gameoflife_env.members["black"]), 5)
 
@@ -105,25 +106,25 @@ class GameOfLifeTestCase(TestCase):
         black = Composite("black")
         g.groups = []
         g.groups.append(black)
-        g.gameoflife_env=Env("Game of Life",
-                             action=g.gameoflife_action,
-                             height=DEF_HEIGHT,
-                             width=DEF_WIDTH,
-                             members=g.groups,
-                             random_placing=False)
+        g.gameoflife_env = Env("Game of Life",
+                               action=g.gameoflife_action,
+                               height=DEF_HEIGHT,
+                               width=DEF_WIDTH,
+                               members=g.groups,
+                               random_placing=False)
         g.populate_board_small_exploder(DEF_WIDTH, DEF_HEIGHT)
         self.assertEqual(len(g.gameoflife_env.members["black"]), 7)
 
-    def test_populate_board_exploder (self):
+    def test_populate_board_exploder(self):
         black = Composite("black")
         g.groups = []
         g.groups.append(black)
-        g.gameoflife_env=Env("Game of Life",
-                             action=g.gameoflife_action,
-                             height=DEF_HEIGHT,
-                             width=DEF_WIDTH,
-                             members=g.groups,
-                             random_placing=False)
+        g.gameoflife_env = Env("Game of Life",
+                               action=g.gameoflife_action,
+                               height=DEF_HEIGHT,
+                               width=DEF_WIDTH,
+                               members=g.groups,
+                               random_placing=False)
         g.populate_board_exploder(DEF_WIDTH, DEF_HEIGHT)
         self.assertEqual(len(g.gameoflife_env.members["black"]), 12)
 
@@ -131,12 +132,12 @@ class GameOfLifeTestCase(TestCase):
         black = Composite("black")
         g.groups = []
         g.groups.append(black)
-        g.gameoflife_env=Env("Game of Life",
-                             action=g.gameoflife_action,
-                             height=DEF_HEIGHT,
-                             width=DEF_WIDTH,
-                             members=g.groups,
-                             random_placing=False)
+        g.gameoflife_env = Env("Game of Life",
+                               action=g.gameoflife_action,
+                               height=DEF_HEIGHT,
+                               width=DEF_WIDTH,
+                               members=g.groups,
+                               random_placing=False)
         g.populate_board_n_horizontal_row(DEF_WIDTH, DEF_HEIGHT)
         self.assertEqual(len(g.gameoflife_env.members["black"]), 9)
 
@@ -144,12 +145,12 @@ class GameOfLifeTestCase(TestCase):
         black = Composite("black")
         g.groups = []
         g.groups.append(black)
-        g.gameoflife_env=Env("Game of Life",
-                             action=g.gameoflife_action,
-                             height=DEF_HEIGHT,
-                             width=DEF_WIDTH,
-                             members=g.groups,
-                             random_placing=False)
+        g.gameoflife_env = Env("Game of Life",
+                               action=g.gameoflife_action,
+                               height=DEF_HEIGHT,
+                               width=DEF_WIDTH,
+                               members=g.groups,
+                               random_placing=False)
         g.populate_board_n_vertical_row(DEF_WIDTH, DEF_HEIGHT)
         self.assertEqual(len(g.gameoflife_env.members["black"]), 9)
 
@@ -157,12 +158,12 @@ class GameOfLifeTestCase(TestCase):
         black = Composite("black")
         g.groups = []
         g.groups.append(black)
-        g.gameoflife_env=Env("Game of Life",
-                             action=g.gameoflife_action,
-                             height=DEF_HEIGHT,
-                             width=DEF_WIDTH,
-                             members=g.groups,
-                             random_placing=False)
+        g.gameoflife_env = Env("Game of Life",
+                               action=g.gameoflife_action,
+                               height=DEF_HEIGHT,
+                               width=DEF_WIDTH,
+                               members=g.groups,
+                               random_placing=False)
         g.populate_board_lightweight_spaceship(DEF_WIDTH, DEF_HEIGHT)
         self.assertEqual(len(g.gameoflife_env.members["black"]), 9)
 
@@ -170,11 +171,11 @@ class GameOfLifeTestCase(TestCase):
         black = Composite("black")
         g.groups = []
         g.groups.append(black)
-        g.gameoflife_env=Env("Game of Life",
-                             action=g.gameoflife_action,
-                             height=DEF_HEIGHT,
-                             width=DEF_WIDTH,
-                             members=g.groups,
-                             random_placing=False)
+        g.gameoflife_env = Env("Game of Life",
+                               action=g.gameoflife_action,
+                               height=DEF_HEIGHT,
+                               width=DEF_WIDTH,
+                               members=g.groups,
+                               random_placing=False)
         g.populate_board_tumbler(DEF_WIDTH, DEF_HEIGHT)
         self.assertEqual(len(g.gameoflife_env.members["black"]), 22)

@@ -7,14 +7,13 @@ from unittest import TestCase, main
 from propargs.propargs import PropArgs
 
 import models.coop as coop
-from indra.composite import Composite
-from models.coop import DEF_SIGMA, DEF_DISTRIBUTING_COUPON, G_HOME
-from models.coop import babysitter_action, central_bank_action, CENTRAL_BANK
-from models.coop import distribute_coupons, coop_action, act, DEF_COUPON
+from models.coop import act, DEF_COUPON
+from models.coop import babysitter_action
 from models.coop import set_up, create_babysitter, create_central_bank
 
 TEST_BABYSITTER_NUM = 3
 TEST_CENTRAL_BANK_NUM = 3
+
 
 class coopTestCase(TestCase):
     def setUp(self):
@@ -72,13 +71,11 @@ class coopTestCase(TestCase):
         # self.assertTrue(new_babysitter0["sitting"] == True)
         # self.assertTrue(new_babysitter0["going_out"] == False)
 
-
     def test_central_bank_action(self):
         '''
         Test the central bank action
         '''
         pass
-
 
     if __name__ == '__main__':
         main()

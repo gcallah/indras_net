@@ -109,15 +109,16 @@ def wolfram_action(wolfram_env):
                 print("Checking agent at", curr_row[agent])
             if (x > 0) and (x < wolfram_env.width - 1):
                 middle_color = get_color(curr_row[agent].primary_group())
-                right_color = get_color(curr_row[get_str_key(x + 1,
-                                                             active_row_y)].primary_group())
+                right_color = get_color(
+                    curr_row[get_str_key(x + 1, active_row_y)].primary_group())
                 if DEBUG:
                     print("  Left: %d, middle: %d, right: %d" %
                           (left_color, middle_color, right_color))
                 if next_color(rule_dict, left_color, middle_color,
                               right_color):
                     wolfram_env.add_switch(next_row[
-                                               get_str_key(x, active_row_y - 1)],
+                                               get_str_key(x,
+                                                           active_row_y - 1)],
                                            groups[W], groups[B])
                 left_color = middle_color
             x += 1

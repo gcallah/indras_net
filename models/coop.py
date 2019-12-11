@@ -40,6 +40,7 @@ last_period_unemployed = 0
 
 central_bank = None
 
+
 def wants_to_sit(agent, *args):
     """
     Checking whether the state is healthy or not

@@ -32,7 +32,6 @@ COMP_SHEEP_NAME = "sheep"
 
 ERR_MSG = "Invalid agent name"
 
-
 wolves = None
 sheep = None
 meadow = None
@@ -126,10 +125,8 @@ def create_wolf(name, i, props=None):
                  duration=wolf_life,
                  action=wolf_action,
                  env=meadow,
-                 attrs={"time_to_repr":
-                        wolf_repro,
-                        "orig_repr_time":
-                        wolf_repro})
+                 attrs={"time_to_repr": wolf_repro,
+                        "orig_repr_time": wolf_repro})
 
 
 def create_sheep(name, i, props=None):

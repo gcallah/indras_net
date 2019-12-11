@@ -79,8 +79,8 @@ class SegregationTestCase(TestCase):
                                                self.pa)
 
         my_city = Env("Small city for test", width=SMALL_GRID,
-                           height=SMALL_GRID,
-                           members=[red_agents, blue_agents])
+                      height=SMALL_GRID,
+                      members=[red_agents, blue_agents])
         return (test_agent, my_city)
 
     def test_seg_agent_action(self):

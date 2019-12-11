@@ -7,6 +7,7 @@ from models.wolfram import set_up, W, B
 
 TEST_ANUM = 999999
 
+
 class WolframTestCase(TestCase):
     def setUp(self):
         (wolf.wolfram_env, wolf.groups, wolf.rule_dict) = set_up()
@@ -41,14 +42,14 @@ class WolframTestCase(TestCase):
         then compares it to what get_rule returns 
         given that get_rule was passed in the parameter to return rule 30.
         """
-        rule30 =  {"(1, 1, 1)": 0,
-        "(1, 1, 0)": 0,
-        "(1, 0, 1)": 0,
-        "(1, 0, 0)": 1,
-        "(0, 1, 1)": 1,
-        "(0, 1, 0)": 1,
-        "(0, 0, 1)": 1,
-        "(0, 0, 0)": 0}
+        rule30 = {"(1, 1, 1)": 0,
+                  "(1, 1, 0)": 0,
+                  "(1, 0, 1)": 0,
+                  "(1, 0, 0)": 1,
+                  "(0, 1, 1)": 1,
+                  "(0, 1, 0)": 1,
+                  "(0, 0, 1)": 1,
+                  "(0, 0, 0)": 0}
         self.assertEqual(get_rule(30), rule30)
 
     def test_next_color(self):
@@ -58,7 +59,7 @@ class WolframTestCase(TestCase):
         self.assertEqual(next_color(wolf.rule_dict, B, B, B), W)
         self.assertEqual(next_color(wolf.rule_dict, B, B, W), W)
         self.assertEqual(next_color(wolf.rule_dict, B, W, B), W)
-        self.assertEqual(next_color(wolf.rule_dict, B, W, W), B)   
+        self.assertEqual(next_color(wolf.rule_dict, B, W, W), B)
         self.assertEqual(next_color(wolf.rule_dict, W, B, B), B)
         self.assertEqual(next_color(wolf.rule_dict, W, B, W), B)
         self.assertEqual(next_color(wolf.rule_dict, W, W, B), B)

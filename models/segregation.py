@@ -134,7 +134,7 @@ def create_resident(name, i, props=None):
                         COLOR: color, "hood_changed": True,
                         "just_moved": False,
                         "hood_size": hood_size
-                        },)
+                        }, )
 
 
 def set_up(props=None):

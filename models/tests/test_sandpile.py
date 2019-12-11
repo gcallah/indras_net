@@ -14,6 +14,7 @@ SMALL_GRID = 4
 
 sandpile = None
 
+
 class SandpileTestCase(TestCase):
     def setUp(self):
         (sp.sandpile, sp.groups, sp.group_indices) = set_up()
@@ -75,6 +76,8 @@ class SandpileTestCase(TestCase):
         """
         Checks that the agent in the center changes groups
         """
-        self.assertEqual(sp.sandpile.attrs["center_agent"].primary_group(), sp.groups[0])
+        self.assertEqual(sp.sandpile.attrs["center_agent"].primary_group(),
+                         sp.groups[0])
         sandpile_action(sp.sandpile)
-        self.assertEqual(sp.sandpile.attrs["center_agent"].primary_group(), sp.groups[1])
+        self.assertEqual(sp.sandpile.attrs["center_agent"].primary_group(),
+                         sp.groups[1])
