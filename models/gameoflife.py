@@ -145,12 +145,9 @@ def populate_board_glider(width, height):
     global groups
 
     center = [width // 2, height // 2]
-    agent_loc = []
-    agent_loc.append((center[0], center[1]))
-    agent_loc.append((center[0] - 1, center[1] + 1))
-    agent_loc.append((center[0] + 1, center[1] + 1))
-    agent_loc.append((center[0] + 1, center[1]))
-    agent_loc.append((center[0], center[1] - 1))
+    agent_loc = [(center[0], center[1]), (center[0] - 1, center[1] + 1),
+                 (center[0] + 1, center[1] + 1),
+                 (center[0] + 1, center[1]), (center[0], center[1] - 1)]
     for loc in agent_loc:
         agent = create_game_cell(loc[0], loc[1])
         groups[0] += agent
@@ -162,14 +159,11 @@ def populate_board_small_exploder(width, height):
     global groups
 
     center = [width // 2, height // 2]
-    agent_loc = []
-    agent_loc.append((center[0], center[1]))
-    agent_loc.append((center[0], center[1] + 1))
-    agent_loc.append((center[0] - 1, center[1]))
-    agent_loc.append((center[0] + 1, center[1]))
-    agent_loc.append((center[0] - 1, center[1] - 1))
-    agent_loc.append((center[0] + 1, center[1] - 1))
-    agent_loc.append((center[0], center[1] - 2))
+    agent_loc = [(center[0], center[1]), (center[0], center[1] + 1),
+                 (center[0] - 1, center[1]),
+                 (center[0] + 1, center[1]), (center[0] - 1, center[1] - 1),
+                 (center[0] + 1, center[1] - 1),
+                 (center[0], center[1] - 2)]
     for loc in agent_loc:
         agent = create_game_cell(loc[0], loc[1])
         groups[0] += agent
@@ -180,9 +174,7 @@ def populate_board_exploder(width, height):
     global biosphere
 
     center = [width // 2, height // 2]
-    agent_loc = []
-    agent_loc.append((center[0], center[1]))
-    agent_loc.append((center[0], center[1] - 4))
+    agent_loc = [(center[0], center[1]), (center[0], center[1] - 4)]
     for i in range(0, 5):
         agent_loc.append((center[0] - 2, center[1] - i))
         agent_loc.append((center[0] + 2, center[1] - i))
@@ -230,16 +222,13 @@ def populate_board_lightweight_spaceship(width, height):
     global biosphere
 
     center = [width // 2, height // 2]
-    agent_loc = []
-    agent_loc.append((center[0], center[1]))
-    agent_loc.append((center[0] - 1, center[1]))
-    agent_loc.append((center[0] - 2, center[1]))
-    agent_loc.append((center[0] - 3, center[1]))
-    agent_loc.append((center[0], center[1] - 1))
-    agent_loc.append((center[0], center[1] - 2))
-    agent_loc.append((center[0] - 4, center[1] - 1))
-    agent_loc.append((center[0] - 1, center[1] - 3))
-    agent_loc.append((center[0] - 4, center[1] - 3))
+    agent_loc = [(center[0], center[1]), (center[0] - 1, center[1]),
+                 (center[0] - 2, center[1]),
+                 (center[0] - 3, center[1]), (center[0], center[1] - 1),
+                 (center[0], center[1] - 2),
+                 (center[0] - 4, center[1] - 1),
+                 (center[0] - 1, center[1] - 3),
+                 (center[0] - 4, center[1] - 3)]
     for loc in agent_loc:
         agent = create_game_cell(loc[0], loc[1])
         groups[0] += agent
@@ -250,32 +239,27 @@ def populate_board_tumbler(width, height):
     global biosphere
 
     center = [width // 2, height // 2]
-    agent_loc = []
+    agent_loc = [(center[0] - 1, center[1]), (center[0] - 2, center[1]),
+                 (center[0] + 1, center[1]),
+                 (center[0] + 2, center[1]), (center[0] - 1, center[1] - 1),
+                 (center[0] - 2, center[1] - 1),
+                 (center[0] + 1, center[1] - 1),
+                 (center[0] + 2, center[1] - 1),
+                 (center[0] - 1, center[1] - 2),
+                 (center[0] - 1, center[1] - 3),
+                 (center[0] - 1, center[1] - 4),
+                 (center[0] + 1, center[1] - 2),
+                 (center[0] + 1, center[1] - 3),
+                 (center[0] + 1, center[1] - 4),
+                 (center[0] - 3, center[1] - 3),
+                 (center[0] - 3, center[1] - 4),
+                 (center[0] - 3, center[1] - 5),
+                 (center[0] - 2, center[1] - 5),
+                 (center[0] + 3, center[1] - 3),
+                 (center[0] + 3, center[1] - 4),
+                 (center[0] + 3, center[1] - 5),
+                 (center[0] + 2, center[1] - 5)]
 
-    agent_loc.append((center[0] - 1, center[1]))
-    agent_loc.append((center[0] - 2, center[1]))
-    agent_loc.append((center[0] + 1, center[1]))
-    agent_loc.append((center[0] + 2, center[1]))
-    agent_loc.append((center[0] - 1, center[1] - 1))
-    agent_loc.append((center[0] - 2, center[1] - 1))
-    agent_loc.append((center[0] + 1, center[1] - 1))
-    agent_loc.append((center[0] + 2, center[1] - 1))
-
-    agent_loc.append((center[0] - 1, center[1] - 2))
-    agent_loc.append((center[0] - 1, center[1] - 3))
-    agent_loc.append((center[0] - 1, center[1] - 4))
-    agent_loc.append((center[0] + 1, center[1] - 2))
-    agent_loc.append((center[0] + 1, center[1] - 3))
-    agent_loc.append((center[0] + 1, center[1] - 4))
-
-    agent_loc.append((center[0] - 3, center[1] - 3))
-    agent_loc.append((center[0] - 3, center[1] - 4))
-    agent_loc.append((center[0] - 3, center[1] - 5))
-    agent_loc.append((center[0] - 2, center[1] - 5))
-    agent_loc.append((center[0] + 3, center[1] - 3))
-    agent_loc.append((center[0] + 3, center[1] - 4))
-    agent_loc.append((center[0] + 3, center[1] - 5))
-    agent_loc.append((center[0] + 2, center[1] - 5))
     for loc in agent_loc:
         agent = create_game_cell(loc[0], loc[1])
         groups[0] += agent
@@ -306,8 +290,7 @@ def set_up(props=None):
     width = pa.get("grid_width", DEF_WIDTH)
     simulation = pa.get("simulation", 0)
     black = Composite("Black", {"color": BLACK, "marker": SQUARE})
-    groups = []
-    groups.append(black)
+    groups = [black]
     biosphere = Env("Game of Life",
                     action=gameoflife_action,
                     height=height,

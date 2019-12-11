@@ -73,7 +73,6 @@ def get_average_attendance(record):
 
 
 def drinker_action(agent):
-
     global attendance
     global attendance_record
     global agents_decided

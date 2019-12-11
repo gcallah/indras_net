@@ -19,7 +19,7 @@ def main(args=None):
         for choice, model in enumerate(model_list):
             print(str(choice) + ". ", model["name"])
         choice = int(input())
-        if choice >= 0 and choice < len(model_list):
+        if 0 <= choice < len(model_list):
             rdict[model_list[choice]["run"]]()
         else:
             return 0

@@ -17,6 +17,7 @@ TEST_REPS = 20
 def print_sep():
     print("________________________", flush=True)
 
+
 class ForestfireTestCase(TestCase):
     def setUp(self):
         self.test_tree = plant_tree(TREE_PREFIX, TEST_ANUM)

@@ -38,6 +38,5 @@ class DrunksTestCase(TestCase):
         discouraged = drunks.discourage(1)
         self.assertEqual(discouraged, 1)
 
-
     if __name__ == '__main__':
         main()

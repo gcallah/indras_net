@@ -35,6 +35,9 @@ mp_pref = None
 hood_size = None
 bb_capital = 2000
 
+period = None
+store_census = None
+
 # The data below creates store types with default values.
 # "Store type":
 # [expense, capital, color]
