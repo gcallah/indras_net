@@ -4,6 +4,7 @@ Places two groups of agents in the enviornment randomly
 and moves them around randomly.
 """
 
+import random
 from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import BLUE
@@ -13,7 +14,6 @@ from indra.utils import get_props
 from capital.trade_utils import seek_a_trade, gen_util_func# noqa F401
 from capital.trade_utils import max_util  # noqa F401
 import capital.trade_utils as tu
-import random
 
 MODEL_NAME = "trade"
 DEBUG = True  # turns debugging code on or off
