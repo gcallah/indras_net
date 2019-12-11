@@ -121,7 +121,7 @@ def set_up(props=None):
                        props=pa)
     sandpile_env.attrs["center_agent"] = sandpile_env.get_agent_at(height // 2,
                                                                    width // 2)
-    return (sandpile_env, groups, group_indices)
+    return sandpile_env, groups, group_indices
 
 
 def restore_globals(env):

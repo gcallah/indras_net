@@ -57,7 +57,7 @@ def set_up(props=None):
               members=[blue_group, red_group],
               props=pa)
 
-    return (env, blue_group, red_group)
+    return env, blue_group, red_group
 
 
 def main():

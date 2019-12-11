@@ -393,7 +393,7 @@ class Agent(object):
                       + " and I ain't got no action to do!")
         else:
             self.active = False
-        return (acted, moved)
+        return acted, moved
 
     def __iadd__(self, scalar):
         """

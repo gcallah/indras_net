@@ -508,4 +508,4 @@ class Space(Composite):
         #  Calculate the new coordinates
         new_x += math.cos(math.radians(angle)) * max_move
         new_y += math.sin(math.radians(angle)) * max_move
-        return (self.constrain_x(new_x), self.constrain_y(new_y))
+        return self.constrain_x(new_x), self.constrain_y(new_y)

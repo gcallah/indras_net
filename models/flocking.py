@@ -100,7 +100,7 @@ def set_up(props=None):
                   height=pa.get('grid_height', DEF_HEIGHT),
                   width=pa.get('grid_width', DEF_WIDTH),
                   members=[flock])
-    return (the_sky, flock)
+    return the_sky, flock
 
 
 def restore_globals(env):

@@ -19,7 +19,7 @@ def create_space():
     space += newton
     space += create_hardy()
     space += create_leibniz()
-    return (space, newton)
+    return space, newton
 
 
 def create_teeny_space():

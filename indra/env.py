@@ -423,7 +423,7 @@ class Env(Space):
                         period = len(data[var]["data"])
         else:
             (period, data) = self.line_data_func(self)
-        return (period, data)
+        return period, data
 
     def plot_data(self):
         """

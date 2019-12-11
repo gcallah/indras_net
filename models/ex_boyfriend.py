@@ -173,7 +173,7 @@ def set_up(props=None):
               members=[ex_boyfriend, girlfriend],
               props=pa)
 
-    return (bar, ex_boyfriend, girlfriend)
+    return bar, ex_boyfriend, girlfriend
 
 
 def main():
