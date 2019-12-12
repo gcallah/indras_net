@@ -7,4 +7,4 @@ then
 fi
 
 export user_type="terminal"
-python3 $1
+python3 $@
