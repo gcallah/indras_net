@@ -4,7 +4,7 @@ This is the test suite for drunks.py.
 
 from unittest import TestCase, main
 
-import capital.capital as cap
+import capital.cap_struct as cap
 
 
 class CapitalTestCase(TestCase):

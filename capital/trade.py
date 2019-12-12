@@ -11,8 +11,7 @@ from indra.display_methods import BLUE
 from indra.env import Env
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import get_props
-from capital.trade_utils import seek_a_trade, gen_util_func# noqa F401
-from capital.trade_utils import max_util  # noqa F401
+from capital.trade_utils import seek_a_trade, gen_util_func
 import capital.trade_utils as tu
 
 MODEL_NAME = "trade"
@@ -24,8 +23,7 @@ DEF_NUM_RESOURCES_TYPE = 4
 trader_group = None
 market = None
 
-# max_utility = tu.max_util
-max_utility = 0
+max_utility = tu.max_util
 
 
 def random_generate_resources(i, total_type, total_resources):
