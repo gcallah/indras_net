@@ -5,10 +5,10 @@ Created on Thu Oct 10 22:55:22 2019
 
 @author: selina
 """
+import os
 import json
 import random
 from numpy import random as np_random
-
 from indra.utils import get_props
 
 MODEL_NAME = "dealer_car_generator"
@@ -20,8 +20,8 @@ MEAN_SCORE = 3
 
 dealers = {}
 pa = get_props(MODEL_NAME, None, model_dir="ml")
-dealer_num = pa.get("num_dealers", 10)   # Selina should make a constant
-car_num = pa.get("num_cars", 40)  # make default constant
+dealer_num = pa.get("num_dealers", 10)
+car_num = pa.get("num_cars", 50)
 for i in range(dealer_num):
     center_score = np_random.uniform(1, 5)
     lst = [max(round(random.gauss(center_score, 0.7), 1),
@@ -37,6 +37,7 @@ for i in range(dealer_num):
         'emoji': emoji,
         'scores': lst
     }
-
-with open('data.json', 'w') as f:
+target_dir = os.getcwd() + "/data/"
+filename = str(dealer_num) + "dealers_" + str(car_num) + "cars_" + "data.json"
+with open(target_dir + filename, 'w') as f:
     json.dump(dealers, f)
