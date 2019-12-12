@@ -54,8 +54,6 @@ def create_trader(name, i, props=None):
                           DEF_NUM_RESOURCES)
         num_r_type = props.get('total_type',
                                DEF_NUM_RESOURCES_TYPE)
-        # num_trader = props.get('num_traders',
-        #                        DEF_NUM_TRADER)
     resources = random_generate_resources(i, num_r_type, num_r)
     return Agent(name + str(i), action=seek_a_trade,
                  env=market,
