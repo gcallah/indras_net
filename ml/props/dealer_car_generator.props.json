@@ -3,7 +3,7 @@
     "val": 10,
     "question": "How many dealers you want to have?",
     "atype": "INT",
-    "hival": 300,
+    "hival": 100,
     "lowval": 1
   },
   "num_cars": {

@@ -23,7 +23,7 @@ A used cars model Documentation
 """
 
 import random
-# import data.json as data
+import sys
 
 from indra.agent import Agent
 from indra.composite import Composite
@@ -34,6 +34,7 @@ from indra.utils import get_props
 
 
 MODEL_NAME = "used_cars"
+GENERATOR_NAME = "dealer_car_generator"
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
@@ -319,14 +320,14 @@ def create_buyer(name, i, props=None):  # testcase done
                         })
 
 
-def set_up(props=None):  # testcase???
+def set_up(num_dealers, props=None):  # testcase???
     """
     A func to set up run that can also be used by test code.
     """
     pa = get_props(MODEL_NAME, props, model_dir="ml")
     dealer_grp = Composite("Dealers", {"color": BLUE},
                            member_creator=create_dealer,
-                           num_members=pa.get('num_sellers', DEF_NUM_BLUE))
+                           num_members=num_dealers)
     buyer_grp = Composite("Buyers", {"color": RED},
                           member_creator=create_buyer,
                           num_members=pa.get('num_buyers', DEF_NUM_RED))
@@ -344,8 +345,13 @@ def main():
     global buyer_grp
     global dealer_grp
     global car_market
-
-    (car_market, dealer_grp, buyer_grp) = set_up()
+    if sys.argv[1] is None:
+        print("a data json file is required to run this program")
+    else:
+        filename = sys.argv[1]
+    info = filename.split("_")
+    num_dealers = int(info[0])
+    (car_market, dealer_grp, buyer_grp) = set_up(num_dealers)
 
     if DEBUG2:
         print(car_market.__repr__())

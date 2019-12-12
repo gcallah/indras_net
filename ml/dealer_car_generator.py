@@ -38,6 +38,6 @@ for i in range(dealer_num):
         'scores': lst
     }
 target_dir = os.getcwd() + "/data/"
-filename = str(dealer_num) + "dealers_" + str(car_num) + "cars_" + "data.json"
+filename = str(dealer_num) + "_" + str(car_num) + "_" + "data.json"
 with open(target_dir + filename, 'w') as f:
     json.dump(dealers, f)

@@ -16,7 +16,7 @@ class UsedCarTestCase(TestCase):
     def setUp(self):
         self.pa = PropArgs.create_props('used_car_props',
                                         ds_file='props/used_cars.props.json')
-        (self.car_market, self.dealers, self.buyers) = set_up()  # noqa: F405
+        (self.car_market, self.dealers, self.buyers) = set_up(10)  # noqa: F405
 
     def tearDown(self):
         (self.car_market, self.dealers, self.buyers) = (None, None, None)
