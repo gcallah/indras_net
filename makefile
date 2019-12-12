@@ -1,6 +1,7 @@
 # Need to export as ENV var
 export TEMPLATE_DIR = templates
 
+# Set up some variables for directories we'll use:
 BOX_DIR = bigbox
 BOX_DATA = $(BOX_DIR)/data
 BOXPLOTS = $(shell ls $(BOX_DATA)/plot*.pdf)
