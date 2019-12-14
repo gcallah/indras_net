@@ -48,16 +48,20 @@ class ActionMenu extends Component {
   }
 
   async componentDidMount() {
-    document.title = 'Indra | Menu';
-    const m = await axios.get(API_SERVER);
-    this.setState({
-      menu: m.data,
-      name: localStorage.getItem('name'),
-      modelId: parseInt(localStorage.getItem('menu_id'), 10),
-      source: localStorage.getItem('source'),
-      envFile: JSON.parse(localStorage.getItem('envFile')),
-      msg: JSON.parse(localStorage.getItem('envFile')).user.user_msgs,
-    });
+    try {
+      document.title = 'Indra | Menu';
+      const m = await axios.get(API_SERVER);
+      this.setState({
+        menu: m.data,
+        name: localStorage.getItem('name'),
+        modelId: parseInt(localStorage.getItem('menu_id'), 10),
+        source: localStorage.getItem('source'),
+        envFile: JSON.parse(localStorage.getItem('envFile')),
+        msg: JSON.parse(localStorage.getItem('envFile')).user.user_msgs,
+      });
+    } catch (error) {
+      return false;
+    }
     // const defaultGraph = GRAPH_DICT[localStorage.getItem('name')];
     const defaultGraph = localStorage.getItem('graph');
     if (defaultGraph === 'scatter') {
@@ -69,10 +73,15 @@ class ActionMenu extends Component {
         loadingPopulation: true,
       });
     }
-    const code = await this.viewSource();
-    this.setState({
-      sourceCode: code,
-    });
+    try {
+      const code = await this.viewSource();
+      this.setState({
+        sourceCode: code,
+      });
+    } catch (error) {
+      return false;
+    }
+    return true;
   }
 
   viewSource = async () => {
