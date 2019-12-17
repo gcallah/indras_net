@@ -51,7 +51,7 @@ Work in Progress
 Trying to get all the models working from the API server. 
 
 Flocking:
-Using Windows Subsystem for Linux(WSL), on Ubuntu 18.04, entering the iPython terminal through the "Examine Model Data" option in the Flocking menu and entering `user.env` to check environment values returns an error with `printer.pretty(obj)`. This occurs with all other models. Need other people to try and replicate this error. Entering user, or any of the other properties like `.menu` or `.user_msgs` do not any errors
+Using Windows Subsystem for Linux(WSL), on Ubuntu 18.04, entering the iPython terminal through the "Examine Model Data" option in the Flocking menu and entering `user.env` to check environment values returns an error with `printer.pretty(obj)`. This occurs with all other models. Need other people to try and replicate this error. Entering user, or any of the other properties like `.menu` or `.user_msgs` do not return any errors.
 
 Selecting the Matplotlib options (Population Graph, Scatter Plot, etc) in the model menus return nothing. No graphs can be seen. Current theory is that matplotlib is not configured correctly on WSL. To get around this, you can use a Windows X-Server like Xming, and add `export DISPLAY=localhost:0.0` to your login script. This will allow the matplotlib graphs to show in an external window. 
 
