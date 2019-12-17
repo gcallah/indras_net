@@ -1,5 +1,5 @@
 """
-A basic model.
+A model for capital structure.
 Places two groups of agents in the enviornment randomly
 and moves them around randomly.
 """

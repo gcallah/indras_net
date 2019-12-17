@@ -74,9 +74,9 @@ def rec_offer(agent, his_good, his_amt, counterparty):
     for my_good in agent["goods"]:
         if my_good != his_good and agent["goods"][my_good]["endow"] > 0:
             loss = -utility_delta(agent, my_good, -my_amt)
-            user_tell("my good: " + my_good + "; his good: " + his_good
-                      + ", I gain: " + str(gain) +
-                      " and lose: " + str(loss))
+            # user_tell("my good: " + my_good + "; his good: " + his_good
+            #           + ", I gain: " + str(gain) +
+            #           " and lose: " + str(loss))
             if gain > loss:
                 if rec_reply(counterparty, his_good, his_amt, my_good, my_amt):
                     trade(agent, my_good, my_amt,
@@ -91,7 +91,7 @@ def rec_reply(agent, my_good, my_amt, his_good, his_amt):
     gain = utility_delta(agent, his_good, his_amt)
     loss = utility_delta(agent, my_good, -my_amt)
     print(agent.name, "receiving a reply: gain = ",
-          gain, "and loss =", loss)
+          gain, "and loss =", abs(loss))
     if gain > abs(loss):
         return ACCEPT
     else:
