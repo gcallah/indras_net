@@ -13,13 +13,6 @@
     "hival": 100,
     "lowval": 2
   },
-  "num_sellers": {
-    "val": 2,
-    "question": "How many sellers do you want?",
-    "atype": "INT",
-    "hival": 100,
-    "lowval": 1
-  },
   "num_buyers": {
     "val": 2,
     "question": "How many buyers do you want?",

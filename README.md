@@ -49,3 +49,10 @@ Work in Progress
 ----------------
 
 Trying to get all the models working from the API server. 
+
+Frontend:
+Dark mode currently does not change the colors of components, such as the header or buttons.
+Mobile design has not been implememnted. We had planned on having the carousel image be below the menu items.
+The general layout could be structured a little better. Especially on the action menu page. There is a lot of white space that is not being utilized and the alignment of things like the header, the title, and menu items are inconsistent.
+There are some unused component files that should be removed.
+A lot of testing needs to be implemented.
