@@ -26,11 +26,6 @@
             "question": "View the source code"
         },
         {
-          "id": 6,
-          "func": "debug_model",
-          "question": "Debug model data"
-        },
-        {
             "id": 0,
             "func": "leave",
             "question": "Quit"

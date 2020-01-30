@@ -137,7 +137,7 @@ def set_up(props=None):
     global group_map
     group_map = {HE: healthy, NF: new_fire,
                  OF: on_fire, BO: burned_out, NG: new_growth}
-    return (forest, group_map)
+    return forest, group_map
 
 
 def main():

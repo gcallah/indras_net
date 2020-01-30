@@ -1,16 +1,17 @@
 # Indra API server
+import logging
 import os
-import sys
 
 from flask import Flask
 from flask_cors import CORS
 from flask_restplus import Resource, Api, fields
-from indra.user import APIUser
+
 from APIServer.model_creator_api import get_model_creator
 from APIServer.model_creator_api import put_model_creator
 from APIServer.models_api import get_models
 from APIServer.props_api import get_props, put_props
 from APIServer.run_model_api import run_model_put
+from indra.user import APIUser
 
 app = Flask(__name__)
 CORS(app)
@@ -38,14 +39,8 @@ class Endpoints(Resource):
         """
         List our endpoints.
         """
-        return {'Available endpoints':
-                [
-                    '/hello',
-                    '/model_creator',
-                    '/models',
-                    '/models/props/<int:model_id>',
-                    '/models/menu/run/<int:run_time>',
-                ]}
+        endpoints = sorted(rule.rule for rule in api.app.url_map.iter_rules())
+        return {"Available endpoints": endpoints}
 
 
 group_fields = api.model("group", {
@@ -58,8 +53,8 @@ group_fields = api.model("group", {
 # env_width/height must be >0 when adding agents
 create_model_spec = api.model("model_specification", {
     "model_name": fields.String("Enter model name."),
-    "env_width": fields.Integer("Enter enviornment width."),
-    "env_height": fields.Integer("Enter enviornment height."),
+    "env_width": fields.Integer("Enter environment width."),
+    "env_height": fields.Integer("Enter environment height."),
     "groups": fields.List(fields.Nested(group_fields)),
 })
 
@@ -140,5 +135,5 @@ class RunModel(Resource):
 
 
 if __name__ == "__main__":
-    print("Warning: you should use api.sh to run the server.", file=sys.stderr)
+    logging.warning("Warning: you should use api.sh to run the server.")
     app.run(host="127.0.0.1", port=8000, debug=True)

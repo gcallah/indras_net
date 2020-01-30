@@ -19,7 +19,7 @@ groups = None
 group_indices = None
 
 
-def create_agent(x, y):
+def create_grain(x, y):
     """
     Create an agent with the passed x, y value as its name.
     """
@@ -108,7 +108,7 @@ def set_up(props=None):
         group_indices[groups[i].name] = i
     for y in range(height):
         for x in range(width):
-            groups[0] += create_agent(x, y)
+            groups[0] += create_grain(x, y)
     sandpile_env = Env("Sandpile",
                        action=sandpile_action,
                        height=height,
@@ -121,7 +121,7 @@ def set_up(props=None):
                        props=pa)
     sandpile_env.attrs["center_agent"] = sandpile_env.get_agent_at(height // 2,
                                                                    width // 2)
-    return (sandpile_env, groups, group_indices)
+    return sandpile_env, groups, group_indices
 
 
 def restore_globals(env):
@@ -131,9 +131,10 @@ def restore_globals(env):
     sandpile_env = env
     groups = []
     group_indices = {}
-    for i in range(NUM_GROUPS):
-        groups.append(env.registry["Group" + str(i)])
-        group_indices[groups[i].name] = i
+    # this model needs to be fundamentally revisited, so:
+    # for i in range(NUM_GROUPS):
+    #     groups.append(env.registry["Group" + str(i)])
+    #     group_indices[groups[i].name] = i
     env.attrs["center_agent"] = env.get_agent_at(env.height // 2,
                                                  env.width // 2)
 

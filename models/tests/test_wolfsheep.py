@@ -9,7 +9,8 @@ from indra.utils import get_props
 from models.wolfsheep import AGT_WOLF_NAME, AGT_SHEEP_NAME
 from models.wolfsheep import WOLF_LIFESPAN, SHEEP_LIFESPAN, SHEEP_REPRO_PERIOD
 from models.wolfsheep import WOLF_REPRO_PERIOD, eat, reproduce
-from models.wolfsheep import create_sheep, create_wolf, set_up, wolf_action, sheep_action
+from models.wolfsheep import create_sheep, create_wolf, set_up, wolf_action, \
+    sheep_action
 from models.wolfsheep import isactive, wolves_created
 
 TEST_SNUM = 3
@@ -21,7 +22,6 @@ TEST_SNAME = AGT_SHEEP_NAME + str(TEST_SNUM)
 class WolfsheepTestCase(TestCase):
     def setUp(self, props=None):
         self.pa = get_props("wolfsheep", props)
-        print(self.pa)
         (ws.meadow, ws.wolves, ws.sheep) = set_up()
         self.wolf = create_wolf(TEST_WNAME, TEST_WNUM, self.pa)
         self.sheep = create_sheep(TEST_SNAME, TEST_SNUM, self.pa)
@@ -55,12 +55,12 @@ class WolfsheepTestCase(TestCase):
         else:
             self.assertEqual(self.wolf["time_to_repr"], time_to_repro - 1)
 
-
     def test_sheep_action(self):
         time_to_repro = self.sheep["time_to_repr"]
         sheep_action(self.sheep)
         if time_to_repro == 1:
-                self.assertEqual(self.sheep["time_to_repr"], SHEEP_REPRO_PERIOD)
+            self.assertEqual(self.sheep["time_to_repr"],
+                             SHEEP_REPRO_PERIOD)
         else:
             self.assertEqual(self.sheep["time_to_repr"], time_to_repro - 1)
 
@@ -98,4 +98,4 @@ class WolfsheepTestCase(TestCase):
         """
         self.wolf["time_to_repr"] = 1
         self.assertFalse(reproduce(self.wolf, create_wolf,
-                                  wolves_created, ws.wolves))
+                                   wolves_created, ws.wolves))

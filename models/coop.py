@@ -7,6 +7,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.env import Env, UNLIMITED
 from indra.space import gaussian_distribution
+from indra.user import user_tell
 from indra.utils import get_props
 
 MODEL_NAME = 'coop'
@@ -17,6 +18,7 @@ DEF_COUPON = 2
 DEF_DISTRIBUTING_COUPON = 2
 DEF_SIGMA = 0.2
 DEF_PERCENT = 10
+# DEF_DISTRIBUTE_THRESHOLD = 5
 
 BSIT_INDEX = 0
 GO_OUT_INDEX = 1
@@ -27,12 +29,16 @@ NUM_OF_GROUPS = 4
 
 BABYSIT = "BABYSITTING"
 GO_OUT = "GOING_OUT"
-
+CB_intervention_points = []
+num_of_rounds = 1
 
 coop_members = None
 coop_env = None
 
 last_period_exchanges = 0
+last_period_unemployed = 0
+
+central_bank = None
 
 
 def wants_to_sit(agent, *args):
@@ -74,31 +80,25 @@ def get_going_out(coop_members):
 
 
 def exchange(coop_env):
+    # get exchange numbers
     global last_period_exchanges
+    global last_period_unemployed
     global coop_members
+
     sitters = get_sitters(coop_members)
-    print("sitters : " + str(len(sitters)))
     going_out = get_going_out(coop_members)
-    print("going_out : " + str(len(going_out)))
+
     exchanges = min(len(sitters), len(going_out))
+    sitter_agents = [agent for agent in sitters]
+    going_out_agents = [agent for agent in going_out]
 
     for i in range(exchanges):
-        # going out agent gives one coupon to babysitting agent
-        sitter = sitters['Babysitters' + str(i + 1)]
-        sitter['sitting'] = False
-        sitter['coupons'] += 1
-        going_outer = going_out['Babysitters' + str(i + 1)]
-        going_outer['goint_out'] = False
-        going_outer['coupons'] -= 1
+        sitter, outer = sitter_agents[i], going_out_agents[i]
+        sitters[sitter]['coupons'] += 1
+        going_out[outer]['coupons'] -= 1
 
-    action = ""
-    if len(sitters) > exchanges:
-        action = "sitting"  # noqa F841
-    else:
-        action = "going_out"  # noqa F841
-
-    # record exchanges in population history
-    # last_period_exchanges = exchanges
+    last_period_exchanges = exchanges
+    last_period_unemployed = max(len(sitters), len(going_out)) - exchanges
 
 
 def distribute_coupons(agent):
@@ -106,11 +106,10 @@ def distribute_coupons(agent):
     Distribute coupons from central bank randomly to each babysitter.
     Coupons are gaussian distributed based on extra_coupons and extra_dev.
     """
-    pass
-    # for i in range(NUM_OF_GROUPS):
-    #     for bbsit in groups[i]:
-    #         groups[i][bbsit]["coupons"] += int(gaussian_distribution(
-    #             agent["extra_coupons"], agent["extra_dev"]))
+    global coop_members
+    for bbsit in coop_members:
+        coop_members[bbsit]['coupons'] += int(gaussian_distribution(
+            agent["extra_coupons"], agent["extra_dev"]))
 
 
 def coop_action(coop_env):
@@ -120,6 +119,7 @@ def coop_action(coop_env):
 def coop_report(coop_env):
     num_babysitter = len(get_sitters(coop_members))
     return 'Number of babysitters is: ' + str(num_babysitter) + '\n'
+    pass
 
 
 def act(agent):
@@ -128,25 +128,16 @@ def act(agent):
     if their holding coupons are less than desired cash balance, they babysit,
     or there is a 50-50 chance for them to go out.
     """
-    print(str(agent), "coupons = ", agent['coupons'],
-          "desired = ", agent['desired_cash'])
     if agent['coupons'] <= agent['desired_cash']:
         agent['goal'] = "BABYSITTING"
-        agent['sitting'] = True
     else:
-        print(str(agent), "is not in first if!")
         if random.random() > .5:
             agent['goal'] = "GOING_OUT"
-            agent['sitting'] = True
-
         else:
             agent['goal'] = "BABYSITTING"
-            agent['going_out'] = True
 
 
 def babysitter_action(agent):
-    agent['sitting'] = False
-    agent['going_out'] = False
     act(agent)
     return False
 
@@ -156,7 +147,21 @@ def central_bank_action(agent):
     If exchanges are down "enough", distribute coupons!
     Enough is a parameter.
     """
-    pass
+    global coop_members
+    global num_of_rounds
+    global CB_intervention_points
+    num_of_rounds += 1
+    unemployment_rates = last_period_unemployed / len(coop_members) * 100
+    unemployment_threshold = agent["percent_change"]
+    if unemployment_rates >= unemployment_threshold:
+        user_tell("Unemployment has risen to "
+                  + str(unemployment_rates)
+                  + " more than default value "
+                  + str(unemployment_threshold)
+                  + " CB Intervened")
+        CB_intervention_points.append([num_of_rounds, last_period_exchanges])
+        user_tell(CB_intervention_points)
+        distribute_coupons(agent)
 
 
 def create_babysitter(name, i, props=None):
@@ -166,8 +171,6 @@ def create_babysitter(name, i, props=None):
     babysitter = Agent(name + str(i), action=babysitter_action)
     mean_coupons = props.get("average_coupons", DEF_COUPON)
     dev = props.get("deviation", DEF_SIGMA)
-    babysitter['sitting'] = False
-    babysitter['going_out'] = False
     babysitter["goal"] = None
     babysitter['coupons'] = int(gaussian_distribution(mean_coupons, dev))
     babysitter['desired_cash'] = props.get("desired_cash",
@@ -183,7 +186,8 @@ def create_central_bank(name, i, props=None):
     central_bank["percent_change"] = props.get("percent_change", DEF_PERCENT)
     central_bank["extra_coupons"] = props.get("extra_coupons", DEF_COUPON)
     central_bank["extra_dev"] = props.get("extra_deviation", DEF_SIGMA)
-    central_bank["num_hist"] = []
+    # central_bank["distribute_threshold"] = props.get("distribute_threshold",
+    #                                                  DEF_DISTRIBUTE_THRESHOLD)
     return central_bank
 
 
@@ -199,28 +203,30 @@ def set_up(props=None):
     coop_members = Composite("Coop_members", num_members=num_members,
                              member_creator=create_babysitter,
                              props=pa)
+    central_bank = Composite("central_bank", num_members=1,
+                             member_creator=create_central_bank,
+                             props=pa)
 
-    # the central bank is out for now!
-    # groups.append(Composite("CENTRAL_BANK", {"color": BLACK},
-    #                         props=pa,
-    #                         member_creator=create_central_bank,
-    #                         num_members=1))
-
-    coop_env = Env('coop_env', members=[coop_members],
+    coop_env = Env('coop_env', members=[coop_members, central_bank],
                    action=coop_action, width=UNLIMITED,
                    height=UNLIMITED,
                    census=coop_report,
                    props=pa,
                    pop_hist_setup=initial_exchanges,
-                   pop_hist_func=record_exchanges)
-    return (coop_env, coop_members)
+                   pop_hist_func=record_exchanges,
+                   attrs={"show_special_points": CB_intervention_points,
+                          "special_points_name": "CB intervention points"})
+    return (coop_env, coop_members, central_bank)
 
 
 def main():
     global coop_env
     global coop_members
+    global central_bank
+    global num_of_rounds
+    global CB_intervention_points
 
-    (coop_env, coop_members) = set_up()
+    (coop_env, coop_members, central_bank) = set_up()
 
     coop_env()
     return 0

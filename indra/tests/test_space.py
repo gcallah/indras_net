@@ -4,7 +4,7 @@ This is the test suite for space.py.
 
 from unittest import TestCase, main, skip
 
-from indra.agent import Agent
+from indra.agent import Agent, X, Y
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.space import Space, distance
 from indra.tests.test_agent import create_newton, create_hardy, create_leibniz
@@ -19,7 +19,8 @@ def create_space():
     space += newton
     space += create_hardy()
     space += create_leibniz()
-    return (space, newton)
+    return space, newton
+
 
 def create_teeny_space():
     """
@@ -165,20 +166,21 @@ class SpaceTestCase(TestCase):
         """
         n = create_newton()
         self.space += n
-        self.assertTrue(self.space.locations[n.pos] == n)
+        self.assertTrue(self.space.get_agent_at(n.pos[X], n.pos[Y]) == n)
 
     def test_add_location(self):
         """
         Can we add an agent to a location?
         """
         for i in range(REP_RAND_TESTS):
-            #test with different random positions
+            # test with different random positions
             x, y = self.space.rand_x(), self.space.rand_y()
             if (x, y) not in self.space.locations:
                 self.newton.set_pos(self.space, x, y)
                 self.space.add_location(x, y, self.newton)
-                self.assertTrue(self.space.locations[self.newton.pos] ==
-                                self.newton)
+                self.assertTrue(self.space.get_agent_at(self.newton.pos[X],
+                                                        self.newton.pos[Y])
+                                == self.newton)
 
     # def test_move_location(self):
     #     """
@@ -186,14 +188,14 @@ class SpaceTestCase(TestCase):
     #     This test sometimes fails: we need to explore!
     #     """
     #     for i in range(REP_RAND_TESTS):
-            #test with different random positions
-            # print("Trying a new location: ", i, "th iteration")
-            # print("Previous newton is at ", self.newton.get_x(), self.newton.get_y())
-            # x, y = self.space.rand_x(), self.space.rand_y()
-            # print("new x, y = ", x, y)
-            # self.space.move_location(x, y, self.newton.get_x(), self.newton.get_y())
-            # print("Now newton is at ", self.newton.get_x(), self.newton.get_y())
-            # self.assertTrue(self.space.locations[(x, y)] == self.newton)
+    # test with different random positions
+    # print("Trying a new location: ", i, "th iteration")
+    # print("Previous newton is at ", self.newton.get_x(), self.newton.get_y())
+    # x, y = self.space.rand_x(), self.space.rand_y()
+    # print("new x, y = ", x, y)
+    # self.space.move_location(x, y, self.newton.get_x(), self.newton.get_y())
+    # print("Now newton is at ", self.newton.get_x(), self.newton.get_y())
+    # self.assertTrue(self.space.locations[(x, y)] == self.newton)
 
     def test_remove_location(self):
         """

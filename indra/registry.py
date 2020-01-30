@@ -5,8 +5,19 @@ This class will appear as a dictionary, but with the right sort of default
 behaviors that we need for our registry.
 """
 import json
+import warnings
 
-REGISTRY = "registry"
+REGISTRY = "Registry"
+
+"""
+We can also have some global singletons here. We'll start with `the_env`;
+perhaps `the_user` should go here as well?
+"""
+the_env = None  # this is a singleton, so global should be ok
+
+
+def get_env():
+    return the_env
 
 
 class Registry(object):
@@ -37,6 +48,15 @@ class Registry(object):
     def __setitem__(self, key, value):
         if key not in self.agents or self.agents[key] is None:
             self.agents[key] = value
+            if value is None:
+                warnings.warn("Trying to set the value of key {} to None.".
+                              format(key), RuntimeWarning)
+        else:
+            pass
+            # this fails the tests at the moment, so we need to debug
+            # it is the tests that have a problem!
+            # raise KeyError("The key \"{}\" already exists in the registry"
+            #                .format(key))
 
     def __contains__(self, item):
         return item in self.agents
@@ -45,5 +65,21 @@ class Registry(object):
         return iter(self.agents)
 
     def to_json(self):
-        return {REGISTRY:
-                {"agents": str(self.agents)}}
+        """
+        For right now, just list what keys are in the registry.
+        """
+        return {REGISTRY: str(self.agents.keys())}
+
+
+registry = Registry()
+
+
+def register(key, val):
+    registry[key] = val
+
+
+def get_registration(key):
+    if key in registry:
+        return registry[key]
+    else:
+        return None

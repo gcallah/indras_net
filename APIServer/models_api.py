@@ -23,5 +23,6 @@ def get_models(indra_dir):
         models_response.append({"model ID": model["model ID"],
                                 "name": model["name"],
                                 "doc": doc,
-                                "source": model["source"]})
+                                "source": model["source"],
+                                "graph": model["graph"]})
     return models_response

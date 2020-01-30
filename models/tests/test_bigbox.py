@@ -4,11 +4,13 @@ import models.bigbox as bb
 from models.bigbox import BB_INDX
 from models.bigbox import set_up
 
-TEST_WIDTH=4
-TEST_HEIGHT=4
+TEST_WIDTH = 4
+TEST_HEIGHT = 4
+
 
 def print_sep():
     print("________________________", flush=True)
+
 
 class BigBoxTestCase(TestCase):
     def setUp(self):
@@ -32,19 +34,18 @@ class BigBoxTestCase(TestCase):
         self.assertLess(util, 1.0)
         self.assertGreater(util, 0.0)
 
-
     def test_transaction(self):
         """
         Create a big box agent
         Create a consumer agent
         Transact the money from consumer to big box
         """
-        a = bb.create_mp("Bookshop" , 1)
+        a = bb.create_mp("Bookshop", 1)
         b = bb.create_consumer("Consumer", 0)
         spending_power = b["spending power"]
         capital = a["capital"]
-        bb.transaction(a,b)
-        self.assertEqual(a["capital"],capital + spending_power)
+        bb.transaction(a, b)
+        self.assertEqual(a["capital"], capital + spending_power)
 
     def test_create_consumer(self):
         """
@@ -57,7 +58,7 @@ class BigBoxTestCase(TestCase):
         """
         Create a mom and pop agent
         """
-        mp = bb.create_mp("Bookshop" , 1)
+        mp = bb.create_mp("Bookshop", 1)
         self.assertEqual(len(mp.attrs), 2)
 
     def test_create_bb(self):
@@ -71,12 +72,12 @@ class BigBoxTestCase(TestCase):
         """
         Test the action of a mom and pop store.
         """
-        mp = bb.create_mp("Bookshop" , 1)
+        mp = bb.create_mp("Bookshop", 1)
         expense = mp["expense"]
         capital = mp["capital"]
         self.assertEqual(True, bb.mp_action(mp))
         bb.mp_action(mp)
-        self.assertEqual(mp["capital"], capital - 2*expense)
+        self.assertEqual(mp["capital"], capital - 2 * expense)
         self.assertEqual(mp.is_active(), False)
 
     def test_bb_action(self):
@@ -88,9 +89,8 @@ class BigBoxTestCase(TestCase):
         capital = bigbox["capital"]
         self.assertEqual(True, bb.bb_action(bigbox))
         bb.bb_action(bigbox)
-        self.assertEqual(bigbox["capital"], capital - 2*expense)
+        self.assertEqual(bigbox["capital"], capital - 2 * expense)
         self.assertEqual(bigbox.is_active(), True)
-
 
     # def test_consumer_action(self):
     #     mp = bb.create_mp("Bookshop", 1)
@@ -102,7 +102,6 @@ class BigBoxTestCase(TestCase):
     #     bb.consumer_action(consumer)
     #     self.assertEqual(mp["capital"], capital + spending)
 
-
     def test_sells_good(self):
         """
         Test if sells_ggod return the right boolean.
@@ -111,12 +110,11 @@ class BigBoxTestCase(TestCase):
         bb.groups[BB_INDX] += bigbox
         consumer = bb.create_consumer("Consumer", 1)
         self.assertEqual(bb.sells_good(bigbox, consumer, bb.groups), True)
-        mp = bb.create_mp("Bookshop" , 1)
+        mp = bb.create_mp("Bookshop", 1)
         consumer["item needed"] = "Bookshop"
         self.assertEqual(bb.sells_good(mp, consumer, bb.groups), True)
         consumer["item needed"] = "Restaurant"
         self.assertEqual(bb.sells_good(mp, consumer, bb.groups), False)
-    
 
     def test_get_util(self):
         """

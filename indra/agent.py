@@ -10,7 +10,10 @@ from random import random
 
 import numpy as np
 
-DEBUG = True  # turns debugging code on or off
+from indra.registry import register, get_registration, get_env
+from indra.utils import get_func_name
+
+DEBUG = False  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
 # x and y indices
@@ -101,10 +104,17 @@ def split(agent1, agent2):
         agent2.del_group(agent1)
 
 
-def switch(agent, grp1, grp2):
+def switch(agent_nm, grp1_nm, grp2_nm):
     """
     Move agent from grp1 to grp2.
+    We first must recover agent objects from the registry.
     """
+    agent = get_registration(agent_nm)
+    grp1 = get_registration(grp1_nm)
+    grp2 = get_registration(grp2_nm)
+    if agent is None or grp1 is None or grp2 is None:
+        print("Could not find an agent for a switch",
+              agent_nm, grp1_nm, grp2_nm)
     split(grp1, agent)
     join(grp2, agent)
 
@@ -131,80 +141,154 @@ class Agent(object):
     Its basic character is that it is a vector, and basic
     vector and matrix operations will be implemented
     here.
-    We should begin passing env to all agents: we think it will
-    simplify code. It should replace `locator`.
+    We are going to stop passing `env` around: we can call
+    `env.get_env()` to get it when needed. So *soon* the
+    env param here should go away, but only when every model
+    is using the new call.
     """
 
     def __init__(self, name, attrs=None, action=None, duration=INF,
-                 prim_group=None, serial_obj=None, env=None):
+                 prim_group=None, serial_obj=None, env=None, reg=True):
+        self.registry = {}
+
         if serial_obj is not None:
-            self.restore_agent(serial_obj)
+            self.restore(serial_obj)
         else:
+            # self.type gotta go!
             self.type = "agent"
             self.name = name
+            # cut locator over to a property
             self.action_key = None
             self.action = action
             if action is not None:
-                self.action_key = action.__name__
-
+                self.action_key = get_func_name(action)
             self.duration = duration
             self.attrs = OrderedDict()
             self.neighbors = None
             if attrs is not None:
                 self.attrs = attrs
-            self.type_sig = type_hash(self)
             self.active = True
-            self.groups = {}
             self.pos = None
-            self.locator = None
-            self.prim_group = prim_group
-            self.env = env
-            if self.prim_group is not None:
-                self.groups[str(self.prim_group)] = self.prim_group
-                if is_space(self.prim_group):
-                    self.locator = self.prim_group
 
-    def restore_agent(self, serial_obj):
+            # some thing we will fetch from registry:
+            # for these, we only store the name but look up object
+            self._env = None if env is None else env.name
+            self._locator = None if self._env is None else self._env
+            self._prim_group = None if prim_group is None else prim_group.name
+            if prim_group is not None and is_space(prim_group):
+                self.locator = prim_group
+
+        if reg:
+            register(self.name, self)
+
+    @property
+    def prim_group(self):
+        """
+        This is the prim_group property.
+        We use the string _prim_group to look up the
+        prim_group object in the registry.
+        An agent may be in multiple groups: it appears in
+        the groups `members` list. But it can have only
+        one primary group.
+        """
+        return get_registration(self._prim_group)
+
+    @prim_group.setter
+    def prim_group(self, val):
+        """
+        Set our prim_group: if passed an agent, store its name.
+        Else, it must be a string, and just store that.
+        Don't try to register the val! Agents register themselves
+        when constructed.
+        """
+        if isinstance(val, Agent):
+            self._prim_group = val.name
+        elif isinstance(val, str):
+            self._prim_group = val
+        elif val is None:
+            self._prim_group = ""
+        else:
+            # we must set up logging to handle these better:
+            print("Bad type passed to prim_group:", str(val))
+
+    @property
+    def env(self):
+        """
+        This is the env property.
+        We use `registry.get_env()` to return whatever
+        the registry has.
+        """
+        return get_env()
+
+    @env.setter
+    def env(self, val):
+        """
+        Can we use `registry.get_env()` instead of this?
+        """
+        if isinstance(val, Agent):
+            self._env = val.name
+        elif isinstance(val, str):
+            self._env = val
+        elif val is None:
+            self._env = None
+        else:
+            # we must set up logging to handle these better:
+            print("Bad type passed to env:", str(val))
+
+    @property
+    def locator(self):
+        """
+        This is the locator property.
+        We use the string _locator to look up the
+        locator object in the registry.
+        """
+        return get_registration(self._locator)
+
+    @locator.setter
+    def locator(self, val):
+        """
+        Set our locator: if passed an agent, store its name.
+        Else, it must be a string, and just store that.
+        Don't try to register the val! Agents register themselves
+        when constructed.
+        """
+        if isinstance(val, Agent):
+            self._locator = val.name
+        elif isinstance(val, str):
+            self._locator = val
+        elif val is None:
+            self._prim_group = ""
+        else:
+            # we must set up logging to handle these better:
+            print("Bad type passed to locator:", str(val))
+
+    def restore(self, serial_obj):
         self.from_json(serial_obj)
 
     def to_json(self):
-        grp_nms = []
-        for grp in self.groups:
-            grp_nms.append(grp)
-        if not self.locator:
-            loc = self.locator
-        else:
-            loc = str(self.locator)
-        if self.prim_group is None:
-            pg = self.prim_group
-        else:
-            pg = str(self.prim_group)
         if not self.neighbors:
             nb = None
         else:
             nb = self.neighbors.name
         return {"name": self.name,
                 "type": self.type,
-                "duration": str(self.duration),
+                "duration": self.duration,
                 "pos": self.pos,
                 "attrs": self.attrs_to_dict(),
-                "groups": grp_nms,
                 "active": self.active,
-                "type_sig": self.type_sig,
-                "prim_group": pg,
-                "locator": loc,
+                "prim_group": self._prim_group,
+                "locator": self._locator,
+                "env": self._env,
                 "neighbors": nb,
                 "action_key": self.action_key
                 }
 
     def from_json(self, serial_agent):
-        self.env = None
         from models.run_dict_helper import action_dict
         self.action = None
         if serial_agent["action_key"] is not None:
             self.action = action_dict[serial_agent["action_key"]]
         self.action_key = serial_agent["action_key"]
-        self.type_sig = serial_agent["type_sig"]
         self.active = serial_agent["active"]
         self.attrs = OrderedDict(serial_agent["attrs"])
         if not serial_agent["pos"]:
@@ -213,12 +297,10 @@ class Agent(object):
             self.pos = tuple(serial_agent["pos"])
         self.duration = int(serial_agent["duration"])
         self.name = serial_agent["name"]
-        self.groups = {}
-        for gnm in serial_agent["groups"]:
-            self.groups[gnm] = None
-        self.prim_group = serial_agent["prim_group"]
         self.neighbors = serial_agent["neighbors"]
-        self.locator = None
+        self._prim_group = serial_agent["prim_group"]
+        self._locator = serial_agent["locator"]
+        self._env = serial_agent["env"]
         self.type = serial_agent["type"]
 
     def __repr__(self):
@@ -232,8 +314,9 @@ class Agent(object):
 
     def set_pos(self, locator, x, y):
         self.locator = locator  # whoever sets my pos is my locator!
+        # and my env, if I don't have one:
         if self.env is None:
-            self.env = locator
+            self.env = self.locator
         self.pos = (x, y)
 
     def get_pos(self):
@@ -309,7 +392,7 @@ class Agent(object):
                       + " and I ain't got no action to do!")
         else:
             self.active = False
-        return (acted, moved)
+        return acted, moved
 
     def __iadd__(self, scalar):
         """
@@ -348,14 +431,13 @@ class Agent(object):
         """
         if (self.is_located() and self.locator is not None
                 and not self.locator.is_full()):
+            new_xy = None
             if angle is not None:
                 if DEBUG:
                     print("Using angled move")
                 new_xy = self.locator.point_from_vector(angle,
                                                         max_move, self.pos)
-                self.locator.place_member(self, max_move, new_xy)
-            else:
-                self.locator.place_member(self, max_move)
+            self.locator.place_member(self, max_move=max_move, xy=new_xy)
 
     def is_active(self):
         return self.active
@@ -370,33 +452,15 @@ class Agent(object):
         """
         return self.attrs
 
-    def same_type(self, other):
-        return self.type_sig == other.type_sig
-
     def del_group(self, group):
-        if str(group) in self.groups:
-            del self.groups[str(group)]
-
         if group == self.prim_group:
             self.prim_group = None
 
     def add_group(self, group):
-        if str(group) not in self.groups or self.groups[str(group)] is None:
-            if DEBUG2:
-                print("Join group being called on " + str(self.pos)
-                      + " to join group: " + group.name)
-            self.groups[group.name] = group
-
-            if is_space(group):
-                self.locator = group
-                if self.env is None:
-                    self.env = group
-
-            pg = self.prim_group
-            # Why do we do line 395? And if we need to, why not just
-            # isinstance(pg, str) ?
-            if (not pg) or str(type(pg)) == "<class 'str'>":
-                self.prim_group = group
+        if is_space(group):
+            self.locator = group
+        if self.prim_group is None:
+            self.prim_group = group
 
     def switch_groups(self, g1, g2):
         self.del_group(g1)

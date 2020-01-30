@@ -5,10 +5,6 @@ A collection of convenience functions
 for using matplotlib.
 """
 import io
-# import numpy as np
-# import pandas as pd
-# import seaborn as sns
-# import networkx as nx
 import logging
 import os
 from functools import wraps
@@ -131,7 +127,7 @@ def expects_plt(fn):
     return wrapper
 
 
-def hierarchy_pos(graph, root, width=1., vert_gap=0.2, vert_loc=0,
+def hierarchy_pos(graph, root, width=1., vert_gap=0.2, vert_loc=0.,
                   xcenter=0.5, pos=None, parent=None):
     """
     This is an attempt to get a tree graph from networkx.
@@ -268,6 +264,16 @@ class LineGraph():
             Legend is located on top left.
             Shows legend.
             """
+            if "show_special_points" in attrs:
+                special_points = attrs["show_special_points"]
+                for point in special_points:
+                    plt.plot(point[0], point[1], 'ro')
+                special_points_name = attrs["special_points_name"]
+                anno_x, anno_y = special_points[0][0], special_points[0][1]
+                plt.annotate(special_points_name, xy=(anno_x, anno_y),
+                             xytext=(3, 1.5),
+                             arrowprops=dict(facecolor='black', shrink=0.05),
+                             )
             if "show_xy_labels" not in attrs:
                 ax.set_xlabel('')
                 ax.set_ylabel('')
@@ -419,10 +425,10 @@ class ScatterPlot():
             self.legend.append(var)
             (x_array, y_array) = self.get_arrays(varieties, var)
             if len(x_array) <= 0:  # no data to graph!
-                next
+                next()
             elif len(x_array) != len(y_array):
                 logging.debug("Array length mismatch in scatter plot")
-                next
+                next()
             color = get_color(varieties[var], i)
             marker = get_marker(varieties[var], i)
             scat = pd.DataFrame({"x": pd.Series(x_array),

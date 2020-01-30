@@ -10,6 +10,7 @@ import Carousel from './Carousel';
 import sandpileImg from './images/Sandpile.jpg';
 import sandpile1Img from './images/sandpile_2.png';
 import mandelobrotImg from './images/mendelobrot_sq.jpg';
+import CreateModelButton from './CreateModelButton';
 import './styles.css';
 
 class Home extends Component {
@@ -22,7 +23,7 @@ class Home extends Component {
       dataForCarousel: [
         { image: sandpileImg, title: 'by Seth Terashima' },
         { image: sandpile1Img, title: 'by Colt Browninga' },
-        { image: mandelobrotImg, title: 'by Adam majewski' },
+        { image: mandelobrotImg, title: 'by Adam Majewski' },
       ],
     };
     this.api_server = 'https://indrasnet.pythonanywhere.com/';
@@ -40,29 +41,15 @@ class Home extends Component {
     }
   }
 
-  renderShowDescription = () => (
-    <h1 className="small-header">
-      <a href="https://gcallah.github.io/indras_net/index.html" className="text-primary m-2" target="_blank" rel="noopener noreferrer">
-        View Project Description
-        {' '}
-      </a>
-      {' '}
-    </h1>
-  );
-
-  handleClick = (id, name, source) => {
+  handleClick = (id, name, source, graph) => {
     localStorage.setItem('menu_id', id);
     localStorage.setItem('name', name);
     localStorage.setItem('source', source);
-  }
-
-  renderHeader = () => <h1 className="text-center">Indra Agent-Based Modeling System</h1>;
+    localStorage.setItem('graph', graph);
+  };
 
   renderChooseModelProp = () => (
-    <h1 className="small-header">
-      Please choose a model:
-      {' '}
-    </h1>
+    <h1 className="small-header">Please choose a model: </h1>
   );
 
   render() {
@@ -70,9 +57,7 @@ class Home extends Component {
       loadingData, dataForCarousel, allItems, apiFailed,
     } = this.state;
     if (apiFailed) {
-      return (
-        <h1>404 Error</h1>
-      );
+      return <h1>404 Error</h1>;
     }
     if (loadingData) {
       return (
@@ -83,8 +68,9 @@ class Home extends Component {
     }
     return (
       <div className="container">
-        <h1 className="margin-top-60"> </h1>
-        <div className="margin-bottom-100">{this.renderHeader()}</div>
+        <div className="margin-bottom-80">
+          <h1 className="text-left">The Agent-Based Modeling System</h1>
+        </div>
         <div className="row">
           <div className="col-6">
             {this.renderChooseModelProp()}
@@ -93,24 +79,19 @@ class Home extends Component {
                 <OverlayTrigger
                   key={`${allItems[item].name}-tooltip`}
                   placement="right"
-                  overlay={(
-                    <Tooltip>
-                      {allItems[item].doc}
-                    </Tooltip>
-                  )}
+                  overlay={<Tooltip>{allItems[item].doc}</Tooltip>}
                 >
                   <Link
                     to={{
-                      pathname: `/models/props/${
-                        allItems[item]['model ID']
-                      }`,
+                      pathname: `/models/props/${allItems[item]['model ID']}`,
                     }}
-                    className="text-primary w-75 p-3 list-group-item list-group-item-action"
+                    className="text-primary w-75 p-3 list-group-item list-group-item-action link"
                     key={allItems[item].name}
                     onClick={() => this.handleClick(
                       allItems[item]['model ID'],
                       allItems[item].name,
                       allItems[item].source,
+                      allItems[item].graph,
                     )}
                   >
                     {allItems[item].name}
@@ -118,7 +99,9 @@ class Home extends Component {
                 </OverlayTrigger>
               ))}
             </ListGroup>
-            {this.renderShowDescription()}
+            <div className="mt-4">
+              <CreateModelButton />
+            </div>
           </div>
           <div className="col-6">
             <Carousel

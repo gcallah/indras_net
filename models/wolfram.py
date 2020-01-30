@@ -26,7 +26,7 @@ curr_row = None
 rule_num = None
 
 
-def create_agent(x, y):
+def create_wolf_cell(x, y):
     """
     Create an agent with the passed x, y value as its name.
     """
@@ -92,12 +92,12 @@ def wolfram_action(wolfram_env):
                           + " against the rule...")
     if active_row_y < 1:
         wolfram_env.user.error_message["run"] = (' '.join([
-                                                 "You have exceeded the ",
-                                                 "maximum height ",
-                                                 "and cannot run the model ",
-                                                 "for more periods.\n",
-                                                 "Please pick one of the ",
-                                                 "other options."]))
+            "You have exceeded the ",
+            "maximum height ",
+            "and cannot run the model ",
+            "for more periods.\n",
+            "Please pick one of the ",
+            "other options."]))
         wolfram_env.exclude_menu_item("run")
     else:
         next_row = wolfram_env.get_row_hood(active_row_y - 1)
@@ -109,16 +109,17 @@ def wolfram_action(wolfram_env):
                 print("Checking agent at", curr_row[agent])
             if (x > 0) and (x < wolfram_env.width - 1):
                 middle_color = get_color(curr_row[agent].primary_group())
-                right_color = get_color(curr_row[get_str_key(x + 1,
-                                        active_row_y)].primary_group())
+                right_color = get_color(
+                    curr_row[get_str_key(x + 1, active_row_y)].primary_group())
                 if DEBUG:
                     print("  Left: %d, middle: %d, right: %d" %
                           (left_color, middle_color, right_color))
                 if next_color(rule_dict, left_color, middle_color,
                               right_color):
                     wolfram_env.add_switch(next_row[
-                        get_str_key(x, active_row_y - 1)],
-                        groups[W], groups[B])
+                                               get_str_key(x,
+                                                           active_row_y - 1)],
+                                           groups[W], groups[B])
                 left_color = middle_color
             x += 1
         curr_row = next_row
@@ -142,12 +143,10 @@ def set_up(props=None):
     height = (width // 2) + (width % 2)
     white = Composite("White", {"color": WHITE})
     black = Composite("Black", {"color": BLACK, "marker": SQUARE})
-    groups = []
-    groups.append(white)
-    groups.append(black)
+    groups = [white, black]
     for y in range(height):
         for x in range(width):
-            groups[W] += create_agent(x, y)
+            groups[W] += create_wolf_cell(x, y)
     wolfram_env = Env("Wolfram Model",
                       action=wolfram_action,
                       height=height,

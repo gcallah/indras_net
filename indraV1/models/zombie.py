@@ -62,9 +62,9 @@ class Beings(ma.MarkovAgent):
             self.env.died(self)
     
     def act(self):
-        '''
+        """
         Handles the movement of both agents
-        '''
+        """
         super().act()
         if (self.ntype == "Zombie"):
             self.zomMove()
@@ -72,9 +72,9 @@ class Beings(ma.MarkovAgent):
             self.humMove()
         
     def postact(self):
-        '''
+        """
         Handles dying and reproducing
-        '''
+        """
         self.age += 1
         self.life_force -= 1
         if self.life_force <= 0:
@@ -114,10 +114,10 @@ class Zombie(Beings):
                 self.eat(creature)
                 
     def zomMove(self):
-        '''
+        """
         Moves zombie towards nearest
-        Human 
-        '''
+        Human
+        """
         creatures = self.neighbor_iter()
         smalldist = 100000
         for creature in creatures:
@@ -172,10 +172,10 @@ class Human(Beings):
         self.died()
         
     def humMove(self):
-        '''
+        """
         Moves human away from nearest
         Zombie
-        '''
+        """
         creatures = self.neighbor_iter()
         fearAgent = None 
         smalldist = 100000

@@ -1,6 +1,7 @@
 # Need to export as ENV var
 export TEMPLATE_DIR = templates
 
+# Set up some variables for directories we'll use:
 BOX_DIR = bigbox
 BOX_DATA = $(BOX_DIR)/data
 BOXPLOTS = $(shell ls $(BOX_DATA)/plot*.pdf)
@@ -79,26 +80,31 @@ submods:
 	cd utils; git pull origin master
 
 # run tests then commit all, then push
-prod: local python js
+prod: local python js notebooks
 
 # run tests then push just what is already committed:
 prod1: tests
 	- git pull origin master
 	git push origin master
 
-tests: pytests jstests
+tests: pytests jstests dockertests
 
 python: pytests github
 
 js: jstests github
 
 pytests: FORCE
+	cd models; make tests
 	cd APIServer; make tests
 	cd indra; make tests
-	cd models; make tests
+	cd ml; make tests
+	cd capital; make tests
 
 jstests: FORCE
 	cd webapp; make tests
+
+dockertests:
+	docker build -t gcallah/$(REPO) docker/
 
 github:
 	- git commit -a

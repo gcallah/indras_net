@@ -2,7 +2,7 @@ export user_type="test"
 export test_dir="tests"
 export ignores="scheduler"  # dummy file!
 
-if [ -z $1 ]
+if [ -z "$1" ]
 then
     export capture=""
 else

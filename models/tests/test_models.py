@@ -7,7 +7,7 @@ from unittest import TestCase
 class TestAllModels(TestCase):
     def setUp(self):
         self.models = {}
-        with open ("models.json") as json_file:
+        with open("models.json") as json_file:
             data = json.load(json_file)
             for mdl_json in data["models_database"]:
                 model = locate("models." + mdl_json["run"])

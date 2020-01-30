@@ -11,6 +11,8 @@ from random import randint
 
 from indra.agent import is_composite, AgentEncoder
 from indra.composite import Composite
+from indra.registry import register, get_registration
+from indra.user import user_debug, user_log
 
 DEF_WIDTH = 10
 DEF_HEIGHT = 10
@@ -105,28 +107,31 @@ class Space(Composite):
 
     def __init__(self, name, width=DEF_WIDTH, height=DEF_HEIGHT,
                  attrs=None, members=None, action=None,
-                 random_placing=True, serial_obj=None):
+                 random_placing=True, serial_obj=None, reg=True):
         super().__init__(name, attrs=attrs, members=members,
-                         action=action, serial_obj=serial_obj)
+                         action=action, serial_obj=serial_obj,
+                         reg=False)
 
+        # get rid of these type fields!
         self.type = "space"
 
         if serial_obj is not None:
-            self.restore_space(serial_obj)
+            self.restore(serial_obj)
         else:
             self.width = width
             self.height = height
             # the location of members in the space {(tuple):Agent}
             self.locations = {}
-
             # by making two class methods for rand_place_members and
             # place_member, we allow two places to override
             if random_placing:
                 self.rand_place_members(self.members)
             else:
                 self.consec_place_members(self.members)
+        if reg:
+            register(self.name, self)
 
-    def restore_space(self, serial_obj):
+    def restore(self, serial_obj):
         self.from_json(serial_obj)
 
     def to_json(self):
@@ -134,9 +139,7 @@ class Space(Composite):
         rep["type"] = self.type
         rep["width"] = self.width
         rep["height"] = self.height
-        rep["locations"] = {}
-        for loc in self.locations:
-            rep["locations"][self.locations[loc].name] = loc
+        rep["locations"] = self.locations
 
         return rep
 
@@ -144,17 +147,7 @@ class Space(Composite):
         super().from_json(serial_space)
         self.width = serial_space["width"]
         self.height = serial_space["height"]
-        # construct self.location
-        self.locations = {}
-        for nm in self.registry:
-            if self.registry[nm].type == "agent":
-                self.locations[self.registry[nm].pos] = self.registry[nm]
-
-        # set up self.neighbors
-        for nm in self.registry:
-            s = self.registry[nm].neighbors
-            if not s and s in self.registry:
-                self.registry[nm].neighbors = self.registry[s]
+        self.locations = serial_space["locations"]
 
     def __repr__(self):
         return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
@@ -286,7 +279,8 @@ class Space(Composite):
         """
         if self.is_empty(x, y):
             return None
-        return self.locations[(x, y)]
+        agent_nm = self.locations[(x, y)]
+        return get_registration(agent_nm)
 
     def place_member(self, mbr, max_move=None, xy=None):
         """
@@ -295,10 +289,8 @@ class Space(Composite):
         Setting `xy` picks a particular spot to place member.
         `xy` must be a tuple!
         """
-
         if self.is_full():
-            print("     is_full")
-            self.user.log("Can't fit no more folks in this space!")
+            user_log("Can't fit no more folks in this space!")
             return None
         if not is_composite(mbr):
             if xy is not None:
@@ -333,17 +325,19 @@ class Space(Composite):
     def add_location(self, x, y, member):
         """
         Add a new member to the locations of positions of members.
+        locations{} stores agents by name, to look up in registry.
         """
-        self.locations[(x, y)] = member
+        self.locations[(x, y)] = member.name
 
     def move_location(self, nx, ny, ox, oy):
         """
         Move a member to a new position, if that position
         is not already occupied.
         """
-        if (nx, ny) not in self.locations:
+        if (ox, oy) not in self.locations:
+            user_debug("Trying to move unlocated agent.")
+        elif (nx, ny) not in self.locations:
             self.locations[(nx, ny)] = self.locations[(ox, oy)]
-
             del self.locations[(ox, oy)]
 
     def remove_location(self, x, y):
@@ -469,9 +463,16 @@ class Space(Composite):
         """
         If the agent has any neighbors in group X, return the first one
         encountered.
+        We may get the groupX object itself, or we may get passed
+        its name.
         """
         hood = self.get_square_hood(agent, save_neighbors=save_neighbors,
                                     hood_size=hood_size)
+        if isinstance(group, str):
+            # lookup group by name
+            group = get_registration(group)
+            if group is None:
+                return None
         for agent_name in hood:
             if group.ismember(agent_name):
                 return group[agent_name]
@@ -483,8 +484,9 @@ class Space(Composite):
         """
         closest = None
         min_distance_seen = MAX_WIDTH * MAX_HEIGHT
-        for key, other in self.locations.items():
-            if other is agent:
+        for key, other_nm in self.locations.items():
+            other = get_registration(other_nm)
+            if other is agent or other is None:
                 continue
             d = distance(agent, other)
             if d < min_distance_seen:
@@ -506,4 +508,4 @@ class Space(Composite):
         #  Calculate the new coordinates
         new_x += math.cos(math.radians(angle)) * max_move
         new_y += math.sin(math.radians(angle)) * max_move
-        return (self.constrain_x(new_x), self.constrain_y(new_y))
+        return self.constrain_x(new_x), self.constrain_y(new_y)

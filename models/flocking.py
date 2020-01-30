@@ -7,13 +7,15 @@ from indra.agent import Agent, X, Y
 from indra.composite import Composite
 from indra.display_methods import BLUE, TREE
 from indra.env import Env
+from indra.registry import get_registration
 from indra.space import DEF_HEIGHT, DEF_WIDTH, distance
 from indra.utils import get_props
 
 MODEL_NAME = "flocking"
-DEBUG = True  # turns debugging code on or off
+DEBUG = False  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
+BIRD_GROUP = "Birds"
 DEF_NUM_BIRDS = 2
 DEF_DESIRED_DISTANCE = 2
 ACCEPTABLE_DEV = .05
@@ -90,7 +92,7 @@ def set_up(props=None):
     """
     pa = get_props(MODEL_NAME, props)
 
-    flock = Composite("Birds", {"color": BLUE, "marker": TREE},
+    flock = Composite(BIRD_GROUP, {"color": BLUE, "marker": TREE},
                       member_creator=create_bird,
                       num_members=pa.get('num_birds', DEF_NUM_BIRDS))
 
@@ -98,14 +100,14 @@ def set_up(props=None):
                   height=pa.get('grid_height', DEF_HEIGHT),
                   width=pa.get('grid_width', DEF_WIDTH),
                   members=[flock])
-    return (the_sky, flock)
+    return the_sky, flock
 
 
 def restore_globals(env):
     global flock
     global the_sky
     the_sky = env
-    flock = env.registry["Birds"]
+    flock = get_registration(BIRD_GROUP)
 
 
 def main():

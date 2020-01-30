@@ -30,29 +30,29 @@ def ram_action(agent):
 
 def create_leibniz():
     return Agent("Leibniz",
-                  attrs={"place": 0.0, "time": LEIBBYEAR},
-                  action=leib_action,
-                  duration=20)
+                 attrs={"place": 0.0, "time": LEIBBYEAR},
+                 action=leib_action,
+                 duration=20)
 
 
 def create_other_leibniz():
     return Agent("Leibniz",
-                  attrs={"place": 1.0, "time": LEIBBYEAR},
-                  action=leib_action,
-                  duration=20)
+                 attrs={"place": 1.0, "time": LEIBBYEAR},
+                 action=leib_action,
+                 duration=20)
 
 
 def create_newton():
     return Agent("Newton",
-                  attrs={"place": 0.0, "time": 1658.0, "achieve": 43.9},
-                  action=newt_action,
-                  duration=30)
+                 attrs={"place": 0.0, "time": 1658.0, "achieve": 43.9},
+                 action=newt_action,
+                 duration=30)
 
 
 def create_hardy():
     return Agent("Hardy",
-                  attrs={ANM: AGE},
-                  duration=10)
+                 attrs={ANM: AGE},
+                 duration=10)
 
 
 def create_ramanujan():
@@ -143,13 +143,6 @@ class AgentTestCase(TestCase):
         ent = create_leibniz()
         s = "place"
         self.assertTrue(s in ent)
-
-    def test_type(self):
-        l1 = create_leibniz()
-        l2 = create_other_leibniz()
-        n = create_newton()
-        self.assertTrue(l1.same_type(l2))
-        self.assertFalse(l1.same_type(n))
 
     def test_iter(self):
         l1 = create_leibniz()

@@ -7,8 +7,8 @@ import random
 from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import RED, BLUE
-# from indra.space import in_hood
 from indra.env import Env
+from indra.registry import get_registration
 from indra.utils import get_props
 
 MODEL_NAME = "segregation"
@@ -111,7 +111,7 @@ def seg_agent_action(agent):
     return stay_put
 
 
-def create_agent(name, i, props=None):
+def create_resident(name, i, props=None):
     """
     Creates agent of specified color type
     """
@@ -134,7 +134,7 @@ def create_agent(name, i, props=None):
                         COLOR: color, "hood_changed": True,
                         "just_moved": False,
                         "hood_size": hood_size
-                        },)
+                        }, )
 
 
 def set_up(props=None):
@@ -148,11 +148,11 @@ def set_up(props=None):
     pa = get_props(MODEL_NAME, props)
     blue_agents = Composite(group_names[BLUE_TEAM] + group_suffix,
                             {"color": BLUE},
-                            props=pa, member_creator=create_agent,
+                            props=pa, member_creator=create_resident,
                             num_members=pa.get('num_blue', NUM_BLUE))
     red_agents = Composite(group_names[RED_TEAM] + group_suffix,
                            {"color": RED},
-                           props=pa, member_creator=create_agent,
+                           props=pa, member_creator=create_resident,
                            num_members=pa.get('num_red', NUM_RED))
     if DEBUG2:
         print(red_agents.__repr__())
@@ -174,8 +174,8 @@ def restore_globals(env):
     global red_agents
     global city
     city = env
-    blue_agents = env.registry[group_names[BLUE_TEAM] + group_suffix]
-    red_agents = env.registry[group_names[RED_TEAM] + group_suffix]
+    blue_agents = get_registration(group_names[BLUE_TEAM] + group_suffix)
+    red_agents = get_registration(group_names[RED_TEAM] + group_suffix)
 
 
 def main():

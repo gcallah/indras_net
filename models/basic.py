@@ -8,6 +8,8 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import RED, BLUE
 from indra.env import Env
+# likely needed soon:
+# from indra.registry import get_registration
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import get_props
 
@@ -16,7 +18,6 @@ DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
 DEF_NUM_BLUE = 10
-
 
 DEF_NUM_RED = 10
 
@@ -56,7 +57,7 @@ def set_up(props=None):
               members=[blue_group, red_group],
               props=pa)
 
-    return (env, blue_group, red_group)
+    return env, blue_group, red_group
 
 
 def main():

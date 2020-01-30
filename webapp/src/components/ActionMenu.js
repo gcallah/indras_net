@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import ListGroup from 'react-bootstrap/ListGroup';
 import axios from 'axios';
 import autoBind from 'react-autobind';
-import PropType from 'prop-types';
 import PageLoader from './PageLoader';
 import PopulationGraph from './PopulationGraph';
 import ScatterPlot from './ScatterPlot';
@@ -10,15 +9,23 @@ import Debugger from './Debugger';
 import ModelStatusBox from './ModelStatusBox';
 import SourceCodeViewer from './SourceCodeViewer';
 import RunModelButton from './RunModelButton';
-import BackHomeButton from './BackHomeButton';
 import './styles.css';
-
 
 const POP = 2;
 const SCATTER = 3;
 const DATA = 4;
 const SOURCE = 5;
 const API_SERVER = 'https://indrasnet.pythonanywhere.com/models/menu/';
+/*
+const GRAPH_DICT = {
+  Basic: 'scatter',
+  Bacteria: 'scatter',
+  "Adam Smith's Fashion Model": 'scatter',
+  "Schelling's Segregation Model": 'scatter',
+  'Predator-Prey Model': 'scatter',
+  'Financial Market': 'scatter',
+};
+*/
 
 class ActionMenu extends Component {
   constructor(props) {
@@ -35,26 +42,46 @@ class ActionMenu extends Component {
       disabledButton: false,
       loadingPopulation: false,
       loadingScatter: false,
+      loadingSourceCode: false,
       loadingDebugger: false,
     };
   }
 
   async componentDidMount() {
-    document.title = 'Indra | Menu';
-    const m = await axios.get(API_SERVER);
-    this.setState({
-      menu: m.data,
-      name: localStorage.getItem('name'),
-      modelId: parseInt(localStorage.getItem('menu_id'), 10),
-      source: localStorage.getItem('source'),
-      envFile: JSON.parse(localStorage.getItem('envFile')),
-      msg: JSON.parse(localStorage.getItem('envFile')).user.user_msgs,
-      loadingScatter: true,
-    });
-    const code = await this.viewSource();
-    this.setState({
-      sourceCode: code,
-    });
+    try {
+      document.title = 'Indra | Menu';
+      const m = await axios.get(API_SERVER);
+      this.setState({
+        menu: m.data,
+        name: localStorage.getItem('name'),
+        modelId: parseInt(localStorage.getItem('menu_id'), 10),
+        source: localStorage.getItem('source'),
+        envFile: JSON.parse(localStorage.getItem('envFile')),
+        msg: JSON.parse(localStorage.getItem('envFile')).user.user_msgs,
+      });
+    } catch (error) {
+      return false;
+    }
+    // const defaultGraph = GRAPH_DICT[localStorage.getItem('name')];
+    const defaultGraph = localStorage.getItem('graph');
+    if (defaultGraph === 'scatter') {
+      this.setState({
+        loadingScatter: true,
+      });
+    } else {
+      this.setState({
+        loadingPopulation: true,
+      });
+    }
+    try {
+      const code = await this.viewSource();
+      this.setState({
+        sourceCode: code,
+      });
+    } catch (error) {
+      return false;
+    }
+    return true;
   }
 
   viewSource = async () => {
@@ -70,11 +97,6 @@ class ActionMenu extends Component {
       return 'Something has gone wrong.';
     }
   };
-
-  goback = () => {
-    const { history } = this.props;
-    history.goBack();
-  }
 
   handleRunPeriod = (e) => {
     this.setState({
@@ -107,6 +129,7 @@ class ActionMenu extends Component {
       loadingData: false,
       loadingPopulation: false,
       loadingScatter: false,
+      loadingSourceCode: false,
       loadingDebugger: false,
     });
     switch (e) {
@@ -150,12 +173,8 @@ class ActionMenu extends Component {
 
   renderHeader = () => {
     const { name } = this.state;
-    return (
-      <h1 className="header">
-        {name}
-      </h1>
-    );
-  }
+    return <h1 className="header">{name}</h1>;
+  };
 
   MenuItem = (i, action, text, key) => (
     <ListGroup.Item
@@ -163,7 +182,7 @@ class ActionMenu extends Component {
       key={key}
       onClick={() => this.handleClick(action)}
     >
-      { text }
+      {text}
     </ListGroup.Item>
   );
 
@@ -191,18 +210,12 @@ class ActionMenu extends Component {
           id={modelId}
         />
 
-        <Debugger
-          loadingData={loadingDebugger}
-          envFile={envFile}
-        />
+        <Debugger loadingData={loadingDebugger} envFile={envFile} />
 
-        <SourceCodeViewer
-          loadingData={loadingSourceCode}
-          code={sourceCode}
-        />
+        <SourceCodeViewer loadingData={loadingSourceCode} code={sourceCode} />
       </div>
     );
-  }
+  };
 
   renderMapItem = () => {
     const { menu } = this.state;
@@ -210,45 +223,36 @@ class ActionMenu extends Component {
       <div className="row margin-bottom-80">
         <div className="col w-25">
           <ListGroup>
-            {
-              Object.keys(menu).map((item, i) => (
-                menu[item].id > 1
-                  ? this.MenuItem(
-                    i,
-                    menu[item].id,
-                    menu[item].question,
-                    menu[item].func,
-                  )
-                  : null
-              ))
-            }
+            {Object.keys(menu).map((item, i) => (menu[item].id > 1
+              ? this.MenuItem(
+                i,
+                menu[item].id,
+                menu[item].question,
+                menu[item].func,
+              )
+              : null))}
           </ListGroup>
         </div>
       </div>
     );
-  }
+  };
 
   render() {
     const {
-      loadingData,
-      msg,
-      disabledButton,
-      errorMessage,
+      loadingData, msg, disabledButton, errorMessage,
     } = this.state;
     if (loadingData) {
-      return (
-        <PageLoader />
-      );
+      return <PageLoader />;
     }
     return (
       <div>
-        <div className="mt-4" style={{ float: 'right' }}>
-          <BackHomeButton />
-        </div>
-        <br />
         {this.renderHeader()}
         <div>
-          <ModelStatusBox title="Model Status" msg={msg} ref={this.modelStatusBoxElement} />
+          <ModelStatusBox
+            title="Model Status"
+            msg={msg}
+            ref={this.modelStatusBoxElement}
+          />
         </div>
         <ul className="list-group">
           <div className="row">
@@ -259,7 +263,7 @@ class ActionMenu extends Component {
                 sendNumPeriods={this.sendNumPeriods}
                 handleRunPeriod={this.handleRunPeriod}
               />
-              <h3 className="margin-top-60 mb-5">Model Analysis:</h3>
+              <h3 className="margin-top-50 mb-4">Model Analysis:</h3>
             </div>
           </div>
           {this.renderMapItem()}
@@ -270,9 +274,7 @@ class ActionMenu extends Component {
   }
 }
 
-ActionMenu.propTypes = {
-  history: PropType.shape(),
-};
+ActionMenu.propTypes = {};
 
 ActionMenu.defaultProps = {
   history: {},

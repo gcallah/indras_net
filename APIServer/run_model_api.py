@@ -1,5 +1,3 @@
-from APIServer.api_utils import json_converter, err_return
-from indra.env import Env
 # these imports below must be automated somehow;
 # also, these things are unserializable, NOT unrestorable!
 # (Otherwise why bother?)
@@ -14,6 +12,8 @@ import models.gameoflife as gameoflife
 import models.sandpile as sandpile
 import models.segregation as segregation
 import models.wolfsheep as wolfsheep
+from APIServer.api_utils import json_converter, err_return
+from indra.env import Env
 
 # this dictionary should be keyed on model id
 restore_globals_dict = {

@@ -12,6 +12,7 @@ from indra.agent import ratio_to_sin
 from indra.composite import Composite
 from indra.display_methods import NAVY, DARKRED, RED, BLUE
 from indra.env import Env
+from indra.registry import get_registration
 from indra.space import in_hood
 from indra.utils import get_props
 
@@ -61,13 +62,13 @@ society = None
 opp_group = None
 
 
-def change_color(agent, society, opp_group):
+def change_color(agent, _society, _opp_group):
     """
     change agent's DISPLAY_COLOR to its opposite color
     """
     agent[DISPLAY_COLOR] = not agent[DISPLAY_COLOR]
-    society.add_switch(agent, agent.primary_group(),
-                       opp_group[str(agent.primary_group())])
+    _society.add_switch(agent, agent.prim_group,
+                        _opp_group[str(agent.prim_group)])
 
 
 def new_color_pref(old_pref, env_color):
@@ -198,10 +199,10 @@ def restore_globals(env):
     global society
     global opp_group
     society = env
-    blue_tsetters = env.registry[BLUE_TSETTERS]
-    red_tsetters = env.registry[RED_TSETTERS]
-    red_followers = env.registry[RED_FOLLOWERS]
-    blue_followers = env.registry[BLUE_FOLLOWERS]
+    blue_tsetters = get_registration(BLUE_TSETTERS)
+    red_tsetters = get_registration(RED_TSETTERS)
+    red_followers = get_registration(RED_FOLLOWERS)
+    blue_followers = get_registration(BLUE_FOLLOWERS)
     opp_group = {str(red_tsetters): blue_tsetters,
                  str(blue_tsetters): red_tsetters,
                  str(red_followers): blue_followers,

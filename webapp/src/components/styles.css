@@ -1,6 +1,6 @@
 .carousel {
   display: block;
-  width: 100%;
+  max-width: 70%;
   align-items: center;
 }
 
@@ -10,8 +10,27 @@
 }
 
 .header {
+  display: flex;
+  text-align: left;
+  margin-bottom: 36px;
+}
+
+.header-items-list {
+  padding: 0;
+  margin: 0;
+}
+
+.header-item {
+  display: inline-block;
+  margin: 0 40px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.indra-name {
+  font-size: 32px;
   text-align: center;
-  font-weight: 200;
+  margin: 0 40px 0 0;
 }
 
 .margin-bottom-80 {
@@ -28,7 +47,7 @@
 
 .model-status {
   float: right;
-  width: 18rem;
+  width: 28rem;
   height: 28rem;
 }
 
@@ -41,6 +60,11 @@
   font-size: 16px;
   font-weight: 400;
 }
-.col {
+
+.list-group-item {
   cursor: pointer;
+}
+
+.link {
+  word-wrap: break-word;
 }

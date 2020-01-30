@@ -1,0 +1,35 @@
+{
+  "grid_height": {
+    "val": 4,
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 2
+  },
+  "grid_width": {
+    "val": 4,
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 2
+  },
+  "num_traders": {
+    "val": 2,
+    "question": "How many traders do you want?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 1
+  },
+  "total_resources": {
+    "val": 20,
+    "question": "How many total resources do you want each resource holder have?",
+    "atype": "INT",
+    "hival": 200,
+    "lowval": 1
+  },
+  "total_type": {
+    "val": 4,
+    "question": "How many type resources do you want?",
+    "atype": "INT",
+    "hival": 200,
+    "lowval": 1
+  }
+}

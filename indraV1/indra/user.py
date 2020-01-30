@@ -38,7 +38,7 @@ DUMMY = pa.DUMMY
 run_output = ""
 
 def ask(msg, default=None, limits=None):
-    answer = None
+    # answer = None
     rng_msg = ""
     if limits is not None:
         (low, high) = limits

@@ -1,6 +1,6 @@
-/* eslint-disable react/prefer-stateless-function */
-import React, { Component } from 'react';
+import React from 'react';
 import { HashRouter, Route, Switch } from 'react-router-dom';
+import styled, { withTheme } from 'styled-components';
 import Layout from './components/Layout';
 import Home from './components/Home';
 import WIP from './components/WIP';
@@ -8,10 +8,21 @@ import ModelDetail from './components/ModelDetail';
 import ActionMenu from './components/ActionMenu';
 import NotFoundPage from './components/NotFoundPage';
 import ErrorCatching from './components/ErrorCatching';
+import ModelBuilder from './components/ModelBuilder';
 
-class App extends Component {
-  render() {
-    return (
+const Wrapper = styled('div')`
+  background: ${(props) => props.theme.background};
+  width: 100vw;
+  min-height: 100vh;
+  font-family: -apple-stem, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen";
+  h1 {
+    color: ${(props) => props.theme.body};
+  }
+`;
+
+function App() {
+  return (
+    <Wrapper>
       <HashRouter>
         <Layout>
           <Switch>
@@ -21,11 +32,12 @@ class App extends Component {
             <Route exact path="/models/menu/:id" component={ActionMenu} />
             <Route exact path="/errorCatching" component={ErrorCatching} />
             <Route component={NotFoundPage} />
+            <Route exact path="/modelcreator" component={ModelBuilder} />
           </Switch>
         </Layout>
       </HashRouter>
-    );
-  }
+    </Wrapper>
+  );
 }
 
-export default App;
+export default withTheme(App);

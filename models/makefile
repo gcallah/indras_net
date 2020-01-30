@@ -1,6 +1,6 @@
 TESTDIR = tests
 PYLINT = flake8
-PYLINTFLAGS = --ignore=E741,W503 --exclude=interactive.py,__main__.py,scheduler.py
+PYLINTFLAGS = --exclude=interactive.py,__main__.py
 PYTHONFILES = $(shell ls *.py)
 TEST_FILES = $(shell ls $(TESTDIR)/test_*.py)
 export user_type = test
@@ -12,7 +12,7 @@ prod: tests
 lint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
 
 pytests: $(PYTHONFILES)
-	./pytests.sh
+	./pytests.sh capture
 
 tests: pytests lint
 

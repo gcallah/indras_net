@@ -13,16 +13,15 @@ DEBUG = False  # Turns debugging code on or off
 DEF_HEIGHT = 30
 DEF_WIDTH = 30
 
-gameoflife_env = None
+biosphere = None
 groups = None
 
 reset_lists = False
 to_come_alive = []
 to_die = []
-DEBUG = False
 
 
-def create_agent(x, y):
+def create_game_cell(x, y):
     """
     Create an agent with the passed x, y value as its name.
     """
@@ -36,7 +35,7 @@ def apply_live_rules(agent):
     Apply the rules for live agents.
     The agent passed in should be alive, meaning its color should be black.
     """
-    global gameoflife_env
+    global biosphere
     global groups
 
     num_live_neighbors = 0
@@ -61,7 +60,7 @@ def apply_dead_rules(curr_x, curr_y, x1, x2, y1, y2):
     num_live_neighbors = 0
     for x in range(x1, x2 + 1):
         for y in range(y1, y2 + 1):
-            neighbor = gameoflife_env.get_agent_at(x, y)
+            neighbor = biosphere.get_agent_at(x, y)
             if (neighbor is not None and neighbor.primary_group() == groups[0]
                     and (curr_x != x or curr_y != y)):
                 num_live_neighbors += 1
@@ -72,7 +71,7 @@ def apply_dead_rules(curr_x, curr_y, x1, x2, y1, y2):
 
 
 def check_for_new_agents(agent):
-    global gameoflife_env
+    global biosphere
     global to_come_alive
 
     curr_x = agent.get_x()
@@ -82,15 +81,15 @@ def check_for_new_agents(agent):
             if (x != 0) or (y != 0):
                 new_x = curr_x + x
                 new_y = curr_y + y
-                if gameoflife_env.get_agent_at(new_x, new_y) is None:
-                    x1, x2, y1, y2 = gameoflife_env.get_moore_hood_idx(new_x,
-                                                                       new_y)
+                if biosphere.get_agent_at(new_x, new_y) is None:
+                    x1, x2, y1, y2 = biosphere.get_moore_hood_idx(new_x,
+                                                                  new_y)
                     if apply_dead_rules(new_x, new_y, x1, x2, y1, y2):
                         to_come_alive.append((new_x, new_y))
     return to_come_alive
 
 
-def gameoflife_action(gameoflife_env):
+def gameoflife_action(biosphere):
     """
     The action that will be taken every period for the enviornment.
     Loops through the list of agents that has to come alive and die
@@ -104,17 +103,17 @@ def gameoflife_action(gameoflife_env):
     for agent_pos in to_come_alive:
         if DEBUG:
             print("Agent at", agent_pos, "will come alive")
-        if gameoflife_env.get_agent_at(agent_pos[0], agent_pos[1]) is None:
-            agent = create_agent(agent_pos[0], agent_pos[1])
+        if biosphere.get_agent_at(agent_pos[0], agent_pos[1]) is None:
+            agent = create_game_cell(agent_pos[0], agent_pos[1])
             groups[0] += agent
-            gameoflife_env.place_member(agent, xy=(agent_pos[0], agent_pos[1]))
+            biosphere.place_member(agent, xy=(agent_pos[0], agent_pos[1]))
     for agent in to_die:
         if not isinstance(agent, tuple):
             if DEBUG:
                 print("Agent at", to_die[agent], "will die")
             agent.die()
             groups[0].del_member(agent)
-            gameoflife_env.remove_location(agent.get_x(), agent.get_y())
+            biosphere.remove_location(agent.get_x(), agent.get_y())
     reset_lists = True
     return True
 
@@ -128,15 +127,13 @@ def game_agent_action(agent):
     global to_come_alive
     global to_die
     global reset_lists
-    global gameoflife_env
+    global biosphere
 
     if reset_lists:
         to_come_alive = []
         to_die = []
         reset_lists = False
 
-    ret = gameoflife_env.get_moore_hood(agent)
-    gameoflife_env.registry["Moore neighbors"] = ret
     check_for_new_agents(agent)
     if apply_live_rules(agent):
         to_die.append(agent)
@@ -144,59 +141,51 @@ def game_agent_action(agent):
 
 
 def populate_board_glider(width, height):
-    global gameoflife_env
+    global biosphere
     global groups
 
     center = [width // 2, height // 2]
-    agent_loc = []
-    agent_loc.append((center[0], center[1]))
-    agent_loc.append((center[0] - 1, center[1] + 1))
-    agent_loc.append((center[0] + 1, center[1] + 1))
-    agent_loc.append((center[0] + 1, center[1]))
-    agent_loc.append((center[0], center[1] - 1))
+    agent_loc = [(center[0], center[1]), (center[0] - 1, center[1] + 1),
+                 (center[0] + 1, center[1] + 1),
+                 (center[0] + 1, center[1]), (center[0], center[1] - 1)]
     for loc in agent_loc:
-        agent = create_agent(loc[0], loc[1])
+        agent = create_game_cell(loc[0], loc[1])
         groups[0] += agent
-        gameoflife_env.place_member(agent, xy=loc)
+        biosphere.place_member(agent, xy=loc)
 
 
 def populate_board_small_exploder(width, height):
-    global gameoflife_env
+    global biosphere
     global groups
 
     center = [width // 2, height // 2]
-    agent_loc = []
-    agent_loc.append((center[0], center[1]))
-    agent_loc.append((center[0], center[1] + 1))
-    agent_loc.append((center[0] - 1, center[1]))
-    agent_loc.append((center[0] + 1, center[1]))
-    agent_loc.append((center[0] - 1, center[1] - 1))
-    agent_loc.append((center[0] + 1, center[1] - 1))
-    agent_loc.append((center[0], center[1] - 2))
+    agent_loc = [(center[0], center[1]), (center[0], center[1] + 1),
+                 (center[0] - 1, center[1]),
+                 (center[0] + 1, center[1]), (center[0] - 1, center[1] - 1),
+                 (center[0] + 1, center[1] - 1),
+                 (center[0], center[1] - 2)]
     for loc in agent_loc:
-        agent = create_agent(loc[0], loc[1])
+        agent = create_game_cell(loc[0], loc[1])
         groups[0] += agent
-        gameoflife_env.place_member(agent, xy=loc)
+        biosphere.place_member(agent, xy=loc)
 
 
 def populate_board_exploder(width, height):
-    global gameoflife_env
+    global biosphere
 
     center = [width // 2, height // 2]
-    agent_loc = []
-    agent_loc.append((center[0], center[1]))
-    agent_loc.append((center[0], center[1] - 4))
+    agent_loc = [(center[0], center[1]), (center[0], center[1] - 4)]
     for i in range(0, 5):
         agent_loc.append((center[0] - 2, center[1] - i))
         agent_loc.append((center[0] + 2, center[1] - i))
     for loc in agent_loc:
-        agent = create_agent(loc[0], loc[1])
+        agent = create_game_cell(loc[0], loc[1])
         groups[0] += agent
-        gameoflife_env.place_member(agent, xy=loc)
+        biosphere.place_member(agent, xy=loc)
 
 
 def populate_board_n_horizontal_row(width, height, n=10):
-    global gameoflife_env
+    global biosphere
 
     center = [width // 2, height // 2]
     agent_loc = []
@@ -207,13 +196,13 @@ def populate_board_n_horizontal_row(width, height, n=10):
     for l in range(1, left):
         agent_loc.append((center[0] - l, center[1]))
     for loc in agent_loc:
-        agent = create_agent(loc[0], loc[1])
+        agent = create_game_cell(loc[0], loc[1])
         groups[0] += agent
-        gameoflife_env.place_member(agent, xy=loc)
+        biosphere.place_member(agent, xy=loc)
 
 
 def populate_board_n_vertical_row(width, height, n=10):
-    global gameoflife_env
+    global biosphere
 
     center = [width // 2, height // 2]
     agent_loc = []
@@ -224,65 +213,68 @@ def populate_board_n_vertical_row(width, height, n=10):
     for b in range(1, bottom):
         agent_loc.append((center[0], center[1] - b))
     for loc in agent_loc:
-        agent = create_agent(loc[0], loc[1])
+        agent = create_game_cell(loc[0], loc[1])
         groups[0] += agent
-        gameoflife_env.place_member(agent, xy=loc)
+        biosphere.place_member(agent, xy=loc)
 
 
 def populate_board_lightweight_spaceship(width, height):
-    global gameoflife_env
+    global biosphere
 
     center = [width // 2, height // 2]
-    agent_loc = []
-    agent_loc.append((center[0], center[1]))
-    agent_loc.append((center[0] - 1, center[1]))
-    agent_loc.append((center[0] - 2, center[1]))
-    agent_loc.append((center[0] - 3, center[1]))
-    agent_loc.append((center[0], center[1] - 1))
-    agent_loc.append((center[0], center[1] - 2))
-    agent_loc.append((center[0] - 4, center[1] - 1))
-    agent_loc.append((center[0] - 1, center[1] - 3))
-    agent_loc.append((center[0] - 4, center[1] - 3))
+    agent_loc = [(center[0], center[1]), (center[0] - 1, center[1]),
+                 (center[0] - 2, center[1]),
+                 (center[0] - 3, center[1]), (center[0], center[1] - 1),
+                 (center[0], center[1] - 2),
+                 (center[0] - 4, center[1] - 1),
+                 (center[0] - 1, center[1] - 3),
+                 (center[0] - 4, center[1] - 3)]
     for loc in agent_loc:
-        agent = create_agent(loc[0], loc[1])
+        agent = create_game_cell(loc[0], loc[1])
         groups[0] += agent
-        gameoflife_env.place_member(agent, xy=loc)
+        biosphere.place_member(agent, xy=loc)
 
 
 def populate_board_tumbler(width, height):
-    global gameoflife_env
+    global biosphere
 
     center = [width // 2, height // 2]
-    agent_loc = []
+    agent_loc = [(center[0] - 1, center[1]), (center[0] - 2, center[1]),
+                 (center[0] + 1, center[1]),
+                 (center[0] + 2, center[1]), (center[0] - 1, center[1] - 1),
+                 (center[0] - 2, center[1] - 1),
+                 (center[0] + 1, center[1] - 1),
+                 (center[0] + 2, center[1] - 1),
+                 (center[0] - 1, center[1] - 2),
+                 (center[0] - 1, center[1] - 3),
+                 (center[0] - 1, center[1] - 4),
+                 (center[0] + 1, center[1] - 2),
+                 (center[0] + 1, center[1] - 3),
+                 (center[0] + 1, center[1] - 4),
+                 (center[0] - 3, center[1] - 3),
+                 (center[0] - 3, center[1] - 4),
+                 (center[0] - 3, center[1] - 5),
+                 (center[0] - 2, center[1] - 5),
+                 (center[0] + 3, center[1] - 3),
+                 (center[0] + 3, center[1] - 4),
+                 (center[0] + 3, center[1] - 5),
+                 (center[0] + 2, center[1] - 5)]
 
-    agent_loc.append((center[0] - 1, center[1]))
-    agent_loc.append((center[0] - 2, center[1]))
-    agent_loc.append((center[0] + 1, center[1]))
-    agent_loc.append((center[0] + 2, center[1]))
-    agent_loc.append((center[0] - 1, center[1] - 1))
-    agent_loc.append((center[0] - 2, center[1] - 1))
-    agent_loc.append((center[0] + 1, center[1] - 1))
-    agent_loc.append((center[0] + 2, center[1] - 1))
-
-    agent_loc.append((center[0] - 1, center[1] - 2))
-    agent_loc.append((center[0] - 1, center[1] - 3))
-    agent_loc.append((center[0] - 1, center[1] - 4))
-    agent_loc.append((center[0] + 1, center[1] - 2))
-    agent_loc.append((center[0] + 1, center[1] - 3))
-    agent_loc.append((center[0] + 1, center[1] - 4))
-
-    agent_loc.append((center[0] - 3, center[1] - 3))
-    agent_loc.append((center[0] - 3, center[1] - 4))
-    agent_loc.append((center[0] - 3, center[1] - 5))
-    agent_loc.append((center[0] - 2, center[1] - 5))
-    agent_loc.append((center[0] + 3, center[1] - 3))
-    agent_loc.append((center[0] + 3, center[1] - 4))
-    agent_loc.append((center[0] + 3, center[1] - 5))
-    agent_loc.append((center[0] + 2, center[1] - 5))
     for loc in agent_loc:
-        agent = create_agent(loc[0], loc[1])
+        agent = create_game_cell(loc[0], loc[1])
         groups[0] += agent
-        gameoflife_env.place_member(agent, xy=loc)
+        biosphere.place_member(agent, xy=loc)
+
+
+populate_board_dict = {
+    0: populate_board_glider,
+    1: populate_board_small_exploder,
+    2: populate_board_exploder,
+    3: populate_board_n_horizontal_row,
+    4: populate_board_n_vertical_row,
+    5: populate_board_lightweight_spaceship,
+    6: populate_board_tumbler
+}
 
 
 def set_up(props=None):
@@ -290,7 +282,7 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     global groups
-    global gameoflife_env
+    global biosphere
 
     pa = get_props(MODEL_NAME, props)
 
@@ -298,52 +290,41 @@ def set_up(props=None):
     width = pa.get("grid_width", DEF_WIDTH)
     simulation = pa.get("simulation", 0)
     black = Composite("Black", {"color": BLACK, "marker": SQUARE})
-    groups = []
-    groups.append(black)
-    gameoflife_env = Env("Game of Life",
-                         action=gameoflife_action,
-                         height=height,
-                         width=width,
-                         members=groups,
-                         attrs={"size": 100,
-                                "change_grid_spacing": (0.5, 1),
-                                "hide_xy_ticks": True,
-                                "hide_legend": True},
-                         random_placing=False,
-                         props=pa)
-    if simulation == 0:
-        populate_board_glider(width, height)
-    elif simulation == 1:
-        populate_board_small_exploder(width, height)
-    elif simulation == 2:
-        populate_board_exploder(width, height)
-    elif simulation == 3:
-        populate_board_n_horizontal_row(width, height)
-    elif simulation == 4:
-        populate_board_n_vertical_row(width, height)
-    elif simulation == 5:
-        populate_board_lightweight_spaceship(width, height)
-    elif simulation == 6:
-        populate_board_tumbler(width, height)
-    return (gameoflife_env, groups)
+    groups = [black]
+    biosphere = Env("Game of Life",
+                    action=gameoflife_action,
+                    height=height,
+                    width=width,
+                    members=groups,
+                    attrs={"size": 100,
+                           "change_grid_spacing": (0.5, 1),
+                           "hide_xy_ticks": True,
+                           "hide_legend": True},
+                    random_placing=False,
+                    props=pa)
+
+    populate_board_dict[simulation](width, height)
+
+    return biosphere, groups
 
 
 def restore_globals(env):
     global groups
-    global gameoflife_env
-    gameoflife_env = env
-    groups = [env.registry["Black"]]
+    global biosphere
+    biosphere = env
+    # this model needs to be totally revisited anyway, so:
+    # groups = [env.registry["Black"]]
 
 
 def main():
-    global gameoflife_env
+    global biosphere
     global groups
-    (gameoflife_env, groups) = set_up()
+    (biosphere, groups) = set_up()
 
     if DEBUG:
-        print(gameoflife_env.__repr__())
+        print(biosphere.__repr__())
 
-    gameoflife_env()
+    biosphere()
     return 0
 
 

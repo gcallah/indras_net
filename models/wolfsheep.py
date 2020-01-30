@@ -5,6 +5,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import TAN, GRAY
 from indra.env import Env
+from indra.registry import get_registration
 from indra.space import in_hood
 from indra.utils import get_props
 
@@ -31,12 +32,9 @@ COMP_SHEEP_NAME = "sheep"
 
 ERR_MSG = "Invalid agent name"
 
-
 wolves = None
 sheep = None
 meadow = None
-create_wolf = None
-create_sheep = None
 wolves_created = 0
 sheep_created = 0
 
@@ -85,12 +83,8 @@ def reproduce(agent, create_func, num_created, group):
     """
     Agents reproduce when "time_to_repr" reaches 0
     """
-    name_prefix = AGT_SHEEP_NAME
-    if str(agent) in wolves:
-        name_prefix = AGT_WOLF_NAME
     if agent["time_to_repr"] == 0:
-        meadow.add_child(create_func(name_prefix, num_created),
-                         group)
+        meadow.add_child(group)
         agent["time_to_repr"] = agent["orig_repr_time"]
         return True
     else:
@@ -131,10 +125,8 @@ def create_wolf(name, i, props=None):
                  duration=wolf_life,
                  action=wolf_action,
                  env=meadow,
-                 attrs={"time_to_repr":
-                        wolf_repro,
-                        "orig_repr_time":
-                        wolf_repro})
+                 attrs={"time_to_repr": wolf_repro,
+                        "orig_repr_time": wolf_repro})
 
 
 def create_sheep(name, i, props=None):
@@ -188,8 +180,8 @@ def restore_globals(env):
     global sheep
     global meadow
     meadow = env
-    wolves = env.registry[COMP_WOLF_NAME]
-    sheep = env.registry[COMP_SHEEP_NAME]
+    wolves = get_registration(COMP_WOLF_NAME)
+    sheep = get_registration(COMP_SHEEP_NAME)
 
 
 def main():

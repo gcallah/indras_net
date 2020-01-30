@@ -3,12 +3,12 @@ This file defines User, which represents a user in our system.
 """
 import json
 import os
-import sys
 from abc import abstractmethod
 
 from IPython import embed
 
 from indra.agent import Agent
+from indra.registry import get_env
 
 TERMINAL = "terminal"
 TEST = "test"
@@ -24,14 +24,28 @@ menu_dir = os.getenv("INDRA_HOME", "/home/indrasnet/indras_net") + "/indra"
 menu_file = "menu.json"
 menu_src = menu_dir + "/" + menu_file
 
+the_user = None  # this is a singleton, so global should be ok
+
+
+def user_tell(msg):
+    return the_user.tell(msg)
+
+
+def user_debug(msg):
+    return the_user.debug(msg)
+
+
+def user_log(msg):
+    return the_user.log(msg)
+
 
 def not_impl(user):
     return user.tell(NOT_IMPL)
 
 
 def run(user, test_run=False):
-    steps = 0
-    acts = 0
+    # steps = 0
+    # acts = 0
     if not test_run:
         steps = user.ask("How many periods?")
         if steps is None or steps == "" or steps.isspace():
@@ -42,7 +56,7 @@ def run(user, test_run=False):
     else:
         steps = DEF_STEPS
 
-    acts = user.env.runN(periods=steps)
+    acts = get_env().runN(periods=steps)
     return acts
 
 
@@ -52,7 +66,7 @@ def leave(user):
 
 
 def scatter_plot(user, update=False):
-    return user.env.scatter_graph()
+    return get_env().scatter_graph()
 
 
 def line_graph(user, update=False):
@@ -60,16 +74,12 @@ def line_graph(user, update=False):
         user.tell("Updating the line graph.")
     else:
         user.tell("Drawing a line graph.")
-    return user.env.line_graph()
+    return get_env().line_graph()
 
 
 def debug(user):
     embed()
     return 0
-
-
-def tell_debug(msg, end='\n'):
-    print("DEBUG: " + msg, file=sys.stderr, end=end)
 
 
 menu_functions = {
@@ -100,15 +110,18 @@ class User(Agent):
 
     def __init__(self, name, env, **kwargs):
         super().__init__(name, **kwargs)
-        self.env = env  # this class needs this all the time, we think
+        # we shouldn't need self.env any more!
         self.menu = get_menu_json()
         self.user_msgs = ''
-        self.debug = ''
+        self.debug_msg = ''
         self.error_message = {}
+        # now we set our global singleton:
+        global the_user
+        the_user = self
 
     def to_json(self):
         return {"user_msgs": self.user_msgs,
-                "debug": self.debug,
+                "debug": self.debug_msg,
                 "name": self.name}
 
     def from_json(self):
@@ -141,6 +154,12 @@ class User(Agent):
         How to ask the user something.
         """
         pass
+
+    def log(self, msg):
+        """
+        By default log just does whatever tell() does.
+        """
+        self.tell(msg)
 
     def tell_err(self, msg, end='\n'):
         self.tell("ERROR: " + msg, end)
@@ -272,7 +291,7 @@ class APIUser(User):
         """
         Tell the user some debug info.
         """
-        self.debug += (msg + end)
+        self.debug_msg += (msg + end)
         return msg
 
     def ask(self, msg, default=None):
@@ -293,5 +312,5 @@ class APIUser(User):
     def to_json(self):
         return {"user_msgs": self.user_msgs,
                 "name": self.name,
-                "debug": self.debug
+                "debug": self.debug_msg
                 }

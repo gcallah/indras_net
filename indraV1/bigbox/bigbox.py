@@ -117,6 +117,7 @@ class Consumer(MarketParticipant):
             n_census: a list of stores selling the agent's desired good
         Returns:
             a store selling that good
+            :param sellers:
         """
         top_seller = None
         max_util = 0.0

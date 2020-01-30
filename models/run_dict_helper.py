@@ -1,3 +1,14 @@
+"""
+1. The name of this file is terrible: what is a `run_dict_helper`?
+   It should be `function_registry`.
+2. It is in the wrong place: we need a registry dir.
+3. We don't need to register any member creator functions for
+   models that don't birth new agents as they run. That means
+   right now I believe *only* wolfsheep needs one!
+4. In fact: I am moving member creators as first thing to go
+   in new registries dir: that will fix circular imports.
+"""
+from APIServer.model_creator_api import generate_func
 from models.bacteria import bacterium_action, toxin_action, nutrient_action
 from models.bacteria import main as bactmain
 from models.bacteria import set_up as bactset_up
@@ -13,6 +24,7 @@ from models.fashion import set_up as faset_up
 from models.flocking import bird_action
 from models.fmarket import main as fmmain
 from models.fmarket import market_maker_action, trend_follower_action
+from models.fmarket import plot_asset_price
 from models.fmarket import set_up as fmset_up
 from models.fmarket import value_investor_action
 from models.forestfire import main as ffmain
@@ -33,7 +45,6 @@ from models.wolfram import wolfram_action, wfagent_action
 from models.wolfsheep import main as wsmain
 from models.wolfsheep import set_up as wsset_up
 from models.wolfsheep import sheep_action, wolf_action
-from APIServer.model_creator_api import generate_func
 
 rdict = {
     "basic": bamain,
@@ -90,4 +101,8 @@ action_dict = {
     "value_investor_action": value_investor_action,
     "bird_action": bird_action,
     "generate_func": generate_func
+}
+
+aux_funcs_dict = {
+    "plot_asset_price": plot_asset_price,
 }
