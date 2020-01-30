@@ -62,7 +62,7 @@ class Test(TestCase):
                     "/models",
                     "/models/props/<int:model_id>",
                     "/models/menu/run/<int:run_time>"]}
-        self.assertEqual(1, 1)
+        self.assertEqual(rv, test_rv)
 
     def test_get_model(self):
         """
