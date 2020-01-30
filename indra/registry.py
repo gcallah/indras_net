@@ -9,6 +9,16 @@ import warnings
 
 REGISTRY = "Registry"
 
+"""
+We can also have some global singletons here. We'll start with `the_env`;
+perhaps `the_user` should go here as well?
+"""
+the_env = None  # this is a singleton, so global should be ok
+
+
+def get_env():
+    return the_env
+
 
 class Registry(object):
     """

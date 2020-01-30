@@ -12,10 +12,10 @@ from capital.trade_utils import rec_offer, utility_delta, adj_add_good
 class EdgeworthboxTestCase(TestCase):
     def setUp(self, props=None):
         self.pa = edge.get_props("edgeworthbox", props, model_dir="capital")
-        (edge.market, edge.cheese_group, edge.wine_group, edge.max_util) = edge.set_up()
+        (edge.cheese_group, edge.wine_group, edge.max_util) = edge.set_up()
 
     def tearDown(self):
-        (edge.market, edge.cheese_group, edge.wine_group, edge.max_util) = (None, None, None, None)
+        (edge.cheese_group, edge.wine_group, edge.max_util) = (None, None, None)
 
     def test_gen_util_func(self):
         util = edge.gen_util_func(0)

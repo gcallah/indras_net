@@ -20,6 +20,9 @@ pytests: $(PYTHONFILES)
 test_cap_struct:
 	nosetests tests.test_cap_struct
 
+test_edgeworthbox:
+	nosetests tests.test_edgeworthbox
+
 %.pylint:
 	$(PYLINT) $(PYLINTFLAGS) $*.py
 

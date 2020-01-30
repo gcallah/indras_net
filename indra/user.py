@@ -8,6 +8,7 @@ from abc import abstractmethod
 from IPython import embed
 
 from indra.agent import Agent
+from indra.registry import get_env
 
 TERMINAL = "terminal"
 TEST = "test"
@@ -55,7 +56,7 @@ def run(user, test_run=False):
     else:
         steps = DEF_STEPS
 
-    acts = user.env.runN(periods=steps)
+    acts = get_env().runN(periods=steps)
     return acts
 
 
@@ -65,7 +66,7 @@ def leave(user):
 
 
 def scatter_plot(user, update=False):
-    return user.env.scatter_graph()
+    return get_env().scatter_graph()
 
 
 def line_graph(user, update=False):
@@ -73,7 +74,7 @@ def line_graph(user, update=False):
         user.tell("Updating the line graph.")
     else:
         user.tell("Drawing a line graph.")
-    return user.env.line_graph()
+    return get_env().line_graph()
 
 
 def debug(user):
@@ -109,11 +110,12 @@ class User(Agent):
 
     def __init__(self, name, env, **kwargs):
         super().__init__(name, **kwargs)
-        self.env = env  # this class needs this all the time, we think
+        # we shouldn't need self.env any more!
         self.menu = get_menu_json()
         self.user_msgs = ''
         self.debug_msg = ''
         self.error_message = {}
+        # now we set our global singleton:
         global the_user
         the_user = self
 

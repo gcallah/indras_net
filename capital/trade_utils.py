@@ -3,6 +3,7 @@
 This file contains general functions useful in trading goods.
 """
 from indra.user import user_tell
+from indra.registry import get_env
 
 ACCEPT = 1
 INADEQ = 0
@@ -16,7 +17,6 @@ answer_dict = {
 
 DEF_MAX_UTIL = 20  # this should be set by the models that use this module
 
-env = None
 max_util = DEF_MAX_UTIL
 
 
@@ -37,9 +37,9 @@ def gen_util_func(qty):
 
 
 def seek_a_trade(agent):
-    nearby_agent = env.get_neighbor_of_groupX(agent,
-                                              agent["trades_with"],
-                                              hood_size=4)
+    nearby_agent = get_env().get_neighbor_of_groupX(agent,
+                                                    agent["trades_with"],
+                                                    hood_size=4)
     if nearby_agent is not None:
         user_tell("I'm " + agent.name + " and I find "
                   + nearby_agent.name)

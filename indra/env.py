@@ -8,14 +8,14 @@ import os
 
 from propargs.propargs import PropArgs as pa
 
+# we mean to add logging soon!
 # import logging
 import indra.display_methods as disp
+import indra.registry as regis  # import register, get_registration, the_env
 from indra.agent import join, switch, Agent, AgentEncoder
-from indra.registry import register, get_registration
 from indra.space import Space
 from indra.user import TEST, TestUser, USER_EXIT, APIUser
 from indra.user import TermUser, TERMINAL, API
-# from indra.display_methods import CIRCLE
 from indra.utils import get_func_name
 
 DEBUG = False
@@ -107,7 +107,9 @@ class Env(Space):
         if self.props is not None:
             self.set_menu_excludes(self.props)
         if reg:
-            register(self.name, self)
+            regis.register(self.name, self)
+        # now we set our global singleton:
+        regis.the_env = self
 
     def set_menu_excludes(self, props):
         if not props.get('use_line', True):
@@ -253,12 +255,12 @@ class Env(Space):
         """
         if self.womb is not None:
             for group_nm in self.womb:
-                group = get_registration(group_nm)
+                group = regis.get_registration(group_nm)
                 if group is not None and group.member_creator is not None:
                     group.num_members_ever += 1
                     agent = group.member_creator("", group.num_members_ever)
                     agent.env = group.env
-                    register(agent.name, agent)
+                    regis.register(agent.name, agent)
                     join(group, agent)
             del self.womb[:]
 

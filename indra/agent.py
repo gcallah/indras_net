@@ -10,7 +10,7 @@ from random import random
 
 import numpy as np
 
-from indra.registry import register, get_registration
+from indra.registry import register, get_registration, get_env
 from indra.utils import get_func_name
 
 DEBUG = False  # turns debugging code on or off
@@ -141,8 +141,10 @@ class Agent(object):
     Its basic character is that it is a vector, and basic
     vector and matrix operations will be implemented
     here.
-    We should begin passing env to all agents: we think it will
-    simplify code. It should replace `locator`.
+    We are going to stop passing `env` around: we can call
+    `env.get_env()` to get it when needed. So *soon* the
+    env param here should go away, but only when every model
+    is using the new call.
     """
 
     def __init__(self, name, attrs=None, action=None, duration=INF,
@@ -213,18 +215,15 @@ class Agent(object):
     def env(self):
         """
         This is the env property.
-        We use the string _env to look up the
-        env object in the registry.
+        We use `registry.get_env()` to return whatever
+        the registry has.
         """
-        return get_registration(self._env)
+        return get_env()
 
     @env.setter
     def env(self, val):
         """
-        Set our env: if passed an agent, store its name.
-        Else, it must be a string, and just store that.
-        Don't try to register the val! Agents register themselves
-        when constructed.
+        Can we use `registry.get_env()` instead of this?
         """
         if isinstance(val, Agent):
             self._env = val.name
