@@ -9,6 +9,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import BLUE
 from indra.env import Env
+from indra.registry import get_env
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import get_props
 from capital.trade_utils import seek_a_trade, gen_util_func
@@ -21,7 +22,6 @@ DEF_NUM_TRADER = 2
 DEF_NUM_RESOURCES = 20
 DEF_NUM_RESOURCES_TYPE = 4
 trader_group = None
-market = None
 
 max_utility = tu.max_util
 
@@ -56,7 +56,6 @@ def create_trader(name, i, props=None):
                                DEF_NUM_RESOURCES_TYPE)
     resources = random_generate_resources(i, num_r_type, num_r)
     return Agent(name + str(i), action=seek_a_trade,
-                 env=market,
                  attrs={"goods": {"penguin": {"endow": resources[0],
                                               "util_func": gen_util_func,
                                               "incr": 0},
@@ -87,26 +86,24 @@ def set_up(props=None):
                              num_members=pa.get('num_traders',
                                                 DEF_NUM_TRADER))
 
-    market = Env("env",
-                 height=pa.get('grid_height', DEF_HEIGHT),
-                 width=pa.get('grid_width', DEF_WIDTH),
-                 members=[trader_group],
-                 props=pa)
-    tu.env = market  # we have to find a better way to handle this!
-    return (market, trader_group, max_utility)
+    Env("env",
+        height=pa.get('grid_height', DEF_HEIGHT),
+        width=pa.get('grid_width', DEF_WIDTH),
+        members=[trader_group],
+        props=pa)
+    return (trader_group, max_utility)
 
 
 def main():
     global trader_group
-    global market
     global max_utility
 
-    (market, trader_group, max_utility) = set_up()
+    (trader_group, max_utility) = set_up()
 
     if DEBUG2:
-        market.user.tell(market.__repr__())
+        get_env().user.tell(get_env().__repr__())
 
-    market()
+    get_env()()
     return 0
 
 
