@@ -10,6 +10,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import RED, BLUE
 from indra.env import Env
+from indra.registry import get_env
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import get_props
 
@@ -35,7 +36,6 @@ DEF_EACH_CAP_PRICE = {"land": DEF_K_PRICE,
 
 resource_holders = None  # list of resource holders
 entrepreneurs = None  # list of entrepreneur
-market = None
 
 
 def dict_to_string(dict):
@@ -45,9 +45,9 @@ def dict_to_string(dict):
 
 def entr_action(agent):
     if agent["cash"] > 0:
-        nearby_rholder = market.get_neighbor_of_groupX(agent,
-                                                       resource_holders,
-                                                       hood_size=4)
+        nearby_rholder = get_env().get_neighbor_of_groupX(agent,
+                                                          resource_holders,
+                                                          hood_size=4)
         if nearby_rholder is not None:
             # try to buy a resource if you have cash
             for good in agent["wants"].keys():
@@ -72,51 +72,55 @@ def entr_action(agent):
                     break
 
             if agent["wants"] and agent["have"]:
-                market.user.tell("I'm " + agent.name
-                                 + " and I will buy resources from "
-                                 + str(nearby_rholder) + ". I have "
-                                 + "{0:.2f}".format(agent["cash"])
-                                 + " dollars left."
-                                 + " I want " + dict_to_string(agent["wants"])
-                                 + ", and I have "
-                                 + dict_to_string(agent["have"]) + ".")
+                get_env().user.tell("I'm " + agent.name
+                                    + " and I will buy resources from "
+                                    + str(nearby_rholder) + ". I have "
+                                    + "{0:.2f}".format(agent["cash"])
+                                    + " dollars left."
+                                    + " I want "
+                                    + dict_to_string(agent["wants"])
+                                    + ", and I have "
+                                    + dict_to_string(agent["have"]) + ".")
             elif agent["wants"]:
-                market.user.tell("I'm " + agent.name
-                                 + " and I will buy resources from "
-                                 + str(nearby_rholder) + ". I have "
-                                 + "{0:.2f}".format(agent["cash"])
-                                 + " dollars left."
-                                 + " I want " + dict_to_string(agent["wants"])
-                                 + ", and I don't have any capital.")
+                get_env().user.tell("I'm " + agent.name
+                                    + " and I will buy resources from "
+                                    + str(nearby_rholder) + ". I have "
+                                    + "{0:.2f}".format(agent["cash"])
+                                    + " dollars left."
+                                    + " I want "
+                                    + dict_to_string(agent["wants"])
+                                    + ", and I don't have any capital.")
             elif agent["have"]:
-                market.user.tell("I'm " + agent.name
-                                 + " and I will buy resources from "
-                                 + str(nearby_rholder) + ". I have "
-                                 + "{0:.2f}".format(agent["cash"])
-                                 + " dollars left."
-                                 + " I got all I need, and I have "
-                                 + dict_to_string(agent["have"]) + "!")
+                get_env().user.tell("I'm " + agent.name
+                                    + " and I will buy resources from "
+                                    + str(nearby_rholder) + ". I have "
+                                    + "{0:.2f}".format(agent["cash"])
+                                    + " dollars left."
+                                    + " I got all I need, and I have "
+                                    + dict_to_string(agent["have"]) + "!")
             return False
             # move to find resource holder
 
         else:
-            market.user.tell("I'm " + agent.name + " and I'm broke!")
+            get_env().user.tell("I'm " + agent.name
+                                + " and I'm broke!")
     else:
-        market.user.tell("I'm " + agent.name + " and I can't find resources.")
+        get_env().user.tell("I'm " + agent.name
+                            + " and I can't find resources.")
     return True
 
 
 def rholder_action(agent):
     if agent["resources"]:
-        market.user.tell("I'm " + agent.name
-                         + " and I've got resources. I have "
-                         + str(agent["cash"]) + " dollors now."
-                         + " I have " + str(agent["resources"]) + ".")
+        get_env().user.tell("I'm " + agent.name
+                            + " and I've got resources. I have "
+                            + str(agent["cash"]) + " dollors now."
+                            + " I have " + str(agent["resources"]) + ".")
     else:
-        market.user.tell("I'm " + agent.name
-                         + " and I've got resources. I have "
-                         + str(agent["cash"]) + " dollors now."
-                         + " I ran out of resources!")
+        get_env().user.tell("I'm " + agent.name
+                            + " and I've got resources. I have "
+                            + str(agent["cash"]) + " dollors now."
+                            + " I ran out of resources!")
     # resource holder dont move
     return True
 
@@ -187,7 +191,6 @@ def set_up(props=None):
 
     global resource_holders
     global entrepreneurs
-    global market
 
     pa = get_props(MODEL_NAME, props, model_dir="capital")
     entrepreneurs = Composite("Entrepreneurs", {"color": BLUE},
@@ -201,26 +204,25 @@ def set_up(props=None):
                                  num_members=pa.get('num_rholder',
                                                     DEF_NUM_RHOLDER))
 
-    market = Env("neighborhood",
-                 height=pa.get('grid_height', DEF_HEIGHT),
-                 width=pa.get('grid_width', DEF_WIDTH),
-                 members=[resource_holders, entrepreneurs],
-                 props=pa)
+    Env("neighborhood",
+        height=pa.get('grid_height', DEF_HEIGHT),
+        width=pa.get('grid_width', DEF_WIDTH),
+        members=[resource_holders, entrepreneurs],
+        props=pa)
 
-    return market, resource_holders, entrepreneurs
+    return resource_holders, entrepreneurs
 
 
 def main():
     global resource_holders
     global entrepreneurs
-    global market
 
-    (market, blue_group, red_group) = set_up()
+    (blue_group, red_group) = set_up()
 
     if DEBUG2:
-        market.user.tell(market.__repr__())
+        get_env().user.tell(get_env().__repr__())
 
-    market()
+    get_env()()
     return 0
 
 
