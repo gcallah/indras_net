@@ -6,7 +6,7 @@ import random
 from indra.agent import Agent
 from indra.composite import Composite
 from indra.env import Env, UNLIMITED
-from indra.space import gaussian_distribution
+from indra.utils import gaussian
 from indra.user import user_tell
 from indra.utils import get_props
 
@@ -108,7 +108,7 @@ def distribute_coupons(agent):
     """
     global coop_members
     for bbsit in coop_members:
-        coop_members[bbsit]['coupons'] += int(gaussian_distribution(
+        coop_members[bbsit]['coupons'] += int(gaussian(
             agent["extra_coupons"], agent["extra_dev"]))
 
 
@@ -172,7 +172,7 @@ def create_babysitter(name, i, props=None):
     mean_coupons = props.get("average_coupons", DEF_COUPON)
     dev = props.get("deviation", DEF_SIGMA)
     babysitter["goal"] = None
-    babysitter['coupons'] = int(gaussian_distribution(mean_coupons, dev))
+    babysitter['coupons'] = int(gaussian(mean_coupons, dev))
     babysitter['desired_cash'] = props.get("desired_cash",
                                            DEF_DESIRED_CASH_BAL)
     return babysitter

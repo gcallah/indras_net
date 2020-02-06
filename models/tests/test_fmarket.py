@@ -9,8 +9,7 @@ from propargs.propargs import PropArgs
 import models.fmarket as fm
 from indra.composite import Composite
 from indra.env import Env
-from models.fmarket import DEF_NUM_ASSET, market_report, DEF_SIGMA, \
-    gaussian_distribution
+from models.fmarket import DEF_NUM_ASSET, market_report, DEF_SIGMA
 from models.fmarket import create_value_investor, DEF_PRICE, trend_direction
 from models.fmarket import market_maker_action, calc_price_change, buy, sell
 from models.fmarket import set_up, create_market_maker, create_trend_follower
@@ -116,13 +115,6 @@ class FMarketTestCase(TestCase):
                      census=market_report)
         self.assertEqual(market_report(market), "Asset price on the market: " \
                          + str(DEF_PRICE) + "\n")
-
-    def test_gaussian_distribution(self):
-        """
-        Test the Gaussian distribution
-        """
-        new_target = gaussian_distribution(DEF_PERIODS, DEF_SIGMA)
-        self.assertTrue(new_target >= 0)
 
     @skip("Test failing on travis but it will take lots of time to see why.")
     def test_trend_follower_action(self):

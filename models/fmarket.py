@@ -9,7 +9,7 @@ from indra.composite import Composite
 from indra.display_methods import BLUE, RED
 from indra.env import Env, UNLIMITED
 from indra.registry import get_registration
-from indra.space import gaussian_distribution
+from indra.utils import gaussian
 from indra.utils import get_props
 
 MODEL_NAME = "fmarket"
@@ -134,10 +134,7 @@ def create_trend_follower(name, i, props=None):
     average_period = props.get("average_period", DEF_PERIODS)
     dev = props.get("deviation_follower", DEF_SIGMA)
     trend_follower = Agent(name + str(i), action=trend_follower_action)
-    trend_follower["change_period"] = gaussian_distribution(average_period,
-                                                            dev)
-    if trend_follower["change_period"] < 0:
-        trend_follower["change_period"] *= -1
+    trend_follower["change_period"] = gaussian(average_period, dev)
 
     trend_follower["capital"] = DEF_CAPITAL
     trend_follower["num_stock"] = 0
@@ -153,8 +150,8 @@ def create_value_investor(name, i, props=None):
     value_investor = Agent(name + str(i), action=value_investor_action)
     mean_price = props.get("discount", DEF_DISCOUNT)
     dev = props.get("deviation_investor", DEF_SIGMA)
-    low_val_percentage = gaussian_distribution(mean_price, dev)
-    high_val_percentage = gaussian_distribution(mean_price, dev)
+    low_val_percentage = gaussian(mean_price, dev)
+    high_val_percentage = gaussian(mean_price, dev)
     value_investor["low_price"] = DEF_REAL_VALUE * (1 - low_val_percentage)
     value_investor["high_price"] = DEF_REAL_VALUE * (1 + high_val_percentage)
 

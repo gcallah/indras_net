@@ -4,7 +4,6 @@ of agents related spatially.
 """
 import json
 import math
-import random
 from functools import wraps
 from math import sqrt
 from random import randint
@@ -64,13 +63,6 @@ def in_hood(agent, other, hood_sz):
               + " and " + str(other) + " is "
               + str(d))
     return d < hood_sz
-
-
-def gaussian_distribution(default_target, sigma):
-    new_target = random.gauss(default_target, sigma)
-    if new_target < 0:
-        new_target *= -1
-    return new_target
 
 
 def use_saved_hood(hood_func):

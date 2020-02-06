@@ -2,8 +2,17 @@
 This file contains miscellaneous.
 """
 import os
+import random
 
 from propargs.propargs import PropArgs
+
+
+def gaussian(mean, sigma, trim_at_zero=True):
+    sample = random.gauss(mean, sigma)
+    if trim_at_zero:
+        if sample < 0:
+            sample *= -1
+    return sample
 
 
 def get_func_name(f):
