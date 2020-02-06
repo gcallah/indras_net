@@ -20,8 +20,21 @@ DEF_MAX_UTIL = 20  # this should be set by the models that use this module
 max_util = DEF_MAX_UTIL
 
 
-# take a goods dict to string
+def initial_endowment(trader, avail_goods):
+    """
+    This function is going to pick a good at random, and give the
+    trader all of it, by default. We will write partial distributions
+    later.
+    """
+    # goods will be a dictionary: {"good_name": {"amt_vailable": amt, ...}
+    # pick an item at random
+    # stick all of it in trader's goods dictionary
+
+
 def goods_to_str(goods):
+    """
+    take a goods dict to string
+    """
     string = ', '.join([str(goods[k]["endow"]) + " " + str(k)
                        for k in goods.keys()])
     return string
