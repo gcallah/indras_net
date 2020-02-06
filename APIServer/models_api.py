@@ -17,12 +17,26 @@ def get_models(indra_dir):
 
     models_response = []
     for model in models_db:
-        doc = ""
-        if "doc" in model:
-            doc = model["doc"]
         models_response.append({"model ID": model["model ID"],
                                 "name": model["name"],
-                                "doc": doc,
-                                "source": model["source"],
-                                "graph": model["graph"]})
+                                "doc": model.get("doc", ""),
+                                "source": model.get("source", ""),
+                                "graph": model.get("graph", "")})
     return models_response
+
+
+def get_model(model_id, indra_dir=None, models_db=None):
+    """
+    Either indra_dir or models_db must be passed!
+    """
+    if models_db is None:
+        try:
+            models_db = load_models(indra_dir)
+        except FileNotFoundError:
+            return {"ERROR": "Model file not found: indra dir is " + indra_dir}
+    for model in models_db:
+        print("Model id:", model["model ID"])
+        if int(model["model ID"]) == model_id:
+            print("Matched model", model_id)
+            return model
+    raise KeyError
