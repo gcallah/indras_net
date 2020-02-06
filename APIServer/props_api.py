@@ -22,6 +22,4 @@ def put_props(model_id, payload, indra_dir):
     model = get_model(model_id, indra_dir=indra_dir)
     ret = setup_dict[model["run"]](props=payload)
     # Every setup function returns the Env instance as the first element
-    env = ret[ENV_INSTANCE]
-    print(env.to_json())
-    return json_converter(env)
+    return json_converter(ret[ENV_INSTANCE])

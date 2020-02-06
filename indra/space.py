@@ -269,17 +269,19 @@ class Space(Composite):
     def is_empty(self, x, y):
         """
         See if cell x,y is empty.
+        Always make location a str for serialization.
         """
-        return (x, y) not in self.locations
+        return str((x, y)) not in self.locations
 
     def get_agent_at(self, x, y):
         """
         Return agent at cell x,y
         If cell is empty return None.
+        Always make location a str for serialization.
         """
         if self.is_empty(x, y):
             return None
-        agent_nm = self.locations[(x, y)]
+        agent_nm = self.locations[str((x, y))]
         return get_registration(agent_nm)
 
     def place_member(self, mbr, max_move=None, xy=None):
@@ -327,24 +329,28 @@ class Space(Composite):
         Add a new member to the locations of positions of members.
         locations{} stores agents by name, to look up in registry.
         """
-        self.locations[(x, y)] = member.name
+        self.locations[str((x, y))] = member.name
 
     def move_location(self, nx, ny, ox, oy):
         """
         Move a member to a new position, if that position
         is not already occupied.
         """
-        if (ox, oy) not in self.locations:
+        old_loc = str((ox, oy))
+        new_loc = str((nx, ny))
+        if old_loc not in self.locations:
             user_debug("Trying to move unlocated agent.")
-        elif (nx, ny) not in self.locations:
-            self.locations[(nx, ny)] = self.locations[(ox, oy)]
-            del self.locations[(ox, oy)]
+        elif new_loc not in self.locations:
+            self.locations[new_loc] = self.locations[old_loc]
+            del self.locations[old_loc]
+        else:
+            user_debug("Trying to place agent in occupied space.")
 
     def remove_location(self, x, y):
         """
         Remove a member from the locations.
         """
-        del self.locations[(x, y)]
+        del self.locations[str((x, y))]
 
     def get_row_hood(self, row_num, pred=None, save_neighbors=False):
         """
