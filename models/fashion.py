@@ -12,7 +12,7 @@ from indra.agent import ratio_to_sin
 from indra.composite import Composite
 from indra.display_methods import NAVY, DARKRED, RED, BLUE
 from indra.env import Env
-from indra.registry import get_registration
+from indra.registry import get_registration, get_env
 from indra.space import in_hood
 from indra.utils import get_props
 
@@ -57,18 +57,17 @@ red_tsetters = None
 blue_tsetters = None
 red_followers = None
 blue_followers = None
-society = None
 
 opp_group = None
 
 
-def change_color(agent, _society, _opp_group):
+def change_color(agent, society, opp_group):
     """
     change agent's DISPLAY_COLOR to its opposite color
     """
     agent[DISPLAY_COLOR] = not agent[DISPLAY_COLOR]
-    _society.add_switch(agent, agent.prim_group,
-                        _opp_group[str(agent.prim_group)])
+    society.add_switch(agent, agent.prim_group,
+                       opp_group[str(agent.prim_group)])
 
 
 def new_color_pref(old_pref, env_color):
@@ -115,7 +114,7 @@ def common_action(agent, others_red, others_blue, op1, op2):
 
     agent[COLOR_PREF] = new_color_pref(agent[COLOR_PREF], env_color)
     if env_unfavorable(agent[DISPLAY_COLOR], agent[COLOR_PREF], op1, op2):
-        change_color(agent, society, opp_group)
+        change_color(agent, get_env(), opp_group)
         return True
     else:
         return False
@@ -151,7 +150,6 @@ def set_up(props=None):
     global blue_tsetters
     global red_followers
     global blue_followers
-    global society
     global opp_group
 
     pa = get_props(MODEL_NAME, props)
@@ -183,11 +181,11 @@ def set_up(props=None):
     if DEBUG2:
         print(blue_followers.__repr__())
 
-    society = Env("Society",
-                  members=[blue_tsetters, red_tsetters,
-                           blue_followers, red_followers],
-                  props=pa)
-    return (society, blue_tsetters, red_tsetters, blue_followers,
+    Env("Society",
+        members=[blue_tsetters, red_tsetters,
+                 blue_followers, red_followers],
+        props=pa)
+    return (blue_tsetters, red_tsetters, blue_followers,
             red_followers, opp_group)
 
 
@@ -196,9 +194,7 @@ def restore_globals(env):
     global blue_tsetters
     global red_followers
     global blue_followers
-    global society
     global opp_group
-    society = env
     blue_tsetters = get_registration(BLUE_TSETTERS)
     red_tsetters = get_registration(RED_TSETTERS)
     red_followers = get_registration(RED_FOLLOWERS)
@@ -214,16 +210,13 @@ def main():
     global blue_tsetters
     global red_followers
     global blue_followers
-    global society
     global opp_group
 
-    (society, blue_tsetters, red_tsetters, blue_followers, red_followers,
+    (blue_tsetters, red_tsetters, blue_followers, red_followers,
      opp_group) = set_up()
 
-    if DEBUG2:
-        print(society.__repr__())
-
-    society()
+    # get_env() returns a callable object:
+    get_env()()
     return 0
 
 
