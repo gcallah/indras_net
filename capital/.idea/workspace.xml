@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="336c1a49-8df5-425a-8d4e-0f58134fd3ca" name="Default Changelist" comment="" />
+    <list default="true" id="336c1a49-8df5-425a-8d4e-0f58134fd3ca" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,8 +17,8 @@
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/tests/test_trade.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="292">
-                  <caret line="13" column="12" lean-forward="true" selection-start-line="13" selection-start-column="12" selection-end-line="13" selection-end-column="12" />
+                <state relative-caret-position="225">
+                  <caret line="15" column="23" selection-start-line="15" selection-start-column="23" selection-end-line="15" selection-end-column="23" />
                   <folding>
                     <element signature="e#46#81#0" expanded="true" />
                   </folding>
@@ -67,8 +69,8 @@
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/trade.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="272">
-                  <caret line="24" lean-forward="true" selection-start-line="24" selection-end-line="24" />
+                <state relative-caret-position="332">
+                  <caret line="28" column="42" selection-start-line="28" selection-start-column="42" selection-end-line="28" selection-end-column="42" />
                   <folding>
                     <element signature="e#112#125#0" expanded="true" />
                   </folding>
@@ -176,6 +178,11 @@
             <path>
               <item name="capital" type="b2602c69:ProjectViewProjectNode" />
               <item name="capital" type="462c0819:PsiDirectoryNode" />
+              <item name="origin_of_money" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="capital" type="b2602c69:ProjectViewProjectNode" />
+              <item name="capital" type="462c0819:PsiDirectoryNode" />
               <item name="props" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -254,18 +261,17 @@
       <workItem from="1580400948873" duration="1061000" />
       <workItem from="1580678863255" duration="1798000" />
       <workItem from="1580877941946" duration="4051000" />
-      <workItem from="1580964751757" duration="2077000" />
+      <workItem from="1580964751757" duration="3065000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="93405000" />
+    <option name="totallyTimeSpent" value="94393000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1680" height="1027" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.08974359" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.13736264" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -450,8 +456,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/trade.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="24" lean-forward="true" selection-start-line="24" selection-end-line="24" />
+        <state relative-caret-position="332">
+          <caret line="28" column="42" selection-start-line="28" selection-start-column="42" selection-end-line="28" selection-end-column="42" />
           <folding>
             <element signature="e#112#125#0" expanded="true" />
           </folding>
@@ -460,8 +466,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/test_trade.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="292">
-          <caret line="13" column="12" lean-forward="true" selection-start-line="13" selection-start-column="12" selection-end-line="13" selection-end-column="12" />
+        <state relative-caret-position="225">
+          <caret line="15" column="23" selection-start-line="15" selection-start-column="23" selection-end-line="15" selection-end-column="23" />
           <folding>
             <element signature="e#46#81#0" expanded="true" />
           </folding>
