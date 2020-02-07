@@ -347,8 +347,9 @@ def main():
     global car_market
     if len(sys.argv) > 1 and sys.argv[1] is None:
         print("A data json file is required to run this program")
-    else:
-        filename = sys.argv[1]
+        exit(1)
+
+    filename = sys.argv[1]
     info = filename.split("_")
     num_dealers = int(info[0])
     (car_market, dealer_grp, buyer_grp) = set_up(num_dealers)
