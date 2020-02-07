@@ -46,26 +46,17 @@ def random_generate_resources(i, total_type, total_resources):
 
 
 def create_trader(name, i, props=None):
-    num_r = DEF_NUM_RESOURCES
-    num_r_type = DEF_NUM_RESOURCES_TYPE
-    # num_trader = DEF_NUM_TRADER
-    if props is not None:
-        num_r = props.get('total_resources',
-                          DEF_NUM_RESOURCES)
-        num_r_type = props.get('total_type',
-                               DEF_NUM_RESOURCES_TYPE)
-    resources = random_generate_resources(i, num_r_type, num_r)
     return Agent(name + str(i), action=seek_a_trade,
-                 attrs={"goods": {"penguin": {"endow": resources[0],
+                 attrs={"goods": {"penguin": {"endow": 0,
                                               "util_func": gen_util_func,
                                               "incr": 0},
-                                  "cat": {"endow": resources[1],
+                                  "cat": {"endow": 0,
                                           "util_func": gen_util_func,
                                           "incr": 0},
-                                  "bear": {"endow": resources[2],
+                                  "bear": {"endow": 0,
                                            "util_func": gen_util_func,
                                            "incr": 0},
-                                  "pet food": {"endow": resources[3],
+                                  "pet food": {"endow": 0,
                                                "util_func": gen_util_func,
                                                "incr": 0}
                                   },

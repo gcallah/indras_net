@@ -4,7 +4,7 @@ This is the test suite for trade.py.
 
 from unittest import TestCase, main
 
-import capital.trade as td
+# import capital.trade as td
 
 
 class tradeTestCase(TestCase):

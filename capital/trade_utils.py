@@ -1,9 +1,9 @@
-
 """
 This file contains general functions useful in trading goods.
 """
 from indra.user import user_tell
 from indra.registry import get_env
+import random
 
 ACCEPT = 1
 INADEQ = 0
@@ -28,7 +28,12 @@ def initial_endowment(trader, avail_goods):
     """
     # goods will be a dictionary: {"good_name": {"amt_vailable": amt, ...}
     # pick an item at random
-    # stick all of it in trader's goods dictionary
+    # stick all of it in trader's goods dictionar
+    rand_good = random.choice(avail_goods.keys())
+    # get a random good_nam
+    trader["goods"][rand_good]["endow"] = (
+        avail_goods[rand_good]["amt_vailable"]
+    )
 
 
 def goods_to_str(goods):
@@ -40,8 +45,10 @@ def goods_to_str(goods):
     return string
 
 
-# convert integer value of ans to string
 def answer_to_str(ans):
+    """
+    convert integer value of ans to string
+    """
     return answer_dict[ans]
 
 
