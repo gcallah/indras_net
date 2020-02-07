@@ -345,7 +345,7 @@ def main():
     global buyer_grp
     global dealer_grp
     global car_market
-    if sys.argv[1] is None:
+    if len(sys.argv) > 1 and sys.argv[1] is None:
         print("A data json file is required to run this program")
     else:
         filename = sys.argv[1]
