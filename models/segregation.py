@@ -8,7 +8,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import RED, BLUE
 from indra.env import Env
-from indra.registry import get_registration
+from indra.registry import get_registration, get_env
 from indra.utils import get_props
 
 MODEL_NAME = "segregation"
@@ -44,7 +44,6 @@ group_suffix = "s"
 
 reds = None
 blues = None
-city = None
 hood_size = None
 
 opp_group = None
@@ -81,7 +80,6 @@ def seg_agent_action(agent):
     If the agent is surrounded by more "others" than it is comfortable
     with, the agent will move.
     """
-    global city
     global red_agents
     global blue_agents
 
@@ -89,7 +87,8 @@ def seg_agent_action(agent):
     if agent["hood_changed"]:
         agent_group = agent.primary_group()
         ratio_same = 0
-        neighbors = city.get_moore_hood(agent, hood_size=agent['hood_size'])
+        neighbors = get_env().get_moore_hood(agent,
+                                             hood_size=agent['hood_size'])
         if DEBUG2:
             print("hood size = ", agent['hood_size'])
         num_same = 0
@@ -143,7 +142,6 @@ def set_up(props=None):
     """
     global blue_agents
     global red_agents
-    global city
 
     pa = get_props(MODEL_NAME, props)
     blue_agents = Composite(group_names[BLUE_TEAM] + group_suffix,
@@ -163,7 +161,7 @@ def set_up(props=None):
                width=pa.get('grid_width', DEF_CITY_DIM),
                props=pa)
     city.exclude_menu_item("line_graph")
-    return (city, blue_agents, red_agents)
+    return (blue_agents, red_agents)
 
 
 def restore_globals(env):
@@ -172,8 +170,6 @@ def restore_globals(env):
     """
     global blue_agents
     global red_agents
-    global city
-    city = env
     blue_agents = get_registration(group_names[BLUE_TEAM] + group_suffix)
     red_agents = get_registration(group_names[RED_TEAM] + group_suffix)
 
@@ -181,13 +177,10 @@ def restore_globals(env):
 def main():
     global blue_agents
     global red_agents
-    global city
-    (city, blue_agents, red_agents) = set_up()
+    (blue_agents, red_agents) = set_up()
 
-    if DEBUG2:
-        print(city.__repr__())
-
-    city()
+    # get_env() returns a callable object:
+    get_env()()
     return 0
 
 

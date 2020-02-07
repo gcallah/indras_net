@@ -13,11 +13,16 @@ REGISTRY = "Registry"
 We can also have some global singletons here. We'll start with `the_env`;
 perhaps `the_user` should go here as well?
 """
-the_env = None  # this is a singleton, so global should be ok
+_the_env = None  # this is a singleton, so global should be ok
+
+
+def set_env(env):
+    global _the_env
+    _the_env = env
 
 
 def get_env():
-    return the_env
+    return _the_env
 
 
 class Registry(object):

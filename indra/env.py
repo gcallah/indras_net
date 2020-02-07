@@ -11,7 +11,7 @@ from propargs.propargs import PropArgs as pa
 # we mean to add logging soon!
 # import logging
 import indra.display_methods as disp
-import indra.registry as regis  # import register, get_registration, the_env
+import indra.registry as regis
 from indra.agent import join, switch, Agent, AgentEncoder
 from indra.space import Space
 from indra.user import TEST, TestUser, USER_EXIT, APIUser
@@ -109,7 +109,7 @@ class Env(Space):
         if reg:
             regis.register(self.name, self)
         # now we set our global singleton:
-        regis.the_env = self
+        regis.set_env(self)
 
     def set_menu_excludes(self, props):
         if not props.get('use_line', True):

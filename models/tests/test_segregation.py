@@ -9,6 +9,7 @@ from propargs.propargs import PropArgs
 import models.segregation as seg
 from indra.composite import Composite
 from indra.env import Env
+from indra.registry import get_env
 from models.segregation import DEF_TOLERANCE, DEF_SIGMA
 from models.segregation import env_favorable
 from models.segregation import group_names, my_group_index
@@ -30,12 +31,11 @@ class SegregationTestCase(TestCase):
     def setUp(self):
         self.pa = PropArgs.create_props('segregation_props',
                                         ds_file='props/segregation.props.json')
-        (seg.city, seg.blue_agents, seg.red_agents) = set_up()
+        (seg.blue_agents, seg.red_agents) = set_up()
 
     def tearDown(self):
         seg.blue_agents = None
         seg.red_agents = None
-        seg.city = None
 
     def test_get_tolerance(self):
         """
