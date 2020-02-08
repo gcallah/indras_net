@@ -30,18 +30,18 @@ def initial_endowment(trader, avail_goods):
     # pick an item at random
     # stick all of it in trader's goods dictionar
     rand_good = random.choice(avail_goods.keys())
-    
+
     # pick again if the goods is endowed (amt is 0)
-    while avail_goods[rand_good]["amt_avaible"] == 0:
+    while avail_goods[rand_good]["amt_available"] == 0:
+        # what if they are ALL 0?
         rand_good = random.choice(avail_goods.keys())
-        
-    # get a random good_nam
+
+    # get a random good
     trader["goods"][rand_good]["endow"] = (
-        avail_goods[rand_good]["amt_vailable"]
+        avail_goods[rand_good]["amt_available"]
     )
-    
-    # in goods dictionary, set amount of endowed goods to 0
-    avail_goods[rand_good]["amt_avaiable"] = 0
+
+    avail_goods[rand_good]["amt_available"] = 0
 
 
 def goods_to_str(goods):

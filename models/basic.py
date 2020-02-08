@@ -8,8 +8,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import RED, BLUE
 from indra.env import Env
-# likely needed soon:
-# from indra.registry import get_registration
+from indra.registry import get_env
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import get_props
 
@@ -23,7 +22,6 @@ DEF_NUM_RED = 10
 
 red_group = None
 blue_group = None
-env = None
 
 
 def agent_action(agent):
@@ -51,26 +49,22 @@ def set_up(props=None):
                           member_creator=create_agent,
                           num_members=pa.get('num_red', DEF_NUM_RED))
 
-    env = Env("env",
-              height=pa.get('grid_height', DEF_HEIGHT),
-              width=pa.get('grid_width', DEF_WIDTH),
-              members=[blue_group, red_group],
-              props=pa)
+    Env("env",
+        height=pa.get('grid_height', DEF_HEIGHT),
+        width=pa.get('grid_width', DEF_WIDTH),
+        members=[blue_group, red_group],
+        props=pa)
 
-    return env, blue_group, red_group
+    return blue_group, red_group
 
 
 def main():
     global red_group
     global blue_group
-    global env
 
-    (env, blue_group, red_group) = set_up()
+    (blue_group, red_group) = set_up()
 
-    if DEBUG2:
-        print(env.__repr__())
-
-    env()
+    get_env()()
     return 0
 
 

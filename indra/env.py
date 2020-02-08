@@ -14,6 +14,7 @@ import indra.display_methods as disp
 import indra.registry as regis
 from indra.agent import join, switch, Agent, AgentEncoder
 from indra.space import Space
+import traceback
 from indra.user import TEST, TestUser, USER_EXIT, APIUser
 from indra.user import TermUser, TERMINAL, API
 from indra.utils import get_func_name
@@ -369,7 +370,7 @@ class Env(Space):
                 line_plot.show()
                 return line_plot
             except Exception as e:
-                self.user.tell("Error when drawing graph: " + str(e))
+                self.user.tell("Error when drawing line graph: " + str(e))
         else:
             return None
 
@@ -388,8 +389,9 @@ class Env(Space):
                     attrs=self.attrs)
                 scatter_plot.show()
                 return scatter_plot
-            except Exception as e:
-                self.user.tell("Error when drawing graph: " + str(e))
+            except ValueError as e:  # Exception as e:
+                self.user.tell("Error when drawing scatter plot: " + str(e))
+                traceback.print_stack()
         else:
             return None
 

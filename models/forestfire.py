@@ -5,8 +5,10 @@ A model to simulate the spread of fire in a forest.
 from indra.agent import Agent
 from indra.agent import prob_state_trans
 from indra.composite import Composite
-from indra.display_methods import RED, GREEN, BLACK, SPRINGGREEN, TOMATO, TREE
+from indra.display_methods import RED, GREEN, BLACK
+from indra.display_methods import SPRINGGREEN, TOMATO, TREE
 from indra.env import Env
+from indra.registry import get_env
 from indra.utils import get_props
 
 MODEL_NAME = "forestfire"
@@ -130,23 +132,19 @@ def set_up(props=None):
     # for i in range():
     #     healthy += plant_tree(i)
 
-    forest = Env("Forest", height=forest_height, width=forest_width,
-                 members=[healthy, new_fire, on_fire, burned_out,
-                          new_growth], props=pa)
+    Env("Forest", height=forest_height, width=forest_width,
+        members=[healthy, new_fire, on_fire, burned_out,
+                 new_growth], props=pa)
 
     global group_map
     group_map = {HE: healthy, NF: new_fire,
                  OF: on_fire, BO: burned_out, NG: new_growth}
-    return forest, group_map
+    return group_map
 
 
 def main():
-    (forest, group_map) = set_up()
-
-    if DEBUG2:
-        print(forest.__repr__())
-
-    forest()
+    set_up()
+    get_env()()
     return 0
 
 

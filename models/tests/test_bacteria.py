@@ -21,7 +21,7 @@ class BacteriaTestCase(TestCase):
     def setUp(self):
         self.pa = PropArgs.create_props('bacteria_props',
                                         ds_file='props/bacteria.props.json')
-        (ba.petri_dish, ba.toxins, ba.nutrients, ba.bacteria) = set_up()
+        (ba.toxins, ba.nutrients, ba.bacteria) = set_up()
         self.toxin = create_toxin("Toxins", TEST_TOX_NUM, self.pa)
         self.nutrient = create_nutrient("Nutrients", TEST_NUTRI_NUM, self.pa)
         self.bacterium = create_bacterium("Bacteria", TEST_BAC_NUM, self.pa)

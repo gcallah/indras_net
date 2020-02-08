@@ -10,7 +10,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import BLUE, GREEN, RED
 from indra.env import Env
-from indra.registry import get_registration
+from indra.registry import get_registration, get_env
 from indra.space import DEF_HEIGHT, DEF_WIDTH, distance
 from indra.utils import get_props
 
@@ -29,8 +29,6 @@ DEF_NUTRIENT_MOVE = 2
 bacteria = None
 toxins = None
 nutrients = None
-petri_dish = None
-env = None
 
 
 def calc_toxin(group, agent):
@@ -167,20 +165,18 @@ def set_up(props=None):
                          num_members=pa.get('num_toxins',
                                             DEF_NUM_BACT))
 
-    petri_dish = Env("Petrie dish",
-                     height=pa.get('grid_height', DEF_HEIGHT),
-                     width=pa.get('grid_width', DEF_WIDTH),
-                     members=[toxins, nutrients, bacteria],
-                     props=pa)
-    return (petri_dish, toxins, nutrients, bacteria)
+    Env("Petrie dish",
+        height=pa.get('grid_height', DEF_HEIGHT),
+        width=pa.get('grid_width', DEF_WIDTH),
+        members=[toxins, nutrients, bacteria],
+        props=pa)
+    return (toxins, nutrients, bacteria)
 
 
 def restore_globals(env):
     global toxins
     global nutrients
     global bacteria
-    global petri_dish
-    petri_dish = env
     toxins = get_registration("Toxins")
     bacteria = get_registration("Bacteria")
     nutrients = get_registration("Nutrients")
@@ -190,14 +186,10 @@ def main():
     global bacteria
     global toxins
     global nutrients
-    global env
 
-    (petri_dish, toxins, nutrients, bacteria) = set_up()
+    (toxins, nutrients, bacteria) = set_up()
 
-    if DEBUG2:
-        print(petri_dish.__repr__())
-
-    petri_dish()
+    get_env()()
     return 0
 
 
