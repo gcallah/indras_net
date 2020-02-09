@@ -8,7 +8,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import BLUE, RED
 from indra.env import Env, UNLIMITED
-from indra.registry import get_registration
+from indra.registry import get_registration, get_env
 from indra.utils import gaussian
 from indra.utils import get_props
 
@@ -29,7 +29,6 @@ DEF_SIGMA = .8
 trend_followers = None
 value_investors = None
 market_maker = None
-market = None
 
 
 def trend_direction(agent, cur_price, price_hist):
@@ -214,7 +213,6 @@ def set_up(props=None):
     global trend_followers
     global value_investors
     global market_maker
-    global market
 
     pa = get_props(MODEL_NAME, props)
 
@@ -227,24 +225,21 @@ def set_up(props=None):
                                 num_members=pa.get("trend_followers",
                                                    DEF_NUM_TREND_FOLLOWER))
     market_maker = create_market_maker("market_maker")
-    market = Env("fmarket",
-                 members=[value_investors, trend_followers, market_maker],
-                 props=pa,
-                 width=UNLIMITED,
-                 height=UNLIMITED,
-                 census=market_report,
-                 line_data_func=plot_asset_price)
-    market.exclude_menu_item("scatter_plot")
-    return (market, value_investors, trend_followers, market_maker)
+    Env("fmarket",
+        members=[value_investors, trend_followers, market_maker],
+        props=pa,
+        width=UNLIMITED,
+        height=UNLIMITED,
+        census=market_report,
+        line_data_func=plot_asset_price)
+    get_env().exclude_menu_item("scatter_plot")
+    return (value_investors, trend_followers, market_maker)
 
 
 def restore_globals(env):
     global trend_followers
     global value_investors
     global market_maker
-    global market
-    market = env
-    market.exclude_menu_item("scatter_plot")
     trend_followers = get_registration("trend_followers")
     value_investors = get_registration("value_investors")
     market_maker = get_registration("market_maker")
@@ -254,11 +249,10 @@ def main():
     global trend_followers
     global value_investors
     global market_maker
-    global market
 
-    (market, trend_followers, value_investors, market_maker) = set_up()
+    (trend_followers, value_investors, market_maker) = set_up()
 
-    market()
+    get_env()()
     return 0
 
 

@@ -7,7 +7,7 @@ from indra.agent import Agent, X, Y
 from indra.composite import Composite
 from indra.display_methods import BLUE, TREE
 from indra.env import Env
-from indra.registry import get_registration
+from indra.registry import get_registration, get_env
 from indra.space import DEF_HEIGHT, DEF_WIDTH, distance
 from indra.utils import get_props
 
@@ -25,7 +25,6 @@ HALF_CIRCLE = 180
 FULL_CIRCLE = 360
 
 flock = None
-the_sky = None
 
 
 def invert_direction(angle):
@@ -96,26 +95,23 @@ def set_up(props=None):
                       member_creator=create_bird,
                       num_members=pa.get('num_birds', DEF_NUM_BIRDS))
 
-    the_sky = Env("the_sky",
-                  height=pa.get('grid_height', DEF_HEIGHT),
-                  width=pa.get('grid_width', DEF_WIDTH),
-                  members=[flock])
-    return the_sky, flock
+    Env("the_sky",
+        height=pa.get('grid_height', DEF_HEIGHT),
+        width=pa.get('grid_width', DEF_WIDTH),
+        members=[flock])
+    return (flock)
 
 
 def restore_globals(env):
     global flock
-    global the_sky
-    the_sky = env
     flock = get_registration(BIRD_GROUP)
 
 
 def main():
     global flock
-    global the_sky
 
-    (the_sky, flock) = set_up()
-    the_sky()
+    (flock) = set_up()
+    get_env()()
     return 0
 
 
