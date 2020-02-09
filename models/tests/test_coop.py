@@ -19,10 +19,9 @@ class coopTestCase(TestCase):
     def setUp(self):
         self.pa = PropArgs.create_props('coop_props',
                                         ds_file='props/coop.props.json')
-        (coop.coop_env, coop.coop_members, central_bank) = set_up()
+        (coop.coop_members, central_bank) = set_up()
 
     def tearDown(self):
-        coop.coop_env = None
         coop.groups = None
         coop.group_indices = None
 
@@ -32,8 +31,6 @@ class coopTestCase(TestCase):
         """
         new_babysitter = create_babysitter("babysitters", 0, self.pa)
         self.assertTrue(new_babysitter["desired_cash"] >= 0)
-        # self.assertTrue(new_babysitter["sitting"] is False)
-        # self.assertTrue(new_babysitter["going_out"] >= 0)
         self.assertTrue(new_babysitter["goal"] is None)
         self.assertTrue(new_babysitter["coupons"] > 0)
 

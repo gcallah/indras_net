@@ -10,6 +10,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import BLUE, RED
 from indra.env import Env
+from indra.registry import get_env
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import get_props
 
@@ -31,7 +32,6 @@ agents_decided = 0
 
 drinkers = None
 non_drinkers = None
-bar = None
 
 
 def get_decision(agent):
@@ -97,14 +97,14 @@ def drinker_action(agent):
 
         if agent.primary_group() == non_drinkers:
             changed = False
-            bar.add_switch(agent, non_drinkers,
-                           drinkers)
+            get_env().add_switch(agent, non_drinkers,
+                                 drinkers)
 
     else:
         if agent.primary_group() == drinkers:
             changed = False
-            bar.add_switch(agent, drinkers,
-                           non_drinkers)
+            get_env().add_switch(agent, drinkers,
+                                 non_drinkers)
 
     # return False means to move
     return changed
@@ -132,7 +132,6 @@ def set_up(props=None):
     """
     global drinkers
     global non_drinkers
-    global bar
     global population
     global optimal_occupancy
     global agents_decided
@@ -140,11 +139,11 @@ def set_up(props=None):
     pa = get_props(MODEL_NAME, props)
     agents_decided = 0
 
-    drinkers = Composite("Drinkers", {"color": RED}, props=pa,
+    drinkers = Composite("At Bar", {"color": RED}, props=pa,
                          member_creator=create_drinker,
                          num_members=pa.get('population', DEF_POPULATION) // 2)
 
-    non_drinkers = Composite("Non-Drinkers", {"color": BLUE}, props=pa,
+    non_drinkers = Composite("Stayed Home", {"color": BLUE}, props=pa,
                              member_creator=create_non_drinker,
                              num_members=pa.get('population',
                                                 DEF_POPULATION) // 2)
@@ -152,22 +151,21 @@ def set_up(props=None):
     population = len(drinkers) + len(non_drinkers)
     optimal_occupancy = int(population * 0.6)
 
-    bar = Env("bar",
-              height=pa.get('grid_height', DEF_HEIGHT),
-              width=pa.get('grid_width', DEF_WIDTH),
-              members=[drinkers, non_drinkers],
-              props=pa)
+    Env("bar",
+        height=pa.get('grid_height', DEF_HEIGHT),
+        width=pa.get('grid_width', DEF_WIDTH),
+        members=[drinkers, non_drinkers],
+        props=pa)
 
-    return (bar, drinkers, non_drinkers)
+    return (drinkers, non_drinkers)
 
 
 def main():
     global drinkers
     global non_drinkers
-    global bar
 
-    (bar, drinkers, non_drinkers) = set_up()
-    bar()
+    (drinkers, non_drinkers) = set_up()
+    get_env()()
 
     return 0
 

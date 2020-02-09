@@ -14,16 +14,16 @@ class ExBoyfriendTestCase(TestCase):
     def setUp(self):
         self.pa = PropArgs.create_props('ex_boyfriend_props',
                                         ds_file='props/ex_boyfriend.props.json')
-        (self.bar, self.ex_boyfriend, self.girlfriend) = set_up()
+        (self.ex_boyfriend, self.newly_freed) = set_up()
 
     def tearDown(self):
-        (self.bar, self.ex_boyfriend, self.girlfriend) = (None, None, None)
+        (self.ex_boyfriend, self.newly_freed) = (None, None)
 
-    def test_create_girlfriend(self):
+    def test_create_newly_freed(self):
         """
-        Test creating a girlfriend.
+        Test creating a newly_freed.
         """
-        agent = ex_boyfriend.create_girlfriend("Girlfriend", 0)
+        agent = ex_boyfriend.create_newly_freed("Girlfriend", 0)
         self.assertEqual(agent.name, "Girlfriend0")
 
     def test_create_boyfriend(self):

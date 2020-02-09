@@ -33,6 +33,10 @@ test_drunks:
 	$(PYLINT) $(PYLINTFLAGS) drunks.py
 	nosetests tests.test_drunks --nocapture
 
+test_ex:
+	$(PYLINT) $(PYLINTFLAGS) ex_boyfriend.py
+	nosetests tests.test_ex_boyfriend --nocapture
+
 test_forestfire:
 	$(PYLINT) $(PYLINTFLAGS) drunks.py
 	nosetests tests.test_forestfire --nocapture

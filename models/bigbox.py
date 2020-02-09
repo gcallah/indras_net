@@ -8,6 +8,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import BLACK, BLUE, GRAY, GREEN, RED, TAN, YELLOW
 from indra.env import Env
+from indra.registry import get_env
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import get_props
 
@@ -29,7 +30,6 @@ EXPENSE_INDX = 0
 CAPITAL_INDX = 1
 COLOR_INDX = 2
 
-town = None
 groups = None
 mp_pref = None
 hood_size = None
@@ -128,8 +128,8 @@ def consumer_action(consumer):
     consumer decide where to shop at.
     """
     global hood_size
-    nearby_neighbors = town.get_moore_hood(consumer,
-                                           hood_size=hood_size)
+    nearby_neighbors = get_env().get_moore_hood(
+        consumer, hood_size=hood_size)
     store_to_go = None
     max_util = 0.0
     for neighbors in nearby_neighbors:
@@ -206,7 +206,6 @@ def set_up(props=None):
     """
     Create an Env for Big box.
     """
-    global town
     global groups
     global mp_pref
     global hood_size
@@ -238,32 +237,29 @@ def set_up(props=None):
     for m in range(0, num_mp):
         rand = random.randint(2, len(groups) - 1)
         groups[rand] += create_mp(groups[rand], m)
-    town = Env("Town",
-               action=town_action,
-               members=groups,
-               height=height,
-               width=width,
-               props=pa)
-    return (town, groups)
+    Env("Town",
+        action=town_action,
+        members=groups,
+        height=height,
+        width=width,
+        props=pa)
+    return (groups)
 
 
 def restore_globals(env):
-    global town
     global groups
     global mp_pref
     global hood_size
     global store_census
-    town = env
-    mp_pref = env.props["mp_pref"]
-    hood_size = env.props["hood_size"]
+    mp_pref = get_env().props["mp_pref"]
+    hood_size = get_env().props["hood_size"]
 
 
 def main():
-    global town
     global groups
 
-    (town, groups) = set_up()
-    town()
+    (groups) = set_up()
+    get_env()()
     return 0
 
 

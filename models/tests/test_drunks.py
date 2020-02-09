@@ -10,11 +10,11 @@ from models.drunks import set_up
 
 class DrunksTestCase(TestCase):
     def setUp(self):
-        (self.bar, self.drinkers, self.nondrinkers) = set_up()
+        (self.drinkers, self.nondrinkers) = set_up()
         self.agent = drunks.create_drinker("drunk", 1)
 
     def tearDown(self):
-        (self.bar, self.drinkers, self.nondrinkers) = (None, None, None)
+        (self.drinkers, self.nondrinkers) = (None, None)
 
     def test_get_decision(self):
         val = drunks.get_decision(self.agent)

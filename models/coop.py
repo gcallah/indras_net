@@ -6,6 +6,7 @@ import random
 from indra.agent import Agent
 from indra.composite import Composite
 from indra.env import Env, UNLIMITED
+from indra.registry import get_env
 from indra.utils import gaussian
 from indra.user import user_tell
 from indra.utils import get_props
@@ -33,7 +34,6 @@ CB_intervention_points = []
 num_of_rounds = 1
 
 coop_members = None
-coop_env = None
 
 last_period_exchanges = 0
 last_period_unemployed = 0
@@ -79,7 +79,7 @@ def get_going_out(coop_members):
     return coop_members.subset(wants_to_go_out)
 
 
-def exchange(coop_env):
+def coop_action(coop_env):
     # get exchange numbers
     global last_period_exchanges
     global last_period_unemployed
@@ -99,6 +99,7 @@ def exchange(coop_env):
 
     last_period_exchanges = exchanges
     last_period_unemployed = max(len(sitters), len(going_out)) - exchanges
+    return True
 
 
 def distribute_coupons(agent):
@@ -110,10 +111,6 @@ def distribute_coupons(agent):
     for bbsit in coop_members:
         coop_members[bbsit]['coupons'] += int(gaussian(
             agent["extra_coupons"], agent["extra_dev"]))
-
-
-def coop_action(coop_env):
-    exchange(coop_env)
 
 
 def coop_report(coop_env):
@@ -195,7 +192,6 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    global coop_env
     global coop_members
     pa = get_props(MODEL_NAME, props)
 
@@ -207,28 +203,25 @@ def set_up(props=None):
                              member_creator=create_central_bank,
                              props=pa)
 
-    coop_env = Env('coop_env', members=[coop_members, central_bank],
-                   action=coop_action, width=UNLIMITED,
-                   height=UNLIMITED,
-                   census=coop_report,
-                   props=pa,
-                   pop_hist_setup=initial_exchanges,
-                   pop_hist_func=record_exchanges,
-                   attrs={"show_special_points": CB_intervention_points,
-                          "special_points_name": "CB intervention points"})
-    return (coop_env, coop_members, central_bank)
+    Env('coop_env', members=[coop_members, central_bank],
+        action=coop_action, width=UNLIMITED,
+        height=UNLIMITED,
+        census=coop_report,
+        props=pa,
+        pop_hist_setup=initial_exchanges,
+        pop_hist_func=record_exchanges,
+        attrs={"show_special_points": CB_intervention_points,
+               "special_points_name": "CB intervention points"})
+    return (coop_members, central_bank)
 
 
 def main():
-    global coop_env
     global coop_members
     global central_bank
-    global num_of_rounds
-    global CB_intervention_points
 
-    (coop_env, coop_members, central_bank) = set_up()
+    (coop_members, central_bank) = set_up()
 
-    coop_env()
+    get_env()()
     return 0
 
 

@@ -17,10 +17,9 @@ class BigBoxTestCase(TestCase):
         """
         set up test environment
         """
-        (bb.town, bb.groups) = set_up()
+        (bb.groups) = set_up()
 
     def tearDown(self):
-        bb.town = None
         bb.groups = None
 
     def test_calc_util(self):

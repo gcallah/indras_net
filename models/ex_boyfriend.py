@@ -10,6 +10,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import RED, BLUE
 from indra.env import Env
+from indra.registry import get_env
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import get_props
 
@@ -38,59 +39,58 @@ DEF_NUM_BLUE = 1
 DEF_NUM_RED = 1
 DEF_CYCLE = 7
 
-girlfriend = None
+newly_freed = None
 ex_boyfriend = None
-bar = None
 
-girlfriend_cycle = None
+newly_freed_cycle = None
 ex_boyfriend_start = None
-girlfriend_start = None
+newly_freed_start = None
 period = None
 boyfriend_going = False
 day = None
 
 
-def get_girlfriend_decision():
+def get_newly_freed_decision():
     global period
-    global girlfriend_start
-    global girlfriend_cycle
+    global newly_freed_start
+    global newly_freed_cycle
 
-    return (period - girlfriend_start) % girlfriend_cycle == 0
+    return (period - newly_freed_start) % newly_freed_cycle == 0
 
 
-def girlfriend_action(agent):
+def newly_freed_action(agent):
     global period
-    global girlfriend_cycle
-    global girlfriend_start
+    global newly_freed_cycle
+    global newly_freed_start
 
-    girlfriend_going = False
+    newly_freed_going = False
     # print("GF here")
 
     if agent["state"] == PR:
-        if girlfriend_cycle is None:
-            girlfriend_cycle = random.randint(1, 7)
-            girlfriend_start = period
+        if newly_freed_cycle is None:
+            newly_freed_cycle = random.randint(1, 7)
+            newly_freed_start = period
 
-        girlfriend_going = get_girlfriend_decision()
-        if girlfriend_going:
-            if girlfriend_going and boyfriend_going:
+        newly_freed_going = get_newly_freed_decision()
+        if newly_freed_going:
+            if newly_freed_going and boyfriend_going:
                 agent["state"] = RC
             else:
                 agent["state"] = CD
-                girlfriend_start += 1
+                newly_freed_start += 1
 
     elif agent["state"] == RC:
-        girlfriend_going = get_girlfriend_decision()
-        if girlfriend_going:
+        newly_freed_going = get_newly_freed_decision()
+        if newly_freed_going:
             if not boyfriend_going:
-                girlfriend_cycle = None
+                newly_freed_cycle = None
                 agent["state"] = PR
             else:
                 agent["state"] = SU
 
     elif agent["state"] == CD:
-        girlfriend_going = get_girlfriend_decision()
-        if girlfriend_going and boyfriend_going:
+        newly_freed_going = get_newly_freed_decision()
+        if newly_freed_going and boyfriend_going:
             agent["state"] = RC
 
     else:
@@ -98,7 +98,7 @@ def girlfriend_action(agent):
 
     print("State: ", agent["state"])
 
-    if girlfriend_going:
+    if newly_freed_going:
         # print("GF going")
         return False
     else:
@@ -138,11 +138,11 @@ def create_boyfriend(name, i, props=None):
                         "going": True})
 
 
-def create_girlfriend(name, i, props=None, state=PR):
+def create_newly_freed(name, i, props=None, state=PR):
     """
     Create an agent.
     """
-    return Agent(name + str(i), action=girlfriend_action,
+    return Agent(name + str(i), action=newly_freed_action,
                  attrs={"state": state})
 
 
@@ -150,43 +150,38 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    global girlfriend
+    global newly_freed
     global ex_boyfriend
-    global bar
     global period
 
     period = 0
 
     pa = get_props(MODEL_NAME, props)
 
-    girlfriend = Composite("Girlfriend", {"color": BLUE}, props=pa,
-                           member_creator=create_girlfriend,
-                           num_members=1)
+    newly_freed = Composite("Girlfriend", {"color": BLUE}, props=pa,
+                            member_creator=create_newly_freed,
+                            num_members=1)
 
     ex_boyfriend = Composite("Ex-Boyfriend", {"color": RED}, props=pa,
                              member_creator=create_boyfriend,
                              num_members=1)
 
-    bar = Env("bar",
-              height=pa.get('grid_height', DEF_HEIGHT),
-              width=pa.get('grid_width', DEF_WIDTH),
-              members=[ex_boyfriend, girlfriend],
-              props=pa)
+    Env("bar",
+        height=pa.get('grid_height', DEF_HEIGHT),
+        width=pa.get('grid_width', DEF_WIDTH),
+        members=[ex_boyfriend, newly_freed],
+        props=pa)
 
-    return bar, ex_boyfriend, girlfriend
+    return ex_boyfriend, newly_freed
 
 
 def main():
     global ex_boyfriend
-    global girlfriend
-    global bar
+    global newly_freed
 
-    (bar, ex_boyfriend, girlfriend) = set_up()
+    (ex_boyfriend, newly_freed) = set_up()
 
-    if DEBUG2:
-        print(bar.__repr__())
-
-    bar()
+    get_env()()
     return 0
 
 
