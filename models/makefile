@@ -38,8 +38,12 @@ test_ex:
 	nosetests tests.test_ex_boyfriend --nocapture
 
 test_forestfire:
-	$(PYLINT) $(PYLINTFLAGS) drunks.py
+	$(PYLINT) $(PYLINTFLAGS) forestfire.py
 	nosetests tests.test_forestfire --nocapture
+
+test_gameoflife:
+	$(PYLINT) $(PYLINTFLAGS) gameoflife.py
+	nosetests tests.test_gameoflife --nocapture
 
 test_seg:
 	nosetests tests.test_segregation --nocapture

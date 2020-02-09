@@ -6,6 +6,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import BLACK, SQUARE
 from indra.env import Env
+from indra.registry import get_env
 from indra.utils import get_props
 
 MODEL_NAME = "gameoflife"
@@ -13,7 +14,6 @@ DEBUG = False  # Turns debugging code on or off
 DEF_HEIGHT = 30
 DEF_WIDTH = 30
 
-biosphere = None
 groups = None
 
 reset_lists = False
@@ -35,7 +35,6 @@ def apply_live_rules(agent):
     Apply the rules for live agents.
     The agent passed in should be alive, meaning its color should be black.
     """
-    global biosphere
     global groups
 
     num_live_neighbors = 0
@@ -60,7 +59,7 @@ def apply_dead_rules(curr_x, curr_y, x1, x2, y1, y2):
     num_live_neighbors = 0
     for x in range(x1, x2 + 1):
         for y in range(y1, y2 + 1):
-            neighbor = biosphere.get_agent_at(x, y)
+            neighbor = get_env().get_agent_at(x, y)
             if (neighbor is not None and neighbor.primary_group() == groups[0]
                     and (curr_x != x or curr_y != y)):
                 num_live_neighbors += 1
@@ -71,7 +70,6 @@ def apply_dead_rules(curr_x, curr_y, x1, x2, y1, y2):
 
 
 def check_for_new_agents(agent):
-    global biosphere
     global to_come_alive
 
     curr_x = agent.get_x()
@@ -81,8 +79,8 @@ def check_for_new_agents(agent):
             if (x != 0) or (y != 0):
                 new_x = curr_x + x
                 new_y = curr_y + y
-                if biosphere.get_agent_at(new_x, new_y) is None:
-                    x1, x2, y1, y2 = biosphere.get_moore_hood_idx(new_x,
+                if get_env().get_agent_at(new_x, new_y) is None:
+                    x1, x2, y1, y2 = get_env().get_moore_hood_idx(new_x,
                                                                   new_y)
                     if apply_dead_rules(new_x, new_y, x1, x2, y1, y2):
                         to_come_alive.append((new_x, new_y))
@@ -127,7 +125,6 @@ def game_agent_action(agent):
     global to_come_alive
     global to_die
     global reset_lists
-    global biosphere
 
     if reset_lists:
         to_come_alive = []
@@ -141,7 +138,6 @@ def game_agent_action(agent):
 
 
 def populate_board_glider(width, height):
-    global biosphere
     global groups
 
     center = [width // 2, height // 2]
@@ -151,11 +147,10 @@ def populate_board_glider(width, height):
     for loc in agent_loc:
         agent = create_game_cell(loc[0], loc[1])
         groups[0] += agent
-        biosphere.place_member(agent, xy=loc)
+        get_env().place_member(agent, xy=loc)
 
 
 def populate_board_small_exploder(width, height):
-    global biosphere
     global groups
 
     center = [width // 2, height // 2]
@@ -167,12 +162,10 @@ def populate_board_small_exploder(width, height):
     for loc in agent_loc:
         agent = create_game_cell(loc[0], loc[1])
         groups[0] += agent
-        biosphere.place_member(agent, xy=loc)
+        get_env().place_member(agent, xy=loc)
 
 
 def populate_board_exploder(width, height):
-    global biosphere
-
     center = [width // 2, height // 2]
     agent_loc = [(center[0], center[1]), (center[0], center[1] - 4)]
     for i in range(0, 5):
@@ -181,12 +174,10 @@ def populate_board_exploder(width, height):
     for loc in agent_loc:
         agent = create_game_cell(loc[0], loc[1])
         groups[0] += agent
-        biosphere.place_member(agent, xy=loc)
+        get_env().place_member(agent, xy=loc)
 
 
 def populate_board_n_horizontal_row(width, height, n=10):
-    global biosphere
-
     center = [width // 2, height // 2]
     agent_loc = []
     right = (n // 2) + (n % 2)
@@ -198,12 +189,10 @@ def populate_board_n_horizontal_row(width, height, n=10):
     for loc in agent_loc:
         agent = create_game_cell(loc[0], loc[1])
         groups[0] += agent
-        biosphere.place_member(agent, xy=loc)
+        get_env().place_member(agent, xy=loc)
 
 
 def populate_board_n_vertical_row(width, height, n=10):
-    global biosphere
-
     center = [width // 2, height // 2]
     agent_loc = []
     top = (n // 2) + (n % 2)
@@ -215,12 +204,10 @@ def populate_board_n_vertical_row(width, height, n=10):
     for loc in agent_loc:
         agent = create_game_cell(loc[0], loc[1])
         groups[0] += agent
-        biosphere.place_member(agent, xy=loc)
+        get_env().place_member(agent, xy=loc)
 
 
 def populate_board_lightweight_spaceship(width, height):
-    global biosphere
-
     center = [width // 2, height // 2]
     agent_loc = [(center[0], center[1]), (center[0] - 1, center[1]),
                  (center[0] - 2, center[1]),
@@ -232,13 +219,13 @@ def populate_board_lightweight_spaceship(width, height):
     for loc in agent_loc:
         agent = create_game_cell(loc[0], loc[1])
         groups[0] += agent
-        biosphere.place_member(agent, xy=loc)
+        get_env().place_member(agent, xy=loc)
 
 
 def populate_board_tumbler(width, height):
-    global biosphere
-
     center = [width // 2, height // 2]
+    # this code is clearly awful: we must re-code this
+    # per the mathematical pattern underlying this crap
     agent_loc = [(center[0] - 1, center[1]), (center[0] - 2, center[1]),
                  (center[0] + 1, center[1]),
                  (center[0] + 2, center[1]), (center[0] - 1, center[1] - 1),
@@ -263,7 +250,7 @@ def populate_board_tumbler(width, height):
     for loc in agent_loc:
         agent = create_game_cell(loc[0], loc[1])
         groups[0] += agent
-        biosphere.place_member(agent, xy=loc)
+        get_env().place_member(agent, xy=loc)
 
 
 populate_board_dict = {
@@ -282,7 +269,6 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     global groups
-    global biosphere
 
     pa = get_props(MODEL_NAME, props)
 
@@ -291,40 +277,32 @@ def set_up(props=None):
     simulation = pa.get("simulation", 0)
     black = Composite("Black", {"color": BLACK, "marker": SQUARE})
     groups = [black]
-    biosphere = Env("Game of Life",
-                    action=gameoflife_action,
-                    height=height,
-                    width=width,
-                    members=groups,
-                    attrs={"size": 100,
-                           "change_grid_spacing": (0.5, 1),
-                           "hide_xy_ticks": True,
-                           "hide_legend": True},
-                    random_placing=False,
-                    props=pa)
+    Env("Game of Life",
+        action=gameoflife_action,
+        height=height,
+        width=width,
+        members=groups,
+        attrs={"size": 100,
+               "change_grid_spacing": (0.5, 1),
+               "hide_xy_ticks": True,
+               "hide_legend": True},
+        random_placing=False,
+        props=pa)
 
     populate_board_dict[simulation](width, height)
 
-    return biosphere, groups
+    return groups
 
 
 def restore_globals(env):
-    global groups
-    global biosphere
-    biosphere = env
-    # this model needs to be totally revisited anyway, so:
-    # groups = [env.registry["Black"]]
+    pass
 
 
 def main():
-    global biosphere
     global groups
-    (biosphere, groups) = set_up()
+    (groups) = set_up()
 
-    if DEBUG:
-        print(biosphere.__repr__())
-
-    biosphere()
+    get_env()()
     return 0
 
 

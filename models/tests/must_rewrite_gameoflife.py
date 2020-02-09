@@ -17,11 +17,10 @@ class GameOfLifeTestCase(TestCase):
     def setUp(self):
         self.pa = PropArgs.create_props('gameoflife_props',
                                         ds_file='props/gameoflife.props.json')
-        (g.gameoflife_env, g.groups) = set_up()
+        (g.groups) = set_up()
         pass
 
     def tearDown(self):
-        g.gameoflife_env = None
         g.groups = None
         pass
 
@@ -67,14 +66,6 @@ class GameOfLifeTestCase(TestCase):
         Add another agent to the composite and run it through apply_dead_rules_composite,
         which should return False as there are four neighbors.
         """
-        # g.groups = []
-        # g.groups.append(Composite("black"))
-        # g.groups[0] += create_grain(TEST_X, TEST_Y)
-        # g.groups[0] += create_grain(TEST_X - 1, TEST_Y)
-        # g.groups[0] += create_grain(TEST_X + 1, TEST_Y)
-        # self.assertEqual(apply_dead_rules(TEST_X, TEST_Y, TEST_X + 1, TEST_X - 1, TEST_Y - 1, TEST_Y + 1), True)
-        # g.groups[0] += create_grain(TEST_X + 2, TEST_Y)
-        # self.assertEqual(apply_dead_rules(TEST_X, TEST_Y, TEST_X + 1, TEST_X - 1, TEST_Y - 1, TEST_Y + 1), False)
         pass
 
     def test_check_for_new_agents(self):
@@ -93,12 +84,12 @@ class GameOfLifeTestCase(TestCase):
         black = Composite("black")
         g.groups = []
         g.groups.append(black)
-        g.gameoflife_env = Env("Game of Life",
-                               action=g.gameoflife_action,
-                               height=DEF_HEIGHT,
-                               width=DEF_WIDTH,
-                               members=g.groups,
-                               random_placing=False)
+        Env("Game of Life",
+            action=g.gameoflife_action,
+            height=DEF_HEIGHT,
+            width=DEF_WIDTH,
+            members=g.groups,
+            random_placing=False)
         g.populate_board_glider(DEF_WIDTH, DEF_HEIGHT)
         self.assertEqual(len(g.gameoflife_env.members["black"]), 5)
 
