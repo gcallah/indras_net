@@ -9,6 +9,9 @@ ACCEPT = 1
 INADEQ = 0
 REJECT = -1
 
+AMT_AVAILABLE = "amt_available"
+GOODS = "goods"
+
 answer_dict = {
     1: "I accept",
     0: "I'm indifferent about",
@@ -20,28 +23,65 @@ DEF_MAX_UTIL = 20  # this should be set by the models that use this module
 max_util = DEF_MAX_UTIL
 
 
-def initial_endowment(trader, avail_goods):
+"""
+    We expect goods dictionaries to look like:
+        goods = {
+            "houses": { AMT_AVAILABLE: int, "maybe more fields": vals ... },
+            "trucks": { AMT_AVAILABLE: int, "maybe more fields": vals ... },
+            "etc.": { AMT_AVAILABLE: int, "maybe more fields": vals ... },
+        }
+    A trader is an object that can be indexed to yield a goods dictionary.
+"""
+
+
+def is_depleted(goods_dict):
+    """
+    See if `goods_dict` has any non-zero amount of goods in it.
+    """
+    for good in goods_dict:
+        if goods_dict[good][AMT_AVAILABLE] > 0:
+            return False
+    # if all goods are 0 (or less) dict is empty:
+    return True
+
+
+def transfer(to_goods, from_goods, good_nm, amt=None):
+    """
+    Transfer goods between two goods dicts.
+    Use `amt` if it is not None.
+    """
+    if good_nm not in to_goods:
+        to_goods[good_nm] = {AMT_AVAILABLE: 0}
+    to_goods[good_nm][AMT_AVAILABLE] = (
+        from_goods[good_nm][AMT_AVAILABLE])
+    from_goods[good_nm][AMT_AVAILABLE] = 0
+
+
+def get_rand_good(goods_dict):
+    return random.choice(list(goods_dict.keys()))
+
+
+def endow(trader, avail_goods):
     """
     This function is going to pick a good at random, and give the
     trader all of it, by default. We will write partial distributions
     later.
     """
-    # goods will be a dictionary: {"good_name": {"amt_vailable": amt, ...}
+    if is_depleted(avail_goods):
+        # we can't allocate what we don't have!
+        return
+
     # pick an item at random
-    # stick all of it in trader's goods dictionar
-    rand_good = random.choice(avail_goods.keys())
+    # stick all of it in trader's goods dictionary
+    rand_good = get_rand_good(avail_goods)
 
     # pick again if the goods is endowed (amt is 0)
-    while avail_goods[rand_good]["amt_available"] == 0:
-        # what if they are ALL 0?
-        rand_good = random.choice(avail_goods.keys())
+    # if we get big goods dicts, this could be slow:
+    while avail_goods[rand_good][AMT_AVAILABLE] == 0:
+        rand_good = get_rand_good(avail_goods)
 
     # get a random good
-    trader["goods"][rand_good]["endow"] = (
-        avail_goods[rand_good]["amt_available"]
-    )
-
-    avail_goods[rand_good]["amt_available"] = 0
+    transfer(trader[GOODS], avail_goods, rand_good)
 
 
 def goods_to_str(goods):

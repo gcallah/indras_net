@@ -17,6 +17,9 @@ pytests: $(PYTHONFILES)
 	nosetests --exe --with-coverage --cover-package=capital
 
 # you can clone the next two lines and get a test for any module:
+test_trade_utils:
+	nosetests tests.test_trade_utils
+
 test_cap_struct:
 	nosetests tests.test_cap_struct
 
