@@ -26,5 +26,13 @@ class TradeUtilsTestCase(TestCase):
         endow(trader, goods)
         self.assertFalse(is_depleted(trader["goods"]))
 
+    def test_is_depleted(self):
+        goods_dict_empty = {}
+        goodA = {AMT_AVAILABLE: 0}
+        goodB = {AMT_AVAILABLE: 0}
+        goods_dict_zeros = {"a": goodA, "b": goodB}
+        self.assertTrue(is_depleted(goods_dict_empty))
+        self.assertTrue(is_depleted(goods_dict_zeros))
+
     if __name__ == '__main__':
         main()
