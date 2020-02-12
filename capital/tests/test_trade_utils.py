@@ -4,7 +4,7 @@ This is the test suite for trade.py.
 
 from unittest import TestCase, main
 
-from capital.trade_utils import endow, get_rand_good, is_depleted, AMT_AVAILABLE
+from capital.trade_utils import endow, get_rand_good, is_depleted, AMT_AVAILABLE, transfer
 
 
 class TradeUtilsTestCase(TestCase):
@@ -39,7 +39,15 @@ class TradeUtilsTestCase(TestCase):
         goodB = {AMT_AVAILABLE: 10}
         goods = {"a": goodA, "b": goodB}
         self.assertIsNotNone(get_rand_good(goods))
-	
+
+    def test_transfer(self):
+        goodA = {AMT_AVAILABLE: 10}
+        goodB = {AMT_AVAILABLE: 10}
+        trader = {"goods": {}}
+        goods = {"a": goodA, "b": goodB}
+        transfer(trader["goods"], goods, "a")
+        self.assertEqual(goods["a"][AMT_AVAILABLE], 0)
+        self.assertEqual(trader["goods"]["a"][AMT_AVAILABLE], 10)
 
     if __name__ == '__main__':
         main()
