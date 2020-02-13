@@ -10,8 +10,8 @@ import warnings
 REGISTRY = "Registry"
 
 """
-We can also have some global singletons here. We'll start with `the_env`;
-perhaps `the_user` should go here as well?
+We can also have some global singletons here. We'll start with `_the_env`;
+Adding `_groups_dict`.
 """
 _the_env = None  # this is a singleton, so global should be ok
 
@@ -23,6 +23,21 @@ def set_env(env):
 
 def get_env():
     return _the_env
+
+
+"""
+Our singleton dict for groups.
+"""
+_groups_dict = {}
+
+
+def add_group(name, grp):
+    global _groups_dict
+    _groups_dict[name] = grp
+
+
+def get_group(name):
+    return _groups_dict.get(name, None)
 
 
 class Registry(object):

@@ -10,7 +10,7 @@ from random import choice
 
 from indra.agent import Agent, join, INF, is_composite, AgentEncoder
 
-from indra.registry import register
+from indra.registry import register, add_group
 from indra.utils import get_func_name
 
 DEBUG = False
@@ -71,6 +71,7 @@ class Composite(Agent):
                         member_creator(self.name, i, props=props,
                                        **kwargs))
         if reg:
+            add_group(self.name, self)
             register(self.name, self)
 
     def restore(self, serial_obj):

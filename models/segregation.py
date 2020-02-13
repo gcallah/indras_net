@@ -8,7 +8,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import RED, BLUE
 from indra.env import Env
-from indra.registry import get_registration, get_env
+from indra.registry import get_env
 from indra.utils import get_props
 
 MODEL_NAME = "segregation"
@@ -38,18 +38,14 @@ HOOD_SIZE = 4
 
 NOT_ZERO = .001
 
-group_names = ["Blue Agent", "Red Agent"]
+BLUE_AGENTS = "Blue agents"
+RED_AGENTS = "Red agents"
 
-group_suffix = "s"
+group_names = [BLUE_AGENTS, RED_AGENTS]
 
-reds = None
-blues = None
 hood_size = None
 
 opp_group = None
-
-red_agents = None
-blue_agents = None
 
 
 def get_tolerance(default_tolerance, sigma):
@@ -80,9 +76,6 @@ def seg_agent_action(agent):
     If the agent is surrounded by more "others" than it is comfortable
     with, the agent will move.
     """
-    global red_agents
-    global blue_agents
-
     stay_put = True
     if agent["hood_changed"]:
         agent_group = agent.primary_group()
@@ -140,45 +133,24 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    global blue_agents
-    global red_agents
-
     pa = get_props(MODEL_NAME, props)
-    blue_agents = Composite(group_names[BLUE_TEAM] + group_suffix,
+    blue_agents = Composite(group_names[BLUE_TEAM],
                             {"color": BLUE},
                             props=pa, member_creator=create_resident,
                             num_members=pa.get('num_blue', NUM_BLUE))
-    red_agents = Composite(group_names[RED_TEAM] + group_suffix,
+    red_agents = Composite(group_names[RED_TEAM],
                            {"color": RED},
                            props=pa, member_creator=create_resident,
                            num_members=pa.get('num_red', NUM_RED))
-    if DEBUG2:
-        print(red_agents.__repr__())
-    if DEBUG2:
-        print(blue_agents.__repr__())
     city = Env("A city", members=[blue_agents, red_agents],
                height=pa.get('grid_height', DEF_CITY_DIM),
                width=pa.get('grid_width', DEF_CITY_DIM),
                props=pa)
     city.exclude_menu_item("line_graph")
-    return (blue_agents, red_agents)
-
-
-def restore_globals(env):
-    """
-    This restore unserializable and globals from JSON nsdata.
-    """
-    global blue_agents
-    global red_agents
-    blue_agents = get_registration(group_names[BLUE_TEAM] + group_suffix)
-    red_agents = get_registration(group_names[RED_TEAM] + group_suffix)
 
 
 def main():
-    global blue_agents
-    global red_agents
-    (blue_agents, red_agents) = set_up()
-
+    set_up()
     # get_env() returns a callable object:
     get_env()()
     return 0

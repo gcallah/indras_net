@@ -58,6 +58,9 @@ test_sched:
 test_fashion:
 	nosetests tests.test_fashion
 
+test_segregation:
+	nosetests tests.test_segregation
+
 test_wolfram:
 	nosetests tests.test_wolfram --nocapture
 
