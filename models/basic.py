@@ -20,9 +20,6 @@ DEF_NUM_BLUE = 10
 
 DEF_NUM_RED = 10
 
-red_group = None
-blue_group = None
-
 
 def agent_action(agent):
     print("I'm " + agent.name + " and I'm acting.")
@@ -55,14 +52,9 @@ def set_up(props=None):
         members=[blue_group, red_group],
         props=pa)
 
-    return blue_group, red_group
-
 
 def main():
-    global red_group
-    global blue_group
-
-    (blue_group, red_group) = set_up()
+    set_up()
 
     get_env()()
     return 0

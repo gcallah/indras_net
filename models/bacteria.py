@@ -10,13 +10,16 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import BLUE, GREEN, RED
 from indra.env import Env
-from indra.registry import get_registration, get_env
+from indra.registry import get_env, get_group
 from indra.space import DEF_HEIGHT, DEF_WIDTH, distance
 from indra.utils import get_props
 
 MODEL_NAME = "bacteria"
 DEBUG = False  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
+
+TOXINS = "Toxins"
+NUTRIENTS = "Nutrients"
 
 DEF_NUM_BACT = 1
 NUM_TOXINS = 1
@@ -25,10 +28,6 @@ DEF_THRESHOLD = -0.2
 DEF_TOXIN_MOVE = 1
 DEF_BACTERIUM_MOVE = 3
 DEF_NUTRIENT_MOVE = 2
-
-bacteria = None
-toxins = None
-nutrients = None
 
 
 def calc_toxin(group, agent):
@@ -68,17 +67,17 @@ def bacterium_action(agent, **kwargs):
     if DEBUG:
         print("I'm " + agent.name + " and I'm hungry.")
 
-    toxin_level = calc_toxin(toxins, agent)
-    nutrient_level = calc_nutrient(nutrients, agent)
+    toxin_level = calc_toxin(get_group(TOXINS), agent)
+    nutrient_level = calc_nutrient(
+        get_group(NUTRIENTS), agent)
 
     if agent["prev_toxicity"] is not None:
-        toxin_change = calc_toxin(toxins, agent) - agent["prev_toxicity"]
+        toxin_change = toxin_level - agent["prev_toxicity"]
     else:
         toxin_change = sys.maxsize * (-1)
 
     if agent["prev_nutricity"] is not None:
-        nutrient_change = calc_nutrient(nutrients,
-                                        agent) - agent["prev_nutricity"]
+        nutrient_change = nutrient_level - agent["prev_nutricity"]
     else:
         nutrient_change = sys.maxsize * (-1)
 
@@ -150,13 +149,13 @@ def set_up(props=None):
     """
     pa = get_props(MODEL_NAME, props)
 
-    toxins = Composite("Toxins", {"color": RED}, props=pa,
+    toxins = Composite(TOXINS, {"color": RED}, props=pa,
                        member_creator=create_toxin,
                        num_members=pa.get('num_toxins', NUM_TOXINS))
     # for i in range(pa.get('num_toxins', NUM_TOXINS)):
     #     toxins += create_toxin("Toxins", i, pa)
 
-    nutrients = Composite("Nutrients", {"color": GREEN}, props=pa,
+    nutrients = Composite(NUTRIENTS, {"color": GREEN}, props=pa,
                           member_creator=create_nutrient,
                           num_members=pa.get('num_nutrients', NUM_TOXINS))
 
@@ -174,20 +173,11 @@ def set_up(props=None):
 
 
 def restore_globals(env):
-    global toxins
-    global nutrients
-    global bacteria
-    toxins = get_registration("Toxins")
-    bacteria = get_registration("Bacteria")
-    nutrients = get_registration("Nutrients")
+    pass
 
 
 def main():
-    global bacteria
-    global toxins
-    global nutrients
-
-    (toxins, nutrients, bacteria) = set_up()
+    set_up()
 
     get_env()()
     return 0

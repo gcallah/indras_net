@@ -22,6 +22,9 @@ tests: pytests lint
 test_models:
 	nosetests tests.test_models
 
+test_bacteria:
+	nosetests tests.test_bacteria --nocapture
+
 test_bigbox:
 	nosetests tests.test_bigboxV2 --nocapture
 
