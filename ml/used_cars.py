@@ -325,7 +325,7 @@ def set_up(num_dealers, props=None):  # testcase???
     A func to set up run that can also be used by test code.
     """
     pa = get_props(MODEL_NAME, props, model_dir="ml")
-    dealer_grp = Composite("Dealers", {"color": BLUE},
+    dealer_grp = Composite(DEALERS, {"color": BLUE},
                            member_creator=create_dealer,
                            num_members=num_dealers)
     buyer_grp = Composite("Buyers", {"color": RED},
