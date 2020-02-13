@@ -1,7 +1,7 @@
 """
 This file contains general functions useful in trading goods.
 """
-from indra.user import user_tell
+from indra.user import user_debug
 from indra.registry import get_env
 import random
 
@@ -58,7 +58,13 @@ def transfer(to_goods, from_goods, good_nm, amt=None):
 
 
 def get_rand_good(goods_dict):
-    return random.choice(list(goods_dict.keys()))
+    """
+    What should this do with empty dict?
+    """
+    if goods_dict is None or not len(goods_dict):
+        return None
+    else:
+        return random.choice(list(goods_dict.keys()))
 
 
 def endow(trader, avail_goods):
@@ -88,7 +94,7 @@ def goods_to_str(goods):
     """
     take a goods dict to string
     """
-    string = ', '.join([str(goods[k]["endow"]) + " " + str(k)
+    string = ', '.join([str(goods[k][AMT_AVAILABLE]) + " " + str(k)
                        for k in goods.keys()])
     return string
 
@@ -105,27 +111,25 @@ def gen_util_func(qty):
 
 
 def seek_a_trade(agent):
-    nearby_agent = get_env().get_neighbor_of_groupX(agent,
-                                                    agent["trades_with"],
-                                                    hood_size=4)
+    nearby_agent = get_env().get_closest_agent(agent)
     if nearby_agent is not None:
-        user_tell("I'm " + agent.name + " and I find "
-                  + nearby_agent.name)
+        user_debug("I'm " + agent.name + " and I find "
+                   + nearby_agent.name)
         # this_good is a dict
         # better to just give each agent at least 0
         # of every good to start
         for this_good in agent["goods"]:
             amt = 1
-            while agent["goods"][this_good]["endow"] >= amt:
+            while agent["goods"][this_good][AMT_AVAILABLE] >= amt:
                 ans = rec_offer(nearby_agent, this_good, amt, agent)
-                user_tell("I'm " + agent.name
-                          + ", " + answer_to_str(ans) + " this offer")
+                user_debug("I'm " + agent.name
+                           + ", " + answer_to_str(ans) + " this offer")
                 if ans == ACCEPT or ans == REJECT:
                     break
                 amt += 1
 
-    user_tell("I'm " + agent.name
-              + ". I have " + goods_to_str(agent["goods"]))
+    user_debug("I'm " + agent.name
+               + ". I have " + goods_to_str(agent["goods"]))
 
     # return False means to move
     return False
@@ -140,7 +144,7 @@ def rec_offer(agent, his_good, his_amt, counterparty):
     my_amt = 1
     gain = utility_delta(agent, his_good, his_amt)
     for my_good in agent["goods"]:
-        if my_good != his_good and agent["goods"][my_good]["endow"] > 0:
+        if my_good != his_good and agent["goods"][my_good][AMT_AVAILABLE] > 0:
             loss = -utility_delta(agent, my_good, -my_amt)
             # user_tell("my good: " + my_good + "; his good: " + his_good
             #           + ", I gain: " + str(gain) +
@@ -179,7 +183,7 @@ def utility_delta(agent, good, change):
     (amt is positive) or lost (amt is negative).
     """
     curr_good = agent["goods"][good]
-    curr_amt = curr_good["endow"]
+    curr_amt = curr_good[AMT_AVAILABLE]
     curr_util = curr_good["util_func"](curr_amt)
     new_util = curr_good["util_func"](curr_amt + change)
     return ((new_util + curr_util) / 2) * change
@@ -187,4 +191,4 @@ def utility_delta(agent, good, change):
 
 def adj_add_good(agent, good, amt):
     agent["util"] += utility_delta(agent, good, amt)
-    agent["goods"][good]["endow"] += amt
+    agent["goods"][good][AMT_AVAILABLE] += amt

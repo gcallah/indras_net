@@ -9,45 +9,44 @@ from capital.trade_utils import endow, get_rand_good, is_depleted, AMT_AVAILABLE
 
 class TradeUtilsTestCase(TestCase):
     def setUp(self, props=None):
-        pass
+        self.goodA = {AMT_AVAILABLE: 10}
+        self.goodB = {AMT_AVAILABLE: 10}
+        self.trader = {"goods": {}}
+        self.goods = {"a": self.goodA, "b": self.goodB}
+        self.goods_dict_empty = {}
 
     def tearDown(self):
-        pass
+        self.goodA = None
+        self.goodB = None
+        self.trader = None
+        self.goods = None
 
     def test_endow(self):
         """
         See capital.trade_utils for description of what a
         `trader` and `goods` must look like.
         """
-        goodA = {AMT_AVAILABLE: 10}
-        goodB = {AMT_AVAILABLE: 10}
-        trader = {"goods": {}}
-        goods = {"a": goodA, "b": goodB}
-        endow(trader, goods)
-        self.assertFalse(is_depleted(trader["goods"]))
+        endow(self.trader, self.goods)
+        self.assertFalse(is_depleted(self.trader["goods"]))
 
     def test_is_depleted(self):
-        goods_dict_empty = {}
         goodA = {AMT_AVAILABLE: 0}
         goodB = {AMT_AVAILABLE: 0}
         goods_dict_zeros = {"a": goodA, "b": goodB}
-        self.assertTrue(is_depleted(goods_dict_empty))
+        self.assertTrue(is_depleted(self.goods_dict_empty))
         self.assertTrue(is_depleted(goods_dict_zeros))
 
     def test_get_rand_good(self):
-        goodA = {AMT_AVAILABLE: 10}
-        goodB = {AMT_AVAILABLE: 10}
-        goods = {"a": goodA, "b": goodB}
-        self.assertIsNotNone(get_rand_good(goods))
+        """
+        Test getting random good from goods dict.
+        """
+        self.assertIsNone(get_rand_good(self.goods_dict_empty))
+        self.assertIsNotNone(get_rand_good(self.goods))
 
     def test_transfer(self):
-        goodA = {AMT_AVAILABLE: 10}
-        goodB = {AMT_AVAILABLE: 10}
-        trader = {"goods": {}}
-        goods = {"a": goodA, "b": goodB}
-        transfer(trader["goods"], goods, "a")
-        self.assertEqual(goods["a"][AMT_AVAILABLE], 0)
-        self.assertEqual(trader["goods"]["a"][AMT_AVAILABLE], 10)
+        transfer(self.trader["goods"], self.goods, "a")
+        self.assertEqual(self.goods["a"][AMT_AVAILABLE], 0)
+        self.assertEqual(self.trader["goods"]["a"][AMT_AVAILABLE], 10)
 
     if __name__ == '__main__':
         main()
