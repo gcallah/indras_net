@@ -19,11 +19,10 @@ class coopTestCase(TestCase):
     def setUp(self):
         self.pa = PropArgs.create_props('coop_props',
                                         ds_file='props/coop.props.json')
-        (coop.coop_members, central_bank) = set_up()
+        set_up()
 
     def tearDown(self):
-        coop.groups = None
-        coop.group_indices = None
+        pass
 
     def test_create_babysitter(self):
         """

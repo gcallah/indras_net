@@ -1,7 +1,9 @@
 """
 El Farol Bar Problem
-A problem to check if it's possible for the bar to be
-occupied by 60% of the population every time
+What happens when patrons want to go to the bar up to
+60% occupancy, but don't beyond that point.
+Yogi Berra: "That place is so popular, no one goes there
+any more."
 """
 
 import random
@@ -10,13 +12,15 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import BLUE, RED
 from indra.env import Env
-from indra.registry import get_env
+from indra.registry import get_env, get_group
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import get_props
 
 DEBUG = False
 
-MODEL_NAME = "drunks"
+MODEL_NAME = "el_farol"
+DRINKERS = "At bar"
+NON_DRINKERS = "At home"
 
 DEF_POPULATION = 10
 DEF_OPTIMAL_OCCUPANCY = int(0.6 * DEF_POPULATION)
@@ -29,9 +33,6 @@ optimal_occupancy = 0
 attendance_record = []
 attendance = 0
 agents_decided = 0
-
-drinkers = None
-non_drinkers = None
 
 
 def get_decision(agent):
@@ -51,8 +52,8 @@ def discourage(unwanted):
     Chooses drinkers randomly from the drinkers that went to the bar.
     """
     discouraged = 0
+    drinkers = get_group(DRINKERS)
     while unwanted:
-
         if DEBUG:
             print("The members are: ", drinkers.members)
         random_drunk = random.choice(list(drinkers.members))
@@ -77,6 +78,9 @@ def drinker_action(agent):
     global attendance_record
     global agents_decided
 
+    drinkers = get_group(DRINKERS)
+    non_drinkers = get_group(NON_DRINKERS)
+
     changed = True
     decision = get_decision(agent)
     agents_decided += 1
@@ -94,7 +98,6 @@ def drinker_action(agent):
 
     if decision:
         attendance += 1
-
         if agent.primary_group() == non_drinkers:
             changed = False
             get_env().add_switch(agent, non_drinkers,
@@ -130,8 +133,6 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    global drinkers
-    global non_drinkers
     global population
     global optimal_occupancy
     global agents_decided
@@ -139,11 +140,11 @@ def set_up(props=None):
     pa = get_props(MODEL_NAME, props)
     agents_decided = 0
 
-    drinkers = Composite("At Bar", {"color": RED}, props=pa,
+    drinkers = Composite(DRINKERS, {"color": RED}, props=pa,
                          member_creator=create_drinker,
                          num_members=pa.get('population', DEF_POPULATION) // 2)
 
-    non_drinkers = Composite("Stayed Home", {"color": BLUE}, props=pa,
+    non_drinkers = Composite(NON_DRINKERS, {"color": BLUE}, props=pa,
                              member_creator=create_non_drinker,
                              num_members=pa.get('population',
                                                 DEF_POPULATION) // 2)
@@ -157,16 +158,10 @@ def set_up(props=None):
         members=[drinkers, non_drinkers],
         props=pa)
 
-    return (drinkers, non_drinkers)
-
 
 def main():
-    global drinkers
-    global non_drinkers
-
-    (drinkers, non_drinkers) = set_up()
+    set_up()
     get_env()()
-
     return 0
 
 

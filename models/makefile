@@ -23,18 +23,20 @@ test_models:
 	nosetests tests.test_models
 
 test_bacteria:
+	$(PYLINT) $(PYLINTFLAGS) coop.py
 	nosetests tests.test_bacteria --nocapture
 
 test_bigbox:
+	$(PYLINT) $(PYLINTFLAGS) coop.py
 	nosetests tests.test_bigboxV2 --nocapture
 
 test_coop:
 	$(PYLINT) $(PYLINTFLAGS) coop.py
 	nosetests tests.test_coop --nocapture
 
-test_drunks:
-	$(PYLINT) $(PYLINTFLAGS) drunks.py
-	nosetests tests.test_drunks --nocapture
+test_el_farol:
+	$(PYLINT) $(PYLINTFLAGS) el_farol.py
+	nosetests tests.test_el_farol --nocapture
 
 test_ex:
 	$(PYLINT) $(PYLINTFLAGS) ex_boyfriend.py
