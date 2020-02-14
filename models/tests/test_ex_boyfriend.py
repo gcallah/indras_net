@@ -14,10 +14,10 @@ class ExBoyfriendTestCase(TestCase):
     def setUp(self):
         self.pa = PropArgs.create_props('ex_boyfriend_props',
                                         ds_file='props/ex_boyfriend.props.json')
-        (self.ex_boyfriend, self.newly_freed) = set_up()
+        set_up()
 
     def tearDown(self):
-        (self.ex_boyfriend, self.newly_freed) = (None, None)
+        pass
 
     def test_create_newly_freed(self):
         """

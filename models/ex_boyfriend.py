@@ -39,9 +39,6 @@ DEF_NUM_BLUE = 1
 DEF_NUM_RED = 1
 DEF_CYCLE = 7
 
-newly_freed = None
-ex_boyfriend = None
-
 newly_freed_cycle = None
 ex_boyfriend_start = None
 newly_freed_start = None
@@ -150,8 +147,6 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    global newly_freed
-    global ex_boyfriend
     global period
 
     period = 0
@@ -172,15 +167,9 @@ def set_up(props=None):
         members=[ex_boyfriend, newly_freed],
         props=pa)
 
-    return ex_boyfriend, newly_freed
-
 
 def main():
-    global ex_boyfriend
-    global newly_freed
-
-    (ex_boyfriend, newly_freed) = set_up()
-
+    set_up()
     get_env()()
     return 0
 
