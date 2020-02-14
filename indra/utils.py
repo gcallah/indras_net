@@ -5,6 +5,7 @@ import os
 import random
 
 from propargs.propargs import PropArgs
+from indra.registry import set_propargs
 
 
 def gaussian(mean, sigma, trim_at_zero=True):
@@ -42,4 +43,7 @@ def get_props(model_nm, props=None, model_dir="models",
         pa = PropArgs.create_props(model_nm,
                                    prop_dict=props,
                                    skip_user_questions=skip_user_questions)
+
+    # we keep props available in registry:
+    set_propargs(pa)
     return pa

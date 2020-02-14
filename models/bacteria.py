@@ -10,7 +10,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import BLUE, GREEN, RED
 from indra.env import Env
-from indra.registry import get_env, get_group
+from indra.registry import get_env, get_group, get_propargs
 from indra.space import DEF_HEIGHT, DEF_WIDTH, distance
 from indra.utils import get_props
 
@@ -121,7 +121,8 @@ def create_bacterium(name, i, props=None):
     bacterium["prev_toxicity"] = None
     bacterium["prev_nutricity"] = None
     bacterium["angle"] = None
-    bacterium["max_move"] = props.get("bacterium_move", DEF_BACTERIUM_MOVE)
+    bacterium["max_move"] = get_propargs().get("bacterium_move",
+                                               DEF_BACTERIUM_MOVE)
     return bacterium
 
 
@@ -130,7 +131,7 @@ def create_toxin(name, i, props=None):
     Create a toxin.
     """
     toxin = Agent(name + str(i), action=toxin_action)
-    toxin["max_move"] = props.get("toxin_move", DEF_TOXIN_MOVE)
+    toxin["max_move"] = get_propargs().get("toxin_move", DEF_TOXIN_MOVE)
     return toxin
 
 
@@ -139,7 +140,8 @@ def create_nutrient(name, i, props=None):
     Create a nutrient.
     """
     nutrient = Agent(name + str(i), action=nutrient_action)
-    nutrient["max_move"] = props.get("nutrient_move", DEF_NUTRIENT_MOVE)
+    nutrient["max_move"] = get_propargs().get("nutrient_move",
+                                              DEF_NUTRIENT_MOVE)
     return nutrient
 
 

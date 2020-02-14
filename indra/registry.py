@@ -11,7 +11,6 @@ REGISTRY = "Registry"
 
 """
 We can also have some global singletons here. We'll start with `_the_env`;
-Adding `_groups_dict`.
 """
 _the_env = None  # this is a singleton, so global should be ok
 
@@ -38,6 +37,21 @@ def add_group(name, grp):
 
 def get_group(name):
     return _groups_dict.get(name, None)
+
+
+"""
+Our singleton for properties.
+"""
+_the_props = None
+
+
+def set_propargs(props):
+    global _the_props
+    _the_props = props
+
+
+def get_propargs():
+    return _the_props
 
 
 class Registry(object):
