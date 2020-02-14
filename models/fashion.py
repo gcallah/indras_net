@@ -53,6 +53,11 @@ BLUE_FOLLOWERS = "Blue Followers"
 RED_TSETTERS = "Red Trendsetters"
 BLUE_TSETTERS = "Blue Trendsetters"
 
+red_tsetters = None
+blue_tsetters = None
+red_followers = None
+blue_followers = None
+
 opp_group = None
 
 
@@ -141,6 +146,10 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
+    global red_tsetters
+    global blue_tsetters
+    global red_followers
+    global blue_followers
     global opp_group
 
     pa = get_props(MODEL_NAME, props)
@@ -150,11 +159,20 @@ def set_up(props=None):
                              member_creator=create_tsetter, props=pa,
                              num_members=pa.get('num_tsetters',
                                                 NUM_TSETTERS))
+    # for i in range():
+    #     red_tsetters += create_tsetter(i)
+
+    if DEBUG2:
+        print(red_tsetters.__repr__())
+
     red_followers = Composite(RED_FOLLOWERS, {"color": RED})
     blue_followers = Composite(BLUE_FOLLOWERS, {"color": BLUE},
                                props=pa, member_creator=create_follower,
                                num_members=pa.get('num_followers',
                                                   NUM_FOLLOWERS))
+    # for i in range():
+    #     blue_followers += create_follower(i)
+
     opp_group = {str(red_tsetters): blue_tsetters,
                  str(blue_tsetters): red_tsetters,
                  str(red_followers): blue_followers,
@@ -172,6 +190,10 @@ def set_up(props=None):
 
 
 def restore_globals(env):
+    global red_tsetters
+    global blue_tsetters
+    global red_followers
+    global blue_followers
     global opp_group
     blue_tsetters = get_registration(BLUE_TSETTERS)
     red_tsetters = get_registration(RED_TSETTERS)
@@ -184,9 +206,14 @@ def restore_globals(env):
 
 
 def main():
+    global red_tsetters
+    global blue_tsetters
+    global red_followers
+    global blue_followers
     global opp_group
 
-    opp_group = set_up()
+    (blue_tsetters, red_tsetters, blue_followers, red_followers,
+     opp_group) = set_up()
 
     # get_env() returns a callable object:
     get_env()()
