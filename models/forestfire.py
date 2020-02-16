@@ -8,8 +8,8 @@ from indra.composite import Composite
 from indra.display_methods import RED, GREEN, BLACK
 from indra.display_methods import SPRINGGREEN, TOMATO, TREE
 from indra.env import Env
-from indra.registry import get_env
-from indra.utils import get_props
+from indra.registry import get_env, get_prop
+from indra.utils import init_props
 
 MODEL_NAME = "forestfire"
 DEBUG = False  # turns debugging code on or off
@@ -48,9 +48,6 @@ STATE_TRANS = [
     [0.0, 0.0, 0.0, .99, .01],
     [1.0, 0.0, 0.0, 0.0, 0.0],
 ]
-
-on_fire = None
-healthy = None
 
 group_map = {HE: None, NF: None, OF: None, BO: None, NG: None}
 
@@ -113,33 +110,28 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    global on_fire
-    global healthy
+    pa = init_props(MODEL_NAME, props)
 
-    pa = get_props(MODEL_NAME, props)
-
-    forest_height = pa.get('grid_height', DEF_DIM)
-    forest_width = pa.get('grid_width', DEF_DIM)
-    forest_density = pa.get('density', DEF_DENSITY)
-    num = int(forest_height * forest_width * forest_density)
-    healthy = Composite(HEALTHY, {"color": GREEN, "marker": TREE},
-                        member_creator=plant_tree, props=pa,
-                        num_members=num)
-    new_fire = Composite(NEW_FIRE, {"color": TOMATO, "marker": TREE})
-    on_fire = Composite(ON_FIRE, {"color": RED, "marker": TREE})
-    burned_out = Composite(BURNED_OUT, {"color": BLACK, "marker": TREE})
-    new_growth = Composite(NEW_GROWTH, {"color": SPRINGGREEN, "marker": TREE})
-    # for i in range():
-    #     healthy += plant_tree(i)
+    forest_height = get_prop('grid_height', DEF_DIM)
+    forest_width = get_prop('grid_width', DEF_DIM)
+    forest_density = get_prop('density', DEF_DENSITY)
+    tree_cnt = int(forest_height * forest_width * forest_density)
+    groups = []
+    groups.append(Composite(HEALTHY, {"color": GREEN, "marker": TREE},
+                  member_creator=plant_tree, props=pa,
+                  num_members=tree_cnt))
+    groups.append(Composite(NEW_FIRE, {"color": TOMATO, "marker": TREE}))
+    groups.append(Composite(ON_FIRE, {"color": RED, "marker": TREE}))
+    groups.append(Composite(BURNED_OUT, {"color": BLACK, "marker": TREE}))
+    groups.append(Composite(NEW_GROWTH, {"color": SPRINGGREEN, "marker":
+                                         TREE}))
 
     Env("Forest", height=forest_height, width=forest_width,
-        members=[healthy, new_fire, on_fire, burned_out,
-                 new_growth], props=pa)
+        members=groups, props=pa)
 
     global group_map
-    group_map = {HE: healthy, NF: new_fire,
-                 OF: on_fire, BO: burned_out, NG: new_growth}
-    return group_map
+    group_map = {HE: groups[HE], NF: groups[NF],
+                 OF: groups[OF], BO: groups[BO], NG: groups[NG]}
 
 
 def main():

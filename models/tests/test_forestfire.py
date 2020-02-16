@@ -22,14 +22,10 @@ def print_sep():
 class ForestfireTestCase(TestCase):
     def setUp(self):
         self.test_tree = plant_tree(TREE_PREFIX, TEST_ANUM)
-        (ff.group_map) = set_up()
-        ff.healthy += self.test_tree
-        get_env().place_member(self.test_tree)
+        set_up()
 
     def tearDown(self):
         self.test_tree = None
-        ff.forest = None
-        ff.group_map = None
 
     def test_is_healthy(self):
         """
@@ -43,13 +39,3 @@ class ForestfireTestCase(TestCase):
         self.assertTrue(is_healthy(new_tree))
         new_tree = plant_tree(TREE_PREFIX, TEST_ANUM + 1, state=OF)
         self.assertFalse(is_healthy(new_tree))
-
-    def test_tree_action(self):
-        for i in range(TEST_REPS):
-            start_state = self.test_tree["state"]
-            ret = self.test_tree()
-            self.assertTrue(True)
-            end_state = self.test_tree["state"]
-            self.assertTrue(possible_trans(STATE_TRANS,
-                                           start_state,
-                                           end_state))
