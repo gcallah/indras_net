@@ -8,9 +8,10 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import RED, BLUE
 from indra.env import Env
-from indra.registry import get_env
+from indra.registry import get_env, get_prop
 from indra.space import DEF_HEIGHT, DEF_WIDTH
-from indra.utils import get_props
+from indra.user import user_tell
+from indra.utils import init_props
 
 MODEL_NAME = "basic"
 DEBUG = True  # turns debugging code on or off
@@ -22,7 +23,10 @@ DEF_NUM_RED = 10
 
 
 def agent_action(agent):
-    print("I'm " + agent.name + " and I'm acting.")
+    """
+    Just a silly agent action function for basic model.
+    """
+    user_tell("I'm " + agent.name + " and I'm acting.")
     # return False means to move
     return False
 
@@ -38,19 +42,18 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    pa = get_props(MODEL_NAME, props)
+    init_props(MODEL_NAME, props)
     blue_group = Composite("Blues", {"color": BLUE},
                            member_creator=create_agent,
-                           num_members=pa.get('num_blue', DEF_NUM_BLUE))
+                           num_members=get_prop('num_blue', DEF_NUM_BLUE))
     red_group = Composite("Reds", {"color": RED},
                           member_creator=create_agent,
-                          num_members=pa.get('num_red', DEF_NUM_RED))
+                          num_members=get_prop('num_red', DEF_NUM_RED))
 
     Env("env",
-        height=pa.get('grid_height', DEF_HEIGHT),
-        width=pa.get('grid_width', DEF_WIDTH),
-        members=[blue_group, red_group],
-        props=pa)
+        height=get_prop('grid_height', DEF_HEIGHT),
+        width=get_prop('grid_width', DEF_WIDTH),
+        members=[blue_group, red_group])
 
 
 def main():
