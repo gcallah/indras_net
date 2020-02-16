@@ -23,7 +23,6 @@ class FMarketTestCase(TestCase):
     def setUp(self):
         self.pa = PropArgs.create_props('fmarket_props',
                                         ds_file='props/fmarket.props.json')
-        (fm.value_investors, fm.trend_followers, fm.market_maker) = set_up()
         self.value_investor = create_value_investor("value_investors",
                                                     TEST_INVESTOR_NUM, self.pa)
         self.trend_follower = create_trend_follower("trend_followers",

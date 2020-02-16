@@ -8,9 +8,9 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import BLUE, RED
 from indra.env import Env, UNLIMITED
-from indra.registry import get_registration, get_env
+from indra.registry import get_env
 from indra.utils import gaussian
-from indra.utils import get_props
+from indra.utils import init_props
 
 MODEL_NAME = "fmarket"
 DEF_NUM_TREND_FOLLOWER = 10
@@ -25,10 +25,6 @@ INF = 1000000000  # just some very big num!
 DEF_REAL_VALUE = 10
 DEF_DISCOUNT = .002
 DEF_SIGMA = .8
-
-trend_followers = None
-value_investors = None
-market_maker = None
 
 
 def trend_direction(agent, cur_price, price_hist):
@@ -210,48 +206,34 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    global trend_followers
-    global value_investors
-    global market_maker
+    pa = init_props(MODEL_NAME, props)
+    groups = []
 
-    pa = get_props(MODEL_NAME, props)
-
-    value_investors = Composite("value_investors", {"color": BLUE},
-                                props=pa, member_creator=create_value_investor,
-                                num_members=pa.get("value_investors",
-                                                   DEF_NUM_VALUE_INVESTOR))
-    trend_followers = Composite("trend_followers", {"color": RED}, props=pa,
-                                member_creator=create_trend_follower,
-                                num_members=pa.get("trend_followers",
-                                                   DEF_NUM_TREND_FOLLOWER))
-    market_maker = create_market_maker("market_maker")
+    groups.append(Composite("value_investors", {"color": BLUE},
+                            props=pa, member_creator=create_value_investor,
+                            num_members=pa.get("value_investors",
+                                               DEF_NUM_VALUE_INVESTOR)))
+    groups.append(Composite("trend_followers", {"color": RED}, props=pa,
+                            member_creator=create_trend_follower,
+                            num_members=pa.get("trend_followers",
+                                               DEF_NUM_TREND_FOLLOWER)))
+    create_market_maker("market_maker")
     Env("fmarket",
-        members=[value_investors, trend_followers, market_maker],
+        members=groups,
         props=pa,
         width=UNLIMITED,
         height=UNLIMITED,
         census=market_report,
         line_data_func=plot_asset_price)
     get_env().exclude_menu_item("scatter_plot")
-    return (value_investors, trend_followers, market_maker)
 
 
 def restore_globals(env):
-    global trend_followers
-    global value_investors
-    global market_maker
-    trend_followers = get_registration("trend_followers")
-    value_investors = get_registration("value_investors")
-    market_maker = get_registration("market_maker")
+    pass
 
 
 def main():
-    global trend_followers
-    global value_investors
-    global market_maker
-
-    (trend_followers, value_investors, market_maker) = set_up()
-
+    set_up()
     get_env()()
     return 0
 
