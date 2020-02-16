@@ -12,9 +12,9 @@ from indra.agent import ratio_to_sin
 from indra.composite import Composite
 from indra.display_methods import NAVY, DARKRED, RED, BLUE
 from indra.env import Env
-from indra.registry import get_registration, get_env
+from indra.registry import get_env, get_group, get_prop
 from indra.space import in_hood
-from indra.utils import get_props
+from indra.utils import init_props
 
 MODEL_NAME = "fashion"
 DEBUG = True  # turns debugging code on or off
@@ -48,15 +48,11 @@ HOOD_SIZE = 4
 
 FOLLOWER_PRENM = "follower"
 TSETTER_PRENM = "tsetter"
+
 RED_FOLLOWERS = "Red Followers"
 BLUE_FOLLOWERS = "Blue Followers"
 RED_TSETTERS = "Red Trendsetters"
 BLUE_TSETTERS = "Blue Trendsetters"
-
-red_tsetters = None
-blue_tsetters = None
-red_followers = None
-blue_followers = None
 
 opp_group = None
 
@@ -92,11 +88,18 @@ def env_unfavorable(my_color, my_pref, op1, op2):
 
 
 def follower_action(agent):
-    return common_action(agent, red_tsetters, blue_tsetters, lt, gt)
+    return common_action(agent,
+                         get_group(RED_TSETTERS),
+                         get_group(BLUE_TSETTERS),
+                         lt, gt)
 
 
 def tsetter_action(agent):
-    return common_action(agent, red_followers, blue_followers, gt, lt)
+    return common_action(agent,
+                         get_group(RED_FOLLOWERS),
+                         get_group(BLUE_FOLLOWERS),
+                         gt,
+                         lt)
 
 
 def common_action(agent, others_red, others_blue, op1, op2):
@@ -122,10 +125,9 @@ def common_action(agent, others_red, others_blue, op1, op2):
 
 def create_tsetter(name, i, props=None, color=RED_SIN):
     """
-    Create a trendsetter: all RED_SIN to start.
+    Create a trendsetter: all RED to start.
     """
-    name = TSETTER_PRENM
-    return Agent(name + str(i),
+    return Agent(TSETTER_PRENM + str(i),
                  action=tsetter_action,
                  attrs={COLOR_PREF: color,
                         DISPLAY_COLOR: color})
@@ -133,87 +135,53 @@ def create_tsetter(name, i, props=None, color=RED_SIN):
 
 def create_follower(name, i, props=None, color=BLUE_SIN):
     """
-    Create a follower: all BLUE_SIN to start.
+    Create a follower: all BLUE to start.
     """
-    name = FOLLOWER_PRENM
-    return Agent(name + str(i),
+    return Agent(FOLLOWER_PRENM + str(i),
                  action=follower_action,
                  attrs={COLOR_PREF: color,
                         DISPLAY_COLOR: color})
+
+
+def create_opp_group():
+    return {RED_TSETTERS: get_group(BLUE_TSETTERS),
+            BLUE_TSETTERS: get_group(RED_TSETTERS),
+            RED_FOLLOWERS: get_group(BLUE_FOLLOWERS),
+            BLUE_FOLLOWERS: get_group(RED_FOLLOWERS)}
 
 
 def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    global red_tsetters
-    global blue_tsetters
-    global red_followers
-    global blue_followers
+    pa = init_props(MODEL_NAME, props)
+    groups = []
+
+    groups.append(Composite(BLUE_TSETTERS, {"color": NAVY}))
+    groups.append(Composite(RED_TSETTERS, {"color": DARKRED},
+                            member_creator=create_tsetter, props=pa,
+                            num_members=get_prop('num_tsetters',
+                                                 NUM_TSETTERS)))
+
+    groups.append(Composite(RED_FOLLOWERS, {"color": RED}))
+    groups.append(Composite(BLUE_FOLLOWERS, {"color": BLUE},
+                            props=pa, member_creator=create_follower,
+                            num_members=pa.get('num_followers',
+                                               NUM_FOLLOWERS)))
+
     global opp_group
+    opp_group = create_opp_group()
 
-    pa = get_props(MODEL_NAME, props)
-
-    blue_tsetters = Composite(BLUE_TSETTERS, {"color": NAVY})
-    red_tsetters = Composite(RED_TSETTERS, {"color": DARKRED},
-                             member_creator=create_tsetter, props=pa,
-                             num_members=pa.get('num_tsetters',
-                                                NUM_TSETTERS))
-    # for i in range():
-    #     red_tsetters += create_tsetter(i)
-
-    if DEBUG2:
-        print(red_tsetters.__repr__())
-
-    red_followers = Composite(RED_FOLLOWERS, {"color": RED})
-    blue_followers = Composite(BLUE_FOLLOWERS, {"color": BLUE},
-                               props=pa, member_creator=create_follower,
-                               num_members=pa.get('num_followers',
-                                                  NUM_FOLLOWERS))
-    # for i in range():
-    #     blue_followers += create_follower(i)
-
-    opp_group = {str(red_tsetters): blue_tsetters,
-                 str(blue_tsetters): red_tsetters,
-                 str(red_followers): blue_followers,
-                 str(blue_followers): red_followers}
-
-    if DEBUG2:
-        print(blue_followers.__repr__())
-
-    Env("Society",
-        members=[blue_tsetters, red_tsetters,
-                 blue_followers, red_followers],
-        props=pa)
-    return (blue_tsetters, red_tsetters, blue_followers,
-            red_followers, opp_group)
+    Env("Society", members=groups, props=pa)
 
 
 def restore_globals(env):
-    global red_tsetters
-    global blue_tsetters
-    global red_followers
-    global blue_followers
     global opp_group
-    blue_tsetters = get_registration(BLUE_TSETTERS)
-    red_tsetters = get_registration(RED_TSETTERS)
-    red_followers = get_registration(RED_FOLLOWERS)
-    blue_followers = get_registration(BLUE_FOLLOWERS)
-    opp_group = {str(red_tsetters): blue_tsetters,
-                 str(blue_tsetters): red_tsetters,
-                 str(red_followers): blue_followers,
-                 str(blue_followers): red_followers}
+    opp_group = create_opp_group()
 
 
 def main():
-    global red_tsetters
-    global blue_tsetters
-    global red_followers
-    global blue_followers
-    global opp_group
-
-    (blue_tsetters, red_tsetters, blue_followers, red_followers,
-     opp_group) = set_up()
+    set_up()
 
     # get_env() returns a callable object:
     get_env()()

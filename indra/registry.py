@@ -46,12 +46,30 @@ _the_props = None
 
 
 def set_propargs(props):
+    """
+    Set the global props object.
+    """
     global _the_props
     _the_props = props
 
 
 def get_propargs():
+    """
+    Get the global props object: shouldn't generally need
+    this; instead use next function.
+    """
     return _the_props
+
+
+def get_prop(key, default_val=None):
+    """
+    Get a particular property.
+    If key is missing (or no props) return default_val.
+    """
+    if _the_props is None:
+        return default_val
+    else:
+        return _the_props.get(key, default_val)
 
 
 class Registry(object):

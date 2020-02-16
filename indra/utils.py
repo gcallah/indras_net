@@ -32,8 +32,8 @@ def get_prop_path(model_name, model_dir="models"):
     return ihome + "/" + model_dir + "/props/" + model_name + ".props.json"
 
 
-def get_props(model_nm, props=None, model_dir="models",
-              skip_user_questions=False):
+def init_props(model_nm, props=None, model_dir="models",
+               skip_user_questions=False):
     props_file = get_prop_path(model_nm, model_dir=model_dir)
     if props is None:
         pa = PropArgs.create_props(model_nm,
@@ -47,3 +47,12 @@ def get_props(model_nm, props=None, model_dir="models",
     # we keep props available in registry:
     set_propargs(pa)
     return pa
+
+
+def get_props(model_nm, props=None, model_dir="models",
+              skip_user_questions=False):
+    """
+    This name for the function is deprecated: use init_props()
+    """
+    return init_props(model_nm, props=props, model_dir=model_dir,
+                      skip_user_questions=skip_user_questions)
