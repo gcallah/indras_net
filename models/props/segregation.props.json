@@ -42,7 +42,7 @@
       "lowval": 0.01
   },
   "hood_size":{
-      "val": 2,
+      "val": 6,
       "question": "What should the size of the agent's neighborhood be?",
       "atype": "INT",
       "hival": 10,

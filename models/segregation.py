@@ -8,8 +8,8 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import RED, BLUE
 from indra.env import Env
-from indra.registry import get_env
-from indra.utils import get_props
+from indra.registry import get_env, get_prop
+from indra.utils import init_props
 
 MODEL_NAME = "segregation"
 DEBUG = True  # Turns debugging code on or off
@@ -110,22 +110,20 @@ def create_resident(name, i, props=None):
 
     if "Blue" in name:
         color = 0
-        mean_tol = props.get('mean_tol', DEF_TOLERANCE)
+        mean_tol = get_prop('mean_tol', DEF_TOLERANCE)
     else:
         color = 1
-        mean_tol = -props.get('mean_tol', DEF_TOLERANCE)
-    dev = props.get('deviation', DEF_SIGMA)
+        mean_tol = -get_prop('mean_tol', DEF_TOLERANCE)
+    dev = get_prop('deviation', DEF_SIGMA)
     this_tolerance = get_tolerance(mean_tol,
                                    dev)
-
-    hood_size = props.get('hood_size', DEF_HOOD_SIZE)
-
     return Agent(name + str(i),
                  action=seg_agent_action,
                  attrs={TOLERANCE: this_tolerance,
                         COLOR: color, "hood_changed": True,
                         "just_moved": False,
-                        "hood_size": hood_size
+                        "hood_size": get_prop('hood_size',
+                                              DEF_HOOD_SIZE)
                         }, )
 
 
@@ -133,18 +131,18 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    pa = get_props(MODEL_NAME, props)
+    pa = init_props(MODEL_NAME, props)
     blue_agents = Composite(group_names[BLUE_TEAM],
                             {"color": BLUE},
                             props=pa, member_creator=create_resident,
-                            num_members=pa.get('num_blue', NUM_BLUE))
+                            num_members=get_prop('num_blue', NUM_BLUE))
     red_agents = Composite(group_names[RED_TEAM],
                            {"color": RED},
                            props=pa, member_creator=create_resident,
-                           num_members=pa.get('num_red', NUM_RED))
+                           num_members=get_prop('num_red', NUM_RED))
     city = Env("A city", members=[blue_agents, red_agents],
-               height=pa.get('grid_height', DEF_CITY_DIM),
-               width=pa.get('grid_width', DEF_CITY_DIM),
+               height=get_prop('grid_height', DEF_CITY_DIM),
+               width=get_prop('grid_width', DEF_CITY_DIM),
                props=pa)
     city.exclude_menu_item("line_graph")
 
