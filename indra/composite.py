@@ -68,7 +68,7 @@ class Composite(Agent):
                     # += adds members
                     join(
                         self,
-                        member_creator(self.name, i, props=props,
+                        member_creator(self.name, i, props=None,
                                        **kwargs))
         if reg:
             add_group(self.name, self)

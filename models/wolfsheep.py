@@ -5,9 +5,9 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import TAN, GRAY
 from indra.env import Env
-from indra.registry import get_registration
+from indra.registry import get_prop, get_group, get_env
 from indra.space import in_hood
-from indra.utils import get_props
+from indra.utils import init_props
 
 MODEL_NAME = "wolfsheep"
 DEBUG = False  # turns debugging code on or off
@@ -27,21 +27,13 @@ SHEEP_REPRO_PERIOD = 3
 AGT_WOLF_NAME = "wolf"
 AGT_SHEEP_NAME = "sheep"
 
-COMP_WOLF_NAME = "wolves"
-COMP_SHEEP_NAME = "sheep"
+WOLF_GROUP = "wolves"
+SHEEP_GROUP = "sheep"
 
 ERR_MSG = "Invalid agent name"
 
-wolves = None
-sheep = None
-meadow = None
 wolves_created = 0
 sheep_created = 0
-
-wolf_repro = WOLF_REPRO_PERIOD
-wolf_life = WOLF_LIFESPAN
-sheep_repro = SHEEP_REPRO_PERIOD
-sheep_life = SHEEP_LIFESPAN
 
 
 def isactive(agent, *args):
@@ -84,7 +76,7 @@ def reproduce(agent, create_func, num_created, group):
     Agents reproduce when "time_to_repr" reaches 0
     """
     if agent["time_to_repr"] == 0:
-        meadow.add_child(group)
+        get_env().add_child(group)
         agent["time_to_repr"] = agent["orig_repr_time"]
         return True
     else:
@@ -92,24 +84,21 @@ def reproduce(agent, create_func, num_created, group):
 
 
 def sheep_action(agent):
-    global sheep
     global sheep_created
 
     agent["time_to_repr"] -= 1
-    reproduce(agent, create_sheep, sheep_created, sheep)
+    reproduce(agent, create_sheep, sheep_created, get_group(SHEEP_GROUP))
     return False
 
 
 def wolf_action(agent):
-    global wolves
     global wolves_created
-    global sheep
 
-    prey = get_prey(agent, sheep)
+    prey = get_prey(agent, get_group(SHEEP_GROUP))
     if prey is not None:
         eat(agent, prey)
     agent["time_to_repr"] -= 1
-    reproduce(agent, create_wolf, wolves_created, wolves)
+    reproduce(agent, create_wolf, wolves_created, get_group(WOLF_GROUP))
     return False
 
 
@@ -118,15 +107,13 @@ def create_wolf(name, i, props=None):
     Method to create wolf
     """
     global wolves_created
-    global meadow
 
     wolves_created += 1
     return Agent(AGT_WOLF_NAME + str(i),
-                 duration=wolf_life,
+                 duration=WOLF_LIFESPAN,
                  action=wolf_action,
-                 env=meadow,
-                 attrs={"time_to_repr": wolf_repro,
-                        "orig_repr_time": wolf_repro})
+                 attrs={"time_to_repr": WOLF_REPRO_PERIOD,
+                        "orig_repr_time": WOLF_REPRO_PERIOD})
 
 
 def create_sheep(name, i, props=None):
@@ -134,67 +121,44 @@ def create_sheep(name, i, props=None):
     Method to create sheep
     """
     global sheep_created
-    global meadow
 
     sheep_created += 1
-    return Agent(AGT_SHEEP_NAME + str(i), duration=sheep_life,
+    return Agent(AGT_SHEEP_NAME + str(i),
+                 duration=SHEEP_LIFESPAN,
                  action=sheep_action,
-                 env=meadow,
-                 attrs={"time_to_repr": sheep_repro,
-                        "orig_repr_time": sheep_repro})
+                 attrs={"time_to_repr": SHEEP_REPRO_PERIOD,
+                        "orig_repr_time": SHEEP_REPRO_PERIOD})
 
 
 def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    global wolves
-    global sheep
-    global meadow
+    init_props(MODEL_NAME, props)
 
-    pa = get_props(MODEL_NAME, props)
+    members = []
+    members.append(Composite(WOLF_GROUP,
+                   attrs={"color": TAN},
+                   member_creator=create_wolf,
+                   num_members=get_prop('num_wolves', NUM_WOLVES)))
 
-    wolves = Composite(COMP_WOLF_NAME, {"color": TAN}, props=pa,
-                       member_creator=create_wolf,
-                       num_members=pa.get('num_wolves', NUM_WOLVES))
+    members.append(Composite(SHEEP_GROUP,
+                   attrs={"color": GRAY},
+                   member_creator=create_sheep,
+                   num_members=get_prop('num_sheep', NUM_SHEEP)))
 
-    if DEBUG2:
-        print(wolves.__repr__())
-
-    sheep = Composite(COMP_SHEEP_NAME, {"color": GRAY}, props=pa,
-                      member_creator=create_sheep,
-                      num_members=pa.get('num_sheep', NUM_SHEEP))
-
-    if DEBUG2:
-        print(sheep.__repr__())
-
-    meadow = Env("meadow", members=[wolves, sheep],
-                 height=pa.get('meadow_height', MEADOW_HEIGHT),
-                 width=pa.get('meadow_width', MEADOW_WIDTH),
-                 props=pa)
-    return (meadow, wolves, sheep)
+    Env("meadow", members=members,
+        height=get_prop('meadow_height', MEADOW_HEIGHT),
+        width=get_prop('meadow_width', MEADOW_WIDTH))
 
 
 def restore_globals(env):
-    global wolves
-    global sheep
-    global meadow
-    meadow = env
-    wolves = get_registration(COMP_WOLF_NAME)
-    sheep = get_registration(COMP_SHEEP_NAME)
+    pass
 
 
 def main():
-    global wolves
-    global sheep
-    global meadow
-
-    (meadow, wolves, sheep) = set_up()
-
-    if DEBUG2:
-        print(meadow.__repr__())
-
-    meadow()
+    set_up()
+    get_env()()
     return 0
 
 

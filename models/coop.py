@@ -10,7 +10,7 @@ import random
 from indra.agent import Agent
 from indra.composite import Composite
 from indra.env import Env, UNLIMITED
-from indra.registry import get_env, get_group
+from indra.registry import get_env, get_group, get_prop
 from indra.utils import gaussian
 from indra.user import user_tell
 from indra.utils import get_props
@@ -159,12 +159,12 @@ def create_babysitter(name, i, props=None):
     Create a babysitter.
     """
     babysitter = Agent(name + str(i), action=babysitter_action)
-    mean_coupons = props.get("average_coupons", DEF_COUPON)
-    dev = props.get("deviation", DEF_SIGMA)
+    mean_coupons = get_prop("average_coupons", DEF_COUPON)
+    dev = get_prop("deviation", DEF_SIGMA)
     babysitter["goal"] = None
     babysitter['coupons'] = int(gaussian(mean_coupons, dev))
-    babysitter['desired_cash'] = props.get("desired_cash",
-                                           DEF_DESIRED_CASH_BAL)
+    babysitter['desired_cash'] = get_prop("desired_cash",
+                                          DEF_DESIRED_CASH_BAL)
     return babysitter
 
 
@@ -173,10 +173,10 @@ def create_central_bank(name, i, props=None):
     Create the central bank to distribute the coupons
     """
     central_bank = Agent(name, action=central_bank_action)
-    central_bank["percent_change"] = props.get("percent_change",
-                                               DEF_PERCENT)
-    central_bank["extra_coupons"] = props.get("extra_coupons", DEF_COUPON)
-    central_bank["extra_dev"] = props.get("extra_deviation", DEF_SIGMA)
+    central_bank["percent_change"] = get_prop("percent_change",
+                                              DEF_PERCENT)
+    central_bank["extra_coupons"] = get_prop("extra_coupons", DEF_COUPON)
+    central_bank["extra_dev"] = get_prop("extra_deviation", DEF_SIGMA)
     return central_bank
 
 

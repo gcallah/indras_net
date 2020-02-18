@@ -10,9 +10,9 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import RED, BLUE
 from indra.env import Env
-from indra.registry import get_env
+from indra.registry import get_env, get_prop
 from indra.space import DEF_HEIGHT, DEF_WIDTH
-from indra.utils import get_props
+from indra.utils import init_props
 
 MODEL_NAME = "ex_boyfriend"
 DEBUG = True  # turns debugging code on or off
@@ -131,7 +131,7 @@ def create_boyfriend(name, i, props=None):
     Create an agent.
     """
     return Agent(name + str(i), action=boyfriend_action,
-                 attrs={"cycle": props.get('cycle', DEF_CYCLE),
+                 attrs={"cycle": get_prop('cycle', DEF_CYCLE),
                         "going": True})
 
 
@@ -151,7 +151,7 @@ def set_up(props=None):
 
     period = 0
 
-    pa = get_props(MODEL_NAME, props)
+    pa = init_props(MODEL_NAME, props)
 
     newly_freed = Composite("Girlfriend", {"color": BLUE}, props=pa,
                             member_creator=create_newly_freed,
@@ -162,10 +162,9 @@ def set_up(props=None):
                              num_members=1)
 
     Env("bar",
-        height=pa.get('grid_height', DEF_HEIGHT),
-        width=pa.get('grid_width', DEF_WIDTH),
-        members=[ex_boyfriend, newly_freed],
-        props=pa)
+        height=get_prop('grid_height', DEF_HEIGHT),
+        width=get_prop('grid_width', DEF_WIDTH),
+        members=[ex_boyfriend, newly_freed])
 
 
 def main():
