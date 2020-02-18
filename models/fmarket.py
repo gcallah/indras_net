@@ -8,7 +8,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import BLUE, RED
 from indra.env import Env, UNLIMITED
-from indra.registry import get_env
+from indra.registry import get_env, get_prop
 from indra.utils import gaussian
 from indra.utils import init_props
 
@@ -211,13 +211,13 @@ def set_up(props=None):
 
     groups.append(Composite("value_investors", {"color": BLUE},
                             props=pa, member_creator=create_value_investor,
-                            num_members=pa.get("value_investors",
-                                               DEF_NUM_VALUE_INVESTOR)))
+                            num_members=get_prop("value_investors",
+                                                 DEF_NUM_VALUE_INVESTOR)))
     groups.append(Composite("trend_followers", {"color": RED}, props=pa,
                             member_creator=create_trend_follower,
-                            num_members=pa.get("trend_followers",
-                                               DEF_NUM_TREND_FOLLOWER)))
-    create_market_maker("market_maker")
+                            num_members=get_prop("trend_followers",
+                                                 DEF_NUM_TREND_FOLLOWER)))
+    groups.append(create_market_maker("market_maker"))
     Env("fmarket",
         members=groups,
         props=pa,

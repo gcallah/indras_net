@@ -12,6 +12,7 @@ from propargs.propargs import PropArgs as pa
 # import logging
 import indra.display_methods as disp
 import indra.registry as regis
+from indra.registry import get_prop
 from indra.agent import join, switch, Agent, AgentEncoder
 from indra.space import Space
 import traceback
@@ -80,7 +81,8 @@ class Env(Space):
     """
 
     def __init__(self, name, action=None, random_placing=True,
-                 props=None, serial_obj=None, census=None,
+                 props=None,  # eliminate soon!
+                 serial_obj=None, census=None,
                  line_data_func=None, exclude_member=None,
                  pop_hist_setup=None,
                  pop_hist_func=None, members=None,
@@ -92,11 +94,11 @@ class Env(Space):
 
         self.type = "env"
         self.user_type = os.getenv("user_type", TERMINAL)
-        self.props = props
         # these funcs all must be restored from the function registry:
         self.census_func = census
         self.pop_hist_setup = pop_hist_setup
         self.pop_hist_func = pop_hist_func
+        self.props = props
 
         self.num_switches = 0
         if serial_obj is not None:
@@ -105,17 +107,17 @@ class Env(Space):
         else:
             self.construct_anew(line_data_func, exclude_member)
 
-        if self.props is not None:
-            self.set_menu_excludes(self.props)
+        self.set_menu_excludes()
+
         if reg:
             regis.register(self.name, self)
         # now we set our global singleton:
         regis.set_env(self)
 
-    def set_menu_excludes(self, props):
-        if not props.get('use_line', True):
+    def set_menu_excludes(self):
+        if not get_prop('use_line', True):
             self.exclude_menu_item("line_graph")
-        if not props.get('use_scatter', True):
+        if not get_prop('use_scatter', True):
             self.exclude_menu_item("scatter_plot")
 
     def construct_anew(self, line_data_func=None, exclude_member=None):
