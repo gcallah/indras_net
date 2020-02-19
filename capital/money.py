@@ -10,8 +10,8 @@ from indra.env import Env
 from indra.registry import get_env
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import get_props
-from capital.trade_utils import seek_a_trade, gen_util_func
-from capital.trade_utils import max_util, AMT_AVAILABLE, endow
+from capital.trade_utils import seek_a_trade
+from capital.trade_utils import AMT_AVAILABLE, endow
 
 MODEL_NAME = "money"
 DEBUG = True  # turns debugging code on or off

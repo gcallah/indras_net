@@ -4,7 +4,6 @@ Places two groups of agents in the enviornment randomly
 and moves them around randomly.
 """
 
-import random
 from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import BLUE
@@ -24,39 +23,37 @@ DEF_NUM_RESOURCES_TYPE = 4
 trader_group = None
 
 max_utility = tu.max_util
+GOODS = {"penguin": {"amt_available": 10,
+                     "util_func": gen_util_func,
+                     "incr": 0},
+         "cat": {"amt_available": 10,
+                 "util_func": gen_util_func,
+                 "incr": 0},
+         "bear": {"amt_available": 10,
+                  "util_func": gen_util_func,
+                  "incr": 0},
+         "pet food": {"amt_available": 10,
+                      "util_func": gen_util_func,
+                      "incr": 0}
+         }
 
 
-def random_generate_resources(i, total_type, total_resources):
-    r = []
-    global max_utility
-    for k in range(total_type):
-        # total resources is the amt of resource that each resource holder have
-        num_resource = int((total_resources * 2)
-                           * (random.random() / total_type * 2))
-        if num_resource > max_utility:
-            max_utility = num_resource
-        if i % 2 == 0 and k < total_type // 2:
-            r.append(num_resource)
-        elif i % 2 == 1 and k > total_type // 2 - 1:
-            r.append(num_resource)
-        else:
-            r.append(0)
-
-    return r
+def allocate_resources(trader, avail_goods):
+    tu.endow(trader, GOODS)
 
 
 def create_trader(name, i, props=None):
     return Agent(name + str(i), action=seek_a_trade,
-                 attrs={"goods": {"penguin": {"endow": 0,
+                 attrs={"goods": {"penguin": {"amt_available": 0,
                                               "util_func": gen_util_func,
                                               "incr": 0},
-                                  "cat": {"endow": 0,
+                                  "cat": {"amt_available": 0,
                                           "util_func": gen_util_func,
                                           "incr": 0},
-                                  "bear": {"endow": 0,
+                                  "bear": {"amt_available": 0,
                                            "util_func": gen_util_func,
                                            "incr": 0},
-                                  "pet food": {"endow": 0,
+                                  "pet food": {"amt_available": 0,
                                                "util_func": gen_util_func,
                                                "incr": 0}
                                   },
