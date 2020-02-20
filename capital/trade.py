@@ -11,7 +11,8 @@ from indra.env import Env
 from indra.registry import get_env
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import get_props
-from capital.trade_utils import seek_a_trade, gen_util_func
+from capital.trade_utils import seek_a_trade
+from capital.trade_utils import UTIL_FUNC, GEN_UTIL_FUNC, AMT_AVAILABLE
 import capital.trade_utils as tu
 
 MODEL_NAME = "trade"
@@ -23,17 +24,17 @@ DEF_NUM_RESOURCES_TYPE = 4
 trader_group = None
 
 max_utility = tu.max_util
-GOODS = {"penguin": {"amt_available": 10,
-                     "util_func": gen_util_func,
+GOODS = {"penguin": {AMT_AVAILABLE: 10,
+                     UTIL_FUNC: GEN_UTIL_FUNC,
                      "incr": 0},
-         "cat": {"amt_available": 10,
-                 "util_func": gen_util_func,
+         "cat": {AMT_AVAILABLE: 10,
+                 UTIL_FUNC: GEN_UTIL_FUNC,
                  "incr": 0},
-         "bear": {"amt_available": 10,
-                  "util_func": gen_util_func,
+         "bear": {AMT_AVAILABLE: 10,
+                  UTIL_FUNC: GEN_UTIL_FUNC,
                   "incr": 0},
-         "pet food": {"amt_available": 10,
-                      "util_func": gen_util_func,
+         "pet food": {AMT_AVAILABLE: 10,
+                      UTIL_FUNC: GEN_UTIL_FUNC,
                       "incr": 0}
          }
 
@@ -44,17 +45,17 @@ def allocate_resources(trader, avail_goods):
 
 def create_trader(name, i, props=None):
     return Agent(name + str(i), action=seek_a_trade,
-                 attrs={"goods": {"penguin": {"amt_available": 0,
-                                              "util_func": gen_util_func,
+                 attrs={"goods": {"penguin": {AMT_AVAILABLE: 0,
+                                              UTIL_FUNC: GEN_UTIL_FUNC,
                                               "incr": 0},
-                                  "cat": {"amt_available": 0,
-                                          "util_func": gen_util_func,
+                                  "cat": {AMT_AVAILABLE: 0,
+                                          UTIL_FUNC: GEN_UTIL_FUNC,
                                           "incr": 0},
-                                  "bear": {"amt_available": 0,
-                                           "util_func": gen_util_func,
+                                  "bear": {AMT_AVAILABLE: 0,
+                                           UTIL_FUNC: GEN_UTIL_FUNC,
                                            "incr": 0},
-                                  "pet food": {"amt_available": 0,
-                                               "util_func": gen_util_func,
+                                  "pet food": {AMT_AVAILABLE: 0,
+                                               UTIL_FUNC: GEN_UTIL_FUNC,
                                                "incr": 0}
                                   },
                         "util": 0,

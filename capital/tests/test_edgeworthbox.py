@@ -2,10 +2,11 @@
 This is the test suite for edgeworthbox.py.
 """
 
-from unittest import TestCase, main
+from unittest import TestCase, main, skip
 
 import capital.edgeworthbox as edge
-from capital.trade_utils import AMT_AVAILABLE, seek_a_trade, gen_util_func, trade, DEF_MAX_UTIL
+from capital.trade_utils import AMT_AVAILABLE, seek_a_trade
+from capital.trade_utils import gen_util_func, trade, DEF_MAX_UTIL
 from capital.trade_utils import rec_offer, utility_delta, adj_add_good
 
 
@@ -17,14 +18,16 @@ class EdgeworthboxTestCase(TestCase):
     def tearDown(self):
         (edge.cheese_group, edge.wine_group, edge.max_util) = (None, None, None)
 
+    @skip("This should be tested in test_trade_utils")
     def test_gen_util_func(self):
-        util = edge.gen_util_func(0)
+        # util = edge.gen_util_func(0)
         self.assertEqual(util, DEF_MAX_UTIL)
 
     def test_trade(self):
         agent1 = edge.create_wagent('Wine holders', 0)
         agent2 = edge.create_cagent('Cheese holders', 0)
-        trade(agent1, "wine", edge.DEF_NUM_WINE, agent2, "cheese", edge.DEF_NUM_CHEESE)
+        trade(agent1, "wine", edge.DEF_NUM_WINE,
+              agent2, "cheese", edge.DEF_NUM_CHEESE)
         self.assertEqual(agent1["goods"]["wine"][AMT_AVAILABLE], 0)
         self.assertEqual(agent2["goods"]["cheese"][AMT_AVAILABLE], 0)
 

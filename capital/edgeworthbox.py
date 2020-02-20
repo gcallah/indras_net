@@ -11,7 +11,8 @@ from indra.env import Env
 from indra.registry import get_env
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import get_props
-from capital.trade_utils import seek_a_trade, AMT_AVAILABLE, gen_util_func, max_util  # noqa F401
+from capital.trade_utils import seek_a_trade, AMT_AVAILABLE
+from capital.trade_utils import GEN_UTIL_FUNC, UTIL_FUNC
 
 MODEL_NAME = "edgeworthbox"
 DEBUG = True  # turns debugging code on or off
@@ -35,10 +36,10 @@ def create_wagent(name, i, props=None):
                                DEF_NUM_WINE)
     return Agent(name + str(i), action=seek_a_trade,
                  attrs={"goods": {"wine": {AMT_AVAILABLE: start_wine,
-                                           "util_func": gen_util_func,
+                                           UTIL_FUNC: GEN_UTIL_FUNC,
                                            "incr": 0},
                                   "cheese": {AMT_AVAILABLE: 0,
-                                             "util_func": gen_util_func,
+                                             UTIL_FUNC: GEN_UTIL_FUNC,
                                              "incr": 0}
                                   },
                         "util": 0,
@@ -53,10 +54,10 @@ def create_cagent(name, i, props=None):
                                  DEF_NUM_CHEESE)
     return Agent(name + str(i), action=seek_a_trade,
                  attrs={"goods": {"cheese": {AMT_AVAILABLE: start_cheese,
-                                             "util_func": gen_util_func,
+                                             UTIL_FUNC: GEN_UTIL_FUNC,
                                              "incr": 0},
                                   "wine": {AMT_AVAILABLE: 0,
-                                           "util_func": gen_util_func,
+                                           UTIL_FUNC: GEN_UTIL_FUNC,
                                            "incr": 0}},
                         "util": 0,
                         "pre_trade_util": 0,

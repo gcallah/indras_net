@@ -24,6 +24,26 @@ max_util = DEF_MAX_UTIL
 
 
 """
+All utility functions must be registered here!
+"""
+UTIL_FUNC = "util_func"
+GEN_UTIL_FUNC = "gen_util_func"
+
+
+def gen_util_func(qty):
+    return max_util - qty
+
+
+util_funcs = {
+    GEN_UTIL_FUNC: gen_util_func,
+}
+
+
+def get_util_func(fname):
+    return util_funcs[fname]
+
+
+"""
     We expect goods dictionaries to look like:
         goods = {
             "houses": { AMT_AVAILABLE: int, "maybe more fields": vals ... },
@@ -106,10 +126,6 @@ def answer_to_str(ans):
     return answer_dict[ans]
 
 
-def gen_util_func(qty):
-    return max_util - qty
-
-
 def seek_a_trade(agent):
     nearby_agent = get_env().get_closest_agent(agent)
     if nearby_agent is not None:
@@ -183,9 +199,10 @@ def utility_delta(agent, good, change):
     (amt is positive) or lost (amt is negative).
     """
     curr_good = agent["goods"][good]
+    ufunc_name = curr_good[UTIL_FUNC]
     curr_amt = curr_good[AMT_AVAILABLE]
-    curr_util = curr_good["util_func"](curr_amt)
-    new_util = curr_good["util_func"](curr_amt + change)
+    curr_util = get_util_func(ufunc_name)(curr_amt)
+    new_util = get_util_func(ufunc_name)(curr_amt + change)
     return ((new_util + curr_util) / 2) * change
 
 
