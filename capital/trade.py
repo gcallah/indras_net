@@ -39,7 +39,7 @@ GOODS = {"penguin": {"amt_available": 10,
 
 
 def allocate_resources(trader, avail_goods):
-    tu.endow(trader, GOODS)
+    tu.endow(trader, avail_goods)
 
 
 def create_trader(name, i, props=None):
@@ -73,6 +73,8 @@ def set_up(props=None):
                              props=pa,
                              num_members=pa.get('num_traders',
                                                 DEF_NUM_TRADER))
+    for trader in trader_group:
+        allocate_resources(trader_group[trader], GOODS)
 
     Env("env",
         height=pa.get('grid_height', DEF_HEIGHT),
