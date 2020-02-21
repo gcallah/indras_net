@@ -38,7 +38,7 @@ class Composite(Agent):
 
     def __init__(self, name, attrs=None, members=None,
                  duration=INF, action=None, member_creator=None,
-                 num_members=None, serial_obj=None, props=None,
+                 num_members=None, serial_obj=None,
                  reg=True, **kwargs):
 
         self.members = OrderedDict()
@@ -68,8 +68,7 @@ class Composite(Agent):
                     # += adds members
                     join(
                         self,
-                        member_creator(self.name, i, props=None,
-                                       **kwargs))
+                        member_creator(self.name, i, **kwargs))
         if reg:
             add_group(self.name, self)
             register(self.name, self)

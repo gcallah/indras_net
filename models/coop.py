@@ -184,21 +184,18 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    pa = get_props(MODEL_NAME, props)
+    get_props(MODEL_NAME, props)
 
-    num_members = pa.get('num_babysitter', DEF_BABYSITTER)
+    num_members = get_prop('num_babysitter', DEF_BABYSITTER)
     co_op_members = Composite(CO_OP_MEMBERS, num_members=num_members,
-                              member_creator=create_babysitter,
-                              props=pa)
+                              member_creator=create_babysitter)
     central_bank = Composite("central_bank", num_members=1,
-                             member_creator=create_central_bank,
-                             props=pa)
+                             member_creator=create_central_bank)
 
     Env('coop_env', members=[co_op_members, central_bank],
         action=coop_action, width=UNLIMITED,
         height=UNLIMITED,
         census=coop_report,
-        props=pa,
         pop_hist_setup=initial_exchanges,
         pop_hist_func=record_exchanges,
         attrs={"show_special_points": CB_intervention_points,

@@ -151,13 +151,13 @@ def set_up(props=None):
 
     period = 0
 
-    pa = init_props(MODEL_NAME, props)
+    init_props(MODEL_NAME, props)
 
-    newly_freed = Composite("Girlfriend", {"color": BLUE}, props=pa,
+    newly_freed = Composite("Girlfriend", {"color": BLUE},
                             member_creator=create_newly_freed,
                             num_members=1)
 
-    ex_boyfriend = Composite("Ex-Boyfriend", {"color": RED}, props=pa,
+    ex_boyfriend = Composite("Ex-Boyfriend", {"color": RED},
                              member_creator=create_boyfriend,
                              num_members=1)
 

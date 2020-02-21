@@ -26,10 +26,6 @@ test_bacteria:
 	$(PYLINT) $(PYLINTFLAGS) coop.py
 	nosetests tests.test_bacteria --nocapture
 
-test_bigbox:
-	$(PYLINT) $(PYLINTFLAGS) coop.py
-	nosetests tests.test_bigboxV2 --nocapture
-
 test_coop:
 	$(PYLINT) $(PYLINTFLAGS) coop.py
 	nosetests tests.test_coop --nocapture
@@ -45,29 +41,6 @@ test_ex:
 test_forestfire:
 	$(PYLINT) $(PYLINTFLAGS) forestfire.py
 	nosetests tests.test_forestfire --nocapture
-
-test_gameoflife:
-	$(PYLINT) $(PYLINTFLAGS) gameoflife.py
-	nosetests tests.test_gameoflife --nocapture
-
-test_seg:
-	nosetests tests.test_segregation --nocapture
-
-test_sand:
-	nosetests tests.test_sandpile --nocapture
-
-test_sched:
-	nosetests tests.test_scheduler --nocapture
-
-# for some reason the following test hangs:
-test_fashion:
-	nosetests tests.test_fashion
-
-test_segregation:
-	nosetests tests.test_segregation
-
-test_wolfram:
-	nosetests tests.test_wolfram --nocapture
 
 test_wolfsheep:
 	nosetests tests.test_wolfsheep --nocapture

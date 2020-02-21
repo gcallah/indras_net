@@ -102,7 +102,7 @@ def wolf_action(agent):
     return False
 
 
-def create_wolf(name, i, props=None):
+def create_wolf(name, i):
     """
     Method to create wolf
     """
@@ -116,7 +116,7 @@ def create_wolf(name, i, props=None):
                         "orig_repr_time": WOLF_REPRO_PERIOD})
 
 
-def create_sheep(name, i, props=None):
+def create_sheep(name, i):
     """
     Method to create sheep
     """
@@ -150,10 +150,6 @@ def set_up(props=None):
     Env("meadow", members=members,
         height=get_prop('meadow_height', MEADOW_HEIGHT),
         width=get_prop('meadow_width', MEADOW_WIDTH))
-
-
-def restore_globals(env):
-    pass
 
 
 def main():

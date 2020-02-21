@@ -21,12 +21,10 @@ TEST_FOLLOWER_NUM = 3
 
 class FMarketTestCase(TestCase):
     def setUp(self):
-        self.pa = PropArgs.create_props('fmarket_props',
-                                        ds_file='props/fmarket.props.json')
         self.value_investor = create_value_investor("value_investors",
-                                                    TEST_INVESTOR_NUM, self.pa)
+                                                    TEST_INVESTOR_NUM)
         self.trend_follower = create_trend_follower("trend_followers",
-                                                    TEST_FOLLOWER_NUM, self.pa)
+                                                    TEST_FOLLOWER_NUM)
         self.market_maker = create_market_maker("market_maker")
 
     def tearDown(self):
@@ -38,8 +36,7 @@ class FMarketTestCase(TestCase):
         """
          Test to see if trend_follower is created
         """
-        new_trend_follower = create_trend_follower("trend_followers", 0,
-                                                   self.pa)
+        new_trend_follower = create_trend_follower("trend_followers", 0)
         self.assertTrue(new_trend_follower["capital"] >= 0)
         self.assertTrue(new_trend_follower["num_stock"] == 0)
 
@@ -47,8 +44,7 @@ class FMarketTestCase(TestCase):
         """
          Test to see if value_investor is created
         """
-        new_value_investor = create_value_investor("value_investors", 0,
-                                                   self.pa)
+        new_value_investor = create_value_investor("value_investors", 0)
         self.assertTrue(new_value_investor["capital"] >= 0)
         self.assertTrue(new_value_investor["num_stock"] == 0)
 
@@ -68,8 +64,7 @@ class FMarketTestCase(TestCase):
         Test the buy action of the investors
         '''
         new_market_maker = create_market_maker("market_maker")
-        new_value_investor = create_value_investor("value_investors", 0,
-                                                   self.pa)
+        new_value_investor = create_value_investor("value_investors", 0)
         new_market_maker["asset_price"] = DEF_PRICE
         new_value_investor["capital"] = DEF_PRICE * DEF_NUM_ASSET + 1
         price = new_market_maker["asset_price"] * DEF_NUM_ASSET
@@ -81,8 +76,7 @@ class FMarketTestCase(TestCase):
         Test the sell action of the investors
         """
         new_market_maker = create_market_maker("market_maker")
-        new_value_investor = create_value_investor("value_investors", 0,
-                                                   self.pa)
+        new_value_investor = create_value_investor("value_investors", 0)
         new_market_maker["asset_price"] = DEF_PRICE
         new_value_investor["capital"] = 0
         new_value_investor["num_stock"] = DEF_NUM_ASSET + 1

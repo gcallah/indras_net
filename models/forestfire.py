@@ -94,7 +94,7 @@ def tree_action(agent):
     return True
 
 
-def plant_tree(name, i, props=None, state=HE):
+def plant_tree(name, i, state=HE):
     """
     Plant a new tree!
     By default, they start out healthy.
@@ -110,7 +110,7 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    pa = init_props(MODEL_NAME, props)
+    init_props(MODEL_NAME, props)
 
     forest_height = get_prop('grid_height', DEF_DIM)
     forest_width = get_prop('grid_width', DEF_DIM)
@@ -118,7 +118,7 @@ def set_up(props=None):
     tree_cnt = int(forest_height * forest_width * forest_density)
     groups = []
     groups.append(Composite(HEALTHY, {"color": GREEN, "marker": TREE},
-                  member_creator=plant_tree, props=pa,
+                  member_creator=plant_tree,
                   num_members=tree_cnt))
     groups.append(Composite(NEW_FIRE, {"color": TOMATO, "marker": TREE}))
     groups.append(Composite(ON_FIRE, {"color": RED, "marker": TREE}))
@@ -126,8 +126,7 @@ def set_up(props=None):
     groups.append(Composite(NEW_GROWTH, {"color": SPRINGGREEN, "marker":
                                          TREE}))
 
-    Env("Forest", height=forest_height, width=forest_width,
-        members=groups, props=pa)
+    Env("Forest", height=forest_height, width=forest_width, members=groups)
 
     global group_map
     group_map = {HE: groups[HE], NF: groups[NF],

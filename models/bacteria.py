@@ -12,7 +12,7 @@ from indra.display_methods import BLUE, GREEN, RED
 from indra.env import Env
 from indra.registry import get_env, get_group, get_prop
 from indra.space import DEF_HEIGHT, DEF_WIDTH, distance
-from indra.utils import get_props
+from indra.utils import init_props
 
 MODEL_NAME = "bacteria"
 DEBUG = False  # turns debugging code on or off
@@ -33,6 +33,7 @@ DEF_NUTRIENT_MOVE = 2
 def calc_toxin(group, agent):
     """
     Calculate the strength of a toxin / nutrient field for an agent.
+    We will use an inverse square law.
     """
     toxin_strength = 0
     for toxin in group:
@@ -149,33 +150,25 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    pa = get_props(MODEL_NAME, props)
+    init_props(MODEL_NAME, props)
 
-    toxins = Composite(TOXINS, {"color": RED}, props=pa,
+    toxins = Composite(TOXINS, {"color": RED},
                        member_creator=create_toxin,
-                       num_members=pa.get('num_toxins', NUM_TOXINS))
-    # for i in range(pa.get('num_toxins', NUM_TOXINS)):
-    #     toxins += create_toxin("Toxins", i, pa)
+                       num_members=get_prop('num_toxins', NUM_TOXINS))
 
-    nutrients = Composite(NUTRIENTS, {"color": GREEN}, props=pa,
+    nutrients = Composite(NUTRIENTS, {"color": GREEN},
                           member_creator=create_nutrient,
-                          num_members=pa.get('num_nutrients', NUM_TOXINS))
+                          num_members=get_prop('num_nutrients', NUM_TOXINS))
 
-    bacteria = Composite("Bacteria", {"color": BLUE}, props=pa,
+    bacteria = Composite("Bacteria", {"color": BLUE},
                          member_creator=create_bacterium,
-                         num_members=pa.get('num_toxins',
-                                            DEF_NUM_BACT))
+                         num_members=get_prop('num_toxins',
+                                              DEF_NUM_BACT))
 
     Env("Petrie dish",
-        height=pa.get('grid_height', DEF_HEIGHT),
-        width=pa.get('grid_width', DEF_WIDTH),
-        members=[toxins, nutrients, bacteria],
-        props=pa)
-    return (toxins, nutrients, bacteria)
-
-
-def restore_globals(env):
-    pass
+        height=get_prop('grid_height', DEF_HEIGHT),
+        width=get_prop('grid_width', DEF_WIDTH),
+        members=[toxins, nutrients, bacteria])
 
 
 def main():

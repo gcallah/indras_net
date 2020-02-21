@@ -12,9 +12,9 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import BLUE, RED
 from indra.env import Env
-from indra.registry import get_env, get_group
+from indra.registry import get_env, get_group, get_prop
 from indra.space import DEF_HEIGHT, DEF_WIDTH
-from indra.utils import get_props
+from indra.utils import init_props
 
 DEBUG = False
 
@@ -137,26 +137,26 @@ def set_up(props=None):
     global optimal_occupancy
     global agents_decided
 
-    pa = get_props(MODEL_NAME, props)
+    init_props(MODEL_NAME, props)
     agents_decided = 0
 
-    drinkers = Composite(DRINKERS, {"color": RED}, props=pa,
+    drinkers = Composite(DRINKERS, {"color": RED},
                          member_creator=create_drinker,
-                         num_members=pa.get('population', DEF_POPULATION) // 2)
+                         num_members=get_prop('population',
+                                              DEF_POPULATION) // 2)
 
-    non_drinkers = Composite(NON_DRINKERS, {"color": BLUE}, props=pa,
+    non_drinkers = Composite(NON_DRINKERS, {"color": BLUE},
                              member_creator=create_non_drinker,
-                             num_members=pa.get('population',
-                                                DEF_POPULATION) // 2)
+                             num_members=get_prop('population',
+                                                  DEF_POPULATION) // 2)
 
     population = len(drinkers) + len(non_drinkers)
     optimal_occupancy = int(population * 0.6)
 
     Env("bar",
-        height=pa.get('grid_height', DEF_HEIGHT),
-        width=pa.get('grid_width', DEF_WIDTH),
-        members=[drinkers, non_drinkers],
-        props=pa)
+        height=get_prop('grid_height', DEF_HEIGHT),
+        width=get_prop('grid_width', DEF_WIDTH),
+        members=[drinkers, non_drinkers])
 
 
 def main():

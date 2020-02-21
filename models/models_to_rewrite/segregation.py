@@ -103,7 +103,7 @@ def seg_agent_action(agent):
     return stay_put
 
 
-def create_resident(name, i, props=None):
+def create_resident(name, i):
     """
     Creates agent of specified color type
     """
@@ -131,19 +131,18 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    pa = init_props(MODEL_NAME, props)
+    init_props(MODEL_NAME, props)
     blue_agents = Composite(group_names[BLUE_TEAM],
                             {"color": BLUE},
-                            props=pa, member_creator=create_resident,
+                            member_creator=create_resident,
                             num_members=get_prop('num_blue', NUM_BLUE))
     red_agents = Composite(group_names[RED_TEAM],
                            {"color": RED},
-                           props=pa, member_creator=create_resident,
+                           member_creator=create_resident,
                            num_members=get_prop('num_red', NUM_RED))
     city = Env("A city", members=[blue_agents, red_agents],
                height=get_prop('grid_height', DEF_CITY_DIM),
-               width=get_prop('grid_width', DEF_CITY_DIM),
-               props=pa)
+               width=get_prop('grid_width', DEF_CITY_DIM))
     city.exclude_menu_item("line_graph")
 
 

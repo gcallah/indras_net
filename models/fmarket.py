@@ -120,14 +120,12 @@ def create_market_maker(name):
     return market_maker
 
 
-def create_trend_follower(name, i, props=None):
+def create_trend_follower(name, i):
     """
     Create a trend follower.
     """
-    global trend_followers
-
-    average_period = props.get("average_period", DEF_PERIODS)
-    dev = props.get("deviation_follower", DEF_SIGMA)
+    average_period = get_prop("average_period", DEF_PERIODS)
+    dev = get_prop("deviation_follower", DEF_SIGMA)
     trend_follower = Agent(name + str(i), action=trend_follower_action)
     trend_follower["change_period"] = gaussian(average_period, dev)
 
@@ -136,15 +134,13 @@ def create_trend_follower(name, i, props=None):
     return trend_follower
 
 
-def create_value_investor(name, i, props=None):
+def create_value_investor(name, i):
     """
     Create a value investor.
     """
-    global value_investors
-
     value_investor = Agent(name + str(i), action=value_investor_action)
-    mean_price = props.get("discount", DEF_DISCOUNT)
-    dev = props.get("deviation_investor", DEF_SIGMA)
+    mean_price = get_prop("discount", DEF_DISCOUNT)
+    dev = get_prop("deviation_investor", DEF_SIGMA)
     low_val_percentage = gaussian(mean_price, dev)
     high_val_percentage = gaussian(mean_price, dev)
     value_investor["low_price"] = DEF_REAL_VALUE * (1 - low_val_percentage)
@@ -206,30 +202,25 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    pa = init_props(MODEL_NAME, props)
+    init_props(MODEL_NAME, props)
     groups = []
 
     groups.append(Composite("value_investors", {"color": BLUE},
-                            props=pa, member_creator=create_value_investor,
+                            member_creator=create_value_investor,
                             num_members=get_prop("value_investors",
                                                  DEF_NUM_VALUE_INVESTOR)))
-    groups.append(Composite("trend_followers", {"color": RED}, props=pa,
+    groups.append(Composite("trend_followers", {"color": RED},
                             member_creator=create_trend_follower,
                             num_members=get_prop("trend_followers",
                                                  DEF_NUM_TREND_FOLLOWER)))
     groups.append(create_market_maker("market_maker"))
     Env("fmarket",
         members=groups,
-        props=pa,
         width=UNLIMITED,
         height=UNLIMITED,
         census=market_report,
         line_data_func=plot_asset_price)
     get_env().exclude_menu_item("scatter_plot")
-
-
-def restore_globals(env):
-    pass
 
 
 def main():

@@ -1,5 +1,5 @@
 """
-This is the test suite for space.py.
+This is the test suite for the wolf-sheep model.
 """
 
 from unittest import TestCase, skip
@@ -9,8 +9,8 @@ from indra.utils import get_props
 from models.wolfsheep import AGT_WOLF_NAME, AGT_SHEEP_NAME
 from models.wolfsheep import WOLF_LIFESPAN, SHEEP_LIFESPAN, SHEEP_REPRO_PERIOD
 from models.wolfsheep import WOLF_REPRO_PERIOD, eat, reproduce
-from models.wolfsheep import create_sheep, create_wolf, set_up, wolf_action, \
-    sheep_action
+from models.wolfsheep import create_sheep, create_wolf, set_up
+from models.wolfsheep import wolf_action, sheep_action
 from models.wolfsheep import isactive, wolves_created
 
 TEST_SNUM = 3
@@ -21,10 +21,9 @@ TEST_SNAME = AGT_SHEEP_NAME + str(TEST_SNUM)
 
 class WolfsheepTestCase(TestCase):
     def setUp(self, props=None):
-        self.pa = get_props("wolfsheep", props)
         set_up()
-        self.wolf = create_wolf(TEST_WNAME, TEST_WNUM, self.pa)
-        self.sheep = create_sheep(TEST_SNAME, TEST_SNUM, self.pa)
+        self.wolf = create_wolf(TEST_WNAME, TEST_WNUM)
+        self.sheep = create_sheep(TEST_SNAME, TEST_SNUM)
 
     def tearDown(self):
         self.test_wolves = None
@@ -34,14 +33,14 @@ class WolfsheepTestCase(TestCase):
         """
          Test to see if wolf is created
         """
-        new_wolf = create_wolf(TEST_WNAME, 1, props=self.pa)
+        new_wolf = create_wolf(TEST_WNAME, 1)
         self.assertEqual(new_wolf.name, AGT_WOLF_NAME + str(1))
 
     def test_create_sheep(self):
         """
         Test to see if sheep is created
         """
-        new_sheep = create_sheep(TEST_SNAME, 1, props=self.pa)
+        new_sheep = create_sheep(TEST_SNAME, 1)
         self.assertEqual(new_sheep.name, AGT_SHEEP_NAME + str(1))
 
     def test_wolf_action(self):

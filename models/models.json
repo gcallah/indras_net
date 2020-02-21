@@ -19,24 +19,6 @@
       "graph": "scatter"
     },
     {
-      "model ID": 2,
-      "name": "Adam Smith's Fashion Model",
-      "run": "fashion",
-      "props": "models/props/fashion.props.json",
-      "doc": "Adam Smith's model of changing fashions.",
-      "source": "https://github.com/gcallah/indras_net/blob/master/models/fashion.py",
-      "graph": "line"
-    },
-    {
-      "model ID": 3,
-      "name": "Schelling's Segregation Model",
-      "run": "segregation",
-      "props": "models/props/segregation.props.json",
-      "doc": "Thomas Schelling's famous model of segregated neighborhoods.",
-      "source": "https://github.com/gcallah/indras_net/blob/master/models/segregation.py",
-      "graph": "scatter"
-    },
-    {
       "model ID": 4,
       "name": "Predator-Prey Model",
       "run": "wolfsheep",

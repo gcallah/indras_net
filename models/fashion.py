@@ -151,30 +151,25 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    pa = init_props(MODEL_NAME, props)
+    init_props(MODEL_NAME, props)
     groups = []
 
     groups.append(Composite(BLUE_TSETTERS, {"color": NAVY}))
     groups.append(Composite(RED_TSETTERS, {"color": DARKRED},
-                            member_creator=create_tsetter, props=pa,
+                            member_creator=create_tsetter,
                             num_members=get_prop('num_tsetters',
                                                  NUM_TSETTERS)))
 
     groups.append(Composite(RED_FOLLOWERS, {"color": RED}))
     groups.append(Composite(BLUE_FOLLOWERS, {"color": BLUE},
-                            props=pa, member_creator=create_follower,
-                            num_members=pa.get('num_followers',
-                                               NUM_FOLLOWERS)))
+                            member_creator=create_follower,
+                            num_members=get_prop('num_followers',
+                                                 NUM_FOLLOWERS)))
 
     global opp_group
     opp_group = create_opp_group()
 
-    Env("Society", members=groups, props=pa)
-
-
-def restore_globals(env):
-    global opp_group
-    opp_group = create_opp_group()
+    Env("Society", members=groups)
 
 
 def main():
