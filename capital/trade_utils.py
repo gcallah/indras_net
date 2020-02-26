@@ -34,8 +34,23 @@ def gen_util_func(qty):
     return max_util - qty
 
 
+def penguin_util_func(qty):
+    return 25 - qty
+
+
+def cat_util_func(qty):
+    return 10 - qty
+
+
+def bear_util_func(qty):
+    return 15 - qty
+
+
 util_funcs = {
     GEN_UTIL_FUNC: gen_util_func,
+    "penguin_util_func": penguin_util_func,
+    "cat_util_func": cat_util_func,
+    "bear_util_func": bear_util_func
 }
 
 
