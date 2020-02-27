@@ -30,8 +30,8 @@ from indra.composite import Composite
 from indra.display_methods import RED, BLUE
 from indra.env import Env
 from indra.space import DEF_HEIGHT, DEF_WIDTH
-from indra.utils import get_props
-
+from indra.registry import get_env, get_group
+from indra.utils import init_props
 
 MODEL_NAME = "used_cars"
 GENERATOR_NAME = "dealer_car_generator"
@@ -55,11 +55,8 @@ POS_EMOJIS = ["smiley", "laughing", "relaxing", "wink"]
 NEG_EMOJIS = ["unnatural", "ambiguous", "hesitate", "eye rolling"]
 CHARACTERISTIC = ["good", "bad"]
 
-DEALERS = "Dealers"
-
-buyer_grp = None
-dealer_grp = None
-car_market = None
+BUYER_GRP = "Buyer_group"
+DEALER_GRP = "Dearler_group"
 
 
 def get_car_life_json(json_file, dealer_name):  # testcase needed!
@@ -105,8 +102,8 @@ def map_json_to_attributes(json_file, dealer_name):
     dealer_name["num_sales"] = len(life_lst)
 
 
-def is_dealer(agent, dealer_grp):  # testcase done
-    return dealer_grp.ismember(agent)
+def is_dealer(agent):  # testcase need changes
+    return get_group(DEALER_GRP).ismember(agent)
 
 
 def get_car_life(dealer):  # testcase done
@@ -134,7 +131,7 @@ def dealer_action(dealer):  # testcase??
     """
     Display debug statements
     """
-    car_market.user.tell("I'm " + dealer.name + " and I'm a dealer.")
+    get_env().user.tell("I'm " + dealer.name + " and I'm a dealer.")
     dealer_characteristic = get_dealer_characteristic()
     dealer["dealer_characteristic"] = dealer_characteristic
     dealer["emoji_used"] = get_dealer_emoji(dealer_characteristic)
@@ -267,9 +264,9 @@ def buyer_action(agent):  # how to write this testcase
     print("Agent: " + agent.name)
     agent["age"] += 1
     if not agent["has_car"]:
-        my_dealer = car_market.get_neighbor_of_groupX(agent,
-                                                      dealer_grp,
-                                                      hood_size=4)
+        my_dealer = get_env().get_neighbor_of_groupX(agent,
+                                                     get_group(DEALER_GRP),
+                                                     hood_size=4)
         if my_dealer is None:
             print("No dealers nearby.")
         elif is_credible(my_dealer, agent):
@@ -324,27 +321,23 @@ def set_up(num_dealers, props=None):  # testcase???
     """
     A func to set up run that can also be used by test code.
     """
-    pa = get_props(MODEL_NAME, props, model_dir="ml")
-    dealer_grp = Composite(DEALERS, {"color": BLUE},
+    pa = init_props(MODEL_NAME, props)
+    group = []
+    group.append(Composite(DEALER_GRP, {"color": BLUE},
                            member_creator=create_dealer,
-                           num_members=num_dealers)
-    buyer_grp = Composite("Buyers", {"color": RED},
-                          member_creator=create_buyer,
-                          num_members=pa.get('num_buyers', DEF_NUM_RED))
+                           num_members=num_dealers))
+    group.append(Composite(BUYER_GRP, {"color": RED},
+                           member_creator=create_buyer,
+                           num_members=pa.get('num_buyers', DEF_NUM_RED)))
 
-    car_market = Env("Car market",
-                     height=pa.get('grid_height', DEF_HEIGHT),
-                     width=pa.get('grid_width', DEF_WIDTH),
-                     members=[dealer_grp, buyer_grp],
-                     props=pa)
-
-    return (car_market, dealer_grp, buyer_grp)
+    Env("Car market",
+        height=pa.get('grid_height', DEF_HEIGHT),
+        width=pa.get('grid_width', DEF_WIDTH),
+        members=group,
+        props=pa)
 
 
 def main():
-    global buyer_grp
-    global dealer_grp
-    global car_market
     if len(sys.argv) > 1 and sys.argv[1] is None:
         print("A data json file is required to run this program")
         exit(1)
@@ -352,12 +345,9 @@ def main():
     filename = sys.argv[1]
     info = filename.split("_")
     num_dealers = int(info[0])
-    (car_market, dealer_grp, buyer_grp) = set_up(num_dealers)
+    set_up(num_dealers)
 
-    if DEBUG2:
-        print(car_market.__repr__())
-
-    car_market()
+    get_env()()
     return 0
 
 
