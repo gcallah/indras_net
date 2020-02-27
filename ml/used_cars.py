@@ -1,27 +1,3 @@
-"""
-Indra Models - Machine Learning
-
-A used cars model Documentation
-
-1.0 Introduction
-
-1.1 Purpose
-
-1.2 Background
-
-1.3 Scope
-
-1.4 Methodology
-
-1.5 Current Process
-
-1.6 Proposed Process
-
-1.7 Constrains
-
-1.8 Future Goals
-"""
-
 import random
 import sys
 
@@ -30,7 +6,7 @@ from indra.composite import Composite
 from indra.display_methods import RED, BLUE
 from indra.env import Env
 from indra.space import DEF_HEIGHT, DEF_WIDTH
-from indra.registry import get_env, get_group
+from indra.registry import get_env, get_group, get_prop
 from indra.utils import init_props
 
 MODEL_NAME = "used_cars"
@@ -321,27 +297,25 @@ def set_up(num_dealers, props=None):  # testcase???
     """
     A func to set up run that can also be used by test code.
     """
-    pa = init_props(MODEL_NAME, props)
+    init_props(MODEL_NAME, props)
     group = []
     group.append(Composite(DEALER_GRP, {"color": BLUE},
                            member_creator=create_dealer,
                            num_members=num_dealers))
     group.append(Composite(BUYER_GRP, {"color": RED},
                            member_creator=create_buyer,
-                           num_members=pa.get('num_buyers', DEF_NUM_RED)))
+                           num_members=get_prop('num_buyers', DEF_NUM_RED)))
 
     Env("Car market",
-        height=pa.get('grid_height', DEF_HEIGHT),
-        width=pa.get('grid_width', DEF_WIDTH),
-        members=group,
-        props=pa)
+        height=get_prop('grid_height', DEF_HEIGHT),
+        width=get_prop('grid_width', DEF_WIDTH),
+        members=group)
 
 
 def main():
     if len(sys.argv) > 1 and sys.argv[1] is None:
         print("A data json file is required to run this program")
         exit(1)
-
     filename = sys.argv[1]
     info = filename.split("_")
     num_dealers = int(info[0])

@@ -49,10 +49,15 @@ def set_up(props=None):
         endow(traders[trader], natures_goods)
         for good in natures_goods:
             if good not in traders[trader]["goods"]:
-                traders[trader]["goods"][good] = natures_goods[good]
+                traders[trader]["goods"][good] = natures_goods[good].copy()
                 traders[trader]["goods"][good][AMT_AVAILABLE] = 0
+            else:
+                # put attributes other than AMT_AVAILABLE into trader dict
+                temp_amt = traders[trader]["goods"][good][AMT_AVAILABLE]
+                traders[trader]["goods"][good] = natures_goods[good].copy()
+                traders[trader]["goods"][good][AMT_AVAILABLE] = temp_amt
     # each trader is given goods and know all goods in the nature
-            print(repr(traders[trader]))
+        print(repr(traders[trader]))
 
     Env("MengerMoney",
         height=get_prop('grid_height', DEF_HEIGHT),

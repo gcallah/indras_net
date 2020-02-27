@@ -16,12 +16,20 @@ class UsedCarTestCase(TestCase):
         
     def tearDown(self):
         pass
-    
+        self.pa = PropArgs.create_props('used_car_props',
+                                        ds_file='props/used_cars.props.json')
+        (self.car_market, self.dealers, self.buyers) = set_up(10)  # noqa: F405
+
+
+    def tearDown(self):
+        (self.car_market, self.dealers, self.buyers) = (None, None, None)
+
     def test_is_dealer(self):
         dealer = create_dealer(DEALER_GRP, 1, None)
         buyer = create_buyer(BUYER_GRP, 0, None)
         self.assertTrue(is_dealer(buyer) is False)
         self.assertTrue(is_dealer(dealer) is True)
+
 
     def test_get_car_life(self):
         dealer = create_dealer(DEALER_GRP, 0, None)
@@ -29,6 +37,7 @@ class UsedCarTestCase(TestCase):
         dealer["curr_car_life"] = feed_car_life
         car_life = get_car_life(dealer)
         self.assertEqual(car_life, feed_car_life)
+
 
     def test_get_dealer_car(self):
         result = get_dealer_car("good")
@@ -38,9 +47,11 @@ class UsedCarTestCase(TestCase):
         self.assertGreaterEqual(result, MIN_CAR_LIFE)
         self.assertLessEqual(result, MAX_BAD_CAR_LIFE)
 
+
     def test_get_dealer_characteristic(self):
         charac = get_dealer_characteristic()
         self.assertTrue(charac == "good" or charac == "bad")
+
 
     def test_set_emoji_indicator(self):
         buyer1 = create_buyer(BUYER_GRP,0, None)
@@ -51,12 +62,14 @@ class UsedCarTestCase(TestCase):
         set_emoji_indicator(buyer2)
         self.assertEqual(buyer1["emoji_indicator"]["unnatural"], "bad")
         self.assertEqual(buyer2["emoji_indicator"]["relaxing"], "good")
+
         
     def test_get_dealer_emoji(self):
         emoji1 = get_dealer_emoji("good")
         emoji2 = get_dealer_emoji("bad")
         self.assertIn(emoji1, POS_EMOJIS)
         self.assertIn(emoji2, NEG_EMOJIS)
+
         
     def test_update_dealer_sale(self):
         dealer1 = create_dealer(DEALER_GRP, 0, None)
@@ -74,6 +87,7 @@ class UsedCarTestCase(TestCase):
         self.assertEqual(dealer1["avg_car_life_sold"],new_car_life)
         self.assertEqual(dealer2["avg_car_life_sold"],
                          round((avg_life + new_car_life) / (num_sales + 1), 2))
+
         
     def test_is_mature(self):
         buyer = create_buyer(BUYER_GRP, 0, None)
@@ -81,6 +95,7 @@ class UsedCarTestCase(TestCase):
         buyer["dealer_hist"] = [1] * MATURE_BOUND
         buyer["dealer_hist"].append(1)
         self.assertTrue(is_mature(buyer))
+
         
     def test_is_credible(self):
         buyer = create_buyer(BUYER_GRP, 0, None)
@@ -95,6 +110,7 @@ class UsedCarTestCase(TestCase):
             self.assertTrue(is_credible(dealer, buyer))
         else:
             self.assertFalse(is_credible(dealer, buyer))
+
             
     def test_cal_avg_life(self):
         buyer = create_buyer(BUYER_GRP, 0, None)
@@ -110,6 +126,7 @@ class UsedCarTestCase(TestCase):
         for key in buyer["emoji_life_avg"]:
             self.assertEqual(buyer["emoji_life_avg"][key], round(num,2))
         
+
     def test_create_dealer(self):
         dealer = create_dealer("Dealer", 0, None)
         self.assertEqual(dealer["num_sales"], 0)
@@ -119,6 +136,7 @@ class UsedCarTestCase(TestCase):
         self.assertEqual(dealer["num_completed_services"], 0)  
         self.assertIsNone(dealer["emoji_used"])
         self.assertIsNone(dealer["dealer_characteristic"])
+
 
     def test_create_buyer(self):
         """
@@ -146,6 +164,7 @@ class UsedCarTestCase(TestCase):
         self.assertEqual(buyer["emoji_carlife_assoc"], {})
         self.assertEqual(buyer["emoji_life_avg"], {})  
         self.assertEqual(buyer["emoji_indicator"], {})
+
 
     if __name__ == '__main__':
         main()

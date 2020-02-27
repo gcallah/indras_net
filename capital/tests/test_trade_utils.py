@@ -5,7 +5,7 @@ This is the test suite for trade.py.
 from unittest import TestCase, main
 
 from capital.trade_utils import endow, get_rand_good, is_depleted, AMT_AVAILABLE, transfer
-
+import capital.trade_utils as tu
 
 class TradeUtilsTestCase(TestCase):
     def setUp(self, props=None):
@@ -20,6 +20,10 @@ class TradeUtilsTestCase(TestCase):
         self.goodB = None
         self.trader = None
         self.goods = None
+
+    def test_gen_util_func(self):
+        util = tu.gen_util_func(0)
+        self.assertEqual(util, tu.DEF_MAX_UTIL)
 
     def test_endow(self):
         """

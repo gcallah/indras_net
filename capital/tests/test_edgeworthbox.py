@@ -18,11 +18,6 @@ class EdgeworthboxTestCase(TestCase):
     def tearDown(self):
         (edge.cheese_group, edge.wine_group, edge.max_util) = (None, None, None)
 
-    @skip("This should be tested in test_trade_utils")
-    def test_gen_util_func(self):
-        # util = edge.gen_util_func(0)
-        self.assertEqual(util, DEF_MAX_UTIL)
-
     def test_trade(self):
         agent1 = edge.create_wagent('Wine holders', 0)
         agent2 = edge.create_cagent('Cheese holders', 0)
