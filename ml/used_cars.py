@@ -1,27 +1,3 @@
-"""
-Indra Models - Machine Learning
-
-A used cars model Documentation
-
-1.0 Introduction
-
-1.1 Purpose
-
-1.2 Background
-
-1.3 Scope
-
-1.4 Methodology
-
-1.5 Current Process
-
-1.6 Proposed Process
-
-1.7 Constrains
-
-1.8 Future Goals
-"""
-
 import random
 import sys
 
@@ -345,10 +321,9 @@ def main():
     global buyer_grp
     global dealer_grp
     global car_market
-    if len(sys.argv) > 1 and sys.argv[1] is None:
+    if len(sys.argv) <= 1:
         print("A data json file is required to run this program")
         exit(1)
-
     filename = sys.argv[1]
     info = filename.split("_")
     num_dealers = int(info[0])
