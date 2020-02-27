@@ -141,23 +141,23 @@ def answer_to_str(ans):
     return answer_dict[ans]
 
 
+def negotiate(trader1, trader2):
+    # this_good is a dict
+    for this_good in trader1["goods"]:
+        amt = 1
+        while trader1["goods"][this_good][AMT_AVAILABLE] >= amt:
+            ans = rec_offer(trader2, this_good, amt, trader1)
+            user_debug("I'm " + trader1.name
+                       + ", " + answer_to_str(ans) + " this offer")
+            if ans == ACCEPT or ans == REJECT:
+                break
+            amt += 1
+
+
 def seek_a_trade(agent):
     nearby_agent = get_env().get_closest_agent(agent)
     if nearby_agent is not None:
-        user_debug("I'm " + agent.name + " and I find "
-                   + nearby_agent.name)
-        # this_good is a dict
-        # better to just give each agent at least 0
-        # of every good to start
-        for this_good in agent["goods"]:
-            amt = 1
-            while agent["goods"][this_good][AMT_AVAILABLE] >= amt:
-                ans = rec_offer(nearby_agent, this_good, amt, agent)
-                user_debug("I'm " + agent.name
-                           + ", " + answer_to_str(ans) + " this offer")
-                if ans == ACCEPT or ans == REJECT:
-                    break
-                amt += 1
+        negotiate(agent, nearby_agent)
 
     user_debug("I'm " + agent.name
                + ". I have " + goods_to_str(agent["goods"]))

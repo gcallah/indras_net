@@ -4,6 +4,8 @@ This is the test suite for trade.py.
 
 from unittest import TestCase, main
 
+# from indra.agent import Agent
+
 from capital.trade_utils import endow, get_rand_good, is_depleted, AMT_AVAILABLE, transfer
 import capital.trade_utils as tu
 
@@ -12,6 +14,7 @@ class TradeUtilsTestCase(TestCase):
         self.goodA = {AMT_AVAILABLE: 10}
         self.goodB = {AMT_AVAILABLE: 10}
         self.trader = {"goods": {}}
+        # self.agent = Agent()
         self.goods = {"a": self.goodA, "b": self.goodB}
         self.goods_dict_empty = {}
 
