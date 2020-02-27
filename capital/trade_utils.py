@@ -92,14 +92,27 @@ def transfer(to_goods, from_goods, good_nm, amt=None):
     from_goods[good_nm][AMT_AVAILABLE] = 0
 
 
-def get_rand_good(goods_dict):
+def get_rand_good(goods_dict, nonzero=False):
     """
     What should this do with empty dict?
     """
+    print("Calling get_rand_good()")
     if goods_dict is None or not len(goods_dict):
         return None
     else:
-        return random.choice(list(goods_dict.keys()))
+        if nonzero and is_depleted(goods_dict):
+            # we can't allocate what we don't have!
+            print("Goods are depleted!")
+            return None
+
+        goods_list = list(goods_dict.keys())
+        good = random.choice(goods_list)
+        if nonzero:
+            # pick again if the goods is endowed (amt is 0)
+            # if we get big goods dicts, this could be slow:
+            while goods_dict[good][AMT_AVAILABLE] == 0:
+                good = random.choice(goods_list)
+        return good
 
 
 def endow(trader, avail_goods):
@@ -108,21 +121,13 @@ def endow(trader, avail_goods):
     trader all of it, by default. We will write partial distributions
     later.
     """
-    if is_depleted(avail_goods):
-        # we can't allocate what we don't have!
-        return
-
     # pick an item at random
     # stick all of it in trader's goods dictionary
-    rand_good = get_rand_good(avail_goods)
+    good2acquire = get_rand_good(avail_goods, nonzero=True)
 
-    # pick again if the goods is endowed (amt is 0)
-    # if we get big goods dicts, this could be slow:
-    while avail_goods[rand_good][AMT_AVAILABLE] == 0:
-        rand_good = get_rand_good(avail_goods)
-
-    # get a random good
-    transfer(trader[GOODS], avail_goods, rand_good)
+    if good2acquire is not None:
+        # get some of the good
+        transfer(trader[GOODS], avail_goods, good2acquire)
 
 
 def goods_to_str(goods):
@@ -158,9 +163,6 @@ def seek_a_trade(agent):
     nearby_agent = get_env().get_closest_agent(agent)
     if nearby_agent is not None:
         negotiate(agent, nearby_agent)
-
-    user_debug("I'm " + agent.name
-               + ". I have " + goods_to_str(agent["goods"]))
 
     # return False means to move
     return False
