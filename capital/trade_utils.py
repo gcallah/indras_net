@@ -115,19 +115,33 @@ def get_rand_good(goods_dict, nonzero=False):
         return good
 
 
-def endow(trader, avail_goods):
+def endow(trader, avail_goods, equal_dist=False, rand_dist=False):
     """
     This function is going to pick a good at random, and give the
     trader all of it, by default. We will write partial distributions
     later.
     """
-    # pick an item at random
-    # stick all of it in trader's goods dictionary
-    good2acquire = get_rand_good(avail_goods, nonzero=True)
+    if equal_dist:
+        # each trader get equal amount of good
+        equal_dist()
+    elif rand_dist:
+        # each trader get random amt of good
+        rand_dist()
+    else:
+        # pick an item at random
+        # stick all of it in trader's goods dictionary
+        good2acquire = get_rand_good(avail_goods, nonzero=True)
+        if good2acquire is not None:
+            # get some of the good
+            transfer(trader[GOODS], avail_goods, good2acquire)
 
-    if good2acquire is not None:
-        # get some of the good
-        transfer(trader[GOODS], avail_goods, good2acquire)
+
+def equal_dist():
+    return
+
+
+def rand_dist():
+    return
 
 
 def goods_to_str(goods):
