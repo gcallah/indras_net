@@ -85,11 +85,12 @@ def transfer(to_goods, from_goods, good_nm, amt=None):
     Transfer goods between two goods dicts.
     Use `amt` if it is not None.
     """
+    if not amt:
+        amt = from_goods[good_nm][AMT_AVAILABLE]
     if good_nm not in to_goods:
         to_goods[good_nm] = {AMT_AVAILABLE: 0}
-    to_goods[good_nm][AMT_AVAILABLE] = (
-        from_goods[good_nm][AMT_AVAILABLE])
-    from_goods[good_nm][AMT_AVAILABLE] = 0
+    to_goods[good_nm][AMT_AVAILABLE] += amt
+    from_goods[good_nm][AMT_AVAILABLE] -= amt
 
 
 def get_rand_good(goods_dict, nonzero=False):
