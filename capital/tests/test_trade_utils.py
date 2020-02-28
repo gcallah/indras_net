@@ -55,5 +55,17 @@ class TradeUtilsTestCase(TestCase):
         self.assertEqual(self.goods["a"][AMT_AVAILABLE], 0)
         self.assertEqual(self.trader["goods"]["a"][AMT_AVAILABLE], 10)
 
+
+    def test_goods_to_string(self):
+        ans1 = 1
+        ans0 = 0
+        ans_str_1 = tu.answer_to_str(ans1)
+        ans_str_0 =tu.answer_to_str(ans0)
+        self.assertEqual(ans_str_1, "I accept")
+        self.assertEqual(ans_str_0, "I'm indifferent about")
+
+
+    def test_answer_to_string(self):
+        pass
     if __name__ == '__main__':
         main()
