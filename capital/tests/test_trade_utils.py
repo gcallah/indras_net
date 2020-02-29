@@ -1,12 +1,11 @@
 """
 This is the test suite for trade.py.
 """
-
+import copy
 from unittest import TestCase, main
-
 # from indra.agent import Agent
-
 from capital.trade_utils import endow, get_rand_good, is_depleted, AMT_AVAILABLE, transfer
+from capital.trade_utils import rand_dist, equal_dist
 import capital.trade_utils as tu
 
 class TradeUtilsTestCase(TestCase):
@@ -66,6 +65,23 @@ class TradeUtilsTestCase(TestCase):
 
 
     def test_answer_to_string(self):
+        pass
+
+    
+    def test_rand_dist(self):
+        """
+        Test if trader dic and nature dic are changed after random distribution trade
+        """
+        trader_before_trade = copy.deepcopy(self.trader["goods"])
+        nature_before_trade = copy.deepcopy(self.goods)
+        rand_dist(self.trader["goods"], self.goods)
+        print(repr(nature_before_trade))
+        print(repr(self.goods))
+        self.assertNotEqual(self.trader["goods"], trader_before_trade)
+        self.assertNotEqual(self.goods, nature_before_trade)
+
+
+    def test_equal_dist(self):
         pass
     if __name__ == '__main__':
         main()
