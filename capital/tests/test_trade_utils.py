@@ -82,6 +82,10 @@ class TradeUtilsTestCase(TestCase):
 
 
     def test_equal_dist(self):
+        """
+        Test if trader get equal amout of goods from all availiable resources
+        """
         pass
+
     if __name__ == '__main__':
         main()

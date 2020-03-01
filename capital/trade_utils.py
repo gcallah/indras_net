@@ -137,8 +137,14 @@ def endow(trader, avail_goods, equal=False, rand=False):
             transfer(trader[GOODS], avail_goods, good2acquire)
 
 
-def equal_dist():
-    return
+def equal_dist(num_trader, to_goods, from_goods):
+    """
+    each trader get equal amount of goods
+    to_goods = trader[GOODS], from_goods = avail_goods
+    """
+    for good in from_goods:
+        amt = from_goods[good][AMT_AVAILABLE]/num_trader
+        transfer(to_goods, from_goods, good, amt)
 
 
 def rand_dist(to_goods, from_goods):
