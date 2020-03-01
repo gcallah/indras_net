@@ -83,9 +83,16 @@ class TradeUtilsTestCase(TestCase):
 
     def test_equal_dist(self):
         """
-        Test if trader get equal amout of goods from all availiable resources
+        Test if trader get equal amout of goods from 
+        all availiable resources
         """
-        pass
+        self.setUp(self)
+        nature_before_trade = copy.deepcopy(self.goods)
+        equal_dist(2,self.trader["goods"], self.goods)
+        self.assertEqual(self.trader["goods"]["a"][AMT_AVAILABLE],
+                         nature_before_trade["a"][AMT_AVAILABLE]/2)
+        self.assertEqual(self.trader["goods"]["b"][AMT_AVAILABLE],
+                         nature_before_trade["b"][AMT_AVAILABLE]/2)
 
     if __name__ == '__main__':
         main()
