@@ -41,6 +41,7 @@ class Composite(Agent):
                  num_members=None, serial_obj=None,
                  reg=True, **kwargs):
 
+        self.num_members_ever = 0
         self.members = OrderedDict()
         super().__init__(name, attrs=attrs, duration=duration,
                          action=action, serial_obj=serial_obj,
