@@ -84,6 +84,7 @@ class Composite(Agent):
         Here we turn a composite into a serialized object.
         """
         rep = super().to_json()
+        rep["num_members_ever"] = self.num_members_ever
         rep["type"] = self.type
         rep["members"] = self.members
         rep["member_creator"] = get_func_name(self.member_creator)
@@ -91,6 +92,7 @@ class Composite(Agent):
 
     def from_json(self, serial_obj):
         super().from_json(serial_obj)
+        self.num_members_ever = serial_obj["num_members_ever"]
         # we loop through the members of this composite
         for nm in serial_obj["members"]:
             member = serial_obj["members"][nm]
