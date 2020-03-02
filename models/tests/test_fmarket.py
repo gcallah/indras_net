@@ -95,17 +95,15 @@ class FMarketTestCase(TestCase):
         self.assertTrue(calc_price_change(ratio) > 0)
 
     def test_market_report(self):
-        self.pa = PropArgs.create_props('fmarket_props',
-                                        ds_file='props/fmarket.props.json')
         new_market_maker = create_market_maker("market_maker")
         value_investors = Composite("value_investors")
         trend_followers = Composite("trend_followers")
         market = Env("env",
                      members=[value_investors, trend_followers,
                               new_market_maker],
-                     props=self.pa,
                      census=market_report)
-        self.assertEqual(market_report(market), "Asset price on the market: " \
+        self.assertEqual(market_report(market),
+                         "Asset price on the market: "
                          + str(DEF_PRICE) + "\n")
 
     @skip("Test failing on travis but it will take lots of time to see why.")
@@ -116,8 +114,7 @@ class FMarketTestCase(TestCase):
         new_market_maker = create_market_maker("market_maker")
         new_market_maker["price_hist"] = [DEF_PRICE]
         new_market_maker["asset_price"] = DEF_PRICE
-        new_trend_follower = create_trend_follower("trend_follower", 0,
-                                                   self.pa)
+        new_trend_follower = create_trend_follower("trend_follower", 0)
         trend_follower_action(new_trend_follower)
         trend = trend_direction(new_trend_follower,
                                 new_market_maker["asset_price"],
@@ -145,8 +142,7 @@ class FMarketTestCase(TestCase):
         Test the trend direction of the market
         """
         new_market_maker = create_market_maker("market_maker")
-        new_trend_follower = create_trend_follower("trend_follower", 0,
-                                                   self.pa)
+        new_trend_follower = create_trend_follower("trend_follower", 0)
         new_trend_follower["change_period"] = DEF_PERIODS
         new_market_maker["asset_price"] = DEF_REAL_VALUE
         new_market_maker["price_hist"] = [DEF_REAL_VALUE]

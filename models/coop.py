@@ -13,7 +13,7 @@ from indra.env import Env, UNLIMITED
 from indra.registry import get_env, get_group, get_prop
 from indra.utils import gaussian
 from indra.user import user_tell
-from indra.utils import get_props
+from indra.utils import init_props
 
 MODEL_NAME = 'coop'
 
@@ -154,7 +154,7 @@ def central_bank_action(agent):
         distribute_coupons(agent)
 
 
-def create_babysitter(name, i, props=None):
+def create_babysitter(name, i):
     """
     Create a babysitter.
     """
@@ -168,7 +168,7 @@ def create_babysitter(name, i, props=None):
     return babysitter
 
 
-def create_central_bank(name, i, props=None):
+def create_central_bank(name, i):
     """
     Create the central bank to distribute the coupons
     """
@@ -184,7 +184,7 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    get_props(MODEL_NAME, props)
+    init_props(MODEL_NAME, props)
 
     num_members = get_prop('num_babysitter', DEF_BABYSITTER)
     co_op_members = Composite(CO_OP_MEMBERS, num_members=num_members,

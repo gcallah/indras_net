@@ -6,8 +6,6 @@ import getpass
 import json
 import os
 
-from propargs.propargs import PropArgs as pa
-
 # we mean to add logging soon!
 # import logging
 import indra.display_methods as disp
@@ -81,7 +79,6 @@ class Env(Space):
     """
 
     def __init__(self, name, action=None, random_placing=True,
-                 props=None,  # eliminate soon!
                  serial_obj=None, census=None,
                  line_data_func=None, exclude_member=None,
                  pop_hist_setup=None,
@@ -98,7 +95,6 @@ class Env(Space):
         self.census_func = census
         self.pop_hist_setup = pop_hist_setup
         self.pop_hist_func = pop_hist_func
-        self.props = props
 
         self.num_switches = 0
         if serial_obj is not None:
@@ -149,11 +145,6 @@ class Env(Space):
 
     def from_json(self, serial_obj):
         super().from_json(serial_obj)
-        model_prop = json.loads(json.dumps(serial_obj["props"],
-                                           indent=4))
-        self.props = pa.create_props("basic",
-                                     prop_dict=model_prop,
-                                     skip_user_questions=True)
         self.pop_hist = PopHist(serial_pops=serial_obj["pop_hist"])
         self.plot_title = serial_obj["plot_title"]
         nm = serial_obj["user"]["name"]
@@ -175,10 +166,6 @@ class Env(Space):
         rep["user"] = self.user.to_json()
         rep["census_func"] = self.census_func
         rep["plot_title"] = self.plot_title
-        if self.props is None:
-            rep["props"] = self.props
-        else:
-            rep["props"] = self.props.to_json()
         rep["pop_hist"] = self.pop_hist.to_json()
         rep["womb"] = self.womb
         rep["switches"] = self.switches
@@ -338,12 +325,6 @@ class Env(Space):
                            + "  Total agents who switched groups: "
                            + str(self.num_switches))
         return census_str
-
-    def get_props(self):
-        """
-        A simple getter for props. Q: Should props be a property instead?
-        """
-        return self.props
 
     def has_disp(self):
         if not disp.plt_present:

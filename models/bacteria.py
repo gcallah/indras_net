@@ -114,7 +114,7 @@ def nutrient_action(agent, **kwargs):
     return False
 
 
-def create_bacterium(name, i, props=None):
+def create_bacterium(name, i):
     """
     Create a baterium.
     """
@@ -127,7 +127,7 @@ def create_bacterium(name, i, props=None):
     return bacterium
 
 
-def create_toxin(name, i, props=None):
+def create_toxin(name, i):
     """
     Create a toxin.
     """
@@ -136,7 +136,7 @@ def create_toxin(name, i, props=None):
     return toxin
 
 
-def create_nutrient(name, i, props=None):
+def create_nutrient(name, i):
     """
     Create a nutrient.
     """

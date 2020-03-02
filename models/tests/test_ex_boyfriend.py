@@ -12,8 +12,6 @@ from models.ex_boyfriend import set_up
 
 class ExBoyfriendTestCase(TestCase):
     def setUp(self):
-        self.pa = PropArgs.create_props('ex_boyfriend_props',
-                                        ds_file='props/ex_boyfriend.props.json')
         set_up()
 
     def tearDown(self):
@@ -30,7 +28,7 @@ class ExBoyfriendTestCase(TestCase):
         """
         Test creating a boyfriend.
         """
-        agent = ex_boyfriend.create_boyfriend("Ex-Boyfriend", 0, self.pa)
+        agent = ex_boyfriend.create_boyfriend("Ex-Boyfriend", 0)
         self.assertEqual(agent.name, "Ex-Boyfriend0")
 
     if __name__ == '__main__':
