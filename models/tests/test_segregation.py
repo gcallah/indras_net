@@ -29,8 +29,6 @@ def print_sep():
 
 class SegregationTestCase(TestCase):
     def setUp(self):
-        self.pa = PropArgs.create_props('segregation_props',
-                                        ds_file='props/segregation.props.json')
         set_up()
 
     def tearDown(self):
@@ -48,34 +46,33 @@ class SegregationTestCase(TestCase):
         self.assertGreater(DEF_TOLERANCE + .2, avg)
 
     def test_my_group_index(self):
-        red_agent = create_resident(RED_AGENTS, TEST_ANUM, self.pa)
+        red_agent = create_resident(RED_AGENTS, TEST_ANUM)
         self.assertEqual(RED_TEAM, my_group_index(red_agent))
-        blue_agent = create_resident(BLUE_AGENTS, TEST_ANUM, self.pa)
+        blue_agent = create_resident(BLUE_AGENTS, TEST_ANUM)
         self.assertEqual(BLUE_TEAM, my_group_index(blue_agent))
 
     def test_other_group_index(self):
-        red_agent = create_resident(RED_AGENTS, TEST_ANUM, self.pa)
+        red_agent = create_resident(RED_AGENTS, TEST_ANUM)
         self.assertEqual(BLUE_TEAM, other_group_index(red_agent))
-        blue_agent = create_resident(BLUE_AGENTS, TEST_ANUM, self.pa)
+        blue_agent = create_resident(BLUE_AGENTS, TEST_ANUM)
         self.assertEqual(RED_TEAM, other_group_index(blue_agent))
 
     def test_create_agent(self):
         """
         Test that creating an agent works.
         """
-        fred = create_resident(RED_AGENTS, TEST_ANUM, self.pa)
+        fred = create_resident(RED_AGENTS, TEST_ANUM)
         freds_nm = group_names[RED_TEAM] + str(TEST_ANUM)
         self.assertEqual(freds_nm, str(fred))
 
     def agent_in_little_city(self, with_blue=False):
         red_agents = Composite("My reds")
-        test_agent = create_resident(RED_AGENTS, TEST_ANUM, self.pa)
+        test_agent = create_resident(RED_AGENTS, TEST_ANUM)
         red_agents += test_agent
         blue_agents = Composite("My blues")
         if with_blue:
             for i in range(0, SMALL_GRID * SMALL_GRID - 1):
-                blue_agents += create_resident(BLUE_AGENTS, TEST_ANUM + 1,
-                                               self.pa)
+                blue_agents += create_resident(BLUE_AGENTS, TEST_ANUM + 1)
 
         my_city = Env("Small city for test", width=SMALL_GRID,
                       height=SMALL_GRID,

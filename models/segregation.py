@@ -82,8 +82,6 @@ def seg_agent_action(agent):
         ratio_same = 0
         neighbors = get_env().get_moore_hood(agent,
                                              hood_size=agent['hood_size'])
-        if DEBUG2:
-            print("hood size = ", agent['hood_size'])
         num_same = 0
         for neighbor in neighbors:
             if neighbors[neighbor].primary_group() == agent_group:

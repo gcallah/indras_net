@@ -42,7 +42,12 @@ test_forestfire:
 	$(PYLINT) $(PYLINTFLAGS) forestfire.py
 	nosetests tests.test_forestfire --nocapture
 
+test_segregation:
+	$(PYLINT) $(PYLINTFLAGS) segregation.py
+	nosetests tests.test_segregation --nocapture
+
 test_wolfsheep:
+	$(PYLINT) $(PYLINTFLAGS) wolfsheep.py
 	nosetests tests.test_wolfsheep --nocapture
 
 nocrud:
