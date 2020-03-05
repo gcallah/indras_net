@@ -8,9 +8,9 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import BLUE
 from indra.env import Env
-from indra.registry import get_env
+from indra.registry import get_env, get_prop
 from indra.space import DEF_HEIGHT, DEF_WIDTH
-from indra.utils import get_props
+from indra.utils import init_props
 from capital.trade_utils import seek_a_trade
 from capital.trade_utils import UTIL_FUNC, GEN_UTIL_FUNC, AMT_AVAILABLE
 import capital.trade_utils as tu
@@ -68,21 +68,19 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     global max_utility
-    pa = get_props(MODEL_NAME, props, model_dir="capital")
+    pa = init_props(MODEL_NAME, props, model_dir="capital")
     trader_group = Composite("trader", {"color": BLUE},
                              member_creator=create_trader,
                              props=pa,
-                             num_members=pa.get('num_traders',
-                                                DEF_NUM_TRADER))
+                             num_members=get_prop('num_traders',
+                                                  DEF_NUM_TRADER))
     Env("env",
-        height=pa.get('grid_height', DEF_HEIGHT),
-        width=pa.get('grid_width', DEF_WIDTH),
-        members=[trader_group],
-        props=pa)
+        height=get_prop('grid_height', DEF_HEIGHT),
+        width=get_prop('grid_width', DEF_WIDTH),
+        members=[trader_group])
     for trader in trader_group:
         allocate_resources(trader_group[trader], GOODS)
         get_env().user.tell(trader_group[trader]["goods"])
-
     return (trader_group, max_utility)
 
 

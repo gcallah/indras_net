@@ -10,9 +10,9 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import RED, BLUE
 from indra.env import Env
-from indra.registry import get_env
+from indra.registry import get_env, get_prop
 from indra.space import DEF_HEIGHT, DEF_WIDTH
-from indra.utils import get_props
+from indra.utils import init_props
 
 MODEL_NAME = "capital"
 DEBUG = False  # turns debugging code on or off
@@ -131,13 +131,13 @@ def create_entr(name, i, props=None):
     """
     starting_cash = DEF_ENTR_CASH
     if props is not None:
-        starting_cash = props.get('entr_starting_cash',
-                                  DEF_ENTR_CASH)
+        starting_cash = get_prop('entr_starting_cash',
+                                 DEF_ENTR_CASH)
 
     resources = copy.deepcopy(DEF_CAP_WANTED)
     if props is not None:
-        total_resources = props.get('entr_want_resource_total',
-                                    DEF_TOTAL_RESOURCES_ENTR_WANT)
+        total_resources = get_prop('entr_want_resource_total',
+                                   DEF_TOTAL_RESOURCES_ENTR_WANT)
         num_resources = len(resources)
         for k in resources.keys():
             resources[k] = int((total_resources * 2)
@@ -168,12 +168,12 @@ def create_rholder(name, i, props=None):
 
     starting_cash = DEF_RHOLDER_CASH
     if props is not None:
-        starting_cash = props.get('rholder_starting_cash',
-                                  DEF_RHOLDER_CASH)
+        starting_cash = get_prop('rholder_starting_cash',
+                                 DEF_RHOLDER_CASH)
 
     if props is not None:
-        total_resources = props.get('rholder_starting_resource_total',
-                                    DEF_TOTAL_RESOURCES_RHOLDER_HAVE)
+        total_resources = get_prop('rholder_starting_resource_total',
+                                   DEF_TOTAL_RESOURCES_RHOLDER_HAVE)
         for k in resources.keys():
             resources[k] = int((total_resources * 2)
                                * (random.random() / num_resources))
@@ -192,7 +192,7 @@ def set_up(props=None):
     global resource_holders
     global entrepreneurs
 
-    pa = get_props(MODEL_NAME, props, model_dir="capital")
+    pa = init_props(MODEL_NAME, props, model_dir="capital")
     entrepreneurs = Composite("Entrepreneurs", {"color": BLUE},
                               member_creator=create_entr,
                               props=pa,
@@ -205,10 +205,9 @@ def set_up(props=None):
                                                     DEF_NUM_RHOLDER))
 
     Env("neighborhood",
-        height=pa.get('grid_height', DEF_HEIGHT),
-        width=pa.get('grid_width', DEF_WIDTH),
-        members=[resource_holders, entrepreneurs],
-        props=pa)
+        height=get_prop('grid_height', DEF_HEIGHT),
+        width=get_prop('grid_width', DEF_WIDTH),
+        members=[resource_holders, entrepreneurs])
 
     return resource_holders, entrepreneurs
 

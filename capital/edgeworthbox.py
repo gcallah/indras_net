@@ -8,9 +8,9 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import RED, BLUE
 from indra.env import Env
-from indra.registry import get_env
+from indra.registry import get_env, get_prop
 from indra.space import DEF_HEIGHT, DEF_WIDTH
-from indra.utils import get_props
+from indra.utils import init_props
 from capital.trade_utils import seek_a_trade, AMT_AVAILABLE
 from capital.trade_utils import GEN_UTIL_FUNC, UTIL_FUNC
 
@@ -69,31 +69,30 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     global max_util
-    pa = get_props(MODEL_NAME, props, model_dir="capital")
+    pa = init_props(MODEL_NAME, props, model_dir="capital")
     cheese_group = Composite("Cheese holders", {"color": BLUE},
                              member_creator=create_cagent,
                              props=pa,
-                             num_members=pa.get('num_cagents',
-                                                DEF_NUM_CAGENTS))
+                             num_members=get_prop('num_cagents',
+                                                  DEF_NUM_CAGENTS))
     wine_group = Composite("Wine holders", {"color": RED},
                            member_creator=create_wagent,
                            props=pa,
-                           num_members=pa.get('num_wagents',
-                                              DEF_NUM_WAGENTS))
+                           num_members=get_prop('num_wagents',
+                                                DEF_NUM_WAGENTS))
 
     Env("EdgeworthBox",
-        height=pa.get('grid_height', DEF_HEIGHT),
-        width=pa.get('grid_width', DEF_WIDTH),
-        members=[cheese_group, wine_group],
-        props=pa)
+        height=get_prop('grid_height', DEF_HEIGHT),
+        width=get_prop('grid_width', DEF_WIDTH),
+        members=[cheese_group, wine_group])
 
     start_cheese = 0
     start_wine = 0
     if pa is not None:
-        start_cheese = pa.get('start_cheese',
-                              DEF_NUM_CHEESE)
-        start_wine = pa.get('start_wine',
-                            DEF_NUM_WINE)
+        start_cheese = get_prop('start_cheese',
+                                DEF_NUM_CHEESE)
+        start_wine = get_prop('start_wine',
+                              DEF_NUM_WINE)
         max_util = max(start_cheese, start_wine)
     else:
         props_max_util = max(start_cheese, start_wine)

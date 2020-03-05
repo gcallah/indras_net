@@ -148,7 +148,9 @@ def equal_dist(num_trader, to_goods, from_goods):
 
 
 def rand_dist(to_goods, from_goods):
-    # select random good by random amount and transfer to trader
+    """
+    select random good by random amount and transfer to trader
+    """
     selected_good = get_rand_good(from_goods, nonzero=True)
     amt = random.randrange(0, from_goods[selected_good][AMT_AVAILABLE], 1)
     transfer(to_goods, from_goods, selected_good, amt)

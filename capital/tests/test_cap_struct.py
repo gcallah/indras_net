@@ -9,7 +9,7 @@ import capital.cap_struct as cap
 
 class CapitalTestCase(TestCase):
     def setUp(self, props=None):
-        self.pa = cap.get_props("cap", props, model_dir="capital")
+        self.pa = cap.init_props("cap", props, model_dir="capital")
         (cap.resource_holders, cap.entrepreneurs) = cap.set_up()
 
     def tearDown(self):
