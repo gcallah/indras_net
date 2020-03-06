@@ -34,6 +34,91 @@ CHARACTERISTIC = ["good", "bad"]
 BUYER_GRP = "Buyer_group"
 DEALER_GRP = "Dearler_group"
 
+# holds avg lives from different strategies
+COMPARE_LST = {}
+DIFF_LIFE_LST = []
+
+
+def update_diff_life_difference(strategy_name):
+    avg_life_before = COMPARE_LST[strategy_name][0]
+    avg_life_after = COMPARE_LST[strategy_name][1]
+    diff_life = avg_life_after - avg_life_before
+    DIFF_LIFE_LST.append(diff_life)
+
+
+def strategy_one(buyer, dealer):  # testcase needed!
+    # mature buyers take cars from good dealer til get 1 bad car
+    curr_dealer_life = dealer["curr_car_life"]
+    dealer_emj = dealer["emoji_used"]
+    buyer_emj_lst = buyer["emoji_life_avg"]
+    curr_buyer_life = buyer_emj_lst[dealer_emj]
+    # keep initial avg car life
+    COMPARE_LST["ONE"] = [curr_buyer_life]
+    # bad car define as less than buyer's avg car life
+    while curr_dealer_life >= curr_buyer_life:
+        buy_from_dealer(buyer, dealer)
+        update_dealer_sale(dealer, curr_dealer_life)
+        curr_dealer_life = dealer["curr_car_life"]
+        dealer_emj = dealer["emoji_used"]
+        buyer_emj_lst = buyer["emoji_life_avg"]
+        curr_buyer_life = buyer_emj_lst[dealer_emj]
+    # store in new avg car life
+    COMPARE_LST["ONE"].append(curr_buyer_life)
+    update_diff_life_difference("ONE")
+
+
+def strategy_two(buyer, dealer):  # testcase needed!
+    # mature buyers take cars from good dealer til get 2 bad car
+    curr_dealer_life = dealer["curr_car_life"]
+    dealer_emj = dealer["emoji_used"]
+    buyer_emj_lst = buyer["emoji_life_avg"]
+    curr_buyer_life = buyer_emj_lst[dealer_emj]
+    # keep initial avg car life
+    COMPARE_LST["TWO"] = [curr_buyer_life]
+    count = 0
+    # bad car define as less than buyer's avg car life
+    while count < 2:
+        if curr_dealer_life >= curr_buyer_life:
+            count += 1
+        # update buyer and dealer info
+        buy_from_dealer(buyer, dealer)
+        update_dealer_sale(dealer, curr_dealer_life)
+        curr_dealer_life = dealer["curr_car_life"]
+        dealer_emj = dealer["emoji_used"]
+        buyer_emj_lst = buyer["emoji_life_avg"]
+        curr_buyer_life = buyer_emj_lst[dealer_emj]
+    # store in new avg car life
+    COMPARE_LST["TWO"].append(curr_buyer_life)
+    update_diff_life_difference("TWO")
+
+
+def strategy_three(buyer, dealer):  # testcases needed!
+    # mature buyer take cars from good dealer and never change
+    curr_dealer_life = dealer["curr_car_life"]
+    dealer_emj = dealer["emoji_used"]
+    buyer_emj_lst = buyer["emoji_life_avg"]
+    curr_buyer_life = buyer_emj_lst[dealer_emj]
+    # keep initial avg car life
+    COMPARE_LST["THREE"] = [curr_buyer_life]
+    # update buyer and dealer info
+    buy_from_dealer(buyer, dealer)
+    update_dealer_sale(dealer, curr_dealer_life)
+    curr_dealer_life = dealer["curr_car_life"]
+    dealer_emj = dealer["emoji_used"]
+    buyer_emj_lst = buyer["emoji_life_avg"]
+    curr_buyer_life = buyer_emj_lst[dealer_emj]
+    COMPARE_LST["THREE"].append(curr_buyer_life)
+    update_diff_life_difference("THREE")
+
+
+def get_best_strategies(buyer, dealer):  # testcases needed!
+    # compute and compare the best strategy
+    best_diff_life = max(DIFF_LIFE_LST)
+    best_strategy_index = DIFF_LIFE_LST.index(best_diff_life)
+    best_strategy = "strategy" + str(best_strategy_index + 1)
+    print("Best strategy is:", best_strategy)
+    return best_strategy
+
 
 def get_car_life_json(json_file, dealer_name):  # testcase needed!
     """
