@@ -16,6 +16,22 @@ from indra.utils import get_func_name
 DEBUG = False
 
 
+def write_composite(grp, fp):
+    """
+    This is untested!
+    But it should be roughly how we can produce the used car data model.
+    """
+    json.dump(grp.to_json(), fp, cls=AgentEncoder, indent=4)
+
+
+def read_composite(fp):
+    """
+    Fill in params, especially serial_obj.
+    """
+    # serial_obj = json.load()
+    return Composite()
+
+
 def grp_from_nm_dict(nm, dictionary):
     grp = Composite(nm)
     grp.members = dictionary

@@ -398,8 +398,9 @@ def set_up(num_dealers, props=None):  # testcase???
 
 
 def main():
-    if len(sys.argv) > 1 and sys.argv[1] is None:
-        print("A data json file is required to run this program")
+    if len(sys.argv) < 2:
+        print("datafile name missing")
+        print("USAGE: used_cars.py [datafile]")
         exit(1)
     filename = sys.argv[1]
     info = filename.split("_")
