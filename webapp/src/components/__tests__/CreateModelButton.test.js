@@ -3,7 +3,6 @@ import { mount } from 'enzyme';
 import { Link, HashRouter as Router } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import CreateModelButton from '../CreateModelButton';
-import { any } from 'prop-types';
 
 describe('<CreateModelButton/>', () => {
   it('<CreateModelButton /> should render <Router/>', () => {
@@ -31,7 +30,7 @@ describe('<CreateModelButton/>', () => {
       children: 'Create a new model',
       active: false,
       disabled: false,
-      type: 'button'
+      type: 'button',
     });
   });
 });
