@@ -57,7 +57,8 @@
     "serve": "serve -s build",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "coverage": "npm run test -- --coverage --watchAll=false && open coverage/lcov-report/index.html"
   },
   "browserslist": {
     "production": [
