@@ -3,53 +3,137 @@
 /* eslint-disable no-unused-vars */
 
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { shallow, mount } from 'enzyme';
-import { Link } from 'react-router';
-import { MemoryRouter } from 'react-router-dom';
-import { create } from 'react-test-renderer';
-import axios from 'axios';
-import { Item } from 'semantic-ui-react';
-import NotFoundPage from './components/NotFoundPage';
+import { mount } from 'enzyme';
+import { ThemeProvider } from 'styled-components';
+import { MemoryRouter, HashRouter, Switch } from 'react-router-dom';
+import App, { IndraRoutes } from './App';
+import Layout from './components/Layout';
 import Home from './components/Home';
-// import App from './App';
+import WIP from './components/WIP';
+import ModelDetail from './components/ModelDetail';
+import ActionMenu from './components/ActionMenu';
+import NotFoundPage from './components/NotFoundPage';
+import ErrorCatching from './components/ErrorCatching';
+import ModelBuilder from './components/ModelBuilder';
 
-it('test case to pass', () => {
-  expect(1).toEqual(1);
+jest.mock('./components/ModelBuilder');
+
+describe('<App/>', () => {
+  it('renders with <HashRouter/>, <Layout/> and <Swtich/>', () => {
+    const defaultTheme = {};
+    const component = mount(
+      <ThemeProvider theme={defaultTheme}>
+        <App />
+      </ThemeProvider>,
+    );
+    expect(component.find(HashRouter)).toHaveLength(1);
+    expect(component.find(Layout)).toHaveLength(1);
+    expect(component.find(Switch)).toHaveLength(1);
+  });
+
+  describe('renders valid component when a route is called', () => {
+    it('home route renders <Home/> component', () => {
+      const component = mount(
+        <MemoryRouter initialEntries={['/']}>
+          <IndraRoutes />
+        </MemoryRouter>,
+      );
+      expect(component.find(Home)).toHaveLength(1);
+      expect(component.find(NotFoundPage)).toHaveLength(0);
+      expect(component.find(WIP)).toHaveLength(0);
+      expect(component.find(ModelDetail)).toHaveLength(0);
+      expect(component.find(ErrorCatching)).toHaveLength(0);
+      expect(component.find(ActionMenu)).toHaveLength(0);
+      expect(component.find(ModelBuilder)).toHaveLength(0);
+    });
+
+    it('WIP route renders <WIP/> component', () => {
+      const component = mount(
+        <MemoryRouter initialEntries={['/wip']}>
+          <IndraRoutes />
+        </MemoryRouter>,
+      );
+      expect(component.find(Home)).toHaveLength(0);
+      expect(component.find(NotFoundPage)).toHaveLength(0);
+      expect(component.find(WIP)).toHaveLength(1);
+      expect(component.find(ModelDetail)).toHaveLength(0);
+      expect(component.find(ErrorCatching)).toHaveLength(0);
+      expect(component.find(ActionMenu)).toHaveLength(0);
+      expect(component.find(ModelBuilder)).toHaveLength(0);
+    });
+
+    it('ModelDetail route renders <ModelDetail/> component', () => {
+      const component = mount(
+        <MemoryRouter initialEntries={['/models/props/abc']}>
+          <IndraRoutes />
+        </MemoryRouter>,
+      );
+      expect(component.find(Home)).toHaveLength(0);
+      expect(component.find(NotFoundPage)).toHaveLength(0);
+      expect(component.find(WIP)).toHaveLength(0);
+      expect(component.find(ModelDetail)).toHaveLength(1);
+      expect(component.find(ErrorCatching)).toHaveLength(0);
+      expect(component.find(ActionMenu)).toHaveLength(0);
+      expect(component.find(ModelBuilder)).toHaveLength(0);
+    });
+
+    it('ActionMenu route renders <ActionMenu/> component', () => {
+      const component = mount(
+        <MemoryRouter initialEntries={['/models/menu/abc']}>
+          <IndraRoutes />
+        </MemoryRouter>,
+      );
+      expect(component.find(Home)).toHaveLength(0);
+      expect(component.find(NotFoundPage)).toHaveLength(0);
+      expect(component.find(WIP)).toHaveLength(0);
+      expect(component.find(ModelDetail)).toHaveLength(0);
+      expect(component.find(ErrorCatching)).toHaveLength(0);
+      expect(component.find(ActionMenu)).toHaveLength(1);
+      expect(component.find(ModelBuilder)).toHaveLength(0);
+    });
+
+    it('ErrorCatching route renders <ErrorCatching/> component', () => {
+      const component = mount(
+        <MemoryRouter initialEntries={['/errorCatching']}>
+          <IndraRoutes />
+        </MemoryRouter>,
+      );
+      expect(component.find(Home)).toHaveLength(0);
+      expect(component.find(NotFoundPage)).toHaveLength(0);
+      expect(component.find(WIP)).toHaveLength(0);
+      expect(component.find(ModelDetail)).toHaveLength(0);
+      expect(component.find(ErrorCatching)).toHaveLength(1);
+      expect(component.find(ActionMenu)).toHaveLength(0);
+      expect(component.find(ModelBuilder)).toHaveLength(0);
+    });
+    it('NotFoundPage route renders <NotFoundPage/> component', () => {
+      const component = mount(
+        <MemoryRouter initialEntries={['/random']}>
+          <IndraRoutes />
+        </MemoryRouter>,
+      );
+      expect(component.find(Home)).toHaveLength(0);
+      expect(component.find(NotFoundPage)).toHaveLength(1);
+      expect(component.find(WIP)).toHaveLength(0);
+      expect(component.find(ModelDetail)).toHaveLength(0);
+      expect(component.find(ErrorCatching)).toHaveLength(0);
+      expect(component.find(ActionMenu)).toHaveLength(0);
+      expect(component.find(ModelBuilder)).toHaveLength(0);
+    });
+
+    it('ModelBuilder route renders <ModelBuilder/> component', () => {
+      const component = mount(
+        <MemoryRouter initialEntries={['/modelcreator']}>
+          <IndraRoutes />
+        </MemoryRouter>,
+      );
+      expect(component.find(Home)).toHaveLength(0);
+      expect(component.find(NotFoundPage)).toHaveLength(0);
+      expect(component.find(WIP)).toHaveLength(0);
+      expect(component.find(ModelDetail)).toHaveLength(0);
+      expect(component.find(ErrorCatching)).toHaveLength(0);
+      expect(component.find(ActionMenu)).toHaveLength(0);
+      expect(component.find('ModelBuilder')).toHaveLength(1);
+    });
+  });
 });
-
-// it('renders without crashing', () => {
-//   const div = document.createElement('div');
-//   ReactDOM.render(<App />, div);
-//   ReactDOM.unmountComponentAtNode(div);
-// });
-
-
-// describe('Home component', () => {
-//   it('header prints', () => {
-//     const wrapper = mount(<Home loadingData />);
-//     const header = wrapper.text();
-//     expect(header).toEqual('Loading...');
-//   });
-// });
-
-
-// test('valid path should direct to the valid component', () => {
-//   const wrapper = mount(
-//     <MemoryRouter initialEntries={['/']}>
-//       <App />
-//     </MemoryRouter>,
-//   );
-//   expect(wrapper.find(Home)).toHaveLength(1);
-//   expect(wrapper.find(NotFoundPage)).toHaveLength(0);
-// });
-
-
-// describe('Home component', () => {
-//   it('change loadingData state after componentDidMount', async () => {
-//     const component = mount(<Home />);
-//     const instance = component.instance();
-//     await instance.componentDidMount();
-//     expect(instance.state.loadingData).toBe(false);
-//   });
-// });

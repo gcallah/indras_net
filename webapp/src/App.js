@@ -25,18 +25,24 @@ function App() {
     <Wrapper>
       <HashRouter>
         <Layout>
-          <Switch>
-            <Route exact path="/" component={Home} />
-            <Route exact path="/wip" component={WIP} />
-            <Route exact path="/models/props/:id" component={ModelDetail} />
-            <Route exact path="/models/menu/:id" component={ActionMenu} />
-            <Route exact path="/errorCatching" component={ErrorCatching} />
-            <Route component={NotFoundPage} />
-            <Route exact path="/modelcreator" component={ModelBuilder} />
-          </Switch>
+          <IndraRoutes />
         </Layout>
       </HashRouter>
     </Wrapper>
+  );
+}
+
+export function IndraRoutes() {
+  return (
+    <Switch>
+      <Route exact path="/" component={Home} />
+      <Route exact path="/wip" component={WIP} />
+      <Route exact path="/models/props/:id" component={ModelDetail} />
+      <Route exact path="/models/menu/:id" component={ActionMenu} />
+      <Route exact path="/errorCatching" component={ErrorCatching} />
+      <Route exact path="/modelcreator" component={ModelBuilder} />
+      <Route component={NotFoundPage} />
+    </Switch>
   );
 }
 
