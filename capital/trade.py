@@ -40,7 +40,7 @@ GOODS = {"penguin": {AMT_AVAILABLE: DEF_NUM_RESOURCES,
 
 
 def allocate_resources(trader, avail_goods):
-    tu.endow(trader, avail_goods)
+    tu.endow(trader, avail_goods, rand=True)
 
 
 def create_trader(name, i, props=None):

@@ -116,6 +116,10 @@ def get_rand_good(goods_dict, nonzero=False):
         return good
 
 
+def incr_util():
+    return
+
+
 def endow(trader, avail_goods, equal=False, rand=False):
     """
     This function is going to pick a good at random, and give the
