@@ -190,11 +190,26 @@ def negotiate(trader1, trader2):
             amt += 1
 
 
+def good_decay(goods):
+    """
+    A func to decrease durability in each period if the goods dic have
+    "durability" attribute
+    """
+    for good in goods:
+        goods[good]["durability"] *= goods[good]["durability"]
+
+
 def seek_a_trade(agent):
     nearby_agent = get_env().get_closest_agent(agent)
     if nearby_agent is not None:
         negotiate(agent, nearby_agent)
-
+    # call good_decay only when the goods dic has "durability"
+    item = list(agent["goods"])[0]
+    if "durability" in agent["goods"][item]:
+        good_decay(agent["goods"])
+        print("GOODS DECAY!!")
+        for good in agent["goods"]:
+            print(repr(agent["goods"][good]))
     # return False means to move
     return False
 
