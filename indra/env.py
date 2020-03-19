@@ -159,6 +159,7 @@ class Env(Space):
         # We need to look up these funcs in registry.
         self.census_func = serial_obj["census_func"]
         self.line_data_func = serial_obj["data_func"]
+        self.num_members_ever = serial_obj["num_members_ever"]
 
     def to_json(self):
         rep = super().to_json()
@@ -171,6 +172,7 @@ class Env(Space):
         rep["switches"] = self.switches
         rep["census_func"] = get_func_name(self.census_func)
         rep["data_func"] = get_func_name(self.line_data_func)
+        rep["num_members_ever"] = self.num_members_ever
         return rep
 
     def __repr__(self):
