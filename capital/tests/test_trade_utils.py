@@ -5,16 +5,19 @@ import copy
 from unittest import TestCase, main
 # from indra.agent import Agent
 from capital.trade_utils import endow, get_rand_good, is_depleted, AMT_AVAILABLE, transfer
-from capital.trade_utils import rand_dist, equal_dist
+from capital.trade_utils import rand_dist, equal_dist, good_decay
 import capital.trade_utils as tu
 
 class TradeUtilsTestCase(TestCase):
     def setUp(self, props=None):
         self.goodA = {AMT_AVAILABLE: 10}
         self.goodB = {AMT_AVAILABLE: 10}
+        self.goodC = {AMT_AVAILABLE: 10, "durability": 0.6}
+        self.goodD = {AMT_AVAILABLE: 10, "durability": 0.9}
         self.trader = {"goods": {}}
         # self.agent = Agent()
         self.goods = {"a": self.goodA, "b": self.goodB}
+        self.goods_dict_du = {"c": self.goodC, "d": self.goodD}
         self.goods_dict_empty = {}
 
     def tearDown(self):
@@ -93,6 +96,14 @@ class TradeUtilsTestCase(TestCase):
                          nature_before_trade["a"][AMT_AVAILABLE]/2)
         self.assertEqual(self.trader["goods"]["b"][AMT_AVAILABLE],
                          nature_before_trade["b"][AMT_AVAILABLE]/2)
+
+    def test_good_decay(self):
+        """
+        Test if the durability of the goods get decayed
+        """
+        good_decay(self.goods_dict_du)
+        self.assertEqual(self.goods_dict_du['c']['durability'], 0.36)
+        self.assertEqual(self.goods_dict_du['d']['durability'], 0.81)
 
     if __name__ == '__main__':
         main()
