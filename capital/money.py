@@ -17,23 +17,26 @@ MODEL_NAME = "money"
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
-DEF_NUM_TRADERS = 5
+DEF_NUM_TRADERS = 2
 
 
 # these are the goods we hand out at the start:
 nature_goods = {
-    "oil": {AMT_AVAILABLE: 100, UTIL_FUNC: GEN_UTIL_FUNC,
+    "oil": {AMT_AVAILABLE: 10, UTIL_FUNC: GEN_UTIL_FUNC,
             "incr": 0, "durability": 0.9},
-    "gold": {AMT_AVAILABLE: 80, UTIL_FUNC: GEN_UTIL_FUNC,
-             "incr": 0, "durability": 0.9},
-    "cheese": {AMT_AVAILABLE: 20, UTIL_FUNC: GEN_UTIL_FUNC,
-               "incr": 0, "durability": 0.9},
-    "bread": {AMT_AVAILABLE: 95, UTIL_FUNC: GEN_UTIL_FUNC,
-              "incr": 0, "durability": 0.9},
+    "gold": {AMT_AVAILABLE: 8, UTIL_FUNC: GEN_UTIL_FUNC,
+             "incr": 0, "durability": 1.0},
+    "cheese": {AMT_AVAILABLE: 2, UTIL_FUNC: GEN_UTIL_FUNC,
+               "incr": 0, "durability": 0.8},
+    "bread": {AMT_AVAILABLE: 5, UTIL_FUNC: GEN_UTIL_FUNC,
+              "incr": 0, "durability": 0.4},
 }
 
 
 def create_trader(name, i, props=None):
+    """
+    A func to create a trader with given name
+    """
     return Agent(name + str(i), action=seek_a_trade,
                  attrs={"goods": {},
                         "util": 0,
@@ -41,6 +44,9 @@ def create_trader(name, i, props=None):
 
 
 def nature_to_traders(traders, nature):
+    """
+    A func to do the initial endowment from the nature to all traders
+    """
     for trader in traders:
         endow(traders[trader], nature)
         for good in nature:
