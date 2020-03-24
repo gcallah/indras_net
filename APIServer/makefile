@@ -11,6 +11,10 @@ pytests: $(PYTHONFILES)
 
 tests: pytests lint
 
+test_props_api:
+	$(PYLINT) $(PYLINTFLAGS) props_api.py
+	nosetests tests.test_props_api --nocapture
+
 %.pylint:
 	$(PYLINT) $(PYLINTFLAGS) $*.py
 
