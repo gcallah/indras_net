@@ -12,7 +12,7 @@ from indra.registry import get_env, get_prop
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import init_props
 from capital.trade_utils import seek_a_trade
-from capital.trade_utils import UTIL_FUNC, GEN_UTIL_FUNC, AMT_AVAILABLE
+from capital.trade_utils import UTIL_FUNC, GEN_UTIL_FUNC, AMT_AVAILABLE, GOODS
 import capital.trade_utils as tu
 
 MODEL_NAME = "trade"
@@ -22,21 +22,36 @@ DEF_NUM_TRADER = 4
 DEF_NUM_RESOURCES = 20
 DEF_NUM_RESOURCES_TYPE = 4
 trader_group = None
-
+COMPLIMENTS = "complimentaries"
 max_utility = tu.max_util
-GOODS = {"penguin": {AMT_AVAILABLE: DEF_NUM_RESOURCES,
-                     UTIL_FUNC: GEN_UTIL_FUNC,
-                     "incr": 0},
-         "cat": {AMT_AVAILABLE: DEF_NUM_RESOURCES,
-                 UTIL_FUNC: GEN_UTIL_FUNC,
-                 "incr": 0},
-         "bear": {AMT_AVAILABLE: DEF_NUM_RESOURCES,
-                  UTIL_FUNC: GEN_UTIL_FUNC,
-                  "incr": 0},
-         "pet food": {AMT_AVAILABLE: DEF_NUM_RESOURCES,
+Mkt_GOODS = {"truck": {AMT_AVAILABLE: DEF_NUM_RESOURCES,
+                       UTIL_FUNC: GEN_UTIL_FUNC,
+                       "incr": 0,
+                       COMPLIMENTS: "fuel"},
+             "land": {AMT_AVAILABLE: DEF_NUM_RESOURCES,
                       UTIL_FUNC: GEN_UTIL_FUNC,
-                      "incr": 0}
-         }
+                      "incr": 0,
+                      COMPLIMENTS: "wine cellar"},
+             "wine cellar": {AMT_AVAILABLE: DEF_NUM_RESOURCES,
+                             UTIL_FUNC: GEN_UTIL_FUNC,
+                             "incr": 0,
+                             COMPLIMENTS: "land"},
+             "fuel": {AMT_AVAILABLE: DEF_NUM_RESOURCES,
+                      UTIL_FUNC: GEN_UTIL_FUNC,
+                      "incr": 0,
+                      COMPLIMENTS: "truck"}
+             }
+
+
+def if_compliment(trader, good, comp):
+    if trader[GOODS][good][COMPLIMENTS] == comp:
+        return True
+    else:
+        return False
+
+
+def find_compliment():
+    return
 
 
 def allocate_resources(trader, avail_goods):

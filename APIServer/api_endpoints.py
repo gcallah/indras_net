@@ -24,6 +24,15 @@ user = APIUser("Dennis", None)
 indra_dir = os.getenv("INDRA_HOME", "/home/indrasnet/indras_net")
 
 
+@api.route('/test')
+class Test(Resource):
+    def get(self):
+        """
+        A trivial endpoint just to demo adding something.
+        """
+        return {'hello': 'susanna'}
+
+
 @api.route('/hello')
 class HelloWorld(Resource):
     def get(self):
