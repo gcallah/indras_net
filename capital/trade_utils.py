@@ -197,6 +197,9 @@ def good_decay(goods):
     """
     for good in goods:
         goods[good]["durability"] *= goods[good]["durability"]
+        # if the good the durability is too low, the good can't to be traded
+        if goods[good]["durability"] < 0.001:
+            goods[good][AMT_AVAILABLE] = 0
 
 
 def seek_a_trade(agent):
@@ -208,8 +211,9 @@ def seek_a_trade(agent):
     if "durability" in agent["goods"][item]:
         good_decay(agent["goods"])
         print("GOODS DECAY!!")
+        print(agent.name)
         for good in agent["goods"]:
-            print(repr(agent["goods"][good]))
+            print(good, repr(agent["goods"][good]))
     # return False means to move
     return False
 
