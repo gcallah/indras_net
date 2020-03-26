@@ -116,8 +116,8 @@ def get_rand_good(goods_dict, nonzero=False):
         return good
 
 
-def incr_util():
-    return
+def incr_util(trader, good):
+    trader[GOODS][good]["incr"] += 1
 
 
 def endow(trader, avail_goods, equal=False, rand=False):
