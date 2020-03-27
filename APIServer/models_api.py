@@ -1,6 +1,7 @@
 # This module handles the models portion of the API server.
 
 import json
+from indra.user import user_log
 
 
 def load_models(indra_dir):
@@ -35,8 +36,8 @@ def get_model(model_id, indra_dir=None, models_db=None):
         except FileNotFoundError:
             return {"ERROR": "Model file not found: indra dir is " + indra_dir}
     for model in models_db:
-        print("Model id:", model["model ID"])
+        user_log("Model id:", model["model ID"])
         if int(model["model ID"]) == model_id:
-            print("Matched model", model_id)
+            user_log("Matched model", model_id)
             return model
     raise KeyError

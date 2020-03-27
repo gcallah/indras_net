@@ -287,6 +287,12 @@ class APIUser(User):
         self.user_msgs += (msg + end)
         return msg
 
+    def log(self, msg):
+        """
+        For PythonAnywhere, `print()` writes to the log.
+        """
+        print(msg)
+
     def debug(self, msg, end='\n'):
         """
         Tell the user some debug info.
