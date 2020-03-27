@@ -123,7 +123,7 @@ class ModelMenu(Resource):
 
     def get(self):
         """
-        Get the menu used once into a model.
+        This returns the menu with which a model interacts with a user.
         """
         return user()
 
