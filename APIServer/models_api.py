@@ -36,8 +36,8 @@ def get_model(model_id, indra_dir=None, models_db=None):
         except FileNotFoundError:
             return {"ERROR": "Model file not found: indra dir is " + indra_dir}
     for model in models_db:
-        user_log("Model id:", model["model ID"])
+        user_log("Model id:" + str(model["model ID"]))
         if int(model["model ID"]) == model_id:
-            user_log("Matched model", model_id)
+            user_log("Matched model" + str(model_id))
             return model
     raise KeyError
