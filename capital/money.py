@@ -22,14 +22,16 @@ DEF_NUM_TRADERS = 2
 
 # these are the goods we hand out at the start:
 nature_goods = {
-    "oil": {AMT_AVAILABLE: 10, UTIL_FUNC: GEN_UTIL_FUNC,
-            "incr": 0, "durability": 0.9},
+    "cow": {AMT_AVAILABLE: 10, UTIL_FUNC: GEN_UTIL_FUNC,
+            "incr": 0, "durability": 0.9, "divisibility": 1.0, },
     "gold": {AMT_AVAILABLE: 8, UTIL_FUNC: GEN_UTIL_FUNC,
-             "incr": 0, "durability": 1.0},
+             "incr": 0, "durability": 1.0, "divisibility": 0.1, },
     "cheese": {AMT_AVAILABLE: 2, UTIL_FUNC: GEN_UTIL_FUNC,
-               "incr": 0, "durability": 0.8},
-    "bread": {AMT_AVAILABLE: 5, UTIL_FUNC: GEN_UTIL_FUNC,
-              "incr": 0, "durability": 0.4},
+               "incr": 0, "durability": 0.8, "divisibility": 0.3, },
+    "banana": {AMT_AVAILABLE: 7, UTIL_FUNC: GEN_UTIL_FUNC,
+               "incr": 0, "durability": 0.2, "divisibility": 0.9, },
+    "diamond": {AMT_AVAILABLE: 8, UTIL_FUNC: GEN_UTIL_FUNC,
+                "incr": 0, "durability": 1.0, "divisibility": 0.2, },
 }
 
 
