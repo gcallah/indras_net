@@ -120,6 +120,19 @@ def incr_util(trader, good):
     trader[GOODS][good]["incr"] += 1
 
 
+def amt_adjust(trader, good):
+    """
+    This function will check if divisibility is an attribute of
+    the goods. If so, amt traded will depend on divisibility; otherwise,
+    amt will be 1.
+    """
+    item = list(trader["goods"])[0]
+    if "durability" in trader["goods"][item]:
+        return trader["goods"][good]["divisibility"]
+    else:
+        return 1
+
+
 def endow(trader, avail_goods, equal=False, rand=False):
     """
     This function is going to pick a good at random, and give the
@@ -180,14 +193,15 @@ def answer_to_str(ans):
 def negotiate(trader1, trader2):
     # this_good is a dict
     for this_good in trader1["goods"]:
-        amt = 1
+        # amt = 1
+        amt = amt_adjust(trader1, this_good)
         while trader1["goods"][this_good][AMT_AVAILABLE] >= amt:
             ans = rec_offer(trader2, this_good, amt, trader1)
             user_debug("I'm " + trader1.name
                        + ", " + answer_to_str(ans) + " this offer")
             if ans == ACCEPT or ans == REJECT:
                 break
-            amt += 1
+            amt += amt
 
 
 def good_decay(goods):
@@ -213,7 +227,7 @@ def seek_a_trade(agent):
         print("GOODS DECAY!!")
         print(agent.name)
         for good in agent["goods"]:
-            print(good, repr(agent["goods"][good]))
+            print(" ", good, repr(agent["goods"][good]))
     # return False means to move
     return False
 
@@ -224,9 +238,11 @@ def rec_offer(agent, his_good, his_amt, counterparty):
     in this function, because if the counter-party can't bid enough
     for a single unit, no trade is possible.
     """
-    my_amt = 1
+    # my_amt = 1
     gain = utility_delta(agent, his_good, his_amt)
     for my_good in agent["goods"]:
+        # adjust my_amt if "divisibility" is one of the attributes
+        my_amt = amt_adjust(agent, my_good)
         if my_good != his_good and agent["goods"][my_good][AMT_AVAILABLE] > 0:
             loss = -utility_delta(agent, my_good, -my_amt)
             # user_tell("my good: " + my_good + "; his good: " + his_good
