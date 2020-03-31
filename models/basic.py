@@ -12,6 +12,7 @@ from indra.registry import get_env, get_prop
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.user import user_tell
 from indra.utils import init_props
+from indra.user import user_log
 
 MODEL_NAME = "basic"
 DEBUG = True  # turns debugging code on or off
@@ -55,10 +56,9 @@ def set_up(props=None):
         width=get_prop('grid_width', DEF_WIDTH),
         members=[blue_group, red_group])
 
-
 def main():
     set_up()
-
+    user_log("Setup complete for: " + MODEL_NAME + " model")
     get_env()()
     return 0
 

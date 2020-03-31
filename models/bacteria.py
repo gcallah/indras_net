@@ -13,6 +13,7 @@ from indra.env import Env
 from indra.registry import get_env, get_group, get_prop
 from indra.space import DEF_HEIGHT, DEF_WIDTH, distance
 from indra.utils import init_props
+from indra.user import user_log
 
 MODEL_NAME = "bacteria"
 DEBUG = False  # turns debugging code on or off
@@ -171,9 +172,10 @@ def set_up(props=None):
         members=[toxins, nutrients, bacteria])
 
 
+
 def main():
     set_up()
-
+    user_log("Setup complete for: " + MODEL_NAME + " model")
     get_env()()
     return 0
 
