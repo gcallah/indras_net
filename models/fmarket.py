@@ -11,7 +11,6 @@ from indra.env import Env, UNLIMITED
 from indra.registry import get_env, get_prop
 from indra.utils import gaussian
 from indra.utils import init_props
-from indra.user import user_log
 
 MODEL_NAME = "fmarket"
 DEF_NUM_TREND_FOLLOWER = 10
@@ -226,7 +225,6 @@ def set_up(props=None):
 
 def main():
     set_up()
-    user_log("Setup complete for: " + MODEL_NAME + " model")
     get_env()()
     return 0
 
