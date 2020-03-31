@@ -116,8 +116,11 @@ def get_rand_good(goods_dict, nonzero=False):
         return good
 
 
-def incr_util(trader, good):
-    trader[GOODS][good]["incr"] += 1
+def incr_util(trader, good, amt=None):
+    if amt:
+        trader[GOODS][good]["incr"] += amt
+    else:
+        trader[GOODS][good]["incr"] += 1
 
 
 def amt_adjust(trader, good):
