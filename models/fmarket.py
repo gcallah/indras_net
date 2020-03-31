@@ -223,6 +223,7 @@ def set_up(props=None):
         line_data_func=plot_asset_price)
     get_env().exclude_menu_item("scatter_plot")
 
+
 def main():
     set_up()
     user_log("Setup complete for: " + MODEL_NAME + " model")

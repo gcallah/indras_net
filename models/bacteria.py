@@ -172,7 +172,6 @@ def set_up(props=None):
         members=[toxins, nutrients, bacteria])
 
 
-
 def main():
     set_up()
     user_log("Setup complete for: " + MODEL_NAME + " model")

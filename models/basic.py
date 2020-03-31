@@ -56,6 +56,7 @@ def set_up(props=None):
         width=get_prop('grid_width', DEF_WIDTH),
         members=[blue_group, red_group])
 
+
 def main():
     set_up()
     user_log("Setup complete for: " + MODEL_NAME + " model")
