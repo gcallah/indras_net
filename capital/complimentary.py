@@ -56,20 +56,25 @@ def create_trader(name, i, props=None):
     return Agent(name + str(i), action=seek_a_trade,
                  attrs={"goods": {"truck": {AMT_AVAILABLE: 0,
                                             UTIL_FUNC: "penguin_util_func",
-                                            "incr": 0},
+                                            "incr": 0,
+                                            COMPLIMENTS: "fuel"},
                                   "land": {AMT_AVAILABLE: 0,
                                            UTIL_FUNC: "cat_util_func",
-                                           "incr": 0},
+                                           "incr": 0,
+                                           COMPLIMENTS: "wine cellar"},
                                   "wine cellar": {AMT_AVAILABLE: 0,
                                                   UTIL_FUNC: "bear_util_func",
-                                                  "incr": 0},
+                                                  "incr": 0,
+                                                  COMPLIMENTS: "land"},
                                   "fuel": {AMT_AVAILABLE: 0,
                                            UTIL_FUNC: GEN_UTIL_FUNC,
-                                           "incr": 0}
+                                           "incr": 0,
+                                           COMPLIMENTS: "truck"}
                                   },
                         "util": 0,
                         "pre_trade_util": 0,
-                        "trades_with": "trader"})
+                        "trades_with": "trader",
+                        COMPLIMENTS: True})
 
 
 def set_up(props=None):

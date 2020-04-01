@@ -229,11 +229,12 @@ def good_decay(goods):
             goods[good][AMT_AVAILABLE] = 0
 
 
-def seek_a_trade(agent, comp=None):
+def seek_a_trade(agent):
     nearby_agent = get_env().get_closest_agent(agent)
     if nearby_agent is not None:
-        if comp:
+        if agent[COMPLIMENTS]:
             negotiate(agent, nearby_agent, comp=True)
+            print("complimentary!!!")
         else:
             negotiate(agent, nearby_agent)
     # call good_decay only when the goods dic has "durability"
@@ -256,15 +257,16 @@ def rec_offer(agent, his_good, his_amt, counterparty, comp=None):
     """
     # my_amt = 1
     gain = utility_delta(agent, his_good, his_amt)
-    if comp:
-        if if_compliment(agent, his_good):
-            incr_util(agent, his_good, amt=None)
-            gain += agent[GOODS][his_good]["incr"]
     for my_good in agent["goods"]:
         # adjust my_amt if "divisibility" is one of the attributes
         my_amt = amt_adjust(agent, my_good)
         if my_good != his_good and agent["goods"][my_good][AMT_AVAILABLE] > 0:
             loss = -utility_delta(agent, my_good, -my_amt)
+            if comp:
+                if if_compliment(agent, my_good, his_good):
+                    incr_util(agent, his_good, amt=None)
+                    gain += agent[GOODS][his_good]["incr"]
+                    print(agent[GOODS][his_good]["incr"])
             # user_tell("my good: " + my_good + "; his good: " + his_good
             #           + ", I gain: " + str(gain) +
             #           " and lose: " + str(loss))
