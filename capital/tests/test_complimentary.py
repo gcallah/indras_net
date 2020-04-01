@@ -25,9 +25,6 @@ class tradeTestCase(TestCase):
         self.goodB = None
         self.trader = None
         self.goods = None
-
-    def test_if_compliment(self):
-        self.assertTrue(cp.if_compliment(self.trader, "a", "b"))
         
 
     def test_create_trader(self):

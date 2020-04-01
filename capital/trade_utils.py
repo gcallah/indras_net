@@ -17,7 +17,7 @@ answer_dict = {
     0: "I'm indifferent about",
     -1: "I reject"
 }
-
+COMPLIMENTS = "complimentaries"
 DEF_MAX_UTIL = 20  # this should be set by the models that use this module
 
 max_util = DEF_MAX_UTIL
@@ -67,6 +67,13 @@ def get_util_func(fname):
         }
     A trader is an object that can be indexed to yield a goods dictionary.
 """
+
+
+def if_compliment(trader, good, comp):
+    if trader[GOODS][good][COMPLIMENTS] == comp:
+        return True
+    else:
+        return False
 
 
 def is_depleted(goods_dict):
@@ -235,7 +242,7 @@ def seek_a_trade(agent):
     return False
 
 
-def rec_offer(agent, his_good, his_amt, counterparty):
+def rec_offer(agent, his_good, his_amt, counterparty, comp=None):
     """
     Receive an offer: we don't need to ever change my_amt
     in this function, because if the counter-party can't bid enough
@@ -243,6 +250,10 @@ def rec_offer(agent, his_good, his_amt, counterparty):
     """
     # my_amt = 1
     gain = utility_delta(agent, his_good, his_amt)
+    if comp:
+        if if_compliment(agent, his_good):
+            incr_util(agent, his_good, amt=None)
+            gain += agent[GOODS][his_good]["incr"]
     for my_good in agent["goods"]:
         # adjust my_amt if "divisibility" is one of the attributes
         my_amt = amt_adjust(agent, my_good)

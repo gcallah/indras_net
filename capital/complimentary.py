@@ -1,5 +1,5 @@
 """
-A trade model.
+A complimentary model.
 Places two groups of agents in the enviornment randomly
 and moves them around randomly.
 """
@@ -12,16 +12,17 @@ from indra.registry import get_env, get_prop
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import init_props
 from capital.trade_utils import seek_a_trade
-from capital.trade_utils import UTIL_FUNC, GEN_UTIL_FUNC, AMT_AVAILABLE, GOODS
+from capital.trade_utils import UTIL_FUNC, GEN_UTIL_FUNC, AMT_AVAILABLE
 import capital.trade_utils as tu
 
-MODEL_NAME = "trade"
+MODEL_NAME = "complimentary"
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 DEF_NUM_TRADER = 4
 DEF_NUM_RESOURCES = 20
 DEF_NUM_RESOURCES_TYPE = 4
 trader_group = None
+
 COMPLIMENTS = "complimentaries"
 max_utility = tu.max_util
 Mkt_GOODS = {"truck": {AMT_AVAILABLE: DEF_NUM_RESOURCES,
@@ -43,35 +44,28 @@ Mkt_GOODS = {"truck": {AMT_AVAILABLE: DEF_NUM_RESOURCES,
              }
 
 
-def if_compliment(trader, good, comp):
-    if trader[GOODS][good][COMPLIMENTS] == comp:
-        return True
-    else:
-        return False
-
-
 def find_compliment():
     return
 
 
 def allocate_resources(trader, avail_goods):
-    tu.endow(trader, avail_goods, rand=True)
+    tu.endow(trader, avail_goods)
 
 
 def create_trader(name, i, props=None):
     return Agent(name + str(i), action=seek_a_trade,
-                 attrs={"goods": {"penguin": {AMT_AVAILABLE: 0,
-                                              UTIL_FUNC: "penguin_util_func",
-                                              "incr": 0},
-                                  "cat": {AMT_AVAILABLE: 0,
-                                          UTIL_FUNC: "cat_util_func",
-                                          "incr": 0},
-                                  "bear": {AMT_AVAILABLE: 0,
-                                           UTIL_FUNC: "bear_util_func",
+                 attrs={"goods": {"truck": {AMT_AVAILABLE: 0,
+                                            UTIL_FUNC: "penguin_util_func",
+                                            "incr": 0},
+                                  "land": {AMT_AVAILABLE: 0,
+                                           UTIL_FUNC: "cat_util_func",
                                            "incr": 0},
-                                  "pet food": {AMT_AVAILABLE: 0,
-                                               UTIL_FUNC: GEN_UTIL_FUNC,
-                                               "incr": 0}
+                                  "wine cellar": {AMT_AVAILABLE: 0,
+                                                  UTIL_FUNC: "bear_util_func",
+                                                  "incr": 0},
+                                  "fuel": {AMT_AVAILABLE: 0,
+                                           UTIL_FUNC: GEN_UTIL_FUNC,
+                                           "incr": 0}
                                   },
                         "util": 0,
                         "pre_trade_util": 0,
@@ -94,7 +88,7 @@ def set_up(props=None):
         width=get_prop('grid_width', DEF_WIDTH),
         members=[trader_group])
     for trader in trader_group:
-        allocate_resources(trader_group[trader], GOODS)
+        allocate_resources(trader_group[trader], Mkt_GOODS)
         get_env().user.tell(trader_group[trader]["goods"])
     return (trader_group, max_utility)
 

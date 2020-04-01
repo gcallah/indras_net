@@ -5,8 +5,9 @@ import copy
 from unittest import TestCase, main
 # from indra.agent import Agent
 from capital.trade_utils import endow, get_rand_good, is_depleted, AMT_AVAILABLE, transfer
-from capital.trade_utils import rand_dist, equal_dist, good_decay, amt_adjust
+from capital.trade_utils import rand_dist, equal_dist, good_decay, amt_adjust, if_compliment, COMPLIMENTS
 import capital.trade_utils as tu
+
 
 class TradeUtilsTestCase(TestCase):
     def setUp(self, props=None):
@@ -46,6 +47,13 @@ class TradeUtilsTestCase(TestCase):
         goods_dict_zeros = {"a": goodA, "b": goodB}
         self.assertTrue(is_depleted(self.goods_dict_empty))
         self.assertTrue(is_depleted(goods_dict_zeros))
+
+    def test_if_compliment(self):
+        self.goodA = {AMT_AVAILABLE: 10, COMPLIMENTS: "b"}
+        self.goodB = {AMT_AVAILABLE: 10}
+        self.trader = {"goods": {"a": self.goodA, "b": self.goodB}}
+        self.goods = {"a": self.goodA, "b": self.goodB}
+        self.assertTrue(if_compliment(self.trader, "a", "b"))
 
     def test_get_rand_good(self):
         """
