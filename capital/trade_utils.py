@@ -1,7 +1,7 @@
 """
 This file contains general functions useful in trading goods.
 """
-from indra.user import user_debug
+# from indra.user import user_debug
 from indra.registry import get_env
 import random
 
@@ -104,7 +104,7 @@ def get_rand_good(goods_dict, nonzero=False):
     """
     What should this do with empty dict?
     """
-    print("Calling get_rand_good()")
+    # print("Calling get_rand_good()")
     if goods_dict is None or not len(goods_dict):
         return None
     else:
@@ -200,15 +200,18 @@ def answer_to_str(ans):
     return answer_dict[ans]
 
 
-def negotiate(trader1, trader2):
+def negotiate(trader1, trader2, comp=None):
     # this_good is a dict
     for this_good in trader1["goods"]:
         # amt = 1
         amt = amt_adjust(trader1, this_good)
         while trader1["goods"][this_good][AMT_AVAILABLE] >= amt:
-            ans = rec_offer(trader2, this_good, amt, trader1)
-            user_debug("I'm " + trader1.name
-                       + ", " + answer_to_str(ans) + " this offer")
+            if comp:
+                ans = rec_offer(trader2, this_good, amt, trader1, comp=True)
+            else:
+                ans = rec_offer(trader2, this_good, amt, trader1)
+            # user_debug("I'm " + trader1.name
+            #            + ", " + answer_to_str(ans) + " this offer")
             if ans == ACCEPT or ans == REJECT:
                 break
             amt += amt
@@ -226,16 +229,19 @@ def good_decay(goods):
             goods[good][AMT_AVAILABLE] = 0
 
 
-def seek_a_trade(agent):
+def seek_a_trade(agent, comp=None):
     nearby_agent = get_env().get_closest_agent(agent)
     if nearby_agent is not None:
-        negotiate(agent, nearby_agent)
+        if comp:
+            negotiate(agent, nearby_agent, comp=True)
+        else:
+            negotiate(agent, nearby_agent)
     # call good_decay only when the goods dic has "durability"
     item = list(agent["goods"])[0]
     if "durability" in agent["goods"][item]:
         good_decay(agent["goods"])
         print("GOODS DECAY!!")
-        print(agent.name)
+        # print(agent.name)
         for good in agent["goods"]:
             print(" ", good, repr(agent["goods"][good]))
     # return False means to move
@@ -275,8 +281,8 @@ def rec_offer(agent, his_good, his_amt, counterparty, comp=None):
 def rec_reply(agent, my_good, my_amt, his_good, his_amt):
     gain = utility_delta(agent, his_good, his_amt)
     loss = utility_delta(agent, my_good, -my_amt)
-    print(agent.name, "receiving a reply: gain = ",
-          gain, "and loss =", abs(loss))
+    # print(agent.name, "receiving a reply: gain = ",
+    #       gain, "and loss =", abs(loss))
     if gain > abs(loss):
         return ACCEPT
     else:
