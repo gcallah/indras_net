@@ -69,8 +69,21 @@ def get_util_func(fname):
 """
 
 
-def if_complement(trader, good, comp):
+def is_complement(trader, good, comp):
+    """
+    see if 'comp' is complement of 'good'
+    """
     if trader[GOODS][good][COMPLEMENTS] == comp:
+        return True
+    else:
+        return False
+
+
+def check_complement(trader):
+    """
+    see if COMPLEMENT is an attribute in trader
+    """
+    if COMPLEMENTS in trader[GOODS]:
         return True
     else:
         return False
@@ -87,7 +100,7 @@ def is_depleted(goods_dict):
     return True
 
 
-def transfer(to_goods, from_goods, good_nm, amt=None):
+def transfer(to_goods, from_goods, good_nm, amt=None, comp=True):
     """
     Transfer goods between two goods dicts.
     Use `amt` if it is not None.
@@ -149,22 +162,27 @@ def endow(trader, avail_goods, equal=False, rand=False):
     trader all of it, by default. We will write partial distributions
     later.
     """
+    comp = False
+    if check_complement(trader):
+        # see if the trader has the imformation of complement
+        comp = True
+
     if equal:
         # each trader get equal amount of good
-        equal_dist()
+        equal_dist(comp=comp)
     elif rand:
         # each trader get random amt of good
-        rand_dist(trader[GOODS], avail_goods)
+        rand_dist(trader[GOODS], avail_goods, comp=comp)
     else:
         # pick an item at random
         # stick all of it in trader's goods dictionary
         good2acquire = get_rand_good(avail_goods, nonzero=True)
         if good2acquire is not None:
             # get some of the good
-            transfer(trader[GOODS], avail_goods, good2acquire)
+            transfer(trader[GOODS], avail_goods, good2acquire, comp=comp)
 
 
-def equal_dist(num_trader, to_goods, from_goods):
+def equal_dist(num_trader, to_goods, from_goods, comp=True):
     """
     each trader get equal amount of goods
     to_goods = trader[GOODS], from_goods = avail_goods
@@ -174,7 +192,7 @@ def equal_dist(num_trader, to_goods, from_goods):
         transfer(to_goods, from_goods, good, amt)
 
 
-def rand_dist(to_goods, from_goods):
+def rand_dist(to_goods, from_goods, comp=True):
     """
     select random good by random amount and transfer to trader
     """
@@ -263,7 +281,7 @@ def rec_offer(agent, his_good, his_amt, counterparty, comp=None):
         if my_good != his_good and agent["goods"][my_good][AMT_AVAILABLE] > 0:
             loss = -utility_delta(agent, my_good, -my_amt)
             if comp:
-                if if_complement(agent, my_good, his_good):
+                if is_complement(agent, my_good, his_good):
                     incr_util(agent, his_good, amt=None)
                     gain += agent[GOODS][his_good]["incr"]
                     print(agent[GOODS][his_good]["incr"])

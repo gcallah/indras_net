@@ -44,10 +44,6 @@ Mkt_GOODS = {"truck": {AMT_AVAILABLE: DEF_NUM_RESOURCES,
              }
 
 
-def find_complement():
-    return
-
-
 def allocate_resources(trader, avail_goods):
     tu.endow(trader, avail_goods)
 
@@ -69,12 +65,11 @@ def create_trader(name, i, props=None):
                                   "fuel": {AMT_AVAILABLE: 0,
                                            UTIL_FUNC: GEN_UTIL_FUNC,
                                            "incr": 0,
-                                           COMPLEMENTS: "truck"}
-                                  },
+                                           COMPLEMENTS: "truck"},
+                                  COMPLEMENTS: True},
                         "util": 0,
                         "pre_trade_util": 0,
-                        "trades_with": "trader",
-                        COMPLEMENTS: True})
+                        "trades_with": "trader"})
 
 
 def set_up(props=None):
