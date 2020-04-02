@@ -1,5 +1,5 @@
 """
-A complimentary model.
+A complementary model.
 Places two groups of agents in the enviornment randomly
 and moves them around randomly.
 """
@@ -15,7 +15,7 @@ from capital.trade_utils import seek_a_trade
 from capital.trade_utils import UTIL_FUNC, GEN_UTIL_FUNC, AMT_AVAILABLE
 import capital.trade_utils as tu
 
-MODEL_NAME = "complimentary"
+MODEL_NAME = "complementary"
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 DEF_NUM_TRADER = 4
@@ -23,28 +23,28 @@ DEF_NUM_RESOURCES = 20
 DEF_NUM_RESOURCES_TYPE = 4
 trader_group = None
 
-COMPLIMENTS = "complimentaries"
+COMPLEMENTS = "complementaries"
 max_utility = tu.max_util
 Mkt_GOODS = {"truck": {AMT_AVAILABLE: DEF_NUM_RESOURCES,
                        UTIL_FUNC: GEN_UTIL_FUNC,
                        "incr": 0,
-                       COMPLIMENTS: "fuel"},
+                       COMPLEMENTS: "fuel"},
              "land": {AMT_AVAILABLE: DEF_NUM_RESOURCES,
                       UTIL_FUNC: GEN_UTIL_FUNC,
                       "incr": 0,
-                      COMPLIMENTS: "wine cellar"},
+                      COMPLEMENTS: "wine cellar"},
              "wine cellar": {AMT_AVAILABLE: DEF_NUM_RESOURCES,
                              UTIL_FUNC: GEN_UTIL_FUNC,
                              "incr": 0,
-                             COMPLIMENTS: "land"},
+                             COMPLEMENTS: "land"},
              "fuel": {AMT_AVAILABLE: DEF_NUM_RESOURCES,
                       UTIL_FUNC: GEN_UTIL_FUNC,
                       "incr": 0,
-                      COMPLIMENTS: "truck"}
+                      COMPLEMENTS: "truck"}
              }
 
 
-def find_compliment():
+def find_complement():
     return
 
 
@@ -57,24 +57,24 @@ def create_trader(name, i, props=None):
                  attrs={"goods": {"truck": {AMT_AVAILABLE: 0,
                                             UTIL_FUNC: "penguin_util_func",
                                             "incr": 0,
-                                            COMPLIMENTS: "fuel"},
+                                            COMPLEMENTS: "fuel"},
                                   "land": {AMT_AVAILABLE: 0,
                                            UTIL_FUNC: "cat_util_func",
                                            "incr": 0,
-                                           COMPLIMENTS: "wine cellar"},
+                                           COMPLEMENTS: "wine cellar"},
                                   "wine cellar": {AMT_AVAILABLE: 0,
                                                   UTIL_FUNC: "bear_util_func",
                                                   "incr": 0,
-                                                  COMPLIMENTS: "land"},
+                                                  COMPLEMENTS: "land"},
                                   "fuel": {AMT_AVAILABLE: 0,
                                            UTIL_FUNC: GEN_UTIL_FUNC,
                                            "incr": 0,
-                                           COMPLIMENTS: "truck"}
+                                           COMPLEMENTS: "truck"}
                                   },
                         "util": 0,
                         "pre_trade_util": 0,
                         "trades_with": "trader",
-                        COMPLIMENTS: True})
+                        COMPLEMENTS: True})
 
 
 def set_up(props=None):

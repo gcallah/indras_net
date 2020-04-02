@@ -17,7 +17,7 @@ answer_dict = {
     0: "I'm indifferent about",
     -1: "I reject"
 }
-COMPLIMENTS = "complimentaries"
+COMPLEMENTS = "complementaries"
 DEF_MAX_UTIL = 20  # this should be set by the models that use this module
 
 max_util = DEF_MAX_UTIL
@@ -69,8 +69,8 @@ def get_util_func(fname):
 """
 
 
-def if_compliment(trader, good, comp):
-    if trader[GOODS][good][COMPLIMENTS] == comp:
+def if_complement(trader, good, comp):
+    if trader[GOODS][good][COMPLEMENTS] == comp:
         return True
     else:
         return False
@@ -232,9 +232,9 @@ def good_decay(goods):
 def seek_a_trade(agent):
     nearby_agent = get_env().get_closest_agent(agent)
     if nearby_agent is not None:
-        if agent[COMPLIMENTS]:
+        if agent[COMPLEMENTS]:
             negotiate(agent, nearby_agent, comp=True)
-            print("complimentary!!!")
+            print("complementary!!!")
         else:
             negotiate(agent, nearby_agent)
     # call good_decay only when the goods dic has "durability"
@@ -263,7 +263,7 @@ def rec_offer(agent, his_good, his_amt, counterparty, comp=None):
         if my_good != his_good and agent["goods"][my_good][AMT_AVAILABLE] > 0:
             loss = -utility_delta(agent, my_good, -my_amt)
             if comp:
-                if if_compliment(agent, my_good, his_good):
+                if if_complement(agent, my_good, his_good):
                     incr_util(agent, his_good, amt=None)
                     gain += agent[GOODS][his_good]["incr"]
                     print(agent[GOODS][his_good]["incr"])
