@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.css": "/indras_net/webapp/static/css/main.fd643c77.chunk.css",
-    "main.js": "/indras_net/webapp/static/js/main.a888492c.chunk.js",
-    "main.js.map": "/indras_net/webapp/static/js/main.a888492c.chunk.js.map",
+    "main.css": "/indras_net/webapp/static/css/main.db17fb3d.chunk.css",
+    "main.js": "/indras_net/webapp/static/js/main.416ded94.chunk.js",
+    "main.js.map": "/indras_net/webapp/static/js/main.416ded94.chunk.js.map",
     "runtime-main.js": "/indras_net/webapp/static/js/runtime-main.45486235.js",
     "runtime-main.js.map": "/indras_net/webapp/static/js/runtime-main.45486235.js.map",
-    "static/css/2.3417a56c.chunk.css": "/indras_net/webapp/static/css/2.3417a56c.chunk.css",
+    "static/css/2.e12d31eb.chunk.css": "/indras_net/webapp/static/css/2.e12d31eb.chunk.css",
     "static/js/2.20d22411.chunk.js": "/indras_net/webapp/static/js/2.20d22411.chunk.js",
     "static/js/2.20d22411.chunk.js.map": "/indras_net/webapp/static/js/2.20d22411.chunk.js.map",
     "index.html": "/indras_net/webapp/index.html",
-    "precache-manifest.9f07f4380fcc7cf6f6c6933214913735.js": "/indras_net/webapp/precache-manifest.9f07f4380fcc7cf6f6c6933214913735.js",
+    "precache-manifest.c92f292ce19aab68357e39d2130ab94d.js": "/indras_net/webapp/precache-manifest.c92f292ce19aab68357e39d2130ab94d.js",
     "service-worker.js": "/indras_net/webapp/service-worker.js",
-    "static/css/2.3417a56c.chunk.css.map": "/indras_net/webapp/static/css/2.3417a56c.chunk.css.map",
-    "static/css/main.fd643c77.chunk.css.map": "/indras_net/webapp/static/css/main.fd643c77.chunk.css.map",
+    "static/css/2.e12d31eb.chunk.css.map": "/indras_net/webapp/static/css/2.e12d31eb.chunk.css.map",
+    "static/css/main.db17fb3d.chunk.css.map": "/indras_net/webapp/static/css/main.db17fb3d.chunk.css.map",
     "static/js/2.20d22411.chunk.js.LICENSE.txt": "/indras_net/webapp/static/js/2.20d22411.chunk.js.LICENSE.txt",
     "static/media/Sandpile.jpg": "/indras_net/webapp/static/media/Sandpile.090bc1a0.jpg",
     "static/media/mendelobrot_sq.jpg": "/indras_net/webapp/static/media/mendelobrot_sq.875dd8b8.jpg",
@@ -21,9 +21,9 @@
   },
   "entrypoints": [
     "static/js/runtime-main.45486235.js",
-    "static/css/2.3417a56c.chunk.css",
+    "static/css/2.e12d31eb.chunk.css",
     "static/js/2.20d22411.chunk.js",
-    "static/css/main.fd643c77.chunk.css",
-    "static/js/main.a888492c.chunk.js"
+    "static/css/main.db17fb3d.chunk.css",
+    "static/js/main.416ded94.chunk.js"
   ]
 }
