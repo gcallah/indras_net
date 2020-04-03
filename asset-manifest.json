@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/indras_net/webapp/static/css/main.fd643c77.chunk.css",
-    "main.js": "/indras_net/webapp/static/js/main.93379a51.chunk.js",
-    "main.js.map": "/indras_net/webapp/static/js/main.93379a51.chunk.js.map",
+    "main.js": "/indras_net/webapp/static/js/main.a888492c.chunk.js",
+    "main.js.map": "/indras_net/webapp/static/js/main.a888492c.chunk.js.map",
     "runtime-main.js": "/indras_net/webapp/static/js/runtime-main.45486235.js",
     "runtime-main.js.map": "/indras_net/webapp/static/js/runtime-main.45486235.js.map",
     "static/css/2.3417a56c.chunk.css": "/indras_net/webapp/static/css/2.3417a56c.chunk.css",
     "static/js/2.20d22411.chunk.js": "/indras_net/webapp/static/js/2.20d22411.chunk.js",
     "static/js/2.20d22411.chunk.js.map": "/indras_net/webapp/static/js/2.20d22411.chunk.js.map",
     "index.html": "/indras_net/webapp/index.html",
-    "precache-manifest.be9f0880ae1dab2be64f9a8e2ba688dc.js": "/indras_net/webapp/precache-manifest.be9f0880ae1dab2be64f9a8e2ba688dc.js",
+    "precache-manifest.9f07f4380fcc7cf6f6c6933214913735.js": "/indras_net/webapp/precache-manifest.9f07f4380fcc7cf6f6c6933214913735.js",
     "service-worker.js": "/indras_net/webapp/service-worker.js",
     "static/css/2.3417a56c.chunk.css.map": "/indras_net/webapp/static/css/2.3417a56c.chunk.css.map",
     "static/css/main.fd643c77.chunk.css.map": "/indras_net/webapp/static/css/main.fd643c77.chunk.css.map",
@@ -24,6 +24,6 @@
     "static/css/2.3417a56c.chunk.css",
     "static/js/2.20d22411.chunk.js",
     "static/css/main.fd643c77.chunk.css",
-    "static/js/main.93379a51.chunk.js"
+    "static/js/main.a888492c.chunk.js"
   ]
 }

@@ -22,7 +22,9 @@ const Wrapper = styled('div')`
 function App() {
   return (
     <Wrapper>
-      <HashRouter>
+      <HashRouter
+        basename="/webapp"
+      >
         <Layout>
           <IndraRoutes />
         </Layout>
