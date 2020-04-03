@@ -19,9 +19,9 @@ const NotFoundPage = () => (
       <h1>Oops!</h1>
       <div>Page not found.</div>
       <div className="action">
-          <a className="btn btn-primary" href="/">
+        <a className="btn btn-primary" href="/">
           Guide me to the right path!
-          </a>
+        </a>
       </div>
     </div>
   </Status>
