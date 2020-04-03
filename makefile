@@ -80,7 +80,7 @@ submods:
 	cd utils; git pull origin master
 
 # run tests then commit all, then push
-prod: local pytests jstests notebooks github
+prod: local pytests js notebooks github
 
 # run tests then push just what is already committed:
 prod1: tests
@@ -91,7 +91,8 @@ tests: pytests jstests dockertests
 
 python: pytests github
 
-js: jstests github
+js: jstests
+	cd webapp; make install
 
 pytests: FORCE
 	cd models; make tests
