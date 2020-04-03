@@ -298,8 +298,8 @@ def rec_offer(agent, his_good, his_amt, counterparty, comp=None):
 def rec_reply(agent, my_good, my_amt, his_good, his_amt):
     gain = utility_delta(agent, his_good, his_amt)
     loss = utility_delta(agent, my_good, -my_amt)
-    # print(agent.name, "receiving a reply: gain = ",
-    #       gain, "and loss =", abs(loss))
+    print(agent.name, "receiving a reply: gain = ",
+          gain, "and loss =", abs(loss))
     if gain > abs(loss):
         return ACCEPT
     else:

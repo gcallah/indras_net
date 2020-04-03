@@ -87,7 +87,8 @@ def set_up(props=None):
         width=get_prop('grid_width', DEF_WIDTH),
         members=[trader_group])
     for trader in trader_group:
-        allocate_resources(trader_group[trader], Mkt_GOODS)
+        for i in range(DEF_NUM_RESOURCES_TYPE):
+            allocate_resources(trader_group[trader], Mkt_GOODS)
         get_env().user.tell(trader_group[trader]["goods"])
     return (trader_group, max_utility)
 
