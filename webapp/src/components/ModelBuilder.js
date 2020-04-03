@@ -32,9 +32,9 @@ class ModelBuilder extends Component {
   }
 
     renderHeader = () => (
-      <h1 className="header" style={{ textAlign: 'center', fontWeight: '200' }}>
-      Please set the parameters for the model builder
-      </h1>
+        <h1 className="header" style={{ textAlign: 'center', fontWeight: '200' }}>
+        Please set the parameters for the model builder
+        </h1>
     )
 
     renderSubmitButton = () => {
