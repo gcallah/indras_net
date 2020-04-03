@@ -33,7 +33,7 @@ class Home extends Component {
     const { history } = this.props;
     try {
       this.setState({ loadingData: true });
-      document.title = 'Indra | Home';
+      document.title = 'Home';
       const res = await axios.get(`${this.api_server}models`);
       this.setState({ allItems: res.data, loadingData: false });
     } catch (e) {
@@ -69,7 +69,7 @@ class Home extends Component {
     return (
       <div className="container">
         <div className="margin-bottom-80">
-          <h1 className="text-left">The Agent-Based Modeling System</h1>
+          <h1 className="text-left">Indra Agent-Based Modeling System</h1>
         </div>
         <div className="row">
           <div className="col-6">
