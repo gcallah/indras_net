@@ -12,7 +12,9 @@ MODELS_DIR = models
 NB_DIR = notebooks
 WEB_DIR = webapp
 WEB_PUBLIC = $(WEB_DIR)/public
+WEB_BUILD = $(WEB_DIR)/build
 WEB_SRC = $(WEB_DIR)/src
+WEB_HOMEPAGE = index.html
 API_DIR = APIServer
 PYLINT = flake8
 PYLINTFLAGS = 
@@ -51,23 +53,21 @@ setup_react:
 	cd $(WEB_DIR); npm install
 
 # Build react files to generate static assets (HTML, CSS, JS)
-webapp: $(WEB_PUBLIC)/index.html
+webapp: $(WEB_PUBLIC)/$(WEB_HOMEPAGE)
 
-$(WEB_PUBLIC)/index.html: $(WEBFILES)
+$(WEB_PUBLIC)/$(WEB_HOMEPAGE): $(WEBFILES)
 	- rm -r static || true
-	- rm webapp.html || true
 	- cd $(WEB_DIR) && \
 	npm run build && \
-	mv build/index.html build/webapp.html && \
 	cp -r build/* .. && \
 	cd ..
 
 deploy_webapp: webapp
 	git add static/js/*js
 	git add static/js/*map
-	git add $(WEB_DIR)/build/static/js/*js
-	git add $(WEB_DIR)/build/static/js/*map
-	git add $(WEB_DIR)/build/webapp.html
+	git add $(WEB_BUILD)/static/js/*js
+	git add $(WEB_BUILD)/static/js/*map
+	git add $(WEB_BUILD)/$(WEB_HOMEPAGE)
 	cd $(WEB_DIR); npm run deploy
 
 # build tags file for vim:
