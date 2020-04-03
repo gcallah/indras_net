@@ -208,7 +208,7 @@ class TermUser(User):
         How to log something for this type of user.
         Our default is going to be the same as tell, for now!
         """
-        return self.user.tell(msg, end)
+        return self.tell(msg, end)
 
     def is_number(self, c):
         """
