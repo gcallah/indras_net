@@ -28,15 +28,6 @@
       "graph": "line"
     },
     {
-      "model ID": 5,
-      "name": "Financial Market",
-      "run": "fmarket",
-      "props": "models/props/fmarket.props.json",
-      "doc": "A model in which value investors and trend followers buy and sell in waves, causing an asset price to cycle.",
-      "source": "https://github.com/gcallah/indras_net/blob/master/models/fmarket.py",
-      "graph": "line"
-    },
-    {
       "model ID": 6,
       "name": "Schelling's Segregation Model",
       "run": "segregation",
