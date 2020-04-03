@@ -91,8 +91,7 @@ tests: pytests jstests dockertests
 
 python: pytests github
 
-js: jstests
-	cd webapp; make install
+js: jstests deploy_webapp
 
 pytests: FORCE
 	cd models; make tests
