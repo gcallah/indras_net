@@ -4,14 +4,10 @@ import { ScatterChart } from 'react-chartkick';
 import 'chart.js';
 import PropTypes from 'prop-types';
 
-const FMARKET = 10;
 function ScatterPlot(props) {
   const { loadingData, envFile, id } = props;
-  if (loadingData && id !== FMARKET) {
+  if (loadingData) {
     const env = envFile.members;
-    // TODO: width and height are set but never used
-    // const WIDTH = envFile.props.grid_height.val;
-    // const HEIGHT = envFile.props.grid_width.val;
     const data = [];
     Object.keys(env).forEach((group, iGroup) => {
       data.push({
@@ -36,9 +32,6 @@ function ScatterPlot(props) {
         />
       </div>
     );
-  }
-  if (loadingData && id === FMARKET) {
-    return <p> There is no scatter plot available for this model! </p>;
   }
   return null;
 }
