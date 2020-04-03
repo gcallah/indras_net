@@ -63,7 +63,6 @@ $(WEB_PUBLIC)/index.html: $(WEBFILES)
 	cd ..
 
 deploy_webapp: webapp
-	@echo "After completion you must run `make prod`"
 	git add static/js/*js
 	git add static/js/*map
 	git add $(WEB_DIR)/build/static/js/*js
