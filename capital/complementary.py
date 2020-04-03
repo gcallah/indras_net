@@ -18,7 +18,7 @@ import capital.trade_utils as tu
 MODEL_NAME = "complementary"
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
-DEF_NUM_TRADER = 4
+DEF_NUM_TRADER = 2
 DEF_NUM_RESOURCES = 20
 DEF_NUM_RESOURCES_TYPE = 4
 trader_group = None
@@ -45,7 +45,7 @@ Mkt_GOODS = {"truck": {AMT_AVAILABLE: DEF_NUM_RESOURCES,
 
 
 def allocate_resources(trader, avail_goods):
-    tu.endow(trader, avail_goods)
+    tu.endow(trader, avail_goods, comp=True, rand=True)
 
 
 def create_trader(name, i, props=None):
@@ -65,8 +65,7 @@ def create_trader(name, i, props=None):
                                   "fuel": {AMT_AVAILABLE: 0,
                                            UTIL_FUNC: GEN_UTIL_FUNC,
                                            "incr": 0,
-                                           COMPLEMENTS: "truck"},
-                                  COMPLEMENTS: True},
+                                           COMPLEMENTS: "truck"}},
                         "util": 0,
                         "pre_trade_util": 0,
                         "trades_with": "trader"})

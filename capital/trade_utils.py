@@ -100,7 +100,7 @@ def is_depleted(goods_dict):
     return True
 
 
-def transfer(to_goods, from_goods, good_nm, amt=None, comp=True):
+def transfer(to_goods, from_goods, good_nm, amt=None, comp=None):
     """
     Transfer goods between two goods dicts.
     Use `amt` if it is not None.
@@ -108,7 +108,16 @@ def transfer(to_goods, from_goods, good_nm, amt=None, comp=True):
     if not amt:
         amt = from_goods[good_nm][AMT_AVAILABLE]
     if good_nm not in to_goods:
-        to_goods[good_nm] = {AMT_AVAILABLE: 0}
+        if comp:
+            to_goods[good_nm] = {AMT_AVAILABLE: 0,
+                                 UTIL_FUNC: GEN_UTIL_FUNC,
+                                 "incr": 0,
+                                 COMPLEMENTS: from_goods[good_nm][COMPLEMENTS]}
+        else:
+            to_goods[good_nm] = {AMT_AVAILABLE: 0,
+                                 UTIL_FUNC: GEN_UTIL_FUNC,
+                                 "incr": 0}
+
     to_goods[good_nm][AMT_AVAILABLE] += amt
     from_goods[good_nm][AMT_AVAILABLE] -= amt
 
@@ -156,16 +165,15 @@ def amt_adjust(trader, good):
         return 1
 
 
-def endow(trader, avail_goods, equal=False, rand=False):
+def endow(trader, avail_goods, equal=False, rand=False, comp=False):
     """
     This function is going to pick a good at random, and give the
     trader all of it, by default. We will write partial distributions
     later.
     """
-    comp = False
-    if check_complement(trader):
-        # see if the trader has the imformation of complement
-        comp = True
+#     if check_complement(trader):
+#         # see if the trader has the imformation of complement
+#         comp = True
 
     if equal:
         # each trader get equal amount of good
@@ -182,24 +190,23 @@ def endow(trader, avail_goods, equal=False, rand=False):
             transfer(trader[GOODS], avail_goods, good2acquire, comp=comp)
 
 
-def equal_dist(num_trader, to_goods, from_goods, comp=True):
+def equal_dist(num_trader, to_goods, from_goods, comp=None):
     """
     each trader get equal amount of goods
     to_goods = trader[GOODS], from_goods = avail_goods
     """
     for good in from_goods:
         amt = from_goods[good][AMT_AVAILABLE]/num_trader
-        transfer(to_goods, from_goods, good, amt)
+        transfer(to_goods, from_goods, good, amt, comp=comp)
 
 
-def rand_dist(to_goods, from_goods, comp=True):
+def rand_dist(to_goods, from_goods, comp=None):
     """
     select random good by random amount and transfer to trader
     """
     selected_good = get_rand_good(from_goods, nonzero=True)
     amt = random.randrange(0, from_goods[selected_good][AMT_AVAILABLE], 1)
-    transfer(to_goods, from_goods, selected_good, amt)
-    return
+    transfer(to_goods, from_goods, selected_good, amt, comp=comp)
 
 
 def goods_to_str(goods):
@@ -224,10 +231,7 @@ def negotiate(trader1, trader2, comp=None):
         # amt = 1
         amt = amt_adjust(trader1, this_good)
         while trader1["goods"][this_good][AMT_AVAILABLE] >= amt:
-            if comp:
-                ans = rec_offer(trader2, this_good, amt, trader1, comp=True)
-            else:
-                ans = rec_offer(trader2, this_good, amt, trader1)
+            ans = rec_offer(trader2, this_good, amt, trader1)
             # user_debug("I'm " + trader1.name
             #            + ", " + answer_to_str(ans) + " this offer")
             if ans == ACCEPT or ans == REJECT:
@@ -250,11 +254,8 @@ def good_decay(goods):
 def seek_a_trade(agent):
     nearby_agent = get_env().get_closest_agent(agent)
     if nearby_agent is not None:
-        if agent[COMPLEMENTS]:
-            negotiate(agent, nearby_agent, comp=True)
-            print("complementary!!!")
-        else:
-            negotiate(agent, nearby_agent)
+        negotiate(agent, nearby_agent)
+        print("I'm", agent.name, "I have", goods_to_str(agent[GOODS]))
     # call good_decay only when the goods dic has "durability"
     item = list(agent["goods"])[0]
     if "durability" in agent["goods"][item]:
@@ -280,14 +281,10 @@ def rec_offer(agent, his_good, his_amt, counterparty, comp=None):
         my_amt = amt_adjust(agent, my_good)
         if my_good != his_good and agent["goods"][my_good][AMT_AVAILABLE] > 0:
             loss = -utility_delta(agent, my_good, -my_amt)
-            if comp:
-                if is_complement(agent, my_good, his_good):
-                    incr_util(agent, his_good, amt=None)
-                    gain += agent[GOODS][his_good]["incr"]
-                    print(agent[GOODS][his_good]["incr"])
-            # user_tell("my good: " + my_good + "; his good: " + his_good
-            #           + ", I gain: " + str(gain) +
-            #           " and lose: " + str(loss))
+
+#             print("my good: " + my_good + "; his good: " + his_good
+#                   + ", I gain: " + str(gain) +
+#                   " and lose: " + str(loss))
             if gain > loss:
                 if rec_reply(counterparty, his_good, his_amt, my_good, my_amt):
                     trade(agent, my_good, my_amt,
