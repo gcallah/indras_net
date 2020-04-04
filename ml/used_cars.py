@@ -1,3 +1,17 @@
+'''
+Goal:
+    1. training period:
+    - make a list of good dealer and bad dealer
+    - buy from anyone;
+    - add dealer ratings to attribute
+    - agent try to multilinear regression
+    2. see emojis (from Prof); then see rating factor
+    3. Multi regression line for ML
+    4. Bank and sugeron examples doing machine learning
+    on training - then on test set.
+    5. contest period - new set of dealers following the
+    same rules;
+'''
 import random
 import sys
 
@@ -32,92 +46,88 @@ NEG_EMOJIS = ["unnatural", "ambiguous", "hesitate", "eye rolling"]
 CHARACTERISTIC = ["good", "bad"]
 
 BUYER_GRP = "Buyer_group"
-DEALER_GRP = "Dearler_group"
-
-# holds avg lives from different strategies
-COMPARE_LST = {}
-DIFF_LIFE_LST = []
+DEALER_GRP = "Dealer_group"
+strategies = {}
 
 
-def update_diff_life_difference(strategy_name):
-    avg_life_before = COMPARE_LST[strategy_name][0]
-    avg_life_after = COMPARE_LST[strategy_name][1]
-    diff_life = avg_life_after - avg_life_before
-    DIFF_LIFE_LST.append(diff_life)
-
-
-def strategy_one(buyer, dealer):  # testcase needed!
-    # mature buyers take cars from good dealer til get 1 bad car
+def buy_till_1bad(buyer, dealer):  # testcase needed!
+    '''
+    mature buyers take cars from good dealer til get 1 bad car
+    '''
+    buy_from_dealer(buyer, dealer)
     curr_dealer_life = dealer["curr_car_life"]
-    dealer_emj = dealer["emoji_used"]
-    buyer_emj_lst = buyer["emoji_life_avg"]
-    curr_buyer_life = buyer_emj_lst[dealer_emj]
-    # keep initial avg car life
-    COMPARE_LST["ONE"] = [curr_buyer_life]
-    # bad car define as less than buyer's avg car life
-    while curr_dealer_life >= curr_buyer_life:
+    # update strategy s1's car life
+    strategies["s1"]["car_life"].append(curr_dealer_life)
+    # bad car life is define as less than buyer's avg car life
+    while curr_dealer_life >= MEDIUM_CAR_LIFE:
         buy_from_dealer(buyer, dealer)
-        update_dealer_sale(dealer, curr_dealer_life)
+        strategies["s1"]["car_life"].append(curr_dealer_life)
         curr_dealer_life = dealer["curr_car_life"]
-        dealer_emj = dealer["emoji_used"]
-        buyer_emj_lst = buyer["emoji_life_avg"]
-        curr_buyer_life = buyer_emj_lst[dealer_emj]
-    # store in new avg car life
-    COMPARE_LST["ONE"].append(curr_buyer_life)
-    update_diff_life_difference("ONE")
 
 
-def strategy_two(buyer, dealer):  # testcase needed!
-    # mature buyers take cars from good dealer til get 2 bad car
+def buy_till_2bad(buyer, dealer):  # testcase needed!
+    '''mature buyers take cars from good dealer til get 2 bad car'''
+    buy_from_dealer(buyer, dealer)
     curr_dealer_life = dealer["curr_car_life"]
+    # update strategy s2's car life
+    strategies["s2"]["car_life"].append(curr_dealer_life)
+    # buyer's own car life history
     dealer_emj = dealer["emoji_used"]
     buyer_emj_lst = buyer["emoji_life_avg"]
     curr_buyer_life = buyer_emj_lst[dealer_emj]
-    # keep initial avg car life
-    COMPARE_LST["TWO"] = [curr_buyer_life]
-    count = 0
+    bad_car_count = 0
     # bad car define as less than buyer's avg car life
-    while count < 2:
+    while bad_car_count < 2:
         if curr_dealer_life >= curr_buyer_life:
-            count += 1
+            bad_car_count += 1
         # update buyer and dealer info
         buy_from_dealer(buyer, dealer)
-        update_dealer_sale(dealer, curr_dealer_life)
         curr_dealer_life = dealer["curr_car_life"]
+        # update strategy s2's car life
+        strategies["s2"]["car_life"].append(curr_dealer_life)
+        # update buyer's own car life history
         dealer_emj = dealer["emoji_used"]
         buyer_emj_lst = buyer["emoji_life_avg"]
         curr_buyer_life = buyer_emj_lst[dealer_emj]
-    # store in new avg car life
-    COMPARE_LST["TWO"].append(curr_buyer_life)
-    update_diff_life_difference("TWO")
 
 
-def strategy_three(buyer, dealer):  # testcases needed!
-    # mature buyer take cars from good dealer and never change
-    curr_dealer_life = dealer["curr_car_life"]
-    dealer_emj = dealer["emoji_used"]
-    buyer_emj_lst = buyer["emoji_life_avg"]
-    curr_buyer_life = buyer_emj_lst[dealer_emj]
-    # keep initial avg car life
-    COMPARE_LST["THREE"] = [curr_buyer_life]
-    # update buyer and dealer info
+def buy_till_3bad(buyer, dealer):  # testcases needed!
+    '''mature buyers take cars from good dealer til get 3 bad car'''
     buy_from_dealer(buyer, dealer)
-    update_dealer_sale(dealer, curr_dealer_life)
     curr_dealer_life = dealer["curr_car_life"]
+    # update strategy s3's car life
+    strategies["s3"]["car_life"].append(curr_dealer_life)
+    # buyer's own car life history
     dealer_emj = dealer["emoji_used"]
     buyer_emj_lst = buyer["emoji_life_avg"]
     curr_buyer_life = buyer_emj_lst[dealer_emj]
-    COMPARE_LST["THREE"].append(curr_buyer_life)
-    update_diff_life_difference("THREE")
+    bad_car_count = 0
+    # bad car define as less than buyer's avg car life
+    while bad_car_count < 3:
+        if curr_dealer_life >= curr_buyer_life:
+            bad_car_count += 1
+        # update buyer and dealer info
+        buy_from_dealer(buyer, dealer)
+        curr_dealer_life = dealer["curr_car_life"]
+        # update strategy s3's car life
+        strategies["s3"]["car_life"].append(curr_dealer_life)
+        # update buyer's own car life history
+        dealer_emj = dealer["emoji_used"]
+        buyer_emj_lst = buyer["emoji_life_avg"]
+        curr_buyer_life = buyer_emj_lst[dealer_emj]
 
 
-def get_best_strategies(buyer, dealer):  # testcases needed!
-    # compute and compare the best strategy
-    best_diff_life = max(DIFF_LIFE_LST)
-    best_strategy_index = DIFF_LIFE_LST.index(best_diff_life)
-    best_strategy = "strategy" + str(best_strategy_index + 1)
-    print("Best strategy is:", best_strategy)
-    return best_strategy
+# different strategies
+strategies = {"s1": {"func": buy_till_1bad,
+                     "car_life": []
+                     },
+              "s2": {"func": buy_till_2bad,
+                     "car_life": []
+                     },
+              "s3": {"func": buy_till_3bad,
+                     "car_life": []
+                     }
+              }
 
 
 def get_car_life_json(json_file, dealer_name):  # testcase needed!
@@ -335,11 +345,14 @@ def buyer_action(agent):  # how to write this testcase
         else:
             print("I found a rotten dealer: ", str(my_dealer))
     else:
+        # return False means to move
         print("I have a car!")
         agent["car_life"] -= 1
         if agent["car_life"] <= 0:
             agent["has_car"] = False
-    # return False means to move
+    # call strategy function to update the data
+    agent["strategy"]["func"]()
+    print("Agent strategy =", agent["strategy"])
     return False
 
 
@@ -354,9 +367,7 @@ def create_dealer(name, i, props=None):  # testcase done
                         "curr_car_life": 0,
                         "num_completed_services": 0,
                         "emoji_used": None,
-                        "dealer_characteristic": None,
-                        "respond_to_return": False,
-                        "return_rate": 0
+                        "dealer_characteristic": None
                         })
 
 
@@ -374,7 +385,8 @@ def create_buyer(name, i, props=None):  # testcase done
                         "emoji_carlife_assoc": {},
                         "emoji_life_avg": {},
                         "emoji_indicator": {},
-                        "can_mature": False
+                        "can_mature": False,
+                        "strategy": random.choice(list(strategies.keys()))
                         })
 
 
@@ -402,9 +414,10 @@ def main():
         print("datafile name missing")
         print("USAGE: used_cars.py [datafile]")
         exit(1)
-    filename = sys.argv[1]
-    info = filename.split("_")
-    num_dealers = int(info[0])
+    pathname = sys.argv[1]
+    filename = pathname.split("/")[1]
+    info = filename.split("_")[0]
+    num_dealers = int(info)
     set_up(num_dealers)
 
     get_env()()
