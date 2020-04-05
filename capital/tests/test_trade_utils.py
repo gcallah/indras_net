@@ -4,8 +4,10 @@ This is the test suite for trade.py.
 import copy
 from unittest import TestCase, main
 # from indra.agent import Agent
-from capital.trade_utils import endow, get_rand_good, is_depleted, AMT_AVAILABLE, transfer
-from capital.trade_utils import rand_dist, equal_dist, good_decay, amt_adjust, is_complement, COMPLEMENTS
+from capital.trade_utils import endow, get_rand_good, is_depleted
+from capital.trade_utils import AMT_AVAILABLE, transfer
+from capital.trade_utils import rand_dist, equal_dist
+from capital.trade_utils import amt_adjust, is_complement, COMPLEMENTS
 import capital.trade_utils as tu
 
 
@@ -107,16 +109,6 @@ class TradeUtilsTestCase(TestCase):
         self.assertEqual(self.trader["goods"]["b"][AMT_AVAILABLE],
                          nature_before_trade["b"][AMT_AVAILABLE]/2)
 
-
-    def test_good_decay(self):
-        """
-        Test if the durability of the goods get decayed
-        """
-        good_decay(self.goods_dict_du)
-        self.assertEqual(self.goods_dict_du['c']['durability'], 0.0004)
-        self.assertEqual(self.goods_dict_du['c'][AMT_AVAILABLE], 0)
-        self.assertEqual(self.goods_dict_du['d']['durability'], 0.81)
-    
 
     def test_amt_adjust(self):
         """

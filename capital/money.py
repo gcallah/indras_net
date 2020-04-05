@@ -35,11 +35,29 @@ natures_goods = {
 }
 
 
+def good_decay(goods):
+    """
+    This must be re-written to change the amount of a good
+    available based on its durability, not change its durability.
+    """
+    for good in goods:
+        goods[good]["durability"] *= goods[good]["durability"]
+        # if the good the durability is too low, the good can't to be traded
+        if goods[good]["durability"] < 0.001:
+            goods[good][AMT_AVAILABLE] = 0
+
+
+def trader_action(agent):
+    ret = seek_a_trade(agent)
+    good_decay(agent["goods"])
+    return ret
+
+
 def create_trader(name, i):
     """
     A func to create a trader.
     """
-    return Agent(name + str(i), action=seek_a_trade,
+    return Agent(name + str(i), action=trader_action,
                  attrs={"goods": {},
                         "util": 0,
                         "pre_trade_util": 0})
