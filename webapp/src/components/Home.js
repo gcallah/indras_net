@@ -10,7 +10,6 @@ import Carousel from './Carousel';
 import sandpileImg from './images/Sandpile.jpg';
 import sandpile1Img from './images/sandpile_2.png';
 import mandelobrotImg from './images/mendelobrot_sq.jpg';
-import CreateModelButton from './CreateModelButton';
 import './styles.css';
 
 class Home extends Component {
@@ -33,7 +32,7 @@ class Home extends Component {
     const { history } = this.props;
     try {
       this.setState({ loadingData: true });
-      document.title = 'Indra | Home';
+      document.title = 'Home';
       const res = await axios.get(`${this.api_server}models`);
       this.setState({ allItems: res.data, loadingData: false });
     } catch (e) {
@@ -69,7 +68,7 @@ class Home extends Component {
     return (
       <div className="container">
         <div className="margin-bottom-80">
-          <h1 className="text-left">The Agent-Based Modeling System</h1>
+          <h1 className="text-left">Indra Agent-Based Modeling System</h1>
         </div>
         <div className="row">
           <div className="col-6">
@@ -99,9 +98,6 @@ class Home extends Component {
                 </OverlayTrigger>
               ))}
             </ListGroup>
-            <div className="mt-4">
-              <CreateModelButton />
-            </div>
           </div>
           <div className="col-6">
             <Carousel

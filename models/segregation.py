@@ -73,8 +73,8 @@ def env_favorable(hood_ratio, my_tolerance):
 
 def seg_agent_action(agent):
     """
-    If the agent is surrounded by more "others" than it is comfortable
-    with, the agent will move.
+    If the agent is surrounded by more "others" than it
+    is comfortable with, the agent will move.
     """
     stay_put = True
     if agent["hood_changed"]:
@@ -133,7 +133,8 @@ def set_up(props=None):
     blue_agents = Composite(group_names[BLUE_TEAM],
                             {"color": BLUE},
                             member_creator=create_resident,
-                            num_members=get_prop('num_blue', NUM_BLUE))
+                            num_members=get_prop('num_blue',
+                                                 NUM_BLUE))
     red_agents = Composite(group_names[RED_TEAM],
                            {"color": RED},
                            member_creator=create_resident,

@@ -58,7 +58,6 @@ def set_up(props=None):
 
 def main():
     set_up()
-
     get_env()()
     return 0
 

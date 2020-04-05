@@ -1,5 +1,7 @@
 """
-    This is financial market model re-written in indra.
+    This is a financial market model written in indra.
+    To run properly from the API server, the global
+    `market_maker` must be eliminated!
 """
 
 from math import isclose
@@ -126,7 +128,8 @@ def create_trend_follower(name, i):
     """
     average_period = get_prop("average_period", DEF_PERIODS)
     dev = get_prop("deviation_follower", DEF_SIGMA)
-    trend_follower = Agent(name + str(i), action=trend_follower_action)
+    trend_follower = Agent(name + str(i),
+                           action=trend_follower_action)
     trend_follower["change_period"] = gaussian(average_period, dev)
 
     trend_follower["capital"] = DEF_CAPITAL

@@ -14,9 +14,7 @@ import ModelDetail from './components/ModelDetail';
 import ActionMenu from './components/ActionMenu';
 import NotFoundPage from './components/NotFoundPage';
 import ErrorCatching from './components/ErrorCatching';
-import ModelBuilder from './components/ModelBuilder';
 
-jest.mock('./components/ModelBuilder');
 
 describe('<App/>', () => {
   it('renders with <HashRouter/>, <Layout/> and <Swtich/>', () => {
@@ -44,7 +42,6 @@ describe('<App/>', () => {
       expect(component.find(ModelDetail)).toHaveLength(0);
       expect(component.find(ErrorCatching)).toHaveLength(0);
       expect(component.find(ActionMenu)).toHaveLength(0);
-      expect(component.find(ModelBuilder)).toHaveLength(0);
     });
 
     it('WIP route renders <WIP/> component', () => {
@@ -59,7 +56,6 @@ describe('<App/>', () => {
       expect(component.find(ModelDetail)).toHaveLength(0);
       expect(component.find(ErrorCatching)).toHaveLength(0);
       expect(component.find(ActionMenu)).toHaveLength(0);
-      expect(component.find(ModelBuilder)).toHaveLength(0);
     });
 
     it('ModelDetail route renders <ModelDetail/> component', () => {
@@ -74,7 +70,6 @@ describe('<App/>', () => {
       expect(component.find(ModelDetail)).toHaveLength(1);
       expect(component.find(ErrorCatching)).toHaveLength(0);
       expect(component.find(ActionMenu)).toHaveLength(0);
-      expect(component.find(ModelBuilder)).toHaveLength(0);
     });
 
     it('ActionMenu route renders <ActionMenu/> component', () => {
@@ -89,7 +84,6 @@ describe('<App/>', () => {
       expect(component.find(ModelDetail)).toHaveLength(0);
       expect(component.find(ErrorCatching)).toHaveLength(0);
       expect(component.find(ActionMenu)).toHaveLength(1);
-      expect(component.find(ModelBuilder)).toHaveLength(0);
     });
 
     it('ErrorCatching route renders <ErrorCatching/> component', () => {
@@ -104,7 +98,6 @@ describe('<App/>', () => {
       expect(component.find(ModelDetail)).toHaveLength(0);
       expect(component.find(ErrorCatching)).toHaveLength(1);
       expect(component.find(ActionMenu)).toHaveLength(0);
-      expect(component.find(ModelBuilder)).toHaveLength(0);
     });
     it('NotFoundPage route renders <NotFoundPage/> component', () => {
       const component = mount(
@@ -118,22 +111,6 @@ describe('<App/>', () => {
       expect(component.find(ModelDetail)).toHaveLength(0);
       expect(component.find(ErrorCatching)).toHaveLength(0);
       expect(component.find(ActionMenu)).toHaveLength(0);
-      expect(component.find(ModelBuilder)).toHaveLength(0);
-    });
-
-    it('ModelBuilder route renders <ModelBuilder/> component', () => {
-      const component = mount(
-        <MemoryRouter initialEntries={['/modelcreator']}>
-          <IndraRoutes />
-        </MemoryRouter>,
-      );
-      expect(component.find(Home)).toHaveLength(0);
-      expect(component.find(NotFoundPage)).toHaveLength(0);
-      expect(component.find(WIP)).toHaveLength(0);
-      expect(component.find(ModelDetail)).toHaveLength(0);
-      expect(component.find(ErrorCatching)).toHaveLength(0);
-      expect(component.find(ActionMenu)).toHaveLength(0);
-      expect(component.find('ModelBuilder')).toHaveLength(1);
     });
   });
 });

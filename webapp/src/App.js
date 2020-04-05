@@ -8,7 +8,6 @@ import ModelDetail from './components/ModelDetail';
 import ActionMenu from './components/ActionMenu';
 import NotFoundPage from './components/NotFoundPage';
 import ErrorCatching from './components/ErrorCatching';
-import ModelBuilder from './components/ModelBuilder';
 
 const Wrapper = styled('div')`
   background: ${(props) => props.theme.background};
@@ -23,7 +22,9 @@ const Wrapper = styled('div')`
 function App() {
   return (
     <Wrapper>
-      <HashRouter>
+      <HashRouter
+        basename="/webapp"
+      >
         <Layout>
           <IndraRoutes />
         </Layout>
@@ -40,7 +41,6 @@ export function IndraRoutes() {
       <Route exact path="/models/props/:id" component={ModelDetail} />
       <Route exact path="/models/menu/:id" component={ActionMenu} />
       <Route exact path="/errorCatching" component={ErrorCatching} />
-      <Route exact path="/modelcreator" component={ModelBuilder} />
       <Route component={NotFoundPage} />
     </Switch>
   );

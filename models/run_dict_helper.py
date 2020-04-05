@@ -24,6 +24,9 @@ from models.fmarket import value_investor_action
 from models.forestfire import main as ffmain
 from models.forestfire import set_up as ffset_up
 from models.forestfire import tree_action
+from models.segregation import main as segmain
+from models.segregation import set_up as segset_up
+from models.segregation import seg_agent_action
 from models.wolfsheep import main as wsmain
 from models.wolfsheep import set_up as wsset_up
 from models.wolfsheep import sheep_action, wolf_action
@@ -34,6 +37,7 @@ rdict = {
     "fashion": famain,
     "fmarket": fmmain,
     "forestfire": ffmain,
+    "segregation": segmain,
     "wolfsheep": wsmain,
 }
 
@@ -43,6 +47,7 @@ setup_dict = {
     "fashion": faset_up,
     "fmarket": fmset_up,
     "forestfire": ffset_up,
+    "segregation": segset_up,
     "wolfsheep": wsset_up,
 }
 
@@ -58,6 +63,7 @@ action_dict = {
     "toxin_action": toxin_action,
     "nutrient_action": nutrient_action,
     "market_maker_action": market_maker_action,
+    "seg_agent_action": seg_agent_action,
     "trend_follower_action": trend_follower_action,
     "value_investor_action": value_investor_action,
     "generate_func": generate_func

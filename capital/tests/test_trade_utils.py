@@ -5,19 +5,22 @@ import copy
 from unittest import TestCase, main
 # from indra.agent import Agent
 from capital.trade_utils import endow, get_rand_good, is_depleted, AMT_AVAILABLE, transfer
-from capital.trade_utils import rand_dist, equal_dist, good_decay
+from capital.trade_utils import rand_dist, equal_dist, good_decay, amt_adjust, is_complement, COMPLEMENTS
 import capital.trade_utils as tu
+
 
 class TradeUtilsTestCase(TestCase):
     def setUp(self, props=None):
         self.goodA = {AMT_AVAILABLE: 10}
         self.goodB = {AMT_AVAILABLE: 10}
-        self.goodC = {AMT_AVAILABLE: 10, "durability": 0.6}
-        self.goodD = {AMT_AVAILABLE: 10, "durability": 0.9}
+        self.goodC = {AMT_AVAILABLE: 10, "durability": 0.02, "divisibility": 0.2,}
+        self.goodD = {AMT_AVAILABLE: 10, "durability": 0.9, "divisibility": 0.8,}
         self.trader = {"goods": {}}
         # self.agent = Agent()
         self.goods = {"a": self.goodA, "b": self.goodB}
         self.goods_dict_du = {"c": self.goodC, "d": self.goodD}
+        self.traderB = {"goods": self.goods_dict_du}
+        self.traderC = {"goods": self.goods}
         self.goods_dict_empty = {}
 
     def tearDown(self):
@@ -44,6 +47,13 @@ class TradeUtilsTestCase(TestCase):
         goods_dict_zeros = {"a": goodA, "b": goodB}
         self.assertTrue(is_depleted(self.goods_dict_empty))
         self.assertTrue(is_depleted(goods_dict_zeros))
+
+    def test_is_complement(self):
+        self.goodA = {AMT_AVAILABLE: 10, COMPLEMENTS: "b"}
+        self.goodB = {AMT_AVAILABLE: 10}
+        self.trader = {"goods": {"a": self.goodA, "b": self.goodB}}
+        self.goods = {"a": self.goodA, "b": self.goodB}
+        self.assertTrue(is_complement(self.trader, "a", "b"))
 
     def test_get_rand_good(self):
         """
@@ -97,13 +107,25 @@ class TradeUtilsTestCase(TestCase):
         self.assertEqual(self.trader["goods"]["b"][AMT_AVAILABLE],
                          nature_before_trade["b"][AMT_AVAILABLE]/2)
 
+
     def test_good_decay(self):
         """
         Test if the durability of the goods get decayed
         """
         good_decay(self.goods_dict_du)
-        self.assertEqual(self.goods_dict_du['c']['durability'], 0.36)
+        self.assertEqual(self.goods_dict_du['c']['durability'], 0.0004)
+        self.assertEqual(self.goods_dict_du['c'][AMT_AVAILABLE], 0)
         self.assertEqual(self.goods_dict_du['d']['durability'], 0.81)
+    
+
+    def test_amt_adjust(self):
+        """
+        Test if amt is adjusted based on the existence of divisibility
+        """
+        amt_c = amt_adjust(self.traderB, "c")
+        amt_a = amt_adjust(self.traderC, "a")
+        self.assertEqual(amt_c, 0.2)
+        self.assertEqual(amt_a, 1)
 
     if __name__ == '__main__':
         main()

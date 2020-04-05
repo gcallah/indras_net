@@ -17,10 +17,10 @@ const NotFoundPage = () => (
   <Status code={404}>
     <div className="NotFoundPage">
       <h1>Oops!</h1>
-      <div>Looks like you&apos;re lost...</div>
+      <div>Page not found.</div>
       <div className="action">
         <a className="btn btn-primary" href="/">
-                Guide me to the right path!
+          Guide me to the right path!
         </a>
       </div>
     </div>
