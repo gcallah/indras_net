@@ -98,7 +98,8 @@ pytests: FORCE
 	cd APIServer; make tests
 	cd indra; make tests
 	cd ml; make tests
-	# cd capital; make tests
+	# capital tests look to work now:
+	cd capital; make tests
 
 jstests: FORCE
 	cd webapp; make tests
