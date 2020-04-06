@@ -84,6 +84,8 @@ python: pytests github
 js: jstests webapp
 	git add $(WEB_STATIC)/js/*js
 	git add $(WEB_STATIC)/js/*map
+	git add $(WEB_STATIC)/css/*
+	git add $(WEB_STATIC)/media/*
 	git add $(REACT_BUILD)/static/js/*js
 	git add $(REACT_BUILD)/static/js/*map
 	git add $(REACT_BUILD)/$(REACT_MAIN)
