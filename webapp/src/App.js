@@ -23,7 +23,6 @@ function App() {
   return (
     <Wrapper>
       <HashRouter
-        basename="/webapp"
       >
         <Layout>
           <IndraRoutes />
