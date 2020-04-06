@@ -57,14 +57,9 @@ setup_react:
 webapp: $(REACT_PUBLIC)/$(REACT_MAIN)
 
 $(REACT_PUBLIC)/$(REACT_MAIN): $(REACT_FILES)
-	- rm -r $(WEB_STATIC)
-	- rm $(REACT_MAIN)
-	- cd $(REACT_TOP) && \
-	npm run build && \
-	cd ..
+	- cd $(REACT_TOP); npm run build
 	mv $(REACT_BUILD)/index.html $(REACT_BUILD)/$(REACT_MAIN)
-	cp -r $(REACT_BUILD)/* $(REACT_TOP)
-	cp $(REACT_BUILD)/$(REACT_MAIN) .
+	cp -r $(REACT_BUILD)/* .
 
 # build tags file for vim:
 tags: FORCE
