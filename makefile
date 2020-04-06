@@ -12,9 +12,7 @@ MODELS_DIR = models
 NB_DIR = notebooks
 WEB_DIR = webapp
 WEB_PUBLIC = $(WEB_DIR)/public
-WEB_BUILD = $(WEB_DIR)/build
 WEB_SRC = $(WEB_DIR)/src
-WEB_HOMEPAGE = index.html
 API_DIR = APIServer
 PYLINT = flake8
 PYLINTFLAGS = 
@@ -53,21 +51,24 @@ setup_react:
 	cd $(WEB_DIR); npm install
 
 # Build react files to generate static assets (HTML, CSS, JS)
-webapp: $(WEB_PUBLIC)/$(WEB_HOMEPAGE)
+webapp: $(WEB_PUBLIC)/index.html
 
-$(WEB_PUBLIC)/$(WEB_HOMEPAGE): $(WEBFILES)
+$(WEB_PUBLIC)/index.html: $(WEBFILES)
 	- rm -r static || true
+	- rm webapp.html || true
 	- cd $(WEB_DIR) && \
 	npm run build && \
+	mv build/index.html build/webapp.html && \
 	cp -r build/* .. && \
 	cd ..
 
 deploy_webapp: webapp
+	@echo "After completion you must run `make prod`"
 	git add static/js/*js
 	git add static/js/*map
-	git add $(WEB_BUILD)/static/js/*js
-	git add $(WEB_BUILD)/static/js/*map
-	git add $(WEB_BUILD)/$(WEB_HOMEPAGE)
+	git add $(WEB_DIR)/build/static/js/*js
+	git add $(WEB_DIR)/build/static/js/*map
+	git add $(WEB_DIR)/build/webapp.html
 	cd $(WEB_DIR); npm run deploy
 
 # build tags file for vim:
@@ -79,7 +80,7 @@ submods:
 	cd utils; git pull origin master
 
 # run tests then commit all, then push
-prod: local pytests js notebooks github
+prod: local pytests jstests notebooks github
 
 # run tests then push just what is already committed:
 prod1: tests
@@ -90,15 +91,14 @@ tests: pytests jstests dockertests
 
 python: pytests github
 
-js: jstests deploy_webapp
+js: jstests github
 
 pytests: FORCE
 	cd models; make tests
 	cd APIServer; make tests
 	cd indra; make tests
 	cd ml; make tests
-	# capital tests look to work now:
-	cd capital; make tests
+	# cd capital; make tests
 
 jstests: FORCE
 	cd webapp; make tests
