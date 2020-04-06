@@ -1,29 +1,29 @@
 {
   "files": {
-    "main.css": "/indras_net/webapp/static/css/main.db17fb3d.chunk.css",
-    "main.js": "/indras_net/webapp/static/js/main.416ded94.chunk.js",
-    "main.js.map": "/indras_net/webapp/static/js/main.416ded94.chunk.js.map",
-    "runtime-main.js": "/indras_net/webapp/static/js/runtime-main.45486235.js",
-    "runtime-main.js.map": "/indras_net/webapp/static/js/runtime-main.45486235.js.map",
-    "static/css/2.e12d31eb.chunk.css": "/indras_net/webapp/static/css/2.e12d31eb.chunk.css",
-    "static/js/2.20d22411.chunk.js": "/indras_net/webapp/static/js/2.20d22411.chunk.js",
-    "static/js/2.20d22411.chunk.js.map": "/indras_net/webapp/static/js/2.20d22411.chunk.js.map",
-    "index.html": "/indras_net/webapp/index.html",
-    "precache-manifest.c92f292ce19aab68357e39d2130ab94d.js": "/indras_net/webapp/precache-manifest.c92f292ce19aab68357e39d2130ab94d.js",
-    "service-worker.js": "/indras_net/webapp/service-worker.js",
-    "static/css/2.e12d31eb.chunk.css.map": "/indras_net/webapp/static/css/2.e12d31eb.chunk.css.map",
-    "static/css/main.db17fb3d.chunk.css.map": "/indras_net/webapp/static/css/main.db17fb3d.chunk.css.map",
-    "static/js/2.20d22411.chunk.js.LICENSE.txt": "/indras_net/webapp/static/js/2.20d22411.chunk.js.LICENSE.txt",
-    "static/media/Sandpile.jpg": "/indras_net/webapp/static/media/Sandpile.090bc1a0.jpg",
-    "static/media/mendelobrot_sq.jpg": "/indras_net/webapp/static/media/mendelobrot_sq.875dd8b8.jpg",
-    "static/media/sandpile_2.png": "/indras_net/webapp/static/media/sandpile_2.d38b3fb1.png",
-    "static/media/slick-theme.css": "/indras_net/webapp/static/media/slick.f97e3bbf.svg"
+    "main.css": "/indras_net/static/css/main.db17fb3d.chunk.css",
+    "main.js": "/indras_net/static/js/main.3db30412.chunk.js",
+    "main.js.map": "/indras_net/static/js/main.3db30412.chunk.js.map",
+    "runtime-main.js": "/indras_net/static/js/runtime-main.9f0c9c69.js",
+    "runtime-main.js.map": "/indras_net/static/js/runtime-main.9f0c9c69.js.map",
+    "static/css/2.618675c8.chunk.css": "/indras_net/static/css/2.618675c8.chunk.css",
+    "static/js/2.3ee719d0.chunk.js": "/indras_net/static/js/2.3ee719d0.chunk.js",
+    "static/js/2.3ee719d0.chunk.js.map": "/indras_net/static/js/2.3ee719d0.chunk.js.map",
+    "index.html": "/indras_net/index.html",
+    "precache-manifest.b1d903516f26ecb067f82b5afd70ffe0.js": "/indras_net/precache-manifest.b1d903516f26ecb067f82b5afd70ffe0.js",
+    "service-worker.js": "/indras_net/service-worker.js",
+    "static/css/2.618675c8.chunk.css.map": "/indras_net/static/css/2.618675c8.chunk.css.map",
+    "static/css/main.db17fb3d.chunk.css.map": "/indras_net/static/css/main.db17fb3d.chunk.css.map",
+    "static/js/2.3ee719d0.chunk.js.LICENSE.txt": "/indras_net/static/js/2.3ee719d0.chunk.js.LICENSE.txt",
+    "static/media/Sandpile.jpg": "/indras_net/static/media/Sandpile.090bc1a0.jpg",
+    "static/media/mendelobrot_sq.jpg": "/indras_net/static/media/mendelobrot_sq.875dd8b8.jpg",
+    "static/media/sandpile_2.png": "/indras_net/static/media/sandpile_2.d38b3fb1.png",
+    "static/media/slick-theme.css": "/indras_net/static/media/slick.f97e3bbf.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.45486235.js",
-    "static/css/2.e12d31eb.chunk.css",
-    "static/js/2.20d22411.chunk.js",
+    "static/js/runtime-main.9f0c9c69.js",
+    "static/css/2.618675c8.chunk.css",
+    "static/js/2.3ee719d0.chunk.js",
     "static/css/main.db17fb3d.chunk.css",
-    "static/js/main.416ded94.chunk.js"
+    "static/js/main.3db30412.chunk.js"
   ]
 }
