@@ -10,16 +10,19 @@ REQ_DIR = $(DOCKER_DIR)
 REPO = indras_net
 MODELS_DIR = models
 NB_DIR = notebooks
-WEB_DIR = webapp
-WEB_PUBLIC = $(WEB_DIR)/public
-WEB_SRC = $(WEB_DIR)/src
+REACT_TOP = webapp
+REACT_BUILD = $(REACT_TOP)/build
+REACT_PUBLIC = $(REACT_TOP)/public
+REACT_SRC = $(REACT_TOP)/src
+REACT_MAIN = webapp.html
+REACT_FILES = $(shell ls $(REACT_SRC)/*.js)
+REACT_FILES += $(shell ls $(REACT_SRC)/components/*.js)
+REACT_FILES += $(shell ls $(REACT_SRC)/*.css)
+WEB_STATIC = static
 API_DIR = APIServer
 PYLINT = flake8
 PYLINTFLAGS = 
 PYTHONFILES = $(shell ls $(MODELS_DIR)/*.py)
-WEBFILES = $(shell ls $(WEB_SRC)/*.js)
-WEBFILES += $(shell ls $(WEB_SRC)/components/*.js)
-WEBFILES += $(shell ls $(WEB_SRC)/*.css)
 
 UTILS_DIR = utils
 PTML_DIR = html_src
@@ -48,28 +51,20 @@ create_dev_env:
 	@echo 'export PYTHONPATH="$$INDRA_HOME:$$PYTHONPATH"'
 
 setup_react:
-	cd $(WEB_DIR); npm install
+	cd $(REACT_TOP); npm install
 
 # Build react files to generate static assets (HTML, CSS, JS)
-webapp: $(WEB_PUBLIC)/index.html
+webapp: $(REACT_PUBLIC)/$(REACT_MAIN)
 
-$(WEB_PUBLIC)/index.html: $(WEBFILES)
-	- rm -r static || true
-	- rm webapp.html || true
-	- cd $(WEB_DIR) && \
+$(REACT_PUBLIC)/$(REACT_MAIN): $(REACT_FILES)
+	- rm -r $(WEB_STATIC)
+	- rm $(REACT_MAIN)
+	- cd $(REACT_TOP) && \
 	npm run build && \
-	mv build/index.html build/webapp.html && \
-	cp -r build/* .. && \
 	cd ..
-
-deploy_webapp: webapp
-	@echo "After completion you must run `make prod`"
-	git add static/js/*js
-	git add static/js/*map
-	git add $(WEB_DIR)/build/static/js/*js
-	git add $(WEB_DIR)/build/static/js/*map
-	git add $(WEB_DIR)/build/webapp.html
-	cd $(WEB_DIR); npm run deploy
+	mv $(REACT_BUILD)/index.html $(REACT_BUILD)/$(REACT_MAIN)
+	cp -r $(REACT_BUILD)/* $(REACT_TOP)
+	cp $(REACT_BUILD)/$(REACT_MAIN) .
 
 # build tags file for vim:
 tags: FORCE
@@ -80,7 +75,7 @@ submods:
 	cd utils; git pull origin master
 
 # run tests then commit all, then push
-prod: local pytests jstests notebooks github
+prod: local pytests js notebooks github
 
 # run tests then push just what is already committed:
 prod1: tests
@@ -91,14 +86,20 @@ tests: pytests jstests dockertests
 
 python: pytests github
 
-js: jstests github
+js: jstests webapp
+	git add $(WEB_STATIC)/js/*js
+	git add $(WEB_STATIC)/js/*map
+	git add $(REACT_BUILD)/static/js/*js
+	git add $(REACT_BUILD)/static/js/*map
+	git add $(REACT_BUILD)/$(REACT_MAIN)
+	cd $(REACT_TOP); npm run deploy
 
 pytests: FORCE
 	cd models; make tests
 	cd APIServer; make tests
 	cd indra; make tests
 	cd ml; make tests
-	# cd capital; make tests
+	cd capital; make tests
 
 jstests: FORCE
 	cd webapp; make tests
