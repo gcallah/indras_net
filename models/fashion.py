@@ -51,6 +51,8 @@ BLUE_FOLLOWERS = "Blue Followers"
 RED_TSETTERS = "Red Trendsetters"
 BLUE_TSETTERS = "Blue Trendsetters"
 
+# the following must become an attribute of the env,
+# not a global!
 opp_group = None
 
 
