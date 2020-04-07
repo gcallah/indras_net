@@ -28,6 +28,15 @@
       "graph": "line"
     },
     {
+      "model ID": 3,
+      "name": "Fashion Trends",
+      "run": "fashion",
+      "props": "models/props/fashion.props.json",
+      "doc": "The interaction of fashion mavens and trend followers causes fashion cycling.",
+      "source": "https://github.com/gcallah/indras_net/blob/master/models/fashion.py",
+      "graph": "line"
+    },
+    {
       "model ID": 4,
       "name": "Predator-Prey Dynamics",
       "run": "wolfsheep",
