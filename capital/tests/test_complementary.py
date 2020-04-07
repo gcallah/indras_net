@@ -4,9 +4,9 @@ This is the test suite for trade.py.
 
 from unittest import TestCase, main
 
-import capital.complementary as cp
 import capital.trade_utils as tu
-from capital.complementary import COMPLEMENTS 
+import capital.complementary as cp
+from capital.complementary import COMPLEMENTS
 
 from capital.trade_utils import AMT_AVAILABLE, seek_a_trade
 from capital.trade_utils import gen_util_func, trade, DEF_MAX_UTIL
@@ -25,6 +25,12 @@ class tradeTestCase(TestCase):
         self.goodB = None
         self.trader = None
         self.goods = None
+        
+    def test_create_trader(self):
+        trader = cp.create_trader("trader", 0)
+        name = trader.name
+        incr = trader["goods"]["truck"]["incr"]
+        self.assertEqual(incr, 0)
 
 
     if __name__ == '__main__':
