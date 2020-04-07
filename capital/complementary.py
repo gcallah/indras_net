@@ -44,8 +44,9 @@ Mkt_GOODS = {"truck": {AMT_AVAILABLE: DEF_NUM_RESOURCES,
              }
 
 
-def allocate_resources(trader, avail_goods):
-    tu.endow(trader, avail_goods, comp=True)
+def allocate_resources(trader, avail_goods,
+                       equal=False, rand=False, comp=True):
+    tu.endow(trader, avail_goods, comp=comp)
 
 
 def create_trader(name, i, props=None):

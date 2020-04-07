@@ -107,7 +107,7 @@ def transfer(to_goods, from_goods, good_nm, amt=None, comp=None):
     """
     if not amt:
         amt = from_goods[good_nm][AMT_AVAILABLE]
-    if good_nm not in to_goods:
+    if good_nm not in to_goods or to_goods[good_nm][AMT_AVAILABLE] == 0:
         if comp:
             to_goods[good_nm] = {AMT_AVAILABLE: 0,
                                  UTIL_FUNC: GEN_UTIL_FUNC,
