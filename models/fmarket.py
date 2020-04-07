@@ -1,7 +1,8 @@
 """
     This is a financial market model written in indra.
-    To run properly from the API server, the global
-    `market_maker` must be eliminated!
+    It is intended to demonstrate how the interaction of value
+    investors and trend followers can produce cyclical price
+    changes.
 """
 
 from math import isclose
@@ -49,8 +50,6 @@ def trend_direction(agent, cur_price, price_hist):
 
 
 def buy(agent):
-    global trend_followers
-    global value_investors
     market_maker = get_env()[MARKET_MAKER]
 
     price = market_maker["asset_price"] * DEF_NUM_ASSET
