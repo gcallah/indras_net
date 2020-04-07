@@ -18,7 +18,7 @@ import capital.trade_utils as tu
 MODEL_NAME = "complementary"
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
-DEF_NUM_TRADER = 2
+DEF_NUM_TRADER = 4
 DEF_NUM_RESOURCES = 20
 DEF_NUM_RESOURCES_TYPE = 4
 trader_group = None
@@ -45,7 +45,7 @@ Mkt_GOODS = {"truck": {AMT_AVAILABLE: DEF_NUM_RESOURCES,
 
 
 def allocate_resources(trader, avail_goods):
-    tu.endow(trader, avail_goods, comp=True, rand=True)
+    tu.endow(trader, avail_goods, comp=True)
 
 
 def create_trader(name, i, props=None):
@@ -87,8 +87,7 @@ def set_up(props=None):
         width=get_prop('grid_width', DEF_WIDTH),
         members=[trader_group])
     for trader in trader_group:
-        for i in range(DEF_NUM_RESOURCES_TYPE):
-            allocate_resources(trader_group[trader], Mkt_GOODS)
+        allocate_resources(trader_group[trader], Mkt_GOODS)
         get_env().user.tell(trader_group[trader]["goods"])
     return (trader_group, max_utility)
 
