@@ -12,7 +12,7 @@ from indra.composite import Composite
 from indra.display_methods import BLUE, RED
 from indra.env import Env, UNLIMITED
 from indra.registry import get_env, get_prop
-from indra.utils import gaussian
+from indra.utils import gaussian  # , get_func_name
 from indra.utils import init_props
 
 MODEL_NAME = "fmarket"
@@ -219,8 +219,10 @@ def set_up(props=None):
         members=groups,
         width=UNLIMITED,
         height=UNLIMITED,
-        census=market_report,
         line_data_func=plot_asset_price)
+    # we need to put this back in, but that involves
+    # re-doing the whole function registry
+    #    census=get_func_name(market_report),
     get_env().exclude_menu_item("scatter_plot")
 
 
