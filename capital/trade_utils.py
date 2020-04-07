@@ -248,6 +248,15 @@ def seek_a_trade(agent):
     return False
 
 
+def seek_a_trade_w_comp(agent):
+    nearby_agent = get_env().get_closest_agent(agent)
+    if nearby_agent is not None:
+        negotiate(agent, nearby_agent, comp=True)
+        print("I'm", agent.name, "I have", goods_to_str(agent[GOODS]))
+    # return False means to move
+    return False
+
+
 def rec_offer(agent, his_good, his_amt, counterparty, comp=None):
     """
     Receive an offer: we don't need to ever change my_amt

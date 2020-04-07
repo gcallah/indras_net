@@ -25,21 +25,7 @@ class tradeTestCase(TestCase):
         self.goodB = None
         self.trader = None
         self.goods = None
-        
 
-    def test_create_trader(self):
-        # agent = td.create_trader('trader', 0)
-        # name = agent.name
-        # pamt = agent["goods"]["penguin"][AMT_AVAILABLE]
-        # camt = agent["goods"]["cat"][AMT_AVAILABLE]
-        # bamt = agent["goods"]["bear"][AMT_AVAILABLE]
-        # pfamt = agent["goods"]["pet food"][AMT_AVAILABLE]
-        # self.assertEqual(name, "trader0")
-        # self.assertEqual(camt, 0)
-        # self.assertEqual(pamt, 0)
-        # self.assertEqual(bamt, 0)
-        # self.assertEqual(pfamt, 0)
-        pass
 
     if __name__ == '__main__':
         main()
