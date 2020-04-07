@@ -37,14 +37,11 @@ natures_goods = {
 
 def good_decay(goods):
     """
-    This must be re-written to change the amount of a good
-    available based on its durability, not change its durability.
+    This function will allow each good to be decaied in each period,
+    with AMT_AVAILABLE being adjusted by durability.
     """
     for good in goods:
-        goods[good]["durability"] *= goods[good]["durability"]
-        # if the good the durability is too low, the good can't to be traded
-        if goods[good]["durability"] < 0.001:
-            goods[good][AMT_AVAILABLE] = 0
+        goods[good][AMT_AVAILABLE] *= goods[good]["durability"]
 
 
 def trader_action(agent):
