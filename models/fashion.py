@@ -1,5 +1,5 @@
-"space_mdl_helper.py""""
-    This is the fashion model re-written in indra.
+"""
+This is the Adam Smith fashion model.
 """
 
 import math
@@ -51,9 +51,16 @@ BLUE_FOLLOWERS = "Blue Followers"
 RED_TSETTERS = "Red Trendsetters"
 BLUE_TSETTERS = "Blue Trendsetters"
 
-# the following must become an attribute of the env,
-# not a global!
-opp_group = None
+OPP_GROUP = "opp_group"
+
+opp_group = {RED_TSETTERS: BLUE_TSETTERS,
+             BLUE_TSETTERS: RED_TSETTERS,
+             RED_FOLLOWERS: BLUE_FOLLOWERS,
+             BLUE_FOLLOWERS: RED_FOLLOWERS}
+
+
+def get_opp_group(grp):
+    return get_group(get_env()[OPP_GROUP][grp])
 
 
 def change_color(agent, society, opp_group):
@@ -142,13 +149,6 @@ def create_follower(name, i, props=None, color=BLUE_SIN):
                         DISPLAY_COLOR: color})
 
 
-def create_opp_group():
-    return {RED_TSETTERS: get_group(BLUE_TSETTERS),
-            BLUE_TSETTERS: get_group(RED_TSETTERS),
-            RED_FOLLOWERS: get_group(BLUE_FOLLOWERS),
-            BLUE_FOLLOWERS: get_group(RED_FOLLOWERS)}
-
-
 def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
@@ -168,10 +168,7 @@ def set_up(props=None):
                             num_members=get_prop('num_followers',
                                                  NUM_FOLLOWERS)))
 
-    global opp_group
-    opp_group = create_opp_group()
-
-    Env("Society", members=groups)
+    Env("Society", members=groups, attrs={OPP_GROUP: opp_group})
 
 
 def main():

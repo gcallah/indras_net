@@ -225,8 +225,13 @@ class Env(Space):
         Put a child agent in the womb.
         agent: child to add
         group: which group child will join
+        We allow the parameters to be passed as the names of the agents,
+        or as the agents themselves.
         """
-        self.switches.append((agent.name, from_grp.name, to_grp.name))
+        agent_nm = agent if isinstance(agent, str) else agent.name
+        from_grp_nm = from_grp if isinstance(from_grp, str) else from_grp.name
+        to_grp_nm = to_grp if isinstance(to_grp, str) else to_grp.name
+        self.switches.append((agent_nm, from_grp_nm, to_grp_nm))
 
     def now_switch(self, agent, from_grp, to_grp):
         """

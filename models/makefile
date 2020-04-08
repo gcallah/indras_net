@@ -38,6 +38,10 @@ test_ex:
 	$(PYLINT) $(PYLINTFLAGS) ex_boyfriend.py
 	nosetests tests.test_ex_boyfriend --nocapture
 
+test_fashion:
+	$(PYLINT) $(PYLINTFLAGS) fashion.py
+	nosetests tests.test_fashion --nocapture
+
 test_fmarket:
 	$(PYLINT) $(PYLINTFLAGS) fmarket.py
 	nosetests tests.test_fmarket --nocapture

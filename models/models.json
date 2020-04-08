@@ -28,6 +28,15 @@
       "graph": "line"
     },
     {
+      "model ID": 3,
+      "name": "Adam Smith's Fashion Model",
+      "run": "fashion",
+      "props": "models/props/fashion.props.json",
+      "doc": "The interaction of trend setters and trend followers causes fashion cycling.",
+      "source": "https://github.com/gcallah/indras_net/blob/master/models/fashion.py",
+      "graph": "line"
+    },
+    {
       "model ID": 4,
       "name": "Predator-Prey Dynamics",
       "run": "wolfsheep",
