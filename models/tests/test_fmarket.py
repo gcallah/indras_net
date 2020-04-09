@@ -21,6 +21,7 @@ TEST_FOLLOWER_NUM = 3
 
 class FMarketTestCase(TestCase):
     def setUp(self):
+        set_up()
         self.value_investor = create_value_investor("value_investors",
                                                     TEST_INVESTOR_NUM)
         self.trend_follower = create_trend_follower("trend_followers",
@@ -53,11 +54,8 @@ class FMarketTestCase(TestCase):
         Test to see if market_maker is created
         """
         new_market_maker = create_market_maker("market_maker")
-        self.assertTrue(new_market_maker["buy"] == 0)
-        self.assertTrue(new_market_maker["sell"] == 0)
-        self.assertTrue(new_market_maker["asset_price"] == DEF_PRICE)
-        self.assertTrue(new_market_maker["prev_asset_price"] == DEF_PRICE)
-        self.assertTrue(new_market_maker["price_hist"] == [DEF_PRICE])
+        self.assertTrue("buy" in new_market_maker)
+        self.assertTrue("sell" in new_market_maker)
 
     def test_buy(self):
         '''

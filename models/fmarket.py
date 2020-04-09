@@ -1,7 +1,8 @@
 """
     This is a financial market model written in indra.
-    To run properly from the API server, the global
-    `market_maker` must be eliminated!
+    It is intended to demonstrate how the interaction of value
+    investors and trend followers can produce cyclical price
+    changes.
 """
 
 from math import isclose
@@ -11,7 +12,7 @@ from indra.composite import Composite
 from indra.display_methods import BLUE, RED
 from indra.env import Env, UNLIMITED
 from indra.registry import get_env, get_prop
-from indra.utils import gaussian
+from indra.utils import gaussian  # , get_func_name
 from indra.utils import init_props
 
 MODEL_NAME = "fmarket"
@@ -27,6 +28,7 @@ INF = 1000000000  # just some very big num!
 DEF_REAL_VALUE = 10
 DEF_DISCOUNT = .002
 DEF_SIGMA = .8
+MARKET_MAKER = "market_maker"
 
 
 def trend_direction(agent, cur_price, price_hist):
@@ -48,9 +50,7 @@ def trend_direction(agent, cur_price, price_hist):
 
 
 def buy(agent):
-    global trend_followers
-    global value_investors
-    global market_maker
+    market_maker = get_env()[MARKET_MAKER]
 
     price = market_maker["asset_price"] * DEF_NUM_ASSET
     if agent["capital"] >= price:
@@ -60,7 +60,7 @@ def buy(agent):
 
 
 def sell(agent):
-    global market_maker
+    market_maker = get_env()[MARKET_MAKER]
 
     price = market_maker["asset_price"] * DEF_NUM_ASSET
     if agent["num_stock"] >= DEF_NUM_ASSET:
@@ -70,7 +70,7 @@ def sell(agent):
 
 
 def market_report(env):
-    global market_maker
+    market_maker = get_env()[MARKET_MAKER]
     return "Asset price on the market: " \
            + str(round(market_maker["asset_price"], 4)) + "\n"
 
@@ -96,7 +96,7 @@ def calc_price_change(ratio, min_price_move=DEF_MIN_PRICE_MOVE,
 
 
 def plot_asset_price(env):
-    global market_maker
+    market_maker = get_env()[MARKET_MAKER]
 
     data = {}
     data_hist = market_maker["price_hist"]
@@ -111,8 +111,6 @@ def create_market_maker(name):
     """
     Create a market maker.
     """
-    global market_maker
-
     market_maker = Agent(name, action=market_maker_action)
     market_maker["buy"] = 0
     market_maker["sell"] = 0
@@ -156,7 +154,7 @@ def create_value_investor(name, i):
 
 def market_maker_action(agent):
     # Determine the current price asset
-    global market_maker
+    market_maker = get_env()[MARKET_MAKER]
 
     market_maker["prev_asset_price"] = market_maker["asset_price"]
     ratio = 1
@@ -178,7 +176,7 @@ def market_maker_action(agent):
 def trend_follower_action(agent):
     # Determine if trend followers should buy
     # or sell the stock
-    global market_maker
+    market_maker = get_env()[MARKET_MAKER]
 
     if trend_direction(agent, market_maker["asset_price"],
                        market_maker["price_hist"]) == 1:
@@ -191,7 +189,7 @@ def trend_follower_action(agent):
 
 def value_investor_action(agent):
     # Determine if value investors should buy or sell the stock
-    global market_maker
+    market_maker = get_env()[MARKET_MAKER]
 
     if market_maker["asset_price"] >= agent["high_price"]:
         sell(agent)
@@ -216,13 +214,15 @@ def set_up(props=None):
                             member_creator=create_trend_follower,
                             num_members=get_prop("trend_followers",
                                                  DEF_NUM_TREND_FOLLOWER)))
-    groups.append(create_market_maker("market_maker"))
+    groups.append(create_market_maker(MARKET_MAKER))
     Env("fmarket",
         members=groups,
         width=UNLIMITED,
         height=UNLIMITED,
-        census=market_report,
         line_data_func=plot_asset_price)
+    # we need to put this back in, but that involves
+    # re-doing the whole function registry
+    #    census=get_func_name(market_report),
     get_env().exclude_menu_item("scatter_plot")
 
 

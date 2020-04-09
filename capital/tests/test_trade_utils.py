@@ -6,8 +6,8 @@ from unittest import TestCase, main
 # from indra.agent import Agent
 from capital.trade_utils import endow, get_rand_good, is_depleted
 from capital.trade_utils import AMT_AVAILABLE, transfer
-from capital.trade_utils import rand_dist, equal_dist
-from capital.trade_utils import amt_adjust, is_complement, COMPLEMENTS
+from capital.trade_utils import rand_dist, equal_dist, GEN_UTIL_FUNC, UTIL_FUNC
+from capital.trade_utils import amt_adjust, is_complement, COMPLEMENTS, adj_add_good_w_comp
 import capital.trade_utils as tu
 
 
@@ -23,6 +23,17 @@ class TradeUtilsTestCase(TestCase):
         self.goods_dict_du = {"c": self.goodC, "d": self.goodD}
         self.traderB = {"goods": self.goods_dict_du}
         self.traderC = {"goods": self.goods}
+        self.traderD = {"goods": {"truck": {AMT_AVAILABLE: 20,
+                                            UTIL_FUNC: GEN_UTIL_FUNC,
+                                            "incr": 0,
+                                            COMPLEMENTS: "fuel"},
+                                  "fuel": {AMT_AVAILABLE: 0,
+                                           UTIL_FUNC: GEN_UTIL_FUNC,
+                                           "incr": 1,
+                                           COMPLEMENTS: "truck"}},
+                        "util": 0,
+                        "pre_trade_util": 0,
+                        "trades_with": "trader"}
         self.goods_dict_empty = {}
 
     def tearDown(self):
@@ -118,6 +129,11 @@ class TradeUtilsTestCase(TestCase):
         amt_a = amt_adjust(self.traderC, "a")
         self.assertEqual(amt_c, 0.2)
         self.assertEqual(amt_a, 1)
+
+
+    def test_adj_add_good_w_comp(self):
+        adj_add_good_w_comp(self.traderD, "truck", -20)
+        self.assertEqual(self.traderD["goods"]["fuel"]["incr"],0)
 
     if __name__ == '__main__':
         main()

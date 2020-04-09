@@ -6,7 +6,6 @@
    models that don't birth new agents as they run. That means
    right now I believe *only* wolfsheep needs one!
 """
-from APIServer.model_creator_api import generate_func
 from models.bacteria import bacterium_action, toxin_action, nutrient_action
 from models.bacteria import main as bactmain
 from models.bacteria import set_up as bactset_up
@@ -16,6 +15,7 @@ from models.basic import set_up as baset_up
 from models.fashion import follower_action, common_action, tsetter_action
 from models.fashion import main as famain
 from models.fashion import set_up as faset_up
+from models.fmarket import market_report
 from models.fmarket import main as fmmain
 from models.fmarket import market_maker_action, trend_follower_action
 from models.fmarket import plot_asset_price
@@ -66,9 +66,19 @@ action_dict = {
     "seg_agent_action": seg_agent_action,
     "trend_follower_action": trend_follower_action,
     "value_investor_action": value_investor_action,
-    "generate_func": generate_func
 }
 
-aux_funcs_dict = {
+
+# the following isn't used yet, but we need to do
+# something like this:
+census_funcs_dict = {
+    "market_report": market_report,
+}
+
+line_funcs_dict = {
     "plot_asset_price": plot_asset_price,
 }
+
+
+def get_census_func(fname):
+    return census_funcs_dict[fname]

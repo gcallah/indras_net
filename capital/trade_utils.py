@@ -107,7 +107,7 @@ def transfer(to_goods, from_goods, good_nm, amt=None, comp=None):
     """
     if not amt:
         amt = from_goods[good_nm][AMT_AVAILABLE]
-    if good_nm not in to_goods:
+    if good_nm not in to_goods or to_goods[good_nm][AMT_AVAILABLE] == 0:
         if comp:
             to_goods[good_nm] = {AMT_AVAILABLE: 0,
                                  UTIL_FUNC: GEN_UTIL_FUNC,
@@ -243,6 +243,15 @@ def seek_a_trade(agent):
     nearby_agent = get_env().get_closest_agent(agent)
     if nearby_agent is not None:
         negotiate(agent, nearby_agent)
+        print("I'm", agent.name, "I have", goods_to_str(agent[GOODS]))
+    # return False means to move
+    return False
+
+
+def seek_a_trade_w_comp(agent):
+    nearby_agent = get_env().get_closest_agent(agent)
+    if nearby_agent is not None:
+        negotiate(agent, nearby_agent, comp=True)
         print("I'm", agent.name, "I have", goods_to_str(agent[GOODS]))
     # return False means to move
     return False

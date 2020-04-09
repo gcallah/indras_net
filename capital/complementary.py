@@ -11,7 +11,7 @@ from indra.env import Env
 from indra.registry import get_env, get_prop
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import init_props
-from capital.trade_utils import seek_a_trade
+from capital.trade_utils import seek_a_trade_w_comp
 from capital.trade_utils import UTIL_FUNC, GEN_UTIL_FUNC, AMT_AVAILABLE
 import capital.trade_utils as tu
 
@@ -44,28 +44,25 @@ Mkt_GOODS = {"truck": {AMT_AVAILABLE: DEF_NUM_RESOURCES,
              }
 
 
-def allocate_resources(trader, avail_goods):
-    tu.endow(trader, avail_goods, comp=True)
+def allocate_resources(trader, avail_goods,
+                       equal=False, rand=False, comp=True):
+    tu.endow(trader, avail_goods, comp=comp)
 
 
 def create_trader(name, i, props=None):
-    return Agent(name + str(i), action=seek_a_trade,
+    return Agent(name + str(i), action=seek_a_trade_w_comp,
                  attrs={"goods": {"truck": {AMT_AVAILABLE: 0,
-                                            UTIL_FUNC: "penguin_util_func",
-                                            "incr": 0,
-                                            COMPLEMENTS: "fuel"},
+                                            UTIL_FUNC: GEN_UTIL_FUNC,
+                                            "incr": 0},
                                   "land": {AMT_AVAILABLE: 0,
-                                           UTIL_FUNC: "cat_util_func",
-                                           "incr": 0,
-                                           COMPLEMENTS: "wine cellar"},
+                                           UTIL_FUNC: GEN_UTIL_FUNC,
+                                           "incr": 0},
                                   "wine cellar": {AMT_AVAILABLE: 0,
-                                                  UTIL_FUNC: "bear_util_func",
-                                                  "incr": 0,
-                                                  COMPLEMENTS: "land"},
+                                                  UTIL_FUNC: GEN_UTIL_FUNC,
+                                                  "incr": 0},
                                   "fuel": {AMT_AVAILABLE: 0,
                                            UTIL_FUNC: GEN_UTIL_FUNC,
-                                           "incr": 0,
-                                           COMPLEMENTS: "truck"}},
+                                           "incr": 0}},
                         "util": 0,
                         "pre_trade_util": 0,
                         "trades_with": "trader"})
