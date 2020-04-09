@@ -12,27 +12,40 @@ from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import init_props
 from capital.trade_utils import seek_a_trade, GEN_UTIL_FUNC
 from capital.trade_utils import AMT_AVAILABLE, endow, UTIL_FUNC
+import copy
 
 MODEL_NAME = "money"
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
-DEF_NUM_TRADERS = 2
+DEF_NUM_TRADERS = 4
 
 
 # these are the goods we hand out at the start:
 natures_goods = {
     "cow": {AMT_AVAILABLE: 10, UTIL_FUNC: GEN_UTIL_FUNC,
-            "incr": 0, "durability": 0.9, "divisibility": 1.0, },
+            "incr": 0, "durability": 0.9, "divisibility": 1.0,
+            "trade_count": 0, },
     "gold": {AMT_AVAILABLE: 8, UTIL_FUNC: GEN_UTIL_FUNC,
-             "incr": 0, "durability": 1.0, "divisibility": 0.1, },
+             "incr": 0, "durability": 1.0, "divisibility": 0.1,
+             "trade_count": 0, },
     "cheese": {AMT_AVAILABLE: 2, UTIL_FUNC: GEN_UTIL_FUNC,
-               "incr": 0, "durability": 0.8, "divisibility": 0.3, },
+               "incr": 0, "durability": 0.8, "divisibility": 0.3,
+               "trade_count": 0, },
     "banana": {AMT_AVAILABLE: 7, UTIL_FUNC: GEN_UTIL_FUNC,
-               "incr": 0, "durability": 0.2, "divisibility": 0.9, },
+               "incr": 0, "durability": 0.2, "divisibility": 0.9,
+               "trade_count": 0, },
     "diamond": {AMT_AVAILABLE: 8, UTIL_FUNC: GEN_UTIL_FUNC,
-                "incr": 0, "durability": 1.0, "divisibility": 0.2, },
+                "incr": 0, "durability": 1.0, "divisibility": 0.2,
+                "trade_count": 0, },
 }
+
+
+def incr_trade_count(good):
+    """
+    This function will increment the local trade_count by 1
+    """
+    natures_goods[good]["trade_count"] += 1
 
 
 def good_decay(goods):
@@ -45,7 +58,17 @@ def good_decay(goods):
 
 
 def trader_action(agent):
+    dic1 = copy.deepcopy(agent["goods"])
     ret = seek_a_trade(agent)
+    dic2 = copy.deepcopy(agent["goods"])
+    diff = {x: (dic1[x][AMT_AVAILABLE]-dic2[x][AMT_AVAILABLE])
+            for x in dic1 if x in dic2}
+    for good in diff:
+        decayed_amt = dic1[good]["durability"] * dic1[good][AMT_AVAILABLE]
+        if (diff[good] != decayed_amt and diff[good] != 0):
+            incr_trade_count(good)
+            print(good, "is traded",
+                  natures_goods[good]["trade_count"], "times")
     good_decay(agent["goods"])
     return ret
 
