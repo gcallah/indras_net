@@ -58,14 +58,6 @@ def ratio_to_sin(ratio):
     return sin(ratio * pi / 2)
 
 
-def type_hash(agent):
-    """
-    type_hash() will return an ID that identifies
-    the ABM type of an entity.
-    """
-    return len(agent)  # temp solution!
-
-
 def is_composite(thing):
     """
     Is this thing a composite?
@@ -154,10 +146,8 @@ class Agent(object):
         if serial_obj is not None:
             self.restore(serial_obj)
         else:
-            # self.type gotta go!
-            self.type = "agent"
+            self.type = type(self).__name__
             self.name = name
-            # cut locator over to a property
             self.action_key = None
             self.action = action
             if action is not None:

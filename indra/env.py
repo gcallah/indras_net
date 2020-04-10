@@ -89,7 +89,7 @@ class Env(Space):
                          random_placing=random_placing, serial_obj=serial_obj,
                          reg=False, members=members, **kwargs)
 
-        self.type = "env"
+        self.type = type(self).__name__
         self.user_type = os.getenv("user_type", TERMINAL)
         # these funcs all must be restored from the function registry:
         self.census_func = census

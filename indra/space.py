@@ -104,8 +104,7 @@ class Space(Composite):
                          action=action, serial_obj=serial_obj,
                          reg=False)
 
-        # get rid of these type fields!
-        self.type = "space"
+        self.type = type(self).__name__
 
         if serial_obj is not None:
             self.restore(serial_obj)
