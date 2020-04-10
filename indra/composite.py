@@ -351,12 +351,6 @@ class Composite(Agent):
     def magnitude(self):
         pass
 
-    def attrs_to_dict(self):
-        if self.attrs is not None:
-            return self.attrs
-        else:
-            return "No attrs"
-
     def has_color(self):
         return "color" in self.attrs
 

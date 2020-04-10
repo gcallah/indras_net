@@ -110,6 +110,15 @@ class Env(Space):
         # now we set our global singleton:
         regis.set_env(self)
 
+    def set_attr(self, key, val):
+        self.attrs[key] = val
+
+    def get_attr(self, key, default=None):
+        if key in self.attrs:
+            return self.attrs[key]
+        else:
+            return default
+
     def set_menu_excludes(self):
         if not get_prop('use_line', True):
             self.exclude_menu_item("line_graph")

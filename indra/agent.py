@@ -152,8 +152,8 @@ class Agent(object):
             if action is not None:
                 self.action_key = get_func_name(action)
             self.duration = duration
-            self.attrs = {}
             self.neighbors = None
+            self.attrs = {}
             if attrs is not None:
                 self.attrs = attrs
             self.active = True

@@ -8,7 +8,7 @@ from indra.composite import Composite
 from indra.display_methods import RED, GREEN, BLACK
 from indra.display_methods import SPRINGGREEN, TOMATO, TREE
 from indra.env import Env
-from indra.registry import get_env, get_prop
+from indra.registry import get_env, get_prop, get_group
 from indra.utils import init_props
 
 MODEL_NAME = "forestfire"
@@ -49,7 +49,7 @@ STATE_TRANS = [
     [1.0, 0.0, 0.0, 0.0, 0.0],
 ]
 
-group_map = {HE: None, NF: None, OF: None, BO: None, NG: None}
+GROUP_MAP = "group_map"
 
 
 def is_healthy(agent, *args):
@@ -70,8 +70,6 @@ def tree_action(agent):
     """
     This is what trees do each turn in the forest.
     """
-    global on_fire
-
     old_state = agent["state"]
     if is_healthy(agent):
         nearby_fires = Composite(agent.name + "'s nearby fires")
@@ -88,8 +86,10 @@ def tree_action(agent):
         agent["state"] = prob_state_trans(old_state, STATE_TRANS)
 
     if old_state != agent["state"]:
+        group_map = get_env().get_attr(GROUP_MAP)
         agent.has_acted = True
-        agent.locator.add_switch(agent, group_map[old_state],
+        agent.locator.add_switch(agent,
+                                 group_map[old_state],
                                  group_map[agent["state"]])
     return True
 
@@ -104,6 +104,15 @@ def plant_tree(name, i, state=HE):
                  action=tree_action,
                  attrs={"state": state,
                         "save_neighbors": True})
+
+
+def set_env_attrs():
+    get_env().set_attr(GROUP_MAP,
+                       {HE: get_group(HEALTHY),
+                        NF: get_group(NEW_FIRE),
+                        OF: get_group(ON_FIRE),
+                        BO: get_group(BURNED_OUT),
+                        NG: get_group(NEW_GROWTH)})
 
 
 def set_up(props=None):
@@ -127,10 +136,7 @@ def set_up(props=None):
                                          TREE}))
 
     Env("Forest", height=forest_height, width=forest_width, members=groups)
-
-    global group_map
-    group_map = {HE: groups[HE], NF: groups[NF],
-                 OF: groups[OF], BO: groups[BO], NG: groups[NG]}
+    set_env_attrs()
 
 
 def main():
