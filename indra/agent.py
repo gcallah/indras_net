@@ -148,7 +148,7 @@ class Agent(object):
     """
 
     def __init__(self, name, attrs=None, action=None, duration=INF,
-                 prim_group=None, serial_obj=None, env=None, reg=True):
+                 prim_group=None, serial_obj=None, reg=True):
         self.registry = {}
 
         if serial_obj is not None:
@@ -170,10 +170,9 @@ class Agent(object):
             self.active = True
             self.pos = None
 
+            self.locator = None
             # some thing we will fetch from registry:
             # for these, we only store the name but look up object
-            self._env = None if env is None else env.name
-            self._locator = None if self._env is None else self._env
             self._prim_group = None if prim_group is None else prim_group.name
             if prim_group is not None and is_space(prim_group):
                 self.locator = prim_group
@@ -223,8 +222,7 @@ class Agent(object):
     @env.setter
     def env(self, val):
         """
-        Can we use `registry.get_env()` instead of this?
-        """
+        I think we can just pass here: this is defunct!
         if isinstance(val, Agent):
             self._env = val.name
         elif isinstance(val, str):
@@ -234,6 +232,8 @@ class Agent(object):
         else:
             # we must set up logging to handle these better:
             print("Bad type passed to env:", str(val))
+        """
+        pass
 
     @property
     def locator(self):
@@ -257,7 +257,7 @@ class Agent(object):
         elif isinstance(val, str):
             self._locator = val
         elif val is None:
-            self._prim_group = ""
+            self._locator = ""
         else:
             # we must set up logging to handle these better:
             print("Bad type passed to locator:", str(val))
@@ -278,7 +278,6 @@ class Agent(object):
                 "active": self.active,
                 "prim_group": self._prim_group,
                 "locator": self._locator,
-                "env": self._env,
                 "neighbors": nb,
                 "action_key": self.action_key
                 }
@@ -300,7 +299,6 @@ class Agent(object):
         self.neighbors = serial_agent["neighbors"]
         self._prim_group = serial_agent["prim_group"]
         self._locator = serial_agent["locator"]
-        self._env = serial_agent["env"]
         self.type = serial_agent["type"]
 
     def __repr__(self):
@@ -314,9 +312,6 @@ class Agent(object):
 
     def set_pos(self, locator, x, y):
         self.locator = locator  # whoever sets my pos is my locator!
-        # and my env, if I don't have one:
-        if self.env is None:
-            self.env = self.locator
         self.pos = (x, y)
 
     def get_pos(self):
