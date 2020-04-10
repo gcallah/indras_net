@@ -12,6 +12,7 @@ from indra.composite import Composite
 from indra.display_methods import BLUE, RED
 from indra.env import Env, UNLIMITED
 from indra.registry import get_env, get_prop
+from indra.user import run_notice
 from indra.utils import gaussian  # , get_func_name
 from indra.utils import init_props
 
@@ -215,7 +216,7 @@ def set_up(props=None):
                             num_members=get_prop("trend_followers",
                                                  DEF_NUM_TREND_FOLLOWER)))
     groups.append(create_market_maker(MARKET_MAKER))
-    Env("fmarket",
+    Env(MODEL_NAME,
         members=groups,
         width=UNLIMITED,
         height=UNLIMITED,
@@ -228,6 +229,7 @@ def set_up(props=None):
 
 def main():
     set_up()
+    run_notice(MODEL_NAME)
     get_env()()
     return 0
 

@@ -9,6 +9,7 @@ from indra.composite import Composite
 from indra.display_methods import RED, BLUE
 from indra.env import Env
 from indra.registry import get_env, get_prop
+from indra.user import run_notice
 from indra.utils import init_props
 
 MODEL_NAME = "segregation"
@@ -147,6 +148,7 @@ def set_up(props=None):
 
 def main():
     set_up()
+    run_notice(MODEL_NAME)
     # get_env() returns a callable object:
     get_env()()
     return 0

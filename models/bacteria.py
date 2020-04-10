@@ -12,6 +12,7 @@ from indra.display_methods import BLUE, GREEN, RED
 from indra.env import Env
 from indra.registry import get_env, get_group, get_prop
 from indra.space import DEF_HEIGHT, DEF_WIDTH, distance
+from indra.user import user_tell, run_notice
 from indra.utils import init_props
 
 MODEL_NAME = "bacteria"
@@ -66,7 +67,7 @@ def bacterium_action(agent, **kwargs):
         4) move (done automatically by returning False)
     """
     if DEBUG:
-        print("I'm " + agent.name + " and I'm hungry.")
+        user_tell("I'm " + agent.name + " and I'm hungry.")
 
     toxin_level = calc_toxin(get_group(TOXINS), agent)
     nutrient_level = calc_nutrient(
@@ -102,14 +103,14 @@ def bacterium_action(agent, **kwargs):
 
 def toxin_action(agent, **kwargs):
     if DEBUG:
-        print("I'm " + agent.name + " and I'm poisonous.")
+        user_tell("I'm " + agent.name + " and I'm poisonous.")
     # return False means to move
     return False
 
 
 def nutrient_action(agent, **kwargs):
     if DEBUG:
-        print("I'm " + agent.name + " and I'm nutrious.")
+        user_tell("I'm " + agent.name + " and I'm nutrious.")
     # return False means to move
     return False
 
@@ -173,6 +174,7 @@ def set_up(props=None):
 
 def main():
     set_up()
+    run_notice(MODEL_NAME)
     get_env()()
     return 0
 

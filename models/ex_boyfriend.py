@@ -12,6 +12,7 @@ from indra.display_methods import RED, BLUE
 from indra.env import Env
 from indra.registry import get_env, get_prop
 from indra.space import DEF_HEIGHT, DEF_WIDTH
+from indra.user import user_tell, run_notice
 from indra.utils import init_props
 
 MODEL_NAME = "ex_boyfriend"
@@ -61,7 +62,6 @@ def newly_freed_action(agent):
     global newly_freed_start
 
     newly_freed_going = False
-    # print("GF here")
 
     if agent["state"] == PR:
         if newly_freed_cycle is None:
@@ -91,36 +91,29 @@ def newly_freed_action(agent):
             agent["state"] = RC
 
     else:
-        print("SUCCESS!!!!")
-
-    print("State: ", agent["state"])
+        user_tell("SUCCESS!!!!")
 
     if newly_freed_going:
-        # print("GF going")
+        # user_tell("GF going")
         return False
     else:
-        # print("GF not going")
+        # user_tell("GF not going")
         return True
 
 
 def boyfriend_action(agent):
-    # print("I'm " + agent.name + " and I'm acting.")
     global ex_boyfriend_start
     global period
     global boyfriend_going
 
     period += 1
-    # print("Period: ", period)
-    # print("Cycle: ", agent['cycle'])
 
     if period % agent["cycle"] == 0:
-        # print("BF Going")
         boyfriend_going = True
         # return False means to move
         return False
 
     else:
-        # print("BF not going")
         boyfriend_going = False
 
     return True
@@ -169,6 +162,7 @@ def set_up(props=None):
 
 def main():
     set_up()
+    run_notice(MODEL_NAME)
     get_env()()
     return 0
 

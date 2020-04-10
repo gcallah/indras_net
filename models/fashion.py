@@ -14,6 +14,7 @@ from indra.display_methods import NAVY, DARKRED, RED, BLUE
 from indra.env import Env
 from indra.registry import get_env, get_group, get_prop
 from indra.space import in_hood
+from indra.user import run_notice
 from indra.utils import init_props
 
 MODEL_NAME = "fashion"
@@ -174,6 +175,7 @@ def set_up(props=None):
 def main():
     set_up()
 
+    run_notice(MODEL_NAME)
     # get_env() returns a callable object:
     get_env()()
     return 0

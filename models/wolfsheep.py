@@ -7,6 +7,7 @@ from indra.display_methods import TAN, GRAY
 from indra.env import Env
 from indra.registry import get_prop, get_group, get_env
 from indra.space import in_hood
+from indra.user import user_tell, run_notice
 from indra.utils import init_props
 
 MODEL_NAME = "wolfsheep"
@@ -52,8 +53,8 @@ def eat(agent, prey):
      Wolf's duration increases by sheep's duration
      """
     if DEBUG:
-        print("The prey is alive? ", isactive(prey))
-        print(str(agent) + " is eating " + str(prey))
+        user_tell("The prey is alive? " + str(isactive(prey)))
+        user_tell(str(agent) + " is eating " + str(prey))
     agent.duration += prey.duration
     prey.die()
 
@@ -154,6 +155,7 @@ def set_up(props=None):
 
 def main():
     set_up()
+    run_notice(MODEL_NAME)
     get_env()()
     return 0
 

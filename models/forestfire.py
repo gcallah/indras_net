@@ -9,6 +9,7 @@ from indra.display_methods import RED, GREEN, BLACK
 from indra.display_methods import SPRINGGREEN, TOMATO, TREE
 from indra.env import Env
 from indra.registry import get_env, get_prop, get_group
+from indra.user import user_log_err, run_notice, user_log_notif
 from indra.utils import init_props
 
 MODEL_NAME = "forestfire"
@@ -37,9 +38,6 @@ BO = 3
 NG = 4
 
 NUM_STATES = 5
-
-STATE_MAP = {HE: HEALTHY, NF: NEW_FIRE,
-             OF: ON_FIRE, BO: BURNED_OUT, NG: NEW_GROWTH}
 
 STATE_TRANS = [
     [.985, .015, 0.0, 0.0, 0.0],
@@ -87,6 +85,9 @@ def tree_action(agent):
 
     if old_state != agent["state"]:
         group_map = get_env().get_attr(GROUP_MAP)
+        if group_map is None:
+            user_log_err("group_map is None!")
+            return True
         agent.has_acted = True
         agent.locator.add_switch(agent,
                                  group_map[old_state],
@@ -107,6 +108,7 @@ def plant_tree(name, i, state=HE):
 
 
 def set_env_attrs():
+    user_log_notif("Setting env attrs for forest fire.")
     get_env().set_attr(GROUP_MAP,
                        {HE: get_group(HEALTHY),
                         NF: get_group(NEW_FIRE),
@@ -141,6 +143,7 @@ def set_up(props=None):
 
 def main():
     set_up()
+    run_notice(MODEL_NAME)
     get_env()()
     return 0
 
