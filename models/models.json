@@ -46,15 +46,6 @@
       "graph": "line"
     },
     {
-      "model ID": 5,
-      "name": "Forest Fire",
-      "run": "forestfire",
-      "props": "models/props/forestfire.props.json",
-      "doc": "How do forest fires spread?",
-      "source": "https://github.com/gcallah/indras_net/blob/master/models/forestfire.py",
-      "graph": "line"
-    },
-    {
       "model ID": 6,
       "name": "Schelling's Segregation Model",
       "run": "segregation",
