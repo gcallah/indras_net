@@ -50,7 +50,7 @@ DEALER_GRP = "Dealer_group"
 strategies = {}
 
 
-def buy_till_1bad(buyer, dealer):  # testcase needed!
+def buy_till_1bad(buyer, dealer):  # emoji required??
     '''
     mature buyers take cars from good dealer til get 1 bad car
     '''
@@ -58,14 +58,53 @@ def buy_till_1bad(buyer, dealer):  # testcase needed!
     curr_dealer_life = dealer["curr_car_life"]
     # update strategy s1's car life
     strategies["s1"]["car_life"].append(curr_dealer_life)
-    # bad car life is define as less than buyer's avg car life
-    while curr_dealer_life >= MEDIUM_CAR_LIFE:
+    buyer_past_car_avg = buyer["dealer_hist"]["dealer"]
+    # bad car life is define as less than avg dealer car life
+    while curr_dealer_life >= buyer_past_car_avg:
         buy_from_dealer(buyer, dealer)
         strategies["s1"]["car_life"].append(curr_dealer_life)
-        curr_dealer_life = dealer["curr_car_life"]
+        buyer_past_car_avg = buyer["dealer_hist"]["dealer"]
 
 
-def buy_till_2bad(buyer, dealer):  # testcase needed!
+def buy_till_2bad(buyer, dealer):  # emoji required??
+    '''
+    mature buyers take cars from good dealer til get 1 bad car
+    '''
+    buy_from_dealer(buyer, dealer)
+    curr_dealer_life = dealer["curr_car_life"]
+    # update strategy s1's car life
+    strategies["s1"]["car_life"].append(curr_dealer_life)
+    buyer_past_car_avg = buyer["dealer_hist"]["dealer"]
+    bad_car_count = 0
+    # bad car life is define as less than avg dealer car life
+    while bad_car_count < 2:
+        if curr_dealer_life >= buyer_past_car_avg:
+            bad_car_count += 1
+        buy_from_dealer(buyer, dealer)
+        strategies["s1"]["car_life"].append(curr_dealer_life)
+        buyer_past_car_avg = buyer["dealer_hist"]["dealer"]
+
+
+def buy_till_3bad(buyer, dealer):  # emoji required??
+    '''
+    mature buyers take cars from good dealer til get 1 bad car
+    '''
+    buy_from_dealer(buyer, dealer)
+    curr_dealer_life = dealer["curr_car_life"]
+    # update strategy s1's car life
+    strategies["s1"]["car_life"].append(curr_dealer_life)
+    buyer_past_car_avg = buyer["dealer_hist"]["dealer"]
+    bad_car_count = 0
+    # bad car life is define as less than avg dealer car life
+    while bad_car_count < 3:
+        if curr_dealer_life >= buyer_past_car_avg:
+            bad_car_count += 1
+        buy_from_dealer(buyer, dealer)
+        strategies["s1"]["car_life"].append(curr_dealer_life)
+        buyer_past_car_avg = buyer["dealer_hist"]["dealer"]
+
+
+def buy_till_2bad_emoji(buyer, dealer):  # old strategy
     '''mature buyers take cars from good dealer til get 2 bad car'''
     buy_from_dealer(buyer, dealer)
     curr_dealer_life = dealer["curr_car_life"]
@@ -91,7 +130,7 @@ def buy_till_2bad(buyer, dealer):  # testcase needed!
         curr_buyer_life = buyer_emj_lst[dealer_emj]
 
 
-def buy_till_3bad(buyer, dealer):  # testcases needed!
+def buy_till_3bad_emoji(buyer, dealer):  # old strategy
     '''mature buyers take cars from good dealer til get 3 bad car'''
     buy_from_dealer(buyer, dealer)
     curr_dealer_life = dealer["curr_car_life"]
@@ -219,7 +258,7 @@ def set_emoji_indicator(buyer):
     """
     when a buyer becomes mature
     he/she can judge based on their
-     past buying experience
+    past buying experience
     """
     mp = buyer["emoji_life_avg"]
     for key in mp:
