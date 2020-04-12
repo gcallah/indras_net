@@ -3,8 +3,8 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import axios from 'axios';
 import autoBind from 'react-autobind';
 import PageLoader from './PageLoader';
-// import PopulationGraph from './PopulationGraph';
-// import ScatterPlot from './ScatterPlot';
+import PopulationGraph from './PopulationGraph';
+import ScatterPlot from './ScatterPlot';
 import Debugger from './Debugger';
 import ModelStatusBox from './ModelStatusBox';
 import SourceCodeViewer from './SourceCodeViewer';
@@ -23,7 +23,7 @@ class ActionMenu extends Component {
     autoBind(this);
     this.state = {
       menu: {},
-      loadingData: false,
+      loadingData: true,
       envFile: {},
       source: '',
       periodNum: 10,
@@ -31,11 +31,11 @@ class ActionMenu extends Component {
       disabledButton: false,
       loadingSourceCode: false,
       loadingDebugger: false,
+      loadingPopulation: false,
+      loadingScatter: false,
+      activeDisplay: null,
     };
   }
-  // These two will go back in state above when graphs come back
-  // loadingPopulation: false,
-  // loadingScatter: false,
 
   async componentDidMount() {
     try {
@@ -47,21 +47,23 @@ class ActionMenu extends Component {
         source: localStorage.getItem('source'),
         envFile: JSON.parse(localStorage.getItem('envFile')),
         msg: JSON.parse(localStorage.getItem('envFile')).user.user_msgs,
+        loadingData: false,
       });
     } catch (error) {
       return false;
     }
-    // take graphs out for now!
-    //    const defaultGraph = localStorage.getItem('graph');
-    //    if (defaultGraph === 'scatter') {
-    //      this.setState({
-    //        loadingScatter: true,
-    //      });
-    //    } else {
-    //      this.setState({
-    //        loadingPopulation: true,
-    //      });
-    //    }
+    const defaultGraph = localStorage.getItem('graph');
+    if (defaultGraph === 'scatter') {
+      this.setState({
+        loadingScatter: true,
+        activeDisplay: SCATTER,
+      });
+    } else {
+      this.setState({
+        loadingPopulation: true,
+        activeDisplay: POP,
+      });
+    }
     try {
       const code = await this.viewSource();
       this.setState({
@@ -113,21 +115,23 @@ class ActionMenu extends Component {
     return 0;
   };
 
-  // these next two lines go back in below when graphs go back in:
-  //  loadingPopulation: false,
-  //  loadingScatter: false,
   handleClick = (e) => {
     this.setState({
       loadingData: false,
       loadingSourceCode: false,
       loadingDebugger: false,
+      loadingScatter: false,
+      loadingPopulation: false,
+    });
+    this.setState({
+      activeDisplay: e,
     });
     switch (e) {
       case POP:
-        // this.setState({ loadingPopulation: true });
+        this.setState({ loadingPopulation: true });
         break;
       case SCATTER:
-        // this.setState({ loadingScatter: true });
+        this.setState({ loadingScatter: true });
         break;
       case DATA:
         this.setState({ loadingDebugger: true });
@@ -166,15 +170,25 @@ class ActionMenu extends Component {
     return <h1 className="header">{name}</h1>;
   };
 
-  MenuItem = (i, action, text, key) => (
-    <ListGroup.Item
-      className="w-50 text-primary p-3 list-group-item list-group-item-action"
-      key={key}
-      onClick={() => this.handleClick(action)}
-    >
-      {text}
-    </ListGroup.Item>
-  );
+  MenuItem = (i, action, text, key) => {
+    const defaultGraph = localStorage.getItem('graph');
+    const { activeDisplay } = this.state;
+    return (
+      <ListGroup.Item
+        className="w-50 p-3 list-group-item list-group-item-action"
+        as="li"
+        active={activeDisplay === action}
+        disabled={
+          (action === SCATTER && defaultGraph === 'line')
+          || (action === POP && defaultGraph === 'scatter')
+        }
+        key={key}
+        onClick={() => this.handleClick(action)}
+      >
+        {text}
+      </ListGroup.Item>
+    );
+  };
 
   renderMenuItem = () => {
     const {
@@ -182,24 +196,18 @@ class ActionMenu extends Component {
       loadingDebugger,
       loadingSourceCode,
       sourceCode,
+      loadingPopulation,
+      loadingScatter,
     } = this.state;
     return (
       <div>
         <Debugger loadingData={loadingDebugger} envFile={envFile} />
         <SourceCodeViewer loadingData={loadingSourceCode} code={sourceCode} />
+        <PopulationGraph loadingData={loadingPopulation} envFile={envFile} />
+        <ScatterPlot loadingData={loadingScatter} envFile={envFile} />
       </div>
     );
   };
-  // This stuff used to be returned above: graphs out for now!
-  //        <PopulationGraph
-  //          loadingData={loadingPopulation}
-  //          envFile={envFile}
-  //        />
-  //
-  //        <ScatterPlot
-  //          loadingData={loadingScatter}
-  //          envFile={envFile}
-  //        />
 
   renderMapItem = () => {
     const { menu } = this.state;
