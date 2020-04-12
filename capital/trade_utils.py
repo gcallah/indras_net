@@ -47,7 +47,7 @@ def bear_util_func(qty):
 
 
 def steep_util_func(qty):
-    return 20 - 20*qty
+    return 40 - 20*qty
 
 
 util_funcs = {
@@ -349,6 +349,9 @@ def adj_add_good(agent, good, amt, comp=None):
 def adj_add_good_w_comp(agent, good, amt):
     agent["util"] += utility_delta(agent, good, amt)
     agent["goods"][good][AMT_AVAILABLE] += amt
+    comp = agent["goods"][good][COMPLEMENTS]
     if agent["goods"][good][AMT_AVAILABLE] == 0:
-        comp = agent["goods"][good][COMPLEMENTS]
         agent["goods"][comp]['incr'] = 0
+        print("comp!!!", agent["goods"])
+    if amt >= 0:
+        agent["goods"][comp]['incr'] += 20 * amt

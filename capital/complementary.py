@@ -19,7 +19,7 @@ MODEL_NAME = "complementary"
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 DEF_NUM_TRADER = 2
-DEF_NUM_RESOURCES = 1
+DEF_NUM_RESOURCES = 2
 DEF_NUM_RESOURCES_TYPE = 4
 trader_group = None
 
@@ -53,16 +53,20 @@ def create_trader(name, i, props=None):
     return Agent(name + str(i), action=seek_a_trade_w_comp,
                  attrs={"goods": {"truck": {AMT_AVAILABLE: 0,
                                             UTIL_FUNC: "steep_util_func",
-                                            "incr": 0},
+                                            "incr": 0,
+                                            COMPLEMENTS: "fuel"},
                                   "penguin": {AMT_AVAILABLE: 0,
                                               UTIL_FUNC: "steep_util_func",
-                                              "incr": 0},
+                                              "incr": 0,
+                                              COMPLEMENTS: "pet_food"},
                                   "pet_food": {AMT_AVAILABLE: 0,
                                                UTIL_FUNC: "steep_util_func",
-                                               "incr": 0},
+                                               "incr": 0,
+                                               COMPLEMENTS: "penguin"},
                                   "fuel": {AMT_AVAILABLE: 0,
                                            UTIL_FUNC: "steep_util_func",
-                                           "incr": 0}},
+                                           "incr": 0,
+                                           COMPLEMENTS: "truck"}},
                         "util": 0,
                         "pre_trade_util": 0,
                         "trades_with": "trader"})
