@@ -117,14 +117,14 @@ def transfer(to_goods, from_goods, good_nm, amt=None, comp=None):
             complement = from_goods[good_nm][COMPLEMENTS]
             to_goods[good_nm] = {AMT_AVAILABLE: 0,
                                  UTIL_FUNC: GEN_UTIL_FUNC,
-                                 "incr": 20,
+                                 "incr": 0,
                                  COMPLEMENTS: complement}
             if complement not in to_goods or \
                to_goods[complement][AMT_AVAILABLE] == 0:
                 to_goods[complement] = {AMT_AVAILABLE: 0,
                                         UTIL_FUNC: GEN_UTIL_FUNC,
                                         "incr": 20,
-                                        COMPLEMENTS: complement}
+                                        COMPLEMENTS: good_nm}
             else:
                 to_goods[complement]["incr"] = 20
                 to_goods[complement][COMPLEMENTS] = good_nm
@@ -247,8 +247,8 @@ def negotiate(trader1, trader2, comp=None):
         amt = amt_adjust(trader1, this_good)
         while trader1["goods"][this_good][AMT_AVAILABLE] >= amt:
             ans = rec_offer(trader2, this_good, amt, trader1, comp=comp)
-            # user_debug("I'm " + trader1.name
-            #            + ", " + answer_to_str(ans) + " this offer")
+#             user_debug("I'm " + trader1.name
+#                        + ", " + answer_to_str(ans) + " this offer")
             if ans == ACCEPT or ans == REJECT:
                 break
             amt += amt
@@ -280,17 +280,22 @@ def rec_offer(agent, his_good, his_amt, counterparty, comp=None):
     """
     # my_amt = 1
     gain = utility_delta(agent, his_good, his_amt)
+    if comp:
+        gain += agent[GOODS][his_good]["incr"]
     for my_good in agent["goods"]:
         # adjust my_amt if "divisibility" is one of the attributes
         my_amt = amt_adjust(agent, my_good)
         if my_good != his_good and agent["goods"][my_good][AMT_AVAILABLE] > 0:
             loss = -utility_delta(agent, my_good, -my_amt)
+            if comp:
+                loss -= agent[GOODS][my_good]["incr"]
 
 #             print("my good: " + my_good + "; his good: " + his_good
 #                   + ", I gain: " + str(gain) +
 #                   " and lose: " + str(loss))
             if gain > loss:
-                if rec_reply(counterparty, his_good, his_amt, my_good, my_amt):
+                if rec_reply(counterparty, his_good,
+                             his_amt, my_good, my_amt, comp=comp):
                     trade(agent, my_good, my_amt,
                           counterparty, his_good, his_amt, comp=comp)
                     return ACCEPT
@@ -299,9 +304,12 @@ def rec_offer(agent, his_good, his_amt, counterparty, comp=None):
     return REJECT
 
 
-def rec_reply(agent, my_good, my_amt, his_good, his_amt):
+def rec_reply(agent, my_good, my_amt, his_good, his_amt, comp=None):
     gain = utility_delta(agent, his_good, his_amt)
     loss = utility_delta(agent, my_good, -my_amt)
+    if comp:
+        gain += agent[GOODS][his_good]["incr"]
+        loss -= agent[GOODS][my_good]["incr"]
     print(agent.name, "receiving a reply: gain = ",
           gain, "and loss =", abs(loss))
     if gain > abs(loss):
