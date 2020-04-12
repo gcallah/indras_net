@@ -12,7 +12,7 @@ from indra.composite import Composite
 from indra.env import Env, UNLIMITED
 from indra.registry import get_env, get_group, get_prop
 from indra.utils import gaussian
-from indra.user import user_tell
+from indra.user import user_tell, run_notice
 from indra.utils import init_props
 
 MODEL_NAME = 'coop'
@@ -204,6 +204,7 @@ def set_up(props=None):
 
 def main():
     set_up()
+    run_notice(MODEL_NAME)
     get_env()()
     return 0
 

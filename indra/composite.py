@@ -63,9 +63,7 @@ class Composite(Agent):
                          action=action, serial_obj=serial_obj,
                          reg=False)
 
-        # we need to get rid of these uses of type!!!
-        # (but carefully, of course)
-        self.type = "composite"
+        self.type = type(self).__name__
 
         if serial_obj is not None:
             self.restore(serial_obj)
@@ -113,12 +111,11 @@ class Composite(Agent):
         # we loop through the members of this composite
         for nm in serial_obj["members"]:
             member = serial_obj["members"][nm]
-            if member["type"] == "agent":
+            if member["type"] == "Agent":
                 self.members[nm] = Agent(name=nm, serial_obj=member)
-            elif member["type"] == "composite":
+            elif member["type"] == "Composite":
                 self.members[nm] = Composite(name=nm, serial_obj=member)
         # the following line restores the *name* of the creator func:
-        # we await future design to restore the actual func.
         self.member_creator = serial_obj["member_creator"]
 
     def __repr__(self):
@@ -141,16 +138,16 @@ class Composite(Agent):
 
     def __getitem__(self, key):
         """
-        We are going to return the 'key'th member
+        We are going to return the 'key' member
         of our member dictionary.
         """
         return self.members[key]
 
     def __setitem__(self, key, member):
         """
-        In contrast to agent, which sets a double val
+        In contrast to agent, which sets a val
         for setitem, for composites, we are going to set
-        the 'key'th member.
+        the 'key' member.
         """
         join(self, member)
 
@@ -353,12 +350,6 @@ class Composite(Agent):
 
     def magnitude(self):
         pass
-
-    def attrs_to_dict(self):
-        if self.attrs is not None:
-            return self.attrs
-        else:
-            return "No attrs"
 
     def has_color(self):
         return "color" in self.attrs

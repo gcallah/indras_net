@@ -12,33 +12,33 @@ from indra.registry import get_env, get_prop
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import init_props
 from capital.trade_utils import seek_a_trade_w_comp
-from capital.trade_utils import UTIL_FUNC, GEN_UTIL_FUNC, AMT_AVAILABLE
+from capital.trade_utils import UTIL_FUNC, AMT_AVAILABLE
 import capital.trade_utils as tu
 
 MODEL_NAME = "complementary"
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
-DEF_NUM_TRADER = 4
-DEF_NUM_RESOURCES = 20
+DEF_NUM_TRADER = 2
+DEF_NUM_RESOURCES = 2
 DEF_NUM_RESOURCES_TYPE = 4
 trader_group = None
 
 COMPLEMENTS = "complementaries"
 max_utility = tu.max_util
 Mkt_GOODS = {"truck": {AMT_AVAILABLE: DEF_NUM_RESOURCES,
-                       UTIL_FUNC: GEN_UTIL_FUNC,
+                       UTIL_FUNC: "steep_util_func",
                        "incr": 0,
                        COMPLEMENTS: "fuel"},
-             "land": {AMT_AVAILABLE: DEF_NUM_RESOURCES,
-                      UTIL_FUNC: GEN_UTIL_FUNC,
-                      "incr": 0,
-                      COMPLEMENTS: "wine cellar"},
-             "wine cellar": {AMT_AVAILABLE: DEF_NUM_RESOURCES,
-                             UTIL_FUNC: GEN_UTIL_FUNC,
-                             "incr": 0,
-                             COMPLEMENTS: "land"},
+             "penguin": {AMT_AVAILABLE: DEF_NUM_RESOURCES,
+                         UTIL_FUNC: "steep_util_func",
+                         "incr": 0,
+                         COMPLEMENTS: "pet_food"},
+             "pet_food": {AMT_AVAILABLE: DEF_NUM_RESOURCES,
+                          UTIL_FUNC: "steep_util_func",
+                          "incr": 0,
+                          COMPLEMENTS: "penguin"},
              "fuel": {AMT_AVAILABLE: DEF_NUM_RESOURCES,
-                      UTIL_FUNC: GEN_UTIL_FUNC,
+                      UTIL_FUNC: "steep_util_func",
                       "incr": 0,
                       COMPLEMENTS: "truck"}
              }
@@ -52,17 +52,21 @@ def allocate_resources(trader, avail_goods,
 def create_trader(name, i, props=None):
     return Agent(name + str(i), action=seek_a_trade_w_comp,
                  attrs={"goods": {"truck": {AMT_AVAILABLE: 0,
-                                            UTIL_FUNC: GEN_UTIL_FUNC,
-                                            "incr": 0},
-                                  "land": {AMT_AVAILABLE: 0,
-                                           UTIL_FUNC: GEN_UTIL_FUNC,
-                                           "incr": 0},
-                                  "wine cellar": {AMT_AVAILABLE: 0,
-                                                  UTIL_FUNC: GEN_UTIL_FUNC,
-                                                  "incr": 0},
+                                            UTIL_FUNC: "steep_util_func",
+                                            "incr": 0,
+                                            COMPLEMENTS: "fuel"},
+                                  "penguin": {AMT_AVAILABLE: 0,
+                                              UTIL_FUNC: "steep_util_func",
+                                              "incr": 0,
+                                              COMPLEMENTS: "pet_food"},
+                                  "pet_food": {AMT_AVAILABLE: 0,
+                                               UTIL_FUNC: "steep_util_func",
+                                               "incr": 0,
+                                               COMPLEMENTS: "penguin"},
                                   "fuel": {AMT_AVAILABLE: 0,
-                                           UTIL_FUNC: GEN_UTIL_FUNC,
-                                           "incr": 0}},
+                                           UTIL_FUNC: "steep_util_func",
+                                           "incr": 0,
+                                           COMPLEMENTS: "truck"}},
                         "util": 0,
                         "pre_trade_util": 0,
                         "trades_with": "trader"})
@@ -84,7 +88,8 @@ def set_up(props=None):
         width=get_prop('grid_width', DEF_WIDTH),
         members=[trader_group])
     for trader in trader_group:
-        allocate_resources(trader_group[trader], Mkt_GOODS)
+        for i in range(2):
+            allocate_resources(trader_group[trader], Mkt_GOODS)
         get_env().user.tell(trader_group[trader]["goods"])
     return (trader_group, max_utility)
 

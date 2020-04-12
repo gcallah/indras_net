@@ -89,7 +89,7 @@ class Env(Space):
                          random_placing=random_placing, serial_obj=serial_obj,
                          reg=False, members=members, **kwargs)
 
-        self.type = "env"
+        self.type = type(self).__name__
         self.user_type = os.getenv("user_type", TERMINAL)
         # these funcs all must be restored from the function registry:
         self.census_func = census
@@ -109,6 +109,15 @@ class Env(Space):
             regis.register(self.name, self)
         # now we set our global singleton:
         regis.set_env(self)
+
+    def set_attr(self, key, val):
+        self.attrs[key] = val
+
+    def get_attr(self, key, default=None):
+        if key in self.attrs:
+            return self.attrs[key]
+        else:
+            return default
 
     def set_menu_excludes(self):
         if not get_prop('use_line', True):

@@ -39,6 +39,18 @@ def user_log(msg):
     return the_user.log(msg)
 
 
+def user_log_err(msg):
+    return the_user.log("ERROR: " + msg)
+
+
+def user_log_notif(msg):
+    return the_user.log("NOTIFICATION: " + msg)
+
+
+def run_notice(model_nm):
+    return user_log_notif("Running model " + model_nm)
+
+
 def not_impl(user):
     return user.tell(NOT_IMPL)
 

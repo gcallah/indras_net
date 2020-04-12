@@ -4,7 +4,6 @@ This file defines an Agent.
 import json
 import logging
 import sys
-from collections import OrderedDict
 from math import pi, sin
 from random import random
 
@@ -56,14 +55,6 @@ def ratio_to_sin(ratio):
     Take a ratio of y to x and turn it into a sine.
     """
     return sin(ratio * pi / 2)
-
-
-def type_hash(agent):
-    """
-    type_hash() will return an ID that identifies
-    the ABM type of an entity.
-    """
-    return len(agent)  # temp solution!
 
 
 def is_composite(thing):
@@ -148,32 +139,29 @@ class Agent(object):
     """
 
     def __init__(self, name, attrs=None, action=None, duration=INF,
-                 prim_group=None, serial_obj=None, env=None, reg=True):
+                 prim_group=None, serial_obj=None, reg=True):
         self.registry = {}
 
         if serial_obj is not None:
             self.restore(serial_obj)
         else:
-            # self.type gotta go!
-            self.type = "agent"
+            self.type = type(self).__name__
             self.name = name
-            # cut locator over to a property
             self.action_key = None
             self.action = action
             if action is not None:
                 self.action_key = get_func_name(action)
             self.duration = duration
-            self.attrs = OrderedDict()
             self.neighbors = None
+            self.attrs = {}
             if attrs is not None:
                 self.attrs = attrs
             self.active = True
             self.pos = None
 
+            self.locator = None
             # some thing we will fetch from registry:
             # for these, we only store the name but look up object
-            self._env = None if env is None else env.name
-            self._locator = None if self._env is None else self._env
             self._prim_group = None if prim_group is None else prim_group.name
             if prim_group is not None and is_space(prim_group):
                 self.locator = prim_group
@@ -223,8 +211,7 @@ class Agent(object):
     @env.setter
     def env(self, val):
         """
-        Can we use `registry.get_env()` instead of this?
-        """
+        I think we can just pass here: this is defunct!
         if isinstance(val, Agent):
             self._env = val.name
         elif isinstance(val, str):
@@ -234,6 +221,8 @@ class Agent(object):
         else:
             # we must set up logging to handle these better:
             print("Bad type passed to env:", str(val))
+        """
+        pass
 
     @property
     def locator(self):
@@ -257,7 +246,7 @@ class Agent(object):
         elif isinstance(val, str):
             self._locator = val
         elif val is None:
-            self._prim_group = ""
+            self._locator = ""
         else:
             # we must set up logging to handle these better:
             print("Bad type passed to locator:", str(val))
@@ -274,11 +263,10 @@ class Agent(object):
                 "type": self.type,
                 "duration": self.duration,
                 "pos": self.pos,
-                "attrs": self.attrs_to_dict(),
+                "attrs": self.attrs,
                 "active": self.active,
                 "prim_group": self._prim_group,
                 "locator": self._locator,
-                "env": self._env,
                 "neighbors": nb,
                 "action_key": self.action_key
                 }
@@ -290,7 +278,7 @@ class Agent(object):
             self.action = action_dict[serial_agent["action_key"]]
         self.action_key = serial_agent["action_key"]
         self.active = serial_agent["active"]
-        self.attrs = OrderedDict(serial_agent["attrs"])
+        self.attrs = serial_agent["attrs"]
         if not serial_agent["pos"]:
             self.pos = None
         else:
@@ -300,7 +288,6 @@ class Agent(object):
         self.neighbors = serial_agent["neighbors"]
         self._prim_group = serial_agent["prim_group"]
         self._locator = serial_agent["locator"]
-        self._env = serial_agent["env"]
         self.type = serial_agent["type"]
 
     def __repr__(self):
@@ -314,9 +301,6 @@ class Agent(object):
 
     def set_pos(self, locator, x, y):
         self.locator = locator  # whoever sets my pos is my locator!
-        # and my env, if I don't have one:
-        if self.env is None:
-            self.env = self.locator
         self.pos = (x, y)
 
     def get_pos(self):
@@ -445,12 +429,6 @@ class Agent(object):
     def die(self):
         self.duration = 0
         self.active = False
-
-    def attrs_to_dict(self):
-        """
-        Now attrs ARE a dict, so just return 'em.
-        """
-        return self.attrs
 
     def del_group(self, group):
         if group == self.prim_group:

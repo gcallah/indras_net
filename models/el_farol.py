@@ -14,6 +14,7 @@ from indra.display_methods import BLUE, RED
 from indra.env import Env
 from indra.registry import get_env, get_group, get_prop
 from indra.space import DEF_HEIGHT, DEF_WIDTH
+from indra.user import user_tell, run_notice
 from indra.utils import init_props
 
 DEBUG = False
@@ -55,12 +56,12 @@ def discourage(unwanted):
     drinkers = get_group(DRINKERS)
     while unwanted:
         if DEBUG:
-            print("The members are: ", drinkers.members)
+            user_tell("The members are: " + drinkers.members)
         random_drunk = random.choice(list(drinkers.members))
 
         if DEBUG:
-            print("drinker ", random_drunk, " = ",
-                  repr(drinkers[random_drunk]))
+            user_tell("drinker ", random_drunk, " = "
+                      + repr(drinkers[random_drunk]))
 
         drinkers[random_drunk]["motivation"] -= 0.05
         discouraged += 1
@@ -69,7 +70,7 @@ def discourage(unwanted):
     return discouraged
 
 
-def get_average_attendance(record):
+def get_avg_attend(record):
     return sum(record) / len(record)
 
 
@@ -93,8 +94,8 @@ def drinker_action(agent):
 
         agents_decided = 0
         attendance = 0
-        print("Avg attendance so far: ",
-              get_average_attendance(attendance_record))
+        user_tell("Avg attendance so far: "
+                  + str(get_avg_attend(attendance_record)))
 
     if decision:
         attendance += 1
@@ -161,6 +162,7 @@ def set_up(props=None):
 
 def main():
     set_up()
+    run_notice(MODEL_NAME)
     get_env()()
     return 0
 
