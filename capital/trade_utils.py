@@ -46,11 +46,16 @@ def bear_util_func(qty):
     return 15 - qty
 
 
+def steep_util_func(qty):
+    return 20 - 20*qty
+
+
 util_funcs = {
     GEN_UTIL_FUNC: gen_util_func,
     "penguin_util_func": penguin_util_func,
     "cat_util_func": cat_util_func,
-    "bear_util_func": bear_util_func
+    "bear_util_func": bear_util_func,
+    "steep_util_func": steep_util_func
 }
 
 
@@ -109,10 +114,20 @@ def transfer(to_goods, from_goods, good_nm, amt=None, comp=None):
         amt = from_goods[good_nm][AMT_AVAILABLE]
     if good_nm not in to_goods or to_goods[good_nm][AMT_AVAILABLE] == 0:
         if comp:
+            complement = from_goods[good_nm][COMPLEMENTS]
             to_goods[good_nm] = {AMT_AVAILABLE: 0,
                                  UTIL_FUNC: GEN_UTIL_FUNC,
-                                 "incr": 0,
-                                 COMPLEMENTS: from_goods[good_nm][COMPLEMENTS]}
+                                 "incr": 20,
+                                 COMPLEMENTS: complement}
+            if complement not in to_goods or \
+               to_goods[complement][AMT_AVAILABLE] == 0:
+                to_goods[complement] = {AMT_AVAILABLE: 0,
+                                        UTIL_FUNC: GEN_UTIL_FUNC,
+                                        "incr": 20,
+                                        COMPLEMENTS: complement}
+            else:
+                to_goods[complement]["incr"] = 20
+                to_goods[complement][COMPLEMENTS] = good_nm
         else:
             to_goods[good_nm] = {AMT_AVAILABLE: 0,
                                  UTIL_FUNC: GEN_UTIL_FUNC,
