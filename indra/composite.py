@@ -106,7 +106,7 @@ class Composite(Agent):
         return rep
 
     def from_json(self, serial_obj):
-        from models.run_dict_helper import member_creator_dict
+        from registry.run_dict import member_creator_dict
         super().from_json(serial_obj)
         self.num_members_ever = serial_obj["num_members_ever"]
         # we loop through the members of this composite

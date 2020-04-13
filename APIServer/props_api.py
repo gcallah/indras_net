@@ -3,7 +3,7 @@ import json
 from APIServer.api_utils import json_converter, err_return
 from APIServer.models_api import get_model
 from indra.registry import get_env
-from models.run_dict_helper import setup_dict
+from registry.run_dict import setup_dict
 
 ENV_INSTANCE = 0
 
