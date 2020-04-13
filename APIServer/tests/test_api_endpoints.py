@@ -8,10 +8,11 @@ from unittest import TestCase, main, skip
 from flask_restplus import Resource
 
 from APIServer.api_endpoints import Props, ModelMenu, RunModel
+from APIServer.api_endpoints import Props, ModelMenu, RunModel
 from APIServer.api_endpoints import app, HelloWorld, Endpoints, Models
 from APIServer.api_endpoints import indra_dir
 from APIServer.api_utils import err_return
-from APIServer.models_api import load_models
+from APIServer.models_api import load_models, MODEL_FILE
 
 menu = [{"val": 0, "func": "run", "question": "Run for N periods"},
         {"val": 1, "func": "line_graph", "question":
@@ -43,7 +44,7 @@ class Test(TestCase):
         See if models can be loaded.
         """
         rv = self.models
-        test_model_file = indra_dir + "/models/models.json"
+        test_model_file = indra_dir + MODEL_FILE
         with open(test_model_file) as file:
             test_rv = json.loads(file.read())["models_database"]
         self.assertEqual(rv, test_rv)
@@ -128,7 +129,7 @@ class Test(TestCase):
         """
         rv = self.model.get()
 
-        test_model_file = indra_dir + "/models/models.json"
+        test_model_file = indra_dir + MODEL_FILE
         with open(test_model_file) as file:
             test_models_db = json.loads(file.read())["models_database"]
 
@@ -153,7 +154,7 @@ class Test(TestCase):
         model_id = random.randint(0, 10)
         rv = self.props.get(model_id)
 
-        test_model_file = indra_dir + "/models/models.json"
+        test_model_file = indra_dir + MODEL_FILE
         with open(test_model_file) as file:
             test_models_db = json.loads(file.read())["models_database"]
 

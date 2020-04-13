@@ -3,9 +3,13 @@
 import json
 from indra.user import user_log
 
+REGISTRY = "registry"
+MODELS_DB = "models.json"
+MODEL_FILE = "/" + REGISTRY + "/" + MODELS_DB
+
 
 def load_models(indra_dir):
-    model_file = indra_dir + "/models/models.json"
+    model_file = indra_dir + MODEL_FILE
     with open(model_file) as file:
         return json.loads(file.read())["models_database"]
 
