@@ -7,7 +7,7 @@ and moves them around randomly.
 from indra.agent import Agent
 from indra.composite import Composite
 from indra.env import Env
-from indra.registry import get_env, get_prop
+from registry.registry import get_env, get_prop
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import init_props
 from capital.trade_utils import seek_a_trade, GEN_UTIL_FUNC

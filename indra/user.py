@@ -8,7 +8,7 @@ from abc import abstractmethod
 from IPython import embed
 
 from indra.agent import Agent
-from indra.registry import get_env
+from registry.registry import get_env
 
 TERMINAL = "terminal"
 TEST = "test"

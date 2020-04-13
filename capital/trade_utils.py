@@ -2,7 +2,7 @@
 This file contains general functions useful in trading goods.
 """
 # from indra.user import user_debug
-from indra.registry import get_env
+from registry.registry import get_env
 import random
 
 ACCEPT = 1

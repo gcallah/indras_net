@@ -5,7 +5,7 @@ import os
 import random
 
 from propargs.propargs import PropArgs
-from indra.registry import set_propargs
+from registry.registry import set_propargs
 
 
 def gaussian(mean, sigma, trim_at_zero=True):

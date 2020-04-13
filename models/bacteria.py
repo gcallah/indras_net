@@ -10,7 +10,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import BLUE, GREEN, RED
 from indra.env import Env
-from indra.registry import get_env, get_group, get_prop
+from registry.registry import get_env, get_group, get_prop
 from indra.space import DEF_HEIGHT, DEF_WIDTH, distance
 from indra.user import user_tell, run_notice
 from indra.utils import init_props

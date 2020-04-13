@@ -4,8 +4,8 @@ This is the test suite for registry.py.
 
 from unittest import TestCase, main
 
-from indra.registry import Registry, REGISTRY, get_prop
-from indra.registry import set_env, get_env, add_group, get_group
+from registry.registry import Registry, REGISTRY, get_prop
+from registry.registry import set_env, get_env, add_group, get_group
 
 TEST_VAL_STR = "test_val"
 TEST_VAL = 1

@@ -12,7 +12,7 @@ from indra.agent import ratio_to_sin
 from indra.composite import Composite
 from indra.display_methods import NAVY, DARKRED, RED, BLUE
 from indra.env import Env
-from indra.registry import get_env, get_group, get_prop
+from registry.registry import get_env, get_group, get_prop
 from indra.space import in_hood
 from indra.user import run_notice
 from indra.utils import init_props

@@ -10,7 +10,7 @@ from random import choice
 
 from indra.agent import Agent, join, INF, is_composite, AgentEncoder
 
-from indra.registry import register, add_group
+from registry.registry import register, add_group
 from indra.utils import get_func_name
 
 DEBUG = False

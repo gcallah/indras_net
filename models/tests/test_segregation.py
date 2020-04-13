@@ -9,7 +9,7 @@ from propargs.propargs import PropArgs
 import models.segregation as seg
 from indra.composite import Composite
 from indra.env import Env
-from indra.registry import get_env
+from registry.registry import get_env
 from models.segregation import DEF_TOLERANCE, DEF_SIGMA
 from models.segregation import env_favorable, BLUE_AGENTS, RED_AGENTS
 from models.segregation import group_names, my_group_index

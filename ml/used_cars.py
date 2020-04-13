@@ -20,7 +20,7 @@ from indra.composite import Composite
 from indra.display_methods import RED, BLUE
 from indra.env import Env
 from indra.space import DEF_HEIGHT, DEF_WIDTH
-from indra.registry import get_env, get_group, get_prop
+from registry.registry import get_env, get_group, get_prop
 from indra.utils import init_props
 
 MODEL_NAME = "used_cars"
