@@ -74,29 +74,31 @@ class Home extends Component {
           <div className="col-6">
             {this.renderChooseModelProp()}
             <ListGroup>
-              {Object.keys(allItems).map((item) => (
-                <OverlayTrigger
-                  key={`${allItems[item].name}-tooltip`}
-                  placement="right"
-                  overlay={<Tooltip>{allItems[item].doc}</Tooltip>}
-                >
-                  <Link
-                    to={{
-                      pathname: `/models/props/${allItems[item]['model ID']}`,
-                    }}
-                    className="text-primary w-75 p-3 list-group-item list-group-item-action link"
-                    key={allItems[item].name}
-                    onClick={() => this.handleClick(
-                      allItems[item]['model ID'],
-                      allItems[item].name,
-                      allItems[item].source,
-                      allItems[item].graph,
-                    )}
+              {/* Show the models if "active" is missing or is set to true */}
+              {Object.keys(allItems).map((item) => (!('active' in allItems[item])
+                || allItems[item].active === true ? (
+                  <OverlayTrigger
+                    key={`${allItems[item].name}-tooltip`}
+                    placement="right"
+                    overlay={<Tooltip>{allItems[item].doc}</Tooltip>}
                   >
-                    {allItems[item].name}
-                  </Link>
-                </OverlayTrigger>
-              ))}
+                    <Link
+                      to={{
+                        pathname: `/models/props/${allItems[item]['model ID']}`,
+                      }}
+                      className="text-primary w-75 p-3 list-group-item list-group-item-action link"
+                      key={allItems[item].name}
+                      onClick={() => this.handleClick(
+                        allItems[item]['model ID'],
+                        allItems[item].name,
+                        allItems[item].source,
+                        allItems[item].graph,
+                      )}
+                    >
+                      {allItems[item].name}
+                    </Link>
+                  </OverlayTrigger>
+                ) : null))}
             </ListGroup>
           </div>
           <div className="col-6">
