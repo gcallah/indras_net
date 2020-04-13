@@ -1,10 +1,5 @@
 """
-1. The name of this file is terrible: what is a `run_dict_helper`?
-   It should be `function_registry`.
-2. It is in the wrong place: we need a registry dir.
-3. We don't need to register any member creator functions for
-   models that don't birth new agents as they run. That means
-   right now I believe *only* wolfsheep needs one!
+The file to register functions we need to restore at run time.
 """
 from models.bacteria import bacterium_action, toxin_action, nutrient_action
 from models.bacteria import main as bactmain

@@ -1,6 +1,6 @@
 import json
 
-from models.run_dict_helper import rdict
+from registry.run_dict import rdict
 
 
 def main(args=None):

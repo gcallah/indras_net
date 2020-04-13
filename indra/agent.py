@@ -9,7 +9,7 @@ from random import random
 
 import numpy as np
 
-from indra.registry import register, get_registration, get_env
+from registry.registry import register, get_registration, get_env
 from indra.utils import get_func_name
 
 DEBUG = False  # turns debugging code on or off
@@ -272,7 +272,7 @@ class Agent(object):
                 }
 
     def from_json(self, serial_agent):
-        from models.run_dict_helper import action_dict
+        from registry.run_dict import action_dict
         self.action = None
         if serial_agent["action_key"] is not None:
             self.action = action_dict[serial_agent["action_key"]]

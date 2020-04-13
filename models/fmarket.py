@@ -11,7 +11,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import BLUE, RED
 from indra.env import Env, UNLIMITED
-from indra.registry import get_env, get_prop
+from registry.registry import get_env, get_prop
 from indra.user import run_notice
 from indra.utils import gaussian  # , get_func_name
 from indra.utils import init_props

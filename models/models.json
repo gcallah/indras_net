@@ -44,7 +44,7 @@
       "doc": "Wolves eat sheep in a meadow and their populations' cycle.",
       "source": "https://github.com/gcallah/indras_net/blob/master/models/wolfsheep.py",
       "graph": "line",
-      "active": false
+      "active": true
     },
     {
       "model ID": 6,

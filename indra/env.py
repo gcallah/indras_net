@@ -9,8 +9,8 @@ import os
 # we mean to add logging soon!
 # import logging
 import indra.display_methods as disp
-import indra.registry as regis
-from indra.registry import get_prop
+import registry.registry as regis
+from registry.registry import get_prop
 from indra.agent import join, switch, Agent, AgentEncoder
 from indra.space import Space
 import traceback

@@ -10,7 +10,7 @@ import random
 from indra.agent import Agent
 from indra.composite import Composite
 from indra.env import Env, UNLIMITED
-from indra.registry import get_env, get_group, get_prop
+from registry.registry import get_env, get_group, get_prop
 from indra.utils import gaussian
 from indra.user import user_tell, run_notice
 from indra.utils import init_props

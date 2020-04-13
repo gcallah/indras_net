@@ -8,7 +8,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import RED, BLUE
 from indra.env import Env
-from indra.registry import get_env, get_prop
+from registry.registry import get_env, get_prop
 from indra.user import run_notice
 from indra.utils import init_props
 
