@@ -171,6 +171,11 @@ class ActionMenu extends Component {
   };
 
   MenuItem = (i, action, text, key) => {
+    /**
+     * All models will have all the menu items appear on the page.
+     * However, we keep one of the graphs (Population graph or Scatter plot)
+     * disabled based on "graph" field from models.json
+     */
     const defaultGraph = localStorage.getItem('graph');
     const { activeDisplay } = this.state;
     return (
