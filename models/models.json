@@ -5,6 +5,7 @@
       "name": "Basic",
       "run": "basic",
       "props": "models/props/basic.props.json",
+      "doc": "A toy model to test the system.",
       "source": "https://github.com/gcallah/indras_net/blob/master/models/basic.py",
       "graph": "scatter"
     },
@@ -42,6 +43,7 @@
       "props": "models/props/wolfsheep.props.json",
       "doc": "Wolves eat sheep in a meadow and their populations' cycle.",
       "source": "https://github.com/gcallah/indras_net/blob/master/models/wolfsheep.py",
+      "graph": "line",
       "active": false
     },
     {
