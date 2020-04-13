@@ -30,6 +30,7 @@ from models.segregation import seg_agent_action
 from models.wolfsheep import main as wsmain
 from models.wolfsheep import set_up as wsset_up
 from models.wolfsheep import sheep_action, wolf_action
+from models.wolfsheep import create_sheep, create_wolf
 
 rdict = {
     "basic": bamain,
@@ -68,6 +69,10 @@ action_dict = {
     "value_investor_action": value_investor_action,
 }
 
+member_creator_dict = {
+    "create_sheep": create_sheep,
+    "create_wolf": create_wolf,
+}
 
 # the following isn't used yet, but we need to do
 # something like this:

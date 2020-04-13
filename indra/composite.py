@@ -106,6 +106,7 @@ class Composite(Agent):
         return rep
 
     def from_json(self, serial_obj):
+        from models.run_dict_helper import member_creator_dict
         super().from_json(serial_obj)
         self.num_members_ever = serial_obj["num_members_ever"]
         # we loop through the members of this composite
@@ -115,8 +116,13 @@ class Composite(Agent):
                 self.members[nm] = Agent(name=nm, serial_obj=member)
             elif member["type"] == "Composite":
                 self.members[nm] = Composite(name=nm, serial_obj=member)
-        # the following line restores the *name* of the creator func:
-        self.member_creator = serial_obj["member_creator"]
+        mem_create_nm = serial_obj["member_creator"]
+        if mem_create_nm in member_creator_dict:
+            self.member_creator = member_creator_dict[mem_create_nm]
+        else:
+            # if it's not in the above dict, we don't need the func,
+            # we can just store its name:
+            self.member_creator = mem_create_nm
 
     def __repr__(self):
         return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
