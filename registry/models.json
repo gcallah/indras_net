@@ -47,6 +47,16 @@
       "active": true
     },
     {
+      "model ID": 5,
+      "name": "Forest Fire",
+      "run": "forestfire",
+      "props": "models/props/forestfire.props.json",
+      "doc": "Examine how fires spread in a forest.",
+      "source": "https://github.com/gcallah/indras_net/blob/master/models/forestfire.py",
+      "graph": "scatter",
+      "active": false
+    },
+    {
       "model ID": 6,
       "name": "Schelling's Segregation Model",
       "run": "segregation",
