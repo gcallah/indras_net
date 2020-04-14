@@ -30,7 +30,6 @@ def random_name():
 
 class Test(TestCase):
     def setUp(self):
-        # none of the object's members names should have caps!
         self.hello_world = HelloWorld(Resource)
         self.endpoints = Endpoints(Resource)
         self.model = Models(Resource)
@@ -75,54 +74,7 @@ class Test(TestCase):
             with self.subTest(test_endpoint=test_endpoint):
                 self.assertIn(test_endpoint, endpoints)
 
-    @skip("The test_put_model_creator() must be completely re-written.")
-    def test_put_model_creator(self):
-        '''
-        Test the model creator API.
-        This test is not good: first of all, it's about 20 tests packed into 1.
-        Secondly, it is way too specifically tied to the details of
-        the return.
-        '''
-        model_name = random_name()
-        env_width = random.randrange(1000)
-        env_height = random.randrange(1000)
-        groups = []
-        for _ in range(random.randrange(100)):
-            groups.append({"group_name": random_name(),
-                           "num_of_agents": random.randrange(100),
-                           "color": "",
-                           "group_actions": []})
-            # There's no point in testing color and group_actions because
-            # APIServer.model_creator_api.CreateGroups.put doesn't do anything
-            # with them anyway.
-        model_features = {"model_name": model_name,
-                          "env_width": env_width,
-                          "env_height": env_height,
-                          "groups": groups}
-        rv = put_model_creator(model_features)
-        self.assertEqual(rv["type"], "env")
-        self.assertEqual(model_name, rv["name"])
-        self.assertEqual(model_name, rv["plot_title"])
-        self.assertEqual(env_width, rv["width"])
-        self.assertEqual(env_height, rv["height"])
-        rv_members = rv["members"]
-        for group in groups:
-            group_name = group["group_name"]
-            self.assertIn(group_name, rv_members)
-            composite = rv_members[group_name]
-            self.assertEqual(composite["type"], "composite")
-            self.assertEqual(group_name, composite["name"])
-            self.assertIn(model_name, composite["groups"])
-            composite_members = composite["members"]
-            for agent_index in range(group["num_of_agents"] - 1):
-                agent_name = group_name + "_agent" + str(agent_index + 1)
-                self.assertIn(agent_name, composite_members)
-                agent = composite_members[agent_name]
-                self.assertEqual(agent["type"], "agent")
-                self.assertEqual(agent_name, agent["name"])
-                self.assertIn(group_name, agent["groups"])
-                self.assertEqual(model_name, agent["locator"])
-
+    @skip("The API tests must be re-written: they are locked to a particular format.")
     def test_get_model(self):
         """
         See if we can get models.

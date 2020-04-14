@@ -1,7 +1,8 @@
 # This module handles the models portion of the API server.
 
 import json
-from indra.user import user_log
+from indra.user import user_log_notif, user_log_err
+from APIServer.api_utils import ERROR
 
 REGISTRY = "registry"
 MODELS_DB = "models.json"
@@ -18,15 +19,11 @@ def get_models(indra_dir):
     try:
         models_db = load_models(indra_dir)
     except FileNotFoundError:
-        return {"ERROR": "Model file not found: indra dir is " + indra_dir}
+        return {ERROR: "Model file not found: indra dir is " + indra_dir}
 
     models_response = []
     for model in models_db:
-        models_response.append({"model ID": model["model ID"],
-                                "name": model["name"],
-                                "doc": model.get("doc", ""),
-                                "source": model.get("source", ""),
-                                "graph": model.get("graph", "")})
+        models_response.append(model)
     return models_response
 
 
@@ -38,9 +35,12 @@ def get_model(model_id, indra_dir=None, models_db=None):
         try:
             models_db = load_models(indra_dir)
         except FileNotFoundError:
-            return {"ERROR": "Model file not found: indra dir is " + indra_dir}
+            msg = user_log_err("Model file not found: indra_dir is: " +
+                               indra_dir)
+            return {ERROR: msg}
     for model in models_db:
         if int(model["model ID"]) == model_id:
-            user_log("Matched model: " + str(model_id))
+            user_log_notif("Matched model: " + model["name"])
             return model
-    raise KeyError
+    msg = user_log_err("Model id not found: " + str(model_id))
+    return {ERROR: msg}
