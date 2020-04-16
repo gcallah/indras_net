@@ -83,6 +83,8 @@ def tree_action(agent):
         # we gotta do these str/int shenanigans with state cause
         # JSON only allows strings as dict keys
         agent["state"] = str(prob_state_trans(int(old_state), STATE_TRANS))
+        if agent["state"] == NF:
+            user_log_notif("Tree spontaneously catching fire.")
 
     if old_state != agent["state"]:
         # if we entered a new state, then...

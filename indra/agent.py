@@ -256,10 +256,6 @@ class Agent(object):
         self.from_json(serial_obj)
 
     def to_json(self):
-        if not self.neighbors:
-            nb = None
-        else:
-            nb = self.neighbors
         return {"name": self.name,
                 "type": self.type,
                 "duration": self.duration,
@@ -268,7 +264,7 @@ class Agent(object):
                 "active": self.active,
                 "prim_group": self._prim_group,
                 "locator": self._locator,
-                "neighbors": nb,
+                "neighbors": None,
                 "action_key": self.action_key
                 }
 

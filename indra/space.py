@@ -357,8 +357,7 @@ class Space(Composite):
             row_hood.name = "Row neighbors"
             return row_hood
 
-    # for the moment, let's not do this!
-    # @use_saved_hood
+    @use_saved_hood
     def get_x_hood(self, agent, width=1, pred=None, include_self=False,
                    save_neighbors=False):
         """
@@ -406,7 +405,6 @@ class Space(Composite):
             agent.neighbors = y_hood
         return y_hood
 
-    # for now, let's slow down and not use the saved hood!
     @use_saved_hood
     def get_vonneumann_hood(self, agent, pred=None, save_neighbors=False):
         """
@@ -418,8 +416,7 @@ class Space(Composite):
             agent.neighbors = vonneumann_hood
         return vonneumann_hood
 
-    # @use_saved_hood
-    # for now, let's slow down and not use the saved hood!
+    @use_saved_hood
     def get_moore_hood(self, agent, pred=None, save_neighbors=False,
                        include_self=False, hood_size=1):
         """
