@@ -10,6 +10,7 @@ from random import random
 import numpy as np
 
 from registry.registry import register, get_registration, get_env
+# from registry.registry import get_group
 from indra.utils import get_func_name
 
 DEBUG = False  # turns debugging code on or off
@@ -258,7 +259,7 @@ class Agent(object):
         if not self.neighbors:
             nb = None
         else:
-            nb = self.neighbors.name
+            nb = self.neighbors
         return {"name": self.name,
                 "type": self.type,
                 "duration": self.duration,
