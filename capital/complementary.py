@@ -11,6 +11,7 @@ from indra.env import Env
 from registry.registry import get_env, get_prop
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import init_props
+from indra.user import user_log_notif
 from capital.trade_utils import seek_a_trade_w_comp
 from capital.trade_utils import UTIL_FUNC, AMT_AVAILABLE
 import capital.trade_utils as tu
@@ -19,29 +20,12 @@ MODEL_NAME = "complementary"
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 DEF_NUM_TRADER = 2
+
 DEF_NUM_RESOURCES = 2
 DEF_NUM_RESOURCES_TYPE = 4
-trader_group = None
+MKT_GOODS = "mkt_goods"
 
 COMPLEMENTS = "complementaries"
-max_utility = tu.max_util
-Mkt_GOODS = {"truck": {AMT_AVAILABLE: DEF_NUM_RESOURCES,
-                       UTIL_FUNC: "steep_util_func",
-                       "incr": 0,
-                       COMPLEMENTS: "fuel"},
-             "penguin": {AMT_AVAILABLE: DEF_NUM_RESOURCES,
-                         UTIL_FUNC: "steep_util_func",
-                         "incr": 0,
-                         COMPLEMENTS: "pet_food"},
-             "pet_food": {AMT_AVAILABLE: DEF_NUM_RESOURCES,
-                          UTIL_FUNC: "steep_util_func",
-                          "incr": 0,
-                          COMPLEMENTS: "penguin"},
-             "fuel": {AMT_AVAILABLE: DEF_NUM_RESOURCES,
-                      UTIL_FUNC: "steep_util_func",
-                      "incr": 0,
-                      COMPLEMENTS: "truck"}
-             }
 
 
 def allocate_resources(trader, avail_goods,
@@ -72,33 +56,50 @@ def create_trader(name, i, props=None):
                         "trades_with": "trader"})
 
 
+def set_env_attrs():
+    user_log_notif("Setting env attrs for " + MODEL_NAME)
+
+
 def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    global max_utility
     pa = init_props(MODEL_NAME, props, model_dir="capital")
+    num_traders = get_prop('num_traders', DEF_NUM_TRADER)
     trader_group = Composite("trader", {"color": BLUE},
                              member_creator=create_trader,
                              props=pa,
-                             num_members=get_prop('num_traders',
-                                                  DEF_NUM_TRADER))
+                             num_members=num_traders)
     Env("env",
         height=get_prop('grid_height', DEF_HEIGHT),
         width=get_prop('grid_width', DEF_WIDTH),
         members=[trader_group])
+    set_env_attrs()
+    num_resources = get_prop('num_resources', DEF_NUM_RESOURCES)
+    MKT_GOODS = {
+                "truck": {AMT_AVAILABLE: num_resources,
+                          UTIL_FUNC: "steep_util_func",
+                          "incr": 0, COMPLEMENTS: "fuel"},
+                "penguin": {AMT_AVAILABLE: num_resources,
+                            UTIL_FUNC: "steep_util_func",
+                            "incr": 0, COMPLEMENTS: "pet_food"},
+                "pet_food": {AMT_AVAILABLE: num_resources,
+                             UTIL_FUNC: "steep_util_func",
+                             "incr": 0, COMPLEMENTS: "penguin"},
+                "fuel": {AMT_AVAILABLE: num_resources,
+                         UTIL_FUNC: "steep_util_func",
+                         "incr": 0, COMPLEMENTS: "truck"}
+                }
     for trader in trader_group:
-        for i in range(2):
-            allocate_resources(trader_group[trader], Mkt_GOODS)
+        for i in range(len(MKT_GOODS) // num_traders):
+            allocate_resources(trader_group[trader], MKT_GOODS)
         get_env().user.tell(trader_group[trader]["goods"])
-    return (trader_group, max_utility)
 
 
 def main():
     global trader_group
-    global max_utility
 
-    (trader_group, max_utility) = set_up()
+    set_up()
 
     if DEBUG2:
         get_env().user.tell(get_env().__repr__())
