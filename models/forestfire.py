@@ -79,12 +79,13 @@ def tree_action(agent):
             agent["state"] = NF
 
     # if we didn't catch on fire above, do probabilistic transition:
-    if agent["state"] != NF:
+    if old_state == agent["state"]:
         # we gotta do these str/int shenanigans with state cause
         # JSON only allows strings as dict keys
         agent["state"] = str(prob_state_trans(int(old_state), STATE_TRANS))
 
     if old_state != agent["state"]:
+        # if we entered a new state, then...
         group_map = get_env().get_attr(GROUP_MAP)
         if group_map is None:
             user_log_err("group_map is None!")
