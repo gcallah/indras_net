@@ -16,6 +16,7 @@ from indra.space import Space
 import traceback
 from indra.user import TEST, TestUser, USER_EXIT, APIUser
 from indra.user import TermUser, TERMINAL, API
+from indra.user import user_log_notif
 from indra.utils import get_func_name
 
 DEBUG = False
@@ -293,9 +294,12 @@ class Env(Space):
             Run our model for N periods.
             Return the total number of actions taken.
         """
+        user_log_notif("Running env " + self.name + " for "
+                       + str(periods) + " periods.")
         num_acts = 0
         num_moves = 0
         for i in range(periods):
+            # these things need to be done before action loop:
             self.handle_womb()
             self.handle_switches()
             self.handle_pop_hist()
