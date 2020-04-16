@@ -54,7 +54,7 @@
       "doc": "Examine how fires spread in a forest.",
       "source": "https://github.com/gcallah/indras_net/blob/master/models/forestfire.py",
       "graph": "scatter",
-      "active": false
+      "active": true
     },
     {
       "model ID": 6,
