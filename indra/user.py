@@ -40,11 +40,15 @@ def user_log(msg):
 
 
 def user_log_err(msg):
-    return the_user.log("ERROR: " + msg)
+    return user_log("ERROR: " + msg)
+
+
+def user_log_warn(msg):
+    return user_log("WARNING: " + msg)
 
 
 def user_log_notif(msg):
-    return the_user.log("NOTIFICATION: " + msg)
+    return user_log("NOTIFICATION: " + msg)
 
 
 def run_notice(model_nm):

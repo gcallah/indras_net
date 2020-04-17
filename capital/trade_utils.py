@@ -243,8 +243,8 @@ def answer_to_str(ans):
 def negotiate(trader1, trader2, comp=None):
     # this_good is a dict
     for this_good in trader1["goods"]:
-        # amt = 1
-        amt = amt_adjust(trader1, this_good)
+        amt = 1
+        # amt = amt_adjust(trader1, this_good)
         while trader1["goods"][this_good][AMT_AVAILABLE] >= amt:
             ans = rec_offer(trader2, this_good, amt, trader1, comp=comp)
 #             user_debug("I'm " + trader1.name
@@ -278,13 +278,13 @@ def rec_offer(agent, his_good, his_amt, counterparty, comp=None):
     in this function, because if the counter-party can't bid enough
     for a single unit, no trade is possible.
     """
-    # my_amt = 1
+    my_amt = 1
     gain = utility_delta(agent, his_good, his_amt)
     if comp:
         gain += agent[GOODS][his_good]["incr"]
     for my_good in agent["goods"]:
         # adjust my_amt if "divisibility" is one of the attributes
-        my_amt = amt_adjust(agent, my_good)
+        # my_amt = amt_adjust(agent, my_good)
         if my_good != his_good and agent["goods"][my_good][AMT_AVAILABLE] > 0:
             loss = -utility_delta(agent, my_good, -my_amt)
             if comp:
@@ -332,7 +332,12 @@ def utility_delta(agent, good, change):
     """
     curr_good = agent["goods"][good]
     ufunc_name = curr_good[UTIL_FUNC]
-    curr_amt = curr_good[AMT_AVAILABLE]
+    # temp change
+    if ("divisibility" in agent["goods"][list(agent["goods"])[0]]):
+        curr_amt = curr_good[AMT_AVAILABLE]/curr_good["divisibility"]
+    else:
+        curr_amt = curr_good[AMT_AVAILABLE]
+    # curr_amt = curr_good[AMT_AVAILABLE]
     curr_util = get_util_func(ufunc_name)(curr_amt)
     new_util = get_util_func(ufunc_name)(curr_amt + change)
     return ((new_util + curr_util) / 2) * change
@@ -341,6 +346,8 @@ def utility_delta(agent, good, change):
 def adj_add_good(agent, good, amt, comp=None):
     if not comp:
         agent["util"] += utility_delta(agent, good, amt)
+        # temp change
+        amt *= amt_adjust(agent, good)
         agent["goods"][good][AMT_AVAILABLE] += amt
     else:
         adj_add_good_w_comp(agent, good, amt)
@@ -348,6 +355,8 @@ def adj_add_good(agent, good, amt, comp=None):
 
 def adj_add_good_w_comp(agent, good, amt):
     agent["util"] += utility_delta(agent, good, amt)
+    # temp change
+    amt *= amt_adjust(agent, good)
     agent["goods"][good][AMT_AVAILABLE] += amt
     comp = agent["goods"][good][COMPLEMENTS]
     if agent["goods"][good][AMT_AVAILABLE] == 0:

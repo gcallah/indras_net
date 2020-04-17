@@ -381,6 +381,7 @@ class Space(Composite):
                 agent.neighbors = x_hood
             return x_hood
 
+    # for now, let's slow down and not use the saved hood!
     @use_saved_hood
     def get_y_hood(self, agent, height=1, pred=None, include_self=False,
                    save_neighbors=False):

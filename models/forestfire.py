@@ -8,7 +8,7 @@ from indra.composite import Composite
 from indra.display_methods import RED, GREEN, BLACK
 from indra.display_methods import SPRINGGREEN, TOMATO, TREE
 from indra.env import Env
-from registry.registry import get_env, get_prop, get_group
+from registry.registry import get_env, get_prop
 from indra.user import user_log_err, run_notice, user_log_notif
 from indra.utils import init_props
 
@@ -30,14 +30,13 @@ ON_FIRE = "On Fire"
 BURNED_OUT = "Burned Out"
 NEW_GROWTH = "New Growth"
 
-# state numbers
-HE = 0
-NF = 1
-OF = 2
-BO = 3
-NG = 4
-
-NUM_STATES = 5
+# state numbers: create as strings for JSON,
+# convert to int when we need 'em that way
+HE = "0"
+NF = "1"
+OF = "2"
+BO = "3"
+NG = "4"
 
 STATE_TRANS = [
     [.985, .015, 0.0, 0.0, 0.0],
@@ -81,9 +80,14 @@ def tree_action(agent):
 
     # if we didn't catch on fire above, do probabilistic transition:
     if old_state == agent["state"]:
-        agent["state"] = prob_state_trans(old_state, STATE_TRANS)
+        # we gotta do these str/int shenanigans with state cause
+        # JSON only allows strings as dict keys
+        agent["state"] = str(prob_state_trans(int(old_state), STATE_TRANS))
+        if agent["state"] == NF:
+            user_log_notif("Tree spontaneously catching fire.")
 
     if old_state != agent["state"]:
+        # if we entered a new state, then...
         group_map = get_env().get_attr(GROUP_MAP)
         if group_map is None:
             user_log_err("group_map is None!")
@@ -110,11 +114,11 @@ def plant_tree(name, i, state=HE):
 def set_env_attrs():
     user_log_notif("Setting env attrs for forest fire.")
     get_env().set_attr(GROUP_MAP,
-                       {HE: get_group(HEALTHY),
-                        NF: get_group(NEW_FIRE),
-                        OF: get_group(ON_FIRE),
-                        BO: get_group(BURNED_OUT),
-                        NG: get_group(NEW_GROWTH)})
+                       {HE: HEALTHY,
+                        NF: NEW_FIRE,
+                        OF: ON_FIRE,
+                        BO: BURNED_OUT,
+                        NG: NEW_GROWTH})
 
 
 def set_up(props=None):

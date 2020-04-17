@@ -10,6 +10,7 @@ from random import random
 import numpy as np
 
 from registry.registry import register, get_registration, get_env
+# from registry.registry import get_group
 from indra.utils import get_func_name
 
 DEBUG = False  # turns debugging code on or off
@@ -255,10 +256,6 @@ class Agent(object):
         self.from_json(serial_obj)
 
     def to_json(self):
-        if not self.neighbors:
-            nb = None
-        else:
-            nb = self.neighbors.name
         return {"name": self.name,
                 "type": self.type,
                 "duration": self.duration,
@@ -267,7 +264,7 @@ class Agent(object):
                 "active": self.active,
                 "prim_group": self._prim_group,
                 "locator": self._locator,
-                "neighbors": nb,
+                "neighbors": None,
                 "action_key": self.action_key
                 }
 

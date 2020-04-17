@@ -7,13 +7,14 @@ from models.bacteria import set_up as bactset_up
 from models.basic import agent_action
 from models.basic import main as bamain
 from models.basic import set_up as baset_up
-from models.fashion import follower_action, common_action, tsetter_action
+from models.el_farol import main as efmain
+from models.el_farol import set_up as efset_up
+from models.el_farol import drinker_action
 from models.fashion import main as famain
 from models.fashion import set_up as faset_up
-from models.fmarket import market_report
+from models.fashion import follower_action, common_action, tsetter_action
 from models.fmarket import main as fmmain
 from models.fmarket import market_maker_action, trend_follower_action
-from models.fmarket import plot_asset_price
 from models.fmarket import set_up as fmset_up
 from models.fmarket import value_investor_action
 from models.forestfire import main as ffmain
@@ -30,6 +31,7 @@ from models.wolfsheep import create_sheep, create_wolf
 rdict = {
     "basic": bamain,
     "bacteria": bactmain,
+    "el_farol": efmain,
     "fashion": famain,
     "fmarket": fmmain,
     "forestfire": ffmain,
@@ -40,6 +42,7 @@ rdict = {
 setup_dict = {
     "basic": baset_up,
     "bacteria": bactset_up,
+    "el_farol": efset_up,
     "fashion": faset_up,
     "fmarket": fmset_up,
     "forestfire": ffset_up,
@@ -49,36 +52,24 @@ setup_dict = {
 
 action_dict = {
     "agent_action": agent_action,
-    "follower_action": follower_action,
+    "bacterium_action": bacterium_action,
     "common_action": common_action,
-    "tsetter_action": tsetter_action,
-    "tree_action": tree_action,
+    "drinker_action": drinker_action,
+    "follower_action": follower_action,
+    "market_maker_action": market_maker_action,
+    "nutrient_action": nutrient_action,
     "sheep_action": sheep_action,
     "wolf_action": wolf_action,
-    "bacterium_action": bacterium_action,
     "toxin_action": toxin_action,
-    "nutrient_action": nutrient_action,
-    "market_maker_action": market_maker_action,
     "seg_agent_action": seg_agent_action,
+    "tsetter_action": tsetter_action,
+    "tree_action": tree_action,
     "trend_follower_action": trend_follower_action,
     "value_investor_action": value_investor_action,
 }
+
 
 member_creator_dict = {
     "create_sheep": create_sheep,
     "create_wolf": create_wolf,
 }
-
-# the following isn't used yet, but we need to do
-# something like this:
-census_funcs_dict = {
-    "market_report": market_report,
-}
-
-line_funcs_dict = {
-    "plot_asset_price": plot_asset_price,
-}
-
-
-def get_census_func(fname):
-    return census_funcs_dict[fname]

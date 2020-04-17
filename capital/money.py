@@ -30,13 +30,13 @@ natures_goods = {
              "incr": 0, "durability": 1.0, "divisibility": 0.1,
              "trade_count": 0, },
     "cheese": {AMT_AVAILABLE: 2, UTIL_FUNC: GEN_UTIL_FUNC,
-               "incr": 0, "durability": 0.8, "divisibility": 0.3,
+               "incr": 0, "durability": 0.8, "divisibility": 0.4,
                "trade_count": 0, },
     "banana": {AMT_AVAILABLE: 7, UTIL_FUNC: GEN_UTIL_FUNC,
-               "incr": 0, "durability": 0.2, "divisibility": 0.9,
+               "incr": 0, "durability": 0.2, "divisibility": 0.2,
                "trade_count": 0, },
     "diamond": {AMT_AVAILABLE: 8, UTIL_FUNC: GEN_UTIL_FUNC,
-                "incr": 0, "durability": 1.0, "divisibility": 0.2,
+                "incr": 0, "durability": 1.0, "divisibility": 0.8,
                 "trade_count": 0, },
 }
 
@@ -67,8 +67,12 @@ def trader_action(agent):
         decayed_amt = dic1[good]["durability"] * dic1[good][AMT_AVAILABLE]
         if (diff[good] != decayed_amt and diff[good] != 0):
             incr_trade_count(good)
-            print(good, "is traded",
-                  natures_goods[good]["trade_count"], "times")
+            # print(good, "is traded",
+            #       natures_goods[good]["trade_count"], "times")
+    print(" TRADE COUNT")
+    for good in natures_goods:
+        print(good, " is traded ",
+              natures_goods[good]["trade_count"], " times")
     good_decay(agent["goods"])
     return ret
 
