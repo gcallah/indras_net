@@ -34,7 +34,8 @@
       "props": "models/props/el_farol.props.json",
       "doc": "Everyone loves the El Farol Bar... until it is too crowded.",
       "source": "https://github.com/gcallah/indras_net/blob/master/models/el_farol.py",
-      "graph": "line"
+      "graph": "line",
+      "active": false
     },
     {
       "model ID": 3,
