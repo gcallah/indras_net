@@ -28,6 +28,15 @@
       "graph": "line"
     },
     {
+      "model ID": 7,
+      "name": "El Farol Bar",
+      "run": "el_farol",
+      "props": "models/props/el_farol.props.json",
+      "doc": "Everyone loves the El Farol Bar... until it is too crowded.",
+      "source": "https://github.com/gcallah/indras_net/blob/master/models/el_farol.py",
+      "graph": "line"
+    },
+    {
       "model ID": 3,
       "name": "Adam Smith's Fashion Model",
       "run": "fashion",
