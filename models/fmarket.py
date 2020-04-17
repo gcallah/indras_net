@@ -12,7 +12,6 @@ from indra.composite import Composite
 from indra.display_methods import BLUE, RED
 from indra.env import Env, UNLIMITED
 from registry.registry import get_env, get_prop
-from indra.user import run_notice
 from indra.utils import gaussian
 from indra.user import run_notice, user_log_notif
 from indra.utils import init_props
@@ -210,6 +209,7 @@ def set_env_attrs():
     user_log_notif("Setting env attrs for " + MODEL_NAME)
     env = get_env()
     env.set_attr("pop_hist_func", record_price)
+    env.set_attr("census_func", market_report)
 
 
 def set_up(props=None):
@@ -234,9 +234,6 @@ def set_up(props=None):
         height=UNLIMITED,
         pop_hist_setup=initial_price,
         pop_hist_func=record_price)
-    # we need to put this back in, but that involves
-    # re-doing the whole function registry
-    #    census=get_func_name(market_report),
     get_env().exclude_menu_item("scatter_plot")
 
 

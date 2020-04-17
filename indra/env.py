@@ -152,13 +152,10 @@ class Env(Space):
         # but only if they're really funcs!
         # cause we're gonna try to call them
         if isinstance(census, FunctionType):
-            user_log_notif("Storing custom census func")
             self.attrs["census_func"] = census
         if isinstance(pop_hist_func, FunctionType):
-            user_log_notif("Storing custom pop hist func")
             self.attrs["pop_hist_func"] = pop_hist_func
         if isinstance(line_data_func, FunctionType):
-            user_log_notif("Storing custom line func")
             self.attrs["line_data_func"] = line_data_func
         self.exclude_member = exclude_member
         self.womb = []  # for agents waiting to be born
