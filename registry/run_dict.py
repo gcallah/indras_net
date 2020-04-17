@@ -10,10 +10,9 @@ from models.basic import set_up as baset_up
 from models.fashion import follower_action, common_action, tsetter_action
 from models.fashion import main as famain
 from models.fashion import set_up as faset_up
-from models.fmarket import market_report
+from models.fmarket import market_report, record_price
 from models.fmarket import main as fmmain
 from models.fmarket import market_maker_action, trend_follower_action
-from models.fmarket import plot_asset_price
 from models.fmarket import set_up as fmset_up
 from models.fmarket import value_investor_action
 from models.forestfire import main as ffmain
@@ -64,19 +63,20 @@ action_dict = {
     "value_investor_action": value_investor_action,
 }
 
+
 member_creator_dict = {
     "create_sheep": create_sheep,
     "create_wolf": create_wolf,
 }
 
-# the following isn't used yet, but we need to do
-# something like this:
-census_funcs_dict = {
-    "market_report": market_report,
+
+pop_hist_func_dict = {
+    "record_price": record_price,
 }
 
-line_funcs_dict = {
-    "plot_asset_price": plot_asset_price,
+
+census_funcs_dict = {
+    "market_report": market_report,
 }
 
 

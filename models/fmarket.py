@@ -14,6 +14,7 @@ from indra.env import Env, UNLIMITED
 from registry.registry import get_env, get_prop
 from indra.user import run_notice
 from indra.utils import gaussian
+from indra.user import run_notice, user_log_notif
 from indra.utils import init_props
 
 MODEL_NAME = "fmarket"
@@ -30,6 +31,7 @@ DEF_REAL_VALUE = 10
 DEF_DISCOUNT = .002
 DEF_SIGMA = .8
 MARKET_MAKER = "market_maker"
+ASSET_PRICE = "Asset Price"
 
 
 def trend_direction(agent, cur_price, price_hist):
@@ -94,18 +96,6 @@ def calc_price_change(ratio, min_price_move=DEF_MIN_PRICE_MOVE,
         direction = -1
 
     return direction * min(max_price_move, min_price_move * ratio)
-
-
-def plot_asset_price(env):
-    market_maker = get_env()[MARKET_MAKER]
-
-    data = {}
-    data_hist = market_maker["price_hist"]
-    data["asset_price"] = {}
-    data["asset_price"]["data"] = data_hist
-    data["asset_price"]["color"] = RED
-    period = len(data_hist)
-    return (period, data)
 
 
 def create_market_maker(name):
@@ -200,6 +190,28 @@ def value_investor_action(agent):
     return True
 
 
+def initial_price(pop_hist):
+    """
+    Set up our pop hist object to record exchanges per period.
+    """
+    pop_hist.record_pop(ASSET_PRICE, DEF_PRICE)
+
+
+def record_price(pop_hist):
+    """
+    This is our hook into the env to record the number of exchanges each
+    period.
+    """
+    market_maker = get_env()[MARKET_MAKER]
+    pop_hist.record_pop(ASSET_PRICE, market_maker["asset_price"])
+
+
+def set_env_attrs():
+    user_log_notif("Setting env attrs for " + MODEL_NAME)
+    env = get_env()
+    env.set_attr("pop_hist_func", record_price)
+
+
 def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
@@ -220,7 +232,8 @@ def set_up(props=None):
         members=groups,
         width=UNLIMITED,
         height=UNLIMITED,
-        line_data_func=plot_asset_price)
+        pop_hist_setup=initial_price,
+        pop_hist_func=record_price)
     # we need to put this back in, but that involves
     # re-doing the whole function registry
     #    census=get_func_name(market_report),
