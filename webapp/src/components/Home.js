@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Loader, Dimmer } from 'semantic-ui-react';
 import ListGroup from 'react-bootstrap/ListGroup';
+import Col from 'react-bootstrap/Col';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import axios from 'axios';
@@ -71,7 +72,7 @@ class Home extends Component {
           <h1 className="text-left">Indra Agent-Based Modeling System</h1>
         </div>
         <div className="row">
-          <div className="col-6">
+          <Col sm={12} lg={4} className="mb-5">
             {this.renderChooseModelProp()}
             <ListGroup>
               {/* Show the models if "active" is missing or is set to true */}
@@ -86,7 +87,7 @@ class Home extends Component {
                       to={{
                         pathname: `/models/props/${allItems[item]['model ID']}`,
                       }}
-                      className="text-primary w-75 p-3 list-group-item list-group-item-action link"
+                      className="text-primary p-3 list-group-item list-group-item-action link"
                       key={allItems[item].name}
                       onClick={() => this.handleClick(
                         allItems[item]['model ID'],
@@ -100,15 +101,15 @@ class Home extends Component {
                   </OverlayTrigger>
                 ) : null))}
             </ListGroup>
-          </div>
-          <div className="col-6">
+          </Col>
+          <Col sm={12} lg={{ cols: 6, span: 6, offset: 2 }}>
             <Carousel
               speed={5000}
               autoplay
-              className="col-12"
+              className="col"
               data={dataForCarousel}
             />
-          </div>
+          </Col>
         </div>
       </div>
     );
