@@ -5,6 +5,7 @@ of agents that share a timeline and a Space.
 import getpass
 import json
 import os
+from types import FunctionType
 
 # we mean to add logging soon!
 # import logging
@@ -17,7 +18,6 @@ import traceback
 from indra.user import TEST, TestUser, USER_EXIT, APIUser
 from indra.user import TermUser, TERMINAL, API
 from indra.user import user_log_notif
-from indra.utils import get_func_name
 
 DEBUG = False
 DEBUG2 = False
@@ -77,13 +77,24 @@ class Env(Space):
     A collection of entities that share a space and time.
     An env *is* a space and *has* a timeline (PopHist).
     That makes the inheritance work out as we want it to.
+    There are four functions possibly passed in here:
+
+        - census
+        - line_data_func
+        - pop_hist_func
+
+    These will all be cutover to be attributes of the env:
+    the handy new way to support serialization.
     """
 
     def __init__(self, name, action=None, random_placing=True,
-                 serial_obj=None, census=None,
-                 line_data_func=None, exclude_member=None,
+                 serial_obj=None,
+                 exclude_member=None,
+                 census=None,
+                 line_data_func=None,
                  pop_hist_setup=None,
-                 pop_hist_func=None, members=None,
+                 pop_hist_func=None,
+                 members=None,
                  reg=True,
                  **kwargs):
         super().__init__(name, action=action,
@@ -92,17 +103,16 @@ class Env(Space):
 
         self.type = type(self).__name__
         self.user_type = os.getenv("user_type", TERMINAL)
-        # these funcs all must be restored from the function registry:
-        self.census_func = census
+        # this func is only used once, so no need to restore it
         self.pop_hist_setup = pop_hist_setup
-        self.pop_hist_func = pop_hist_func
 
         self.num_switches = 0
         if serial_obj is not None:
             # are we restoring env from json?
             self.restore_env(serial_obj)
         else:
-            self.construct_anew(line_data_func, exclude_member)
+            self.construct_anew(line_data_func, exclude_member,
+                                census, pop_hist_func)
 
         self.set_menu_excludes()
 
@@ -126,19 +136,30 @@ class Env(Space):
         if not get_prop('use_scatter', True):
             self.exclude_menu_item("scatter_plot")
 
-    def construct_anew(self, line_data_func=None, exclude_member=None):
+    def construct_anew(self, line_data_func=None, exclude_member=None,
+                       census=None, pop_hist_func=None):
         self.pop_hist = PopHist()  # this will record pops across time
         # Make sure varieties are present in the history
-        if self.pop_hist_setup is None:
+        if self.pop_hist_setup is not None:
+            self.pop_hist_setup(self.pop_hist)
+        else:
             for mbr in self.members:
                 self.pop_hist.record_pop(mbr, self.pop_count(mbr))
-        else:
-            self.pop_hist_setup(self.pop_hist)
 
-        # Attributes for plotting
         self.plot_title = self.name
         self.user = None
-        self.line_data_func = line_data_func
+        # these funcs will be stored as attrs...
+        # but only if they're really funcs!
+        # cause we're gonna try to call them
+        if isinstance(census, FunctionType):
+            user_log_notif("Storing custom census func")
+            self.attrs["census_func"] = census
+        if isinstance(pop_hist_func, FunctionType):
+            user_log_notif("Storing custom pop hist func")
+            self.attrs["pop_hist_func"] = pop_hist_func
+        if isinstance(line_data_func, FunctionType):
+            user_log_notif("Storing custom line func")
+            self.attrs["line_data_func"] = line_data_func
         self.exclude_member = exclude_member
         self.womb = []  # for agents waiting to be born
         self.switches = []  # for agents waiting to switch groups
@@ -162,26 +183,18 @@ class Env(Space):
         self.user = APIUser(nm, self)
         self.user.tell(msg)
         self.name = serial_obj["name"]
-
         self.switches = serial_obj["switches"]
         self.womb = serial_obj["womb"]
-
-        # We need to look up these funcs in registry.
-        self.census_func = serial_obj["census_func"]
-        self.line_data_func = serial_obj["data_func"]
         self.num_members_ever = serial_obj["num_members_ever"]
 
     def to_json(self):
         rep = super().to_json()
         rep["type"] = self.type
         rep["user"] = self.user.to_json()
-        rep["census_func"] = self.census_func
         rep["plot_title"] = self.plot_title
         rep["pop_hist"] = self.pop_hist.to_json()
         rep["womb"] = self.womb
         rep["switches"] = self.switches
-        rep["census_func"] = get_func_name(self.census_func)
-        rep["data_func"] = get_func_name(self.line_data_func)
         rep["num_members_ever"] = self.num_members_ever
         return rep
 
@@ -280,14 +293,14 @@ class Env(Space):
 
     def handle_pop_hist(self):
         self.pop_hist.add_period()
-        if self.pop_hist_func is None:
+        if "pop_hist_func" in self.attrs:
+            self.attrs["pop_hist_func"](self.pop_hist)
+        else:
             for mbr in self.pop_hist.pops:
                 if mbr in self.members and self.is_mbr_comp(mbr):
                     self.pop_hist.record_pop(mbr, self.pop_count(mbr))
                 else:
                     self.pop_hist.record_pop(mbr, 0)
-        else:
-            self.pop_hist_func(self.pop_hist)
 
     def runN(self, periods=DEF_TIME):
         """
@@ -321,10 +334,10 @@ class Env(Space):
         and how many agent has switched groups and returns
         a string of these census data.
 
-        census_func (to be added) overrides the default behavior.
+        census_func overrides the default behavior.
         """
-        if self.census_func:
-            return self.census_func(self)
+        if "census_func" in self.attrs:
+            return self.attrs["census_func"](self)
         else:
             total_pop = 0
             census_str = ("\nTotal census for period "
@@ -418,7 +431,9 @@ class Env(Space):
             exclude = self.exclude_member
         else:
             exclude = None
-        if self.line_data_func is None:
+        if "line_data_func" in self.attrs:
+            (period, data) = self.attrs["line_data_func"](self)
+        else:
             data = {}
             for var in self.pop_hist.pops:
                 if var != exclude:
@@ -427,8 +442,6 @@ class Env(Space):
                     data[var]["color"] = self.get_color(var)
                     if not period:
                         period = len(data[var]["data"])
-        else:
-            (period, data) = self.line_data_func(self)
         return period, data
 
     def plot_data(self):
