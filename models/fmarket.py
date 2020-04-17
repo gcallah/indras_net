@@ -232,9 +232,9 @@ def set_up(props=None):
         members=groups,
         width=UNLIMITED,
         height=UNLIMITED,
-        pop_hist_setup=initial_price,
-        pop_hist_func=record_price)
+        pop_hist_setup=initial_price)
     get_env().exclude_menu_item("scatter_plot")
+    set_env_attrs()
 
 
 def main():

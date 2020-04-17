@@ -152,6 +152,7 @@ class Env(Space):
         # but only if they're really funcs!
         # cause we're gonna try to call them
         if isinstance(census, FunctionType):
+            print("Adding custom census func")
             self.attrs["census_func"] = census
         if isinstance(pop_hist_func, FunctionType):
             self.attrs["pop_hist_func"] = pop_hist_func
