@@ -78,7 +78,7 @@ def is_complement(trader, good, comp):
     """
     see if 'comp' is complement of 'good'
     """
-    if trader[GOODS][good][COMPLEMENTS] == comp:
+    if comp in trader[GOODS][good][COMPLEMENTS]:
         return True
     else:
         return False
@@ -114,20 +114,21 @@ def transfer(to_goods, from_goods, good_nm, amt=None, comp=None):
         amt = from_goods[good_nm][AMT_AVAILABLE]
     if good_nm not in to_goods or to_goods[good_nm][AMT_AVAILABLE] == 0:
         if comp:
-            complement = from_goods[good_nm][COMPLEMENTS]
+            complement_list = from_goods[good_nm][COMPLEMENTS]
             to_goods[good_nm] = {AMT_AVAILABLE: 0,
                                  UTIL_FUNC: GEN_UTIL_FUNC,
                                  "incr": 0,
-                                 COMPLEMENTS: complement}
-            if complement not in to_goods or \
-               to_goods[complement][AMT_AVAILABLE] == 0:
-                to_goods[complement] = {AMT_AVAILABLE: 0,
-                                        UTIL_FUNC: GEN_UTIL_FUNC,
-                                        "incr": 20,
-                                        COMPLEMENTS: good_nm}
-            else:
-                to_goods[complement]["incr"] = 20
-                to_goods[complement][COMPLEMENTS] = good_nm
+                                 COMPLEMENTS: complement_list}
+            for complement in complement_list:
+                if complement not in to_goods or \
+                   to_goods[complement][AMT_AVAILABLE] == 0:
+                    to_goods[complement] = {AMT_AVAILABLE: 0,
+                                            UTIL_FUNC: GEN_UTIL_FUNC,
+                                            "incr": 20,
+                                            COMPLEMENTS: [good_nm]}
+                else:
+                    to_goods[complement]["incr"] = 20
+                    to_goods[complement][COMPLEMENTS] = [good_nm]
         else:
             to_goods[good_nm] = {AMT_AVAILABLE: 0,
                                  UTIL_FUNC: GEN_UTIL_FUNC,
@@ -358,9 +359,10 @@ def adj_add_good_w_comp(agent, good, amt):
     # temp change
     amt *= amt_adjust(agent, good)
     agent["goods"][good][AMT_AVAILABLE] += amt
-    comp = agent["goods"][good][COMPLEMENTS]
-    if agent["goods"][good][AMT_AVAILABLE] == 0:
-        agent["goods"][comp]['incr'] = 0
-        print("comp!!!", agent["goods"])
-    if amt >= 0:
-        agent["goods"][comp]['incr'] += 20 * amt
+    comp_list = agent["goods"][good][COMPLEMENTS]
+    for comp in comp_list:
+        if agent["goods"][good][AMT_AVAILABLE] == 0:
+            agent["goods"][comp]['incr'] = 0
+            print("comp!!!", agent["goods"])
+        if amt >= 0:
+            agent["goods"][comp]['incr'] += 20 * amt

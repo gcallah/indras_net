@@ -2,6 +2,7 @@
   display: block;
   max-width: 70%;
   align-items: center;
+  margin: 0 auto;
 }
 
 .error-message {
