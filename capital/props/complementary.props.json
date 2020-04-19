@@ -22,10 +22,17 @@
   },
   "num_traders": {
     "val": 2,
-    "question": "How many entrepreneurs do you want?",
+    "question": "How many traders do you want?",
     "atype": "INT",
     "hival": 100,
     "lowval": 1
+  },
+  "num_rtype":{
+     "val": 6,
+     "question": "How many type of resources do you want?",
+     "atype": "INT",
+     "hival": 100,
+     "lowval": 1
   },
   "use_line": {
     "val": 0,
