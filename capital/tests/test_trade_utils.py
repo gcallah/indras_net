@@ -26,11 +26,11 @@ class TradeUtilsTestCase(TestCase):
         self.traderD = {"goods": {"truck": {AMT_AVAILABLE: 20,
                                             UTIL_FUNC: GEN_UTIL_FUNC,
                                             "incr": 0,
-                                            COMPLEMENTS: "fuel"},
+                                            COMPLEMENTS: ["fuel"]},
                                   "fuel": {AMT_AVAILABLE: 0,
                                            UTIL_FUNC: GEN_UTIL_FUNC,
                                            "incr": 1,
-                                           COMPLEMENTS: "truck"}},
+                                           COMPLEMENTS: ["truck"]}},
                         "util": 0,
                         "pre_trade_util": 0,
                         "trades_with": "trader"}

@@ -21,7 +21,7 @@ DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 DEF_NUM_TRADER = 2
 
-DEF_NUM_RESOURCES = 2
+DEF_NUM_RESOURCES = 1
 DEF_NUM_RESOURCES_TYPE = 4
 MKT_GOODS = "mkt_goods"
 
@@ -38,19 +38,19 @@ def create_trader(name, i, props=None):
                  attrs={"goods": {"truck": {AMT_AVAILABLE: 0,
                                             UTIL_FUNC: "steep_util_func",
                                             "incr": 0,
-                                            COMPLEMENTS: "fuel"},
+                                            COMPLEMENTS: ["fuel"]},
                                   "penguin": {AMT_AVAILABLE: 0,
                                               UTIL_FUNC: "steep_util_func",
                                               "incr": 0,
-                                              COMPLEMENTS: "pet_food"},
+                                              COMPLEMENTS: ["pet_food"]},
                                   "pet_food": {AMT_AVAILABLE: 0,
                                                UTIL_FUNC: "steep_util_func",
                                                "incr": 0,
-                                               COMPLEMENTS: "penguin"},
+                                               COMPLEMENTS: ["penguin"]},
                                   "fuel": {AMT_AVAILABLE: 0,
                                            UTIL_FUNC: "steep_util_func",
                                            "incr": 0,
-                                           COMPLEMENTS: "truck"}},
+                                           COMPLEMENTS: ["truck"]}},
                         "util": 0,
                         "pre_trade_util": 0,
                         "trades_with": "trader"})
@@ -79,16 +79,16 @@ def set_up(props=None):
     MKT_GOODS = {
                 "truck": {AMT_AVAILABLE: num_resources,
                           UTIL_FUNC: "steep_util_func",
-                          "incr": 0, COMPLEMENTS: "fuel"},
+                          "incr": 0, COMPLEMENTS: ["fuel"]},
                 "penguin": {AMT_AVAILABLE: num_resources,
                             UTIL_FUNC: "steep_util_func",
-                            "incr": 0, COMPLEMENTS: "pet_food"},
+                            "incr": 0, COMPLEMENTS: ["pet_food"]},
                 "pet_food": {AMT_AVAILABLE: num_resources,
                              UTIL_FUNC: "steep_util_func",
-                             "incr": 0, COMPLEMENTS: "penguin"},
+                             "incr": 0, COMPLEMENTS: ["penguin"]},
                 "fuel": {AMT_AVAILABLE: num_resources,
                          UTIL_FUNC: "steep_util_func",
-                         "incr": 0, COMPLEMENTS: "truck"}
+                         "incr": 0, COMPLEMENTS: ["truck"]}
                 }
     for trader in trader_group:
         for i in range(len(MKT_GOODS) // num_traders):
