@@ -22,7 +22,7 @@ DEBUG2 = False  # turns deeper debugging code on or off
 DEF_NUM_TRADER = 2
 
 DEF_NUM_RESOURCES = 1
-DEF_NUM_RESOURCES_TYPE = 4
+DEF_NUM_RESOURCES_TYPE = 6
 MKT_GOODS = "mkt_goods"
 
 COMPLEMENTS = "complementaries"
@@ -88,18 +88,33 @@ def set_up(props=None):
     set_env_attrs()
     num_resources = get_prop('num_resources', DEF_NUM_RESOURCES)
     MKT_GOODS = {
-                "truck": {AMT_AVAILABLE: num_resources,
-                          UTIL_FUNC: "steep_util_func",
-                          "incr": 0, COMPLEMENTS: ["fuel", "land"]},
-                "penguin": {AMT_AVAILABLE: num_resources,
-                            UTIL_FUNC: "steep_util_func",
-                            "incr": 0, COMPLEMENTS: ["pet_food"]},
-                "pet_food": {AMT_AVAILABLE: num_resources,
+                 "truck": {AMT_AVAILABLE: num_resources,
+                           UTIL_FUNC: "steep_util_func",
+                           "incr": 0,
+                           COMPLEMENTS: ["fuel", "land"]},
+                 "penguin": {AMT_AVAILABLE: num_resources,
                              UTIL_FUNC: "steep_util_func",
-                             "incr": 0, COMPLEMENTS: ["penguin"]},
-                "fuel": {AMT_AVAILABLE: num_resources,
-                         UTIL_FUNC: "steep_util_func",
-                         "incr": 0, COMPLEMENTS: ["truck"]}
+                             "incr": 0,
+                             COMPLEMENTS: ["pet_food",
+                                           "meat"]},
+                 "pet_food": {AMT_AVAILABLE: num_resources,
+                              UTIL_FUNC: "steep_util_func",
+                              "incr": 0,
+                              COMPLEMENTS: ["penguin",
+                                            "meat"]},
+                 "fuel": {AMT_AVAILABLE: num_resources,
+                          UTIL_FUNC: "steep_util_func",
+                          "incr": 0,
+                          COMPLEMENTS: ["truck", "land"]},
+                 "land": {AMT_AVAILABLE: num_resources,
+                          UTIL_FUNC: "steep_util_func",
+                          "incr": 0,
+                          COMPLEMENTS: ["truck", "fuel"]},
+                 "meat": {AMT_AVAILABLE: num_resources,
+                          UTIL_FUNC: "steep_util_func",
+                          "incr": 0,
+                          COMPLEMENTS: ["penguin",
+                                        "pet_food"]}
                 }
     for trader in trader_group:
         for i in range(len(MKT_GOODS) // num_traders):
