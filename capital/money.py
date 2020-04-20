@@ -20,6 +20,8 @@ DEBUG2 = False  # turns deeper debugging code on or off
 
 DEF_NUM_TRADERS = 4
 
+TRADE_COUNT = "trade_count"
+INIT_COUNT = 0  # a starting point for trade_count
 
 # these are the goods we hand out at the start:
 natures_goods = {
@@ -39,6 +41,30 @@ natures_goods = {
                 "incr": 0, "durability": 1.0, "divisibility": 0.8,
                 "trade_count": 0, },
 }
+
+
+def initial_amt(pop_hist):
+    """
+    Set up our pop hist object to record amount traded per period.
+    """
+    for good in natures_goods:
+        pop_hist.record_pop(good, INIT_COUNT)
+
+
+def record_amt(pop_hist):
+    """
+    This is our hook into the env to record the number of trades each
+    period.
+    """
+    get_env()
+    for good in natures_goods:
+        # INIT_COUNT = curr_natures_goods[good][TRADE_COUNT]
+        pop_hist.record_pop(good, natures_goods[good][TRADE_COUNT])
+
+
+def set_env_attrs():
+    env = get_env()
+    env.set_attr("pop_hist_func", record_amt)
 
 
 def incr_trade_count(good):
@@ -123,7 +149,9 @@ def set_up(props=None):
         height=get_prop('grid_height', DEF_HEIGHT),
         width=get_prop('grid_width', DEF_WIDTH),
         members=[traders],
-        attrs={"goods": natures_goods})
+        attrs={"goods": natures_goods},
+        pop_hist_setup=initial_amt)
+    set_env_attrs()
 
 
 def main():
