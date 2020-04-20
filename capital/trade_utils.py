@@ -47,7 +47,7 @@ def bear_util_func(qty):
 
 
 def steep_util_func(qty):
-    return 40 - 20*qty
+    return 20 - 10*qty
 
 
 util_funcs = {
