@@ -44,7 +44,8 @@
       "props": "models/props/fashion.props.json",
       "doc": "The interaction of trend setters and trend followers causes fashion cycling.",
       "source": "https://github.com/gcallah/indras_net/blob/master/models/fashion.py",
-      "graph": "line"
+      "graph": "line",
+      "active": false
     },
     {
       "model ID": 4,
