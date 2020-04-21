@@ -47,7 +47,7 @@ def bear_util_func(qty):
 
 
 def steep_util_func(qty):
-    return 20 - 10*qty
+    return 40 - 10*qty
 
 
 util_funcs = {
@@ -124,11 +124,13 @@ def transfer(to_goods, from_goods, good_nm, amt=None, comp=None):
                    to_goods[complement][AMT_AVAILABLE] == 0:
                     to_goods[complement] = {AMT_AVAILABLE: 0,
                                             UTIL_FUNC: GEN_UTIL_FUNC,
-                                            "incr": 20,
-                                            COMPLEMENTS: [good_nm]}
+                                            "incr": 20*amt,
+                                            COMPLEMENTS: from_goods
+                                            [complement][COMPLEMENTS]}
                 else:
-                    to_goods[complement]["incr"] = 20
-                    to_goods[complement][COMPLEMENTS] = [good_nm]
+                    to_goods[complement]["incr"] = 20*amt
+                    to_goods[complement][COMPLEMENTS] = from_goods
+                    [complement][COMPLEMENTS]
         else:
             to_goods[good_nm] = {AMT_AVAILABLE: 0,
                                  UTIL_FUNC: GEN_UTIL_FUNC,
@@ -181,7 +183,7 @@ def amt_adjust(trader, good):
         return 1
 
 
-def endow(trader, avail_goods, equal=False, rand=False, comp=False):
+def endow(trader, avail_goods, equal=False, rand=False):
     """
     This function is going to pick a good at random, and give the
     trader all of it, by default. We will write partial distributions
@@ -193,17 +195,42 @@ def endow(trader, avail_goods, equal=False, rand=False, comp=False):
 
     if equal:
         # each trader get equal amount of good
-        equal_dist(comp=comp)
+        equal_dist()
     elif rand:
         # each trader get random amt of good
-        rand_dist(trader[GOODS], avail_goods, comp=comp)
+        rand_dist(trader[GOODS], avail_goods)
     else:
         # pick an item at random
         # stick all of it in trader's goods dictionary
         good2acquire = get_rand_good(avail_goods, nonzero=True)
         if good2acquire is not None:
             # get some of the good
-            transfer(trader[GOODS], avail_goods, good2acquire, comp=comp)
+            transfer(trader[GOODS], avail_goods, good2acquire)
+
+
+def comp_endow(trader, avail_goods, equal=False, rand=False):
+    """
+    This function is going to pick a good at random, and give the
+    trader all of it, by default. We will write partial distributions
+    later.
+    """
+#     if check_complement(trader):
+#         # see if the trader has the imformation of complement
+#         comp = True
+
+    if equal:
+        # each trader get equal amount of good
+        equal_dist(comp=True)
+    elif rand:
+        # each trader get random amt of good
+        rand_dist(trader[GOODS], avail_goods, comp=True)
+    else:
+        # pick an item at random
+        # stick all of it in trader's goods dictionary
+        good2acquire = get_rand_good(avail_goods, nonzero=True)
+        if good2acquire is not None:
+            # get some of the good
+            transfer(trader[GOODS], avail_goods, good2acquire, comp=True)
 
 
 def equal_dist(num_trader, to_goods, from_goods, comp=None):
@@ -283,6 +310,7 @@ def rec_offer(agent, his_good, his_amt, counterparty, comp=None):
     gain = utility_delta(agent, his_good, his_amt)
     if comp:
         gain += agent[GOODS][his_good]["incr"]
+        print(his_good, agent[GOODS][his_good]['incr'])
     for my_good in agent["goods"]:
         # adjust my_amt if "divisibility" is one of the attributes
         # my_amt = amt_adjust(agent, my_good)
@@ -311,8 +339,8 @@ def rec_reply(agent, my_good, my_amt, his_good, his_amt, comp=None):
     if comp:
         gain += agent[GOODS][his_good]["incr"]
         loss -= agent[GOODS][my_good]["incr"]
-    print(agent.name, "receiving a reply: gain = ",
-          gain, "and loss =", abs(loss))
+#     print(agent.name, "receiving a reply: gain = ",
+#           gain, "and loss =", abs(loss))
     if gain > abs(loss):
         return ACCEPT
     else:

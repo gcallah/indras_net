@@ -29,8 +29,8 @@ COMPLEMENTS = "complementaries"
 
 
 def allocate_resources(trader, avail_goods,
-                       equal=False, rand=False, comp=True):
-    tu.endow(trader, avail_goods, comp=comp)
+                       equal=False, rand=False):
+    tu.comp_endow(trader, avail_goods, equal=False, rand=False)
 
 
 def create_trader(name, i, props=None):
