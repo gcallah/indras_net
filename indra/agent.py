@@ -282,7 +282,7 @@ class Agent(object):
             self.pos = tuple(serial_agent["pos"])
         self.duration = int(serial_agent["duration"])
         self.name = serial_agent["name"]
-        self.neighbors = serial_agent["neighbors"]
+        self.neighbors = None  # these must be re-created every run
         self._prim_group = serial_agent["prim_group"]
         self._locator = serial_agent["locator"]
         self.type = serial_agent["type"]

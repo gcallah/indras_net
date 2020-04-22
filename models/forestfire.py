@@ -75,7 +75,7 @@ def tree_action(agent):
             nearby_fires = neighbors.subset(is_on_fire, agent)
         if len(nearby_fires) > 0:
             if DEBUG2:
-                print("Setting nearby tree on fire!")
+                user_log_notif("Setting nearby tree on fire!")
             agent["state"] = NF
 
     # if we didn't catch on fire above, do probabilistic transition:
