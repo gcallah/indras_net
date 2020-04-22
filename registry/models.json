@@ -45,7 +45,7 @@
       "doc": "The interaction of trend setters and trend followers causes fashion cycling.",
       "source": "https://github.com/gcallah/indras_net/blob/master/models/fashion.py",
       "graph": "line",
-      "active": false
+      "active": true
     },
     {
       "model ID": 4,

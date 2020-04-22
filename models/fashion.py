@@ -14,7 +14,7 @@ from indra.display_methods import NAVY, DARKRED, RED, BLUE
 from indra.env import Env
 from registry.registry import get_env, get_group, get_prop
 from indra.space import in_hood
-from indra.user import run_notice
+from indra.user import run_notice, user_log_notif
 from indra.utils import init_props
 
 MODEL_NAME = "fashion"
@@ -68,9 +68,13 @@ def change_color(agent, society, opp_group):
     """
     change agent's DISPLAY_COLOR to its opposite color
     """
+    if DEBUG2:
+        user_log_notif("Agent " + agent.name + " is changing colors"
+                       + "; its prim group is "
+                       + agent.prim_group_nm)
     agent[DISPLAY_COLOR] = not agent[DISPLAY_COLOR]
-    society.add_switch(agent, agent.prim_group,
-                       opp_group[str(agent.prim_group)])
+    society.add_switch(agent, agent.prim_group_nm,
+                       opp_group[agent.prim_group_nm])
 
 
 def new_color_pref(old_pref, env_color):

@@ -171,6 +171,14 @@ class Agent(object):
             register(self.name, self)
 
     @property
+    def prim_group_nm(self):
+        """
+        _prim_group is just a name, but we don't want models
+        going straight at it!
+        """
+        return self._prim_group
+
+    @property
     def prim_group(self):
         """
         This is the prim_group property.
