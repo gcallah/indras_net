@@ -19,7 +19,7 @@ MODEL_NAME = "money"
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
-DEF_NUM_TRADERS = 4
+DEF_NUM_TRADERS = 6
 
 MONEY_MAX_UTIL = 100
 
@@ -29,20 +29,32 @@ INIT_COUNT = 0  # a starting point for trade_count
 # these are the goods we hand out at the start:
 natures_goods = {
     "cow": {AMT_AVAILABLE: 10, UTIL_FUNC: GEN_UTIL_FUNC,
-            "incr": 0, "durability": 0.9, "divisibility": 1.0,
-            "trade_count": 0, },
+            "incr": 0, "durability": 0.8, "divisibility": 1.0,
+            "trade_count": 0, "is_allocated": False, },
     "gold": {AMT_AVAILABLE: 8, UTIL_FUNC: GEN_UTIL_FUNC,
              "incr": 0, "durability": 1.0, "divisibility": 0.1,
-             "trade_count": 0, },
+             "trade_count": 0, "is_allocated": False, },
     "cheese": {AMT_AVAILABLE: 2, UTIL_FUNC: GEN_UTIL_FUNC,
                "incr": 0, "durability": 0.8, "divisibility": 0.4,
-               "trade_count": 0, },
+               "trade_count": 0, "is_allocated": False, },
     "banana": {AMT_AVAILABLE: 7, UTIL_FUNC: GEN_UTIL_FUNC,
                "incr": 0, "durability": 0.2, "divisibility": 0.2,
-               "trade_count": 0, },
+               "trade_count": 0, "is_allocated": False, },
     "diamond": {AMT_AVAILABLE: 8, UTIL_FUNC: GEN_UTIL_FUNC,
                 "incr": 0, "durability": 1.0, "divisibility": 0.8,
-                "trade_count": 0, },
+                "trade_count": 0, "is_allocated": False, },
+    "avocado": {AMT_AVAILABLE: 5, UTIL_FUNC: GEN_UTIL_FUNC,
+                "incr": 0, "durability": 0.4, "divisibility": 0.5,
+                "trade_count": 0, "is_allocated": False, },
+    "stone": {AMT_AVAILABLE: 10, UTIL_FUNC: GEN_UTIL_FUNC,
+              "incr": 0, "durability": 1.0, "divisibility": 1.0,
+              "trade_count": 0, "is_allocated": False, },
+    "fabric": {AMT_AVAILABLE: 7, UTIL_FUNC: GEN_UTIL_FUNC,
+               "incr": 0, "durability": 0.9, "divisibility": 0.5,
+               "trade_count": 0, "is_allocated": False, },
+    "milk": {AMT_AVAILABLE: 8, UTIL_FUNC: GEN_UTIL_FUNC,
+             "incr": 0, "durability": 0.2, "divisibility": 0.15,
+             "trade_count": 0, "is_allocated": False, },
 }
 
 
@@ -51,7 +63,8 @@ def initial_amt(pop_hist):
     Set up our pop hist object to record amount traded per period.
     """
     for good in natures_goods:
-        pop_hist.record_pop(good, INIT_COUNT)
+        if natures_goods[good]["is_allocated"] is True:
+            pop_hist.record_pop(good, INIT_COUNT)
 
 
 def record_amt(pop_hist):
@@ -61,8 +74,8 @@ def record_amt(pop_hist):
     """
     get_env()
     for good in natures_goods:
-        # INIT_COUNT = curr_natures_goods[good][TRADE_COUNT]
-        pop_hist.record_pop(good, natures_goods[good][TRADE_COUNT])
+        if natures_goods[good]["is_allocated"] is True:
+            pop_hist.record_pop(good, natures_goods[good][TRADE_COUNT])
 
 
 def set_env_attrs():
@@ -132,6 +145,7 @@ def nature_to_traders(traders, nature):
                 temp_amt = traders[trader]["goods"][good][AMT_AVAILABLE]
                 traders[trader]["goods"][good] = nature[good].copy()
                 traders[trader]["goods"][good][AMT_AVAILABLE] = temp_amt
+                nature[good]["is_allocated"] = True
     # each trader is given goods and knows all goods in nature
         print(repr(traders[trader]))
 
