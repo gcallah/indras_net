@@ -1,11 +1,4 @@
 {
-  "num_resources": {
-    "val": 1,
-    "question": "How many of each resource exist?",
-    "atype": "INT",
-    "hival": 100,
-    "lowval": 1
-  },
   "grid_height": {
     "val": 3,
     "question": "What is the grid height?",
@@ -33,6 +26,13 @@
      "atype": "INT",
      "hival": 100,
      "lowval": 1
+  },
+  "num_resources": {
+    "val": 1,
+    "question": "How many of each resource exist?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 1
   },
   "use_line": {
     "val": 0,

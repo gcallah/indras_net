@@ -32,19 +32,22 @@ class tradeTestCase(TestCase):
         self.goodB = None
         self.trader = None
         self.goods = None
-        
+
+    def test_main(self):
+        self.assertEqual(cp.main(), 0)
+
     def test_create_trader(self):
         self.trader = cp.create_trader("trader", 0)
         name = self.trader.name
         incr = self.trader["goods"]["truck"]["incr"]
         self.assertEqual(incr, 0)
-        
+
     def test_allocate_resources(self):
         self.trader = cp.create_trader("trader", 0)
         cp.allocate_resources(self.trader, self.goods)
 #         empty = tu.is_depleted(self.trader["goods"])
 #         self.assertFalse(empty)
-        self.assertIsNotNone(self.trader["goods"]["truck"][COMPLEMENTS])      
+        self.assertIsNotNone(self.trader["goods"]["truck"][COMPLEMENTS])
 
 
     if __name__ == '__main__':
