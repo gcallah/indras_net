@@ -23,6 +23,9 @@ class MoneyTestCase(TestCase):
         self.trader = None
         self.goods = None
 
+    def test_main(self):
+        self.assertEqual(mn.main(), 0)
+
     def test_create_trader(self):
         self.trader[0] = mn.create_trader('Trader', 0)
         self.assertEqual(self.trader[0].name, "Trader0")

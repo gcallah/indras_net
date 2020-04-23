@@ -10,6 +10,7 @@ from indra.env import Env
 from registry.registry import get_env, get_prop
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import init_props
+import capital.trade_utils as tu
 from capital.trade_utils import seek_a_trade, GEN_UTIL_FUNC
 from capital.trade_utils import AMT_AVAILABLE, endow, UTIL_FUNC
 import copy
@@ -19,6 +20,8 @@ DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
 DEF_NUM_TRADERS = 4
+
+MONEY_MAX_UTIL = 100
 
 TRADE_COUNT = "trade_count"
 INIT_COUNT = 0  # a starting point for trade_count
@@ -65,6 +68,7 @@ def record_amt(pop_hist):
 def set_env_attrs():
     env = get_env()
     env.set_attr("pop_hist_func", record_amt)
+    tu.max_utils = MONEY_MAX_UTIL
 
 
 def incr_trade_count(good):
