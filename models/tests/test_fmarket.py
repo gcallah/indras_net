@@ -33,6 +33,10 @@ class FMarketTestCase(TestCase):
         self.test_trend_followers = None
         self.test_market_maker = None
 
+    # an integration test:
+    def test_main(self):
+        self.assertEqual(fm.main(), 0)
+
     def test_create_trend_follower(self):
         """
          Test to see if trend_follower is created

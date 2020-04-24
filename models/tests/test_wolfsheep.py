@@ -29,6 +29,10 @@ class WolfsheepTestCase(TestCase):
         self.test_wolves = None
         self.test_sheep = None
 
+    # an integration test:
+    def test_main(self):
+        self.assertEqual(ws.main(), 0)
+
     def test_create_wolf(self):
         """
          Test to see if wolf is created

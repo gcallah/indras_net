@@ -29,6 +29,9 @@ class BacteriaTestCase(TestCase):
         self.test_nutrients = None
         self.test_bacteria = None
 
+    def test_main(self):
+        self.assertEqual(ba.main(), 0)
+
     def test_create_toxin(self):
         """
          Test to see if toxin is created

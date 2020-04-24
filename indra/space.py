@@ -11,7 +11,7 @@ from random import randint
 from indra.agent import is_composite, AgentEncoder
 from indra.composite import Composite
 from registry.registry import register, get_registration
-from indra.user import user_debug, user_log
+from indra.user import user_debug, user_log, user_log_warn
 
 DEF_WIDTH = 10
 DEF_HEIGHT = 10
@@ -330,7 +330,7 @@ class Space(Composite):
         old_loc = str((ox, oy))
         new_loc = str((nx, ny))
         if old_loc not in self.locations:
-            user_debug("Trying to move unlocated agent.")
+            user_log_warn("Trying to move unlocated agent.")
         elif new_loc not in self.locations:
             self.locations[new_loc] = self.locations[old_loc]
             del self.locations[old_loc]

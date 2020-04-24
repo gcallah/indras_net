@@ -27,6 +27,10 @@ class ForestfireTestCase(TestCase):
     def tearDown(self):
         self.test_tree = None
 
+    # an integration test:
+    def test_main(self):
+        self.assertEqual(ff.main(), 0)
+
     def test_is_healthy(self):
         """
         See if target tree is healthy.

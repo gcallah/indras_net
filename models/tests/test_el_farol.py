@@ -15,6 +15,10 @@ class ElFarolTestCase(TestCase):
     def tearDown(self):
         pass
 
+    # an integration test:
+    def test_main(self):
+        self.assertEqual(el_farol.main(), 0)
+
     def test_create_non_drinker(self):
         """
         Test creating a non-drinker.

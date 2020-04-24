@@ -6,21 +6,27 @@ PYTHONFILES = $(shell ls *.py)
 TEST_FILES = $(shell ls $(TESTDIR)/test_*.py)
 export user_type = test
 
+FORCE:
+
 prod: tests
 	-git commit -a
 	git push origin master
 
 lint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
 
+# this must be fixed to run pytests!
+tests: lint pytests
 
-tests: test_used_cars lint
+pytests: FORCE
+	nosetests --exe --with-coverage --cover-package=ml
 
 %.pylint:
 	$(PYLINT) $(PYLINTFLAGS) $*.py
 
-test_used_cars:
-	$(PYLINT) $(PYLINTFLAGS) used_cars.py
-	nosetests tests.test_used_cars --nocapture  --with-coverage --cover-package=ml
+# test a python file:
+%.py: FORCE
+	$(PYLINT) $(PYLINTFLAGS) $@
+	nosetests tests.test_$* --nocapture
 
 nocrud:
 	-rm *~

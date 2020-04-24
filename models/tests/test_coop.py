@@ -22,6 +22,10 @@ class coopTestCase(TestCase):
     def tearDown(self):
         pass
 
+    # an integration test:
+    def test_main(self):
+        self.assertEqual(coop.main(), 0)
+
     def test_create_babysitter(self):
         """
          Test to see if babysitter is created

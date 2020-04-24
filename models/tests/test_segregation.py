@@ -34,6 +34,10 @@ class SegregationTestCase(TestCase):
     def tearDown(self):
         pass
 
+    # an integration test:
+    def test_main(self):
+        self.assertEqual(seg.main(), 0)
+
     def test_get_tolerance(self):
         """
         Test that our tolerance function gets a good distribution.
