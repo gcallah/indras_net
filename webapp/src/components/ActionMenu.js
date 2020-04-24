@@ -10,12 +10,13 @@ import ModelStatusBox from './ModelStatusBox';
 import SourceCodeViewer from './SourceCodeViewer';
 import RunModelButton from './RunModelButton';
 import './styles.css';
+import config from '../config';
 
 const POP = 2;
 const SCATTER = 3;
 const DATA = 4;
 const SOURCE = 5;
-const API_SERVER = 'https://indrasnet.pythonanywhere.com/models/menu/';
+const API_SERVER = `${config.API_URL}models/menu/`;
 
 class ActionMenu extends Component {
   constructor(props) {

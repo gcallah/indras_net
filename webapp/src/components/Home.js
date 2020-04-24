@@ -12,6 +12,7 @@ import sandpileImg from './images/Sandpile.jpg';
 import sandpile1Img from './images/sandpile_2.png';
 import mandelobrotImg from './images/mendelobrot_sq.jpg';
 import './styles.css';
+import config from '../config';
 
 class Home extends Component {
   constructor(props) {
@@ -26,7 +27,7 @@ class Home extends Component {
         { image: mandelobrotImg, title: 'by Adam Majewski' },
       ],
     };
-    this.api_server = 'https://indrasnet.pythonanywhere.com/';
+    this.api_server = config.API_URL;
   }
 
   async componentDidMount() {

@@ -4,8 +4,9 @@ import PropTypes from 'prop-types';
 import ModelInputField from './ModelInputField';
 import PageLoader from './PageLoader';
 import './styles.css';
+import config from '../config';
 
-const apiServer = 'https://indrasnet.pythonanywhere.com/models/props/';
+const apiServer = `${config.API_URL}models/props/`;
 
 class ModelDetail extends Component {
   constructor(props) {
