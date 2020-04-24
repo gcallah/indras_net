@@ -1,0 +1,21 @@
+{
+  "grid_height": {
+    "val": 4,
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 2
+  },
+  "grid_width": {
+    "val": 4,
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 2
+  },
+  "num_traders": {
+    "val": 3,
+    "question": "How many traders do you want?",
+    "atype": "INT",
+    "hival": 8,
+    "lowval": 3
+  }
+}
