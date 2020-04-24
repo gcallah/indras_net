@@ -16,16 +16,37 @@ from capital.trade_utils import UTIL_FUNC, GEN_UTIL_FUNC, AMT_AVAILABLE
 
 class tradeTestCase(TestCase):
     def setUp(self, props=None):
-        self.trader = None
-        self.goods = {"truck": {AMT_AVAILABLE: DEF_NUM_RESOURCES,
-                       UTIL_FUNC: GEN_UTIL_FUNC,
-                       "incr": 0,
-                       COMPLEMENTS: ["fuel"]},
-                      "fuel": {AMT_AVAILABLE: DEF_NUM_RESOURCES,
-                       UTIL_FUNC: GEN_UTIL_FUNC,
-                       "incr": 0,
-                       COMPLEMENTS: ["truck"]}
-                     }
+        self.trader = cp.create_trader("trader", 0)
+        self.goods = {
+                     "truck": {AMT_AVAILABLE: 1,
+                               UTIL_FUNC: "steep_util_func",
+                               "incr": 0,
+                               COMPLEMENTS: ["fuel", "land"]},
+                     "penguin": {AMT_AVAILABLE: 1,
+                                 UTIL_FUNC: "steep_util_func",
+                                 "incr": 0,
+                                 COMPLEMENTS: ["pet_food",
+                                               "meat"]},
+                     "pet_food": {AMT_AVAILABLE: 1,
+                                  UTIL_FUNC: "steep_util_func",
+                                  "incr": 0,
+                                  COMPLEMENTS: ["penguin",
+                                                "meat"]},
+                     "fuel": {AMT_AVAILABLE: 1,
+                              UTIL_FUNC: "steep_util_func",
+                              "incr": 0,
+                              COMPLEMENTS: ["truck", "land"]},
+                     "land": {AMT_AVAILABLE: 1,
+                              UTIL_FUNC: "steep_util_func",
+                              "incr": 0,
+                              COMPLEMENTS: ["truck", "fuel"]},
+                     "meat": {AMT_AVAILABLE: 1,
+                              UTIL_FUNC: "steep_util_func",
+                              "incr": 0,
+                              COMPLEMENTS: ["penguin",
+                                            "pet_food"]}
+                    }
+
 
     def tearDown(self):
         self.goodA = None
@@ -33,15 +54,18 @@ class tradeTestCase(TestCase):
         self.trader = None
         self.goods = None
 
-    @skip("This test needs to be fixed.")
+
     def test_main(self):
+        print(cp.main())
         self.assertEqual(cp.main(), 0)
+
 
     def test_create_trader(self):
         self.trader = cp.create_trader("trader", 0)
         name = self.trader.name
         incr = self.trader["goods"]["truck"]["incr"]
         self.assertEqual(incr, 0)
+
 
     def test_allocate_resources(self):
         self.trader = cp.create_trader("trader", 0)

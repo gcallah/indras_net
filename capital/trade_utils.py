@@ -4,6 +4,7 @@ This file contains general functions useful in trading goods.
 # from indra.user import user_debug
 from registry.registry import get_env
 import random
+import copy
 
 ACCEPT = 1
 INADEQ = 0
@@ -110,34 +111,22 @@ def transfer(to_goods, from_goods, good_nm, amt=None, comp=None):
     Transfer goods between two goods dicts.
     Use `amt` if it is not None.
     """
+    nature = copy.deepcopy(from_goods)
     if not amt:
         amt = from_goods[good_nm][AMT_AVAILABLE]
-    if good_nm not in to_goods or to_goods[good_nm][AMT_AVAILABLE] == 0:
-        if comp:
-            complement_list = from_goods[good_nm][COMPLEMENTS]
-            to_goods[good_nm] = {AMT_AVAILABLE: 0,
-                                 UTIL_FUNC: GEN_UTIL_FUNC,
-                                 "incr": 0,
-                                 COMPLEMENTS: complement_list}
-            for complement in complement_list:
-                if complement not in to_goods or \
-                   to_goods[complement][AMT_AVAILABLE] == 0:
-                    to_goods[complement] = {AMT_AVAILABLE: 0,
-                                            UTIL_FUNC: GEN_UTIL_FUNC,
-                                            "incr": 20*amt,
-                                            COMPLEMENTS: from_goods
-                                            [complement][COMPLEMENTS]}
-                else:
-                    to_goods[complement]["incr"] = 20*amt
-                    to_goods[complement][COMPLEMENTS] = from_goods
-                    [complement][COMPLEMENTS]
+        print("amt", amt)
+    for good in from_goods:
+        if good in to_goods:
+            amt_before_add = to_goods[good][AMT_AVAILABLE]
         else:
-            to_goods[good_nm] = {AMT_AVAILABLE: 0,
-                                 UTIL_FUNC: GEN_UTIL_FUNC,
-                                 "incr": 0}
-
-    to_goods[good_nm][AMT_AVAILABLE] += amt
-    from_goods[good_nm][AMT_AVAILABLE] -= amt
+            amt_before_add = 0
+        to_goods[good] = nature[good]
+        if good != good_nm:
+            to_goods[good][AMT_AVAILABLE] = amt_before_add
+        else:
+            from_goods[good][AMT_AVAILABLE] -= amt
+            to_goods[good][AMT_AVAILABLE] = amt_before_add + amt
+            print(to_goods[good][AMT_AVAILABLE])
 
 
 def get_rand_good(goods_dict, nonzero=False):
@@ -183,7 +172,7 @@ def amt_adjust(trader, good):
         return 1
 
 
-def endow(trader, avail_goods, equal=False, rand=False):
+def endow(trader, avail_goods, equal=False, rand=False, comp=False):
     """
     This function is going to pick a good at random, and give the
     trader all of it, by default. We will write partial distributions
@@ -195,42 +184,17 @@ def endow(trader, avail_goods, equal=False, rand=False):
 
     if equal:
         # each trader get equal amount of good
-        equal_dist()
+        equal_dist(comp=comp)
     elif rand:
         # each trader get random amt of good
-        rand_dist(trader[GOODS], avail_goods)
+        rand_dist(trader[GOODS], avail_goods, comp=comp)
     else:
         # pick an item at random
         # stick all of it in trader's goods dictionary
         good2acquire = get_rand_good(avail_goods, nonzero=True)
         if good2acquire is not None:
             # get some of the good
-            transfer(trader[GOODS], avail_goods, good2acquire)
-
-
-def comp_endow(trader, avail_goods, equal=False, rand=False):
-    """
-    This function is going to pick a good at random, and give the
-    trader all of it, by default. We will write partial distributions
-    later.
-    """
-#     if check_complement(trader):
-#         # see if the trader has the imformation of complement
-#         comp = True
-
-    if equal:
-        # each trader get equal amount of good
-        equal_dist(comp=True)
-    elif rand:
-        # each trader get random amt of good
-        rand_dist(trader[GOODS], avail_goods, comp=True)
-    else:
-        # pick an item at random
-        # stick all of it in trader's goods dictionary
-        good2acquire = get_rand_good(avail_goods, nonzero=True)
-        if good2acquire is not None:
-            # get some of the good
-            transfer(trader[GOODS], avail_goods, good2acquire, comp=True)
+            transfer(trader[GOODS], avail_goods, good2acquire, comp=comp)
 
 
 def equal_dist(num_trader, to_goods, from_goods, comp=None):
