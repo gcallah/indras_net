@@ -30,7 +30,7 @@ COMPLEMENTS = "complementaries"
 
 def allocate_resources(trader, avail_goods,
                        equal=False, rand=False):
-    tu.comp_endow(trader, avail_goods, equal=False, rand=False)
+    tu.endow(trader, avail_goods, equal=equal, rand=rand, comp=True)
 
 
 def create_trader(name, i, props=None):
@@ -116,6 +116,7 @@ def set_up(props=None):
                           COMPLEMENTS: ["penguin",
                                         "pet_food"]}
                 }
+    print(MKT_GOODS)
     for trader in trader_group:
         for i in range(len(MKT_GOODS) // num_traders):
             allocate_resources(trader_group[trader], MKT_GOODS)
