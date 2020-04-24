@@ -19,7 +19,7 @@ MODEL_NAME = "money"
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
-DEF_NUM_TRADERS = 6
+DEF_NUM_TRADERS = 4
 
 MONEY_MAX_UTIL = 100
 
@@ -44,14 +44,11 @@ natures_goods = {
                 "incr": 0, "durability": 1.0, "divisibility": 0.8,
                 "trade_count": 0, "is_allocated": False, },
     "avocado": {AMT_AVAILABLE: 5, UTIL_FUNC: GEN_UTIL_FUNC,
-                "incr": 0, "durability": 0.4, "divisibility": 0.5,
+                "incr": 0, "durability": 0.3, "divisibility": 0.5,
                 "trade_count": 0, "is_allocated": False, },
     "stone": {AMT_AVAILABLE: 10, UTIL_FUNC: GEN_UTIL_FUNC,
               "incr": 0, "durability": 1.0, "divisibility": 1.0,
               "trade_count": 0, "is_allocated": False, },
-    "fabric": {AMT_AVAILABLE: 7, UTIL_FUNC: GEN_UTIL_FUNC,
-               "incr": 0, "durability": 0.9, "divisibility": 0.5,
-               "trade_count": 0, "is_allocated": False, },
     "milk": {AMT_AVAILABLE: 8, UTIL_FUNC: GEN_UTIL_FUNC,
              "incr": 0, "durability": 0.2, "divisibility": 0.15,
              "trade_count": 0, "is_allocated": False, },
@@ -110,9 +107,7 @@ def trader_action(agent):
         decayed_amt = dic1[good]["durability"] * dic1[good][AMT_AVAILABLE]
         if (diff[good] != decayed_amt and diff[good] != 0):
             incr_trade_count(good)
-            # print(good, "is traded",
-            #       natures_goods[good]["trade_count"], "times")
-    print(" TRADE COUNT")
+    print("TRADE COUNT")
     for good in natures_goods:
         print(good, " is traded ",
               natures_goods[good]["trade_count"], " times")
@@ -136,17 +131,9 @@ def nature_to_traders(traders, nature):
     """
     for trader in traders:
         endow(traders[trader], nature)
-        for good in nature:
-            if good not in traders[trader]["goods"]:
-                traders[trader]["goods"][good] = nature[good].copy()
-                traders[trader]["goods"][good][AMT_AVAILABLE] = 0
-            else:
-                # put attributes other than AMT_AVAILABLE into trader dict
-                temp_amt = traders[trader]["goods"][good][AMT_AVAILABLE]
-                traders[trader]["goods"][good] = nature[good].copy()
-                traders[trader]["goods"][good][AMT_AVAILABLE] = temp_amt
+        for good in traders[trader]["goods"]:
+            if traders[trader]["goods"][good][AMT_AVAILABLE] != 0:
                 nature[good]["is_allocated"] = True
-    # each trader is given goods and knows all goods in nature
         print(repr(traders[trader]))
 
 
