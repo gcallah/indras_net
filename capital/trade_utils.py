@@ -29,6 +29,7 @@ All utility functions must be registered here!
 """
 UTIL_FUNC = "util_func"
 GEN_UTIL_FUNC = "gen_util_func"
+STEEP_GRADIENT = 20
 
 
 def gen_util_func(qty):
@@ -48,7 +49,7 @@ def bear_util_func(qty):
 
 
 def steep_util_func(qty):
-    return 40 - 10*qty
+    return 20 - STEEP_GRADIENT*qty
 
 
 util_funcs = {
@@ -114,7 +115,6 @@ def transfer(to_goods, from_goods, good_nm, amt=None, comp=None):
     nature = copy.deepcopy(from_goods)
     if not amt:
         amt = from_goods[good_nm][AMT_AVAILABLE]
-        print("amt", amt)
     for good in from_goods:
         if good in to_goods:
             amt_before_add = to_goods[good][AMT_AVAILABLE]
@@ -126,7 +126,13 @@ def transfer(to_goods, from_goods, good_nm, amt=None, comp=None):
         else:
             from_goods[good][AMT_AVAILABLE] -= amt
             to_goods[good][AMT_AVAILABLE] = amt_before_add + amt
-            print(to_goods[good][AMT_AVAILABLE])
+    if comp:
+        for g in to_goods:
+            if to_goods[g][AMT_AVAILABLE] > 0:
+                to_goods[g]['incr'] += amt * STEEP_GRADIENT
+                comp_list = to_goods[g][COMPLEMENTS]
+                for comp in comp_list:
+                    to_goods[comp]['incr'] += STEEP_GRADIENT * amt
 
 
 def get_rand_good(goods_dict, nonzero=False):
@@ -152,11 +158,11 @@ def get_rand_good(goods_dict, nonzero=False):
         return good
 
 
-def incr_util(trader, good, amt=None):
+def incr_util(good_dict, good, amt=None):
     if amt:
-        trader[GOODS][good]["incr"] += amt
+        good_dict[good]["incr"] += amt
     else:
-        trader[GOODS][good]["incr"] += 1
+        good_dict[good]["incr"] += 1
 
 
 def amt_adjust(trader, good):
@@ -178,10 +184,6 @@ def endow(trader, avail_goods, equal=False, rand=False, comp=False):
     trader all of it, by default. We will write partial distributions
     later.
     """
-#     if check_complement(trader):
-#         # see if the trader has the imformation of complement
-#         comp = True
-
     if equal:
         # each trader get equal amount of good
         equal_dist(comp=comp)
@@ -281,11 +283,11 @@ def rec_offer(agent, his_good, his_amt, counterparty, comp=None):
         if my_good != his_good and agent["goods"][my_good][AMT_AVAILABLE] > 0:
             loss = -utility_delta(agent, my_good, -my_amt)
             if comp:
-                loss -= agent[GOODS][my_good]["incr"]
+                loss += agent[GOODS][my_good]["incr"]
 
-#             print("my good: " + my_good + "; his good: " + his_good
-#                   + ", I gain: " + str(gain) +
-#                   " and lose: " + str(loss))
+            print("my good: " + my_good + "; his good: " + his_good
+                  + ", I gain: " + str(gain) +
+                  " and lose: " + str(loss))
             if gain > loss:
                 if rec_reply(counterparty, his_good,
                              his_amt, my_good, my_amt, comp=comp):
@@ -350,11 +352,22 @@ def adj_add_good_w_comp(agent, good, amt):
     agent["util"] += utility_delta(agent, good, amt)
     # temp change
     amt *= amt_adjust(agent, good)
+    old_amt = agent["goods"][good][AMT_AVAILABLE]
+    if old_amt == 0 and amt > 0 and agent[GOODS][good]['incr'] != 0:
+        incr_util(agent[GOODS], good, amt=amt*STEEP_GRADIENT)
+        for comp in agent[GOODS][good][COMPLEMENTS]:
+            incr_util(agent[GOODS], comp, amt=amt*STEEP_GRADIENT)
+        print(agent[GOODS])
     agent["goods"][good][AMT_AVAILABLE] += amt
-    comp_list = agent["goods"][good][COMPLEMENTS]
-    for comp in comp_list:
-        if agent["goods"][good][AMT_AVAILABLE] == 0:
-            agent["goods"][comp]['incr'] = 0
-            print("comp!!!", agent["goods"])
-        if amt >= 0:
-            agent["goods"][comp]['incr'] += 20 * amt
+#     agent["goods"][good]["incr"] = 0
+    for g in agent[GOODS]:
+        if agent[GOODS][g][AMT_AVAILABLE] == 0:
+            agent[GOODS][g]['incr'] = 0
+            comp_list = agent["goods"][good][COMPLEMENTS]
+            for comp in comp_list:
+                agent["goods"][comp]['incr'] = 0
+        if agent[GOODS][g][AMT_AVAILABLE] > 0:
+            agent[GOODS][g]['incr'] += amt * STEEP_GRADIENT
+            comp_list = agent["goods"][good][COMPLEMENTS]
+            for comp in comp_list:
+                agent["goods"][comp]['incr'] += STEEP_GRADIENT * amt

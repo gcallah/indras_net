@@ -116,7 +116,6 @@ def set_up(props=None):
                           COMPLEMENTS: ["penguin",
                                         "pet_food"]}
                 }
-    print(MKT_GOODS)
     for trader in trader_group:
         for i in range(len(MKT_GOODS) // num_traders):
             allocate_resources(trader_group[trader], MKT_GOODS)
