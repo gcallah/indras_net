@@ -58,7 +58,7 @@ def is_healthy(agent, *args):
 
 def is_on_fire(agent, *args):
     """
-    Checking whether the state is healthy or not
+    Checking whether the state is on fire or not
     """
     return agent["state"] == OF
 
