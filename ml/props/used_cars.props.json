@@ -20,9 +20,16 @@
     "hival": 100,
     "lowval": 1
   },
+  "num_dealers": {
+    "val": 2,
+    "question": "How many dealers do you want?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 1
+  },
   "buyer_maturity": {
-    "val": 40,
-    "question": "How many periods does it take a buyer to mature?",
+    "val": 100,
+    "question": "How long is the training period?",
     "atype": "INT",
     "hival": 400,
     "lowval": 10
