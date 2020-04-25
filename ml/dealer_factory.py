@@ -36,7 +36,7 @@ emoji_list = list(DEF_CORRELATIONS.keys())
 
 
 def dealer_action():
-    pass
+    return False
 
 
 def constrain_car_life(unconstrained):
