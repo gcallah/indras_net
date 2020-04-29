@@ -4,7 +4,12 @@ import propTypes from 'prop-types';
 
 const CardWrapper = ({ title, children }) => (
   <Card>
-    <Card.Header>{title}</Card.Header>
+    <h5
+      style={{ textAlign: 'center', fontSize: 16 }}
+      className="card-header bg-primary text-white"
+    >
+      {title}
+    </h5>
     <Card.Body>{children}</Card.Body>
   </Card>
 );
