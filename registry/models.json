@@ -80,6 +80,16 @@
       "graph": "scatter"
     },
     {
+      "model ID": 8,
+      "name": "Trade with complementary",
+      "run": "complementary",
+      "props": "capital/props/complementary.props.json",
+      "doc": "Trade of complementary goods in the capital structure",
+      "source": "https://github.com/gcallah/indras_net/blob/master/capital/complementary.py",
+      "graph": "scatter",
+      "active": false
+    },
+    {
       "model ID": 9,
       "name": "Menger's Origin of Money",
       "run": "money",

@@ -30,6 +30,9 @@ from models.wolfsheep import create_sheep, create_wolf
 from capital.money import main as mnmain
 from capital.money import set_up as mnset_up
 from capital.money import trader_action as mntrader_action
+from capital.complementary import main as cpmain
+from capital.complementary import set_up as cpset_up
+from capital.trade_utils import seek_a_trade_w_comp as cptrader_action
 
 rdict = {
     "basic": bamain,
@@ -41,6 +44,7 @@ rdict = {
     "segregation": segmain,
     "wolfsheep": wsmain,
     "money": mnmain,
+    "complementary": cpmain,
 }
 
 setup_dict = {
@@ -53,6 +57,7 @@ setup_dict = {
     "segregation": segset_up,
     "wolfsheep": wsset_up,
     "money": mnset_up,
+    "complementary": cpset_up,
 }
 
 action_dict = {
@@ -72,6 +77,7 @@ action_dict = {
     "trend_follower_action": trend_follower_action,
     "value_investor_action": value_investor_action,
     "money_action": mntrader_action,
+    "complementary_action": cptrader_action,
 }
 
 
