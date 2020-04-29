@@ -1,6 +1,7 @@
 """
 This file defines an Agent.
 """
+import types
 import json
 import logging
 import sys
@@ -122,6 +123,8 @@ class AgentEncoder(json.JSONEncoder):
             return o.to_json()
         elif isinstance(o, np.int64):
             return int(o)
+        elif isinstance(o, types.FunctionType):
+            return None  # can't JSON a function!
         else:
             return json.JSONEncoder.default(self, o)
 
