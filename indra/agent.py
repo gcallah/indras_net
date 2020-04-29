@@ -124,7 +124,7 @@ class AgentEncoder(json.JSONEncoder):
         elif isinstance(o, np.int64):
             return int(o)
         elif isinstance(o, types.FunctionType):
-            return None  # can't JSON a function!
+            return str(o)  # can't JSON a function!
         else:
             return json.JSONEncoder.default(self, o)
 
