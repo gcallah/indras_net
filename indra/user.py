@@ -309,7 +309,7 @@ class APIUser(User):
         log. But let's also add the logging messages to return to
         the front-end.
         """
-        self.user_msgs += (msg + '\n')
+        self.debug_msg += (msg + '\n')
         print(msg)
 
     def debug(self, msg, end='\n'):

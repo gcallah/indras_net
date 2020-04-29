@@ -25,7 +25,8 @@
       "props": "models/props/fmarket.props.json",
       "doc": "The interaction of value investors and trend followers causes price cycling.",
       "source": "https://github.com/gcallah/indras_net/blob/master/models/fmarket.py",
-      "graph": "line"
+      "graph": "line",
+      "active": false
     },
     {
       "model ID": 7,
@@ -78,10 +79,10 @@
     },
     {
       "model ID": 9,
-      "name": "Carl Menger's Theory of the Origin of Money",
+      "name": "Menger's Origin of Money",
       "run": "money",
       "props": "capital/props/money.props.json",
-      "doc": "Implement how money emerges",
+      "doc": "Test Carl Menger's theory of how money emerges",
       "source": "https://github.com/gcallah/indras_net/blob/master/capital/money.py",
       "graph": "line",
       "active": false
