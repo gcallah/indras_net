@@ -3,6 +3,7 @@ import React from 'react';
 import { ScatterChart } from 'react-chartkick';
 import 'chart.js';
 import PropTypes from 'prop-types';
+import CardWrapper from './CardWrapper';
 
 function ScatterPlot(props) {
   const { loadingData, envFile, id } = props;
@@ -24,13 +25,9 @@ function ScatterPlot(props) {
       });
     });
     return (
-      <div>
-        <ScatterChart
-          data={data}
-          width="600px"
-          height="600px"
-        />
-      </div>
+      <CardWrapper title="Scatter Plot">
+        <ScatterChart data={data} width="600px" height="600px" />
+      </CardWrapper>
     );
   }
   return null;

@@ -206,7 +206,7 @@ class ActionMenu extends Component {
       loadingScatter,
     } = this.state;
     return (
-      <div>
+      <div className="mt-5">
         <Debugger loadingData={loadingDebugger} envFile={envFile} />
         <SourceCodeViewer loadingData={loadingSourceCode} code={sourceCode} />
         <PopulationGraph loadingData={loadingPopulation} envFile={envFile} />

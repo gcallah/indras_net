@@ -2,7 +2,7 @@ import React from 'react';
 import { LineChart } from 'react-chartkick';
 import 'chart.js';
 import PropType from 'prop-types';
-
+import CardWrapper from './CardWrapper';
 
 function PopulationGraph(props) {
   const { loadingData } = props;
@@ -24,9 +24,9 @@ function PopulationGraph(props) {
       });
     });
     return (
-      <div>
+      <CardWrapper title="Population Graph">
         <LineChart data={data} width="600px" height="600px" />
-      </div>
+      </CardWrapper>
     );
   }
   return null;
