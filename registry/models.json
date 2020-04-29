@@ -75,6 +75,16 @@
       "doc": "Thomas Schelling's famous model of neighborhood segregation.",
       "source": "https://github.com/gcallah/indras_net/blob/master/models/segregation.py",
       "graph": "scatter"
+    },
+    {
+      "model ID": 9,
+      "name": "Carl Menger's Theory of the Origin of Money",
+      "run": "money",
+      "props": "capital/props/money.props.json",
+      "doc": "Implement how money emerges",
+      "source": "https://github.com/gcallah/indras_net/blob/master/capital/money.py",
+      "graph": "line",
+      "active": false
     }
   ]
 }

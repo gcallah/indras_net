@@ -27,6 +27,9 @@ from models.wolfsheep import main as wsmain
 from models.wolfsheep import set_up as wsset_up
 from models.wolfsheep import sheep_action, wolf_action
 from models.wolfsheep import create_sheep, create_wolf
+from capital.money import main as mnmain
+from capital.money import set_up as mnset_up
+from capital.money import trader_action as mntrader_action
 
 rdict = {
     "basic": bamain,
@@ -37,6 +40,7 @@ rdict = {
     "forestfire": ffmain,
     "segregation": segmain,
     "wolfsheep": wsmain,
+    "money": mnmain,
 }
 
 setup_dict = {
@@ -48,6 +52,7 @@ setup_dict = {
     "forestfire": ffset_up,
     "segregation": segset_up,
     "wolfsheep": wsset_up,
+    "money": mnset_up,
 }
 
 action_dict = {
@@ -66,6 +71,7 @@ action_dict = {
     "tree_action": tree_action,
     "trend_follower_action": trend_follower_action,
     "value_investor_action": value_investor_action,
+    "money_action": mntrader_action,
 }
 
 
