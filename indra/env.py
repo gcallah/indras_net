@@ -35,6 +35,10 @@ POP_SEP = ", "
 color_num = 0
 
 
+def agent_by_name(agent):
+    return agent if isinstance(agent, str) else agent.name
+
+
 class PopHist:
     """
         Data structure to record the fluctuating numbers of various agent
@@ -234,34 +238,25 @@ class Env(Space):
     def add_child(self, group):
         """
         Put a child agent in the womb.
-        agent: child to add
-        group: which group child will join
+        group: which group will add new agent
         """
-        self.womb.append(group.name)
-        if DEBUG:
-            self.user.tell("{} added to the womb".format(group.name))
+        grp_nm = agent_by_name(group)
+        self.womb.append(grp_nm)
+        user_log_notif("An agent was added to the womb for " + grp_nm)
 
     def add_switch(self, agent, from_grp, to_grp):
         """
-        Put a child agent in the womb.
-        agent: child to add
-        group: which group child will join
+        Switch agent from 1 grp to another
         We allow the parameters to be passed as the names of the agents,
         or as the agents themselves.
+        In the future, it should be just names.
         """
-        agent_nm = agent if isinstance(agent, str) else agent.name
-        from_grp_nm = from_grp if isinstance(from_grp, str) else from_grp.name
-        to_grp_nm = to_grp if isinstance(to_grp, str) else to_grp.name
+        agent_nm = agent_by_name(agent)
+        from_grp_nm = agent_by_name(from_grp)
+        to_grp_nm = agent_by_name(to_grp)
         self.switches.append((agent_nm, from_grp_nm, to_grp_nm))
-
-    def now_switch(self, agent, from_grp, to_grp):
-        """
-        Switches the groups of the agent now
-        instead of at the end of period
-        unlike add_switch.
-        """
-        switch(agent.name, from_grp.name, to_grp.name)
-        self.num_switches += 1
+        user_log_notif("Agent " + agent_nm + " was scheduled to switch from "
+                       + from_grp_nm + " to " + to_grp_nm)
 
     def handle_womb(self):
         """
@@ -284,6 +279,8 @@ class Env(Space):
 
     def handle_switches(self):
         if self.switches is not None:
+            user_log_notif("Switching " + str(len(self.switches))
+                           + " agents between groups")
             for (agent_nm, from_grp_nm, to_grp_nm) in self.switches:
                 switch(agent_nm, from_grp_nm, to_grp_nm)
                 self.num_switches += 1
