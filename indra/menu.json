@@ -26,6 +26,11 @@
             "question": "View the source code"
         },
         {
+            "id": 6,
+            "func": "logs",
+            "question": "View log"
+        },
+        {
             "id": 0,
             "func": "leave",
             "question": "Quit"

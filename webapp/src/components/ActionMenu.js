@@ -11,11 +11,13 @@ import SourceCodeViewer from './SourceCodeViewer';
 import RunModelButton from './RunModelButton';
 import './styles.css';
 import config from '../config';
+import LogsViewer from './LogsViewer';
 
 const POP = 2;
 const SCATTER = 3;
 const DATA = 4;
 const SOURCE = 5;
+const LOG = 6;
 const API_SERVER = `${config.API_URL}models/menu/`;
 
 class ActionMenu extends Component {
@@ -34,6 +36,7 @@ class ActionMenu extends Component {
       loadingDebugger: false,
       loadingPopulation: false,
       loadingScatter: false,
+      loadingLogs: false,
       activeDisplay: null,
     };
   }
@@ -123,6 +126,7 @@ class ActionMenu extends Component {
       loadingDebugger: false,
       loadingScatter: false,
       loadingPopulation: false,
+      loadingLogs: false,
     });
     this.setState({
       activeDisplay: e,
@@ -139,6 +143,9 @@ class ActionMenu extends Component {
         break;
       case SOURCE:
         this.setState({ loadingSourceCode: true });
+        break;
+      case LOG:
+        this.setState({ loadingLogs: true });
         break;
       default:
         break;
@@ -204,6 +211,7 @@ class ActionMenu extends Component {
       sourceCode,
       loadingPopulation,
       loadingScatter,
+      loadingLogs,
     } = this.state;
     return (
       <div className="mt-5">
@@ -211,6 +219,7 @@ class ActionMenu extends Component {
         <SourceCodeViewer loadingData={loadingSourceCode} code={sourceCode} />
         <PopulationGraph loadingData={loadingPopulation} envFile={envFile} />
         <ScatterPlot loadingData={loadingScatter} envFile={envFile} />
+        <LogsViewer loadingData={loadingLogs} envFile={envFile} />
       </div>
     );
   };
