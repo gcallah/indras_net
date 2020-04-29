@@ -2,18 +2,21 @@ PYLINT = flake8
 PYLINTFLAGS = --exclude=interactive.py,__main__.py
 PYTHONFILES = $(shell ls *.py)
 
+FORCE:
+
 tests: pytests lint
 
 lint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
 
-pytests: $(PYTHONFILES)
+pytests: FORCE
 	./pytests.sh
 
 tests: pytests lint
 
-test_props_api:
-	$(PYLINT) $(PYLINTFLAGS) props_api.py
-	nosetests tests.test_props_api --nocapture
+# test a python file:
+%.py: FORCE
+	$(PYLINT) $(PYLINTFLAGS) $@
+	nosetests tests.test_$* --nocapture
 
 %.pylint:
 	$(PYLINT) $(PYLINTFLAGS) $*.py

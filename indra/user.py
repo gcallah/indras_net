@@ -305,8 +305,11 @@ class APIUser(User):
 
     def log(self, msg):
         """
-        For PythonAnywhere, `print()` writes to the log.
+        When running on a server, `print()` ought to write to the
+        log. But let's also add the logging messages to return to
+        the front-end.
         """
+        self.user_msgs += (msg + '\n')
         print(msg)
 
     def debug(self, msg, end='\n'):
