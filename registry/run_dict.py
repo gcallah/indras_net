@@ -29,10 +29,10 @@ from models.wolfsheep import sheep_action, wolf_action
 from models.wolfsheep import create_sheep, create_wolf
 from capital.money import main as mnmain
 from capital.money import set_up as mnset_up
-from capital.money import trader_action as mntrader_action
+from capital.money import money_trader_action
 from capital.complementary import main as cpmain
 from capital.complementary import set_up as cpset_up
-from capital.trade_utils import seek_a_trade_w_comp as cptrader_action
+from capital.trade_utils import seek_a_trade_w_comp
 
 rdict = {
     "basic": bamain,
@@ -76,8 +76,8 @@ action_dict = {
     "tree_action": tree_action,
     "trend_follower_action": trend_follower_action,
     "value_investor_action": value_investor_action,
-    "money_action": mntrader_action,
-    "complementary_action": cptrader_action,
+    "money_trader_action": money_trader_action,
+    "seek_a_trade_w_comp": seek_a_trade_w_comp,
 }
 
 

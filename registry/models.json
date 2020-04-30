@@ -81,7 +81,7 @@
     },
     {
       "model ID": 8,
-      "name": "Trade with complementary",
+      "name": "Capital Structure",
       "run": "complementary",
       "props": "capital/props/complementary.props.json",
       "doc": "Trade of complementary goods in the capital structure",

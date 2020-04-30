@@ -81,7 +81,7 @@ def set_up(props=None):
                              member_creator=create_trader,
                              props=pa,
                              num_members=num_traders)
-    Env("env",
+    Env(MODEL_NAME,
         height=get_prop('grid_height', DEF_HEIGHT),
         width=get_prop('grid_width', DEF_WIDTH),
         members=[trader_group])
@@ -119,7 +119,7 @@ def set_up(props=None):
     for trader in trader_group:
         for i in range(len(MKT_GOODS) // num_traders):
             allocate_resources(trader_group[trader], MKT_GOODS)
-        get_env().user.tell(trader_group[trader]["goods"])
+        user_log_notif(repr(trader_group[trader]["goods"]))
 
 
 def main():
