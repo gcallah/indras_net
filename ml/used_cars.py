@@ -5,7 +5,9 @@ from indra.space import DEF_HEIGHT, DEF_WIDTH
 from registry.registry import get_env, get_prop
 from indra.utils import init_props
 from ml.dealer_factory import generate_dealer
-from ml.buyer_action_s import create_buyer
+from ml.buyer_action_s import create_buyer_s as selina_cb
+from ml.buyer_action_a import create_buyer_a as ava_cb
+
 
 MODEL_NAME = "used_cars"
 DEBUG = True  # turns debugging code on or off
@@ -14,7 +16,8 @@ DEBUG2 = False  # turns deeper debugging code on or off
 DEF_NUM_DEALER = 500
 DEF_NUM_BUYER = 10
 
-BUYER_GRP = "Buyer_group"
+AVA_BUYER_GRP = "Ava_buyer_group"
+SELINA_BUYER_GRP = "Selina_buyer_group"
 DEALER_GRP = "Dealer_group"
 
 '''
@@ -37,8 +40,12 @@ def set_up(props=None):  # testcase???
                            num_members=get_prop('num_dealers',
                                                 DEF_NUM_DEALER)))
 # can we put the testing period in to composite too?
-    group.append(Composite(BUYER_GRP, {"color": RED},
-                           member_creator=create_buyer,
+    group.append(Composite(AVA_BUYER_GRP, {"color": RED},
+                           member_creator=ava_cb,
+                           num_members=get_prop('num_buyers', DEF_NUM_BUYER)))
+
+    group.append(Composite(SELINA_BUYER_GRP, {"color": RED},
+                           member_creator=selina_cb,
                            num_members=get_prop('num_buyers', DEF_NUM_BUYER)))
 
     Env("Car market",
