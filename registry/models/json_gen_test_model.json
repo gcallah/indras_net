@@ -1,0 +1,9 @@
+{
+    "active": "true",
+    "doc": "A toy model to test the system.",
+    "graph": "scatter",
+    "name": "Basisc",
+    "props": "models/props/basic.props.json",
+    "run": "basic,\nsdasdad\nasdadasd\nasdasdadasd asd asd asd asd",
+    "source": "https://github.com/gcallah/indras_net/blob/master/models/basic.py"
+}
