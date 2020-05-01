@@ -42,6 +42,10 @@ def script_output(message, withName=True):
         print(message)
 
 def parse_docstring(file_path):
+    """
+        parses the docstring at the top of every model file
+        returns a [] with tuples (KEY, VAL) in the order of the jsonFields
+    """
     print(file_path)
     with open(file_path, 'r') as input_stream:
         # skip blank lines until first sign of docstring
@@ -54,19 +58,41 @@ def parse_docstring(file_path):
         # Strip away the extension and create file
         name, ext = os.path.splitext(filename)
         fd = open(DEST_FOLDER + name + "_model.json", "w")
-
-        # line = ""
-        # doc1,doc2 = -1,-1 # doc1 for docstrings using double quotes
-        # while(doc1 == -1 and doc2 == -1):
-        #     line = input_stream.readline()
-
-        #     # EOF
-        #     if(len(line) == 0):
-                
-        #         fd = open("")
-        #         return
-
         fd.close()
+
+        # Step 2: find the beginning of the docstring
+        line = ""
+        doc1,doc2 = -1,-1 # doc1 for docstrings using double quotes
+        while(doc1 == -1 and doc2 == -1):
+            line = input_stream.readline()
+
+            # EOF
+            # Nothing to add no docstring
+            if(len(line) == 0):
+                return []
+
+            line = line.strip()
+            if(len(line) == 0):
+                continue
+            
+            doc1 = line.find("\"\"\"")
+            doc2 = line.find("\'\'\'")
+            if(doc1 != -1 or doc2 != -1):
+                # We reached the start of the docstring
+                break
+            else:
+                # Indicates we found some other string first
+                script_output("model docstring must be at the header of file")
+                script_output("error found in " + file_path, False)
+                exit(1)
+
+        # # Step 3 start reading until last key
+        # for i in range(len(jsonFields)):
+        #     line = input_stream.readline()
+        #     keyIndex = line.find(jsonFields[i] + ": ")
+        #     if(keyIndex == -1):
+
+
 
 def generate_json(content):
     return 2
