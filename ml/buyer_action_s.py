@@ -1,7 +1,4 @@
 import random
-import pandas as pd
-import statsmodels.api as sm
-import seaborn as sns
 from indra.agent import Agent
 from registry.registry import get_group, get_env
 
@@ -16,18 +13,9 @@ BUYER_GRP = "Buyer_group"
 DEALER_GRP = "Dealer_group"
 strategies = {}
 
-sns.set()
-
 
 def multi_linear_regression(agent):
-    data = pd.DataFrame(agent["purchase_hist"])
-    y = data["car_life"]
-    emojis = list(agent["emoji_experienced"].keys())
-    x1 = data[emojis]
-    x = sm.add_constant(x1)
-    results = sm.OLS(y, x).fit()
-    results.summary()
-    print(results.params)
+    pass
 
 
 strategies = {"s1": {"func": multi_linear_regression}}
