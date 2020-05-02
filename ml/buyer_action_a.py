@@ -1,13 +1,11 @@
 '''
 Ava's Agent
 '''
-import random
 from indra.agent import Agent
 from registry.registry import get_env, get_group
 
 MODEL_NAME = "ava_agent"
-TRAINING_PERIOD = 100
-strategies = {}
+TRAINING_PERIOD = 50
 DEALER_GRP = "Dealer_group"
 
 
@@ -32,7 +30,7 @@ def is_mature(buyer):  # testcase done
     return buyer["maturality"] > TRAINING_PERIOD
 
 
-def cal_avg_life(buyer):  # testcase done
+def cal_from_buyer(buyer):  # testcase done
     """
     Each emoji associate with list of car lifes
     this function calculates average car life of a emoji
@@ -52,7 +50,6 @@ def buy_from_dealer(agent, my_dealer):
     Update all dealer and buyer's attributes
     """
     agent["maturality"] += 1
-    agent["has_car"] = True
     received_car_life = my_dealer["avg_car_life"]
     agent["car_life"] = received_car_life
     received_emojis = my_dealer["emojis"]
@@ -63,15 +60,11 @@ def buy_from_dealer(agent, my_dealer):
             assoc[emoji] = [received_car_life]
         else:
             assoc[emoji].append(received_car_life)
-        print("My emoji car association:", assoc)
-        cal_avg_life(agent)
-
-
-def has_car_update(agent):
-    print("I have a car!")
-    agent["car_life"] -= 1
-    if agent["car_life"] <= 0:
-        agent["has_car"] = False
+    if not is_mature(agent):
+        print("I am immature. I got a car life",
+              str(my_dealer["avg_car_life"]),
+              ", and my dealer's emoji(s) is/are: ",
+              str(my_dealer["emojis"]))
 
 
 def training_action(agent):
@@ -86,16 +79,44 @@ def training_action(agent):
         # unmature buyer learning
         buy_from_dealer(agent, my_dealer)
         # you *should* separate out your calculations
+        cal_from_buyer(agent)
     return False
+
+
+def evaluate_dealer_emoji(buyer, dealer):
+    # info buyer received from dealer
+    received_emojis = dealer["emojis"]
+    received_car = dealer["avg_car_life"]
+    num_emojis = len(received_emojis)
+    # calculate average life associate with emoji
+    buyer_emojis_table = buyer["emoji_life_avg"]
+    judge_car_life = 0
+    for emoji in received_emojis:
+        judge_car_life += buyer_emojis_table[emoji]
+    judge_car_life /= num_emojis
+    is_good_buy = received_car > judge_car_life
+    return is_good_buy
 
 
 def strategic_action(agent):
     my_dealer = get_env().get_neighbor_of_groupX(agent,
                                                  get_group(DEALER_GRP),
                                                  hood_size=4)
-    print(my_dealer)
-    # evaluate dealer and buy or not
-    # store info on car life
+    if my_dealer is None:
+        print("No dealers nearby.")
+    else:
+        # evaluate dealer and buy or not
+        buy_flag = evaluate_dealer_emoji(agent, my_dealer)
+        # predict if received emoji will give a bad car life
+        if buy_flag:
+            # store info on car life
+            received_car_life = my_dealer["avg_car_life"]
+            agent["strategy_car_life"].append(received_car_life)
+            buy_from_dealer(agent, my_dealer)
+            print("I am mature. I got a car life",
+                  str(my_dealer["avg_car_life"]),
+                  ", and my dealer's emoji(s) is/are: ",
+                  str(my_dealer["emojis"]))
     return False
 
 
@@ -104,45 +125,6 @@ def work_this_into_func():  # I will outline it!
     mature buyers take cars from good dealer til get 1 bad car
     '''
     pass
-    # bad_flag = False
-    # while not bad_flag:
-    #    print("_" * 20)
-    #    print("Agent: " + agent.name)
-    #    if not agent["has_car"]:
-    #        my_dealer = get_env().get_neighbor_of_groupX(agent,
-    #                                                     get_group(DEALER_GRP),
-    #                                                     hood_size=4)
-    #        if my_dealer is None:
-    #            print("No dealers nearby.")
-    #        else:
-    #            # info buyer received from dealer
-    #            received_car_life = my_dealer["avg_car_life"]
-    #            received_emojis = my_dealer["emojis"]
-    #            num_emojis = len(received_emojis)
-    #            # calculate average life associate with emoji
-    #            buyer_emojis_table = agent["emoji_life_avg"]
-    #            judge_car_life = 0
-    #            for emoji in received_emojis:
-    #                judge_car_life += buyer_emojis_table[emoji]
-    #            judge_car_life /= num_emojis
-    #            # judge if received emoji will give a bad car
-    #            if received_car_life > judge_car_life:
-    #                # update strategy s1's car life
-    #                strategies["s1"]["car_life"].append(received_car_life)
-    #                buy_from_dealer(agent, my_dealer)
-    #            else:
-    #                bad_flag = True
-    #    else:
-    #        # return False means to move
-    #        has_car_update(agent)
-    # return False
-
-
-# different strategies
-strategies = {"s1": {"func": strategic_action,
-                     "car_life": []
-                     }
-              }
 
 
 def buyer_action(agent):  # how to write this testcase
@@ -154,9 +136,11 @@ def buyer_action(agent):  # how to write this testcase
         training_action(agent)
     else:
         strategic_action(agent)
-    life_from_stategy = strategies["car_life"]
-    print("Car life received from using strategy:", life_from_stategy)
-    print("Avergae life is", life_from_stategy/len(life_from_stategy))
+    car_lifes = agent["strategy_car_life"]
+    if len(car_lifes) != 0:
+        car_life_avg = sum(car_lifes) / len(car_lifes)
+        print("Car life received from using strategy:", car_lifes)
+        print("Avergae life is", car_life_avg)
     return False
 
 
@@ -166,10 +150,9 @@ def create_buyer_a(name, i, **kwargs):  # testcase done
     """
     return Agent(name + str(i),
                  action=buyer_action,
-                 attrs={"has_car": False,
-                        "car_life": None,
+                 attrs={"car_life": None,
                         "emoji_carlife_assoc": {},
                         "emoji_life_avg": {},
                         "maturality": 0,
-                        "strategy": random.choice(list(strategies.keys()))
+                        "strategy_car_life": []
                         })
