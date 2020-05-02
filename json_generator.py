@@ -23,7 +23,7 @@ import distutils.util
 """
 
 # jsonFields is a list of fields or keys that the parser must know
-# "source" should be required as a field at the very least. It is later used by 
+# "source" should be required as a field at the very least. It is later used by
 # json_combiner.py as a way to tell if a model is new or not
 jsonFields = set(["name", "run", "props", "doc", "source", "graph", "active"])
 SCRIPT_NAME = sys.argv[0]
@@ -76,6 +76,7 @@ def has_docstring_quotes(line):  # (str) -> bool
     if(f1 != -1 or f2 != -1):
         return True
     return False
+
 
 def validate_docstring(content, filename, withOutput=True):
     """
@@ -166,6 +167,7 @@ def clean_valString(valString):
 
     return result
 
+
 def convert_valString(valString):
     """
         Function to attempt to convert the string to its actual type
@@ -184,8 +186,9 @@ def convert_valString(valString):
             return bool(distutils.util.strtobool(valString))
         except ValueError:
             return valString
-    except:
+    except Exception:
         return valString
+
 
 def parse_docstring(file_path):
     """
@@ -250,7 +253,8 @@ def parse_docstring(file_path):
 
                 if(lineKey in jsonFields):
                     if(len(valueString) > 0):
-                        model_kv[keyString] = convert_valString(clean_valString(valueString))
+                        model_kv[keyString] = \
+                            convert_valString(clean_valString(valueString))
 
                     found_set.add(lineKey)
                     v_start = len(lineKey) + delimitorLen

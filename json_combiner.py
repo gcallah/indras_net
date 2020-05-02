@@ -15,7 +15,7 @@ SRC_FOLDER = "registry/models/"  # must have trailing /
 SCRIPT_NAME = sys.argv[0]
 DB_NAME = "models_database"
 ID_FIELD = "model ID"
-NAME_FIELD = "name"
+SOURCE_FIELD = "source"
 RESULT_JSON = { DB_NAME : [] }
 MODEL_ID = 0
 
@@ -102,20 +102,34 @@ def init_model_id(known_models):
 def get_model_id(targetName, known_models):
     id = -1
     for model in known_models:
-        if(targetName == model[NAME_FIELD]):
+        if(targetName == model[SOURCE_FIELD]):
             id = model[ID_FIELD]
             break
 
     return id
+
+def has_model(targetName, models):
+    for model in models:
+        if(targetName == model[SOURCE_FIELD]):
+            return True
+    
+    return False
 
 def combine_models(models, known_models=[]):
     #print(models, known_models)
     global MODEL_ID
     new_models = []
 
+    # Add models that are in known_models, but not in models to our result
+    # Do not want to erase known_models if it happened to be more up to date
+    # than what we have in registry/models
+    for model in known_models:
+        if(has_model(model[SOURCE_FIELD], models) is False):
+            RESULT_JSON[DB_NAME].append(model)
+
     # process the exisiting / known models first
     for model in models:
-        knownID = get_model_id(model[NAME_FIELD], known_models)
+        knownID = get_model_id(model[SOURCE_FIELD], known_models)
         if(knownID == -1):
             new_models.append(model)
         else:
@@ -128,6 +142,9 @@ def combine_models(models, known_models=[]):
         model[ID_FIELD] = MODEL_ID
         RESULT_JSON[DB_NAME].append(model)
         MODEL_ID += 1
+
+    # Sort it out for neatness
+    RESULT_JSON[DB_NAME].sort(key=lambda model: model[ID_FIELD])
 
     # write out to DEST_FILE
     save_result()
