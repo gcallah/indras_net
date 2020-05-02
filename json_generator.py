@@ -157,12 +157,12 @@ def strip_docstring(content):
 def clean_valString(valString):
     """
         Cleans up the value string that was processed
-        removes trailing whitespace and comma
+        removes leading and trailing whitespace and comma
     """
-    # strip trailing whitespace
-    result = valString.rstrip()
+    # strip leading and trailing whitespace
+    result = valString.strip()
     # remove trailing comma if any
-    if(result[-1] == ","):
+    if(len(result) > 0 and result[-1] == ","):
         result = result[:len(result)-1]
 
     return result
@@ -173,7 +173,6 @@ def parse_docstring(file_path):
         parses the docstring at the top of every model file
         returns a [] with tuples (KEY, VAL) in the order of the jsonFields
     """
-    print(file_path)
     with open(file_path, 'r') as input_stream:
         # skip blank lines until first sign of docstring
         # error if found anything else.
@@ -204,7 +203,6 @@ def parse_docstring(file_path):
             line = line.lstrip()
             docstring_content.append(line)
 
-        print(docstring_content)
         # If invalid docstring, return empty
         if(validate_docstring(docstring_content, file_path) is False):
             return {}, output_file
@@ -238,13 +236,13 @@ def parse_docstring(file_path):
                     found_set.add(lineKey)
                     v_start = len(lineKey) + delimitorLen
                     keyString = lineKey
-                    valueString = line[v_start:].lstrip()
+                    valueString = line[v_start:]
                 else:
                     # stop parsing since we found a rogue key
                     script_output("UNKNOWN KEY " + repr(lineKey))
                     return {}, output_file
             else:
-                valueString += line.lstrip()
+                valueString += line
 
         # Last key
         model_kv[keyString] = clean_valString(valueString)
@@ -287,6 +285,5 @@ if __name__ == "__main__":
 
     validate_config()
 
-    print(model_files)
     for file in model_files:
         generate_json(parse_docstring(file))
