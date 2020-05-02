@@ -24,6 +24,7 @@ import os.path
 # Docstring must be in same order
 # jsonFields is a list of fields or keys that the parser must know
 # the docstring (if there is any) must contain all of these (no more no less)
+# "name" should be required as a field at the very least
 jsonFields = set(["name", "run", "props", "doc", "source", "graph", "active"])
 SCRIPT_NAME = sys.argv[0]
 DEST_FOLDER = "registry/models/"  # must have trailing /
@@ -92,8 +93,8 @@ def validate_docstring(content, filename, withOutput=True):
             script_output("docstring too short in " + filename)
         return False
 
-    if(len(content[0]) > quote_len or
-            len(content[len(content)-1]) > quote_len):
+    if(len(content[0].strip()) > quote_len or
+            len(content[len(content)-1].strip()) > quote_len):
         if(withOutput):
             script_output("docstring quotes should be in a line by itself")
             script_output("Problem in " + filename, False)

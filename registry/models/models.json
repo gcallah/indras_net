@@ -1,3 +1,14 @@
 {
-    "models_database": []
+    "models_database": [
+        {
+            "active": "true",
+            "doc": "A toy model to test the system.",
+            "graph": "scatter",
+            "model ID": 10,
+            "name": "Basic",
+            "props": "models/props/basic.props.json",
+            "run": "basic",
+            "source": "https://github.com/gcallah/indras_net/blob/master/models/basic.py"
+        }
+    ]
 }
