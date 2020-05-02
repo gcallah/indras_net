@@ -1,23 +1,24 @@
 #!/usr/bin/env python3
 
+import json
+import sys
+import os
+
 """
     Combines all *_model.json files in registry/models
     to one models.json file
 """
 
-import json
-import sys
-import os
-import copy
 
 DEST_FILE = "registry/models/models.json"
 SRC_FOLDER = "registry/models/"  # must have trailing /
 SCRIPT_NAME = sys.argv[0]
 DB_NAME = "models_database"
 ID_FIELD = "model ID"
-SOURCE_FIELD = "source"
-RESULT_JSON = { DB_NAME : [] }
+SOURCE_FIELD = "source"  # Used to determine new or old models
+RESULT_JSON = {DB_NAME: []}
 MODEL_ID = 0
+
 
 def usage():  # () -> None
     """
@@ -56,16 +57,27 @@ def script_output(message, withName=True):  # (str, bool) -> None
     else:
         print(message)
 
+
 def save_result():
+    """
+        Handy function to saves RESULTJSON to the DEST_FILE
+    """
     with open(DEST_FILE, 'w') as output_stream:
         rawJSON = \
             json.JSONEncoder(sort_keys=True, indent=4).encode(RESULT_JSON)
         output_stream.write(rawJSON)
 
+
 def get_prev_models():
+    """
+        Reads from models.json, which also happens to be our DEST_FILE
+        If our DEST_FILE doesn't exist, it will just create the new file
+        Otherwise, it will read in the json,
+        so the script knows the model ID for exisiting models
+    """
     try:
         with open(DEST_FILE, 'r') as input_stream:
-           return json.load(input_stream)[DB_NAME]
+            return json.load(input_stream)[DB_NAME]
 
     except OSError:
         script_output("No existing models.json found")
@@ -73,50 +85,93 @@ def get_prev_models():
         save_result()
         return []
 
+
 def get_model_files():
+    """
+        Gets all the filepaths for *_model.json files from the SRC_FOLDER
+    """
     model_files = []
     for file in os.listdir(SRC_FOLDER):
         if file.endswith("_model.json"):
             model_files.append(os.path.join(SRC_FOLDER, file))
-    
+
     return model_files
 
+
 def load_models(model_files):
+    """
+        Loads all the models from list of model files (.json) for processing
+    """
     model = []
     for file in model_files:
         with open(file, 'r') as input_stream:
             model.append(json.load(input_stream))
-    
+
     return model
 
+
 def init_model_id(known_models):
+    """
+        Sets model_id to be the next avaliable or free id for use
+        Its based on whether there are existing models that the script is aware
+        of. (if models.json doesn't exist, then it assume no existing models
+        were ever created)
+        MODEL_ID will default to 0 if no known model id were used
+    """
     global MODEL_ID
 
     ids = []
     for model in known_models:
         ids.append(model[ID_FIELD])
-    
+
     if(len(ids) > 0):
         MODEL_ID = max(ids)+1
 
-def get_model_id(targetName, known_models):
+
+def get_model_id(targetValue, known_models):
+    """
+        Gets the model id for the model with given targetValue
+        targetValue should be the source since its used as the unique feature
+        of each model
+    """
     id = -1
     for model in known_models:
-        if(targetName == model[SOURCE_FIELD]):
+        if(targetValue == model[SOURCE_FIELD]):
             id = model[ID_FIELD]
             break
 
     return id
 
-def has_model(targetName, models):
+
+def has_model(targetValue, models):
+    """
+        Checks if a model exists with given targetValue
+        Model should have source_field
+    """
     for model in models:
-        if(targetName == model[SOURCE_FIELD]):
+        if(targetValue == model[SOURCE_FIELD]):
             return True
-    
+
     return False
 
+
 def combine_models(models, known_models=[]):
-    #print(models, known_models)
+    """
+        Merges known models (from models.json) with models from
+        model.json files
+
+        models.json could have models that don't have a model.json files
+
+        combine_models() just puts every unique models into our set
+
+        Note: this script's definition of unique is purely based on "source"
+        field. The reason is that a model's source should not be the same
+        as another model.
+
+        This does mean that if a model's source is changed,
+        a new model id is assigned.
+        The old instance of the model will remain in model.json
+    """
     global MODEL_ID
     new_models = []
 
@@ -135,25 +190,25 @@ def combine_models(models, known_models=[]):
         else:
             model[ID_FIELD] = knownID
             RESULT_JSON[DB_NAME].append(model)
-    
-    #print(new_models)
 
+    # Assign new models with unique IDs
     for model in new_models:
         model[ID_FIELD] = MODEL_ID
         RESULT_JSON[DB_NAME].append(model)
         MODEL_ID += 1
 
-    # Sort it out for neatness
+    # Sort it out for neatness based on ID
     RESULT_JSON[DB_NAME].sort(key=lambda model: model[ID_FIELD])
 
     # write out to DEST_FILE
     save_result()
 
+
 if __name__ == "__main__":
     if(len(sys.argv) > 1):
         usage()
         exit(0)
-    
+
     validate_config()
 
     models = load_models(get_model_files())
