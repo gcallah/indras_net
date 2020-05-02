@@ -33,10 +33,10 @@ def set_up(props=None):  # testcase???
     """
     A func to set up run that can also be used by test code.
     """
-    init_props(MODEL_NAME, props)
+    init_props(MODEL_NAME, props, model_dir="ml")
     group = []
     group.append(Composite(DEALER_GRP, {"color": BLUE},
-                           member_creator=generate_dealer(),
+                           member_creator=generate_dealer,
                            num_members=get_prop('num_dealers',
                                                 DEF_NUM_DEALER)))
 # can we put the testing period in to composite too?
@@ -48,7 +48,7 @@ def set_up(props=None):  # testcase???
                            member_creator=selina_cb,
                            num_members=get_prop('num_buyers', DEF_NUM_BUYER)))
 
-    Env("Car market",
+    Env(MODEL_NAME,
         height=get_prop('grid_height', DEF_HEIGHT),
         width=get_prop('grid_width', DEF_WIDTH),
         members=group)

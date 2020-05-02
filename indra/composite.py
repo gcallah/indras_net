@@ -80,10 +80,7 @@ class Composite(Agent):
                 # If we have a member creator function, call it
                 # `num_members` times to create group members.
                 for i in range(num_members):
-                    # += adds members
-                    join(
-                        self,
-                        member_creator(self.name, i, **kwargs))
+                    join(self, member_creator(self.name, i, **kwargs))
         if reg:
             add_group(self.name, self)
             register(self.name, self)
