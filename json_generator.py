@@ -3,6 +3,7 @@
 import sys
 import json
 import os.path
+import distutils.util
 """
     Script to generate *_model.json files, given *.py
     *.py files must have docstring at the header of the file first
@@ -10,6 +11,7 @@ import os.path
 """
 
 # Docstring format
+# the docstring (if there is any) must contain all of these (no more no less)
 """
     name: str,
     run: str,
@@ -20,11 +22,9 @@ import os.path
     active: bool
 """
 
-
-# Docstring must be in same order
 # jsonFields is a list of fields or keys that the parser must know
-# the docstring (if there is any) must contain all of these (no more no less)
-# "name" should be required as a field at the very least
+# "source" should be required as a field at the very least. It is later used by 
+# json_combiner.py as a way to tell if a model is new or not
 jsonFields = set(["name", "run", "props", "doc", "source", "graph", "active"])
 SCRIPT_NAME = sys.argv[0]
 DEST_FOLDER = "registry/models/"  # must have trailing /
@@ -76,7 +76,6 @@ def has_docstring_quotes(line):  # (str) -> bool
     if(f1 != -1 or f2 != -1):
         return True
     return False
-
 
 def validate_docstring(content, filename, withOutput=True):
     """
@@ -167,6 +166,26 @@ def clean_valString(valString):
 
     return result
 
+def convert_valString(valString):
+    """
+        Function to attempt to convert the string to its actual type
+        I.E, "1" -> 1, "true" -> true
+        This acts as a catch all, the fallback is to string
+    """
+
+    if(valString.lower() == "null"):
+        return None
+    try:
+        return int(valString)
+    except ValueError:
+        try:
+            # This returns 0,1 if the string is a bool value
+            # bool() then converts it into True or False
+            return bool(distutils.util.strtobool(valString))
+        except ValueError:
+            return valString
+    except:
+        return valString
 
 def parse_docstring(file_path):
     """
@@ -231,7 +250,7 @@ def parse_docstring(file_path):
 
                 if(lineKey in jsonFields):
                     if(len(valueString) > 0):
-                        model_kv[keyString] = clean_valString(valueString)
+                        model_kv[keyString] = convert_valString(clean_valString(valueString))
 
                     found_set.add(lineKey)
                     v_start = len(lineKey) + delimitorLen
@@ -245,7 +264,7 @@ def parse_docstring(file_path):
                 valueString += line
 
         # Last key
-        model_kv[keyString] = clean_valString(valueString)
+        model_kv[keyString] = convert_valString(clean_valString(valueString))
 
         if(validate_model(model_kv, found_set) is False):
             return {}, output_file
