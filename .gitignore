@@ -53,7 +53,3 @@ APIServer/.coverage
 /.vscode
 precache-manifest.*
 /webapp/coverage/*
-
-# testing
-models/json_gen_test.py
-registry/*
