@@ -74,65 +74,72 @@ def has_car_update(agent):
         agent["has_car"] = False
 
 
-def training_buyers(agent):
-    while not is_mature(agent):
-        print("_" * 20)
-        print("Agent: " + agent.name)
-        if not agent["has_car"]:
-            my_dealer = get_env().get_neighbor_of_groupX(agent,
-                                                         get_group(DEALER_GRP),
-                                                         hood_size=4)
-            if my_dealer is None:
-                print("No dealers nearby.")
-            else:
-                # unmature buyer learning
-                buy_from_dealer(agent, my_dealer)
-        else:
-            # return False means to move
-            has_car_update(agent)
+def training_action(agent):
+    print("_" * 20)
+    print("Agent: " + agent.name)
+    my_dealer = get_env().get_neighbor_of_groupX(agent,
+                                                 get_group(DEALER_GRP),
+                                                 hood_size=4)
+    if my_dealer is None:
+        print("No dealers nearby.")
+    else:
+        # unmature buyer learning
+        buy_from_dealer(agent, my_dealer)
+        # you *should* separate out your calculations
     return False
 
 
-def learn_with_strategy(agent):
+def strategic_action(agent):
+    my_dealer = get_env().get_neighbor_of_groupX(agent,
+                                                 get_group(DEALER_GRP),
+                                                 hood_size=4)
+    print(my_dealer)
+    # evaluate dealer and buy or not
+    # store info on car life
+    return False
+
+
+def work_this_into_func():  # I will outline it!
     '''
     mature buyers take cars from good dealer til get 1 bad car
     '''
-    bad_flag = False
-    while not bad_flag:
-        print("_" * 20)
-        print("Agent: " + agent.name)
-        if not agent["has_car"]:
-            my_dealer = get_env().get_neighbor_of_groupX(agent,
-                                                         get_group(DEALER_GRP),
-                                                         hood_size=4)
-            if my_dealer is None:
-                print("No dealers nearby.")
-            else:
-                # info buyer received from dealer
-                received_car_life = my_dealer["avg_car_life"]
-                received_emojis = my_dealer["emojis"]
-                num_emojis = len(received_emojis)
-                # calculate average life associate with emoji
-                buyer_emojis_table = agent["emoji_life_avg"]
-                judge_car_life = 0
-                for emoji in received_emojis:
-                    judge_car_life += buyer_emojis_table[emoji]
-                judge_car_life /= num_emojis
-                # judge if received emoji will give a bad car
-                if received_car_life > judge_car_life:
-                    # update strategy s1's car life
-                    strategies["s1"]["car_life"].append(received_car_life)
-                    buy_from_dealer(agent, my_dealer)
-                else:
-                    bad_flag = True
-        else:
-            # return False means to move
-            has_car_update(agent)
-    return False
+    pass
+    # bad_flag = False
+    # while not bad_flag:
+    #    print("_" * 20)
+    #    print("Agent: " + agent.name)
+    #    if not agent["has_car"]:
+    #        my_dealer = get_env().get_neighbor_of_groupX(agent,
+    #                                                     get_group(DEALER_GRP),
+    #                                                     hood_size=4)
+    #        if my_dealer is None:
+    #            print("No dealers nearby.")
+    #        else:
+    #            # info buyer received from dealer
+    #            received_car_life = my_dealer["avg_car_life"]
+    #            received_emojis = my_dealer["emojis"]
+    #            num_emojis = len(received_emojis)
+    #            # calculate average life associate with emoji
+    #            buyer_emojis_table = agent["emoji_life_avg"]
+    #            judge_car_life = 0
+    #            for emoji in received_emojis:
+    #                judge_car_life += buyer_emojis_table[emoji]
+    #            judge_car_life /= num_emojis
+    #            # judge if received emoji will give a bad car
+    #            if received_car_life > judge_car_life:
+    #                # update strategy s1's car life
+    #                strategies["s1"]["car_life"].append(received_car_life)
+    #                buy_from_dealer(agent, my_dealer)
+    #            else:
+    #                bad_flag = True
+    #    else:
+    #        # return False means to move
+    #        has_car_update(agent)
+    # return False
 
 
 # different strategies
-strategies = {"s1": {"func": learn_with_strategy,
+strategies = {"s1": {"func": strategic_action,
                      "car_life": []
                      }
               }
@@ -144,16 +151,16 @@ def buyer_action(agent):  # how to write this testcase
     to decides whether wants to buy a car or not
     """
     if not is_mature(agent):
-        training_buyers(agent)
+        training_action(agent)
     else:
-        learn_with_strategy(agent)
+        strategic_action(agent)
     life_from_stategy = strategies["car_life"]
     print("Car life received from using strategy:", life_from_stategy)
     print("Avergae life is", life_from_stategy/len(life_from_stategy))
     return False
 
 
-def create_buyer_a(name, i, props=None):  # testcase done
+def create_buyer_a(name, i, **kwargs):  # testcase done
     """
     Create an agent.
     """

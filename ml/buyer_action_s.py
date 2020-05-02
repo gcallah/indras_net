@@ -118,7 +118,7 @@ def buyer_action(agent):  # how to write this testcase
     return False
 
 
-def create_buyer_s(name, i, props=None):  # testcase done
+def create_buyer_s(name, i, **kwargs):  # testcase done
     """
     Create a buyer agent.
     """
