@@ -28,7 +28,7 @@ import distutils.util
 jsonFields = set(["name", "run", "props", "doc", "source", "graph", "active"])
 SCRIPT_NAME = sys.argv[0]
 DEST_FOLDER = "registry/models/"  # must have trailing /
-jsonFieldDelimitor = ":"
+jsonFieldDelimitor = ": "  # Must have trailing space and be len 2
 
 
 def usage():  # () -> None
@@ -45,8 +45,12 @@ def validate_config():  # () -> None
     if(len(jsonFields) == 0):
         script_output("jsonFields should be len greater than 0")
         exit(1)
-    if(len(jsonFieldDelimitor) != 1):
-        script_output("jsonFieldDelimitor must be len 1")
+    if(len(jsonFieldDelimitor) != 2):
+        script_output(
+            "jsonFieldDelimitor must be len 2 (1 for symbol, 1 for space)")
+        exit(1)
+    if(jsonFieldDelimitor[-1] !=  " "):
+        script_output("jsonFieldDelimotr must have single trailing space")
         exit(1)
     if(len(DEST_FOLDER) == 0):
         script_output("Please indicate a destination folder, DEST_FOLDER")
@@ -115,6 +119,10 @@ def validate_model(model_kv, key_set):
     # Missing fields
     if(len(key_set) != len(jsonFields)):
         script_output("Missing required fields: " + str(jsonFields - key_set))
+        script_output(
+            "Please make sure to put a space after delimitor", False)
+        script_output(
+            "Current delimitor: " + repr(jsonFieldDelimitor[0]), False)
         return False
 
     # If for some random reason duplicates were not filtered during parsing
