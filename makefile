@@ -21,7 +21,7 @@ REACT_FILES += $(shell ls $(REACT_SRC)/*.css)
 WEB_STATIC = static
 API_DIR = APIServer
 PYLINT = flake8
-PYLINTFLAGS = 
+PYLINTFLAGS =
 PYTHONFILES = $(shell ls $(MODELS_DIR)/*.py)
 
 UTILS_DIR = utils
@@ -38,7 +38,7 @@ notebooks: $(PYTHONFILES)
 local: $(HTMLFILES) $(INCS)
 
 %.html: $(PTML_DIR)/%.ptml $(INCS)
-	python3 $(UTILS_DIR)/html_checker.py $< 
+	python3 $(UTILS_DIR)/html_checker.py $<
 	$(UTILS_DIR)/html_include.awk <$< >$@
 	git add $@
 

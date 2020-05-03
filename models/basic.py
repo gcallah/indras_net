@@ -1,7 +1,13 @@
 """
-A basic model.
-Places two groups of agents in the enviornment randomly
-and moves them around randomly.
+    name: Bacteria
+    run: bacteria
+    props: models/props/bacteria.props.json
+    doc: A model of bacteria with toxin and nutrient levels. The bacteria avoid
+        the toxins and seek nutrients.
+    source:
+        https://github.com/gcallah/indras_net/blob/master/models/bacteria.py
+    graph: scatter
+    active: true
 """
 
 from indra.agent import Agent

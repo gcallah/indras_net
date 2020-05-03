@@ -35,7 +35,7 @@ DEF_CORRELATIONS = {
 emoji_list = list(DEF_CORRELATIONS.keys())
 
 
-def dealer_action():
+def dealer_action(agent):
     return False
 
 
@@ -59,7 +59,7 @@ def avg_life_from_emojis(emojis):
     return constrain_car_life(this_car_life)
 
 
-def generate_dealer():
+def generate_dealer(unused1, unused2, *kwargs):
     dealer = Agent("dealer" + str(random.randint(0, MAX_DEALERS)),
                    action=dealer_action)
     num_emojis = random.randint(1, len(DEF_CORRELATIONS) // 2)

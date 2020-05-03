@@ -1,0 +1,103 @@
+{
+    "models_database": [
+      {
+          "model ID": 0,
+          "name": "Basic",
+          "run": "basic",
+          "props": "models/props/basic.props.json",
+          "doc": "A toy model to test the system.",
+          "source": "https://github.com/gcallah/indras_net/blob/master/models/basic.py",
+          "graph": "scatter",
+          "active": true
+        },
+        {
+          "model ID": 1,
+          "name": "Bacteria",
+          "run": "bacteria",
+          "props": "models/props/bacteria.props.json",
+          "doc": "A model of bacteria with toxin and nutrient levels",
+          "source": "https://github.com/gcallah/indras_net/blob/master/models/bacteria.py",
+          "graph": "scatter",
+          "active": true
+        },
+        {
+          "model ID": 2,
+          "name": "Financial Market Cycles",
+          "run": "fmarket",
+          "props": "models/props/fmarket.props.json",
+          "doc": "The interaction of value investors and trend followers causes price cycling.",
+          "source": "https://github.com/gcallah/indras_net/blob/master/models/fmarket.py",
+          "graph": "line",
+          "active": false
+        },
+        {
+          "model ID": 7,
+          "name": "El Farol Bar",
+          "run": "el_farol",
+          "props": "models/props/el_farol.props.json",
+          "doc": "Everyone loves the El Farol Bar... until it is too crowded.",
+          "source": "https://github.com/gcallah/indras_net/blob/master/models/el_farol.py",
+          "graph": "line",
+          "active": false
+        },
+        {
+          "model ID": 3,
+          "name": "Adam Smith's Fashion Model",
+          "run": "fashion",
+          "props": "models/props/fashion.props.json",
+          "doc": "The interaction of trend setters and trend followers causes fashion cycling.",
+          "source": "https://github.com/gcallah/indras_net/blob/master/models/fashion.py",
+          "graph": "line",
+          "active": true
+        },
+        {
+          "model ID": 4,
+          "name": "Predator-Prey Dynamics",
+          "run": "wolfsheep",
+          "props": "models/props/wolfsheep.props.json",
+          "doc": "Wolves eat sheep in a meadow and their populations' cycle.",
+          "source": "https://github.com/gcallah/indras_net/blob/master/models/wolfsheep.py",
+          "graph": "line",
+          "active": true
+        },
+        {
+          "model ID": 5,
+          "name": "Forest Fire",
+          "run": "forestfire",
+          "props": "models/props/forestfire.props.json",
+          "doc": "Examine how fires spread in a forest.",
+          "source": "https://github.com/gcallah/indras_net/blob/master/models/forestfire.py",
+          "graph": "scatter",
+          "active": true
+        },
+        {
+          "model ID": 6,
+          "name": "Schelling's Segregation Model",
+          "run": "segregation",
+          "props": "models/props/segregation.props.json",
+          "doc": "Thomas Schelling's famous model of neighborhood segregation.",
+          "source": "https://github.com/gcallah/indras_net/blob/master/models/segregation.py",
+          "graph": "scatter"
+        },
+        {
+          "model ID": 8,
+          "name": "Capital Structure",
+          "run": "complementary",
+          "props": "capital/props/complementary.props.json",
+          "doc": "Trade of complementary goods in the capital structure",
+          "source": "https://github.com/gcallah/indras_net/blob/master/capital/complementary.py",
+          "graph": "scatter",
+          "active": false
+        },
+        {
+          "model ID": 9,
+          "name": "Menger's Origin of Money",
+          "run": "money",
+          "props": "capital/props/money.props.json",
+          "doc": "Test Carl Menger's theory of how money emerges",
+          "source": "https://github.com/gcallah/indras_net/blob/master/capital/money.py",
+          "graph": "line",
+          "active": false
+        }
+    ]
+}

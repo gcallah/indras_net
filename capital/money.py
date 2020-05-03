@@ -97,7 +97,7 @@ def good_decay(goods):
         goods[good][AMT_AVAILABLE] *= goods[good]["durability"]
 
 
-def trader_action(agent):
+def money_trader_action(agent):
     dic1 = copy.deepcopy(agent["goods"])
     ret = seek_a_trade(agent)
     dic2 = copy.deepcopy(agent["goods"])
@@ -119,7 +119,7 @@ def create_trader(name, i):
     """
     A func to create a trader.
     """
-    return Agent(name + str(i), action=trader_action,
+    return Agent(name + str(i), action=money_trader_action,
                  attrs={"goods": {},
                         "util": 0,
                         "pre_trade_util": 0})
@@ -150,7 +150,7 @@ def set_up(props=None):
 
     nature_to_traders(traders, natures_goods)
 
-    Env("MengerMoney",
+    Env(MODEL_NAME,
         height=get_prop('grid_height', DEF_HEIGHT),
         width=get_prop('grid_width', DEF_WIDTH),
         members=[traders],
