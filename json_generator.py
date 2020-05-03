@@ -28,7 +28,7 @@ import distutils.util
 jsonFields = set(["name", "run", "props", "doc", "source", "graph", "active"])
 SCRIPT_NAME = sys.argv[0]
 DEST_FOLDER = "registry/models/"  # must have trailing /
-jsonFieldDelimitor = ": "  # Must have trailing space and be len 2
+jsonFieldDelimitor = ":"
 
 
 def usage():  # () -> None
@@ -45,12 +45,9 @@ def validate_config():  # () -> None
     if(len(jsonFields) == 0):
         script_output("jsonFields should be len greater than 0")
         exit(1)
-    if(len(jsonFieldDelimitor) != 2):
+    if(len(jsonFieldDelimitor) != 1):
         script_output(
-            "jsonFieldDelimitor must be len 2 (1 for symbol, 1 for space)")
-        exit(1)
-    if(jsonFieldDelimitor[-1] != " "):
-        script_output("jsonFieldDelimotr must have single trailing space")
+            "jsonFieldDelimitor must be len 1")
         exit(1)
     if(len(DEST_FOLDER) == 0):
         script_output("Please indicate a destination folder, DEST_FOLDER")
@@ -251,7 +248,9 @@ def parse_docstring(file_path):
             delimitorIndex = line.find(jsonFieldDelimitor)
 
             # Found sign of a key
-            if(delimitorIndex != -1):
+            if(delimitorIndex != -1 and
+                delimitorIndex+1 < len(line) and
+                    line[delimitorIndex+1].isspace()):
                 lineKey = line[:delimitorIndex]
 
                 if(lineKey in found_set):
