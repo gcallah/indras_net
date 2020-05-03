@@ -49,7 +49,7 @@ def validate_config():  # () -> None
         script_output(
             "jsonFieldDelimitor must be len 2 (1 for symbol, 1 for space)")
         exit(1)
-    if(jsonFieldDelimitor[-1] !=  " "):
+    if(jsonFieldDelimitor[-1] != " "):
         script_output("jsonFieldDelimotr must have single trailing space")
         exit(1)
     if(len(DEST_FOLDER) == 0):
