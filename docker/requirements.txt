@@ -7,3 +7,4 @@ flask_restplus
 flask-cors
 propargs
 seaborn
+sympy
