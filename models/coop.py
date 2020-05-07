@@ -140,7 +140,6 @@ def central_bank_action(agent):
                   + " CB Intervened")
         CB_interven_pts.append([get_env_attr("num_rounds"),
                                 get_env_attr("last_per_exchg")])
-        user_tell(CB_interven_pts)
         distribute_coupons(agent)
     return True
 
