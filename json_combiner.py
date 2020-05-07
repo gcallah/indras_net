@@ -112,7 +112,9 @@ def load_models(model_files):
     model = []
     for file in model_files:
         with open(file, 'r') as input_stream:
-            model.append(json.load(input_stream))
+            loadedData = json.load(input_stream)
+            if(len(loadedData) > 0):
+                model.append(loadedData)
 
     return model
 
