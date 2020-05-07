@@ -12,6 +12,16 @@
       },
       {
         "model ID": 1,
+        "name": "Babysitting Co-op",
+        "run": "coop",
+        "props": "models/props/coop.props.json",
+        "doc": "A model of the Capitol Hill babysitting co-op",
+        "source": "https://github.com/gcallah/indras_net/blob/master/models/coop.py",
+        "graph": "line",
+        "active": true
+      },
+      {
+        "model ID": 2,
         "name": "Bacteria",
         "run": "bacteria",
         "props": "models/props/bacteria.props.json",
@@ -21,7 +31,7 @@
         "active": true
       },
       {
-        "model ID": 2,
+        "model ID": 3,
         "name": "Financial Market Cycles",
         "run": "fmarket",
         "props": "models/props/fmarket.props.json",
@@ -31,7 +41,7 @@
         "active": false
       },
       {
-        "model ID": 7,
+        "model ID": 4,
         "name": "El Farol Bar",
         "run": "el_farol",
         "props": "models/props/el_farol.props.json",
@@ -41,7 +51,7 @@
         "active": false
       },
       {
-        "model ID": 3,
+        "model ID": 5,
         "name": "Adam Smith's Fashion Model",
         "run": "fashion",
         "props": "models/props/fashion.props.json",
@@ -51,7 +61,7 @@
         "active": true
       },
       {
-        "model ID": 4,
+        "model ID": 6,
         "name": "Predator-Prey Dynamics",
         "run": "wolfsheep",
         "props": "models/props/wolfsheep.props.json",
@@ -61,7 +71,7 @@
         "active": true
       },
       {
-        "model ID": 5,
+        "model ID": 7,
         "name": "Forest Fire",
         "run": "forestfire",
         "props": "models/props/forestfire.props.json",
@@ -71,7 +81,7 @@
         "active": true
       },
       {
-        "model ID": 6,
+        "model ID": 8,
         "name": "Schelling's Segregation Model",
         "run": "segregation",
         "props": "models/props/segregation.props.json",
@@ -80,7 +90,7 @@
         "graph": "scatter"
       },
       {
-        "model ID": 8,
+        "model ID": 9,
         "name": "Capital Structure",
         "run": "complementary",
         "props": "capital/props/complementary.props.json",
@@ -90,7 +100,7 @@
         "active": false
       },
       {
-        "model ID": 9,
+        "model ID": 10,
         "name": "Menger's Origin of Money",
         "run": "money",
         "props": "capital/props/money.props.json",

@@ -24,6 +24,22 @@ def get_env():
     return _the_env
 
 
+def get_env_attr(key, default=None):
+    """
+    A convenience function, since this will be
+    used often.
+    """
+    return _the_env.get_attr(key, default)
+
+
+def set_env_attr(key, val):
+    """
+    A convenience function, since this will be
+    used often.
+    """
+    return _the_env.set_attr(key, val)
+
+
 """
 Our singleton dict for groups.
 """

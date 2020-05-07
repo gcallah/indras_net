@@ -11,8 +11,9 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.env import Env, UNLIMITED
 from registry.registry import get_env, get_group, get_prop
+from registry.registry import get_env_attr, set_env_attr
 from indra.utils import gaussian
-from indra.user import user_tell, run_notice
+from indra.user import user_tell, run_notice, user_log_notif
 from indra.utils import init_props
 
 MODEL_NAME = 'coop'
@@ -28,12 +29,6 @@ CO_OP_MEMBERS = "Co-op members"
 
 BABYSIT = "BABYSITTING"
 GO_OUT = "GOING_OUT"
-
-CB_intervention_points = []
-num_of_rounds = 1
-
-last_period_exchanges = 0
-last_period_unemployed = 0
 
 
 def wants_to_sit(agent, *args):
@@ -62,8 +57,8 @@ def record_exchanges(pop_hist):
     This is our hook into the env to record the number of exchanges each
     period.
     """
-    global last_period_exchanges
-    pop_hist.record_pop("Exchanges", last_period_exchanges)
+    pop_hist.record_pop("Exchanges",
+                        get_env_attr("last_per_exchg"))
 
 
 def get_sitters(co_op_members):
@@ -75,9 +70,6 @@ def get_going_out(co_op_members):
 
 
 def coop_action(coop_env):
-    global last_period_exchanges
-    global last_period_unemployed
-
     sitters = get_sitters(get_group(CO_OP_MEMBERS))
     going_out = get_going_out(get_group(CO_OP_MEMBERS))
 
@@ -90,8 +82,9 @@ def coop_action(coop_env):
         sitters[sitter]['coupons'] += 1
         going_out[outer]['coupons'] -= 1
 
-    last_period_exchanges = exchanges
-    last_period_unemployed = max(len(sitters), len(going_out)) - exchanges
+    set_env_attr("last_per_exchg", exchanges)
+    set_env_attr("last_per_unemp",
+                 max(len(sitters), len(going_out)) - exchanges)
     return True
 
 
@@ -112,7 +105,7 @@ def coop_report(coop_env):
     pass
 
 
-def act(agent):
+def babysitter_action(agent):
     """
     Co-op members act as follows:
     if their holding coupons are less than desired cash balance, they babysit,
@@ -125,11 +118,7 @@ def act(agent):
             agent['goal'] = "GOING_OUT"
         else:
             agent['goal'] = "BABYSITTING"
-
-
-def babysitter_action(agent):
-    act(agent)
-    return False
+    return True
 
 
 def central_bank_action(agent):
@@ -137,21 +126,22 @@ def central_bank_action(agent):
     If exchanges are down "enough", distribute coupons!
     Enough is a parameter.
     """
-    global num_of_rounds
-    global CB_intervention_points
-    num_of_rounds += 1
-    co_op_members = get_group(CO_OP_MEMBERS)
-    unemployment_rates = last_period_unemployed / len(co_op_members) * 100
-    unemployment_threshold = agent["percent_change"]
-    if unemployment_rates >= unemployment_threshold:
+    CB_interven_pts = get_env_attr("CB_interven_pts")
+    set_env_attr("num_rounds", get_env_attr("num_rounds") + 1)
+    co_op_mbrs = get_group(CO_OP_MEMBERS)
+    unemp_rate = get_env_attr("last_per_unemp", 0) / len(co_op_mbrs) * 100
+    unemp_threshold = agent["percent_change"]
+    if unemp_rate >= unemp_threshold:
         user_tell("Unemployment has risen to "
-                  + str(unemployment_rates)
+                  + str(unemp_rate)
                   + " more than default value "
-                  + str(unemployment_threshold)
+                  + str(unemp_threshold)
                   + " CB Intervened")
-        CB_intervention_points.append([num_of_rounds, last_period_exchanges])
-        user_tell(CB_intervention_points)
+        CB_interven_pts.append([get_env_attr("num_rounds"),
+                                get_env_attr("last_per_exchg")])
+        user_tell(CB_interven_pts)
         distribute_coupons(agent)
+    return True
 
 
 def create_babysitter(name, i):
@@ -180,6 +170,13 @@ def create_central_bank(name, i):
     return central_bank
 
 
+def set_env_attrs():
+    user_log_notif("Setting env attrs for " + MODEL_NAME)
+    env = get_env()
+    env.set_attr("pop_hist_func", record_exchanges)
+    env.set_attr("census_func", coop_report)
+
+
 def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
@@ -192,14 +189,15 @@ def set_up(props=None):
     central_bank = Composite("central_bank", num_members=1,
                              member_creator=create_central_bank)
 
-    Env('coop_env', members=[co_op_members, central_bank],
+    Env(MODEL_NAME, members=[co_op_members, central_bank],
         action=coop_action, width=UNLIMITED,
         height=UNLIMITED,
-        census=coop_report,
         pop_hist_setup=initial_exchanges,
-        pop_hist_func=record_exchanges,
-        attrs={"show_special_points": CB_intervention_points,
-               "special_points_name": "CB intervention points"})
+        attrs={"last_per_exchg": 0,
+               "last_per_unemp": 0,
+               "num_rounds": 0,
+               "CB_interven_pts": []})
+    set_env_attrs()
 
 
 def main():
