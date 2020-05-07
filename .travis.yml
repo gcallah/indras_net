@@ -11,6 +11,7 @@ before_install:
 
 install:
     - pip install -r docker/requirements-dev.txt
+    - cd webapp; npm install
 
 env:
     - PYTHONPATH=/home/travis/build/gcallah/indras_net:$(pwd) props_dir=/home/travis/build/gcallah/indras_net/APIServer/data/
