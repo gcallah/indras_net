@@ -204,6 +204,7 @@ def parse_docstring(file_path):
         parses the docstring at the top of every model file
         returns a [] with tuples (KEY, VAL) in the order of the jsonFields
     """
+    script_output("Processing: " + file_path)
     with open(file_path, 'r') as input_stream:
         # skip blank lines until first sign of docstring
         # error if found anything else.
