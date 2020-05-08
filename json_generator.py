@@ -13,9 +13,7 @@ import argparse
 
 """
     usage / options
-    ./json_generator [-d D] [filenames...]
-    
-    -d for giving an path to destination folder for all files created
+    ./json_generator [filenames...]
 """
 
 # Docstring format
@@ -34,8 +32,7 @@ import argparse
 # "source" should be required as a field at the very least. It is later used by
 # json_combiner.py as a way to tell if a model is new or not
 jsonFields = set(["name", "run", "props", "doc", "source", "graph", "active"])
-SCRIPT_NAME = sys.argv[0]
-DEST_FOLDER = "registry/models/"  # must have trailing /
+script_name = sys.argv[0]
 jsonFieldDelimitor = ":"
 
 
@@ -50,23 +47,13 @@ def validate_config():  # () -> None
         script_output(
             "jsonFieldDelimitor must be len 1")
         exit(1)
-    if(len(DEST_FOLDER) == 0):
-        script_output("Please indicate a destination folder, DEST_FOLDER")
-        exit(1)
-    if(DEST_FOLDER[-1] != "/"):
-        script_output("DEST_FOLDER should have a trailing /")
-        exit(1)
-    if(os.path.isdir(DEST_FOLDER) is False):
-        script_output(DEST_FOLDER + " does not exist as a directory")
-        exit(1)
-
 
 def script_output(message, withName=True):  # (str, bool) -> None
     """
         Wrapper for print to include the script's name
     """
     if(withName is True):
-        print(SCRIPT_NAME + ": " + message)
+        print(script_name + ": " + message)
     else:
         print(message)
 
@@ -90,16 +77,16 @@ def validate_docstring(content, filename, withOutput=True):
 
         params: ([str...], str, bool) -> bool
     """
-    min_doclen = 2  # Min len of the docstring should be at least 2 lines
-    quote_len = 4  # len of a """ or ''' (counting newline)
+    MIN_DOCLEN = 2  # Min len of the docstring should be at least 2 lines
+    QUOTE_LEN = 4  # len of a """ or ''' (counting newline)
 
-    if(len(content) < min_doclen):
+    if(len(content) < MIN_DOCLEN):
         if(withOutput):
             script_output("docstring too short in " + filename)
         return False
 
-    if(len(content[0].strip()) > quote_len or
-            len(content[len(content)-1].strip()) > quote_len):
+    if(len(content[0].strip()) > QUOTE_LEN or
+            len(content[len(content)-1].strip()) > QUOTE_LEN):
         if(withOutput):
             script_output("docstring quotes should be in a line by itself")
             script_output("Problem in " + filename, False)
@@ -203,22 +190,23 @@ def parse_docstring(file_path):
     """
         parses the docstring at the top of every model file
         returns a [] with tuples (KEY, VAL) in the order of the jsonFields
+        general expected form: <key>: <value>
+
+        Parsing logic
+        1.) Reading in lines between docstring quotes and prestrip 
+        leading whitespaces
+        2.) Checks if docstring is empty or docstring quotes on same line
+        (Stops parsing if true)
+        3.) loop through lines of docstring we read in. Looking for
+        <key>: <value> pattern. If ": " is found, then we got a potential key.
+        Else, the line is part of the <value> of the last key detected
+        3b.) Stop parsing if we found duplicate keys, or 
+        we found an unexpected key
+        4.) return the result if our result was validated
     """
     script_output("Processing: " + file_path)
     with open(file_path, 'r') as input_stream:
-        # skip blank lines until first sign of docstring
-        # error if found anything else.
-        # Step 1: create the empty json file
-        filename = os.path.basename(file_path)
-        if(len(filename) == 0):
-            script_output(filename + " not a file")
-            exit(1)
-        # Strip away the extension and create file
-        name, ext = os.path.splitext(filename)
-        output_file = DEST_FOLDER + name + "_model.json"
-        open(output_file, "w").close()
-
-        # Step 2:
+        # Step 1:
         # Read everything from the docstring in first for processing
         docstring_content = []
         num_indicator = 0  # Indicators of docstring quotes
@@ -226,7 +214,7 @@ def parse_docstring(file_path):
             line = input_stream.readline()
 
             if(len(line) == 0):
-                return {}, output_file
+                return {}
 
             if(has_docstring_quotes(line)):
                 num_indicator += 1
@@ -237,12 +225,12 @@ def parse_docstring(file_path):
 
         # If invalid docstring, return empty
         if(validate_docstring(docstring_content, file_path) is False):
-            return {}, output_file
+            return {}
 
         # Remove leading and trailing lines
         docstring_content = strip_docstring(docstring_content)
 
-        # Step 3: Now we process the docstring
+        # Step 2: Now we process the docstring
         model_kv = {}  # model's key val pair for the json
         delimitorLen = len(jsonFieldDelimitor)
         found_set = set()
@@ -261,7 +249,7 @@ def parse_docstring(file_path):
                 if(lineKey in found_set):
                     script_output("FOUND DUPLICATE FIELD: " + lineKey)
                     script_output("in " + file_path, False)
-                    return {}, output_file
+                    return {}
 
                 if(lineKey in jsonFields):
                     if(len(valueString) > 0):
@@ -275,7 +263,7 @@ def parse_docstring(file_path):
                 else:
                     # stop parsing since we found a rogue key
                     script_output("UNKNOWN KEY " + repr(lineKey))
-                    return {}, output_file
+                    return {}
             else:
                 valueString += line
 
@@ -283,13 +271,13 @@ def parse_docstring(file_path):
         model_kv[keyString] = convert_valString(clean_valString(valueString))
 
         if(validate_model(model_kv, found_set) is False):
-            return {}, output_file
+            return {}
 
-        # Step 4: return the finished product to our caller
-        return model_kv, output_file
+        # Step 3: return the finished product to our caller
+        return model_kv
 
 
-def generate_json(input):
+def generate_json(model_kv):
     """
         Generates json output to given output file
         The "input" should be generated by parse_docstring()
@@ -298,33 +286,20 @@ def generate_json(input):
             1: the destination file the parse_docstring() created
         ((dict, str)) -> None
     """
-    if(type(input) != tuple or
-            type(input[0]) != dict or
-            type(input[1]) != str):
-        script_output("generate_json((dict,str)), check function def")
+    if(type(model_kv) != dict):
+        script_output("generate_json(dict), check function def")
         exit(1)
 
-    model_kv = input[0]
-    output_file = input[1]
-
-    with open(output_file, "w") as output_stream:
-        rawJSON = json.JSONEncoder(sort_keys=True, indent=4).encode(model_kv)
-        output_stream.write(rawJSON)
+    print(json.JSONEncoder(sort_keys=True, indent=4).encode(model_kv))
 
 
 if __name__ == "__main__":
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument("filenames", nargs="+")
-    arg_parser.add_argument("-d", help="indicate destination folder")
 
     args = arg_parser.parse_args()
 
     model_files = args.filenames
-
-    if(args.d is not None):
-        DEST_FOLDER = args.d
-    else:
-        script_output("Using default DEST_FOLDER: " + DEST_FOLDER)
 
     validate_config()
 
