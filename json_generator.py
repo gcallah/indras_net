@@ -2,7 +2,6 @@
 
 import sys
 import json
-import os.path
 import distutils.util
 import argparse
 """
@@ -47,6 +46,7 @@ def validate_config():  # () -> None
         script_output(
             "jsonFieldDelimitor must be len 1")
         exit(1)
+
 
 def script_output(message, withName=True):  # (str, bool) -> None
     """
@@ -193,14 +193,14 @@ def parse_docstring(file_path):
         general expected form: <key>: <value>
 
         Parsing logic
-        1.) Reading in lines between docstring quotes and prestrip 
+        1.) Reading in lines between docstring quotes and prestrip
         leading whitespaces
         2.) Checks if docstring is empty or docstring quotes on same line
         (Stops parsing if true)
         3.) loop through lines of docstring we read in. Looking for
         <key>: <value> pattern. If ": " is found, then we got a potential key.
         Else, the line is part of the <value> of the last key detected
-        3b.) Stop parsing if we found duplicate keys, or 
+        3b.) Stop parsing if we found duplicate keys, or
         we found an unexpected key
         4.) return the result if our result was validated
     """
