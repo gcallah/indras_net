@@ -14,14 +14,14 @@
     "lowval": 2
   },
   "num_buyers": {
-    "val": 2,
+    "val": 5,
     "question": "How many buyers do you want?",
     "atype": "INT",
     "hival": 100,
     "lowval": 1
   },
   "num_dealers": {
-    "val": 2,
+    "val": 500,
     "question": "How many dealers do you want?",
     "atype": "INT",
     "hival": 1000,
