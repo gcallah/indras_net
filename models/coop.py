@@ -9,6 +9,7 @@ import random
 
 from indra.agent import Agent
 from indra.composite import Composite
+from indra.display_methods import RED, GREEN
 from indra.env import Env, UNLIMITED
 from registry.registry import get_env, get_group, get_prop
 from registry.registry import get_env_attr, set_env_attr
@@ -139,7 +140,6 @@ def central_bank_action(agent):
                   + " CB Intervened")
         CB_interven_pts.append([get_env_attr("num_rounds"),
                                 get_env_attr("last_per_exchg")])
-        user_tell(CB_interven_pts)
         distribute_coupons(agent)
     return True
 
@@ -184,9 +184,13 @@ def set_up(props=None):
     init_props(MODEL_NAME, props)
 
     num_members = get_prop('num_babysitter', DEF_BABYSITTER)
-    co_op_members = Composite(CO_OP_MEMBERS, num_members=num_members,
+    co_op_members = Composite(CO_OP_MEMBERS,
+                              {"color": RED},
+                              num_members=num_members,
                               member_creator=create_babysitter)
-    central_bank = Composite("central_bank", num_members=1,
+    central_bank = Composite("central_bank",
+                             {"color": GREEN},
+                             num_members=1,
                              member_creator=create_central_bank)
 
     Env(MODEL_NAME, members=[co_op_members, central_bank],

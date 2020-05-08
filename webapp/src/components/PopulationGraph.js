@@ -5,6 +5,9 @@ import PropType from 'prop-types';
 import CardWrapper from './CardWrapper';
 
 function PopulationGraph(props) {
+  const NUM_COLORS = 7;
+  const colors = ['red', 'green', 'blue', 'black', 'purple', 'magenta', 'orange'];
+  let thisColor = 0;
   const { loadingData } = props;
   if (loadingData) {
     const data = [];
@@ -14,7 +17,7 @@ function PopulationGraph(props) {
     Object.keys(env).forEach((group, iGroup) => {
       data.push({
         name: group,
-        color: props.envFile.members[group].attrs.color,
+        color: colors[thisColor % NUM_COLORS],
         data: {},
       });
       // modify individual 'data' dictionary of each pops
@@ -22,6 +25,7 @@ function PopulationGraph(props) {
       Object.keys(env[group]).forEach((member, iMember) => {
         data[iGroup].data[member] = env[group][iMember];
       });
+      thisColor += 1;
     });
     return (
       <CardWrapper title="Population Graph">
