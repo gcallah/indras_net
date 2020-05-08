@@ -4,10 +4,18 @@ import sys
 import json
 import os.path
 import distutils.util
+import argparse
 """
     Script to generate *_model.json files, given *.py
     *.py files must have docstring at the header of the file first
     otherwise, an empty *_model.json file will be generated
+"""
+
+"""
+    usage / options
+    ./json_generator [-d D] [filenames...]
+    
+    -d for giving an path to destination folder for all files created
 """
 
 # Docstring format
@@ -31,13 +39,6 @@ DEST_FOLDER = "registry/models/"  # must have trailing /
 jsonFieldDelimitor = ":"
 
 
-def usage():  # () -> None
-    """
-        Prints usage message
-    """
-    print("Usage: " + SCRIPT_NAME + " [filepath...]")
-
-
 def validate_config():  # () -> None
     """
         Checks the configuration of this script
@@ -54,6 +55,9 @@ def validate_config():  # () -> None
         exit(1)
     if(DEST_FOLDER[-1] != "/"):
         script_output("DEST_FOLDER should have a trailing /")
+        exit(1)
+    if(os.path.isdir(DEST_FOLDER) is False):
+        script_output(DEST_FOLDER + " does not exist as a directory")
         exit(1)
 
 
@@ -200,6 +204,7 @@ def parse_docstring(file_path):
         parses the docstring at the top of every model file
         returns a [] with tuples (KEY, VAL) in the order of the jsonFields
     """
+    script_output("Processing: " + file_path)
     with open(file_path, 'r') as input_stream:
         # skip blank lines until first sign of docstring
         # error if found anything else.
@@ -308,10 +313,18 @@ def generate_json(input):
 
 
 if __name__ == "__main__":
-    model_files = sys.argv[1:]
-    if(len(model_files) == 0):
-        usage()
-        exit(0)
+    arg_parser = argparse.ArgumentParser()
+    arg_parser.add_argument("filenames", nargs="+")
+    arg_parser.add_argument("-d", help="indicate destination folder")
+
+    args = arg_parser.parse_args()
+
+    model_files = args.filenames
+
+    if(args.d is not None):
+        DEST_FOLDER = args.d
+    else:
+        script_output("Using default DEST_FOLDER: " + DEST_FOLDER)
 
     validate_config()
 

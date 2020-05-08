@@ -3,14 +3,18 @@
 import json
 import sys
 import os
+import argparse
 
 """
     Combines all *_model.json files in registry/models
     to one models.json file
 """
 
+# DEST_FOLDER + DEST_FILENAME = path for the result file
+# DEST_FILENAME will be appended to the end of DEST_FOLDER prior to processing
+DEST_FILENAME = "models.json"
+DEST_FOLDER = "registry/models/"  # must have trailing /
 
-DEST_FILE = "registry/models/models.json"
 SRC_FOLDER = "registry/models/"  # must have trailing /
 SCRIPT_NAME = sys.argv[0]
 DB_NAME = "models_database"
@@ -31,20 +35,23 @@ def validate_config():  # () -> None
     """
         Checks the configuration of this script
     """
-    if(len(DEST_FILE) == 0):
-        script_output("Please the path for destination file, DEST_FILE")
+    if(len(DEST_FOLDER) == 0):
+        script_output("Please the path for destination file, DEST_FOLDER")
         exit(1)
-    if(DEST_FILE[-1] == "/"):
-        script_output("DEST_FILE should not have trailing /")
-        exit(1)
-    if(DEST_FILE[len(DEST_FILE)-5:] != ".json"):
-        script_output("DEST_FILE should be a .json file")
+    if(DEST_FOLDER[-1] != "/"):
+        script_output("DEST_FOLDER should have trailing /")
         exit(1)
     if(len(SRC_FOLDER) == 0):
         script_output("Please indicate a source folder, SRC_FOLDER")
         exit(1)
     if(SRC_FOLDER[-1] != "/"):
         script_output("SRC_FOLDER should have a trailing /")
+        exit(1)
+    if(os.path.isdir(DEST_FOLDER) is False):
+        script_output(DEST_FOLDER + " does not exist as a directory")
+        exit(1)
+    if(os.path.isdir(SRC_FOLDER) is False):
+        script_output(SRC_FOLDER + " does not exist as a directory")
         exit(1)
 
 
@@ -60,9 +67,9 @@ def script_output(message, withName=True):  # (str, bool) -> None
 
 def save_result():
     """
-        Handy function to saves RESULTJSON to the DEST_FILE
+        Handy function to saves RESULT_JSON to the DEST_FOLDER
     """
-    with open(DEST_FILE, 'w') as output_stream:
+    with open(DEST_FOLDER, 'w') as output_stream:
         rawJSON = \
             json.JSONEncoder(sort_keys=True, indent=4).encode(RESULT_JSON)
         output_stream.write(rawJSON)
@@ -70,18 +77,18 @@ def save_result():
 
 def get_prev_models():
     """
-        Reads from models.json, which also happens to be our DEST_FILE
-        If our DEST_FILE doesn't exist, it will just create the new file
+        Reads from models.json, which also happens to be our DEST_FOLDER
+        If our DEST_FOLDER doesn't exist, it will just create the new file
         Otherwise, it will read in the json,
         so the script knows the model ID for exisiting models
     """
     try:
-        with open(DEST_FILE, 'r') as input_stream:
+        with open(DEST_FOLDER, 'r') as input_stream:
             return json.load(input_stream)[DB_NAME]
 
     except OSError:
         script_output("No existing models.json found")
-        script_output("Creating empty models.json file in: " + DEST_FILE)
+        script_output("Creating empty models.json file in: " + DEST_FOLDER)
         save_result()
         return []
 
@@ -105,7 +112,9 @@ def load_models(model_files):
     model = []
     for file in model_files:
         with open(file, 'r') as input_stream:
-            model.append(json.load(input_stream))
+            loadedData = json.load(input_stream)
+            if(len(loadedData) > 0):
+                model.append(loadedData)
 
     return model
 
@@ -200,16 +209,36 @@ def combine_models(models, known_models=[]):
     # Sort it out for neatness based on ID
     RESULT_JSON[DB_NAME].sort(key=lambda model: model[ID_FIELD])
 
-    # write out to DEST_FILE
+    # write out to DEST_FOLDER
     save_result()
 
 
 if __name__ == "__main__":
-    if(len(sys.argv) > 1):
-        usage()
-        exit(0)
+    arg_parser = argparse.ArgumentParser()
+    arg_parser.add_argument(
+        "-s",
+        help="indicate source folder for *_models.json")
+    arg_parser.add_argument(
+        "-d",
+        help="indicate destination folder for models.json")
+
+    args = arg_parser.parse_args()
+
+    if(args.s is not None):
+        SRC_FOLDER = args.s
+
+    if(args.d is not None):
+        DEST_FOLDER = args.d
+
+    if(args.s is None and args.d is None):
+        script_output("Using default config")
+        script_output("DESTINATION: " + DEST_FOLDER, False)
+        script_output("SOURCE: " + SRC_FOLDER, False)
 
     validate_config()
+
+    # Add "models.json" to the end of the DEST_FOLDER
+    DEST_FOLDER += DEST_FILENAME
 
     models = load_models(get_model_files())
     prev_models = get_prev_models()

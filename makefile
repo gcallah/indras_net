@@ -74,7 +74,6 @@ prod: local pytests js notebooks github
 
 # run tests then push just what is already committed:
 prod1: tests
-	- git pull origin master
 	git push origin master
 
 tests: pytests jstests dockertests
@@ -106,7 +105,6 @@ dockertests:
 
 github:
 	- git commit -a
-	- git pull origin master
 	git push origin master
 
 lint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
