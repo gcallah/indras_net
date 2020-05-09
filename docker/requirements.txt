@@ -1,5 +1,6 @@
 ipython
 matplotlib
+scipy
 numpy
 flask
 werkzeug==0.16.1
