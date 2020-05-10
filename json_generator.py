@@ -229,9 +229,11 @@ def parse_docstring(file_path):
             if(has_docstring_quotes(line)):
                 num_indicator += 1
 
-            # Prestrip whitespaces in front of line
-            line = line.lstrip()
-            docstring_content.append(line)
+            # We have entered a docstring
+            if(num_indicator > 0):
+                # Prestrip whitespaces in front of line
+                line = line.lstrip()
+                docstring_content.append(line)
 
         # If invalid docstring, return empty
         if(validate_docstring(docstring_content, file_path) is False):
