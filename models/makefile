@@ -21,9 +21,6 @@ tests: pytests lint
 %.pylint:
 	$(PYLINT) $(PYLINTFLAGS) $*.py
 
-test_models:
-	nosetests tests.test_models
-
 # test a python file:
 %.py: FORCE
 	$(PYLINT) $(PYLINTFLAGS) $@

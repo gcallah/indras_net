@@ -140,7 +140,7 @@ def set_up(props=None):
     groups.append(Composite(NEW_GROWTH, {"color": SPRINGGREEN, "marker":
                                          TREE}))
 
-    Env("Forest", height=forest_height, width=forest_width, members=groups)
+    Env(MODEL_NAME, height=forest_height, width=forest_width, members=groups)
     set_env_attrs()
 
 

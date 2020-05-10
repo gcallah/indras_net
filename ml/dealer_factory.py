@@ -17,7 +17,7 @@ NUM_DEALS = 4
 
 CORR_SCALAR = 3
 MIN_CAR_LIFE = .2
-MEAN_CAR_LIFE = 5
+MEAN_CAR_LIFE = 5.0
 MAX_CAR_LIFE = 10
 CAR_LIFE_SIGMA = 2
 DEF_CORRELATIONS = {
@@ -56,7 +56,7 @@ def avg_life_from_emojis(emojis):
     this_car_life = MEAN_CAR_LIFE
     for emoji in emojis:
         this_car_life += DEF_CORRELATIONS[emoji] * CORR_SCALAR
-    return constrain_car_life(this_car_life)
+    return constrain_car_life(round(this_car_life, 2))
 
 
 def generate_dealer(unused1, unused2, *kwargs):

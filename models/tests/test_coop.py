@@ -7,8 +7,7 @@ from unittest import TestCase, main
 from propargs.propargs import PropArgs
 
 import models.coop as coop
-from models.coop import act, DEF_COUPON
-from models.coop import babysitter_action
+from models.coop import DEF_COUPON, babysitter_action
 from models.coop import set_up, create_babysitter, create_central_bank
 
 TEST_BABYSITTER_NUM = 3
@@ -47,14 +46,17 @@ class coopTestCase(TestCase):
     def test_exchange(self):
         pass
 
-    def test_act(self):
+    def test_babysitter_action(self):
+        """
+        If "coupons" < "desired_cash" the agent should want
+        to babysit.
+        """
         new_babysitter0 = create_babysitter("babysitters", 0)
         new_babysitter0["goal"] = None
         new_babysitter0["coupons"] = DEF_COUPON - 1
         new_babysitter0["desired_cash"] = DEF_COUPON
-        act(new_babysitter0)
+        babysitter_action(new_babysitter0)
         self.assertEqual(new_babysitter0["goal"], "BABYSITTING")
-        # self.assertTrue(new_babysitter0["sitting"])
 
     def test_coup_action(self):
         pass

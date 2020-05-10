@@ -30,6 +30,10 @@ INCS = $(TEMPLATE_DIR)/head.txt $(TEMPLATE_DIR)/logo.txt $(TEMPLATE_DIR)/menu.tx
 
 HTMLFILES = $(shell ls $(PTML_DIR)/*.ptml | sed -e 's/.ptml/.html/' | sed -e 's/html_src\///')
 
+MODEL_REGISTRY = registry/models
+MODELJSON_FILES = $(shell ls $(MODELS_DIR)/*.py | sed -e 's/.py/_model.json/' | sed -e 's/$(MODELS_DIR)\//registry\/models\//')
+JSON_DESTINATION = $(MODEL_REGISTRY)/models.json
+
 FORCE:
 
 notebooks: $(PYTHONFILES)
@@ -41,6 +45,12 @@ local: $(HTMLFILES) $(INCS)
 	python3 $(UTILS_DIR)/html_checker.py $<
 	$(UTILS_DIR)/html_include.awk <$< >$@
 	git add $@
+
+$(MODEL_REGISTRY)/%_model.json: $(MODELS_DIR)/%.py
+	python3 json_generator.py $< >$@
+
+models.json: $(MODELJSON_FILES)
+	python3 json_combiner.py $? --models_fp $(JSON_DESTINATION)
 
 create_dev_env:
 	pip3 install -r $(REQ_DIR)/requirements-dev.txt
@@ -74,7 +84,6 @@ prod: local pytests js notebooks github
 
 # run tests then push just what is already committed:
 prod1: tests
-	- git pull origin master
 	git push origin master
 
 tests: pytests jstests dockertests
@@ -106,7 +115,6 @@ dockertests:
 
 github:
 	- git commit -a
-	- git pull origin master
 	git push origin master
 
 lint: $(patsubst %.py,%.pylint,$(PYTHONFILES))
