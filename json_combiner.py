@@ -26,7 +26,7 @@ import argparse
 
     --models_fp: optional flag to indicate the filepath to a models.json file
         This is used for the script to know about previously combined models
-        (Should definitely be the SAME PATH that you redirect the output for)
+        (Should definitely be the SAME PATH that you redirect the output to)
 """
 
 DB_NAME = "models_database"

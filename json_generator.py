@@ -5,14 +5,14 @@ import json
 import distutils.util
 import argparse
 """
-    Script to generate *_model.json files, given *.py
-    *.py files must have docstring at the header of the file first
+    Script to generate a *_model.json file, given *.py
+    *.py file must have docstring at the header of the file first
     otherwise, an empty *_model.json file will be generated
 """
 
 """
     usage / options
-    ./json_generator [filenames...]
+    ./json_generator filename
 """
 
 # Docstring format
@@ -204,7 +204,6 @@ def parse_docstring(file_path):
         we found an unexpected key
         4.) return the result if our result was validated
     """
-    script_output("Processing: " + file_path)
     with open(file_path, 'r') as input_stream:
         # Step 1:
         # Read everything from the docstring in first for processing
@@ -295,13 +294,12 @@ def generate_json(model_kv):
 
 if __name__ == "__main__":
     arg_parser = argparse.ArgumentParser()
-    arg_parser.add_argument("filenames", nargs="+")
+    arg_parser.add_argument("filename")
 
     args = arg_parser.parse_args()
 
-    model_files = args.filenames
+    model_file = args.filename
 
     validate_config()
 
-    for file in model_files:
-        generate_json(parse_docstring(file))
+    generate_json(parse_docstring(model_file))
