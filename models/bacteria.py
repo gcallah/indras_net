@@ -1,4 +1,15 @@
 """
+    active: true,
+    doc: A model of bacteria with toxin and nutrient levels. The bacteria avoid\nthe toxins and seek nutrients.,
+    graph: scatter,
+    name: Bacteria,
+    props: models/props/bacteria.props.json,
+    run: bacteria,
+    source: https://github.com/gcallah/indras_net/blob/master/models/bacteria.py
+"""
+
+
+"""
 This is the model that stimulates the behavior
 of bacterias according to toxin and nutrients level.
 """

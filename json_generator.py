@@ -33,6 +33,7 @@ import argparse
 jsonFields = set(["name", "run", "props", "doc", "source", "graph", "active"])
 script_name = sys.argv[0]
 jsonFieldDelimitor = ":"
+saw_error = False
 
 
 def validate_config():  # () -> None
@@ -77,12 +78,14 @@ def validate_docstring(content, filename, withOutput=True):
 
         params: ([str...], str, bool) -> bool
     """
+    global saw_error
     MIN_DOCLEN = 2  # Min len of the docstring should be at least 2 lines
     QUOTE_LEN = 4  # len of a """ or ''' (counting newline)
 
     if(len(content) < MIN_DOCLEN):
         if(withOutput):
             script_output("docstring too short in " + filename)
+            saw_error = True
         return False
 
     if(len(content[0].strip()) > QUOTE_LEN or
@@ -90,18 +93,23 @@ def validate_docstring(content, filename, withOutput=True):
         if(withOutput):
             script_output("docstring quotes should be in a line by itself")
             script_output("Problem in " + filename, False)
+            saw_error = True
         return False
 
     return True
 
 
 def validate_model(model_kv, key_set):
+    global saw_error
     # In case, file had a docstring, but it wasn't what we were expecting
     if(len(key_set) == 0):
         script_output("Didn't find any known fields.")
+        script_output("Fields should be in the following format:", False)
+        script_output("<key>: <value>\n", False)
         script_output(
             "Please make sure your FIRST docstring has all the fields:", False)
         script_output(str(jsonFields), False)
+        saw_error = True
         return False
 
     # Missing fields
@@ -111,12 +119,14 @@ def validate_model(model_kv, key_set):
             "Please make sure to put a space after delimitor", False)
         script_output(
             "Current delimitor: " + repr(jsonFieldDelimitor[0]), False)
+        saw_error = True
         return False
 
     # If for some random reason duplicates were not filtered during parsing
     if(len(model_kv) != len(jsonFields)):
         script_output(
             "script error, model_kv is not the same len as jsonFields")
+        saw_error = True
         return False
 
     return True
@@ -204,6 +214,7 @@ def parse_docstring(file_path):
         we found an unexpected key
         4.) return the result if our result was validated
     """
+    global saw_error
     with open(file_path, 'r') as input_stream:
         # Step 1:
         # Read everything from the docstring in first for processing
@@ -248,6 +259,7 @@ def parse_docstring(file_path):
                 if(lineKey in found_set):
                     script_output("FOUND DUPLICATE FIELD: " + lineKey)
                     script_output("in " + file_path, False)
+                    saw_error = True
                     return {}
 
                 if(lineKey in jsonFields):
@@ -262,6 +274,7 @@ def parse_docstring(file_path):
                 else:
                     # stop parsing since we found a rogue key
                     script_output("UNKNOWN KEY " + repr(lineKey))
+                    saw_error = True
                     return {}
             else:
                 valueString += line
@@ -292,7 +305,7 @@ def generate_json(model_kv):
     print(json.JSONEncoder(sort_keys=True, indent=4).encode(model_kv))
 
 
-if __name__ == "__main__":
+def main():
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument("filename")
 
@@ -303,3 +316,10 @@ if __name__ == "__main__":
     validate_config()
 
     generate_json(parse_docstring(model_file))
+
+    if(saw_error is True):
+        exit(1)
+
+
+if __name__ == "__main__":
+    main()

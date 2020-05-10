@@ -2,20 +2,20 @@
 
 import json
 import sys
-import os
 import argparse
 
 """
     Combines all *_model.json files given and optionally, models.json file
     result outputs to stdout
 
-    Note: if no path to models.json is given but the file does exist,
-    then script has no knowledge of any existing models that may have already
-    been created. Thus, it will assign new model ids.
+    Note: if no path to models.json is given (through --models_fp) but the file
+    does exist, then script has no knowledge of any existing models that may
+    have already been created. Thus, script will assign new model ids.
 
-    For consistent behavior between runs,
-    please give the path to the models.json file and redirect the output of the
-    script back to the same path.
+    Note 2: DO NOT ATTEMPT TO USE --models_fp with IO redirection that points
+    to the same filepath given to --models_fp
+    This will cause issues since IO redirection will truncate the file before
+    the script has a chance to read the contents of the file.
 """
 
 """
@@ -26,7 +26,11 @@ import argparse
 
     --models_fp: optional flag to indicate the filepath to a models.json file
         This is used for the script to know about previously combined models
-        (Should definitely be the SAME PATH that you redirect the output to)
+        (Will also store back the results to the same file)
+
+    Default behavior: outputs to stdout
+    Optional behavior: if given models_fp, then it will store result to
+                        models_fp
 """
 
 DB_NAME = "models_database"
@@ -57,9 +61,19 @@ def script_output(message, withName=True):  # (str, bool) -> None
         print(message)
 
 
+def save_result(dest_fp):
+    """
+        Handy function to encode result_json to json and save to file
+    """
+    with open(dest_fp, 'w') as output_stream:
+        rawJSON = \
+            json.JSONEncoder(sort_keys=True, indent=4).encode(result_json)
+        output_stream.write(rawJSON)
+
+
 def print_result():
     """
-        Handy function to encode result_json to json and print to stdout
+        Handy function to print result_json
     """
     print(json.JSONEncoder(sort_keys=True, indent=4).encode(result_json))
 
@@ -71,16 +85,15 @@ def get_prev_models(filepath):
         Otherwise, it will read in the json,
         so the script knows the model ID for exisiting models
     """
-    if(os.path.basename(filepath) != "models.json"):
-        script_output(
-            "get_prev_models(), filepath is not pointing to models.json")
-        exit(1)
-
     try:
         with open(filepath, 'r') as input_stream:
-            # Assumes models.json has DB_NAME that matches
-            # what the script expects
-            return json.load(input_stream)[DB_NAME]
+            try:
+                # Assumes models.json has DB_NAME that matches
+                # what the script expects
+                return json.load(input_stream)[DB_NAME]
+            except ValueError:
+                script_output("Invalid JSON in " + filepath)
+                exit(1)
 
     except OSError:
         script_output("Could not open " + filepath)
@@ -95,9 +108,13 @@ def get_models(model_files):
     for file in model_files:
         if file.endswith("_model.json"):
             with open(file, 'r') as input_stream:
-                loadedData = json.load(input_stream)
-                if(len(loadedData) > 0):
-                    model.append(loadedData)
+                try:
+                    loadedData = json.load(input_stream)
+                    if(len(loadedData) > 0):
+                        model.append(loadedData)
+                except ValueError:
+                    script_output("Invalid JSON in " + file)
+                    exit(1)
         else:
             script_output("File does not end with _model.json found")
             script_output(file, False)
@@ -219,8 +236,8 @@ def main():
     prev_models = []
 
     if(models_json_fp is not None):
-        if(os.path.basename(models_json_fp) != "models.json"):
-            script_output("--models_fp is not referring to a models.json file")
+        if(models_json_fp.endswith(".json") is False):
+            script_output("--models_fp is not referring to a *.json file")
             script_output("Please check your path", False)
             exit(1)
 
@@ -237,8 +254,14 @@ def main():
     # *_model.json (potentially new models)
     combine_models(models, prev_models)
 
-    # Output result to stdout
-    print_result()
+    # If not none, then we have to save our result back to models_json_fp
+    # We cannot use redirection because that truncates the file before we get a
+    # chance to even read from models_json_fp
+    if(models_json_fp is not None):
+        save_result(models_json_fp)
+    else:
+        # Output result to stdout
+        print_result()
 
 
 if __name__ == "__main__":
