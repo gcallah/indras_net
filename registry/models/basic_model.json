@@ -2,7 +2,7 @@
     "active": true,
     "doc": "A toy model to test the system.",
     "graph": "scatter",
-    "name": "Basic2.0 YAYYYY",
+    "name": "Basic",
     "props": "models/props/basic.props.json",
     "run": "basic",
     "source": "https://github.com/gcallah/indras_net/blob/master/models/basic.py"
