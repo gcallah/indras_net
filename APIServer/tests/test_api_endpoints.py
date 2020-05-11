@@ -12,7 +12,10 @@ from APIServer.api_endpoints import Props, ModelMenu, RunModel
 from APIServer.api_endpoints import app, HelloWorld, Endpoints, Models
 from APIServer.api_endpoints import indra_dir
 from APIServer.api_utils import err_return
-from APIServer.models_api import load_models, MODEL_FILE
+from APIServer.models_api import load_models, MODEL_FILE, MODEL_ID
+
+
+MIN_NUM_ENDPOINTS = 2
 
 menu = [{"val": 0, "func": "run", "question": "Run for N periods"},
         {"val": 1, "func": "line_graph", "question":
@@ -23,6 +26,7 @@ menu = [{"val": 0, "func": "run", "question": "Run for N periods"},
             "Leave menu for interactive python session."},
         {"val": 4, "func": "leave", "question": "Quit)."}
         ]
+
 
 def random_name():
     return "".join(random.choices(string.ascii_letters,
@@ -59,44 +63,16 @@ class Test(TestCase):
         '''
         Check that /endpoints lists these endpoints.
         '''
-        endpoints = set(self.endpoints.get()["Available endpoints"])
-        test_endpoints = ["/endpoints",
-                          "/hello",
-                          "/model_creator",
-                          "/models",
-                          "/models/menu/",
-                          "/models/menu/run/<int:run_time>",
-                          "/models/props/<int:model_id>"]
-        for test_endpoint in test_endpoints:
-            # While we could just convert test_endpoints into a set and then
-            # check for set equality, this allows the output to show which
-            # endpoint was missing.
-            with self.subTest(test_endpoint=test_endpoint):
-                self.assertIn(test_endpoint, endpoints)
+        endpoints = self.endpoints.get()["Available endpoints"]
+        self.assertGreaterEqual(len(endpoints), MIN_NUM_ENDPOINTS)
 
-    @skip("The API tests must be re-written: they are locked to a particular format.")
-    def test_get_model(self):
+    def test_get_models(self):
         """
         See if we can get models.
         """
-        rv = self.model.get()
-
-        test_model_file = indra_dir + MODEL_FILE
-        with open(test_model_file) as file:
-            test_models_db = json.loads(file.read())["models_database"]
-
-        test_models_response = []
-        for model in test_models_db:
-            doc = ""
-            if "doc" in model:
-                doc = model["doc"]
-            test_models_response.append({"model ID": model["model ID"],
-                                         "name": model["name"],
-                                         "doc": doc,
-                                         "source": model["source"],
-                                         "graph": model["graph"]})
-
-        self.assertEqual(rv, test_models_response)
+        api_ret = self.model.get()
+        for model in api_ret:
+            self.assertIn(MODEL_ID, model)
 
     @skip("Skipping get props.")
     def test_get_props(self):

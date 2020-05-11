@@ -8,6 +8,8 @@ REGISTRY = "registry"
 MODELS_DB = "models.json"
 MODEL_FILE = "/" + REGISTRY + "/" + MODELS_DB
 
+MODEL_ID = "model ID"
+
 
 def load_models(indra_dir):
     model_file = indra_dir + MODEL_FILE
@@ -39,7 +41,7 @@ def get_model(model_id, indra_dir=None, models_db=None):
                                indra_dir)
             return {ERROR: msg}
     for model in models_db:
-        if int(model["model ID"]) == model_id:
+        if int(model[MODEL_ID]) == model_id:
             user_log_notif("Matched model: " + model["name"])
             return model
     msg = user_log_err("Model id not found: " + str(model_id))
