@@ -5,14 +5,14 @@ import json
 import distutils.util
 import argparse
 """
-    Script to generate *_model.json files, given *.py
-    *.py files must have docstring at the header of the file first
+    Script to generate a *_model.json file, given *.py
+    *.py file must have docstring at the header of the file first
     otherwise, an empty *_model.json file will be generated
 """
 
 """
     usage / options
-    ./json_generator [filenames...]
+    ./json_generator filename
 """
 
 # Docstring format
@@ -33,6 +33,7 @@ import argparse
 jsonFields = set(["name", "run", "props", "doc", "source", "graph", "active"])
 script_name = sys.argv[0]
 jsonFieldDelimitor = ":"
+saw_error = False
 
 
 def validate_config():  # () -> None
@@ -77,12 +78,14 @@ def validate_docstring(content, filename, withOutput=True):
 
         params: ([str...], str, bool) -> bool
     """
+    global saw_error
     MIN_DOCLEN = 2  # Min len of the docstring should be at least 2 lines
     QUOTE_LEN = 4  # len of a """ or ''' (counting newline)
 
     if(len(content) < MIN_DOCLEN):
         if(withOutput):
             script_output("docstring too short in " + filename)
+            saw_error = True
         return False
 
     if(len(content[0].strip()) > QUOTE_LEN or
@@ -90,18 +93,32 @@ def validate_docstring(content, filename, withOutput=True):
         if(withOutput):
             script_output("docstring quotes should be in a line by itself")
             script_output("Problem in " + filename, False)
+            saw_error = True
         return False
 
     return True
 
 
 def validate_model(model_kv, key_set):
+    """
+        Method to check if docstring we read in is valid
+        Things to check for:
+        1.) Missing fields
+        2.) Any foreign keys
+        3.) Duplicate keys
+
+        key_set is the set of unique keys in model_kv
+    """
+    global saw_error
     # In case, file had a docstring, but it wasn't what we were expecting
     if(len(key_set) == 0):
         script_output("Didn't find any known fields.")
+        script_output("Fields should be in the following format:", False)
+        script_output("<key>: <value>\n", False)
         script_output(
             "Please make sure your FIRST docstring has all the fields:", False)
         script_output(str(jsonFields), False)
+        saw_error = True
         return False
 
     # Missing fields
@@ -111,12 +128,14 @@ def validate_model(model_kv, key_set):
             "Please make sure to put a space after delimitor", False)
         script_output(
             "Current delimitor: " + repr(jsonFieldDelimitor[0]), False)
+        saw_error = True
         return False
 
     # If for some random reason duplicates were not filtered during parsing
     if(len(model_kv) != len(jsonFields)):
         script_output(
             "script error, model_kv is not the same len as jsonFields")
+        saw_error = True
         return False
 
     return True
@@ -168,7 +187,7 @@ def convert_valString(valString):
     """
         Function to attempt to convert the string to its actual type
         I.E, "1" -> 1, "true" -> true
-        This acts as a catch all, the fallback is to string
+        The catch all type is to string
     """
 
     if(valString.lower() == "null"):
@@ -204,7 +223,7 @@ def parse_docstring(file_path):
         we found an unexpected key
         4.) return the result if our result was validated
     """
-    script_output("Processing: " + file_path)
+    global saw_error
     with open(file_path, 'r') as input_stream:
         # Step 1:
         # Read everything from the docstring in first for processing
@@ -219,9 +238,11 @@ def parse_docstring(file_path):
             if(has_docstring_quotes(line)):
                 num_indicator += 1
 
-            # Prestrip whitespaces in front of line
-            line = line.lstrip()
-            docstring_content.append(line)
+            # We have entered a docstring
+            if(num_indicator > 0):
+                # Prestrip whitespaces in front of line
+                line = line.lstrip()
+                docstring_content.append(line)
 
         # If invalid docstring, return empty
         if(validate_docstring(docstring_content, file_path) is False):
@@ -249,6 +270,7 @@ def parse_docstring(file_path):
                 if(lineKey in found_set):
                     script_output("FOUND DUPLICATE FIELD: " + lineKey)
                     script_output("in " + file_path, False)
+                    saw_error = True
                     return {}
 
                 if(lineKey in jsonFields):
@@ -263,6 +285,7 @@ def parse_docstring(file_path):
                 else:
                     # stop parsing since we found a rogue key
                     script_output("UNKNOWN KEY " + repr(lineKey))
+                    saw_error = True
                     return {}
             else:
                 valueString += line
@@ -279,12 +302,10 @@ def parse_docstring(file_path):
 
 def generate_json(model_kv):
     """
-        Generates json output to given output file
-        The "input" should be generated by parse_docstring()
-        which returns a tuple containing:
-            0: the dictionary with the key, val pair for json object
-            1: the destination file the parse_docstring() created
-        ((dict, str)) -> None
+        Generates json  and prints to stdout
+        model_kv is generated by parse_docstring()
+        it contains the key value pair of each field
+        (dict) -> None
     """
     if(type(model_kv) != dict):
         script_output("generate_json(dict), check function def")
@@ -293,15 +314,21 @@ def generate_json(model_kv):
     print(json.JSONEncoder(sort_keys=True, indent=4).encode(model_kv))
 
 
-if __name__ == "__main__":
+def main():
     arg_parser = argparse.ArgumentParser()
-    arg_parser.add_argument("filenames", nargs="+")
+    arg_parser.add_argument("filename")
 
     args = arg_parser.parse_args()
 
-    model_files = args.filenames
+    model_file = args.filename
 
     validate_config()
 
-    for file in model_files:
-        generate_json(parse_docstring(file))
+    generate_json(parse_docstring(model_file))
+
+    if(saw_error is True):
+        exit(1)
+
+
+if __name__ == "__main__":
+    main()

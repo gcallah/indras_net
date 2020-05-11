@@ -1,13 +1,11 @@
 """
-    name: Bacteria
-    run: bacteria
-    props: models/props/bacteria.props.json
-    doc: A model of bacteria with toxin and nutrient levels. The bacteria avoid
-        the toxins and seek nutrients.
-    source:
-        https://github.com/gcallah/indras_net/blob/master/models/bacteria.py
-    graph: scatter
-    active: true
+    active: true,
+    doc: A toy model to test the system.,
+    graph: scatter,
+    name: Basic,
+    props: models/props/basic.props.json,
+    run: basic,
+    source: https://github.com/gcallah/indras_net/blob/master/models/basic.py
 """
 
 from indra.agent import Agent
