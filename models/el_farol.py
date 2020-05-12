@@ -157,7 +157,7 @@ def set_up(props=None):
                              member_creator=create_non_drinker,
                              num_members=get_prop('population',
                                                   DEF_POPULATION) // 2)
-    bar = Env("bar",
+    bar = Env("el_farol",
               height=get_prop('grid_height', DEF_HEIGHT),
               width=get_prop('grid_width', DEF_WIDTH),
               members=[drinkers, non_drinkers],
