@@ -292,7 +292,8 @@ class Space(Composite):
                 (x, y) = self.gen_new_pos(mbr, max_move)
             if self.is_empty(x, y):
                 if mbr.is_located():
-                    self.move_location(x, y, mbr.get_x(), mbr.get_y())
+                    self.move_location(x, y, mbr.get_x(),
+                                       mbr.get_y(), mbr.name)
                 else:
                     self.add_location(x, y, mbr)
                 # if I am setting pos, I am agent's locator!
@@ -322,7 +323,7 @@ class Space(Composite):
         """
         self.locations[str((x, y))] = member.name
 
-    def move_location(self, nx, ny, ox, oy):
+    def move_location(self, nx, ny, ox, oy, agent_name="NA"):
         """
         Move a member to a new position, if that position
         is not already occupied.
@@ -330,7 +331,9 @@ class Space(Composite):
         old_loc = str((ox, oy))
         new_loc = str((nx, ny))
         if old_loc not in self.locations:
-            user_log_warn("Trying to move unlocated agent at " + old_loc)
+            user_log_warn("Trying to move unlocated agent "
+                          + agent_name + " at " + old_loc)
+            user_log_warn("self.locations = " + repr(self.locations))
         elif new_loc not in self.locations:
             self.locations[new_loc] = self.locations[old_loc]
             del self.locations[old_loc]
@@ -504,6 +507,6 @@ class Space(Composite):
         (prev_x, prev_y) = xy
         (new_x, new_y) = xy
         #  Calculate the new coordinates
-        new_x += math.cos(math.radians(angle)) * max_move
-        new_y += math.sin(math.radians(angle)) * max_move
+        new_x += int(math.cos(math.radians(angle)) * max_move)
+        new_y += int(math.sin(math.radians(angle)) * max_move)
         return self.constrain_x(new_x), self.constrain_y(new_y)
