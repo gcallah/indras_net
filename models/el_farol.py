@@ -166,6 +166,7 @@ def set_up(props=None):
     bar.set_attr("population", population)
     bar.set_attr(OPT_OCCUPANCY, int(population * 0.6))
     bar.set_attr(AGENTS_DECIDED, 0)
+    bar.set_attr(ATTENDANCE, 0)
 
 
 def main():
