@@ -132,7 +132,7 @@ def attendance(pop_hist):
 
 def attendance_report(env):
     return("Attendance this period: "
-           + env.attrs[ATTENDANCE])
+           + str(env.attrs[ATTENDANCE]))
 
 
 def set_env_attrs():
