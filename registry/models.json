@@ -48,7 +48,7 @@
         "doc": "Everyone loves the El Farol Bar... until it is too crowded.",
         "source": "https://github.com/gcallah/indras_net/blob/master/models/el_farol.py",
         "graph": "line",
-        "active": false
+        "active": true
       },
       {
         "model ID": 5,
