@@ -173,7 +173,7 @@ def set_up(props=None):
                             num_members=get_prop('num_followers',
                                                  NUM_FOLLOWERS)))
 
-    Env("Society", members=groups, attrs={OPP_GROUP: opp_group})
+    Env(MODEL_NAME, members=groups, attrs={OPP_GROUP: opp_group})
 
 
 def main():

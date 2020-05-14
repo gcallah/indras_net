@@ -6,7 +6,7 @@ import argparse
 
 """
     Combines all *_model.json files given and optionally, models.json file
-    result outputs to stdout
+    result outputs to stdout (default)
 
     Note: if no path to models.json is given (through --models_fp) but the file
     does exist, then script has no knowledge of any existing models that may
@@ -29,8 +29,8 @@ import argparse
         (Will also store back the results to the same file)
 
     Default behavior: outputs to stdout
-    Optional behavior: if given models_fp, then it will store result to
-                        models_fp
+    Optional behavior: if given models_fp, then it will read from models_fp and
+                        store result to models_fp
 """
 
 DB_NAME = "models_database"

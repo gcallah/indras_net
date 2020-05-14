@@ -19,8 +19,9 @@ MODEL_NAME = "bacteria"
 DEBUG = False  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
-TOXINS = "Toxins"
+BACTERIA = "Bacteria"
 NUTRIENTS = "Nutrients"
+TOXINS = "Toxins"
 
 DEF_NUM_BACT = 1
 NUM_TOXINS = 1
@@ -161,12 +162,12 @@ def set_up(props=None):
                           member_creator=create_nutrient,
                           num_members=get_prop('num_nutrients', NUM_TOXINS))
 
-    bacteria = Composite("Bacteria", {"color": BLUE},
+    bacteria = Composite(BACTERIA, {"color": BLUE},
                          member_creator=create_bacterium,
                          num_members=get_prop('num_toxins',
                                               DEF_NUM_BACT))
 
-    Env("Petrie dish",
+    Env(MODEL_NAME,
         height=get_prop('grid_height', DEF_HEIGHT),
         width=get_prop('grid_width', DEF_WIDTH),
         members=[toxins, nutrients, bacteria])

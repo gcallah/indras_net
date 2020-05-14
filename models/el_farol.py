@@ -130,9 +130,10 @@ def attendance(pop_hist):
                         get_env().attrs[ATTENDANCE])
 
 
-def attendance_report():
-    return("Attendance this period: "
-           + get_env().attrs[ATTENDANCE])
+def attendance_report(env):
+    return("El Farol attendees on day "
+           + str(env.get_periods())
+           + ": " + str(env.attrs[ATTENDANCE]))
 
 
 def set_env_attrs():
@@ -157,7 +158,7 @@ def set_up(props=None):
                              member_creator=create_non_drinker,
                              num_members=get_prop('population',
                                                   DEF_POPULATION) // 2)
-    bar = Env("bar",
+    bar = Env("el_farol",
               height=get_prop('grid_height', DEF_HEIGHT),
               width=get_prop('grid_width', DEF_WIDTH),
               members=[drinkers, non_drinkers],
@@ -166,6 +167,8 @@ def set_up(props=None):
     bar.set_attr("population", population)
     bar.set_attr(OPT_OCCUPANCY, int(population * 0.6))
     bar.set_attr(AGENTS_DECIDED, 0)
+    bar.set_attr(ATTENDANCE, 0)
+    set_env_attrs()
 
 
 def main():

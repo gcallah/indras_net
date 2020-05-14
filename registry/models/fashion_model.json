@@ -3,5 +3,5 @@ Fields should be in the following format:
 <key>: <value>
 
 Please make sure your FIRST docstring has all the fields:
-{'props', 'doc', 'name', 'graph', 'run', 'active', 'source'}
+{'doc', 'props', 'active', 'run', 'graph', 'source', 'name'}
 {}
