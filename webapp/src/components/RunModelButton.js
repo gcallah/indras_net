@@ -37,6 +37,7 @@ export default class RunModelButton extends React.Component {
         <input
           type="INT"
           className="from-control m-2 number-input"
+          style={{ width: '40px' }}
           placeholder="10"
           onChange={handleRunPeriod}
         />
