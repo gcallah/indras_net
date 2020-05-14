@@ -257,6 +257,8 @@ class Env(Space):
         self.switches.append((agent_nm, from_grp_nm, to_grp_nm))
         user_log_notif("Agent " + agent_nm + " is scheduled to switch from "
                        + from_grp_nm + " to " + to_grp_nm)
+        user_log_notif("Pending switches = "
+                       + self.pending_switches())
 
     def handle_womb(self):
         """
@@ -277,9 +279,12 @@ class Env(Space):
                     join(group, agent)
             del self.womb[:]
 
+    def pending_switches(self):
+        return str(len(self.switches))
+
     def handle_switches(self):
         if self.switches is not None:
-            user_log_notif("Switching " + str(len(self.switches))
+            user_log_notif("Switching " + self.pending_switches()
                            + " agents between groups")
             for (agent_nm, from_grp_nm, to_grp_nm) in self.switches:
                 switch(agent_nm, from_grp_nm, to_grp_nm)
