@@ -131,8 +131,9 @@ def attendance(pop_hist):
 
 
 def attendance_report(env):
-    return("Attendance this period: "
-           + str(env.attrs[ATTENDANCE]))
+    return("El Farol attendees on day "
+           + str(env.get_periods())
+           + ": " + str(env.attrs[ATTENDANCE]))
 
 
 def set_env_attrs():
@@ -167,6 +168,7 @@ def set_up(props=None):
     bar.set_attr(OPT_OCCUPANCY, int(population * 0.6))
     bar.set_attr(AGENTS_DECIDED, 0)
     bar.set_attr(ATTENDANCE, 0)
+    set_env_attrs()
 
 
 def main():

@@ -332,6 +332,8 @@ class Env(Space):
         census_func overrides the default behavior.
         """
         if "census_func" in self.attrs:
+            user_log_notif("Employing custom census func for "
+                           + self.name)
             return self.attrs["census_func"](self)
         else:
             total_pop = 0
