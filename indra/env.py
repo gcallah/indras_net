@@ -244,6 +244,9 @@ class Env(Space):
         self.womb.append(grp_nm)
         user_log_notif("An agent was added to the womb for " + grp_nm)
 
+    def rpt_switches(self):
+        return "Switches = " + repr(self.switches)
+
     def add_switch(self, agent, from_grp, to_grp):
         """
         Switch agent from 1 grp to another
@@ -257,8 +260,7 @@ class Env(Space):
         self.switches.append((agent_nm, from_grp_nm, to_grp_nm))
         user_log_notif("Agent " + agent_nm + " is scheduled to switch from "
                        + from_grp_nm + " to " + to_grp_nm)
-        user_log_notif("Pending switches = "
-                       + self.pending_switches())
+        user_log_notif(self.rpt_switches())
 
     def handle_womb(self):
         """
@@ -284,6 +286,7 @@ class Env(Space):
 
     def handle_switches(self):
         if self.switches is not None:
+            user_log_notif(self.rpt_switches())
             user_log_notif("Switching " + self.pending_switches()
                            + " agents between groups")
             for (agent_nm, from_grp_nm, to_grp_nm) in self.switches:
