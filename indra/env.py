@@ -244,8 +244,12 @@ class Env(Space):
         self.womb.append(grp_nm)
         user_log_notif("An agent was added to the womb for " + grp_nm)
 
+    def pending_switches(self):
+        return str(len(self.switches))
+
     def rpt_switches(self):
-        return "Switches = " + repr(self.switches)
+        return "# switches = " + self.pending_switches() + "; id: "\
+               + str(id(self.switches))
 
     def add_switch(self, agent, from_grp, to_grp):
         """
@@ -281,18 +285,15 @@ class Env(Space):
                     join(group, agent)
             del self.womb[:]
 
-    def pending_switches(self):
-        return str(len(self.switches))
-
     def handle_switches(self):
         if self.switches is not None:
-            user_log_notif(self.rpt_switches())
+            user_log_notif("In handle: " + self.rpt_switches())
             user_log_notif("Switching " + self.pending_switches()
                            + " agents between groups")
             for (agent_nm, from_grp_nm, to_grp_nm) in self.switches:
                 switch(agent_nm, from_grp_nm, to_grp_nm)
                 self.num_switches += 1
-            del self.switches[:]
+            self.switches.clear()
 
     def handle_pop_hist(self):
         self.pop_hist.add_period()
