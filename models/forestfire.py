@@ -92,9 +92,9 @@ def tree_action(agent):
             user_log_err("group_map is None!")
             return True
         agent.has_acted = True
-        agent.locator.add_switch(agent,
-                                 group_map[old_state],
-                                 group_map[agent["state"]])
+        get_env().add_switch(agent,
+                             group_map[old_state],
+                             group_map[agent["state"]])
     return True
 
 
