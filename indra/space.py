@@ -333,7 +333,6 @@ class Space(Composite):
         if old_loc not in self.locations:
             user_log_warn("Trying to move unlocated agent "
                           + agent_name + " at " + old_loc)
-            user_log_warn("self.locations = " + repr(self.locations))
         elif new_loc not in self.locations:
             self.locations[new_loc] = self.locations[old_loc]
             del self.locations[old_loc]

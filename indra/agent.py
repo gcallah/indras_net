@@ -104,9 +104,12 @@ def switch(agent_nm, grp1_nm, grp2_nm):
     agent = get_registration(agent_nm)
     grp1 = get_registration(grp1_nm)
     grp2 = get_registration(grp2_nm)
-    if agent is None or grp1 is None or grp2 is None:
-        print("Could not find an agent for a switch",
-              agent_nm, grp1_nm, grp2_nm)
+    if agent is None:
+        print("In switch; could not find agent: " + str(agent))
+    if grp1 is None:
+        print("In switch; could not find from group: " + str(grp1))
+    if grp2 is None:
+        print("In switch; could not find to group: " + str(grp2))
     split(grp1, agent)
     join(grp2, agent)
 
@@ -165,50 +168,27 @@ class Agent(object):
             self.locator = None
             # some thing we will fetch from registry:
             # for these, we only store the name but look up object
-            self._prim_group = None if prim_group is None else prim_group.name
-            if prim_group is not None and is_space(prim_group):
-                self.locator = prim_group
-
+            self.prim_group = None if prim_group is None else prim_group.name
         if reg:
             register(self.name, self)
 
-    @property
+    def set_prim_group(self, group):
+        """
+        We want this to store the name of the group.
+        The str() of the group is its name.
+        The str() of the name is itself.
+        If we are passed None, set to blank.
+        """
+        if group is None:
+            group = ""
+        self.prim_group = str(group)
+
     def prim_group_nm(self):
         """
-        _prim_group is just a name, but we don't want models
+        prim_group is just a name, but we don't want models
         going straight at it!
         """
-        return self._prim_group
-
-    @property
-    def prim_group(self):
-        """
-        This is the prim_group property.
-        We use the string _prim_group to look up the
-        prim_group object in the registry.
-        An agent may be in multiple groups: it appears in
-        the groups `members` list. But it can have only
-        one primary group.
-        """
-        return get_registration(self._prim_group)
-
-    @prim_group.setter
-    def prim_group(self, val):
-        """
-        Set our prim_group: if passed an agent, store its name.
-        Else, it must be a string, and just store that.
-        Don't try to register the val! Agents register themselves
-        when constructed.
-        """
-        if isinstance(val, Agent):
-            self._prim_group = val.name
-        elif isinstance(val, str):
-            self._prim_group = val
-        elif val is None:
-            self._prim_group = ""
-        else:
-            # we must set up logging to handle these better:
-            print("Bad type passed to prim_group:", str(val))
+        return self.prim_group
 
     @property
     def env(self):
@@ -218,22 +198,6 @@ class Agent(object):
         the registry has.
         """
         return get_env()
-
-    @env.setter
-    def env(self, val):
-        """
-        I think we can just pass here: this is defunct!
-        if isinstance(val, Agent):
-            self._env = val.name
-        elif isinstance(val, str):
-            self._env = val
-        elif val is None:
-            self._env = None
-        else:
-            # we must set up logging to handle these better:
-            print("Bad type passed to env:", str(val))
-        """
-        pass
 
     @property
     def locator(self):
@@ -247,20 +211,11 @@ class Agent(object):
     @locator.setter
     def locator(self, val):
         """
-        Set our locator: if passed an agent, store its name.
-        Else, it must be a string, and just store that.
-        Don't try to register the val! Agents register themselves
-        when constructed.
+        Set our locator:
+        The str() of the locator is its name.
+        The str() of the name is itself.
         """
-        if isinstance(val, Agent):
-            self._locator = val.name
-        elif isinstance(val, str):
-            self._locator = val
-        elif val is None:
-            self._locator = ""
-        else:
-            # we must set up logging to handle these better:
-            print("Bad type passed to locator:", str(val))
+        self._locator = str(val)
 
     def restore(self, serial_obj):
         self.from_json(serial_obj)
@@ -272,7 +227,7 @@ class Agent(object):
                 "pos": self.pos,
                 "attrs": self.attrs,
                 "active": self.active,
-                "prim_group": self._prim_group,
+                "prim_group": self.prim_group,
                 "locator": self._locator,
                 "neighbors": None,
                 "action_key": self.action_key
@@ -293,7 +248,7 @@ class Agent(object):
         self.duration = int(serial_agent["duration"])
         self.name = serial_agent["name"]
         self.neighbors = None  # these must be re-created every run
-        self._prim_group = serial_agent["prim_group"]
+        self.prim_group = serial_agent["prim_group"]
         self._locator = serial_agent["locator"]
         self.type = serial_agent["type"]
 
@@ -301,7 +256,7 @@ class Agent(object):
         return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
 
     def primary_group(self):
-        return self.prim_group
+        return get_registration(self.prim_group)
 
     def is_located(self):
         return self.pos is not None

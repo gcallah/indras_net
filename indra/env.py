@@ -280,10 +280,9 @@ class Env(Space):
                 if group is not None and group.member_creator is not None:
                     group.num_members_ever += 1
                     agent = group.member_creator("", group.num_members_ever)
-                    agent.env = group.env
                     regis.register(agent.name, agent)
                     join(group, agent)
-            del self.womb[:]
+            self.womb.clear()
 
     def handle_switches(self):
         if self.switches is not None:

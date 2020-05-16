@@ -19,7 +19,7 @@ from indra.utils import init_props
 
 MODEL_NAME = "fashion"
 DEBUG = True  # turns debugging code on or off
-DEBUG2 = False  # turns deeper debugging code on or off
+DEBUG2 = True  # turns deeper debugging code on or off
 
 NUM_TSETTERS = 5
 NUM_FOLLOWERS = 55
@@ -71,10 +71,10 @@ def change_color(agent, society, opp_group):
     if DEBUG2:
         user_log_notif("Agent " + agent.name + " is changing colors"
                        + "; its prim group is "
-                       + agent.prim_group_nm)
+                       + agent.prim_group_nm())
     agent[DISPLAY_COLOR] = not agent[DISPLAY_COLOR]
-    society.add_switch(agent, agent.prim_group_nm,
-                       opp_group[agent.prim_group_nm])
+    society.add_switch(agent, agent.prim_group_nm(),
+                       opp_group[agent.prim_group_nm()])
 
 
 def new_color_pref(old_pref, env_color):
