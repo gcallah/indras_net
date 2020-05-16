@@ -61,7 +61,8 @@ def buy_from_dealer(agent, my_dealer):
         else:
             assoc[emoji].append(received_car_life)
     if not is_mature(agent):
-        print("I am immature. \nI got a car life",
+        print("I am an immature buyer.")
+        print("I got a car life",
               str(my_dealer["avg_car_life"]),
               ", \nMy dealer's emoji(s) is/are: ",
               str(my_dealer["emojis"]))
@@ -78,7 +79,7 @@ def training_action(agent):
     else:
         # unmature buyer learning
         buy_from_dealer(agent, my_dealer)
-        # you *should* separate out your calculations
+        # separate out calculations
         cal_from_buyer(agent)
     return False
 
@@ -113,18 +114,7 @@ def strategic_action(agent):
             received_car_life = my_dealer["avg_car_life"]
             agent["strategy_car_life"].append(received_car_life)
             buy_from_dealer(agent, my_dealer)
-            print("I am mature. \nI received a car life",
-                  str(my_dealer["avg_car_life"]),
-                  ", \nand my dealer's emoji(s) is/are: ",
-                  str(my_dealer["emojis"]))
     return False
-
-
-def work_this_into_func():  # I will outline it!
-    '''
-    mature buyers take cars from good dealer til get 1 bad car
-    '''
-    pass
 
 
 def buyer_action(agent):  # how to write this testcase
@@ -141,7 +131,9 @@ def buyer_action(agent):  # how to write this testcase
     car_lifes = agent["strategy_car_life"]
     if len(car_lifes) != 0:
         car_life_avg = sum(car_lifes) / len(car_lifes)
-        print("Average car life from strategy:", car_life_avg)
+        print("I am a mature buyer!")
+        print("I have bought", len(car_lifes), "cars")
+        print("My average car life is", round(car_life_avg, 2))
     return False
 
 
