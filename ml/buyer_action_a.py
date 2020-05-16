@@ -2,10 +2,10 @@
 Ava's Agent
 '''
 from indra.agent import Agent
-from registry.registry import get_env, get_group
+from registry.registry import get_env, get_group, get_prop
 
 MODEL_NAME = "ava_agent"
-TRAINING_PERIOD = 50
+TRAINING_PERIOD = 100
 DEALER_GRP = "Dealer_group"
 
 
@@ -27,7 +27,7 @@ def is_mature(buyer):  # testcase done
     check if buyer has enough experience
     to make its own decision
     """
-    return buyer["maturality"] > TRAINING_PERIOD
+    return buyer["maturality"] > get_prop('buyer_maturity', TRAINING_PERIOD)
 
 
 def cal_from_buyer(buyer):  # testcase done

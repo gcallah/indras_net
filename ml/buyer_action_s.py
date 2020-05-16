@@ -129,15 +129,15 @@ def buy_w_experience(agent, dealer):
         agent["matured_car_lives"] += dealer["avg_car_life"]
         agent["avg"] = agent["matured_car_lives"]/agent["matured_car_num"]
         agent["avg"] = round(agent["avg"], 2)
-    print("I bought ", agent["matured_car_num"], "cars so far")
-    print("My current average car life is :", agent["avg"])
+    print("I have bought", agent["matured_car_num"], "cars")
+    print("My current average car life is", agent["avg"])
     return False
 
 
 def buy_from_dealer(agent, dealer):
     ''' used for immature buyers.
     Supervised learnig data collection period'''
-    print("I am immature. \nI got a car life",
+    print("I am an immature buyer. \nI got a car life",
           str(dealer["avg_car_life"]),
           ", \nMy dealer's emoji(s) is/are: ",
           str(dealer["emojis"]))
