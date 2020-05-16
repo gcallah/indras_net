@@ -14,7 +14,7 @@ from indra.utils import init_props
 
 MODEL_NAME = "forestfire"
 DEBUG = False  # turns debugging code on or off
-DEBUG2 = True  # turns deeper debugging code on or off
+DEBUG2 = False  # turns deeper debugging code on or off
 
 NEARBY = 1.8
 
@@ -69,7 +69,7 @@ def tree_action(agent):
     """
     old_state = agent["state"]
     if is_healthy(agent):
-        neighbors = agent.locator.get_moore_hood(agent)
+        neighbors = get_env().get_moore_hood(agent)
         if neighbors is not None:
             nearby_fires = neighbors.subset(is_on_fire, agent)
             if len(nearby_fires) > 0:
