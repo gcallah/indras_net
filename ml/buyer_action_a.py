@@ -86,7 +86,6 @@ def training_action(agent):
 
 def evaluate_dealer_emoji(buyer, dealer):
     # info buyer received from dealer
-    is_good_buy = False
     received_emojis = dealer["emojis"]
     received_car = dealer["avg_car_life"]
     num_emojis = len(received_emojis)
@@ -97,7 +96,7 @@ def evaluate_dealer_emoji(buyer, dealer):
         if emoji in buyer_emojis_table:
             judge_car_life += buyer_emojis_table[emoji]
         else:
-            is_good_buy = True
+            return True
     judge_car_life /= num_emojis
     is_good_buy = received_car > judge_car_life
     return is_good_buy
