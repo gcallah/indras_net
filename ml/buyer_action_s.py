@@ -1,4 +1,3 @@
-import random
 from indra.agent import Agent
 from registry.registry import get_group, get_env, get_prop
 import numpy
@@ -17,9 +16,11 @@ strategies = {}
 
 def matrix_reduction(agent):
     matrix, res = agent["strategy"]["data_collection"](agent)
+    col = len(matrix[0])
+    if col > len(matrix):  # not enought for matrix reduction
+        return -1
     i = 0
     x = []
-    col = len(matrix[0])
     while i < len(matrix) and len(x) == 0:
         A = numpy.array(matrix[i:i + col])
         b = numpy.array(res[i:i + col])
@@ -28,13 +29,12 @@ def matrix_reduction(agent):
         except numpy.linalg.LinAlgError:
             i += 1
     if len(x) == 0:
-        print("Matrix_reduction failed")
         return -1
     else:
         for emoji in agent["emoji_experienced"]:
             index = agent["emoji_experienced"][emoji]
-            agent["emoji_scores"][emoji] = round(x[index][0], 4)
-        agent["predicted_base_line"] = round(x[-1][0], 4)
+            agent["emoji_scores"][emoji] = round(x[index][0], 2)
+        agent["predicted_base_line"] = round(x[-1][0], 2)
         return 0
 
 
@@ -46,7 +46,7 @@ def correlation_detection(agent):
     the second is 1/4 and 1/8.... geometic series will add up to 1'''
 
     base_factor = .5
-    emoji_dic = agent["strategy"]["data_collection"](agent)
+    emoji_dic = strategies["s2"]["data_collection"](agent)
     for emoji in emoji_dic:
         score = 0
         length = len(emoji_dic[emoji])
@@ -119,30 +119,27 @@ def is_mature(buyer):
 def buy_w_experience(agent, dealer):
     ''' used for mature buyers.
     Supervised learnig predicting period'''
-    print("I am an mature buyer!")
-    print("I used strategy", agent["strategy"]["func"])
+    print("I am a mature buyer!")
     res_score = agent["predicted_base_line"]
     for emoji in dealer["emojis"]:
         if emoji in agent["emoji_scores"]:
             res_score += agent["emoji_scores"][emoji]
     if res_score >= MEDIUM_CAR_LIFE:
-        print("I think this dealer is trustworthy")
-        agent["car_life"] = dealer["avg_car_life"]
-    else:
-        print("I think this dealer is unreliable")
-    print("I predicted the car life is ",
-          str(res_score),
-          ", and the actual car life is: ",
-          str(dealer["avg_car_life"]))
+        agent["matured_car_num"] += 1
+        agent["matured_car_lives"] += dealer["avg_car_life"]
+        agent["avg"] = agent["matured_car_lives"]/agent["matured_car_num"]
+        agent["avg"] = round(agent["avg"], 2)
+    print("I bought ", agent["matured_car_num"], "cars so far")
+    print("My current average car life is :", agent["avg"])
     return False
 
 
 def buy_from_dealer(agent, dealer):
     ''' used for immature buyers.
     Supervised learnig data collection period'''
-    print("I am an immature buyer. I got a car that last ",
+    print("I am immature. \nI got a car life",
           str(dealer["avg_car_life"]),
-          ", and my dealer's emoji(s) is/are: ",
+          ", \nMy dealer's emoji(s) is/are: ",
           str(dealer["emojis"]))
     curr_purchase = {"car_life": dealer["avg_car_life"],
                      "emojis": dealer["emojis"]}
@@ -169,9 +166,6 @@ def buyer_action(agent):
         buy_from_dealer(agent, my_dealer)
     else:
         if(not agent["learnt"]):
-            print("Investigating, buyer strategy =", agent["strategy"])
-            print(agent["strategy"])
-            print(type(agent["strategy"]))
             success = agent["strategy"]["func"](agent)
             if success == -1:
                 strategies["s2"]["func"](agent)
@@ -188,11 +182,13 @@ def create_buyer_s(name, i, **kwargs):
                         "purchase_hist": [],  # list of purchase for learning
                         "emoji_experienced": {},  # emojis when immature
                         "learnt": False,
-                        "strategy": strategies[random.choice(
-                                               list(strategies.keys()))],
+                        "strategy": strategies["s1"],
                         "car_life": 0,
                         "emoji_scores": {},
-                        "predicted_base_line": MEDIUM_CAR_LIFE
+                        "predicted_base_line": MEDIUM_CAR_LIFE,
+                        "matured_car_num": 0,
+                        "matured_car_lives": 0,
+                        "avg": 0
                         })
 
 
