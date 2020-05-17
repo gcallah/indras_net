@@ -54,7 +54,7 @@ def set_up(props=None):
                           member_creator=create_agent,
                           num_members=get_prop('num_red', DEF_NUM_RED))
 
-    Env("env",
+    Env(MODEL_NAME,
         height=get_prop('grid_height', DEF_HEIGHT),
         width=get_prop('grid_width', DEF_WIDTH),
         members=[blue_group, red_group])

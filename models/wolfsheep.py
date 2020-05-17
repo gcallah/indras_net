@@ -148,7 +148,8 @@ def set_up(props=None):
                    member_creator=create_sheep,
                    num_members=get_prop('num_sheep', NUM_SHEEP)))
 
-    Env("meadow", members=members,
+    Env(MODEL_NAME,
+        members=members,
         height=get_prop('meadow_height', MEADOW_HEIGHT),
         width=get_prop('meadow_width', MEADOW_WIDTH))
 

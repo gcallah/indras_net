@@ -140,7 +140,7 @@ def set_up(props=None):
                            {"color": RED},
                            member_creator=create_resident,
                            num_members=get_prop('num_red', NUM_RED))
-    city = Env("A city", members=[blue_agents, red_agents],
+    city = Env(MODEL_NAME, members=[blue_agents, red_agents],
                height=get_prop('grid_height', DEF_CITY_DIM),
                width=get_prop('grid_width', DEF_CITY_DIM))
     city.exclude_menu_item("line_graph")

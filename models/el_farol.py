@@ -36,13 +36,9 @@ NUM_NON_DRINKERS = DEF_POPULATION - NUM_DRINKERS
 
 def get_decision(agent):
     """
-    Makes a decision randomly for the agent whether or not to go to the bar
+    Makes a decision for the agent whether or not to go to the bar
     """
-    random_num = random.random()
-    if random_num <= agent["motivation"]:
-        return True
-
-    return False
+    return random.random() <= agent["motivation"]
 
 
 def discourage(unwanted):
@@ -158,7 +154,7 @@ def set_up(props=None):
                              member_creator=create_non_drinker,
                              num_members=get_prop('population',
                                                   DEF_POPULATION) // 2)
-    bar = Env("el_farol",
+    bar = Env(MODEL_NAME,
               height=get_prop('grid_height', DEF_HEIGHT),
               width=get_prop('grid_width', DEF_WIDTH),
               members=[drinkers, non_drinkers],

@@ -165,9 +165,6 @@ class Agent(object):
             self.active = True
             self.pos = None
 
-            self.locator = None
-            # some thing we will fetch from registry:
-            # for these, we only store the name but look up object
             self.prim_group = None if prim_group is None else prim_group.name
         if reg:
             register(self.name, self)
@@ -203,19 +200,9 @@ class Agent(object):
     def locator(self):
         """
         This is the locator property.
-        We use the string _locator to look up the
-        locator object in the registry.
+        We are cutting this over to just be the env!
         """
-        return get_registration(self._locator)
-
-    @locator.setter
-    def locator(self, val):
-        """
-        Set our locator:
-        The str() of the locator is its name.
-        The str() of the name is itself.
-        """
-        self._locator = str(val)
+        return get_env()
 
     def restore(self, serial_obj):
         self.from_json(serial_obj)
@@ -228,7 +215,6 @@ class Agent(object):
                 "attrs": self.attrs,
                 "active": self.active,
                 "prim_group": self.prim_group,
-                "locator": self._locator,
                 "neighbors": None,
                 "action_key": self.action_key
                 }
@@ -249,7 +235,6 @@ class Agent(object):
         self.name = serial_agent["name"]
         self.neighbors = None  # these must be re-created every run
         self.prim_group = serial_agent["prim_group"]
-        self._locator = serial_agent["locator"]
         self.type = serial_agent["type"]
 
     def __repr__(self):
@@ -262,7 +247,6 @@ class Agent(object):
         return self.pos is not None
 
     def set_pos(self, locator, x, y):
-        self.locator = locator  # whoever sets my pos is my locator!
         self.pos = (x, y)
 
     def get_pos(self):
@@ -397,8 +381,6 @@ class Agent(object):
             self.prim_group = None
 
     def add_group(self, group):
-        if is_space(group):
-            self.locator = group
         if self.prim_group is None:
             self.prim_group = group
 
