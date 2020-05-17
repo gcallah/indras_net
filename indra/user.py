@@ -8,7 +8,7 @@ from abc import abstractmethod
 from IPython import embed
 
 from indra.agent import Agent
-from registry.registry import get_env
+from registry.registry import get_env, set_user
 
 TERMINAL = "terminal"
 TEST = "test"
@@ -134,6 +134,8 @@ class User(Agent):
         # now we set our global singleton:
         global the_user
         the_user = self
+        # but we should cut over to it being in registry:
+        set_user(self)
 
     def to_json(self):
         return {"user_msgs": self.user_msgs,
