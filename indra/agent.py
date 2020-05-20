@@ -79,9 +79,15 @@ def join(agent1, agent2):
     if not is_composite(agent1):
         user_log_err("[Error] Attempt to place " + str(agent2)
                      + " in non-group " + str(agent1))
+        return False
     else:
-        agent1.add_member(agent2)
-        agent2.add_group(agent1)
+        if not agent1.add_member(agent2):
+            user_log_err("Could not add mbr " + str(agent2)
+                         + " to " + str(agent1))
+        if not agent2.add_group(agent1):
+            user_log_err("Could not add grp " + str(agent2)
+                         + " to " + str(agent1))
+        return True
 
 
 def split(agent1, agent2):
@@ -91,9 +97,11 @@ def split(agent1, agent2):
     if not is_composite(agent1):
         user_log_err("[Error] Attempt to remove " + str(agent2)
                      + " from non-group " + str(agent1))
+        return False
     else:
         agent1.del_member(agent2)
         agent2.del_group(agent1)
+        return True
 
 
 def switch(agent_nm, grp1_nm, grp2_nm):
@@ -102,16 +110,20 @@ def switch(agent_nm, grp1_nm, grp2_nm):
     We first must recover agent objects from the registry.
     """
     agent = get_registration(agent_nm)
-    grp1 = get_registration(grp1_nm)
-    grp2 = get_registration(grp2_nm)
     if agent is None:
         user_log_notif("In switch; could not find agent: " + str(agent))
+    grp1 = get_registration(grp1_nm)
     if grp1 is None:
         user_log_notif("In switch; could not find from group: " + str(grp1))
+    grp2 = get_registration(grp2_nm)
     if grp2 is None:
         user_log_notif("In switch; could not find to group: " + str(grp2))
-    split(grp1, agent)
-    join(grp2, agent)
+    if not split(grp1, agent):
+        user_log_err("Could not split " + str(agent)
+                     + " and " + str(grp1))
+    if not join(grp2, agent):
+        user_log_err("Could not join " + str(agent)
+                     + " and " + str(grp2))
 
 
 class AgentEncoder(json.JSONEncoder):
@@ -165,7 +177,7 @@ class Agent(object):
             self.active = True
             self.pos = None
 
-            self.prim_group = None if prim_group is None else prim_group.name
+            self.prim_group = None if prim_group is None else str(prim_group)
         if reg:
             register(self.name, self)
 
@@ -377,13 +389,18 @@ class Agent(object):
         self.active = False
 
     def del_group(self, group):
-        if group == self.prim_group:
+        if str(group) == self.prim_group:
             self.prim_group = None
+            return True
+        else:
+            return False
 
     def add_group(self, group):
-        if self.prim_group is None:
-            self.prim_group = group
+        self.prim_group = str(group)
+        return True
 
     def switch_groups(self, g1, g2):
-        self.del_group(g1)
-        self.add_group(g2)
+        if not self.del_group(g1):
+            user_log_err("Could not delete ", str(g1))
+        if not self.add_group(g2):
+            user_log_err("Could not add agent to ", str(g2))

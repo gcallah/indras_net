@@ -11,25 +11,11 @@ from random import choice
 from indra.agent import Agent, join, INF, is_composite, AgentEncoder
 
 from registry.registry import register, add_group
+from registry.registry import user_log_notif
+# from registry.registry import user_log_err
 from indra.utils import get_func_name
 
 DEBUG = False
-
-
-def write_composite(grp, fp):
-    """
-    This is untested!
-    But it should be roughly how we can produce the used car data model.
-    """
-    json.dump(grp.to_json(), fp, cls=AgentEncoder, indent=4)
-
-
-def read_composite(fp):
-    """
-    Fill in params, especially serial_obj.
-    """
-    # serial_obj = json.load()
-    return Composite()
 
 
 def grp_from_nm_dict(nm, dictionary):
@@ -42,8 +28,6 @@ class Composite(Agent):
     """
     This is the base class of all collections
     of entities. It itself is an agent.
-    Its fundamental nature is that it is a set of vectors.
-
     Args:
         attrs: a dictionary of group properties
         members: a list of members, that will be turned
@@ -196,8 +180,6 @@ class Composite(Agent):
                 else:
                     # delete agents but not composites:
                     if not is_composite(member):
-                        if DEBUG:
-                            print("Marking " + key + " for deletion.")
                         del_list.append(key)
         for key in del_list:
             del self.members[key]
@@ -300,6 +282,7 @@ class Composite(Agent):
         self.members[str(member)] = member
         if not member.prim_group:
             member.set_prim_group(self)
+        return True
 
     def del_member(self, member):
         """
@@ -309,6 +292,9 @@ class Composite(Agent):
             del self.members[str(member)]
             if member.primary_group() is self:
                 member.set_prim_group(None)
+        else:
+            user_log_notif("Attempt to del non-existent mbr: "
+                           + str(member))
 
     def rand_member(self):
         if len(self) > 0:

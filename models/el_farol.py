@@ -26,10 +26,12 @@ BAR_ATTEND = "Bar attendees"
 ATTENDANCE = "attendance"
 AGENTS_DECIDED = "agents_decided"
 OPT_OCCUPANCY = "opt_occupancy"
+MOTIV = "motivation"
 
 DEF_POPULATION = 10
-DEF_OPTIMAL_OCCUPANCY = int(0.6 * DEF_POPULATION)
-MOTIVATION = [0.6] * DEF_POPULATION
+DEF_MOTIV = 0.6
+MIN_MOTIV = 0.05
+DEF_OPTIMAL_OCCUPANCY = int(DEF_MOTIV * DEF_POPULATION)
 NUM_DRINKERS = DEF_POPULATION // 2
 NUM_NON_DRINKERS = DEF_POPULATION - NUM_DRINKERS
 
@@ -38,7 +40,7 @@ def get_decision(agent):
     """
     Makes a decision for the agent whether or not to go to the bar
     """
-    return random.random() <= agent["motivation"]
+    return random.random() <= agent[MOTIV]
 
 
 def discourage(unwanted):
@@ -51,13 +53,14 @@ def discourage(unwanted):
     while unwanted:
         if DEBUG:
             user_tell("The members are: " + drinkers.members)
-        random_drunk = random.choice(list(drinkers.members))
+        rand_name = random.choice(list(drinkers.members))
+        rand_agent = drinkers[rand_name]
 
         if DEBUG:
-            user_tell("drinker ", random_drunk, " = "
-                      + repr(drinkers[random_drunk]))
+            user_tell("drinker ", rand_agent, " = "
+                      + repr(drinkers[rand_agent]))
 
-        drinkers[random_drunk]["motivation"] -= 0.05
+        rand_agent[MOTIV] = max(rand_agent[MOTIV] - 0.05, MIN_MOTIV)
         discouraged += 1
         unwanted -= 1
     return discouraged
@@ -103,7 +106,7 @@ def create_drinker(name, i, props=None):
     Create an agent.
     """
     return Agent(name + str(i), action=drinker_action,
-                 attrs={"motivation": 0.6})
+                 attrs={MOTIV: DEF_MOTIV})
 
 
 def create_non_drinker(name, i, props=None):
@@ -111,7 +114,7 @@ def create_non_drinker(name, i, props=None):
     Create an agent.
     """
     return Agent(name + str(i), action=drinker_action,
-                 attrs={"motivation": 0.6})
+                 attrs={MOTIV: DEF_MOTIV})
 
 
 def setup_attendance(pop_hist):
@@ -161,7 +164,7 @@ def set_up(props=None):
               pop_hist_setup=setup_attendance)
     population = len(drinkers) + len(non_drinkers)
     bar.set_attr("population", population)
-    bar.set_attr(OPT_OCCUPANCY, int(population * 0.6))
+    bar.set_attr(OPT_OCCUPANCY, int(population * DEF_MOTIV))
     bar.set_attr(AGENTS_DECIDED, 0)
     bar.set_attr(ATTENDANCE, 0)
     set_env_attrs()

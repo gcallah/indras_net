@@ -5,7 +5,7 @@ This is the test suite for el_farol.py.
 from unittest import TestCase, main
 
 import models.el_farol as el_farol
-from models.el_farol import set_up
+from models.el_farol import set_up, DRINKERS, NON_DRINKERS, MOTIV
 
 
 class ElFarolTestCase(TestCase):
@@ -13,6 +13,9 @@ class ElFarolTestCase(TestCase):
         set_up()
 
     def tearDown(self):
+        """
+        This should undo what setup() does!
+        """
         pass
 
     # an integration test:
@@ -23,15 +26,15 @@ class ElFarolTestCase(TestCase):
         """
         Test creating a non-drinker.
         """
-        agent = el_farol.create_non_drinker("non-drunk", 0)
-        self.assertEqual(agent.name, "non-drunk0")
+        agent = el_farol.create_non_drinker(DRINKERS, 0)
+        self.assertIn(MOTIV, agent)
 
     def test_create_drinker(self):
         """
         Test creating a drinker.
         """
-        agent = el_farol.create_drinker("drunk", 0)
-        self.assertEqual(agent.name, "drunk0")
+        agent = el_farol.create_drinker(NON_DRINKERS, 0)
+        self.assertIn(MOTIV, agent)
 
     def test_discourage(self):
         discouraged = el_farol.discourage(1)
