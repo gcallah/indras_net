@@ -20,7 +20,7 @@ def load_models(indra_dir):
 def get_models(indra_dir):
     try:
         models_db = load_models(indra_dir)
-    except FileNotFoundError:
+    except FileNotFoundError:  # noqa: F821
         return {ERROR: "Model file not found: indra dir is " + indra_dir}
 
     models_response = []
@@ -36,7 +36,7 @@ def get_model(model_id, indra_dir=None, models_db=None):
     if models_db is None:
         try:
             models_db = load_models(indra_dir)
-        except FileNotFoundError:
+        except FileNotFoundError:  # noqa: F821
             msg = user_log_err("Model file not found: indra_dir is: " +
                                indra_dir)
             return {ERROR: msg}

@@ -120,8 +120,7 @@ def expects_plt(fn):
     @wraps(fn)
     def wrapper(*args, **kwargs):
         if not plt_present:
-            print(f"cannot plot with {fn.__qualname__}: \
-            matplotlib's pyplot is not installed")
+            print("Matplotlib not detected.")
             return
         return fn(*args, **kwargs)
     return wrapper

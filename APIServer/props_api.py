@@ -15,7 +15,7 @@ def get_props(model_id, indra_dir):
             return json.loads(file.read())
     except (IndexError, KeyError, ValueError):
         return err_return("Invalid model id " + str(model_id))
-    except FileNotFoundError:
+    except FileNotFoundError:  # noqa: F821
         return err_return("Models or props file not found")
 
 

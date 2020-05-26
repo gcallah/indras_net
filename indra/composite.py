@@ -11,7 +11,7 @@ from random import choice
 from indra.agent import Agent, join, INF, is_composite, AgentEncoder
 
 from registry.registry import register, add_group
-from registry.registry import user_log_notif
+# from registry.registry import user_log_notif
 # from registry.registry import user_log_err
 from indra.utils import get_func_name
 
@@ -293,8 +293,7 @@ class Composite(Agent):
             if member.primary_group() is self:
                 member.set_prim_group(None)
         else:
-            user_log_notif("Attempt to del non-existent mbr: "
-                           + str(member))
+            print("Attempt to del non-existent mbr: " + str(member))
 
     def rand_member(self):
         if len(self) > 0:
@@ -305,7 +304,7 @@ class Composite(Agent):
         else:
             return None
 
-    def subset(self, predicate, *args, name=None):
+    def subset(self, predicate, *args, name=None):  # noqa E999
         new_dict = OrderedDict()
         for mbr in self:
             if predicate(self[mbr], *args):

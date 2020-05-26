@@ -10,7 +10,7 @@ from random import random
 import numpy as np
 
 from registry.registry import register, get_registration, get_env
-from registry.registry import user_log_notif, user_log_err
+# from registry.registry import user_log_notif, user_log_err
 from indra.utils import get_func_name
 
 DEBUG = False  # turns debugging code on or off
@@ -77,16 +77,16 @@ def join(agent1, agent2):
     Create connection between agent1 and agent2.
     """
     if not is_composite(agent1):
-        user_log_err("[Error] Attempt to place " + str(agent2)
-                     + " in non-group " + str(agent1))
+        print("[Error] Attempt to place " + str(agent2)
+              + " in non-group " + str(agent1))
         return False
     else:
         if not agent1.add_member(agent2):
-            user_log_err("Could not add mbr " + str(agent2)
-                         + " to " + str(agent1))
+            print("Could not add mbr " + str(agent2)
+                  + " to " + str(agent1))
         if not agent2.add_group(agent1):
-            user_log_err("Could not add grp " + str(agent2)
-                         + " to " + str(agent1))
+            print("Could not add grp " + str(agent2)
+                  + " to " + str(agent1))
         return True
 
 
@@ -95,8 +95,8 @@ def split(agent1, agent2):
     Break connection between agent1 and agent2.
     """
     if not is_composite(agent1):
-        user_log_err("[Error] Attempt to remove " + str(agent2)
-                     + " from non-group " + str(agent1))
+        print("[Error] Attempt to remove " + str(agent2)
+              + " from non-group " + str(agent1))
         return False
     else:
         agent1.del_member(agent2)
@@ -111,19 +111,19 @@ def switch(agent_nm, grp1_nm, grp2_nm):
     """
     agent = get_registration(agent_nm)
     if agent is None:
-        user_log_notif("In switch; could not find agent: " + str(agent))
+        print("In switch; could not find agent: " + str(agent))
     grp1 = get_registration(grp1_nm)
     if grp1 is None:
-        user_log_notif("In switch; could not find from group: " + str(grp1))
+        print("In switch; could not find from group: " + str(grp1))
     grp2 = get_registration(grp2_nm)
     if grp2 is None:
-        user_log_notif("In switch; could not find to group: " + str(grp2))
+        print("In switch; could not find to group: " + str(grp2))
     if not split(grp1, agent):
-        user_log_err("Could not split " + str(agent)
-                     + " and " + str(grp1))
+        print("Could not split " + str(agent)
+              + " and " + str(grp1))
     if not join(grp2, agent):
-        user_log_err("Could not join " + str(agent)
-                     + " and " + str(grp2))
+        print("Could not join " + str(agent)
+              + " and " + str(grp2))
 
 
 class AgentEncoder(json.JSONEncoder):
@@ -330,8 +330,8 @@ class Agent(object):
                     self.move(max_move=max_move, angle=angle)
                     moved = True
             elif DEBUG:
-                user_log_notif("I'm " + self.name
-                               + " and I ain't got no action to do!")
+                print("I'm " + self.name
+                      + " and I ain't got no action to do!")
         else:
             self.active = False
         return acted, moved
@@ -376,7 +376,7 @@ class Agent(object):
             new_xy = None
             if angle is not None:
                 if DEBUG:
-                    user_log_notif("Using angled move")
+                    print("Using angled move")
                 new_xy = self.locator.point_from_vector(angle,
                                                         max_move, self.pos)
             self.locator.place_member(self, max_move=max_move, xy=new_xy)
@@ -401,6 +401,6 @@ class Agent(object):
 
     def switch_groups(self, g1, g2):
         if not self.del_group(g1):
-            user_log_err("Could not delete ", str(g1))
+            print("Could not delete ", str(g1))
         if not self.add_group(g2):
-            user_log_err("Could not add agent to ", str(g2))
+            print("Could not add agent to ", str(g2))

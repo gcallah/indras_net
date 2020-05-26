@@ -8,7 +8,7 @@ from abc import abstractmethod
 from IPython import embed
 
 from indra.agent import Agent
-from registry.registry import get_env, set_user
+from registry.registry import get_env  # , set_user
 
 TERMINAL = "terminal"
 TEST = "test"
@@ -135,7 +135,7 @@ class User(Agent):
         global the_user
         the_user = self
         # but we should cut over to it being in registry:
-        set_user(self)
+        # set_user(self)
 
     def to_json(self):
         return {"user_msgs": self.user_msgs,
@@ -203,7 +203,7 @@ class TermUser(User):
         """
         How to tell the user something.
         """
-        print(msg, end=end)
+        print(msg, end=end)  # noqa E999
         return msg
 
     def debug(self, msg, end='\n'):
