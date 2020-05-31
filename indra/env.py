@@ -233,7 +233,12 @@ class Env(Space):
                     break
 
     def add_member(self, member):
-        super().add_member(member)
+        """
+        Don't think we really need this here!
+        It is just a pass-through call at present.
+        Must examine further: eliminate if not needed.
+        """
+        return super().add_member(member)
 
     def add_child(self, group):
         """
