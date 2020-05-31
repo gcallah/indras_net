@@ -24,9 +24,6 @@ menu_dir = os.getenv("INDRA_HOME", "/home/indrasnet/indras_net") + "/indra"
 menu_file = "menu.json"
 menu_src = menu_dir + "/" + menu_file
 
-the_user = None  # this is a singleton, so global should be ok
-NOT_IMPL = "Choice not yet implemented."
-
 
 def user_tell(msg):
     return reg.user_tell(msg)
@@ -57,7 +54,7 @@ def run_notice(model_nm):
 
 
 def not_impl(user):
-    return reg.not_impl(NOT_IMPL)
+    return reg.not_impl(user)
 
 
 def run(user, test_run=False):

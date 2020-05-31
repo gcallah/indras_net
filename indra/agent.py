@@ -85,8 +85,10 @@ def join(agent1, agent2):
             user_log_notif("Could not add mbr " + str(agent2)
                            + " to " + str(agent1))
         if not agent2.add_group(agent1):
-            print("Could not add grp " + str(agent2)
-                  + " to " + str(agent1))
+            user_log_notif("Could not add grp "
+                           + str(agent2)
+                           + " to "
+                           + str(agent1))
         return True
 
 
@@ -111,19 +113,19 @@ def switch(agent_nm, grp1_nm, grp2_nm):
     """
     agent = get_registration(agent_nm)
     if agent is None:
-        print("In switch; could not find agent: " + str(agent))
+        user_log_notif("In switch; could not find agent: " + str(agent))
     grp1 = get_registration(grp1_nm)
     if grp1 is None:
-        print("In switch; could not find from group: " + str(grp1))
+        user_log_notif("In switch; could not find from group: " + str(grp1))
     grp2 = get_registration(grp2_nm)
     if grp2 is None:
-        print("In switch; could not find to group: " + str(grp2))
+        user_log_notif("In switch; could not find to group: " + str(grp2))
     if not split(grp1, agent):
-        print("Could not split " + str(agent)
-              + " and " + str(grp1))
+        user_log_notif("Could not split " + str(agent)
+                       + " and " + str(grp1))
     if not join(grp2, agent):
-        print("Could not join " + str(agent)
-              + " and " + str(grp2))
+        user_log_notif("Could not join " + str(agent)
+                       + " and " + str(grp2))
 
 
 class AgentEncoder(json.JSONEncoder):
@@ -330,8 +332,9 @@ class Agent(object):
                     self.move(max_move=max_move, angle=angle)
                     moved = True
             elif DEBUG:
-                print("I'm " + self.name
-                      + " and I ain't got no action to do!")
+                user_log_notif("I'm "
+                               + self.name
+                               + " and I have no action!")
         else:
             self.active = False
         return acted, moved
@@ -376,7 +379,7 @@ class Agent(object):
             new_xy = None
             if angle is not None:
                 if DEBUG:
-                    print("Using angled move")
+                    user_log_notif("Using angled move")
                 new_xy = self.locator.point_from_vector(angle,
                                                         max_move, self.pos)
             self.locator.place_member(self, max_move=max_move, xy=new_xy)
@@ -401,6 +404,6 @@ class Agent(object):
 
     def switch_groups(self, g1, g2):
         if not self.del_group(g1):
-            print("Could not delete ", str(g1))
+            user_log_notif("Could not delete ", str(g1))
         if not self.add_group(g2):
-            print("Could not add agent to ", str(g2))
+            user_log_notif("Could not add agent to ", str(g2))
