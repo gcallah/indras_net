@@ -10,7 +10,7 @@ from random import random
 import numpy as np
 
 from registry.registry import register, get_registration, get_env
-# from registry.registry import user_log_notif, user_log_err
+from registry.registry import user_log_notif, user_log_err
 from indra.utils import get_func_name
 
 DEBUG = False  # turns debugging code on or off
@@ -77,13 +77,13 @@ def join(agent1, agent2):
     Create connection between agent1 and agent2.
     """
     if not is_composite(agent1):
-        print("[Error] Attempt to place " + str(agent2)
-              + " in non-group " + str(agent1))
+        user_log_err("Attempt to place " + str(agent2)
+                     + " in non-group " + str(agent1))
         return False
     else:
         if not agent1.add_member(agent2):
-            print("Could not add mbr " + str(agent2)
-                  + " to " + str(agent1))
+            user_log_notif("Could not add mbr " + str(agent2)
+                           + " to " + str(agent1))
         if not agent2.add_group(agent1):
             print("Could not add grp " + str(agent2)
                   + " to " + str(agent1))
@@ -95,8 +95,8 @@ def split(agent1, agent2):
     Break connection between agent1 and agent2.
     """
     if not is_composite(agent1):
-        print("[Error] Attempt to remove " + str(agent2)
-              + " from non-group " + str(agent1))
+        user_log_err("Attempt to remove " + str(agent2)
+                     + " from non-group " + str(agent1))
         return False
     else:
         agent1.del_member(agent2)

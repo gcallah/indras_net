@@ -10,8 +10,58 @@ import warnings
 REGISTRY = "Registry"
 
 """
-We can also have some global singletons here. We'll start with `_the_env`;
+We can also have some global singletons here. We'll start with `_the_user`;
 """
+_the_user = None  # this is a singleton, so global should be ok
+NOT_IMPL = "Choice not yet implemented."
+
+
+def set_user(user):
+    global _the_user
+    _the_user = user
+
+
+def user_tell(msg):
+    if _the_user is None:
+        print(msg)
+    else:
+        return _the_user.tell(msg)
+
+
+def user_debug(msg):
+    if _the_user is None:
+        print(msg)
+    else:
+        return _the_user.debug(msg)
+
+
+def user_log(msg):
+    if _the_user is None:
+        print(msg)
+    else:
+        return _the_user.log(msg)
+
+
+def user_log_err(msg):
+    return user_log("ERROR: " + msg)
+
+
+def user_log_warn(msg):
+    return user_log("WARNING: " + msg)
+
+
+def user_log_notif(msg):
+    return user_log("NOTIFICATION: " + msg)
+
+
+def run_notice(model_nm):
+    return user_log_notif("Running model " + model_nm)
+
+
+def not_impl(user):
+    return _the_user.tell(NOT_IMPL)
+
+
 _the_env = None  # this is a singleton, so global should be ok
 
 

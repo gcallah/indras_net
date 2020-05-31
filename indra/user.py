@@ -8,13 +8,13 @@ from abc import abstractmethod
 from IPython import embed
 
 from indra.agent import Agent
-from registry.registry import get_env  # , set_user
+from registry.registry import get_env, set_user
+import registry.registry as reg
 
 TERMINAL = "terminal"
 TEST = "test"
 API = "api"
 GUI = "gui"
-NOT_IMPL = "Choice not yet implemented."
 CANT_ASK_TEST = "Can't ask anything of a scripted test"
 DEF_STEPS = 1
 DEFAULT_CHOICE = '1'
@@ -25,38 +25,39 @@ menu_file = "menu.json"
 menu_src = menu_dir + "/" + menu_file
 
 the_user = None  # this is a singleton, so global should be ok
+NOT_IMPL = "Choice not yet implemented."
 
 
 def user_tell(msg):
-    return the_user.tell(msg)
+    return reg.user_tell(msg)
 
 
 def user_debug(msg):
-    return the_user.debug(msg)
+    return reg.user_debug(msg)
 
 
 def user_log(msg):
-    return the_user.log(msg)
+    return reg.user_log(msg)
 
 
 def user_log_err(msg):
-    return user_log("ERROR: " + msg)
+    return reg.user_log_err(msg)
 
 
 def user_log_warn(msg):
-    return user_log("WARNING: " + msg)
+    return reg.user_log(msg)
 
 
 def user_log_notif(msg):
-    return user_log("NOTIFICATION: " + msg)
+    return reg.user_log(msg)
 
 
 def run_notice(model_nm):
-    return user_log_notif("Running model " + model_nm)
+    return reg.user_log_notif(model_nm)
 
 
 def not_impl(user):
-    return user.tell(NOT_IMPL)
+    return reg.not_impl(NOT_IMPL)
 
 
 def run(user, test_run=False):
@@ -131,11 +132,7 @@ class User(Agent):
         self.user_msgs = ''
         self.debug_msg = ''
         self.error_message = {}
-        # now we set our global singleton:
-        global the_user
-        the_user = self
-        # but we should cut over to it being in registry:
-        # set_user(self)
+        set_user(self)
 
     def to_json(self):
         return {"user_msgs": self.user_msgs,
