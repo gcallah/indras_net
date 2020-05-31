@@ -13,8 +13,8 @@ from indra.display_methods import RED, GREEN
 from indra.env import Env, UNLIMITED
 from registry.registry import get_env, get_group, get_prop
 from registry.registry import get_env_attr, set_env_attr
+from registry.registry import user_tell, run_notice, user_log_notif
 from indra.utils import gaussian
-from indra.user import user_tell, run_notice, user_log_notif
 from indra.utils import init_props
 
 MODEL_NAME = 'coop'

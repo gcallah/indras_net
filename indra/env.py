@@ -267,9 +267,6 @@ class Env(Space):
         from_grp_nm = agent_by_name(from_grp)
         to_grp_nm = agent_by_name(to_grp)
         self.switches.append((agent_nm, from_grp_nm, to_grp_nm))
-        user_log_notif("Agent " + agent_nm + " is scheduled to switch from "
-                       + from_grp_nm + " to " + to_grp_nm)
-        user_log_notif(self.rpt_switches())
 
     def handle_womb(self):
         """

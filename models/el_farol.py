@@ -13,8 +13,8 @@ from indra.composite import Composite
 from indra.display_methods import BLUE, RED
 from indra.env import Env
 from registry.registry import get_env, get_group, get_prop
+from registry.registry import user_tell, run_notice, user_log_notif
 from indra.space import DEF_HEIGHT, DEF_WIDTH
-from indra.user import user_tell, run_notice, user_log_notif
 from indra.utils import init_props
 
 DEBUG = False

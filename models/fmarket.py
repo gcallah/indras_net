@@ -12,8 +12,8 @@ from indra.composite import Composite
 from indra.display_methods import BLUE, RED
 from indra.env import Env, UNLIMITED
 from registry.registry import get_env, get_prop
+from registry.registry import run_notice, user_log_notif
 from indra.utils import gaussian
-from indra.user import run_notice, user_log_notif
 from indra.utils import init_props
 
 MODEL_NAME = "fmarket"

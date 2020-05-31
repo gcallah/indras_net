@@ -13,8 +13,8 @@ from indra.composite import Composite
 from indra.display_methods import NAVY, DARKRED, RED, BLUE
 from indra.env import Env
 from registry.registry import get_env, get_group, get_prop
+from registry.registry import run_notice, user_log_notif
 from indra.space import in_hood
-from indra.user import run_notice, user_log_notif
 from indra.utils import init_props
 
 MODEL_NAME = "fashion"
