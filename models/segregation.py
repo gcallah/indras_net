@@ -9,7 +9,7 @@ from indra.composite import Composite
 from indra.display_methods import RED, BLUE
 from indra.env import Env
 from registry.registry import get_env, get_prop
-from indra.user import run_notice
+from registry.registry import run_notice
 from indra.utils import init_props
 
 MODEL_NAME = "segregation"

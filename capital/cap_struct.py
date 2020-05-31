@@ -11,6 +11,7 @@ from indra.composite import Composite
 from indra.display_methods import RED, BLUE
 from indra.env import Env
 from registry.registry import get_env, get_prop
+from registry.registry import user_tell
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import init_props
 
@@ -72,41 +73,40 @@ def entr_action(agent):
                     break
 
             if agent["wants"] and agent["have"]:
-                get_env().user.tell("I'm " + agent.name
-                                    + " and I will buy resources from "
-                                    + str(nearby_rholder) + ". I have "
-                                    + "{0:.2f}".format(agent["cash"])
-                                    + " dollars left."
-                                    + " I want "
-                                    + dict_to_string(agent["wants"])
-                                    + ", and I have "
-                                    + dict_to_string(agent["have"]) + ".")
+                user_tell("I'm " + agent.name
+                          + " and I will buy resources from "
+                          + str(nearby_rholder) + ". I have "
+                          + "{0:.2f}".format(agent["cash"])
+                          + " dollars left."
+                          + " I want "
+                          + dict_to_string(agent["wants"])
+                          + ", and I have "
+                          + dict_to_string(agent["have"]) + ".")
             elif agent["wants"]:
-                get_env().user.tell("I'm " + agent.name
-                                    + " and I will buy resources from "
-                                    + str(nearby_rholder) + ". I have "
-                                    + "{0:.2f}".format(agent["cash"])
-                                    + " dollars left."
-                                    + " I want "
-                                    + dict_to_string(agent["wants"])
-                                    + ", and I don't have any capital.")
+                user_tell("I'm " + agent.name
+                          + " and I will buy resources from "
+                          + str(nearby_rholder) + ". I have "
+                          + "{0:.2f}".format(agent["cash"])
+                          + " dollars left."
+                          + " I want "
+                          + dict_to_string(agent["wants"])
+                          + ", and I don't have any capital.")
             elif agent["have"]:
-                get_env().user.tell("I'm " + agent.name
-                                    + " and I will buy resources from "
-                                    + str(nearby_rholder) + ". I have "
-                                    + "{0:.2f}".format(agent["cash"])
-                                    + " dollars left."
-                                    + " I got all I need, and I have "
-                                    + dict_to_string(agent["have"]) + "!")
+                user_tell("I'm " + agent.name
+                          + " and I will buy resources from "
+                          + str(nearby_rholder) + ". I have "
+                          + "{0:.2f}".format(agent["cash"])
+                          + " dollars left."
+                          + " I got all I need, and I have "
+                          + dict_to_string(agent["have"]) + "!")
             return False
             # move to find resource holder
 
         else:
-            get_env().user.tell("I'm " + agent.name
-                                + " and I'm broke!")
+            user_tell("I'm " + agent.name + " and I'm broke!")
     else:
-        get_env().user.tell("I'm " + agent.name
-                            + " and I can't find resources.")
+        user_tell("I'm " + agent.name
+                  + " and I can't find resources.")
     return True
 
 

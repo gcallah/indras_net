@@ -6,8 +6,8 @@ from indra.composite import Composite
 from indra.display_methods import TAN, GRAY
 from indra.env import Env
 from registry.registry import get_prop, get_group, get_env
+from registry.registry import user_tell, run_notice
 from indra.space import in_hood
-from indra.user import user_tell, run_notice
 from indra.utils import init_props
 
 MODEL_NAME = "wolfsheep"
