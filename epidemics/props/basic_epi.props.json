@@ -1,0 +1,30 @@
+{
+  "grid_height": {
+    "val": 20,
+    "question": "What is the grid height?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 2
+  },
+  "grid_width": {
+    "val": 20,
+    "question": "What is the grid width?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 2
+  },
+  "immune_period": {
+    "val": 10,
+    "question": "What is mean period of immunity?",
+    "atype": "INT",
+    "hival": 100,
+    "lowval": 1
+  },
+  "density": {
+    "val": 0.44,
+    "question": "What density of people in the city would you like?",
+    "atype": "DBL",
+    "hival": 1,
+    "lowval": 0
+  }
+}
