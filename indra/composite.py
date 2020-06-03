@@ -10,9 +10,7 @@ from random import choice
 
 from indra.agent import Agent, join, INF, is_composite, AgentEncoder
 
-from registry.registry import register, add_group
-# from registry.registry import user_log_notif
-# from registry.registry import user_log_err
+from registry.registry import add_group
 from indra.utils import get_func_name
 
 DEBUG = False
@@ -66,9 +64,7 @@ class Composite(Agent):
                 for i in range(num_members):
                     join(self, member_creator(self.name, i, **kwargs))
         if reg:
-            # this is suspicious: why add it twice?
             add_group(self.name, self)
-            register(self.name, self)
 
     def restore(self, serial_obj):
         """

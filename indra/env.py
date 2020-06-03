@@ -122,8 +122,6 @@ class Env(Space):
 
         self.set_menu_excludes()
 
-        if reg:
-            regis.register(self.name, self)
         # now we set our global singleton:
         regis.set_env(self)
 

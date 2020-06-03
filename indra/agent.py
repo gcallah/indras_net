@@ -257,7 +257,7 @@ class Agent(object):
         return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
 
     def primary_group(self):
-        return get_registration(self.prim_group)
+        return get_group(self.prim_group)
 
     def is_located(self):
         return self.pos is not None
