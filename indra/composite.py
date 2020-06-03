@@ -66,6 +66,7 @@ class Composite(Agent):
                 for i in range(num_members):
                     join(self, member_creator(self.name, i, **kwargs))
         if reg:
+            # this is suspicious: why add it twice?
             add_group(self.name, self)
             register(self.name, self)
 

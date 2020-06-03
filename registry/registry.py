@@ -141,9 +141,9 @@ def get_prop(key, default_val=None):
 class Registry(object):
     """
     This is an abstraction layer over a dictionary of object names.
-    As objects are restored from a serilazed stream, they should be registered
-    here. If they are already registered, they will ignore the newly
-    registered object, and leave the old value in place.
+    As objects are restored from a serilazed stream, they should be
+    registered here. If they are already registered, they will
+    ignore the newly registered object, and leave the old value in place.
     """
     def __init__(self):
         self.agents = {}

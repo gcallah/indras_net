@@ -10,7 +10,7 @@ from random import randint
 
 from indra.agent import is_composite, AgentEncoder
 from indra.composite import Composite
-from registry.registry import register, get_registration
+from registry.registry import register, get_registration, get_group
 from indra.user import user_debug, user_log, user_log_warn
 
 DEF_WIDTH = 10
@@ -470,7 +470,7 @@ class Space(Composite):
                                     hood_size=hood_size)
         if isinstance(group, str):
             # lookup group by name
-            group = get_registration(group)
+            group = get_group(group)
             if group is None:
                 return None
         for agent_name in hood:

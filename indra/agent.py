@@ -10,7 +10,7 @@ from random import random
 import numpy as np
 
 from registry.registry import register, get_registration, get_env
-from registry.registry import user_log_notif, user_log_err
+from registry.registry import get_group, user_log_notif, user_log_err
 from indra.utils import get_func_name
 
 DEBUG = True  # turns debugging code on or off
@@ -114,10 +114,10 @@ def switch(agent_nm, grp1_nm, grp2_nm):
     agent = get_registration(agent_nm)
     if agent is None:
         user_log_notif("In switch; could not find agent: " + str(agent))
-    grp1 = get_registration(grp1_nm)
+    grp1 = get_group(grp1_nm)
     if grp1 is None:
         user_log_notif("In switch; could not find from group: " + str(grp1))
-    grp2 = get_registration(grp2_nm)
+    grp2 = get_group(grp2_nm)
     if grp2 is None:
         user_log_notif("In switch; could not find to group: " + str(grp2))
     split_em = split(grp1, agent)

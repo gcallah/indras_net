@@ -280,7 +280,7 @@ class Env(Space):
         """
         if self.womb is not None:
             for group_nm in self.womb:
-                group = regis.get_registration(group_nm)
+                group = regis.get_group(group_nm)
                 if group is not None and group.member_creator is not None:
                     group.num_members_ever += 1
                     agent = group.member_creator("", group.num_members_ever)
