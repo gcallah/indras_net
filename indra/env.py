@@ -29,6 +29,8 @@ UNLIMITED = 1000
 X = 0
 Y = 1
 
+CENSUS_FUNC = "census_func"
+
 POP_HIST_HDR = "PopHist for "
 POP_SEP = ", "
 
@@ -157,7 +159,7 @@ class Env(Space):
         # cause we're gonna try to call them
         if isinstance(census, FunctionType):
             print("Adding custom census func")
-            self.attrs["census_func"] = census
+            self.attrs[CENSUS_FUNC] = census
         if isinstance(pop_hist_func, FunctionType):
             self.attrs["pop_hist_func"] = pop_hist_func
         if isinstance(line_data_func, FunctionType):
@@ -341,25 +343,26 @@ class Env(Space):
 
         census_func overrides the default behavior.
         """
-        if "census_func" in self.attrs:
+        if CENSUS_FUNC in self.attrs:
             user_log_notif("Employing custom census func for "
                            + self.name)
-            return self.attrs["census_func"](self)
+            return self.attrs[CENSUS_FUNC](self)
         else:
-            total_pop = 0
+            SEP_STR = "==================\n"
             census_str = ("\nTotal census for period "
                           + str(self.get_periods()) + ":\n"
-                          + "==================\n"
+                          + SEP_STR
                           + "Group census:\n"
-                          + "==================\n")
+                          + SEP_STR)
             for name in self.members:
-                population = len(self.members[name])
-                total_pop += population
-                census_str += ("  " + name + ": "
+                grp = self.members[name]
+                population = len(grp)
+                census_str += ("  " + name + " ("
+                               + str(id(grp)) + "): "
                                + str(population) + "\n")
-            census_str += ("==================\n"
+            census_str += (SEP_STR
                            + "Agent census:\n"
-                           + "==================\n"
+                           + SEP_STR
                            + "  Total agents moved: "
                            + str(num_moves) + "\n"
                            + "  Total agents who switched groups: "

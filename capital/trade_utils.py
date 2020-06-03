@@ -1,7 +1,6 @@
 """
 This file contains general functions useful in trading goods.
 """
-# from indra.user import user_debug
 from registry.registry import get_env
 import random
 import copy
@@ -241,8 +240,6 @@ def negotiate(trader1, trader2, comp=None):
         # amt = amt_adjust(trader1, this_good)
         while trader1["goods"][this_good][AMT_AVAILABLE] >= amt:
             ans = rec_offer(trader2, this_good, amt, trader1, comp=comp)
-#             user_debug("I'm " + trader1.name
-#                        + ", " + answer_to_str(ans) + " this offer")
             if ans == ACCEPT or ans == REJECT:
                 break
             amt += amt

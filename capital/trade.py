@@ -8,7 +8,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import BLUE
 from indra.env import Env
-from registry.registry import get_env, get_prop
+from registry.registry import get_env, get_prop, user_log_notif
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import init_props
 from capital.trade_utils import seek_a_trade
@@ -80,7 +80,7 @@ def set_up(props=None):
         members=[trader_group])
     for trader in trader_group:
         allocate_resources(trader_group[trader], GOODS)
-        get_env().user.tell(trader_group[trader]["goods"])
+        user_log_notif(trader_group[trader]["goods"])
     return (trader_group, max_utility)
 
 
@@ -91,7 +91,7 @@ def main():
     (trader_group, max_utility) = set_up()
 
     if DEBUG2:
-        get_env().user.tell(get_env().__repr__())
+        user_log_notif(get_env().__repr__())
 
     get_env()()
     return 0

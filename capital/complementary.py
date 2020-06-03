@@ -8,10 +8,9 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import BLUE
 from indra.env import Env
-from registry.registry import get_env, get_prop
+from registry.registry import get_env, get_prop, user_log_notif
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import init_props
-from indra.user import user_log_notif
 from capital.trade_utils import seek_a_trade_w_comp
 from capital.trade_utils import UTIL_FUNC, AMT_AVAILABLE
 import capital.trade_utils as tu

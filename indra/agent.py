@@ -13,7 +13,7 @@ from registry.registry import register, get_registration, get_env
 from registry.registry import user_log_notif, user_log_err
 from indra.utils import get_func_name
 
-DEBUG = False  # turns debugging code on or off
+DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
 # x and y indices
@@ -120,12 +120,14 @@ def switch(agent_nm, grp1_nm, grp2_nm):
     grp2 = get_registration(grp2_nm)
     if grp2 is None:
         user_log_notif("In switch; could not find to group: " + str(grp2))
-    if not split(grp1, agent):
-        user_log_notif("Could not split " + str(agent)
-                       + " and " + str(grp1))
-    if not join(grp2, agent):
-        user_log_notif("Could not join " + str(agent)
-                       + " and " + str(grp2))
+    split_em = split(grp1, agent)
+    joined_em = join(grp2, agent)
+    if DEBUG and split_em and joined_em:
+        user_log_notif("Switched agent " + str(agent)
+                       + " from grp " + grp1_nm
+                       + "(" + str(id(grp1)) + ")"
+                       + " to grp " + grp2_nm
+                       + "(" + str(id(grp2)) + ")")
 
 
 class AgentEncoder(json.JSONEncoder):

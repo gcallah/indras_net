@@ -6,6 +6,7 @@ import logging
 import indra.utils as utils
 import indra.grid_agent as ga
 import indra.grid_env as ge
+from registry.registry import user_log_notif
 
 TRADE = "trade"
 
@@ -222,7 +223,7 @@ class EdgeboxEnv(ge.GridEnv):
         """
         self.trades_this_prd = 0
         super().step()
-        self.user.tell("Trades this period: "
+        user_log_notif("Trades this period: "
                        + str(self.trades_this_prd))
         self.step_report()
 
@@ -231,10 +232,10 @@ class EdgeboxEnv(ge.GridEnv):
         What we report to the user after stepping.
         """
         if self.trades_this_prd <= 0:
-            self.user.tell("We've reached equilibrium.")
+            user_log_notif("We've reached equilibrium.")
         else:
             for a in self.agents:
-                self.user.tell("%s has gained %f utils and now has: %s"
+                user_log_notif("%s has gained %f utils and now has: %s"
                                % (a.name, a.util_gain(), a.list_goods()))
 
     def record_trade(self, a1, a2):
