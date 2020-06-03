@@ -52,15 +52,12 @@ $(MODEL_REGISTRY)/%_model.json: $(MODELS_DIR)/%.py
 models.json: $(MODELJSON_FILES)
 	python3 json_combiner.py $? --models_fp $(JSON_DESTINATION)
 
-create_dev_env:
-	pip3 install -r $(REQ_DIR)/requirements-dev.txt
+create_dev_env: FORCE
+	./setup.sh
 	git submodule init $(UTILS_DIR)
 	git submodule update $(UTILS_DIR)
-	@echo 'Set PYTHONPATH and INDRA_HOME in your login script as follows:'
-	@echo 'export INDRA_HOME="$(shell pwd)"'
-	@echo 'export PYTHONPATH="$$INDRA_HOME:$$PYTHONPATH"'
 
-setup_react:
+setup_react: FORCE
 	cd $(REACT_TOP); npm install
 
 # Build react files to generate static assets (HTML, CSS, JS)

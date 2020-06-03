@@ -1,5 +1,5 @@
 """
-A model to simulate the spread of fire in a forest.
+A model to simulate the spread of fire in a city.
 """
 
 from indra.agent import Agent
@@ -23,7 +23,8 @@ DEF_DENSITY = .44
 
 TREE_PREFIX = "Tree"
 
-# tree condition strings
+# health condition strings
+# We need: CONTAGIOUS, DEAD, IMMUNE
 HEALTHY = "Healthy"
 INFECTED = "Infected"
 ON_FIRE = "On Fire"
@@ -32,6 +33,7 @@ NEW_GROWTH = "New Growth"
 
 # state numbers: create as strings for JSON,
 # convert to int when we need 'em that way
+# these should be changed to 2 letter abbreviations of the above.
 HE = "0"
 IN = "1"
 OF = "2"
@@ -43,7 +45,7 @@ STATE_TRANS = [
     [0.0, 0.0, 1.0, 0.0, 0.0],
     [0.0, 0.0, 0.0, 1.0, 0.0],
     [0.0, 0.0, 0.0, .99, .01],
-    [1.0, 0.0, 0.0, 0.0, 0.0],
+    [.90, 0.0, 0.0, 0.0, .10],
 ]
 
 GROUP_MAP = "group_map"
@@ -56,7 +58,7 @@ def is_healthy(agent, *args):
     return agent["state"] == HE
 
 
-def is_on_fire(agent, *args):
+def is_contagious(agent, *args):
     """
     Checking whether the state is on fire or not
     """
@@ -65,16 +67,16 @@ def is_on_fire(agent, *args):
 
 def tree_action(agent):
     """
-    This is what trees do each turn in the forest.
+    This is what trees do each turn in the city.
     """
     old_state = agent["state"]
     if is_healthy(agent):
         neighbors = get_env().get_moore_hood(agent)
         if neighbors is not None:
-            nearby_fires = neighbors.subset(is_on_fire, agent)
+            nearby_fires = neighbors.subset(is_contagious, agent)
             if len(nearby_fires) > 0:
                 if DEBUG2:
-                    user_log_notif("Setting nearby tree on fire!")
+                    user_log_notif("Infecting nearby people!")
                 agent["state"] = IN
 
     # if we didn't catch on fire above, do probabilistic transition:
@@ -126,10 +128,10 @@ def set_up(props=None):
     """
     init_props(MODEL_NAME, props, model_dir="epidemics")
 
-    forest_height = get_prop('grid_height', DEF_DIM)
-    forest_width = get_prop('grid_width', DEF_DIM)
-    forest_density = get_prop('density', DEF_DENSITY)
-    tree_cnt = int(forest_height * forest_width * forest_density)
+    city_height = get_prop('grid_height', DEF_DIM)
+    city_width = get_prop('grid_width', DEF_DIM)
+    city_density = get_prop('density', DEF_DENSITY)
+    tree_cnt = int(city_height * city_width * city_density)
     groups = []
     groups.append(Composite(HEALTHY, {"color": GREEN},
                   member_creator=plant_tree,
@@ -139,7 +141,7 @@ def set_up(props=None):
     groups.append(Composite(BURNED_OUT, {"color": BLACK}))
     groups.append(Composite(NEW_GROWTH, {"color": SPRINGGREEN}))
 
-    Env(MODEL_NAME, height=forest_height, width=forest_width, members=groups)
+    Env(MODEL_NAME, height=city_height, width=city_width, members=groups)
     set_env_attrs()
 
 
