@@ -1,27 +1,27 @@
 {
   "grid_height": {
-    "val": 8,
+    "val": 20,
     "question": "What is the grid height?",
     "atype": "INT",
     "hival": 100,
     "lowval": 2
   },
   "grid_width": {
-    "val": 8,
+    "val": 20,
     "question": "What is the grid width?",
     "atype": "INT",
     "hival": 100,
     "lowval": 2
   },
   "num_tsetters": {
-    "val": 4,
+    "val": 8,
     "question": "How many fashion trendsetters do you want?",
     "atype": "INT",
     "hival": 100,
     "lowval": 1
   },
   "num_followers": {
-    "val": 4,
+    "val": 24,
     "question": "How many fashion followers do you want?",
     "atype": "INT",
     "hival": 100,
