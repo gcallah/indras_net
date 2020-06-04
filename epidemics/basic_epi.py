@@ -1,5 +1,5 @@
 """
-A model to simulate the spread of fire in a city.
+A model to simulate the spread of virus in a city.
 """
 
 from indra.agent import Agent
@@ -7,9 +7,10 @@ from indra.agent import prob_state_trans
 from indra.composite import Composite
 from indra.display_methods import RED, GREEN, BLACK
 from indra.display_methods import SPRINGGREEN, TOMATO, TREE
+from indra.display_methods import BLUE
 from indra.env import Env
 from registry.registry import get_env, get_prop
-from registry.registry import user_log_err, run_notice, user_log_notif
+from registry.registry import user_log_err, run_notice, user_log_notif 
 from indra.utils import init_props
 
 MODEL_NAME = "basic_epi"
@@ -21,31 +22,31 @@ NEARBY = 1.8
 DEF_DIM = 30
 DEF_DENSITY = .44
 
-TREE_PREFIX = "Tree"
+PERSON_PREFIX = "Person"
 
 # health condition strings
 # We need: CONTAGIOUS, DEAD, IMMUNE
 HEALTHY = "Healthy"
 INFECTED = "Infected"
-ON_FIRE = "On Fire"
-BURNED_OUT = "Burned Out"
-NEW_GROWTH = "New Growth"
+CONTAGIOUS = "CONTAGIOUS"
+DEAD = "DEAD"
+IMMUNE = "IMMUNE"
 
 # state numbers: create as strings for JSON,
 # convert to int when we need 'em that way
 # these should be changed to 2 letter abbreviations of the above.
 HE = "0"
 IN = "1"
-OF = "2"
-BO = "3"
-NG = "4"
+CN = "2"
+DE = "3"
+IM = "4"
 
 STATE_TRANS = [
     [.985, .015, 0.0, 0.0, 0.0],
     [0.0, 0.0, 1.0, 0.0, 0.0],
+    [0.0, 0.0, 0.0, 0.06, 0.94],
     [0.0, 0.0, 0.0, 1.0, 0.0],
-    [0.0, 0.0, 0.0, .99, .01],
-    [.90, 0.0, 0.0, 0.0, .10],
+    [.10, 0.0, 0.0, 0.0, .90],
 ]
 
 GROUP_MAP = "group_map"
@@ -60,32 +61,32 @@ def is_healthy(agent, *args):
 
 def is_contagious(agent, *args):
     """
-    Checking whether the state is on fire or not
+    Checking whether the state is contagious or not
     """
-    return agent["state"] == OF
+    return agent["state"] == CN
 
 
-def tree_action(agent):
+def people_action(agent):
     """
-    This is what trees do each turn in the city.
+    This is what people do each turn in the city.
     """
     old_state = agent["state"]
     if is_healthy(agent):
         neighbors = get_env().get_moore_hood(agent)
         if neighbors is not None:
-            nearby_fires = neighbors.subset(is_contagious, agent)
-            if len(nearby_fires) > 0:
+            nearby_virus = neighbors.subset(is_contagious, agent)
+            if len(nearby_virus) > 0:
                 if DEBUG2:
                     user_log_notif("Infecting nearby people!")
                 agent["state"] = IN
 
-    # if we didn't catch on fire above, do probabilistic transition:
+    # if we didn't catch disease above, do probabilistic transition:
     if old_state == agent["state"]:
         # we gotta do these str/int shenanigans with state cause
         # JSON only allows strings as dict keys
         agent["state"] = str(prob_state_trans(int(old_state), STATE_TRANS))
         if agent["state"] == IN:
-            user_log_notif("Tree spontaneously catching fire.")
+            user_log_notif("Person spontaneously catching virus.")
 
     if old_state != agent["state"]:
         # if we entered a new state, then...
@@ -100,14 +101,14 @@ def tree_action(agent):
     return False
 
 
-def plant_tree(name, i, state=HE):
+def create_person(name, i, state=HE):
     """
-    Plant a new tree!
+    Create a new person!
     By default, they start out healthy.
     """
-    name = TREE_PREFIX
+    name = PERSON_PREFIX
     return Agent(name + str(i),
-                 action=tree_action,
+                 action=people_action,
                  attrs={"state": state,
                         "save_neighbors": True})
 
@@ -117,9 +118,9 @@ def set_env_attrs():
     get_env().set_attr(GROUP_MAP,
                        {HE: HEALTHY,
                         IN: INFECTED,
-                        OF: ON_FIRE,
-                        BO: BURNED_OUT,
-                        NG: NEW_GROWTH})
+                        CN: CONTAGIOUS,
+                        DE: DEAD,
+                        IM: IMMUNE})
 
 
 def set_up(props=None):
@@ -131,15 +132,15 @@ def set_up(props=None):
     city_height = get_prop('grid_height', DEF_DIM)
     city_width = get_prop('grid_width', DEF_DIM)
     city_density = get_prop('density', DEF_DENSITY)
-    tree_cnt = int(city_height * city_width * city_density)
+    pop_cnt = int(city_height * city_width * city_density)
     groups = []
     groups.append(Composite(HEALTHY, {"color": GREEN},
-                  member_creator=plant_tree,
-                  num_members=tree_cnt))
+                  member_creator=create_person,
+                  num_members=pop_cnt))
     groups.append(Composite(INFECTED, {"color": TOMATO}))
-    groups.append(Composite(ON_FIRE, {"color": RED}))
-    groups.append(Composite(BURNED_OUT, {"color": BLACK}))
-    groups.append(Composite(NEW_GROWTH, {"color": SPRINGGREEN}))
+    groups.append(Composite(CONTAGIOUS, {"color": RED}))
+    groups.append(Composite(DEAD, {"color": BLACK}))
+    groups.append(Composite(IMMUNE, {"color": BLUE}))
 
     Env(MODEL_NAME, height=city_height, width=city_width, members=groups)
     set_env_attrs()
@@ -154,3 +155,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
