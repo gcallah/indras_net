@@ -28,9 +28,9 @@ PERSON_PREFIX = "Person"
 # We need: CONTAGIOUS, DEAD, IMMUNE
 HEALTHY = "Healthy"
 INFECTED = "Infected"
-CONTAGIOUS = "CONTAGIOUS"
-DEAD = "DEAD"
-IMMUNE = "IMMUNE"
+CONTAGIOUS = "Contagious"
+DEAD = "Dead"
+IMMUNE = "Immune"
 
 # state numbers: create as strings for JSON,
 # convert to int when we need 'em that way
