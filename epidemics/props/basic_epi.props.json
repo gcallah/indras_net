@@ -13,7 +13,7 @@
     "hival": 100,
     "lowval": 2
   },
-  "immune_period": {
+  "immune_per": {
     "val": 10,
     "question": "What is mean period of immunity?",
     "atype": "INT",

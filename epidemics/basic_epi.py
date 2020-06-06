@@ -7,7 +7,7 @@ from indra.agent import prob_state_trans
 from indra.composite import Composite
 from indra.display_methods import RED, GREEN, BLACK
 from indra.display_methods import SPRINGGREEN, TOMATO, TREE
-from indra.display_methods import BLUE
+from indra.display_methods import BLUE, YELLOW
 from indra.env import Env
 from registry.registry import get_env, get_prop
 from registry.registry import user_log_err, run_notice, user_log_notif 
@@ -22,11 +22,15 @@ NEARBY = 1.8
 DEF_DIM = 30
 DEF_DENSITY = .44
 
+DEF_IMMUNE_PER = 10
+DEF_IM_HE_TRANS = 1 / DEF_IMMUNE_PER
+
 PERSON_PREFIX = "Person"
 
 # health condition strings
 # We need: CONTAGIOUS, DEAD, IMMUNE
 HEALTHY = "Healthy"
+EXPOSED = "Exposed"
 INFECTED = "Infected"
 CONTAGIOUS = "Contagious"
 DEAD = "Dead"
@@ -36,59 +40,63 @@ IMMUNE = "Immune"
 # convert to int when we need 'em that way
 # these should be changed to 2 letter abbreviations of the above.
 HE = "0"
-IN = "1"
-CN = "2"
-DE = "3"
-IM = "4"
+EX = "1"
+IN = "2"
+CN = "3"
+DE = "4"
+IM = "5"
 
 STATE_TRANS = [
-    [.985, .015, 0.0, 0.0, 0.0],
-    [0.0, 0.0, 1.0, 0.0, 0.0],
-    [0.0, 0.0, 0.0, 0.06, 0.94],
-    [0.0, 0.0, 0.0, 1.0, 0.0],
-    [.10, 0.0, 0.0, 0.0, .90],
+    # HE    EX   IN   CN   DE    IM
+    [.985, .015, 0.0, 0.0, 0.0,  0.0],  # HE
+    [.50,  0.0,  .50, 0.0, 0.0,  0.0],  # EX
+    [0.0,  0.0,  0.0, 1.0, 0.0,  0.0],  # IN
+    [0.0,  0.0,  0.0, 0.0, 0.06, 0.94], # CN
+    [0.0,  0.0,  0.0, 0.0, 1.0,  0.0],  # DE
+    [DEF_IM_HE_TRANS,  0.0,  0.0, 0.0, 0.0,  .90],  # IM
 ]
 
 GROUP_MAP = "group_map"
+STATE = "state"
 
 
 def is_healthy(agent, *args):
     """
     Checking whether the state is healthy or not
     """
-    return agent["state"] == HE
+    return agent[STATE] == HE
 
 
 def is_contagious(agent, *args):
     """
     Checking whether the state is contagious or not
     """
-    return agent["state"] == CN
+    return agent[STATE] == CN
 
 
 def people_action(agent):
     """
     This is what people do each turn in the city.
     """
-    old_state = agent["state"]
+    old_state = agent[STATE]
     if is_healthy(agent):
         neighbors = get_env().get_moore_hood(agent)
         if neighbors is not None:
             nearby_virus = neighbors.subset(is_contagious, agent)
             if len(nearby_virus) > 0:
                 if DEBUG2:
-                    user_log_notif("Infecting nearby people!")
-                agent["state"] = IN
+                    user_log_notif("Exposing nearby people!")
+                agent[STATE] = EX
 
     # if we didn't catch disease above, do probabilistic transition:
-    if old_state == agent["state"]:
+    if old_state == agent[STATE]:
         # we gotta do these str/int shenanigans with state cause
         # JSON only allows strings as dict keys
-        agent["state"] = str(prob_state_trans(int(old_state), STATE_TRANS))
-        if agent["state"] == IN:
+        agent[STATE] = str(prob_state_trans(int(old_state), STATE_TRANS))
+        if agent[STATE] == EX:
             user_log_notif("Person spontaneously catching virus.")
 
-    if old_state != agent["state"]:
+    if old_state != agent[STATE]:
         # if we entered a new state, then...
         group_map = get_env().get_attr(GROUP_MAP)
         if group_map is None:
@@ -97,8 +105,11 @@ def people_action(agent):
         agent.has_acted = True
         get_env().add_switch(agent,
                              group_map[old_state],
-                             group_map[agent["state"]])
-    return False
+                             group_map[agent[STATE]])
+    if agent[STATE] == DE:
+        return True
+    else:
+        return False
 
 
 def create_person(name, i, state=HE):
@@ -109,7 +120,7 @@ def create_person(name, i, state=HE):
     name = PERSON_PREFIX
     return Agent(name + str(i),
                  action=people_action,
-                 attrs={"state": state,
+                 attrs={STATE: state,
                         "save_neighbors": True})
 
 
@@ -117,6 +128,7 @@ def set_env_attrs():
     user_log_notif("Setting env attrs for basic epidemic.")
     get_env().set_attr(GROUP_MAP,
                        {HE: HEALTHY,
+                        EX: EXPOSED,
                         IN: INFECTED,
                         CN: CONTAGIOUS,
                         DE: DEAD,
@@ -132,11 +144,15 @@ def set_up(props=None):
     city_height = get_prop('grid_height', DEF_DIM)
     city_width = get_prop('grid_width', DEF_DIM)
     city_density = get_prop('density', DEF_DENSITY)
+    immune_per = get_prop('immune_per', DEF_IMMUNE_PER)
+    # now we must handle putting this param in trans matrix
+    # and we add props for death rate and infectiousness
     pop_cnt = int(city_height * city_width * city_density)
     groups = []
     groups.append(Composite(HEALTHY, {"color": GREEN},
                   member_creator=create_person,
                   num_members=pop_cnt))
+    groups.append(Composite(EXPOSED, {"color": YELLOW}))
     groups.append(Composite(INFECTED, {"color": TOMATO}))
     groups.append(Composite(CONTAGIOUS, {"color": RED}))
     groups.append(Composite(DEAD, {"color": BLACK}))

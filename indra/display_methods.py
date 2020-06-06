@@ -8,7 +8,6 @@ import io
 import logging
 import os
 from functools import wraps
-from math import ceil
 
 from indra.user import TERMINAL, API
 
@@ -99,12 +98,6 @@ DEFAULT_MARKER = '8'
 SQUARE = 's'
 TREE = '^'
 CIRCLE = 'o'
-
-# markers = [DEFAULT_MARKER,
-#            SQUARE,
-#            TREE,
-#            CIRCLE
-#            ]
 
 markers = {DEFAULT_MARKER: "8",
            SQUARE: "s",
@@ -345,23 +338,25 @@ class ScatterPlot():
         will get assigned different colors
         """
         global anim_func
+        DEF_SIZE = 40
 
         plt.close()
         self.scats = None
         self.anim = anim
         self.data_func = data_func
-        self.s = ceil(4096 / width)
         self.headless = is_headless
         self.legend = ["Type"]
-        size = 40
         legend_pos = "upper left"
 
         fig, ax = plt.subplots()
         ax.set_xlim(0, width)
         ax.set_ylim(0, height)
         self.create_scats(varieties)
+
+        size = DEF_SIZE
         if attrs is not None and "size" in attrs:
             size = attrs["size"]
+
         g = sns.scatterplot("x", "y", data=self.scats,
                             hue="color", palette=colors_dict,
                             style="marker", markers=markers, s=size)
@@ -405,6 +400,7 @@ class ScatterPlot():
                 g.legend_.remove()
         ax.set_title(title)
 
+        # Why is this here commented out?
         # if anim and not self.headless:
         #     anim_func = animation.FuncAnimation(fig,
         #                                         self.update_plot,
