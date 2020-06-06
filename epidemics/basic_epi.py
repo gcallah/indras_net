@@ -22,6 +22,8 @@ NEARBY = 1.8
 DEF_DIM = 30
 DEF_DENSITY = .44
 
+# we want constants for death rate and infectiousness
+# up here as well
 DEF_IMMUNE_PER = 10
 DEF_IM_HE_TRANS = 1 / DEF_IMMUNE_PER
 

@@ -455,6 +455,5 @@ class ScatterPlot():
             for scat in self.scats:
                 if scat is not None:
                     scat.remove()
-        varieties = self.data_func()
-        self.create_scats(varieties)
+        self.create_scats(self.data_func())
         return self.scats

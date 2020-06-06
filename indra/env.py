@@ -466,6 +466,7 @@ class Env(Space):
 
         data = {}
         for variety in self.members:
+            print("In plot_data add group: ", variety)
             data[variety] = {}
             # matplotlib wants a list of x coordinates, and a list of y
             # coordinates:
