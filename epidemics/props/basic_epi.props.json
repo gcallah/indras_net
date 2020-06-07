@@ -26,5 +26,19 @@
     "atype": "DBL",
     "hival": 1,
     "lowval": 0
+  },
+    "death_rate": {
+    "val": 0.06,
+    "question": "What is the death rate of the virus?",
+    "atype": "DBL",
+    "hival": 1,
+    "lowval": 0
+  },
+  "infec": {
+    "val": 0.5,
+    "question": "What is the rate of infection if exposed?",
+    "atype": "DBL",
+    "hival": 1,
+    "lowval": 0
   }
 }

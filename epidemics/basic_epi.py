@@ -21,11 +21,16 @@ NEARBY = 1.8
 
 DEF_DIM = 30
 DEF_DENSITY = .44
+DEF_DEATH_RATE = .06
+DEF_INFEC = 0.5
 
 # we want constants for death rate and infectiousness
 # up here as well
 DEF_IMMUNE_PER = 10
 DEF_IM_HE_TRANS = 1 / DEF_IMMUNE_PER
+DEF_IM_STAY = 1 - DEF_IM_HE_TRANS
+DEF_SURV_RATE = 1 - DEF_DEATH_RATE
+DEF_EX_HE_TRANS = 1 - DEF_INFEC
 
 PERSON_PREFIX = "Person"
 
@@ -48,15 +53,17 @@ CN = "3"
 DE = "4"
 IM = "5"
 
+
 STATE_TRANS = [
     # HE    EX   IN   CN   DE    IM
     [.985, .015, 0.0, 0.0, 0.0,  0.0],  # HE
-    [.50,  0.0,  .50, 0.0, 0.0,  0.0],  # EX
+    [DEF_EX_HE_TRANS ,  0.0,  DEF_INFEC, 0.0, 0.0,  0.0],  # EX
     [0.0,  0.0,  0.0, 1.0, 0.0,  0.0],  # IN
-    [0.0,  0.0,  0.0, 0.0, 0.06, 0.94], # CN
+    [0.0,  0.0,  0.0, 0.0, DEF_DEATH_RATE, DEF_SURV_RATE], # CN
     [0.0,  0.0,  0.0, 0.0, 1.0,  0.0],  # DE
-    [DEF_IM_HE_TRANS,  0.0,  0.0, 0.0, 0.0,  .90],  # IM
+    [DEF_IM_HE_TRANS,  0.0,  0.0, 0.0, 0.0,  DEF_IM_STAY],  # IM
 ]
+
 
 GROUP_MAP = "group_map"
 STATE = "state"
@@ -147,6 +154,28 @@ def set_up(props=None):
     city_width = get_prop('grid_width', DEF_DIM)
     city_density = get_prop('density', DEF_DENSITY)
     immune_per = get_prop('immune_per', DEF_IMMUNE_PER)
+    death_rate = get_prop('death_rate', DEF_DEATH_RATE)
+    infec = get_prop('infec', DEF_INFEC)
+    
+    im_he_trans = 1 / immune_per
+    im_stay = 1 - im_he_trans
+    surv_rate = 1 - death_rate
+    ex_he_trans = 1 - infec
+   
+   #When I recreate the state_trans table here and print out its values, 
+   #it gives me the values plugged in, however outside of this funciton 
+   #they remain unchanged. It seems to have no effect on the values outputted
+    STATE_TRANS = [
+    # HE    EX   IN   CN   DE    IM
+    [0.0, 1, 0.0, 0.0, 0.0,  0.0],  # HE
+    [ex_he_trans,  0.0,  infec, 0.0, 0.0,  0.0],  # EX
+    [0.0,  0.0,  0.0, 1.0, 0.0,  0.0],  # IN
+    [0.0,  0.0,  0.0, 0.0, death_rate, surv_rate], # CN
+    [0.0,  0.0,  0.0, 0.0, 1.0,  0.0],  # DE
+    [im_he_trans,  0.0,  0.0, 0.0, 0.0,  im_stay],  # IM
+    ]
+    print(STATE_TRANS)
+    
     # now we must handle putting this param in trans matrix
     # and we add props for death rate and infectiousness
     pop_cnt = int(city_height * city_width * city_density)
