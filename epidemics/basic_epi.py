@@ -19,13 +19,12 @@ DEBUG2 = False  # turns deeper debugging code on or off
 
 NEARBY = 1.8
 
+# we want constants for death rate and infectiousness
+# up here as well
 DEF_DIM = 30
 DEF_DENSITY = .44
 DEF_DEATH_RATE = .06
 DEF_INFEC = 0.5
-
-# we want constants for death rate and infectiousness
-# up here as well
 DEF_IMMUNE_PER = 10
 DEF_IM_HE_TRANS = 1 / DEF_IMMUNE_PER
 DEF_IM_STAY = 1 - DEF_IM_HE_TRANS
@@ -143,6 +142,8 @@ def set_env_attrs():
                         DE: DEAD,
                         IM: IMMUNE})
 
+def set_trans_prob(table, row, col, val):
+    table[int(row)][int(col)] = val
 
 def set_up(props=None):
     """
@@ -156,25 +157,15 @@ def set_up(props=None):
     immune_per = get_prop('immune_per', DEF_IMMUNE_PER)
     death_rate = get_prop('death_rate', DEF_DEATH_RATE)
     infec = get_prop('infec', DEF_INFEC)
+    immune_rate = 1/immune_per
     
-    im_he_trans = 1 / immune_per
-    im_stay = 1 - im_he_trans
-    surv_rate = 1 - death_rate
-    ex_he_trans = 1 - infec
-   
-   #When I recreate the state_trans table here and print out its values, 
-   #it gives me the values plugged in, however outside of this funciton 
-   #they remain unchanged. It seems to have no effect on the values outputted
-    STATE_TRANS = [
-    # HE    EX   IN   CN   DE    IM
-    [0.0, 1, 0.0, 0.0, 0.0,  0.0],  # HE
-    [ex_he_trans,  0.0,  infec, 0.0, 0.0,  0.0],  # EX
-    [0.0,  0.0,  0.0, 1.0, 0.0,  0.0],  # IN
-    [0.0,  0.0,  0.0, 0.0, death_rate, surv_rate], # CN
-    [0.0,  0.0,  0.0, 0.0, 1.0,  0.0],  # DE
-    [im_he_trans,  0.0,  0.0, 0.0, 0.0,  im_stay],  # IM
-    ]
-    print(STATE_TRANS)
+    #Replace state trans values with updated values
+    set_trans_prob(STATE_TRANS,EX,HE,1-infec)
+    set_trans_prob(STATE_TRANS,EX,IN,infec)
+    set_trans_prob(STATE_TRANS,CN,DE,death_rate)
+    set_trans_prob(STATE_TRANS,CN,IM,1-death_rate)
+    set_trans_prob(STATE_TRANS,IM,HE,1-immune_per)
+    set_trans_prob(STATE_TRANS,IM,IM,immune_per)
     
     # now we must handle putting this param in trans matrix
     # and we add props for death rate and infectiousness
