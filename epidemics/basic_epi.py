@@ -3,7 +3,7 @@ A model to simulate the spread of virus in a city.
 """
 
 from indra.agent import Agent
-from indra.agent import prob_state_trans
+from indra.agent import prob_state_trans, set_trans
 from indra.composite import Composite
 from indra.display_methods import RED, GREEN, BLACK
 from indra.display_methods import SPRINGGREEN, TOMATO, TREE
@@ -19,8 +19,7 @@ DEBUG2 = False  # turns deeper debugging code on or off
 
 NEARBY = 1.8
 
-# we want constants for death rate and infectiousness
-# up here as well
+#Constants that are re-analyzed in setup
 DEF_DIM = 30
 DEF_DENSITY = .44
 DEF_DEATH_RATE = .06
@@ -34,7 +33,6 @@ DEF_EX_HE_TRANS = 1 - DEF_INFEC
 PERSON_PREFIX = "Person"
 
 # health condition strings
-# We need: CONTAGIOUS, DEAD, IMMUNE
 HEALTHY = "Healthy"
 EXPOSED = "Exposed"
 INFECTED = "Infected"
@@ -142,9 +140,6 @@ def set_env_attrs():
                         DE: DEAD,
                         IM: IMMUNE})
 
-def set_trans_prob(table, row, col, val):
-    table[int(row)][int(col)] = val
-
 def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
@@ -160,12 +155,9 @@ def set_up(props=None):
     immune_rate = 1/immune_per
     
     #Replace state trans values with updated values
-    set_trans_prob(STATE_TRANS,EX,HE,1-infec)
-    set_trans_prob(STATE_TRANS,EX,IN,infec)
-    set_trans_prob(STATE_TRANS,CN,DE,death_rate)
-    set_trans_prob(STATE_TRANS,CN,IM,1-death_rate)
-    set_trans_prob(STATE_TRANS,IM,HE,1-immune_per)
-    set_trans_prob(STATE_TRANS,IM,IM,immune_per)
+    set_trans(STATE_TRANS,EX,IN,infec,HE)
+    set_trans(STATE_TRANS,CN,DE,death_rate,IM)
+    set_trans(STATE_TRANS,IM,HE,immune_rate,IM)
     
     # now we must handle putting this param in trans matrix
     # and we add props for death rate and infectiousness
