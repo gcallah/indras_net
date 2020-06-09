@@ -130,7 +130,7 @@ def set_env_attrs():
 
 def set_up(props=None):
     """
-    A func to set up run that can also be used by test code.
+    A func to set up a  run that can also be used by test code.
     """
     init_props(MODEL_NAME, props)
 
