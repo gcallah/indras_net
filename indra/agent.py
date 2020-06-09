@@ -62,7 +62,7 @@ def set_trans(states, curr_state, poss_state, val,
     """
     states[int(curr_state)][int(poss_state)] = val
     if compl_state is not None:
-        states[int(curr_state)][int(compl_state)] = 1 - val
+        states[int(curr_state)][int(compl_state)] = 1.0 - val
 
 
 def ratio_to_sin(ratio):

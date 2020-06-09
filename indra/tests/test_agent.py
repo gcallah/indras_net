@@ -168,6 +168,8 @@ class AgentTestCase(TestCase):
         We're going to switch 2 probs, then put 'em
         back, so we don't break above test.
         """
+        global STATE_TRANS
+
         prob1 = STATE_TRANS[0][0]
         prob2 = STATE_TRANS[0][1]
         set_trans(STATE_TRANS, 0, 0, prob2, 1)
