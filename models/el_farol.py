@@ -23,6 +23,7 @@ MODEL_NAME = "el_farol"
 DRINKERS = "At bar"
 NON_DRINKERS = "At home"
 BAR_ATTEND = "Bar attendees"
+POPULATION = "population"
 ATTENDANCE = "attendance"
 AGENTS_DECIDED = "agents_decided"
 OPT_OCCUPANCY = "opt_occupancy"
@@ -30,6 +31,7 @@ MOTIV = "motivation"
 
 DEF_POPULATION = 10
 DEF_MOTIV = 0.6
+DISC_AMT = .01
 MIN_MOTIV = 0.05
 DEF_OPTIMAL_OCCUPANCY = int(DEF_MOTIV * DEF_POPULATION)
 NUM_DRINKERS = DEF_POPULATION // 2
@@ -60,7 +62,8 @@ def discourage(unwanted):
             user_tell("drinker ", rand_agent, " = "
                       + repr(drinkers[rand_agent]))
 
-        rand_agent[MOTIV] = max(rand_agent[MOTIV] - 0.05, MIN_MOTIV)
+        rand_agent[MOTIV] = max(rand_agent[MOTIV] - DISC_AMT,
+                                MIN_MOTIV)
         discouraged += 1
         unwanted -= 1
     return discouraged
@@ -78,7 +81,7 @@ def drinker_action(agent):
     attendance = bar.get_attr(ATTENDANCE, 0)
     opt_occupancy = bar.get_attr(OPT_OCCUPANCY)
     agents_decided = bar.get_attr(AGENTS_DECIDED)
-    if agents_decided == bar.get_attr("population", 0):
+    if agents_decided == bar.get_attr(POPULATION, 0):
         if attendance > opt_occupancy:
             extras = attendance - opt_occupancy
             discourage(extras)
@@ -162,7 +165,7 @@ def set_up(props=None):
               members=[drinkers, non_drinkers],
               pop_hist_setup=setup_attendance)
     population = len(drinkers) + len(non_drinkers)
-    bar.set_attr("population", population)
+    bar.set_attr(POPULATION, population)
     bar.set_attr(OPT_OCCUPANCY, int(population * DEF_MOTIV))
     bar.set_attr(AGENTS_DECIDED, 0)
     bar.set_attr(ATTENDANCE, 0)
