@@ -58,10 +58,11 @@ def set_trans(states, curr_state, poss_state, val,
     curr_state to poss_state to val.
     If compl_state is passed, set it equal to 1 - val.
     At present it is assumed that states is a matrix.
+    All of the casting to int() is JSON nonsense.
     """
-    states[curr_state][poss_state] = val
+    states[int(curr_state)][int(poss_state)] = val
     if compl_state is not None:
-        states[curr_state][compl_state] = 1 - val
+        states[int(curr_state)][int(compl_state)] = 1 - val
 
 
 def ratio_to_sin(ratio):

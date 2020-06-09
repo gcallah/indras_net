@@ -3,7 +3,7 @@ A model to simulate the spread of fire in a forest.
 """
 
 from indra.agent import Agent
-from indra.agent import prob_state_trans
+from indra.agent import prob_state_trans, set_trans
 from indra.composite import Composite
 from indra.display_methods import RED, GREEN, BLACK
 from indra.display_methods import SPRINGGREEN, TOMATO, TREE
@@ -20,6 +20,7 @@ NEARBY = 1.8
 
 DEF_DIM = 30
 DEF_DENSITY = .44
+DEF_NEW_FIRE = .01
 
 TREE_PREFIX = "Tree"
 
@@ -40,7 +41,7 @@ NG = "4"
 
 TRANS_TABLE = "trans_table"
 state_trans = [
-    [.985, .015, 0.0, 0.0, 0.0],
+    [1 - DEF_NEW_FIRE, DEF_NEW_FIRE, 0.0, 0.0, 0.0],
     [0.0, 0.0, 1.0, 0.0, 0.0],
     [0.0, 0.0, 0.0, 1.0, 0.0],
     [0.0, 0.0, 0.0, .99, .01],
@@ -135,6 +136,8 @@ def set_up(props=None):
 
     forest_height = get_prop('grid_height', DEF_DIM)
     forest_width = get_prop('grid_width', DEF_DIM)
+    new_fire = get_prop('new_fire', DEF_NEW_FIRE)
+    set_trans(state_trans, HE, NF, float(new_fire), HE)
     forest_density = get_prop('density', DEF_DENSITY)
     tree_cnt = int(forest_height * forest_width * forest_density)
     groups = []

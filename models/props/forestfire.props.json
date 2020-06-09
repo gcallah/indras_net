@@ -13,6 +13,13 @@
     "hival": 100,
     "lowval": 2
   },
+  "new_fire": {
+    "val": 0.01,
+    "question": "What is the probability a tree will catch on fire on its own?",
+    "atype": "DBL",
+    "hival": 0.5,
+    "lowval": 0.0001
+  },
   "density": {
     "val": 0.44,
     "question": "What density of trees in the forest would you like?",
