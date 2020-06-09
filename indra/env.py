@@ -355,7 +355,7 @@ class Env(Space):
             for name in self.members:
                 grp = self.members[name]
                 population = len(grp)
-                census_str += ("  " + name + " ("
+                census_str += ("  " + name + " (id: "
                                + str(id(grp)) + "): "
                                + str(population) + "\n")
             census_str += (SEP_STR

@@ -12,7 +12,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import BLUE, RED
 from indra.env import Env
-from registry.registry import get_env, get_group, get_prop
+from registry.registry import get_env, get_group, get_prop, set_env_attr
 from registry.registry import user_tell, run_notice, user_log_notif
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import init_props
@@ -137,9 +137,8 @@ def attendance_report(env):
 
 def set_env_attrs():
     user_log_notif("Setting env attrs for " + MODEL_NAME)
-    env = get_env()
-    env.set_attr("pop_hist_func", attendance)
-    env.set_attr("census_func", attendance_report)
+    set_env_attr("pop_hist_func", attendance)
+    set_env_attr("census_func", attendance_report)
 
 
 def set_up(props=None):

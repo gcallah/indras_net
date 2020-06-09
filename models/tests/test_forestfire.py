@@ -7,7 +7,7 @@ from unittest import TestCase
 import models.forestfire as ff
 from indra.agent import possible_trans
 from registry.registry import get_env
-from models.forestfire import is_healthy, OF, set_up, STATE_TRANS, TREE_PREFIX
+from models.forestfire import is_healthy, OF, set_up, TREE_PREFIX
 from models.forestfire import plant_tree
 
 TEST_ANUM = 999999

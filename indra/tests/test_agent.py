@@ -5,7 +5,7 @@ This is the test suite for agent.py.
 from unittest import TestCase, main, skip
 
 from indra.agent import Agent, ratio_to_sin, NEUTRAL
-from indra.agent import prob_state_trans
+from indra.agent import prob_state_trans, set_trans
 
 REP_RAND_TESTS = 20
 
@@ -13,6 +13,13 @@ LEIBBYEAR = 1646
 LEIBDYEAR = 1716
 ANM = "age"
 AGE = 141.0
+
+STATE_TRANS = [
+    [.98, .02, 0.0, 0.0],
+    [0.0, 0.0, 1.0, 0.0],
+    [0.0, 0.0, .96, .04],
+    [1.0, 0.0, 0.0, 0.0],
+]
 
 
 def newt_action(agent):
@@ -100,22 +107,6 @@ class AgentTestCase(TestCase):
         ent = create_ramanujan()
         self.assertEqual("Ramanujan", str(ent))
 
-    @skip("skipping repr test until api is stable")
-    def test_repr(self):
-        """
-        Test the repr of an agent.
-        """
-        rep = ('{\n    "name": "Hardy",'
-               + '\n    "duration": 10,'
-               + '\n    "pos": null,'
-               + '\n    "attrs": '
-               + '{\n        "' + ANM + '": ' + str(AGE)
-               + '\n    },'
-               + '\n    "groups": "",'
-               + '\n    "active": true,'
-               + '\n    "type_sig": 1\n}')
-        self.assertEqual(rep, repr(self.hardy))
-
     def test_len(self):
         """
         See if we get the agent's len correct.
@@ -157,12 +148,8 @@ class AgentTestCase(TestCase):
         self.assertAlmostEqual(ratio_to_sin(.5), NEUTRAL)
 
     def test_prob_state_trans(self):
-        STATE_TRANS = [
-            [.98, .02, 0.0, 0.0],
-            [0.0, 0.0, 1.0, 0.0],
-            [0.0, 0.0, .96, .04],
-            [1.0, 0.0, 0.0, 0.0],
-        ]
+        global STATE_TRANS
+
         for i in range(REP_RAND_TESTS):
             new_state = prob_state_trans(0, STATE_TRANS)
             self.assertNotEqual(new_state, 2)
@@ -174,6 +161,22 @@ class AgentTestCase(TestCase):
             self.assertNotEqual(new_state, 1)
             new_state = prob_state_trans(3, STATE_TRANS)
             self.assertEqual(new_state, 0)
+
+    def test_set_trans(self):
+        """
+        Tests re-setting a probability.
+        We're going to switch 2 probs, then put 'em
+        back, so we don't break above test.
+        """
+        prob1 = STATE_TRANS[0][0]
+        prob2 = STATE_TRANS[0][1]
+        set_trans(STATE_TRANS, 0, 0, prob2, 1)
+        self.assertAlmostEqual(STATE_TRANS[0][0], prob2)
+        self.assertAlmostEqual(STATE_TRANS[0][1], prob1)
+        # now set 'em back:
+        set_trans(STATE_TRANS, 0, 0, prob1, 1)
+        self.assertAlmostEqual(STATE_TRANS[0][0], prob1)
+        self.assertAlmostEqual(STATE_TRANS[0][1], prob2)
 
 
 if __name__ == '__main__':

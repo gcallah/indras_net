@@ -8,7 +8,7 @@ from indra.composite import Composite
 from indra.display_methods import RED, GREEN, BLACK
 from indra.display_methods import SPRINGGREEN, TOMATO, TREE
 from indra.env import Env
-from registry.registry import get_env, get_prop
+from registry.registry import get_env, get_prop, set_env_attr, get_env_attr
 from registry.registry import user_log_err, run_notice, user_log_notif
 from indra.utils import init_props
 
@@ -38,7 +38,8 @@ OF = "2"
 BO = "3"
 NG = "4"
 
-STATE_TRANS = [
+TRANS_TABLE = "trans_table"
+state_trans = [
     [.985, .015, 0.0, 0.0, 0.0],
     [0.0, 0.0, 1.0, 0.0, 0.0],
     [0.0, 0.0, 0.0, 1.0, 0.0],
@@ -81,20 +82,22 @@ def tree_action(agent):
     if old_state == agent["state"]:
         # we gotta do these str/int shenanigans with state cause
         # JSON only allows strings as dict keys
-        agent["state"] = str(prob_state_trans(int(old_state), STATE_TRANS))
+        agent["state"] = str(prob_state_trans(int(old_state),
+                                              get_env_attr(TRANS_TABLE)))
         if agent["state"] == NF:
             user_log_notif("Tree spontaneously catching fire.")
 
     if old_state != agent["state"]:
         # if we entered a new state, then...
-        group_map = get_env().get_attr(GROUP_MAP)
+        env = get_env()
+        group_map = env.get_attr(GROUP_MAP)
         if group_map is None:
             user_log_err("group_map is None!")
             return True
         agent.has_acted = True
-        get_env().add_switch(agent,
-                             group_map[old_state],
-                             group_map[agent["state"]])
+        env.add_switch(agent,
+                       group_map[old_state],
+                       group_map[agent["state"]])
     return True
 
 
@@ -111,13 +114,17 @@ def plant_tree(name, i, state=HE):
 
 
 def set_env_attrs():
+    """
+    I actually don't think we need to do this here!
+    It can be done once in set_up().
+    """
     user_log_notif("Setting env attrs for forest fire.")
-    get_env().set_attr(GROUP_MAP,
-                       {HE: HEALTHY,
-                        NF: NEW_FIRE,
-                        OF: ON_FIRE,
-                        BO: BURNED_OUT,
-                        NG: NEW_GROWTH})
+    set_env_attr(GROUP_MAP,
+                 {HE: HEALTHY,
+                  NF: NEW_FIRE,
+                  OF: ON_FIRE,
+                  BO: BURNED_OUT,
+                  NG: NEW_GROWTH})
 
 
 def set_up(props=None):
@@ -141,6 +148,9 @@ def set_up(props=None):
                                          TREE}))
 
     Env(MODEL_NAME, height=forest_height, width=forest_width, members=groups)
+    # the next set should just be done once:
+    set_env_attr(TRANS_TABLE, state_trans)
+    # whereas these settings must be re-done every API re-load:
     set_env_attrs()
 
 

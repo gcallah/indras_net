@@ -51,6 +51,19 @@ def possible_trans(states, start_state, end_state):
     return states[start_state][end_state]
 
 
+def set_trans(states, curr_state, poss_state, val,
+              compl_state=None):
+    """
+    Change the probability of transitioning from
+    curr_state to poss_state to val.
+    If compl_state is passed, set it equal to 1 - val.
+    At present it is assumed that states is a matrix.
+    """
+    states[curr_state][poss_state] = val
+    if compl_state is not None:
+        states[curr_state][compl_state] = 1 - val
+
+
 def ratio_to_sin(ratio):
     """
     Take a ratio of y to x and turn it into a sine.
@@ -125,9 +138,9 @@ def switch(agent_nm, grp1_nm, grp2_nm):
     if DEBUG and split_em and joined_em:
         user_log_notif("Switched agent " + str(agent)
                        + " from grp " + grp1_nm
-                       + "(" + str(id(grp1)) + ")"
+                       + "(id: " + str(id(grp1)) + ")"
                        + " to grp " + grp2_nm
-                       + "(" + str(id(grp2)) + ")")
+                       + "(id: " + str(id(grp2)) + ")")
 
 
 class AgentEncoder(json.JSONEncoder):
