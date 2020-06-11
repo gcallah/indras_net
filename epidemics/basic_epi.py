@@ -166,8 +166,12 @@ def set_up(props=None):
     groups = []
     groups.append(Composite(HEALTHY, {"color": GREEN},
                   member_creator=create_person,
-                  num_members=pop_cnt))
-    groups.append(Composite(EXPOSED, {"color": YELLOW}))
+                  num_members=pop_cnt,
+                  state=HE))
+    groups.append(Composite(EXPOSED, {"color": YELLOW},
+                            member_creator=create_person,
+                            num_members=1,
+                            state=EX))
     groups.append(Composite(INFECTED, {"color": TOMATO}))
     groups.append(Composite(CONTAGIOUS, {"color": RED}))
     groups.append(Composite(DEAD, {"color": BLACK}))
