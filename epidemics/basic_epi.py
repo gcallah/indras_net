@@ -169,14 +169,25 @@ def set_up(props=None):
                   num_members=pop_cnt,
                   state=HE))
     groups.append(Composite(EXPOSED, {"color": YELLOW},
-                            member_creator=create_person,
-                            num_members=1,
-                            state=EX))
-    groups.append(Composite(INFECTED, {"color": TOMATO}))
-    groups.append(Composite(CONTAGIOUS, {"color": RED}))
-    groups.append(Composite(DEAD, {"color": BLACK}))
-    groups.append(Composite(IMMUNE, {"color": BLUE}))
-
+                  member_creator=create_person,
+                  num_members=1,
+                  state=EX))
+    groups.append(Composite(INFECTED, {"color": TOMATO},
+                  member_creator=create_person,
+                  num_members=1,
+                  state=IN))
+    groups.append(Composite(CONTAGIOUS, {"color": RED},
+                  member_creator=create_person,
+                  num_members=1,
+                  state=CN))
+    groups.append(Composite(DEAD, {"color": BLACK},
+                  member_creator=create_person,
+                  num_members=1,
+                  state=DE))
+    groups.append(Composite(IMMUNE, {"color": BLUE},
+                  member_creator=create_person,
+                  num_members=1,
+                  state=IM))
     Env(MODEL_NAME, height=city_height, width=city_width, members=groups)
     set_env_attrs()
 
