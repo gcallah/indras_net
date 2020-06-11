@@ -6,11 +6,11 @@ from indra.agent import Agent
 from indra.agent import prob_state_trans, set_trans
 from indra.composite import Composite
 from indra.display_methods import RED, GREEN, BLACK
-from indra.display_methods import SPRINGGREEN, TOMATO, TREE
+from indra.display_methods import TOMATO
 from indra.display_methods import BLUE, YELLOW
 from indra.env import Env
 from registry.registry import get_env, get_prop
-from registry.registry import user_log_err, run_notice, user_log_notif 
+from registry.registry import user_log_err, run_notice, user_log_notif
 from indra.utils import init_props
 
 MODEL_NAME = "basic_epi"
@@ -19,7 +19,7 @@ DEBUG2 = False  # turns deeper debugging code on or off
 
 NEARBY = 1.8
 
-#Constants that are re-analyzed in setup
+# Constants that are re-analyzed in setup
 DEF_DIM = 30
 DEF_DENSITY = .44
 DEF_DEATH_RATE = .06
@@ -54,9 +54,9 @@ IM = "5"
 STATE_TRANS = [
     # HE    EX   IN   CN   DE    IM
     [.985, .015, 0.0, 0.0, 0.0,  0.0],  # HE
-    [DEF_EX_HE_TRANS ,  0.0,  DEF_INFEC, 0.0, 0.0,  0.0],  # EX
+    [DEF_EX_HE_TRANS,  0.0,  DEF_INFEC, 0.0, 0.0,  0.0],  # EX
     [0.0,  0.0,  0.0, 1.0, 0.0,  0.0],  # IN
-    [0.0,  0.0,  0.0, 0.0, DEF_DEATH_RATE, DEF_SURV_RATE], # CN
+    [0.0,  0.0,  0.0, 0.0, DEF_DEATH_RATE, DEF_SURV_RATE],  # CN
     [0.0,  0.0,  0.0, 0.0, 1.0,  0.0],  # DE
     [DEF_IM_HE_TRANS,  0.0,  0.0, 0.0, 0.0,  DEF_IM_STAY],  # IM
 ]
@@ -140,6 +140,7 @@ def set_env_attrs():
                         DE: DEAD,
                         IM: IMMUNE})
 
+
 def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
@@ -153,12 +154,12 @@ def set_up(props=None):
     death_rate = get_prop('death_rate', DEF_DEATH_RATE)
     infec = get_prop('infec', DEF_INFEC)
     immune_rate = 1/immune_per
-    
-    #Replace state trans values with updated values
-    set_trans(STATE_TRANS,EX,IN,infec,HE)
-    set_trans(STATE_TRANS,CN,DE,death_rate,IM)
-    set_trans(STATE_TRANS,IM,HE,immune_rate,IM)
-    
+
+    # Replace state trans values with updated values
+    set_trans(STATE_TRANS, EX, IN, infec, HE)
+    set_trans(STATE_TRANS, CN, DE, death_rate, IM)
+    set_trans(STATE_TRANS, IM, HE, immune_rate, IM)
+
     # now we must handle putting this param in trans matrix
     # and we add props for death rate and infectiousness
     pop_cnt = int(city_height * city_width * city_density)
@@ -185,6 +186,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
