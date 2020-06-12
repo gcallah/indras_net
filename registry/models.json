@@ -117,7 +117,7 @@
         "doc": "A model of the spread of an epidemic",
         "source": "https://github.com/gcallah/indras_net/blob/master/epidemics/epidemic.py",
         "graph": "scatter",
-        "active": false
+        "active": true
       }
     ]
   }
