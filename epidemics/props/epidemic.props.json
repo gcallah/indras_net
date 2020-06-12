@@ -40,5 +40,19 @@
     "atype": "DBL",
     "hival": 1,
     "lowval": 0
+  },
+    "distancing": {
+    "val": 1,
+    "question": "What is the social distancing distance?",
+    "atype": "DBL",
+    "hival": 6,
+    "lowval": 0
+  },
+  "person_move": {
+    "val": 3,
+    "question": "What is the max distance peopple move?",
+    "atype": "DBL",
+    "hival": 6,
+    "lowval": 0
   }
 }

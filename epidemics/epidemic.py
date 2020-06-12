@@ -32,9 +32,8 @@ DEF_IM_HE_TRANS = 1 / DEF_IMMUNE_PER
 DEF_IM_STAY = 1 - DEF_IM_HE_TRANS
 DEF_SURV_RATE = 1 - DEF_DEATH_RATE
 DEF_EX_HE_TRANS = 1 - DEF_INFEC
-# Need to add these two to initial questions asked to user.
-PERSON_MOVE = 3
-DISTANCING = 1
+DEF_PERSON_MOVE = 3
+DEF_DISTANCING = 1
 
 PERSON_PREFIX = "Person"
 
@@ -81,7 +80,8 @@ def is_isolated(agent):
     for group in groupList:
         for currAgent in group:
             if ((group[currAgent] != agent) and
-               (distance(group[currAgent], agent) <= DISTANCING)):
+               (distance(group[currAgent], agent) <=
+               get_prop('distancing', DEF_DISTANCING))):
                 return False
     return True
 
@@ -160,7 +160,7 @@ def create_person(name, i, state=HE):
     person = Agent(name + str(i), action=people_action,
                    attrs={STATE: state, "save_neighbors": True})
     person["angle"] = None
-    person["max_move"] = PERSON_MOVE
+    person["max_move"] = get_prop('person_move', DEF_PERSON_MOVE)
     return person
 
 
