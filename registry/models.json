@@ -108,6 +108,16 @@
         "source": "https://github.com/gcallah/indras_net/blob/master/capital/money.py",
         "graph": "line",
         "active": false
+      },
+      {
+        "model ID": 11,
+        "name": "Epidemic Model",
+        "run": "epidemic",
+        "props": "epidemics/props/epidemic.props.json",
+        "doc": "A model of the spread of an epidemic",
+        "source": "https://github.com/gcallah/indras_net/blob/master/epidemics/epidemic.py",
+        "graph": "scatter",
+        "active": false
       }
     ]
   }

@@ -53,7 +53,7 @@ models.json: $(MODELJSON_FILES)
 	python3 json_combiner.py $? --models_fp $(JSON_DESTINATION)
 
 create_dev_env: FORCE
-	./setup.sh
+	./setup.sh .bash_profile  # change to .bashrc for Linux!
 	git submodule init $(UTILS_DIR)
 	git submodule update $(UTILS_DIR)
 

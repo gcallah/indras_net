@@ -15,7 +15,7 @@ from registry.registry import user_log_err, run_notice, user_log_notif
 from indra.utils import init_props
 from indra.space import distance
 
-MODEL_NAME = "basic_epi"
+MODEL_NAME = "epidemic"
 DEBUG = False  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
@@ -80,7 +80,6 @@ def is_isolated(agent):
                  get_group(CONTAGIOUS), get_group(DEAD), get_group(IMMUNE)]
     for group in groupList:
         for currAgent in group:
-            print(isinstance(currAgent, str))
             if ((group[currAgent] != agent) and
                (distance(group[currAgent], agent) <= DISTANCING)):
                 return False
