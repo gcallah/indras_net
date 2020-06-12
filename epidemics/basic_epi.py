@@ -1,6 +1,7 @@
 """
 A model to simulate the spread of virus in a city.
 """
+from random import randint
 
 from indra.agent import Agent
 from indra.agent import prob_state_trans, set_trans
@@ -9,15 +10,17 @@ from indra.display_methods import RED, GREEN, BLACK
 from indra.display_methods import TOMATO
 from indra.display_methods import BLUE, YELLOW
 from indra.env import Env
-from registry.registry import get_env, get_prop
+from registry.registry import get_env, get_prop, get_group
 from registry.registry import user_log_err, run_notice, user_log_notif
 from indra.utils import init_props
+from indra.space import distance
 
 MODEL_NAME = "basic_epi"
 DEBUG = False  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
 NEARBY = 1.8
+
 
 # Constants that are re-analyzed in setup
 DEF_DIM = 30
@@ -29,6 +32,9 @@ DEF_IM_HE_TRANS = 1 / DEF_IMMUNE_PER
 DEF_IM_STAY = 1 - DEF_IM_HE_TRANS
 DEF_SURV_RATE = 1 - DEF_DEATH_RATE
 DEF_EX_HE_TRANS = 1 - DEF_INFEC
+# Need to add these two to initial questions asked to user.
+PERSON_MOVE = 3
+DISTANCING = 1
 
 PERSON_PREFIX = "Person"
 
@@ -64,6 +70,21 @@ STATE_TRANS = [
 
 GROUP_MAP = "group_map"
 STATE = "state"
+
+
+def is_isolated(agent):
+    '''
+    Checks if agent is maintaining distancing.
+    '''
+    groupList = [get_group(HEALTHY), get_group(EXPOSED), get_group(INFECTED),
+                 get_group(CONTAGIOUS), get_group(DEAD), get_group(IMMUNE)]
+    for group in groupList:
+        for currAgent in group:
+            print(isinstance(currAgent, str))
+            if ((group[currAgent] != agent) and
+               (distance(group[currAgent], agent) <= DISTANCING)):
+                return False
+    return True
 
 
 def is_healthy(agent, *args):
@@ -112,6 +133,18 @@ def people_action(agent):
         get_env().add_switch(agent,
                              group_map[old_state],
                              group_map[agent[STATE]])
+
+    # Current social-distancing movement is random. Change in the future
+    if(not is_isolated(agent)):
+        if agent["angle"] is None:
+            new_angle = randint(0, 360)
+        else:
+            angle_shift = randint(45, 315)
+            new_angle = agent["angle"] + angle_shift
+        if (new_angle > 360):
+            new_angle = new_angle % 360
+        agent["angle"] = new_angle
+
     if agent[STATE] == DE:
         return True
     else:
@@ -124,10 +157,12 @@ def create_person(name, i, state=HE):
     By default, they start out healthy.
     """
     name = PERSON_PREFIX
-    return Agent(name + str(i),
-                 action=people_action,
-                 attrs={STATE: state,
-                        "save_neighbors": True})
+
+    person = Agent(name + str(i), action=people_action,
+                   attrs={STATE: state, "save_neighbors": True})
+    person["angle"] = None
+    person["max_move"] = PERSON_MOVE
+    return person
 
 
 def set_env_attrs():
