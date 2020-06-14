@@ -187,15 +187,13 @@ def set_up(props=None):
     immune_per = get_prop('immune_per', DEF_IMMUNE_PER)
     death_rate = get_prop('death_rate', DEF_DEATH_RATE)
     infec = get_prop('infec', DEF_INFEC)
-    immune_rate = 1/immune_per
+    immune_rate = 1 / immune_per
 
     # Replace state trans values with updated values
     set_trans(STATE_TRANS, EX, IN, infec, HE)
     set_trans(STATE_TRANS, CN, DE, death_rate, IM)
     set_trans(STATE_TRANS, IM, HE, immune_rate, IM)
 
-    # now we must handle putting this param in trans matrix
-    # and we add props for death rate and infectiousness
     pop_cnt = int(city_height * city_width * city_density)
     groups = []
     groups.append(Composite(HEALTHY, {"color": GREEN},
