@@ -1,6 +1,6 @@
 """ This is a template file for tests.  """ 
 from unittest import TestCase, main
-import epidemics.basic_epi as be
+import epidemics.epidemic as be
 
 
 class BasicTestCase(TestCase):
