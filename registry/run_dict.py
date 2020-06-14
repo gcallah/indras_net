@@ -38,6 +38,11 @@ from models.wolfsheep import main as wsmain
 from models.wolfsheep import set_up as wsset_up
 from models.wolfsheep import sheep_action, wolf_action
 from models.wolfsheep import create_sheep, create_wolf
+from epidemics.epidemic import main as epmain
+from epidemics.epidemic import set_up as epset_up
+from epidemics.epidemic import people_action
+from epidemics.epidemic import MODEL_NAME as EPMODEL_NAME
+from epidemics.epidemic import set_env_attrs as ep_set_env_attrs
 from capital.money import main as mnmain
 from capital.money import set_up as mnset_up
 from capital.money import money_trader_action
@@ -68,6 +73,7 @@ rdict = {
     "fashion": famain,
     "fmarket": fmmain,
     "forestfire": ffmain,
+    "epidemic": epmain,
     "segregation": segmain,
     "wolfsheep": wsmain,
     "money": mnmain,
@@ -82,6 +88,7 @@ setup_dict = {
     "fashion": faset_up,
     "fmarket": fmset_up,
     "forestfire": ffset_up,
+    "epidemic": epset_up,
     "segregation": segset_up,
     "wolfsheep": wsset_up,
     "money": mnset_up,
@@ -105,6 +112,7 @@ action_dict = {
     "seg_agent_action": seg_agent_action,
     "tsetter_action": tsetter_action,
     "tree_action": tree_action,
+    "people_action": people_action,
     "trend_follower_action": trend_follower_action,
     "value_investor_action": value_investor_action,
     "money_trader_action": money_trader_action,

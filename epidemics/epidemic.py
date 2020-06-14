@@ -1,25 +1,28 @@
 """
 A model to simulate the spread of virus in a city.
 """
+from random import randint
 
 from indra.agent import Agent
 from indra.agent import prob_state_trans, set_trans
 from indra.composite import Composite
 from indra.display_methods import RED, GREEN, BLACK
-from indra.display_methods import SPRINGGREEN, TOMATO, TREE
+from indra.display_methods import TOMATO
 from indra.display_methods import BLUE, YELLOW
 from indra.env import Env
-from registry.registry import get_env, get_prop
-from registry.registry import user_log_err, run_notice, user_log_notif 
+from registry.registry import get_env, get_prop, get_group
+from registry.registry import user_log_err, run_notice, user_log_notif
 from indra.utils import init_props
+from indra.space import distance
 
-MODEL_NAME = "basic_epi"
+MODEL_NAME = "epidemic"
 DEBUG = False  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
 NEARBY = 1.8
 
-#Constants that are re-analyzed in setup
+
+# Constants that are re-analyzed in setup
 DEF_DIM = 30
 DEF_DENSITY = .44
 DEF_DEATH_RATE = .06
@@ -29,6 +32,8 @@ DEF_IM_HE_TRANS = 1 / DEF_IMMUNE_PER
 DEF_IM_STAY = 1 - DEF_IM_HE_TRANS
 DEF_SURV_RATE = 1 - DEF_DEATH_RATE
 DEF_EX_HE_TRANS = 1 - DEF_INFEC
+DEF_PERSON_MOVE = 3
+DEF_DISTANCING = 1
 
 PERSON_PREFIX = "Person"
 
@@ -54,9 +59,9 @@ IM = "5"
 STATE_TRANS = [
     # HE    EX   IN   CN   DE    IM
     [.985, .015, 0.0, 0.0, 0.0,  0.0],  # HE
-    [DEF_EX_HE_TRANS ,  0.0,  DEF_INFEC, 0.0, 0.0,  0.0],  # EX
+    [DEF_EX_HE_TRANS,  0.0,  DEF_INFEC, 0.0, 0.0,  0.0],  # EX
     [0.0,  0.0,  0.0, 1.0, 0.0,  0.0],  # IN
-    [0.0,  0.0,  0.0, 0.0, DEF_DEATH_RATE, DEF_SURV_RATE], # CN
+    [0.0,  0.0,  0.0, 0.0, DEF_DEATH_RATE, DEF_SURV_RATE],  # CN
     [0.0,  0.0,  0.0, 0.0, 1.0,  0.0],  # DE
     [DEF_IM_HE_TRANS,  0.0,  0.0, 0.0, 0.0,  DEF_IM_STAY],  # IM
 ]
@@ -64,6 +69,21 @@ STATE_TRANS = [
 
 GROUP_MAP = "group_map"
 STATE = "state"
+
+
+def is_isolated(agent):
+    '''
+    Checks if agent is maintaining distancing.
+    '''
+    groupList = [get_group(HEALTHY), get_group(EXPOSED), get_group(INFECTED),
+                 get_group(CONTAGIOUS), get_group(DEAD), get_group(IMMUNE)]
+    for group in groupList:
+        for currAgent in group:
+            if ((group[currAgent] != agent) and
+               (distance(group[currAgent], agent) <=
+               get_prop('distancing', DEF_DISTANCING))):
+                return False
+    return True
 
 
 def is_healthy(agent, *args):
@@ -112,6 +132,18 @@ def people_action(agent):
         get_env().add_switch(agent,
                              group_map[old_state],
                              group_map[agent[STATE]])
+
+    # Current social-distancing movement is random. Change in the future
+    if(not is_isolated(agent)):
+        if agent["angle"] is None:
+            new_angle = randint(0, 360)
+        else:
+            angle_shift = randint(45, 315)
+            new_angle = agent["angle"] + angle_shift
+        if (new_angle > 360):
+            new_angle = new_angle % 360
+        agent["angle"] = new_angle
+
     if agent[STATE] == DE:
         return True
     else:
@@ -124,10 +156,12 @@ def create_person(name, i, state=HE):
     By default, they start out healthy.
     """
     name = PERSON_PREFIX
-    return Agent(name + str(i),
-                 action=people_action,
-                 attrs={STATE: state,
-                        "save_neighbors": True})
+
+    person = Agent(name + str(i), action=people_action,
+                   attrs={STATE: state, "save_neighbors": True})
+    person["angle"] = None
+    person["max_move"] = get_prop('person_move', DEF_PERSON_MOVE)
+    return person
 
 
 def set_env_attrs():
@@ -139,6 +173,7 @@ def set_env_attrs():
                         CN: CONTAGIOUS,
                         DE: DEAD,
                         IM: IMMUNE})
+
 
 def set_up(props=None):
     """
@@ -153,25 +188,40 @@ def set_up(props=None):
     death_rate = get_prop('death_rate', DEF_DEATH_RATE)
     infec = get_prop('infec', DEF_INFEC)
     immune_rate = 1/immune_per
-    
-    #Replace state trans values with updated values
-    set_trans(STATE_TRANS,EX,IN,infec,HE)
-    set_trans(STATE_TRANS,CN,DE,death_rate,IM)
-    set_trans(STATE_TRANS,IM,HE,immune_rate,IM)
-    
+
+    # Replace state trans values with updated values
+    set_trans(STATE_TRANS, EX, IN, infec, HE)
+    set_trans(STATE_TRANS, CN, DE, death_rate, IM)
+    set_trans(STATE_TRANS, IM, HE, immune_rate, IM)
+
     # now we must handle putting this param in trans matrix
     # and we add props for death rate and infectiousness
     pop_cnt = int(city_height * city_width * city_density)
     groups = []
     groups.append(Composite(HEALTHY, {"color": GREEN},
                   member_creator=create_person,
-                  num_members=pop_cnt))
-    groups.append(Composite(EXPOSED, {"color": YELLOW}))
-    groups.append(Composite(INFECTED, {"color": TOMATO}))
-    groups.append(Composite(CONTAGIOUS, {"color": RED}))
-    groups.append(Composite(DEAD, {"color": BLACK}))
-    groups.append(Composite(IMMUNE, {"color": BLUE}))
-
+                  num_members=pop_cnt,
+                  state=HE))
+    groups.append(Composite(EXPOSED, {"color": YELLOW},
+                  member_creator=create_person,
+                  num_members=1,
+                  state=EX))
+    groups.append(Composite(INFECTED, {"color": TOMATO},
+                  member_creator=create_person,
+                  num_members=1,
+                  state=IN))
+    groups.append(Composite(CONTAGIOUS, {"color": RED},
+                  member_creator=create_person,
+                  num_members=1,
+                  state=CN))
+    groups.append(Composite(DEAD, {"color": BLACK},
+                  member_creator=create_person,
+                  num_members=1,
+                  state=DE))
+    groups.append(Composite(IMMUNE, {"color": BLUE},
+                  member_creator=create_person,
+                  num_members=1,
+                  state=IM))
     Env(MODEL_NAME, height=city_height, width=city_width, members=groups)
     set_env_attrs()
 
@@ -185,6 +235,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
