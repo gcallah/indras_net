@@ -10,7 +10,7 @@ class BasicTestCase(TestCase):
     def tearDown(self):
         pass
 
-    def testHealty(self):
+    def testHealthy(self):
         saliou = ep.create_person("Saliou", 0)
         self.assertTrue(ep.is_healthy(saliou))
 
