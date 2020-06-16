@@ -2,6 +2,7 @@
 A model to simulate the spread of virus in a city.
 """
 from random import randint
+# from math import atan, degrees
 
 from indra.agent import Agent
 from indra.agent import prob_state_trans, set_trans
@@ -10,7 +11,7 @@ from indra.display_methods import RED, GREEN, BLACK
 from indra.display_methods import TOMATO
 from indra.display_methods import BLUE, YELLOW
 from indra.env import Env
-from registry.registry import get_env, get_prop, get_group
+from registry.registry import get_env, get_prop
 from registry.registry import user_log_err, run_notice, user_log_notif
 from indra.utils import init_props
 from indra.space import distance
@@ -75,15 +76,8 @@ def is_isolated(agent):
     '''
     Checks if agent is maintaining distancing.
     '''
-    groupList = [get_group(HEALTHY), get_group(EXPOSED), get_group(INFECTED),
-                 get_group(CONTAGIOUS), get_group(DEAD), get_group(IMMUNE)]
-    for group in groupList:
-        for currAgent in group:
-            if ((group[currAgent] != agent) and
-               (distance(group[currAgent], agent) <=
-               get_prop('distancing', DEF_DISTANCING))):
-                return False
-    return True
+    return (distance(get_env().get_closest_agent(agent), agent) <=
+            get_prop('distancing', DEF_DISTANCING))
 
 
 def is_healthy(agent, *args):
@@ -140,6 +134,21 @@ def people_action(agent):
         else:
             angle_shift = randint(45, 315)
             new_angle = agent["angle"] + angle_shift
+            '''
+            # Working on moving in direction opposite nearest agent
+            other_agent = get_env().get_closest_agent(agent)
+            x_dif = other_agent.get_x() - agent.get_x()
+            y_dif = other_agent.get_y() - agent.get_y()
+            print(degrees(atan(y_dif / x_dif)))
+            # This seems to always yield a set value?
+            if (x_dif != 0):
+                new_angle = 180 + degrees(atan(y_dif / x_dif))
+            else:
+                if(y_dif > 0):
+                    new_angle = 90
+                else:
+                    new_angle = 270
+             '''
         if (new_angle > 360):
             new_angle = new_angle % 360
         agent["angle"] = new_angle
