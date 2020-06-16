@@ -25,8 +25,8 @@ tests: pytests lint
 
 # test a python file:
 %.py: FORCE
-	$(PYLINT) $(PYLINTFLAGS) $@
 	nosetests tests.test_$* --nocapture
+	$(PYLINT) $(PYLINTFLAGS) $@
 
 nocrud:
 	-rm *~
