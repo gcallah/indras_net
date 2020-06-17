@@ -342,8 +342,6 @@ class Env(Space):
         census_func overrides the default behavior.
         """
         if CENSUS_FUNC in self.attrs:
-            user_log_notif("Employing custom census func for "
-                           + self.name)
             return self.attrs[CENSUS_FUNC](self)
         else:
             SEP_STR = "==================\n"
