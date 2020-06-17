@@ -94,6 +94,10 @@ def is_contagious(agent, *args):
     return agent[STATE] == CN
 
 
+def epidemic_report(env):
+    return "epicdemic_report in progress"+"\n"
+
+
 def people_action(agent):
     """
     This is what people do each turn in the city.
@@ -175,13 +179,15 @@ def create_person(name, i, state=HE):
 
 def set_env_attrs():
     user_log_notif("Setting env attrs for basic epidemic.")
-    get_env().set_attr(GROUP_MAP,
-                       {HE: HEALTHY,
-                        EX: EXPOSED,
-                        IN: INFECTED,
-                        CN: CONTAGIOUS,
-                        DE: DEAD,
-                        IM: IMMUNE})
+    env = get_env()
+    env.set_attr(GROUP_MAP,
+                 {HE: HEALTHY,
+                  EX: EXPOSED,
+                  IN: INFECTED,
+                  CN: CONTAGIOUS,
+                  DE: DEAD,
+                  IM: IMMUNE})
+    env.set_attr("census_func", epidemic_report)
 
 
 def set_up(props=None):
@@ -206,29 +212,29 @@ def set_up(props=None):
     pop_cnt = int(city_height * city_width * city_density)
     groups = []
     groups.append(Composite(HEALTHY, {"color": GREEN},
-                  member_creator=create_person,
-                  num_members=pop_cnt,
-                  state=HE))
+                            member_creator=create_person,
+                            num_members=pop_cnt,
+                            state=HE))
     groups.append(Composite(EXPOSED, {"color": YELLOW},
-                  member_creator=create_person,
-                  num_members=1,
-                  state=EX))
+                            member_creator=create_person,
+                            num_members=1,
+                            state=EX))
     groups.append(Composite(INFECTED, {"color": TOMATO},
-                  member_creator=create_person,
-                  num_members=1,
-                  state=IN))
+                            member_creator=create_person,
+                            num_members=1,
+                            state=IN))
     groups.append(Composite(CONTAGIOUS, {"color": RED},
-                  member_creator=create_person,
-                  num_members=1,
-                  state=CN))
+                            member_creator=create_person,
+                            num_members=1,
+                            state=CN))
     groups.append(Composite(DEAD, {"color": BLACK},
-                  member_creator=create_person,
-                  num_members=1,
-                  state=DE))
+                            member_creator=create_person,
+                            num_members=1,
+                            state=DE))
     groups.append(Composite(IMMUNE, {"color": BLUE},
-                  member_creator=create_person,
-                  num_members=1,
-                  state=IM))
+                            member_creator=create_person,
+                            num_members=1,
+                            state=IM))
     Env(MODEL_NAME, height=city_height, width=city_width, members=groups)
     set_env_attrs()
 
