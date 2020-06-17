@@ -2,7 +2,7 @@
 A model to simulate the spread of virus in a city.
 """
 from random import randint
-# from math import atan, degrees
+from math import atan, degrees
 
 from indra.agent import Agent
 from indra.agent import prob_state_trans, set_trans
@@ -34,7 +34,7 @@ DEF_IM_STAY = 1 - DEF_IM_HE_TRANS
 DEF_SURV_RATE = 1 - DEF_DEATH_RATE
 DEF_EX_HE_TRANS = 1 - DEF_INFEC
 DEF_PERSON_MOVE = 3
-DEF_DISTANCING = 1
+DEF_DISTANCING = 2
 
 PERSON_PREFIX = "Person"
 
@@ -76,7 +76,7 @@ def is_isolated(agent):
     '''
     Checks if agent is maintaining distancing.
     '''
-    return (distance(get_env().get_closest_agent(agent), agent) <=
+    return (distance(get_env().get_closest_agent(agent), agent) >=
             get_prop('distancing', DEF_DISTANCING))
 
 
@@ -127,28 +127,28 @@ def people_action(agent):
                              group_map[old_state],
                              group_map[agent[STATE]])
 
-    # Current social-distancing movement is random. Change in the future
     if(not is_isolated(agent)):
         if agent["angle"] is None:
             new_angle = randint(0, 360)
         else:
-            angle_shift = randint(45, 315)
-            new_angle = agent["angle"] + angle_shift
-            '''
-            # Working on moving in direction opposite nearest agent
             other_agent = get_env().get_closest_agent(agent)
             x_dif = other_agent.get_x() - agent.get_x()
             y_dif = other_agent.get_y() - agent.get_y()
-            print(degrees(atan(y_dif / x_dif)))
-            # This seems to always yield a set value?
-            if (x_dif != 0):
-                new_angle = 180 + degrees(atan(y_dif / x_dif))
-            else:
-                if(y_dif > 0):
-                    new_angle = 90
+            if (x_dif != 0 and y_dif != 0):
+                if (x_dif > 0):
+                    new_angle = 180 + degrees(atan(y_dif / x_dif))
                 else:
+                    new_angle = degrees(atan(y_dif / x_dif))
+            elif (y_dif != 0):
+                if(y_dif > 0):
                     new_angle = 270
-             '''
+                else:
+                    new_angle = 90
+            else:
+                if(x_dif > 0):
+                    new_angle = 180
+                else:
+                    new_angle = 0
         if (new_angle > 360):
             new_angle = new_angle % 360
         agent["angle"] = new_angle
