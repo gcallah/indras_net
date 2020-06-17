@@ -12,11 +12,11 @@ IMmune = "5"
 """
 
 def create_sal():
-    return ep.create_person("Saliou", 0)
+    return ep.create_person("Saliou", "0")
 def create_bob():
-    return ep.create_person("Bob", 1,2)
+    return ep.create_person("Bob", 1,"2")
 def create_azi():
-    return ep.create_person("Aziz", 2,3)
+    return ep.create_person("Aziz", 2,"3")
 def create_envirement():
     return ep.set_up()
 
@@ -37,7 +37,6 @@ class BasicTestCase(TestCase):
     def testNotHealthy(self):
         bob = create_bob()
         self.assertFalse(ep.is_healthy(bob))
-    @skip("Test fails I know why bu need to sleep. it has to do with the making the states strings, back and forth.")
     def testContagious(self):
         azi = create_azi()
         self.assertTrue(ep.is_contagious(azi),"Aziz should be contagious(3) but is"+ str(azi["state"]))
@@ -46,11 +45,15 @@ class BasicTestCase(TestCase):
         azi = create_azi()
         self.assertIs(azi,azi)
 
+
+    @skip("This is able to replicate the bug on the integration test, still tryin to fix it.")
+    def test_cordinates(self):
+        azi = create_azi()
+        self.assertIsNotNone(azi.get_x())
+        self.assertIsNotNone(azi.get_y())
     @skip("Test failing although model works: don't know why!")
     def test_main(self):
         self.assertEqual(ep.main(), 0)
-
-    
-
 if __name__ == '__main__':
-     main()
+    main()
+
