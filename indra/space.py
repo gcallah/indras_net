@@ -509,3 +509,40 @@ class Space(Composite):
         new_x += int(math.cos(math.radians(angle)) * max_move)
         new_y += int(math.sin(math.radians(angle)) * max_move)
         return self.constrain_x(new_x), self.constrain_y(new_y)
+
+
+class Region():
+
+    def __init__(self, NW, NE, SW, SE):
+        self.NW = NW
+        self.NE = NE
+        self.SW = SW
+        self.SE = SE
+
+    def contains(self, coord):
+        if (coord[0] >= self.NW[0]) and (coord[0] < self.NE[0]):
+            if(coord[1] >= self.SW[1]) and (coord[1] < self.NE[1]):
+                return True
+        return False
+
+
+class CompositeRegion(Region):
+
+    def __init__(self, region_set=None):
+        if region_set is None:
+            self.composite = {}
+        else:
+            self.composite = region_set
+
+    def contains(self, coord):
+        for region in self.composite:
+            if (region.contains(coord)):
+                print(region.contains(coord))
+                return True
+        return False
+
+    def add_region(self, region):
+        self.composite.add(region)
+
+    def remove_region(self, region):
+        self.composite.remove(region)
