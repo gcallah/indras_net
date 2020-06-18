@@ -65,6 +65,9 @@ class PopHist:
     def __iter__(self):
         return iter(self.pops)
 
+    def __getitem__(self, key):
+        return self.pops[key]
+
     def add_period(self):
         self.periods += 1
 
