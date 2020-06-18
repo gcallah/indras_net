@@ -13,18 +13,26 @@ IMmune = "5"
 
 def create_sal():
     return ep.create_person("Saliou", "0")
+
+
 def create_bob():
-    return ep.create_person("Bob", 1,"2")
+    return ep.create_person("Bob", 1, ep.IN)
+
+
 def create_azi():
-    return ep.create_person("Aziz", 2,"3")
+    return ep.create_person("Aziz", 2, ep.CN)
+
+
 def create_envirement():
     return ep.set_up()
+
 
 class BasicTestCase(TestCase):
     def setUp(self):
         sal = create_sal()
         bob = create_bob()
         azi = create_azi()
+
     def tearDown(self):
         sal = None
         bob = None
@@ -51,9 +59,12 @@ class BasicTestCase(TestCase):
         azi = create_azi()
         self.assertIsNotNone(azi.get_x())
         self.assertIsNotNone(azi.get_y())
+
     @skip("Test failing although model works: don't know why!")
     def test_main(self):
         self.assertEqual(ep.main(), 0)
+
+
 if __name__ == '__main__':
     main()
 
