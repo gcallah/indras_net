@@ -12,7 +12,7 @@ IMmune = "5"
 """
 
 def create_sal():
-    return ep.create_person("Saliou", "0")
+    return ep.create_person("Saliou", 0, ep.HE)
 
 
 def create_bob():
@@ -60,7 +60,7 @@ class BasicTestCase(TestCase):
         self.assertIsNotNone(azi.get_x())
         self.assertIsNotNone(azi.get_y())
 
-    @skip("Test failing although model works: don't know why!")
+    # @skip("Test failing although model works: don't know why!")
     def test_main(self):
         self.assertEqual(ep.main(), 0)
 

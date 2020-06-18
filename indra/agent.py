@@ -6,6 +6,7 @@ import json
 import sys
 from math import pi, sin
 from random import random
+from functools import wraps
 
 import numpy as np
 
@@ -276,15 +277,32 @@ class Agent(object):
     def is_located(self):
         return self.pos is not None
 
+    def check_null_pos(fn):
+        """
+        Should be used to decorate any function that uses pos[X] or pos[Y]
+        """
+        @wraps(fn)
+        def wrapper(*args, **kwargs):
+            # args[0] is self!
+            if args[0].pos is None:
+                user_log_err("Using the pos of an unlocated agent: "
+                             + args[0].name + " in function "
+                             + fn.__name__)
+                return 0
+            return fn(*args, **kwargs)
+        return wrapper
+
     def set_pos(self, locator, x, y):
         self.pos = (x, y)
 
     def get_pos(self):
         return self.pos
 
+    @check_null_pos
     def get_x(self):
         return self.pos[X]
 
+    @check_null_pos
     def get_y(self):
         return self.pos[Y]
 
