@@ -62,6 +62,9 @@ class PopHist:
     def __repr__(self):
         return str(self)  # for now!
 
+    def __iter__(self):
+        return iter(self.pops)
+
     def add_period(self):
         self.periods += 1
 
