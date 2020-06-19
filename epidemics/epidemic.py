@@ -95,7 +95,61 @@ def is_contagious(agent, *args):
 
 
 def epidemic_report(env):
-    return "epicdemic_report in progress"+"\n"
+    # taking data for each period using pop_hist
+    history = {}
+    history = get_env().pop_hist
+    healthy_history = history['Healthy']
+    periods = len(healthy_history)
+    exposed_history = history['Exposed']
+    infected_history = history['Infected']
+    contagious_history = history['Contagious']
+    dead_history = history['Dead']
+    immune_history = history['Immune']
+
+    # initializing list for each parameter
+    total_cases = []
+    new_cases = []
+    dead_cases = []
+    new_dead_cases = []
+
+    # calculating parameter for each period
+    for i in range(1, periods):
+        previous_total = infected_history[i-1]+contagious_history[i-1]
+        current_total = infected_history[i]+contagious_history[i]
+
+        current_new_cases_calculation = current_total-previous_total
+        if current_new_cases_calculation > 0:
+            current_new_cases = current_new_cases_calculation
+        else:
+            current_new_cases = 0
+
+        current_new_death_calculation = dead_history[i]-dead_history[i-1]
+        if(current_new_death_calculation > 0):
+            current_new_death = current_new_death_calculation
+        else:
+            current_new_death = 0
+
+        total_cases.append(current_total)
+        new_cases.append(current_new_cases)
+        new_dead_cases.append(dead_history[i]-dead_history[i-1])
+        dead_cases.append(dead_history[i])
+
+    # converting result to string
+    result = ""
+    for i in range(1, periods):
+        current_period_string = ""
+        current_period_string += "Current Period : "+str(i)+"\n"
+        current_period_string += "Total Cases in current period : " + \
+            str(total_cases[i-1])+"\n"
+        current_period_string += "New Cases in current period : " + \
+            str(new_cases[i-1])+"\n"
+        current_period_string += "New Deaths Cases in current period : " + \
+            str(new_dead_cases[i-1])+"\n"
+        current_period_string += "Dead Cases in current period : " + \
+            str(dead_cases[i-1])+"\n"
+        current_period_string += "\n"
+        result += current_period_string
+    return result+"\n"
 
 
 def people_action(agent):
