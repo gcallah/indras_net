@@ -4,6 +4,7 @@ of agents related spatially.
 """
 import json
 import math
+import sys
 from functools import wraps
 from math import sqrt
 from random import randint
@@ -518,12 +519,35 @@ class Region():
         self.NE = NE
         self.SW = SW
         self.SE = SE
+        self.width = self.NW[0] - self.NE[0]
+        self.height = self.NW[1] - self.SW[1]
 
     def contains(self, coord):
         if (coord[0] >= self.NW[0]) and (coord[0] < self.NE[0]):
             if(coord[1] >= self.SW[1]) and (coord[1] < self.NE[1]):
                 return True
         return False
+
+    def calc_heat(self, group, coord):
+        heat_strength = 0
+        for heat in group:
+            distance = sqrt(
+                ((coord[0] - group[heat].get_x()) ** 2)
+                + ((coord[1] - group[heat].get_y()) ** 2)
+            )
+            if distance != 0:
+                heat_strength += 1 / ((distance) ** 2)
+            else:
+                heat_strength += sys.maxsize
+        heat_strength *= -1
+        return heat_strength
+
+    def heatmap(self, group):
+        heat_map_ls = []
+        for x in range(self.height):
+            for y in range(self.width):
+                heat_map_ls.append(self.calc_heat(group, (x, y)))
+        return heat_map_ls
 
 
 class CompositeRegion(Region):
