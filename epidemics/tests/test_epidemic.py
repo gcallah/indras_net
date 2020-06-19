@@ -40,27 +40,28 @@ class BasicTestCase(TestCase):
         env = None
 
     def testHealthy(self):
+        # create people and test their attrubutes
         sal = create_sal()
+
         self.assertTrue(ep.is_healthy(sal))
     def testNotHealthy(self):
         bob = create_bob()
         self.assertFalse(ep.is_healthy(bob))
+
     def testContagious(self):
         azi = create_azi()
-        self.assertTrue(ep.is_contagious(azi),"Aziz should be contagious(3) but is"+ str(azi["state"]))
+        self.assertTrue(ep.is_contagious(azi))
 
     def testSamePerson(self):
         azi = create_azi()
         self.assertIs(azi,azi)
 
-
-    @skip("This is able to replicate the bug on the integration test, still tryin to fix it.")
     def test_cordinates(self):
+        # this should not work yet as Aziz doesn't have a pos yet but the problem should be caught. 
         azi = create_azi()
         self.assertIsNotNone(azi.get_x())
         self.assertIsNotNone(azi.get_y())
-
-    # @skip("Test failing although model works: don't know why!")
+ 
     def test_main(self):
         self.assertEqual(ep.main(), 0)
 
