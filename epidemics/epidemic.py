@@ -1,7 +1,6 @@
 """
 A model to simulate the spread of virus in a city.
 """
-from random import randint
 from math import atan, degrees
 
 from indra.agent import Agent
@@ -70,6 +69,30 @@ STATE_TRANS = [
 
 GROUP_MAP = "group_map"
 STATE = "state"
+
+
+def opposing_angle(agent, other_agent):
+    '''
+    Returns the angle of the other_agent relative to the agent
+    '''
+    x_dif = other_agent.get_x() - agent.get_x()
+    y_dif = other_agent.get_y() - agent.get_y()
+    if (x_dif != 0 and y_dif != 0):
+        if (x_dif > 0):
+            new_angle = 180 + degrees(atan(y_dif / x_dif))
+        else:
+            new_angle = degrees(atan(y_dif / x_dif))
+    elif (y_dif != 0):
+        if(y_dif > 0):
+            new_angle = 270
+        else:
+            new_angle = 90
+    else:
+        if(x_dif > 0):
+            new_angle = 180
+        else:
+            new_angle = 0
+    return new_angle
 
 
 def is_isolated(agent):
@@ -186,31 +209,13 @@ def people_action(agent):
                              group_map[agent[STATE]])
 
     if(not is_isolated(agent)):
-        if agent["angle"] is None:
-            new_angle = randint(0, 360)
-        else:
-            other_agent = get_env().get_closest_agent(agent)
-            x_dif = other_agent.get_x() - agent.get_x()
-            y_dif = other_agent.get_y() - agent.get_y()
-            if (x_dif != 0 and y_dif != 0):
-                if (x_dif > 0):
-                    new_angle = 180 + degrees(atan(y_dif / x_dif))
-                else:
-                    new_angle = degrees(atan(y_dif / x_dif))
-            elif (y_dif != 0):
-                if(y_dif > 0):
-                    new_angle = 270
-                else:
-                    new_angle = 90
-            else:
-                if(x_dif > 0):
-                    new_angle = 180
-                else:
-                    new_angle = 0
-        if (new_angle > 360):
+        new_angle = opposing_angle(agent, get_env().get_closest_agent(agent))
+        print(new_angle)
+        if(new_angle > 360):
             new_angle = new_angle % 360
         agent["angle"] = new_angle
-
+    else:
+        return True
     if agent[STATE] == DE:
         return True
     else:
