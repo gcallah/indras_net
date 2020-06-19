@@ -210,7 +210,6 @@ def people_action(agent):
 
     if(not is_isolated(agent)):
         new_angle = opposing_angle(agent, get_env().get_closest_agent(agent))
-        print(new_angle)
         if(new_angle > 360):
             new_angle = new_angle % 360
         agent["angle"] = new_angle
