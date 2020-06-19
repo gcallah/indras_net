@@ -100,11 +100,11 @@ def epidemic_report(env):
     history = get_env().pop_hist
     healthy_history = history['Healthy']
     periods = len(healthy_history)
-    exposed_history = history['Exposed']
+    # exposed_history = history['Exposed']
     infected_history = history['Infected']
     contagious_history = history['Contagious']
     dead_history = history['Dead']
-    immune_history = history['Immune']
+    # immune_history = history['Immune']
 
     # initializing list for each parameter
     total_cases = []
@@ -131,7 +131,7 @@ def epidemic_report(env):
 
         total_cases.append(current_total)
         new_cases.append(current_new_cases)
-        new_dead_cases.append(dead_history[i]-dead_history[i-1])
+        new_dead_cases.append(current_new_death)
         dead_cases.append(dead_history[i])
 
     # converting result to string
