@@ -62,6 +62,12 @@ class PopHist:
     def __repr__(self):
         return str(self)  # for now!
 
+    def __iter__(self):
+        return iter(self.pops)
+
+    def __getitem__(self, key):
+        return self.pops[key]
+
     def add_period(self):
         self.periods += 1
 
@@ -342,8 +348,6 @@ class Env(Space):
         census_func overrides the default behavior.
         """
         if CENSUS_FUNC in self.attrs:
-            user_log_notif("Employing custom census func for "
-                           + self.name)
             return self.attrs[CENSUS_FUNC](self)
         else:
             SEP_STR = "==================\n"

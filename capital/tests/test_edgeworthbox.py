@@ -35,11 +35,10 @@ class EdgeworthboxTestCase(TestCase):
 
     def test_utility_delta(self):
         agent = edge.create_cagent('Cheese holders', 0)
-        test_case = edge.DEF_NUM_CHEESE
-        agent["goods"]["cheese"][AMT_AVAILABLE] = test_case
-        change = utility_delta(agent, "cheese", 1)
-        check = (DEF_MAX_UTIL - test_case + DEF_MAX_UTIL - (test_case + 1)) / 2
-        self.assertEqual(change, check)
+        agent["goods"]["cheese"][AMT_AVAILABLE] = edge.DEF_NUM_CHEESE
+        delta = utility_delta(agent, "cheese", 1)
+        self.assertGreaterEqual(delta, 0.0)
+        self.assertLessEqual(delta, DEF_MAX_UTIL)
 
     def test_adj_add_good(self):
         agent = edge.create_cagent('Cheese holders', 0)

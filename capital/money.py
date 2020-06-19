@@ -23,36 +23,52 @@ DEF_NUM_TRADERS = 4
 
 MONEY_MAX_UTIL = 100
 
+DUR_DECR = "durability_decrement"
 TRADE_COUNT = "trade_count"
 INIT_COUNT = 0  # a starting point for trade_count
 
 # these are the goods we hand out at the start:
 natures_goods = {
+    # add initial value to this data?
     "cow": {AMT_AVAILABLE: 10, UTIL_FUNC: GEN_UTIL_FUNC,
-            "incr": 0, "durability": 0.8, "divisibility": 1.0,
+            "incr": 0, DUR_DECR: 0.8, "divisibility": 1.0,
             "trade_count": 0, "is_allocated": False, },
     "gold": {AMT_AVAILABLE: 8, UTIL_FUNC: GEN_UTIL_FUNC,
-             "incr": 0, "durability": 1.0, "divisibility": 0.1,
+             "incr": 0, DUR_DECR: 1.0, "divisibility": 0.1,
              "trade_count": 0, "is_allocated": False, },
     "cheese": {AMT_AVAILABLE: 2, UTIL_FUNC: GEN_UTIL_FUNC,
-               "incr": 0, "durability": 0.8, "divisibility": 0.4,
+               "incr": 0, DUR_DECR: 0.8, "divisibility": 0.4,
                "trade_count": 0, "is_allocated": False, },
     "banana": {AMT_AVAILABLE: 7, UTIL_FUNC: GEN_UTIL_FUNC,
-               "incr": 0, "durability": 0.2, "divisibility": 0.2,
+               "incr": 0, DUR_DECR: 0.2, "divisibility": 0.2,
                "trade_count": 0, "is_allocated": False, },
     "diamond": {AMT_AVAILABLE: 8, UTIL_FUNC: GEN_UTIL_FUNC,
-                "incr": 0, "durability": 1.0, "divisibility": 0.8,
+                "incr": 0, DUR_DECR: 1.0, "divisibility": 0.8,
                 "trade_count": 0, "is_allocated": False, },
     "avocado": {AMT_AVAILABLE: 5, UTIL_FUNC: GEN_UTIL_FUNC,
-                "incr": 0, "durability": 0.3, "divisibility": 0.5,
+                "incr": 0, DUR_DECR: 0.3, "divisibility": 0.5,
                 "trade_count": 0, "is_allocated": False, },
     "stone": {AMT_AVAILABLE: 10, UTIL_FUNC: GEN_UTIL_FUNC,
-              "incr": 0, "durability": 1.0, "divisibility": 1.0,
+              "incr": 0, DUR_DECR: 1.0, "divisibility": 1.0,
               "trade_count": 0, "is_allocated": False, },
     "milk": {AMT_AVAILABLE: 8, UTIL_FUNC: GEN_UTIL_FUNC,
-             "incr": 0, "durability": 0.2, "divisibility": 0.15,
+             "incr": 0, DUR_DECR: 0.2, "divisibility": 0.15,
              "trade_count": 0, "is_allocated": False, },
 }
+
+
+class Good:
+    def __init__(self, name, amt, age=0):
+        self.amt = amt
+        self.dur_decr = natures_goods[name][DUR_DECR]
+        self.util_func = natures_goods[name][UTIL_FUNC]
+        self.age = age
+
+    def get_decr_amt(self):
+        return self.dur_decr * self.age
+
+    def get_older(self):
+        self.age += 1
 
 
 def initial_amt(pop_hist):
@@ -94,17 +110,17 @@ def good_decay(goods):
     with AMT_AVAILABLE being adjusted by durability.
     """
     for good in goods:
-        goods[good][AMT_AVAILABLE] *= goods[good]["durability"]
+        goods[good][AMT_AVAILABLE] *= goods[good][DUR_DECR]
 
 
 def money_trader_action(agent):
     dic1 = copy.deepcopy(agent["goods"])
     ret = seek_a_trade(agent)
     dic2 = copy.deepcopy(agent["goods"])
-    diff = {x: (dic1[x][AMT_AVAILABLE]-dic2[x][AMT_AVAILABLE])
+    diff = {x: (dic1[x][AMT_AVAILABLE] - dic2[x][AMT_AVAILABLE])
             for x in dic1 if x in dic2}
     for good in diff:
-        decayed_amt = dic1[good]["durability"] * dic1[good][AMT_AVAILABLE]
+        decayed_amt = dic1[good][DUR_DECR] * dic1[good][AMT_AVAILABLE]
         if (diff[good] != decayed_amt and diff[good] != 0):
             incr_trade_count(good)
     print("TRADE COUNT")
@@ -120,6 +136,8 @@ def create_trader(name, i):
     A func to create a trader.
     """
     return Agent(name + str(i), action=money_trader_action,
+                 # goods will now be a dictionary like:
+                 # goods["cow"] = [cowA, cowB, cowC, etc.]
                  attrs={"goods": {},
                         "util": 0,
                         "pre_trade_util": 0})
