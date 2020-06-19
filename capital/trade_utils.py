@@ -17,8 +17,10 @@ answer_dict = {
     0: "I'm indifferent about",
     -1: "I reject"
 }
+
 COMPLEMENTS = "complementaries"
 DEF_MAX_UTIL = 20  # this should be set by the models that use this module
+DIM_UTIL_BASE = 1.1  # we should experiment with this!
 
 max_util = DEF_MAX_UTIL
 
@@ -32,7 +34,7 @@ STEEP_GRADIENT = 20
 
 
 def gen_util_func(qty):
-    return max_util - qty
+    return max_util * (DIM_UTIL_BASE ** (-qty))
 
 
 def penguin_util_func(qty):
@@ -233,27 +235,29 @@ def answer_to_str(ans):
     return answer_dict[ans]
 
 
-def negotiate(trader1, trader2, comp=None):
+def negotiate(trader1, trader2, comp=False, amt=1):
     # this_good is a dict
+    # we want to offer "divisibility" amount extra each loop
     for this_good in trader1["goods"]:
-        amt = 1
         # amt = amt_adjust(trader1, this_good)
         while trader1["goods"][this_good][AMT_AVAILABLE] >= amt:
             ans = rec_offer(trader2, this_good, amt, trader1, comp=comp)
+            # Besides acceptance or rejection, the offer can be inadequate!
             if ans == ACCEPT or ans == REJECT:
                 break
             amt += amt
 
 
-def seek_a_trade(agent):
+def seek_a_trade(agent, comp=False):
     nearby_agent = get_env().get_closest_agent(agent)
     if nearby_agent is not None:
-        negotiate(agent, nearby_agent)
+        negotiate(agent, nearby_agent, comp)
         print("I'm", agent.name, "I have", goods_to_str(agent[GOODS]))
     # return False means to move
     return False
 
 
+# must eliminate next function and use the one above!
 def seek_a_trade_w_comp(agent):
     nearby_agent = get_env().get_closest_agent(agent)
     if nearby_agent is not None:
@@ -263,7 +267,7 @@ def seek_a_trade_w_comp(agent):
     return False
 
 
-def rec_offer(agent, his_good, his_amt, counterparty, comp=None):
+def rec_offer(agent, his_good, his_amt, counterparty, comp=False):
     """
     Receive an offer: we don't need to ever change my_amt
     in this function, because if the counter-party can't bid enough
@@ -324,12 +328,11 @@ def utility_delta(agent, good, change):
     """
     curr_good = agent["goods"][good]
     ufunc_name = curr_good[UTIL_FUNC]
-    # temp change
-    if ("divisibility" in agent["goods"][list(agent["goods"])[0]]):
-        curr_amt = curr_good[AMT_AVAILABLE]/curr_good["divisibility"]
-    else:
-        curr_amt = curr_good[AMT_AVAILABLE]
-    # curr_amt = curr_good[AMT_AVAILABLE]
+    # Trying to work out divisiblity: not sure if this works!
+    # if ("divisibility" in agent["goods"][list(agent["goods"])[0]]):
+    #    curr_amt = curr_good[AMT_AVAILABLE] / curr_good["divisibility"]
+    # else:
+    curr_amt = curr_good[AMT_AVAILABLE]
     curr_util = get_util_func(ufunc_name)(curr_amt)
     new_util = get_util_func(ufunc_name)(curr_amt + change)
     return ((new_util + curr_util) / 2) * change
