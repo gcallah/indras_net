@@ -161,15 +161,15 @@ def epidemic_report(env):
     result = ""
     for i in range(1, periods):
         current_period_string = ""
-        current_period_string += "Current Period : "+str(i)+"\n"
-        current_period_string += "Total Cases in current period : " + \
+        current_period_string += "Current period: "+str(i)+"\n"
+        current_period_string += "Total cases: " + \
             str(total_cases[i-1])+"\n"
-        current_period_string += "New Cases in current period : " + \
+        current_period_string += "New cases in last period: " + \
             str(new_cases[i-1])+"\n"
-        current_period_string += "New Deaths Cases in current period : " + \
-            str(new_dead_cases[i-1])+"\n"
-        current_period_string += "Dead Cases in current period : " + \
+        current_period_string += "Total deaths: " + \
             str(dead_cases[i-1])+"\n"
+        current_period_string += "New Deaths in last period: " + \
+            str(new_dead_cases[i-1])+"\n"
         current_period_string += "\n"
         result += current_period_string
     return result+"\n"
