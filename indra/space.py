@@ -550,6 +550,18 @@ class Region():
         return heat_map_ls
 
 
+class CircularRegion(Region):
+    def __init__(self, center, radius):
+        self.center = center
+        self.radius = radius
+
+    def contains(self, coord):
+        if ((coord[0] - self.center[0]) ** 2
+                + (coord[1] - self.center[1]) ** 2 < self.radius ** 2):
+            return True
+        return False
+
+
 class CompositeRegion(Region):
 
     def __init__(self, region_set=None):
