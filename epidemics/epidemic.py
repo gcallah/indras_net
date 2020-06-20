@@ -168,7 +168,7 @@ def epidemic_report(env):
             str(new_cases[i-1])+"\n"
         current_period_string += "Total deaths: " + \
             str(dead_cases[i-1])+"\n"
-        current_period_string += "New Deaths in last period: " + \
+        current_period_string += "New deaths in last period: " + \
             str(new_dead_cases[i-1])+"\n"
         current_period_string += "\n"
         result += current_period_string
