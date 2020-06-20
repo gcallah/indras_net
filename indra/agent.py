@@ -412,7 +412,7 @@ class Agent(object):
                 and not self.locator.is_full()):
             new_xy = None
             if angle is not None:
-                if DEBUG:
+                if DEBUG2:
                     user_log_notif("Using angled move")
                 new_xy = self.locator.point_from_vector(angle,
                                                         max_move, self.pos)

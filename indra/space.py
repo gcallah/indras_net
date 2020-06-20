@@ -230,6 +230,7 @@ class Space(Composite):
 
     def get_moore_hood_idx(self, x, y, distance=1):
         """
+        J & K: THIS WILL GO AWAY!
         Return set of coords (x1, x2, y1, y2) that are the
         corners of a square... *unless* those corners could
         be off the grid. In that case, pull them back in bounds.
@@ -424,6 +425,13 @@ class Space(Composite):
                        include_self=False, hood_size=1):
         """
         Takes in an agent and returns a Composite of its Moore neighbors.
+        J & K:
+            This should look like:
+            region = Region(center_x=agent.get_x(),
+                            center_y=agent.get_y(),
+                            size=hood_size)
+            members = region.get_agents(exclude_self=True, pred=None)
+            return Composite("Moore neighbors", members=members)
         """
         moore_hood = Composite("Moore neighbors")
         x1, x2, y1, y2 = self.get_moore_hood_idx(agent.get_x(),
