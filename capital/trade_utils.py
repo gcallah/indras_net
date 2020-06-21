@@ -38,19 +38,19 @@ def gen_util_func(qty):
 
 
 def penguin_util_func(qty):
-    return 25 - qty
+    return 25 * (1 ** (-qty))
 
 
 def cat_util_func(qty):
-    return 10 - qty
+    return 10 * (1 ** (-qty))
 
 
 def bear_util_func(qty):
-    return 15 - qty
+    return 15 * (1 ** (-qty))
 
 
 def steep_util_func(qty):
-    return 20 - STEEP_GRADIENT*qty
+    return 20 * (2 ** (-qty))
 
 
 util_funcs = {
