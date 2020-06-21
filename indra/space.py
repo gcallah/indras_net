@@ -432,12 +432,18 @@ class Space(Composite):
                             size=hood_size)
             members = region.get_agents(exclude_self=True, pred=None)
             return Composite("Moore neighbors", members=members)
-        """
+
         moore_hood = Composite("Moore neighbors")
+        """
         x1, x2, y1, y2 = self.get_moore_hood_idx(agent.get_x(),
                                                  agent.get_y(),
                                                  hood_size)
-
+        region = Region(center_x=agent.get_x(),
+                        center_y=agent.get_y(),
+                        size=hood_size)
+        members = region.get_agents(self, exclude_self=True, pred=None)
+        return Composite("Moore neighbors", members=members)
+        """
         for x in range(x1, x2 + 1):
             for y in range(y1, y2 + 1):
                 neighbor = self.get_agent_at(x, y)
@@ -452,6 +458,7 @@ class Space(Composite):
         if agent.get("save_neighbors", False):
             agent.neighbors = moore_hood
         return moore_hood
+        """
 
     def get_square_hood(self, agent, pred=None, save_neighbors=False,
                         include_self=False, hood_size=1):
@@ -522,19 +529,37 @@ class Space(Composite):
 
 class Region():
 
-    def __init__(self, NW, NE, SW, SE):
-        self.NW = NW
-        self.NE = NE
-        self.SW = SW
-        self.SE = SE
-        self.width = self.NW[0] - self.NE[0]
-        self.height = self.NW[1] - self.SW[1]
+    def __init__(self, NW=None, NE=None, SW=None, SE=None, center_x=None,
+                 center_y=None, size=None):
+        if (center_x is not None and center_y is not None
+                and size is not None):
+            self.NW = (center_x - size, center_y + size)
+            self.NE = (center_x + size + 1, center_y + size)
+            self.SW = (center_x - size, center_y - size - 1)
+            self.SE = (center_x + size + 1, center_y - size - 1)
+            self.width = size * 2
+            self.height = size * 2
+        else:
+            self.NW = NW
+            self.NE = NE
+            self.SW = SW
+            self.SE = SE
+            self.width = self.NW[0] - self.NE[0]
+            self.height = self.NW[1] - self.SW[1]
 
     def contains(self, coord):
         if (coord[0] >= self.NW[0]) and (coord[0] < self.NE[0]):
             if(coord[1] >= self.SW[1]) and (coord[1] < self.NE[1]):
                 return True
         return False
+
+    def get_agents(self, Space, exclude_self=False, pred=None):
+        agent_ls = []
+        for y in range(self.height):
+            for x in range(self.width):
+                if Space.get_agent_at(x, y) is not None:
+                    agent_ls.append(Space.get_agent_at(x, y))
+        return agent_ls
 
     def calc_heat(self, group, coord):
         heat_strength = 0
@@ -552,8 +577,8 @@ class Region():
 
     def heatmap(self, group):
         heat_map_ls = []
-        for x in range(self.height):
-            for y in range(self.width):
+        for y in range(self.height):
+            for x in range(self.width):
                 heat_map_ls.append(self.calc_heat(group, (x, y)))
         return heat_map_ls
 
