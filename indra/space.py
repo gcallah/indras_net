@@ -434,10 +434,11 @@ class Space(Composite):
             return Composite("Moore neighbors", members=members)
 
         moore_hood = Composite("Moore neighbors")
-        """
+
         x1, x2, y1, y2 = self.get_moore_hood_idx(agent.get_x(),
                                                  agent.get_y(),
                                                  hood_size)
+        """
         region = Region(center_x=agent.get_x(),
                         center_y=agent.get_y(),
                         size=hood_size)
@@ -559,9 +560,15 @@ class Region():
         agent_ls = []
         for y in range(self.height):
             for x in range(self.width):
-                if Space.get_agent_at(x, y) is not None:
-                    if self.center is not (x, y) and exclude_self is True:
-                        agent_ls.append(Space.get_agent_at(x, y))
+                x_coord = self.SW[0] + x
+                y_coord = self.SW[1] + y
+                if Space.get_agent_at(x_coord, y_coord) is not None:
+                    if (x_coord, y_coord) is self.center:
+                        if exclude_self is False:
+                            agent_ls.append(
+                                Space.get_agent_at(x_coord, y_coord))
+                    else:
+                        agent_ls.append(Space.get_agent_at(x_coord, y_coord))
         return agent_ls
 
     def calc_heat(self, group, coord):
