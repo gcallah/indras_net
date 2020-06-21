@@ -539,6 +539,7 @@ class Region():
             self.SE = (center_x + size + 1, center_y - size - 1)
             self.width = size * 2
             self.height = size * 2
+            self.center = (center_x, center_y)
         else:
             self.NW = NW
             self.NE = NE
@@ -546,6 +547,7 @@ class Region():
             self.SE = SE
             self.width = self.NW[0] - self.NE[0]
             self.height = self.NW[1] - self.SW[1]
+            self.center = None
 
     def contains(self, coord):
         if (coord[0] >= self.NW[0]) and (coord[0] < self.NE[0]):
@@ -558,7 +560,8 @@ class Region():
         for y in range(self.height):
             for x in range(self.width):
                 if Space.get_agent_at(x, y) is not None:
-                    agent_ls.append(Space.get_agent_at(x, y))
+                    if self.center is not (x, y) and exclude_self is True:
+                        agent_ls.append(Space.get_agent_at(x, y))
         return agent_ls
 
     def calc_heat(self, group, coord):
