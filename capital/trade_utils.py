@@ -239,7 +239,7 @@ def negotiate(trader1, trader2, comp=False, amt=1):
     # this_good is a dict
     # we want to offer "divisibility" amount extra each loop
     for this_good in trader1["goods"]:
-        # amt = amt_adjust(trader1, this_good)
+        amt = amt_adjust(trader1, this_good)
         while trader1["goods"][this_good][AMT_AVAILABLE] >= amt:
             ans = rec_offer(trader2, this_good, amt, trader1, comp=comp)
             # Besides acceptance or rejection, the offer can be inadequate!
@@ -280,7 +280,7 @@ def rec_offer(agent, his_good, his_amt, counterparty, comp=False):
         print(his_good, agent[GOODS][his_good]['incr'])
     for my_good in agent["goods"]:
         # adjust my_amt if "divisibility" is one of the attributes
-        # my_amt = amt_adjust(agent, my_good)
+        my_amt = amt_adjust(agent, my_good)
         if my_good != his_good and agent["goods"][my_good][AMT_AVAILABLE] > 0:
             loss = -utility_delta(agent, my_good, -my_amt)
             if comp:
