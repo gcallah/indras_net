@@ -31,11 +31,8 @@ def create_envirement():
 class BasicTestCase(TestCase):
     def setUp(self):
         sal = create_sal()
-        sal.set_pos(0, 0, 0)
         bob = create_bob()
-        bob.set_pos(0, 1, 1)
         azi = create_azi()
-        azi.set_pos(0, -1, 1)
 
     def tearDown(self):
         sal = None
