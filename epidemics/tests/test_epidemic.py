@@ -11,6 +11,7 @@ DEad = "4"
 IMmune = "5"
 """
 
+
 def create_sal():
     return ep.create_person("Saliou", 0, ep.HE)
 
@@ -30,8 +31,11 @@ def create_envirement():
 class BasicTestCase(TestCase):
     def setUp(self):
         sal = create_sal()
+        sal.set_pos(0, 0, 0)
         bob = create_bob()
+        bob.set_pos(0, 1, 1)
         azi = create_azi()
+        azi.set_pos(0, -1, 1)
 
     def tearDown(self):
         sal = None
@@ -42,8 +46,8 @@ class BasicTestCase(TestCase):
     def testHealthy(self):
         # create people and test their attrubutes
         sal = create_sal()
-
         self.assertTrue(ep.is_healthy(sal))
+
     def testNotHealthy(self):
         bob = create_bob()
         self.assertFalse(ep.is_healthy(bob))
@@ -54,18 +58,20 @@ class BasicTestCase(TestCase):
 
     def testSamePerson(self):
         azi = create_azi()
-        self.assertIs(azi,azi)
+        self.assertIs(azi, azi)
 
     def test_cordinates(self):
-        # this should not work yet as Aziz doesn't have a pos yet but the problem should be caught. 
+        '''
+        This should not work yet as Aziz doesn't have
+        a pos yet but the problem should be caught.
+        '''
         azi = create_azi()
         self.assertIsNotNone(azi.get_x())
         self.assertIsNotNone(azi.get_y())
- 
+
     def test_main(self):
         self.assertEqual(ep.main(), 0)
 
 
 if __name__ == '__main__':
     main()
-
