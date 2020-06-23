@@ -1,5 +1,7 @@
 import networkx as nx
-import pylab as plt
+# %matplotlib inline
+import matplotlib.pyplot as plt
+# from networkx.drawing.nx_agraph import graphviz_layout
 
 
 class GoodStruct:
@@ -10,14 +12,23 @@ class GoodStruct:
     def add_node(self, node):
         self.G.add_node(node)
 
-    def add_edge(self, node1, node2):
+    def add_edge(self, node1, node2, weight=None):
         '''
         add an edge between node1 and node2
         '''
-        self.G.add_edge(node1, node2)
+        self.G.add_edge(node1, node2, weight=weight)
 
     def draw_graph(self):
         nx.draw_shell(self.G, with_labels=True, font_weight='bold')
+
+        # pos = graphviz_layout(self.G)
+        # plt.axis('off')
+        # nx.draw_networkx_nodes(self.G,pos,node_color='g',alpha = 0.8)
+        # nx.draw_networkx_edges(self.G,pos,edge_color='b',alpha = 0.6)
+        # nx.draw_networkx_edge_labels(self.G,pos,edge_labels = \
+        # nx.get_edge_attributes(self.G,'weight'))
+        # nx.draw_networkx_labels(self.G,pos) # node lables
+
         plt.savefig('graph.png')
 
     def __str__(self):
@@ -53,6 +64,12 @@ class GoodStruct:
         '''
         self.G.remove_node(node)
 
+    def get_weight(self, node1, node2):
+        '''
+        get weight of the edge between node1 and node2
+        '''
+        return self.G[node1][node2]['weight']
+
 
 def main():
     goods = GoodStruct()
@@ -62,20 +79,28 @@ def main():
     goods.add_node("refrigerator")
     goods.add_node("cheese")
     goods.add_node("peperoni")
+    goods.add_node("lamp")
+    goods.add_node("sun light")
 
-    goods.add_edge("land", "oven")
-    goods.add_edge("land", "refrigerator")
-    goods.add_edge("cheese", "refrigerator")
-    goods.add_edge("peperoni", "refrigerator")
-    goods.add_edge("pizza base", "oven")
-    goods.add_edge("pizza base", "peperoni")
-    goods.add_edge("pizza base", "cheese")
+    goods.add_edge("land", "oven", weight=4)
+    goods.add_edge("land", "refrigerator", weight=4)
+    goods.add_edge("cheese", "refrigerator", weight=4)
+    goods.add_edge("peperoni", "refrigerator", weight=4)
+    goods.add_edge("pizza base", "oven", weight=4)
+    goods.add_edge("pizza base", "peperoni", weight=2)
+    goods.add_edge("pizza base", "cheese", weight=2)
+    goods.add_edge("land", "lamp", weight=1)
+    goods.add_edge("sun light", "lamp", weight=-4)
+    goods.add_edge("land", "sun light", weight=1)
 
     print("node:", goods.nodes(), "\n")
     print("edges:", goods.edges(), "\n")
     print("number of nodes:", len(goods), "\n")
     print("graph as a string:", goods, "\n")
     print("neighbors of piassa:", goods.neighbors("pizza base"), "\n")
+    print("weight from land to oven:", goods.get_weight('land', 'oven'))
+    print("weight from \'sun light' to \'lamp':",
+          goods.get_weight("sun light", "lamp"))
     goods.draw_graph()
 
 

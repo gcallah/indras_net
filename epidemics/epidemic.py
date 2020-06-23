@@ -34,6 +34,7 @@ DEF_SURV_RATE = 1 - DEF_DEATH_RATE
 DEF_EX_HE_TRANS = 1 - DEF_INFEC
 DEF_PERSON_MOVE = 3
 DEF_DISTANCING = 2
+DEF_INFEC = 0.02
 
 PERSON_PREFIX = "Person"
 
@@ -58,7 +59,7 @@ IM = "5"
 
 STATE_TRANS = [
     # HE    EX   IN   CN   DE    IM
-    [.985, .015, 0.0, 0.0, 0.0,  0.0],  # HE
+    [0.98, 0.02, 0.0, 0.0, 0.0,  0.0],  # HE
     [DEF_EX_HE_TRANS,  0.0,  DEF_INFEC, 0.0, 0.0,  0.0],  # EX
     [0.0,  0.0,  0.0, 1.0, 0.0,  0.0],  # IN
     [0.0,  0.0,  0.0, 0.0, DEF_DEATH_RATE, DEF_SURV_RATE],  # CN
@@ -119,74 +120,27 @@ def is_contagious(agent, *args):
 
 def epidemic_report(env):
     # taking data for each period using pop_hist
-    history = {}
-    history = get_env().pop_hist
-    healthy_history = history['Healthy']
-    periods = len(healthy_history)
-    # exposed_history = history['Exposed']
-    infected_history = history['Infected']
-    contagious_history = history['Contagious']
-    dead_history = history['Dead']
-    # immune_history = history['Immune']
+    pop_hist = get_env().pop_hist
 
-    # initializing list for each parameter
-    total_cases = []
-    new_cases = []
-    dead_cases = []
-    new_dead_cases = []
+    periods = len(pop_hist[INFECTED])
 
-    if(periods == 2):
-        history.record_pop("total_infected", infected_history[0])
-        history.record_pop("total_infected", infected_history[0])
-    else:
-        current = infected_history[periods-1]-infected_history[periods-2]
-        previous = history["total_infected"][periods-2]
+    total_deaths = pop_hist[DEAD][periods-1]
+    curr_deaths = total_deaths - pop_hist[DEAD][periods - 2]
+    curr_infected = pop_hist[INFECTED][periods-1] - \
+        pop_hist[INFECTED][periods - 2]
+    curr_infected = max(0, curr_infected)
 
-        if(current > 0):
-            total = current+previous
-        else:
-            total = previous
+    if curr_infected > 0:
+        cases = get_env().get_attr("total_cases")
+        get_env().set_attr("total_cases", cases + curr_infected)
 
-        history["total_infected"][periods-1] = total
+    result = "Total Deaths: " + str(total_deaths) + "\n"
+    result += "New Deaths: " + str(curr_deaths) + "\n"
+    result += "Total Cases: " + \
+        str(get_env().get_attr("total_cases")) + "\n"
+    result += "New Cases: " + str(curr_infected) + "\n"
 
-    # calculating parameter for each period
-    for i in range(1, periods):
-        previous_total = infected_history[i-1]+contagious_history[i-1]
-        current_total = infected_history[i]+contagious_history[i]
-
-        current_new_cases_calculation = current_total-previous_total
-        if current_new_cases_calculation > 0:
-            current_new_cases = current_new_cases_calculation
-        else:
-            current_new_cases = 0
-
-        current_new_death_calculation = dead_history[i]-dead_history[i-1]
-        if(current_new_death_calculation > 0):
-            current_new_death = current_new_death_calculation
-        else:
-            current_new_death = 0
-
-        total_cases.append(current_total)
-        new_cases.append(current_new_cases)
-        new_dead_cases.append(current_new_death)
-        dead_cases.append(dead_history[i])
-
-    # converting result to string
-    result = ""
-    for i in range(1, periods):
-        current_period_string = ""
-        current_period_string += "Current period: "+str(i)+"\n"
-        current_period_string += "Total cases: " + \
-            str(history["total_infected"][i-1])+"\n"
-        current_period_string += "New cases in last period: " + \
-            str(new_cases[i-1])+"\n"
-        current_period_string += "Total deaths: " + \
-            str(dead_cases[i-1])+"\n"
-        current_period_string += "New deaths in last period: " + \
-            str(new_dead_cases[i-1])+"\n"
-        current_period_string += "\n"
-        result += current_period_string
-    return result+"\n"
+    return result
 
 
 def people_action(agent):
@@ -287,6 +241,7 @@ def set_env_attrs():
                   DE: DEAD,
                   IM: IMMUNE})
     env.set_attr("census_func", epidemic_report)
+    env.set_attr("total_cases", 0)
 
 
 def set_up(props=None):
@@ -300,6 +255,7 @@ def set_up(props=None):
     city_density = get_prop('density', DEF_DENSITY)
     immune_per = get_prop('immune_per', DEF_IMMUNE_PER)
     death_rate = get_prop('death_rate', DEF_DEATH_RATE)
+    initial_infected = get_prop('initial_infected', DEF_INFEC)
     infec = get_prop('infec', DEF_INFEC)
     immune_rate = 1 / immune_per
 
@@ -312,7 +268,7 @@ def set_up(props=None):
     groups = []
     groups.append(Composite(HEALTHY, {"color": GREEN},
                             member_creator=create_person,
-                            num_members=pop_cnt,
+                            num_members=int(pop_cnt * (1 - initial_infected)),
                             state=HE))
     groups.append(Composite(EXPOSED, {"color": YELLOW},
                             member_creator=create_person,
@@ -320,7 +276,7 @@ def set_up(props=None):
                             state=EX))
     groups.append(Composite(INFECTED, {"color": TOMATO},
                             member_creator=create_person,
-                            num_members=1,
+                            num_members=int(pop_cnt * initial_infected),
                             state=IN))
     groups.append(Composite(CONTAGIOUS, {"color": RED},
                             member_creator=create_person,
