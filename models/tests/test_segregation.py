@@ -12,9 +12,9 @@ from indra.env import Env
 from registry.registry import get_env
 from models.segregation import DEF_TOLERANCE, DEF_SIGMA
 from models.segregation import env_favorable, BLUE_AGENTS, RED_AGENTS
-from models.segregation import group_names, my_group_index
-from models.segregation import other_group_index, get_tolerance
-from models.segregation import set_up, create_resident, RED_TEAM, BLUE_TEAM
+from models.segregation import group_names
+from models.segregation import get_tolerance
+from models.segregation import set_up, create_resident, RED_GRP_IDX, BLUE_GRP_IDX
 
 TEST_ANUM = 999999
 
@@ -49,24 +49,12 @@ class SegregationTestCase(TestCase):
         self.assertLess(DEF_TOLERANCE - .2, avg)
         self.assertGreater(DEF_TOLERANCE + .2, avg)
 
-    def test_my_group_index(self):
-        red_agent = create_resident(RED_AGENTS, TEST_ANUM)
-        self.assertEqual(RED_TEAM, my_group_index(red_agent))
-        blue_agent = create_resident(BLUE_AGENTS, TEST_ANUM)
-        self.assertEqual(BLUE_TEAM, my_group_index(blue_agent))
-
-    def test_other_group_index(self):
-        red_agent = create_resident(RED_AGENTS, TEST_ANUM)
-        self.assertEqual(BLUE_TEAM, other_group_index(red_agent))
-        blue_agent = create_resident(BLUE_AGENTS, TEST_ANUM)
-        self.assertEqual(RED_TEAM, other_group_index(blue_agent))
-
     def test_create_agent(self):
         """
         Test that creating an agent works.
         """
         fred = create_resident(RED_AGENTS, TEST_ANUM)
-        freds_nm = group_names[RED_TEAM] + str(TEST_ANUM)
+        freds_nm = group_names[RED_GRP_IDX] + str(TEST_ANUM)
         self.assertEqual(freds_nm, str(fred))
 
     def agent_in_little_city(self, with_blue=False):

@@ -1,7 +1,7 @@
 """
 A model to simulate the spread of virus in a city.
 """
-from random import randint
+from math import atan, degrees
 
 from indra.agent import Agent
 from indra.agent import prob_state_trans, set_trans
@@ -13,7 +13,7 @@ from indra.env import Env
 from registry.registry import get_env, get_prop, get_group
 from registry.registry import user_log_err, run_notice, user_log_notif
 from indra.utils import init_props
-from indra.space import distance
+from indra.space import distance, CircularRegion
 
 MODEL_NAME = "epidemic"
 DEBUG = False  # turns debugging code on or off
@@ -33,7 +33,7 @@ DEF_IM_STAY = 1 - DEF_IM_HE_TRANS
 DEF_SURV_RATE = 1 - DEF_DEATH_RATE
 DEF_EX_HE_TRANS = 1 - DEF_INFEC
 DEF_PERSON_MOVE = 3
-DEF_DISTANCING = 1
+DEF_DISTANCING = 2
 
 PERSON_PREFIX = "Person"
 
@@ -71,19 +71,36 @@ GROUP_MAP = "group_map"
 STATE = "state"
 
 
+def opposing_angle(pos1, pos2):
+    '''
+    Returns the angle of the other_agent relative to the agent
+    '''
+    x_dif = pos2[0] - pos1[0]
+    y_dif = pos2[1] - pos1[1]
+    if (x_dif != 0 and y_dif != 0):
+        if (x_dif > 0):
+            new_angle = 180 + degrees(atan(y_dif / x_dif))
+        else:
+            new_angle = degrees(atan(y_dif / x_dif))
+    elif (y_dif != 0):
+        if(y_dif > 0):
+            new_angle = 270
+        else:
+            new_angle = 90
+    else:
+        if(x_dif > 0):
+            new_angle = 180
+        else:
+            new_angle = 0
+    return new_angle
+
+
 def is_isolated(agent):
     '''
     Checks if agent is maintaining distancing.
     '''
-    groupList = [get_group(HEALTHY), get_group(EXPOSED), get_group(INFECTED),
-                 get_group(CONTAGIOUS), get_group(DEAD), get_group(IMMUNE)]
-    for group in groupList:
-        for currAgent in group:
-            if ((group[currAgent] != agent) and
-               (distance(group[currAgent], agent) <=
-               get_prop('distancing', DEF_DISTANCING))):
-                return False
-    return True
+    return (distance(get_env().get_closest_agent(agent), agent) >=
+            get_prop('distancing', DEF_DISTANCING))
 
 
 def is_healthy(agent, *args):
@@ -98,6 +115,78 @@ def is_contagious(agent, *args):
     Checking whether the state is contagious or not
     """
     return agent[STATE] == CN
+
+
+def epidemic_report(env):
+    # taking data for each period using pop_hist
+    history = {}
+    history = get_env().pop_hist
+    healthy_history = history['Healthy']
+    periods = len(healthy_history)
+    # exposed_history = history['Exposed']
+    infected_history = history['Infected']
+    contagious_history = history['Contagious']
+    dead_history = history['Dead']
+    # immune_history = history['Immune']
+
+    # initializing list for each parameter
+    total_cases = []
+    new_cases = []
+    dead_cases = []
+    new_dead_cases = []
+
+    if(periods == 2):
+        history.record_pop("total_infected", infected_history[0])
+        history.record_pop("total_infected", infected_history[0])
+    else:
+        current = infected_history[periods-1]-infected_history[periods-2]
+        previous = history["total_infected"][periods-2]
+
+        if(current > 0):
+            total = current+previous
+        else:
+            total = previous
+
+        history["total_infected"][periods-1] = total
+
+    # calculating parameter for each period
+    for i in range(1, periods):
+        previous_total = infected_history[i-1]+contagious_history[i-1]
+        current_total = infected_history[i]+contagious_history[i]
+
+        current_new_cases_calculation = current_total-previous_total
+        if current_new_cases_calculation > 0:
+            current_new_cases = current_new_cases_calculation
+        else:
+            current_new_cases = 0
+
+        current_new_death_calculation = dead_history[i]-dead_history[i-1]
+        if(current_new_death_calculation > 0):
+            current_new_death = current_new_death_calculation
+        else:
+            current_new_death = 0
+
+        total_cases.append(current_total)
+        new_cases.append(current_new_cases)
+        new_dead_cases.append(current_new_death)
+        dead_cases.append(dead_history[i])
+
+    # converting result to string
+    result = ""
+    for i in range(1, periods):
+        current_period_string = ""
+        current_period_string += "Current period: "+str(i)+"\n"
+        current_period_string += "Total cases: " + \
+            str(history["total_infected"][i-1])+"\n"
+        current_period_string += "New cases in last period: " + \
+            str(new_cases[i-1])+"\n"
+        current_period_string += "Total deaths: " + \
+            str(dead_cases[i-1])+"\n"
+        current_period_string += "New deaths in last period: " + \
+            str(new_dead_cases[i-1])+"\n"
+        current_period_string += "\n"
+        result += current_period_string
+    return result+"\n"
 
 
 def people_action(agent):
@@ -133,17 +222,40 @@ def people_action(agent):
                              group_map[old_state],
                              group_map[agent[STATE]])
 
-    # Current social-distancing movement is random. Change in the future
-    if(not is_isolated(agent)):
-        if agent["angle"] is None:
-            new_angle = randint(0, 360)
-        else:
-            angle_shift = randint(45, 315)
-            new_angle = agent["angle"] + angle_shift
-        if (new_angle > 360):
+    if(not is_isolated(agent) and agent.is_located()):
+        '''
+        Old code, leaving it in just in case.
+        new_angle = opposing_angle(agent, get_env().get_closest_agent(agent))
+        if(new_angle > 360):
             new_angle = new_angle % 360
+        '''
+        agents_in_range = []
+        curr_region = CircularRegion(agent.get_pos(), DEF_PERSON_MOVE*2)
+        group_list = [get_group(HEALTHY), get_group(EXPOSED),
+                      get_group(INFECTED), get_group(CONTAGIOUS),
+                      get_group(DEAD), get_group(IMMUNE)]
+        for group in group_list:
+            for curr_agent in group:
+                if group[curr_agent].is_located():
+                    if curr_region.contains(group[curr_agent].get_pos()):
+                        agents_in_range.append(group[curr_agent])
+        vector_x = 0
+        vector_y = 0
+        for curr_agent in agents_in_range:
+            if(curr_agent.get_x() != agent.get_x()):
+                if ((curr_agent.get_x() - agent.get_x()) < 0):
+                    vector_x -= 1/((curr_agent.get_x() - agent.get_x()) ** 2)
+                else:
+                    vector_x += 1/((curr_agent.get_x() - agent.get_x()) ** 2)
+            if(curr_agent.get_y() != agent.get_y()):
+                if ((curr_agent.get_y() - agent.get_y()) < 0):
+                    vector_y -= 1/((curr_agent.get_y() - agent.get_y()) ** 2)
+                else:
+                    vector_y += 1/((curr_agent.get_y() - agent.get_y()) ** 2)
+        new_angle = opposing_angle([0, 0], [vector_x, vector_y])
         agent["angle"] = new_angle
-
+    else:
+        return True
     if agent[STATE] == DE:
         return True
     else:
@@ -166,13 +278,15 @@ def create_person(name, i, state=HE):
 
 def set_env_attrs():
     user_log_notif("Setting env attrs for basic epidemic.")
-    get_env().set_attr(GROUP_MAP,
-                       {HE: HEALTHY,
-                        EX: EXPOSED,
-                        IN: INFECTED,
-                        CN: CONTAGIOUS,
-                        DE: DEAD,
-                        IM: IMMUNE})
+    env = get_env()
+    env.set_attr(GROUP_MAP,
+                 {HE: HEALTHY,
+                  EX: EXPOSED,
+                  IN: INFECTED,
+                  CN: CONTAGIOUS,
+                  DE: DEAD,
+                  IM: IMMUNE})
+    env.set_attr("census_func", epidemic_report)
 
 
 def set_up(props=None):
@@ -197,29 +311,29 @@ def set_up(props=None):
     pop_cnt = int(city_height * city_width * city_density)
     groups = []
     groups.append(Composite(HEALTHY, {"color": GREEN},
-                  member_creator=create_person,
-                  num_members=pop_cnt,
-                  state=HE))
+                            member_creator=create_person,
+                            num_members=pop_cnt,
+                            state=HE))
     groups.append(Composite(EXPOSED, {"color": YELLOW},
-                  member_creator=create_person,
-                  num_members=1,
-                  state=EX))
+                            member_creator=create_person,
+                            num_members=1,
+                            state=EX))
     groups.append(Composite(INFECTED, {"color": TOMATO},
-                  member_creator=create_person,
-                  num_members=1,
-                  state=IN))
+                            member_creator=create_person,
+                            num_members=1,
+                            state=IN))
     groups.append(Composite(CONTAGIOUS, {"color": RED},
-                  member_creator=create_person,
-                  num_members=1,
-                  state=CN))
+                            member_creator=create_person,
+                            num_members=1,
+                            state=CN))
     groups.append(Composite(DEAD, {"color": BLACK},
-                  member_creator=create_person,
-                  num_members=1,
-                  state=DE))
+                            member_creator=create_person,
+                            num_members=1,
+                            state=DE))
     groups.append(Composite(IMMUNE, {"color": BLUE},
-                  member_creator=create_person,
-                  num_members=1,
-                  state=IM))
+                            member_creator=create_person,
+                            num_members=1,
+                            state=IM))
     Env(MODEL_NAME, height=city_height, width=city_width, members=groups)
     set_env_attrs()
 

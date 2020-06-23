@@ -4,6 +4,7 @@ of agents related spatially.
 """
 import json
 import math
+import sys
 from functools import wraps
 from math import sqrt
 from random import randint
@@ -229,6 +230,7 @@ class Space(Composite):
 
     def get_moore_hood_idx(self, x, y, distance=1):
         """
+        J & K: THIS WILL GO AWAY!
         Return set of coords (x1, x2, y1, y2) that are the
         corners of a square... *unless* those corners could
         be off the grid. In that case, pull them back in bounds.
@@ -423,12 +425,27 @@ class Space(Composite):
                        include_self=False, hood_size=1):
         """
         Takes in an agent and returns a Composite of its Moore neighbors.
-        """
+        J & K:
+            This should look like:
+            region = Region(center_x=agent.get_x(),
+                            center_y=agent.get_y(),
+                            size=hood_size)
+            members = region.get_agents(exclude_self=True, pred=None)
+            return Composite("Moore neighbors", members=members)
+
         moore_hood = Composite("Moore neighbors")
+
         x1, x2, y1, y2 = self.get_moore_hood_idx(agent.get_x(),
                                                  agent.get_y(),
                                                  hood_size)
-
+        """
+        region = Region(center_x=agent.get_x(),
+                        center_y=agent.get_y(),
+                        size=hood_size)
+        region.check_bounds(self)
+        members = region.get_agents(self, exclude_self=True, pred=None)
+        return Composite("Moore neighbors", members=members)
+        """
         for x in range(x1, x2 + 1):
             for y in range(y1, y2 + 1):
                 neighbor = self.get_agent_at(x, y)
@@ -443,6 +460,7 @@ class Space(Composite):
         if agent.get("save_neighbors", False):
             agent.neighbors = moore_hood
         return moore_hood
+        """
 
     def get_square_hood(self, agent, pred=None, save_neighbors=False,
                         include_self=False, hood_size=1):
@@ -509,3 +527,112 @@ class Space(Composite):
         new_x += int(math.cos(math.radians(angle)) * max_move)
         new_y += int(math.sin(math.radians(angle)) * max_move)
         return self.constrain_x(new_x), self.constrain_y(new_y)
+
+
+class Region():
+
+    def __init__(self, NW=None, NE=None, SW=None, SE=None, center_x=None,
+                 center_y=None, size=None):
+        if (center_x is not None and center_y is not None
+                and size is not None):
+            self.NW = (center_x - size, center_y + size)
+            self.NE = (center_x + size + 1, center_y + size)
+            self.SW = (center_x - size, center_y - size - 1)
+            self.SE = (center_x + size + 1, center_y - size - 1)
+            self.width = size * 2
+            self.height = size * 2
+            self.center = (center_x, center_y)
+        else:
+            self.NW = NW
+            self.NE = NE
+            self.SW = SW
+            self.SE = SE
+            self.width = self.NW[0] - self.NE[0]
+            self.height = self.NW[1] - self.SW[1]
+            self.center = None
+
+    def contains(self, coord):
+        if (coord[0] >= self.NW[0]) and (coord[0] < self.NE[0]):
+            if(coord[1] >= self.SW[1]) and (coord[1] < self.NE[1]):
+                return True
+        return False
+
+    def check_bounds(self, Space):
+        self.NW = (Space.constrain_x(self.NW[0]),
+                   Space.constrain_y(self.NW[1]))
+        self.NE = (Space.constrain_x(self.NE[0]) + 1,
+                   Space.constrain_y(self.NE[1]))
+        self.SW = (Space.constrain_x(self.SW[0]),
+                   Space.constrain_y(self.SW[1]) - 1)
+        self.SE = (Space.constrain_x(self.SE[0]) + 1,
+                   Space.constrain_y(self.SE[1]) - 1)
+
+    def get_agents(self, Space, exclude_self=False, pred=None):
+        agent_ls = []
+        for y in range(self.height):
+            for x in range(self.width):
+                x_coord = self.SW[0] + x
+                y_coord = self.SW[1] + y
+                if Space.get_agent_at(x_coord, y_coord) is not None:
+                    if (x_coord, y_coord) is self.center:
+                        if exclude_self is False:
+                            agent_ls.append(
+                                Space.get_agent_at(x_coord, y_coord))
+                    else:
+                        agent_ls.append(Space.get_agent_at(x_coord, y_coord))
+        return agent_ls
+
+    def calc_heat(self, group, coord):
+        heat_strength = 0
+        for heat in group:
+            distance = sqrt(
+                ((coord[0] - group[heat].get_x()) ** 2)
+                + ((coord[1] - group[heat].get_y()) ** 2)
+            )
+            if distance != 0:
+                heat_strength += 1 / ((distance) ** 2)
+            else:
+                heat_strength += sys.maxsize
+        heat_strength *= -1
+        return heat_strength
+
+    def heatmap(self, group):
+        heat_map_ls = []
+        for y in range(self.height):
+            for x in range(self.width):
+                heat_map_ls.append(self.calc_heat(group, (x, y)))
+        return heat_map_ls
+
+
+class CircularRegion(Region):
+    def __init__(self, center, radius):
+        self.center = center
+        self.radius = radius
+
+    def contains(self, coord):
+        if ((coord[0] - self.center[0]) ** 2
+                + (coord[1] - self.center[1]) ** 2 < self.radius ** 2):
+            return True
+        return False
+
+
+class CompositeRegion(Region):
+
+    def __init__(self, region_set=None):
+        if region_set is None:
+            self.composite = {}
+        else:
+            self.composite = region_set
+
+    def contains(self, coord):
+        for region in self.composite:
+            if (region.contains(coord)):
+                print(region.contains(coord))
+                return True
+        return False
+
+    def add_region(self, region):
+        self.composite.add(region)
+
+    def remove_region(self, region):
+        self.composite.remove(region)

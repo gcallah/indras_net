@@ -102,6 +102,7 @@ menu_functions = {
     "scatter_plot": scatter_plot,
     "line_graph": line_graph,
     "debug": debug,
+    "logs": not_impl,
 }
 
 

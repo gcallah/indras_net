@@ -6,7 +6,7 @@ from unittest import TestCase, main, skip
 
 from indra.agent import Agent, X, Y
 from indra.space import DEF_HEIGHT, DEF_WIDTH
-from indra.space import Space, distance
+from indra.space import Space, distance, Region, CompositeRegion
 from indra.tests.test_agent import create_newton, create_hardy, create_leibniz
 from indra.tests.test_agent import create_ramanujan
 
@@ -252,6 +252,24 @@ class SpaceTestCase(TestCase):
             hood = space.get_vonneumann_hood(self.test_agent)
             self.assertTrue(self.test_agent4.name not in hood)
 
+    """
+    Tests for regions
+    """
+    @skip("For now while debugging 2nd test")
+    def test_contains(self):
+        test_reg = Region((0,3),(3,3),(0,0),(3,0))
+        self.assertTrue(test_reg.contains((0,0)))
+        self.assertTrue(test_reg.contains((2,2)))
+        self.assertFalse(test_reg.contains((3,3)))
+    
+    def test_composite_contains(self):
+        test_reg1 = Region((0,3),(3,3),(0,0),(3,0))
+        test_reg2 = Region((4,10),(10,10),(4,4),(10,4))
+        test_reg3 = Region((8,13),(9,13),(8,12),(9,12))
+        test_set = {test_reg1, test_reg2, test_reg3}
+        test_comp = CompositeRegion(test_set) 
+        self.assertTrue(test_comp.contains((5,5)))
+        self.assertFalse(test_comp.contains((9,13)))
 
 if __name__ == '__main__':
     main()

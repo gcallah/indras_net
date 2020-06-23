@@ -23,7 +23,7 @@ DEF_CITY_DIM = 40
 
 TOLERANCE = "tolerance"
 DEVIATION = "deviation"
-COLOR = "color"
+GRP_INDEX = "grp_index"
 
 DEF_HOOD_SIZE = 1
 DEF_TOLERANCE = .5
@@ -32,8 +32,8 @@ DEF_SIGMA = .2
 MAX_TOL = 0.1
 MIN_TOL = 0.9
 
-BLUE_TEAM = 0
-RED_TEAM = 1
+BLUE_GRP_IDX = 0
+RED_GRP_IDX = 1
 
 HOOD_SIZE = 4
 
@@ -57,14 +57,6 @@ def get_tolerance(default_tolerance, sigma):
     return tol
 
 
-def my_group_index(agent):
-    return int(agent[COLOR])
-
-
-def other_group_index(agent):
-    return not my_group_index(agent)
-
-
 def env_favorable(hood_ratio, my_tolerance):
     """
     Is the environment to our agent's liking or not??
@@ -76,6 +68,8 @@ def seg_agent_action(agent):
     """
     If the agent is surrounded by more "others" than it
     is comfortable with, the agent will move.
+    The whole idea here is to count those in other group
+    and those in my group, and get the ratio.
     """
     agent_group = agent.primary_group()
     ratio_same = 0
@@ -89,16 +83,16 @@ def seg_agent_action(agent):
     return env_favorable(ratio_same, agent[TOLERANCE])
 
 
-def create_resident(name, i):
+def create_resident(name, i, group=BLUE):
     """
     Creates agent of specified color type
     """
 
-    if "Blue" in name:
-        color = 0
+    if group == BLUE:
+        grp_idx = BLUE_GRP_IDX
         mean_tol = get_prop('mean_tol', DEF_TOLERANCE)
     else:
-        color = 1
+        grp_idx = RED_GRP_IDX
         mean_tol = -get_prop('mean_tol', DEF_TOLERANCE)
     dev = get_prop('deviation', DEF_SIGMA)
     this_tolerance = get_tolerance(mean_tol,
@@ -106,7 +100,7 @@ def create_resident(name, i):
     return Agent(name + str(i),
                  action=seg_agent_action,
                  attrs={TOLERANCE: this_tolerance,
-                        COLOR: color, "hood_changed": True,
+                        GRP_INDEX: grp_idx, "hood_changed": True,
                         "just_moved": False,
                         "hood_size": get_prop('hood_size',
                                               DEF_HOOD_SIZE)
@@ -118,15 +112,17 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     init_props(MODEL_NAME, props)
-    blue_agents = Composite(group_names[BLUE_TEAM],
+    blue_agents = Composite(group_names[BLUE_GRP_IDX],
                             {"color": BLUE},
                             member_creator=create_resident,
                             num_members=get_prop('num_blue',
-                                                 NUM_BLUE))
-    red_agents = Composite(group_names[RED_TEAM],
+                                                 NUM_BLUE),
+                            group=BLUE)
+    red_agents = Composite(group_names[RED_GRP_IDX],
                            {"color": RED},
                            member_creator=create_resident,
-                           num_members=get_prop('num_red', NUM_RED))
+                           num_members=get_prop('num_red', NUM_RED),
+                           group=RED)
     city = Env(MODEL_NAME, members=[blue_agents, red_agents],
                height=get_prop('grid_height', DEF_CITY_DIM),
                width=get_prop('grid_width', DEF_CITY_DIM))
