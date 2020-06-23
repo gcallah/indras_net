@@ -67,7 +67,7 @@ class Good:
     def get_decr_amt(self):
         return self.dur_decr * self.age
 
-    def get_older(self):
+    def decay(self):
         self.age += 1
 
 
