@@ -34,6 +34,7 @@ DEF_SURV_RATE = 1 - DEF_DEATH_RATE
 DEF_EX_HE_TRANS = 1 - DEF_INFEC
 DEF_PERSON_MOVE = 3
 DEF_DISTANCING = 2
+DEF_INFEC = 0.02
 
 PERSON_PREFIX = "Person"
 
@@ -58,7 +59,7 @@ IM = "5"
 
 STATE_TRANS = [
     # HE    EX   IN   CN   DE    IM
-    [.985, .015, 0.0, 0.0, 0.0,  0.0],  # HE
+    [0.98, 0.02, 0.0, 0.0, 0.0,  0.0],  # HE
     [DEF_EX_HE_TRANS,  0.0,  DEF_INFEC, 0.0, 0.0,  0.0],  # EX
     [0.0,  0.0,  0.0, 1.0, 0.0,  0.0],  # IN
     [0.0,  0.0,  0.0, 0.0, DEF_DEATH_RATE, DEF_SURV_RATE],  # CN
@@ -254,6 +255,7 @@ def set_up(props=None):
     city_density = get_prop('density', DEF_DENSITY)
     immune_per = get_prop('immune_per', DEF_IMMUNE_PER)
     death_rate = get_prop('death_rate', DEF_DEATH_RATE)
+    initial_infected = get_prop('initial_infected', DEF_INFEC)
     infec = get_prop('infec', DEF_INFEC)
     immune_rate = 1 / immune_per
 
@@ -266,7 +268,7 @@ def set_up(props=None):
     groups = []
     groups.append(Composite(HEALTHY, {"color": GREEN},
                             member_creator=create_person,
-                            num_members=pop_cnt,
+                            num_members=int(pop_cnt * (1 - initial_infected)),
                             state=HE))
     groups.append(Composite(EXPOSED, {"color": YELLOW},
                             member_creator=create_person,
@@ -274,7 +276,7 @@ def set_up(props=None):
                             state=EX))
     groups.append(Composite(INFECTED, {"color": TOMATO},
                             member_creator=create_person,
-                            num_members=1,
+                            num_members=int(pop_cnt * initial_infected),
                             state=IN))
     groups.append(Composite(CONTAGIOUS, {"color": RED},
                             member_creator=create_person,

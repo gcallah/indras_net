@@ -54,5 +54,12 @@
     "atype": "DBL",
     "hival": 6,
     "lowval": 0
+  },
+  "initial_infected": {
+    "val": 0.02,
+    "question": "What ratio of people are initially infected?",
+    "atype": "DBL",
+    "hival": 1,
+    "lowval": 0
   }
 }
