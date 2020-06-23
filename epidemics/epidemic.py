@@ -208,7 +208,7 @@ def people_action(agent):
                              group_map[old_state],
                              group_map[agent[STATE]])
 
-    if(not is_isolated(agent)):
+    if(not is_isolated(agent) and agent.is_located()):
         '''
         Old code, leaving it in just in case.
         new_angle = opposing_angle(agent, get_env().get_closest_agent(agent))
@@ -222,8 +222,9 @@ def people_action(agent):
                       get_group(DEAD), get_group(IMMUNE)]
         for group in group_list:
             for curr_agent in group:
-                if curr_region.contains(group[curr_agent].get_pos()):
-                    agents_in_range.append(group[curr_agent])
+                if group[curr_agent].is_located():
+                    if curr_region.contains(group[curr_agent].get_pos()):
+                        agents_in_range.append(group[curr_agent])
         vector_x = 0
         vector_y = 0
         for curr_agent in agents_in_range:

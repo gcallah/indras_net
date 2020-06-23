@@ -442,6 +442,7 @@ class Space(Composite):
         region = Region(center_x=agent.get_x(),
                         center_y=agent.get_y(),
                         size=hood_size)
+        region.check_bounds(self)
         members = region.get_agents(self, exclude_self=True, pred=None)
         return Composite("Moore neighbors", members=members)
         """
@@ -555,6 +556,16 @@ class Region():
             if(coord[1] >= self.SW[1]) and (coord[1] < self.NE[1]):
                 return True
         return False
+
+    def check_bounds(self, Space):
+        self.NW = (Space.constrain_x(self.NW[0]),
+                   Space.constrain_y(self.NW[1]))
+        self.NE = (Space.constrain_x(self.NE[0]) + 1,
+                   Space.constrain_y(self.NE[1]))
+        self.SW = (Space.constrain_x(self.SW[0]),
+                   Space.constrain_y(self.SW[1]) - 1)
+        self.SE = (Space.constrain_x(self.SE[0]) + 1,
+                   Space.constrain_y(self.SE[1]) - 1)
 
     def get_agents(self, Space, exclude_self=False, pred=None):
         agent_ls = []
