@@ -71,29 +71,16 @@ def seg_agent_action(agent):
     The whole idea here is to count those in other group
     and those in my group, and get the ratio.
     """
-    stay_put = True
-    if agent["hood_changed"]:
-        agent_group = agent.primary_group()
-        ratio_same = 0
-        neighbors = get_env().get_moore_hood(agent,
-                                             hood_size=agent['hood_size'])
-        num_same = 0
-        for neighbor in neighbors:
-            if neighbors[neighbor].primary_group() == agent_group:
-                num_same += 1
-            if agent["just_moved"] is True:
-                neighbors[neighbor]["hood_changed"] = True
-        agent["just_moved"] = False
-        if len(neighbors) != 0:
-            ratio_same = num_same / len(neighbors)
-        stay_put = env_favorable(ratio_same, agent[TOLERANCE])
-        if stay_put:
-            agent["hood_changed"] = False
-        else:
-            agent["just_moved"] = True
-            for neighbor in neighbors:
-                neighbors[neighbor]["hood_changed"] = True
-    return stay_put
+    agent_group = agent.primary_group()
+    ratio_same = 0
+    neighbors = get_env().get_moore_hood(agent, hood_size=agent['hood_size'])
+    num_same = 0
+    for neighbor in neighbors:
+        if neighbors[neighbor].primary_group() == agent_group:
+            num_same += 1
+    if len(neighbors) != 0:
+        ratio_same = num_same / len(neighbors)
+    return env_favorable(ratio_same, agent[TOLERANCE])
 
 
 def create_resident(name, i, group=BLUE):
