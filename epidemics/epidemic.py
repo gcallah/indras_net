@@ -135,6 +135,20 @@ def epidemic_report(env):
     dead_cases = []
     new_dead_cases = []
 
+    if(periods == 2):
+        history.record_pop("total_infected", infected_history[0])
+        history.record_pop("total_infected", infected_history[0])
+    else:
+        current = infected_history[periods-1]-infected_history[periods-2]
+        previous = history["total_infected"][periods-2]
+
+        if(current > 0):
+            total = current+previous
+        else:
+            total = previous
+
+        history["total_infected"][periods-1] = total
+
     # calculating parameter for each period
     for i in range(1, periods):
         previous_total = infected_history[i-1]+contagious_history[i-1]
@@ -163,7 +177,7 @@ def epidemic_report(env):
         current_period_string = ""
         current_period_string += "Current period: "+str(i)+"\n"
         current_period_string += "Total cases: " + \
-            str(total_cases[i-1])+"\n"
+            str(history["total_infected"][i-1])+"\n"
         current_period_string += "New cases in last period: " + \
             str(new_cases[i-1])+"\n"
         current_period_string += "Total deaths: " + \
