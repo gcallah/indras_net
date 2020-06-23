@@ -250,8 +250,10 @@ def negotiate(trader1, trader2, comp=False, amt=1):
 
 def seek_a_trade(agent, comp=False):
     nearby_agent = get_env().get_closest_agent(agent)
+    this_good_amt = 1
+    # if divisible...
     if nearby_agent is not None:
-        negotiate(agent, nearby_agent, comp)
+        negotiate(agent, nearby_agent, comp, amt=this_good_amt)
         print("I'm", agent.name, "I have", goods_to_str(agent[GOODS]))
     # return False means to move
     return False
