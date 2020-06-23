@@ -118,6 +118,13 @@ def is_contagious(agent, *args):
     return agent[STATE] == CN
 
 
+def is_dead(agent, *args):
+    """
+    Checking whether the state is contagious or not
+    """
+    return agent[STATE] == DE
+
+
 def epidemic_report(env):
     # taking data for each period using pop_hist
     pop_hist = get_env().pop_hist

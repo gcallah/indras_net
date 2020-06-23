@@ -9,7 +9,7 @@ from functools import wraps
 from math import sqrt
 from random import randint
 
-from indra.agent import is_composite, AgentEncoder
+from indra.agent import is_composite, AgentEncoder, X, Y
 from indra.composite import Composite
 from registry.registry import register, get_registration, get_group
 from indra.user import user_debug, user_log, user_log_warn
@@ -530,6 +530,14 @@ class Space(Composite):
 
 
 class Region():
+    """
+    This is the base of all regions used for neighborhoods, obstacles,
+    and other sub-divisions of space.
+
+    Region(space, NW=(2, 3), NE=(4, 5), SW=(7, 8), SE=(8, 9))
+    or
+    Region(space, xy=(2, 3), size=7)
+    """
 
     def __init__(self, NW=None, NE=None, SW=None, SE=None, center_x=None,
                  center_y=None, size=None):
@@ -547,8 +555,8 @@ class Region():
             self.NE = NE
             self.SW = SW
             self.SE = SE
-            self.width = self.NW[0] - self.NE[0]
-            self.height = self.NW[1] - self.SW[1]
+            self.width = self.NW[X] - self.NE[X]
+            self.height = self.NW[Y] - self.SW[Y]
             self.center = None
 
     def contains(self, coord):
@@ -567,19 +575,20 @@ class Region():
         self.SE = (Space.constrain_x(self.SE[0]) + 1,
                    Space.constrain_y(self.SE[1]) - 1)
 
-    def get_agents(self, Space, exclude_self=False, pred=None):
+    def get_agents(self, space, exclude_self=False, pred=None):
         agent_ls = []
         for y in range(self.height):
             for x in range(self.width):
                 x_coord = self.SW[0] + x
                 y_coord = self.SW[1] + y
-                if Space.get_agent_at(x_coord, y_coord) is not None:
-                    if (x_coord, y_coord) is self.center:
-                        if exclude_self is False:
-                            agent_ls.append(
-                                Space.get_agent_at(x_coord, y_coord))
-                    else:
-                        agent_ls.append(Space.get_agent_at(x_coord, y_coord))
+                potential_neighbor = space.get_agent_at(x_coord, y_coord)
+                if potential_neighbor is not None:
+                    if pred is None or pred(potential_neighbor):
+                        if (x_coord, y_coord) is self.center:
+                            if exclude_self is False:
+                                agent_ls.append(potential_neighbor)
+                        else:
+                            agent_ls.append(potential_neighbor)
         return agent_ls
 
     def calc_heat(self, group, coord):
