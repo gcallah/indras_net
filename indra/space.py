@@ -599,12 +599,23 @@ class CircularRegion(Region):
     def get_agents(self, exclude_self=False, pred=None):
         agent_ls = []
         for coord in self.space.locations:
-            if self.contains(coord):
-                potential_agent = self.space.get_agent_at(coord[X], coord[Y])
-                if pred is None or pred(potential_agent):
-                    if coord == self.center:
-                        if exclude_self is False:
-                            agent_ls.append(potential_agent)
+            # Need to convert coord string into an x and a y value:
+            conv_coord = [0, 0]
+            curr_num = ""
+            for curr_char in coord:
+                if curr_char.isdigit():
+                    curr_num += curr_char
+                elif curr_char == ",":
+                    conv_coord[0] = int(curr_num)
+                    curr_num = ""
+                elif curr_char == ")":
+                    conv_coord[1] = int(curr_num)
+            if self.contains(conv_coord):
+                potential_agent = self.space.get_agent_at(conv_coord[X],
+                                                          conv_coord[Y])
+                if pred is None or pred is True:
+                    if (conv_coord == self.center) and (exclude_self is False):
+                        agent_ls.append(potential_agent)
                     else:
                         agent_ls.append(potential_agent)
         return agent_ls

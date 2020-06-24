@@ -10,7 +10,7 @@ from indra.display_methods import RED, GREEN, BLACK
 from indra.display_methods import TOMATO
 from indra.display_methods import BLUE, YELLOW
 from indra.env import Env
-from registry.registry import get_env, get_prop, get_group
+from registry.registry import get_env, get_prop
 from registry.registry import user_log_err, run_notice, user_log_notif
 from indra.utils import init_props
 from indra.space import distance, CircularRegion
@@ -184,15 +184,11 @@ def people_action(agent):
                              group_map[agent[STATE]])
 
     if(not is_isolated(agent) and agent.is_located()):
-        '''
-        Old code, leaving it in just in case.
-        new_angle = opposing_angle(agent, get_env().get_closest_agent(agent))
-        if(new_angle > 360):
-            new_angle = new_angle % 360
-        '''
         agents_in_range = []
         curr_region = CircularRegion(get_env(),
                                      agent.get_pos(), DEF_PERSON_MOVE*2)
+        '''
+        leaving old code to get agents in just in case
         group_list = [get_group(HEALTHY), get_group(EXPOSED),
                       get_group(INFECTED), get_group(CONTAGIOUS),
                       get_group(DEAD), get_group(IMMUNE)]
@@ -201,6 +197,8 @@ def people_action(agent):
                 if group[curr_agent].is_located():
                     if curr_region.contains(group[curr_agent].get_pos()):
                         agents_in_range.append(group[curr_agent])
+        '''
+        agents_in_range = curr_region.get_agents(get_env(), True)
         vector_x = 0
         vector_y = 0
         for curr_agent in agents_in_range:
