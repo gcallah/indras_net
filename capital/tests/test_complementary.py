@@ -8,9 +8,9 @@ import capital.trade_utils as tu
 import capital.complementary as cp
 from capital.complementary import COMPLEMENTS, DEF_NUM_RESOURCES
 
-from capital.trade_utils import AMT_AVAILABLE, seek_a_trade
+from capital.trade_utils import AMT_AVAIL, seek_a_trade
 from capital.trade_utils import gen_util_func, trade, DEF_MAX_UTIL
-from capital.trade_utils import UTIL_FUNC, GEN_UTIL_FUNC, AMT_AVAILABLE
+from capital.trade_utils import UTIL_FUNC, GEN_UTIL_FUNC, AMT_AVAIL
 # from capital.trade_utils import rec_offer, utility_delta, adj_add_good
 
 
@@ -18,29 +18,29 @@ class tradeTestCase(TestCase):
     def setUp(self, props=None):
         self.trader = cp.create_trader("trader", 0)
         self.goods = {
-                     "truck": {AMT_AVAILABLE: 1,
+                     "truck": {AMT_AVAIL: 1,
                                UTIL_FUNC: "steep_util_func",
                                "incr": 0,
                                COMPLEMENTS: ["fuel", "land"]},
-                     "penguin": {AMT_AVAILABLE: 1,
+                     "penguin": {AMT_AVAIL: 1,
                                  UTIL_FUNC: "steep_util_func",
                                  "incr": 0,
                                  COMPLEMENTS: ["pet_food",
                                                "meat"]},
-                     "pet_food": {AMT_AVAILABLE: 1,
+                     "pet_food": {AMT_AVAIL: 1,
                                   UTIL_FUNC: "steep_util_func",
                                   "incr": 0,
                                   COMPLEMENTS: ["penguin",
                                                 "meat"]},
-                     "fuel": {AMT_AVAILABLE: 1,
+                     "fuel": {AMT_AVAIL: 1,
                               UTIL_FUNC: "steep_util_func",
                               "incr": 0,
                               COMPLEMENTS: ["truck", "land"]},
-                     "land": {AMT_AVAILABLE: 1,
+                     "land": {AMT_AVAIL: 1,
                               UTIL_FUNC: "steep_util_func",
                               "incr": 0,
                               COMPLEMENTS: ["truck", "fuel"]},
-                     "meat": {AMT_AVAILABLE: 1,
+                     "meat": {AMT_AVAIL: 1,
                               UTIL_FUNC: "steep_util_func",
                               "incr": 0,
                               COMPLEMENTS: ["penguin",

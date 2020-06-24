@@ -11,7 +11,7 @@ from indra.env import Env
 from registry.registry import get_env, get_prop
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import init_props
-from capital.trade_utils import seek_a_trade, AMT_AVAILABLE
+from capital.trade_utils import seek_a_trade, AMT_AVAIL
 from capital.trade_utils import GEN_UTIL_FUNC, UTIL_FUNC
 
 MODEL_NAME = "edgeworthbox"
@@ -35,10 +35,10 @@ def create_wagent(name, i, props=None):
         start_wine = props.get('start_wine',
                                DEF_NUM_WINE)
     return Agent(name + str(i), action=seek_a_trade,
-                 attrs={"goods": {"wine": {AMT_AVAILABLE: start_wine,
+                 attrs={"goods": {"wine": {AMT_AVAIL: start_wine,
                                            UTIL_FUNC: GEN_UTIL_FUNC,
                                            "incr": 0},
-                                  "cheese": {AMT_AVAILABLE: 0,
+                                  "cheese": {AMT_AVAIL: 0,
                                              UTIL_FUNC: GEN_UTIL_FUNC,
                                              "incr": 0}
                                   },
@@ -53,10 +53,10 @@ def create_cagent(name, i, props=None):
         start_cheese = props.get('start_cheese',
                                  DEF_NUM_CHEESE)
     return Agent(name + str(i), action=seek_a_trade,
-                 attrs={"goods": {"cheese": {AMT_AVAILABLE: start_cheese,
+                 attrs={"goods": {"cheese": {AMT_AVAIL: start_cheese,
                                              UTIL_FUNC: GEN_UTIL_FUNC,
                                              "incr": 0},
-                                  "wine": {AMT_AVAILABLE: 0,
+                                  "wine": {AMT_AVAIL: 0,
                                            UTIL_FUNC: GEN_UTIL_FUNC,
                                            "incr": 0}},
                         "util": 0,

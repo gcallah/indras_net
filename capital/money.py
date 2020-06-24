@@ -12,7 +12,7 @@ from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import init_props
 import capital.trade_utils as tu
 from capital.trade_utils import seek_a_trade, GEN_UTIL_FUNC
-from capital.trade_utils import AMT_AVAILABLE, endow, UTIL_FUNC
+from capital.trade_utils import AMT_AVAIL, endow, UTIL_FUNC
 import copy
 
 MODEL_NAME = "money"
@@ -30,28 +30,28 @@ INIT_COUNT = 0  # a starting point for trade_count
 # these are the goods we hand out at the start:
 natures_goods = {
     # add initial value to this data?
-    "cow": {AMT_AVAILABLE: 10, UTIL_FUNC: GEN_UTIL_FUNC,
+    "cow": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
             "incr": 0, DUR_DECR: 0.8, "divisibility": 1.0,
             "trade_count": 0, "is_allocated": False, },
-    "gold": {AMT_AVAILABLE: 8, UTIL_FUNC: GEN_UTIL_FUNC,
+    "gold": {AMT_AVAIL: 8, UTIL_FUNC: GEN_UTIL_FUNC,
              "incr": 0, DUR_DECR: 1.0, "divisibility": 0.1,
              "trade_count": 0, "is_allocated": False, },
-    "cheese": {AMT_AVAILABLE: 2, UTIL_FUNC: GEN_UTIL_FUNC,
+    "cheese": {AMT_AVAIL: 2, UTIL_FUNC: GEN_UTIL_FUNC,
                "incr": 0, DUR_DECR: 0.8, "divisibility": 0.4,
                "trade_count": 0, "is_allocated": False, },
-    "banana": {AMT_AVAILABLE: 7, UTIL_FUNC: GEN_UTIL_FUNC,
+    "banana": {AMT_AVAIL: 7, UTIL_FUNC: GEN_UTIL_FUNC,
                "incr": 0, DUR_DECR: 0.2, "divisibility": 0.2,
                "trade_count": 0, "is_allocated": False, },
-    "diamond": {AMT_AVAILABLE: 8, UTIL_FUNC: GEN_UTIL_FUNC,
+    "diamond": {AMT_AVAIL: 8, UTIL_FUNC: GEN_UTIL_FUNC,
                 "incr": 0, DUR_DECR: 1.0, "divisibility": 0.8,
                 "trade_count": 0, "is_allocated": False, },
-    "avocado": {AMT_AVAILABLE: 5, UTIL_FUNC: GEN_UTIL_FUNC,
+    "avocado": {AMT_AVAIL: 5, UTIL_FUNC: GEN_UTIL_FUNC,
                 "incr": 0, DUR_DECR: 0.3, "divisibility": 0.5,
                 "trade_count": 0, "is_allocated": False, },
-    "stone": {AMT_AVAILABLE: 10, UTIL_FUNC: GEN_UTIL_FUNC,
+    "stone": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
               "incr": 0, DUR_DECR: 1.0, "divisibility": 1.0,
               "trade_count": 0, "is_allocated": False, },
-    "milk": {AMT_AVAILABLE: 8, UTIL_FUNC: GEN_UTIL_FUNC,
+    "milk": {AMT_AVAIL: 8, UTIL_FUNC: GEN_UTIL_FUNC,
              "incr": 0, DUR_DECR: 0.2, "divisibility": 0.15,
              "trade_count": 0, "is_allocated": False, },
 }
@@ -107,20 +107,20 @@ def incr_trade_count(good):
 def good_decay(goods):
     """
     This function will allow each good to be decaied in each period,
-    with AMT_AVAILABLE being adjusted by durability.
+    with AMT_AVAIL being adjusted by durability.
     """
     for good in goods:
-        goods[good][AMT_AVAILABLE] *= goods[good][DUR_DECR]
+        goods[good][AMT_AVAIL] *= goods[good][DUR_DECR]
 
 
 def money_trader_action(agent):
     dic1 = copy.deepcopy(agent["goods"])
     ret = seek_a_trade(agent)
     dic2 = copy.deepcopy(agent["goods"])
-    diff = {x: (dic1[x][AMT_AVAILABLE] - dic2[x][AMT_AVAILABLE])
+    diff = {x: (dic1[x][AMT_AVAIL] - dic2[x][AMT_AVAIL])
             for x in dic1 if x in dic2}
     for good in diff:
-        decayed_amt = dic1[good][DUR_DECR] * dic1[good][AMT_AVAILABLE]
+        decayed_amt = dic1[good][DUR_DECR] * dic1[good][AMT_AVAIL]
         if (diff[good] != decayed_amt and diff[good] != 0):
             incr_trade_count(good)
     print("TRADE COUNT")
@@ -150,7 +150,7 @@ def nature_to_traders(traders, nature):
     for trader in traders:
         endow(traders[trader], nature)
         for good in traders[trader]["goods"]:
-            if traders[trader]["goods"][good][AMT_AVAILABLE] != 0:
+            if traders[trader]["goods"][good][AMT_AVAIL] != 0:
                 nature[good]["is_allocated"] = True
         print(repr(traders[trader]))
 

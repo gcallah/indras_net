@@ -5,11 +5,13 @@ from registry.registry import get_env
 import random
 import copy
 
+DEBUG = True
+
 ACCEPT = 1
 INADEQ = 0
 REJECT = -1
 
-AMT_AVAILABLE = "amt_available"
+AMT_AVAIL = "amt_available"
 GOODS = "goods"
 
 answer_dict = {
@@ -69,9 +71,9 @@ def get_util_func(fname):
 """
     We expect goods dictionaries to look like:
         goods = {
-            "houses": { AMT_AVAILABLE: int, "maybe more fields": vals ... },
-            "trucks": { AMT_AVAILABLE: int, "maybe more fields": vals ... },
-            "etc.": { AMT_AVAILABLE: int, "maybe more fields": vals ... },
+            "houses": { AMT_AVAIL: int, "maybe more fields": vals ... },
+            "trucks": { AMT_AVAIL: int, "maybe more fields": vals ... },
+            "etc.": { AMT_AVAIL: int, "maybe more fields": vals ... },
         }
     A trader is an object that can be indexed to yield a goods dictionary.
 """
@@ -102,7 +104,7 @@ def is_depleted(goods_dict):
     See if `goods_dict` has any non-zero amount of goods in it.
     """
     for good in goods_dict:
-        if goods_dict[good][AMT_AVAILABLE] > 0:
+        if goods_dict[good][AMT_AVAIL] > 0:
             return False
     # if all goods are 0 (or less) dict is empty:
     return True
@@ -115,21 +117,21 @@ def transfer(to_goods, from_goods, good_nm, amt=None, comp=None):
     """
     nature = copy.deepcopy(from_goods)
     if not amt:
-        amt = from_goods[good_nm][AMT_AVAILABLE]
+        amt = from_goods[good_nm][AMT_AVAIL]
     for good in from_goods:
         if good in to_goods:
-            amt_before_add = to_goods[good][AMT_AVAILABLE]
+            amt_before_add = to_goods[good][AMT_AVAIL]
         else:
             amt_before_add = 0
         to_goods[good] = nature[good]
         if good != good_nm:
-            to_goods[good][AMT_AVAILABLE] = amt_before_add
+            to_goods[good][AMT_AVAIL] = amt_before_add
         else:
-            from_goods[good][AMT_AVAILABLE] -= amt
-            to_goods[good][AMT_AVAILABLE] = amt_before_add + amt
+            from_goods[good][AMT_AVAIL] -= amt
+            to_goods[good][AMT_AVAIL] = amt_before_add + amt
     if comp:
         for g in to_goods:
-            if to_goods[g][AMT_AVAILABLE] > 0:
+            if to_goods[g][AMT_AVAIL] > 0:
                 to_goods[g]['incr'] += amt * STEEP_GRADIENT
                 comp_list = to_goods[g][COMPLEMENTS]
                 for comp in comp_list:
@@ -154,7 +156,7 @@ def get_rand_good(goods_dict, nonzero=False):
         if nonzero:
             # pick again if the goods is endowed (amt is 0)
             # if we get big goods dicts, this could be slow:
-            while goods_dict[good][AMT_AVAILABLE] == 0:
+            while goods_dict[good][AMT_AVAIL] == 0:
                 good = random.choice(goods_list)
         return good
 
@@ -206,7 +208,7 @@ def equal_dist(num_trader, to_goods, from_goods, comp=None):
     to_goods = trader[GOODS], from_goods = avail_goods
     """
     for good in from_goods:
-        amt = from_goods[good][AMT_AVAILABLE]/num_trader
+        amt = from_goods[good][AMT_AVAIL]/num_trader
         transfer(to_goods, from_goods, good, amt, comp=comp)
 
 
@@ -215,7 +217,7 @@ def rand_dist(to_goods, from_goods, comp=None):
     select random good by random amount and transfer to trader
     """
     selected_good = get_rand_good(from_goods, nonzero=True)
-    amt = random.randrange(0, from_goods[selected_good][AMT_AVAILABLE], 1)
+    amt = random.randrange(0, from_goods[selected_good][AMT_AVAIL], 1)
     transfer(to_goods, from_goods, selected_good, amt, comp=comp)
 
 
@@ -223,7 +225,7 @@ def goods_to_str(goods):
     """
     take a goods dict to string
     """
-    string = ', '.join([str(goods[k][AMT_AVAILABLE]) + " " + str(k)
+    string = ', '.join([str(goods[k][AMT_AVAIL]) + " " + str(k)
                        for k in goods.keys()])
     return string
 
@@ -237,10 +239,10 @@ def answer_to_str(ans):
 
 def negotiate(trader1, trader2, comp=False, amt=1):
     # this_good is a dict
-    # we want to offer "divisibility" amount extra each loop
     for this_good in trader1["goods"]:
         amt = amt_adjust(trader1, this_good)
-        while trader1["goods"][this_good][AMT_AVAILABLE] >= amt:
+        while trader1["goods"][this_good][AMT_AVAIL] >= amt:
+            # we want to offer "divisibility" amount extra each loop
             ans = rec_offer(trader2, this_good, amt, trader1, comp=comp)
             # Besides acceptance or rejection, the offer can be inadequate!
             if ans == ACCEPT or ans == REJECT:
@@ -250,11 +252,11 @@ def negotiate(trader1, trader2, comp=False, amt=1):
 
 def seek_a_trade(agent, comp=False):
     nearby_agent = get_env().get_closest_agent(agent)
-    this_good_amt = 1
-    # if divisible...
     if nearby_agent is not None:
-        negotiate(agent, nearby_agent, comp, amt=this_good_amt)
-        print("I'm", agent.name, "I have", goods_to_str(agent[GOODS]))
+        negotiate(agent, nearby_agent, comp)
+        if DEBUG:
+            print("I'm", agent.name,
+                  "I have", goods_to_str(agent[GOODS]))
     # return False means to move
     return False
 
@@ -269,57 +271,56 @@ def seek_a_trade_w_comp(agent):
     return False
 
 
-def rec_offer(agent, his_good, his_amt, counterparty, comp=False):
+def rec_offer(agent, their_good, their_amt, counterparty, comp=False):
     """
     Receive an offer: we don't need to ever change my_amt
     in this function, because if the counter-party can't bid enough
     for a single unit, no trade is possible.
     """
     my_amt = 1
-    gain = utility_delta(agent, his_good, his_amt)
+    gain = utility_delta(agent, their_good, their_amt)
     if comp:
-        gain += agent[GOODS][his_good]["incr"]
-        print(his_good, agent[GOODS][his_good]['incr'])
+        gain += agent[GOODS][their_good]["incr"]
+        print(their_good, agent[GOODS][their_good]['incr'])
     for my_good in agent["goods"]:
         # adjust my_amt if "divisibility" is one of the attributes
         my_amt = amt_adjust(agent, my_good)
-        if my_good != his_good and agent["goods"][my_good][AMT_AVAILABLE] > 0:
+        if my_good != their_good and agent["goods"][my_good][AMT_AVAIL] > 0:
             loss = -utility_delta(agent, my_good, -my_amt)
             if comp:
                 loss += agent[GOODS][my_good]["incr"]
 
-            print("my good: " + my_good + "; his good: " + his_good
+            print("my good: " + my_good + "; his good: " + their_good
                   + ", I gain: " + str(gain) +
                   " and lose: " + str(loss))
             if gain > loss:
-                if rec_reply(counterparty, his_good,
-                             his_amt, my_good, my_amt, comp=comp):
+                if rec_reply(counterparty, their_good,
+                             their_amt, my_good, my_amt, comp=comp):
                     trade(agent, my_good, my_amt,
-                          counterparty, his_good, his_amt, comp=comp)
+                          counterparty, their_good, their_amt, comp=comp)
                     return ACCEPT
                 else:
                     return INADEQ
     return REJECT
 
 
-def rec_reply(agent, my_good, my_amt, his_good, his_amt, comp=None):
-    gain = utility_delta(agent, his_good, his_amt)
+def rec_reply(agent, my_good, my_amt, their_good, their_amt, comp=None):
+    gain = utility_delta(agent, their_good, their_amt)
     loss = utility_delta(agent, my_good, -my_amt)
     if comp:
-        gain += agent[GOODS][his_good]["incr"]
+        gain += agent[GOODS][their_good]["incr"]
         loss -= agent[GOODS][my_good]["incr"]
-#     print(agent.name, "receiving a reply: gain = ",
-#           gain, "and loss =", abs(loss))
     if gain > abs(loss):
         return ACCEPT
     else:
         return INADEQ
 
 
-def trade(agent, my_good, my_amt, counterparty, his_good, his_amt, comp=None):
+def trade(agent, my_good, my_amt, counterparty,
+          their_good, their_amt, comp=None):
     adj_add_good(agent, my_good, -my_amt, comp=comp)
-    adj_add_good(agent, his_good, his_amt, comp=comp)
-    adj_add_good(counterparty, his_good, -his_amt, comp=comp)
+    adj_add_good(agent, their_good, their_amt, comp=comp)
+    adj_add_good(counterparty, their_good, -their_amt, comp=comp)
     adj_add_good(counterparty, my_good, my_amt, comp=comp)
 
 
@@ -327,14 +328,11 @@ def utility_delta(agent, good, change):
     """
     We are going to determine the utility of goods gained
     (amt is positive) or lost (amt is negative).
+    `change` will be fractional if good divisibility < 1
     """
     curr_good = agent["goods"][good]
     ufunc_name = curr_good[UTIL_FUNC]
-    # Trying to work out divisiblity: not sure if this works!
-    # if ("divisibility" in agent["goods"][list(agent["goods"])[0]]):
-    #    curr_amt = curr_good[AMT_AVAILABLE] / curr_good["divisibility"]
-    # else:
-    curr_amt = curr_good[AMT_AVAILABLE]
+    curr_amt = curr_good[AMT_AVAIL]
     curr_util = get_util_func(ufunc_name)(curr_amt)
     new_util = get_util_func(ufunc_name)(curr_amt + change)
     return ((new_util + curr_util) / 2) * change
@@ -343,32 +341,28 @@ def utility_delta(agent, good, change):
 def adj_add_good(agent, good, amt, comp=None):
     if not comp:
         agent["util"] += utility_delta(agent, good, amt)
-        # temp change
-        amt *= amt_adjust(agent, good)
-        agent["goods"][good][AMT_AVAILABLE] += amt
+        agent["goods"][good][AMT_AVAIL] += amt
     else:
         adj_add_good_w_comp(agent, good, amt)
 
 
 def adj_add_good_w_comp(agent, good, amt):
     agent["util"] += utility_delta(agent, good, amt)
-    # temp change
-    amt *= amt_adjust(agent, good)
-    old_amt = agent["goods"][good][AMT_AVAILABLE]
+    old_amt = agent["goods"][good][AMT_AVAIL]
     if old_amt == 0 and amt > 0 and agent[GOODS][good]['incr'] != 0:
         incr_util(agent[GOODS], good, amt=amt*STEEP_GRADIENT)
         for comp in agent[GOODS][good][COMPLEMENTS]:
             incr_util(agent[GOODS], comp, amt=amt*STEEP_GRADIENT)
         print(agent[GOODS])
-    agent["goods"][good][AMT_AVAILABLE] += amt
+    agent["goods"][good][AMT_AVAIL] += amt
 #     agent["goods"][good]["incr"] = 0
     for g in agent[GOODS]:
-        if agent[GOODS][g][AMT_AVAILABLE] == 0:
+        if agent[GOODS][g][AMT_AVAIL] == 0:
             agent[GOODS][g]['incr'] = 0
             comp_list = agent["goods"][good][COMPLEMENTS]
             for comp in comp_list:
                 agent["goods"][comp]['incr'] = 0
-        if agent[GOODS][g][AMT_AVAILABLE] > 0:
+        if agent[GOODS][g][AMT_AVAIL] > 0:
             agent[GOODS][g]['incr'] += amt * STEEP_GRADIENT
             comp_list = agent["goods"][good][COMPLEMENTS]
             for comp in comp_list:

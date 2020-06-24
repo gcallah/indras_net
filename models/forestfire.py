@@ -71,6 +71,8 @@ def tree_action(agent):
     """
     old_state = agent["state"]
     if is_healthy(agent):
+        #  if get_env().exists_neighbor(is_on_fire):
+        #      agent["state"] = NF
         neighbors = get_env().get_moore_hood(agent)
         if neighbors is not None:
             nearby_fires = neighbors.subset(is_on_fire, agent)

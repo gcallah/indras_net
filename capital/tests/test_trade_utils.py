@@ -5,7 +5,7 @@ import copy
 from unittest import TestCase, main
 # from indra.agent import Agent
 from capital.trade_utils import endow, get_rand_good, is_depleted
-from capital.trade_utils import AMT_AVAILABLE, transfer
+from capital.trade_utils import AMT_AVAIL, transfer
 from capital.trade_utils import rand_dist, equal_dist, GEN_UTIL_FUNC, UTIL_FUNC
 from capital.trade_utils import amt_adjust, is_complement, COMPLEMENTS, adj_add_good_w_comp
 import capital.trade_utils as tu
@@ -13,21 +13,21 @@ import capital.trade_utils as tu
 
 class TradeUtilsTestCase(TestCase):
     def setUp(self, props=None):
-        self.goodA = {AMT_AVAILABLE: 10}
-        self.goodB = {AMT_AVAILABLE: 10}
-        self.goodC = {AMT_AVAILABLE: 10, "durability": 0.02, "divisibility": 0.2,}
-        self.goodD = {AMT_AVAILABLE: 10, "durability": 0.9, "divisibility": 0.8,}
+        self.goodA = {AMT_AVAIL: 10}
+        self.goodB = {AMT_AVAIL: 10}
+        self.goodC = {AMT_AVAIL: 10, "durability": 0.02, "divisibility": 0.2,}
+        self.goodD = {AMT_AVAIL: 10, "durability": 0.9, "divisibility": 0.8,}
         self.trader = {"goods": {}}
         # self.agent = Agent()
         self.goods = {"a": self.goodA, "b": self.goodB}
         self.goods_dict_du = {"c": self.goodC, "d": self.goodD}
         self.traderB = {"goods": self.goods_dict_du}
         self.traderC = {"goods": self.goods}
-        self.traderD = {"goods": {"truck": {AMT_AVAILABLE: 20,
+        self.traderD = {"goods": {"truck": {AMT_AVAIL: 20,
                                             UTIL_FUNC: GEN_UTIL_FUNC,
                                             "incr": 0,
                                             COMPLEMENTS: ["fuel"]},
-                                  "fuel": {AMT_AVAILABLE: 0,
+                                  "fuel": {AMT_AVAIL: 0,
                                            UTIL_FUNC: GEN_UTIL_FUNC,
                                            "incr": 1,
                                            COMPLEMENTS: ["truck"]}},
@@ -55,15 +55,15 @@ class TradeUtilsTestCase(TestCase):
         self.assertFalse(is_depleted(self.trader["goods"]))
 
     def test_is_depleted(self):
-        goodA = {AMT_AVAILABLE: 0}
-        goodB = {AMT_AVAILABLE: 0}
+        goodA = {AMT_AVAIL: 0}
+        goodB = {AMT_AVAIL: 0}
         goods_dict_zeros = {"a": goodA, "b": goodB}
         self.assertTrue(is_depleted(self.goods_dict_empty))
         self.assertTrue(is_depleted(goods_dict_zeros))
 
     def test_is_complement(self):
-        self.goodA = {AMT_AVAILABLE: 10, COMPLEMENTS: "b"}
-        self.goodB = {AMT_AVAILABLE: 10}
+        self.goodA = {AMT_AVAIL: 10, COMPLEMENTS: "b"}
+        self.goodB = {AMT_AVAIL: 10}
         self.trader = {"goods": {"a": self.goodA, "b": self.goodB}}
         self.goods = {"a": self.goodA, "b": self.goodB}
         self.assertTrue(is_complement(self.trader, "a", "b"))
@@ -77,8 +77,8 @@ class TradeUtilsTestCase(TestCase):
 
     def test_transfer(self):
         transfer(self.trader["goods"], self.goods, "a")
-        self.assertEqual(self.goods["a"][AMT_AVAILABLE], 0)
-        self.assertEqual(self.trader["goods"]["a"][AMT_AVAILABLE], 10)
+        self.assertEqual(self.goods["a"][AMT_AVAIL], 0)
+        self.assertEqual(self.trader["goods"]["a"][AMT_AVAIL], 10)
 
 
     def test_goods_to_string(self):
@@ -115,10 +115,10 @@ class TradeUtilsTestCase(TestCase):
         self.setUp(self)
         nature_before_trade = copy.deepcopy(self.goods)
         equal_dist(2,self.trader["goods"], self.goods)
-        self.assertEqual(self.trader["goods"]["a"][AMT_AVAILABLE],
-                         nature_before_trade["a"][AMT_AVAILABLE]/2)
-        self.assertEqual(self.trader["goods"]["b"][AMT_AVAILABLE],
-                         nature_before_trade["b"][AMT_AVAILABLE]/2)
+        self.assertEqual(self.trader["goods"]["a"][AMT_AVAIL],
+                         nature_before_trade["a"][AMT_AVAIL]/2)
+        self.assertEqual(self.trader["goods"]["b"][AMT_AVAIL],
+                         nature_before_trade["b"][AMT_AVAIL]/2)
 
 
     def test_amt_adjust(self):

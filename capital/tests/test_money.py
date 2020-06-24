@@ -4,15 +4,15 @@ This is the test suite for trade.py.
 import copy
 from unittest import TestCase, main
 # from indra.agent import Agent
-from capital.trade_utils import endow, get_rand_good, is_depleted, AMT_AVAILABLE, transfer
+from capital.trade_utils import endow, get_rand_good, is_depleted, AMT_AVAIL, transfer
 from capital.trade_utils import rand_dist, equal_dist, GOODS
 import capital.money as mn
 import capital.trade_utils as tu
 
 class MoneyTestCase(TestCase):
     def setUp(self, props=None):
-        self.goodA = {AMT_AVAILABLE: 10, "durability":0.6}
-        self.goodB = {AMT_AVAILABLE: 8, "durability":0.9}
+        self.goodA = {AMT_AVAIL: 10, "durability":0.6}
+        self.goodB = {AMT_AVAIL: 8, "durability":0.9}
         self.trader = {}
         self.goods = {"a": self.goodA, "b": self.goodB}
         self.goods_dict_empty = {}
