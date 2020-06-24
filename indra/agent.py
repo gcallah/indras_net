@@ -274,6 +274,9 @@ class Agent(object):
     def primary_group(self):
         return get_group(self.prim_group)
 
+    def group_name(self):
+        return self.prim_group
+
     def is_located(self):
         return self.pos is not None
 
@@ -433,7 +436,8 @@ class Agent(object):
             return False
 
     def add_group(self, group):
-        self.prim_group = str(group)
+        if not self.prim_group:
+            self.prim_group = str(group)
         return True
 
     def switch_groups(self, g1, g2):

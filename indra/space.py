@@ -425,19 +425,6 @@ class Space(Composite):
                        include_self=False, hood_size=1):
         """
         Takes in an agent and returns a Composite of its Moore neighbors.
-        J & K:
-            This should look like:
-            region = Region(center_x=agent.get_x(),
-                            center_y=agent.get_y(),
-                            size=hood_size)
-            members = region.get_agents(exclude_self=True, pred=None)
-            return Composite("Moore neighbors", members=members)
-
-        moore_hood = Composite("Moore neighbors")
-
-        x1, x2, y1, y2 = self.get_moore_hood_idx(agent.get_x(),
-                                                 agent.get_y(),
-                                                 hood_size)
         """
         region = Region(center_x=agent.get_x(),
                         center_y=agent.get_y(),
@@ -445,22 +432,6 @@ class Space(Composite):
         region.check_bounds(self)
         members = region.get_agents(self, exclude_self=True, pred=None)
         return Composite("Moore neighbors", members=members)
-        """
-        for x in range(x1, x2 + 1):
-            for y in range(y1, y2 + 1):
-                neighbor = self.get_agent_at(x, y)
-                if neighbor is not None:
-                    if pred is not None:
-                        if not pred(neighbor):
-                            print("pred is false")
-                            continue
-                    if agent is not neighbor or include_self:
-                        moore_hood += neighbor
-
-        if agent.get("save_neighbors", False):
-            agent.neighbors = moore_hood
-        return moore_hood
-        """
 
     def get_square_hood(self, agent, pred=None, save_neighbors=False,
                         include_self=False, hood_size=1):

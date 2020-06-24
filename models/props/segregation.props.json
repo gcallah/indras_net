@@ -14,14 +14,14 @@
     "lowval": 2
   },
   "num_blue": {
-    "val": 100,
+    "val": 70,
     "question": "How many blue agents do you want?",
     "atype": "INT",
     "hival": 1000,
     "lowval": 1
   },
   "num_red": {
-    "val": 100,
+    "val": 70,
     "question": "How many red agents do you want?",
     "atype": "INT",
     "hival": 1000,
@@ -42,7 +42,7 @@
       "lowval": 0.01
   },
   "hood_size":{
-      "val": 6,
+      "val": 4,
       "question": "What should the size of the agent's neighborhood be?",
       "atype": "INT",
       "hival": 10,
