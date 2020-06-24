@@ -191,7 +191,8 @@ def people_action(agent):
             new_angle = new_angle % 360
         '''
         agents_in_range = []
-        curr_region = CircularRegion(agent.get_pos(), DEF_PERSON_MOVE*2)
+        curr_region = CircularRegion(get_env(),
+                                     agent.get_pos(), DEF_PERSON_MOVE*2)
         group_list = [get_group(HEALTHY), get_group(EXPOSED),
                       get_group(INFECTED), get_group(CONTAGIOUS),
                       get_group(DEAD), get_group(IMMUNE)]

@@ -439,11 +439,10 @@ class Space(Composite):
                                                  agent.get_y(),
                                                  hood_size)
         """
-        region = Region(center_x=agent.get_x(),
-                        center_y=agent.get_y(),
+        region = Region(space=self, center=(agent.get_x(), agent.get_y()),
                         size=hood_size)
-        region.check_bounds(self)
-        members = region.get_agents(self, exclude_self=True, pred=None)
+        region.check_bounds()
+        members = region.get_agents(exclude_self=True, pred=None)
         return Composite("Moore neighbors", members=members)
         """
         for x in range(x1, x2 + 1):
@@ -539,17 +538,17 @@ class Region():
     Region(space, xy=(2, 3), size=7)
     """
 
-    def __init__(self, NW=None, NE=None, SW=None, SE=None, center_x=None,
-                 center_y=None, size=None):
-        if (center_x is not None and center_y is not None
-                and size is not None):
-            self.NW = (center_x - size, center_y + size)
-            self.NE = (center_x + size + 1, center_y + size)
-            self.SW = (center_x - size, center_y - size - 1)
-            self.SE = (center_x + size + 1, center_y - size - 1)
+    def __init__(self, space=None, NW=None, NE=None, SW=None,
+                 SE=None, center=None, size=None):
+        if (center is not None and size is not None):
+            self.NW = (center[X] - size, center[Y] + size)
+            self.NE = (center[X] + size + 1, center[Y] + size)
+            self.SW = (center[X] - size, center[Y] - size - 1)
+            self.SE = (center[X] + size + 1, center[Y] - size - 1)
             self.width = size * 2
             self.height = size * 2
-            self.center = (center_x, center_y)
+            self.center = center
+            self.space = space
         else:
             self.NW = NW
             self.NE = NE
@@ -558,30 +557,31 @@ class Region():
             self.width = self.NW[X] - self.NE[X]
             self.height = self.NW[Y] - self.SW[Y]
             self.center = None
+            self.space = space
 
     def contains(self, coord):
-        if (coord[0] >= self.NW[0]) and (coord[0] < self.NE[0]):
-            if(coord[1] >= self.SW[1]) and (coord[1] < self.NE[1]):
+        if (coord[X] >= self.NW[X]) and (coord[X] < self.NE[X]):
+            if(coord[Y] >= self.SW[Y]) and (coord[Y] < self.NE[Y]):
                 return True
         return False
 
-    def check_bounds(self, Space):
-        self.NW = (Space.constrain_x(self.NW[0]),
-                   Space.constrain_y(self.NW[1]))
-        self.NE = (Space.constrain_x(self.NE[0]) + 1,
-                   Space.constrain_y(self.NE[1]))
-        self.SW = (Space.constrain_x(self.SW[0]),
-                   Space.constrain_y(self.SW[1]) - 1)
-        self.SE = (Space.constrain_x(self.SE[0]) + 1,
-                   Space.constrain_y(self.SE[1]) - 1)
+    def check_bounds(self):
+        self.NW = (self.space.constrain_x(self.NW[X]),
+                   self.space.constrain_y(self.NW[Y]))
+        self.NE = (self.space.constrain_x(self.NE[X]) + 1,
+                   self.space.constrain_y(self.NE[Y]))
+        self.SW = (self.space.constrain_x(self.SW[X]),
+                   self.space.constrain_y(self.SW[Y]) - 1)
+        self.SE = (self.space.constrain_x(self.SE[X]) + 1,
+                   self.space.constrain_y(self.SE[Y]) - 1)
 
-    def get_agents(self, space, exclude_self=False, pred=None):
+    def get_agents(self, exclude_self=False, pred=None):
         agent_ls = []
         for y in range(self.height):
             for x in range(self.width):
-                x_coord = self.SW[0] + x
-                y_coord = self.SW[1] + y
-                potential_neighbor = space.get_agent_at(x_coord, y_coord)
+                x_coord = self.SW[X] + x
+                y_coord = self.SW[Y] + y
+                potential_neighbor = self.space.get_agent_at(x_coord, y_coord)
                 if potential_neighbor is not None:
                     if pred is None or pred(potential_neighbor):
                         if (x_coord, y_coord) is self.center:
@@ -595,8 +595,8 @@ class Region():
         heat_strength = 0
         for heat in group:
             distance = sqrt(
-                ((coord[0] - group[heat].get_x()) ** 2)
-                + ((coord[1] - group[heat].get_y()) ** 2)
+                ((coord[X] - group[heat].get_x()) ** 2)
+                + ((coord[Y] - group[heat].get_y()) ** 2)
             )
             if distance != 0:
                 heat_strength += 1 / ((distance) ** 2)
@@ -614,15 +614,29 @@ class Region():
 
 
 class CircularRegion(Region):
-    def __init__(self, center, radius):
+    def __init__(self, space, center, radius):
+        self.space = space
         self.center = center
         self.radius = radius
 
     def contains(self, coord):
-        if ((coord[0] - self.center[0]) ** 2
-                + (coord[1] - self.center[1]) ** 2 < self.radius ** 2):
+        if ((coord[X] - self.center[X]) ** 2
+                + (coord[Y] - self.center[Y]) ** 2 < self.radius ** 2):
             return True
         return False
+
+    def get_agents(self, exclude_self=False, pred=None):
+        agent_ls = []
+        for coord in self.space.locations:
+            if self.contains(coord):
+                potential_agent = self.space.get_agent_at(coord[X], coord[Y])
+                if pred is None or pred(potential_agent):
+                    if coord == self.center:
+                        if exclude_self is False:
+                            agent_ls.append(potential_agent)
+                    else:
+                        agent_ls.append(potential_agent)
+        return agent_ls
 
 
 class CompositeRegion(Region):

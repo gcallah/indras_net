@@ -255,17 +255,18 @@ class SpaceTestCase(TestCase):
     """
     Tests for regions
     """
-    @skip("For now while debugging 2nd test")
     def test_contains(self):
-        test_reg = Region((0,3),(3,3),(0,0),(3,0))
+        space = Space("test space")
+        test_reg = Region(space,(0,3),(3,3),(0,0),(3,0))
         self.assertTrue(test_reg.contains((0,0)))
         self.assertTrue(test_reg.contains((2,2)))
         self.assertFalse(test_reg.contains((3,3)))
     
     def test_composite_contains(self):
-        test_reg1 = Region((0,3),(3,3),(0,0),(3,0))
-        test_reg2 = Region((4,10),(10,10),(4,4),(10,4))
-        test_reg3 = Region((8,13),(9,13),(8,12),(9,12))
+        space = Space("test space")
+        test_reg1 = Region(space,(0,3),(3,3),(0,0),(3,0))
+        test_reg2 = Region(space,(4,10),(10,10),(4,4),(10,4))
+        test_reg3 = Region(space,(8,13),(9,13),(8,12),(9,12))
         test_set = {test_reg1, test_reg2, test_reg3}
         test_comp = CompositeRegion(test_set) 
         self.assertTrue(test_comp.contains((5,5)))
