@@ -365,9 +365,9 @@ class Env(Space):
             census_str += (SEP_STR
                            + "Agent census:\n"
                            + SEP_STR
-                           + "  Total agents moved: "
+                           + "  Agents who moved: "
                            + str(num_moves) + "\n"
-                           + "  Total agents who switched groups: "
+                           + "  Agents who switched groups: "
                            + str(self.num_switches))
         return census_str
 

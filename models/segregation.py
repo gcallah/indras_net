@@ -29,8 +29,8 @@ DEF_HOOD_SIZE = 1
 DEF_TOLERANCE = .5
 DEF_SIGMA = .2
 
-MAX_TOL = 0.1
-MIN_TOL = 0.9
+MIN_TOL = 0.1
+MAX_TOL = 0.9
 
 BLUE_GRP_IDX = 0
 RED_GRP_IDX = 1
@@ -50,10 +50,14 @@ opp_group = None
 
 
 def get_tolerance(default_tolerance, sigma):
+    """
+    `tolerance` measures how *little* of one's own group one will
+    tolerate being among.
+    """
     tol = random.gauss(default_tolerance, sigma)
     # a low tolerance number here means high tolerance!
-    tol = max(tol, MAX_TOL)
-    tol = min(tol, MIN_TOL)
+    tol = min(tol, MAX_TOL)
+    tol = max(tol, MIN_TOL)
     return tol
 
 
@@ -71,15 +75,17 @@ def seg_agent_action(agent):
     The whole idea here is to count those in other group
     and those in my group, and get the ratio.
     """
-    agent_group = agent.primary_group()
-    ratio_same = 0
+    agent_group = agent.group_name()
+    ratio_same = 1  # default to don't move!
     neighbors = get_env().get_moore_hood(agent, hood_size=agent['hood_size'])
     num_same = 0
     for neighbor in neighbors:
-        if neighbors[neighbor].primary_group() == agent_group:
+        if neighbors[neighbor].group_name() == agent_group:
             num_same += 1
     if len(neighbors) != 0:
         ratio_same = num_same / len(neighbors)
+        if DEBUG2:
+            print("ratio same = ", ratio_same)
     return env_favorable(ratio_same, agent[TOLERANCE])
 
 

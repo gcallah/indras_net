@@ -277,8 +277,6 @@ class Composite(Agent):
         Should be called by join()
         """
         self.members[str(member)] = member
-        if not member.prim_group:
-            member.set_prim_group(self)
         return True
 
     def del_member(self, member):
