@@ -136,16 +136,25 @@ def epidemic_report(env):
     curr_infected = pop_hist[INFECTED][periods-1] - \
         pop_hist[INFECTED][periods - 2]
     curr_infected = max(0, curr_infected)
+    if(pop_hist[INFECTED][periods - 2] > 0):
+        Ro = curr_infected / pop_hist[INFECTED][periods - 2]
+    else:
+        Ro = 0.0
+
+    result = "Current period: " + str(periods-1) + "\n"
+    result += "New cases: " + str(curr_infected) + "\n"
+    result += "Current cases: " + str(pop_hist[INFECTED][periods - 2]) + "\n"
 
     if curr_infected > 0:
         cases = get_env().get_attr("total_cases")
         get_env().set_attr("total_cases", cases + curr_infected)
 
-    result = "Total Deaths: " + str(total_deaths) + "\n"
-    result += "New Deaths: " + str(curr_deaths) + "\n"
-    result += "Total Cases: " + \
+    result += "Total deaths: " + str(total_deaths) + "\n"
+    result += "New deaths: " + str(curr_deaths) + "\n"
+    result += "Total cases: " + \
         str(get_env().get_attr("total_cases")) + "\n"
-    result += "New Cases: " + str(curr_infected) + "\n"
+    result += "New cases: " + str(curr_infected) + "\n"
+    result += "Ro value: " + str(Ro) + "\n"
 
     return result
 
