@@ -271,6 +271,27 @@ class SpaceTestCase(TestCase):
         test_comp = CompositeRegion(test_set) 
         self.assertTrue(test_comp.contains((5,5)))
         self.assertFalse(test_comp.contains((9,13)))
+    
+    def test_get_agent(self):
+        space = Space("test space")
+        test_reg = Region(space=space, center=(3,3), size=3)
+        space += self.test_agent
+        space += self.test_agent2
+        space.place_member(mbr=self.test_agent, xy=(0, 1))
+        space.place_member(mbr=self.test_agent2, xy=(1,2))
+        self.assertTrue(len(test_reg.get_agents()) == 2)
+
+    def test_exists_neighbor(self):
+        space = Space("test space")
+        test_reg = Region(space,(0,3),(3,3),(0,0),(3,0))
+        space += self.test_agent
+        space += self.test_agent2
+        self.assertFalse(test_reg.exists_neighbor())
+        space.place_member(mbr=self.test_agent, xy=(0, 1))
+        space.place_member(mbr=self.test_agent2, xy=(1,2))
+        self.assertIsNotNone(test_reg.space.get_agent_at(0,1))
+        self.assertTrue(test_reg.exists_neighbor())
+
 
 if __name__ == '__main__':
     main()

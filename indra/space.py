@@ -512,23 +512,33 @@ class Region():
     def __init__(self, space=None, NW=None, NE=None, SW=None,
                  SE=None, center=None, size=None):
         if (center is not None and size is not None):
+            if (NW is not None or NE is not None or SW is not None
+                    or SE is not None):
+                raise Exception("Extra coordinate entered")
+            if (space is None):
+                raise Exception("Space not added as parameter")
             self.NW = (center[X] - size, center[Y] + size)
             self.NE = (center[X] + size + 1, center[Y] + size)
             self.SW = (center[X] - size, center[Y] - size - 1)
             self.SE = (center[X] + size + 1, center[Y] - size - 1)
-            self.width = size * 2
-            self.height = size * 2
+            self.width = size * 2 + 1
+            self.height = size * 2 + 1
             self.center = center
             self.space = space
         else:
+            if (center is not None or size is not None):
+                raise Exception("center or size added when not necessary")
+            if (space is None):
+                raise Exception("Space not added as parameter")
             self.NW = NW
             self.NE = NE
             self.SW = SW
             self.SE = SE
-            self.width = self.NW[X] - self.NE[X]
-            self.height = self.NW[Y] - self.SW[Y]
+            self.width = abs(self.NW[X] - self.NE[X])
+            self.height = abs(self.NW[Y] - self.SW[Y])
             self.center = None
             self.space = space
+        self.check_bounds()
 
     def contains(self, coord):
         if (coord[X] >= self.NW[X]) and (coord[X] < self.NE[X]):
@@ -548,10 +558,21 @@ class Region():
 
     def get_agents(self, exclude_self=False, pred=None):
         agent_ls = []
+        if DEBUG2:
+            print("width: " + str(self.width))
+            print("height: " + str(self.height))
+            print("============")
+            print("NW: " + str(self.NW))
+            print("NE: " + str(self.NE))
+            print("SW: " + str(self.SW))
+            print("SE: " + str(self.SE))
+            print("===========")
         for y in range(self.height):
+            y_coord = self.SW[Y] + y + 1
             for x in range(self.width):
                 x_coord = self.SW[X] + x
-                y_coord = self.SW[Y] + y
+                if DEBUG2:
+                    print("(x,y): " + str((x_coord, y_coord)))
                 potential_neighbor = self.space.get_agent_at(x_coord, y_coord)
                 if potential_neighbor is not None:
                     if pred is None or pred(potential_neighbor):
@@ -561,6 +582,32 @@ class Region():
                         else:
                             agent_ls.append(potential_neighbor)
         return agent_ls
+
+    def exists_neighbor(self, exclude_self=False, pred=None):
+        if DEBUG2:
+            print("width: " + str(self.width))
+            print("height: " + str(self.height))
+            print("============")
+            print("NW: " + str(self.NW))
+            print("NE: " + str(self.NE))
+            print("SW: " + str(self.SW))
+            print("SE: " + str(self.SE))
+            print("===========")
+        for y in range(self.height):
+            y_coord = self.SW[Y] + y + 1
+            for x in range(self.width):
+                x_coord = self.SW[X] + x
+                if DEBUG2:
+                    print("(x,y): " + str((x_coord, y_coord)))
+                potential_neighbor = self.space.get_agent_at(x_coord, y_coord)
+                if potential_neighbor is not None:
+                    if pred is None or pred(potential_neighbor):
+                        if (x_coord, y_coord) is self.center:
+                            if exclude_self is False:
+                                return True
+                        else:
+                            return True
+        return False
 
     def calc_heat(self, group, coord):
         heat_strength = 0
