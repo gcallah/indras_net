@@ -30,15 +30,28 @@ def create_env():
 
 class BasicTestCase(TestCase):
     def set_up(self):
-        sal = create_sal()
-        bob = create_bob()
-        azi = create_azi()
-        
+        self.sal = create_sal()
+        self.bob = create_bob()
+        self.azi = create_azi()
+        self.healthy = Composite(HEALTHY, state=HE)
+        groups.append(self.healthy)
+        self.healthy += self.azi
+        groups.append(Composite(EXPOSED, state=EX))
+        groups.append(Composite(INFECTED, state=IN))
+        groups.append(Composite(CONTAGIOUS, state=CN))
+        groups.append(Composite(DEAD, state=DE))
+        groups.append(Composite(IMMUNE, state=IM))
+        # you could do this also:
+        # exposed = self.env[EXPOSED]
+        self.env = Env(MODEL_NAME, height=20, width=20, members=groups)
+        ep.set_env_attrs()
+
     def tear_down(self):
-        sal = None
-        bob = None
-        azi = None
-        env = None
+        self.sal = None
+        self.bob = None
+        self.azi = None
+        self.healthy = None
+        self.env = None
 
     def test_healthy(self):
         # create people and test their attrubutes
