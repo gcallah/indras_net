@@ -1,5 +1,8 @@
 """ This is a template file for tests.  """
 from unittest import TestCase, main, skip
+
+from indra.composite import Composite
+from indra.env import Env
 import epidemics.epidemic as ep
 """
 This is for persoanl reference
@@ -29,24 +32,25 @@ def create_env():
 
 
 class BasicTestCase(TestCase):
-    def set_up(self):
+    def setUp(self):
+        groups = []
         self.sal = create_sal()
         self.bob = create_bob()
         self.azi = create_azi()
-        self.healthy = Composite(HEALTHY, state=HE)
+        self.healthy = Composite(ep.HEALTHY, state=ep.HE)
         groups.append(self.healthy)
         self.healthy += self.azi
-        groups.append(Composite(EXPOSED, state=EX))
-        groups.append(Composite(INFECTED, state=IN))
-        groups.append(Composite(CONTAGIOUS, state=CN))
-        groups.append(Composite(DEAD, state=DE))
-        groups.append(Composite(IMMUNE, state=IM))
+        groups.append(Composite(ep.EXPOSED, state=ep.EX))
+        groups.append(Composite(ep.INFECTED, state=ep.IN))
+        groups.append(Composite(ep.CONTAGIOUS, state=ep.CN))
+        groups.append(Composite(ep.DEAD, state=ep.DE))
+        groups.append(Composite(ep.IMMUNE, state=ep.IM))
         # you could do this also:
         # exposed = self.env[EXPOSED]
-        self.env = Env(MODEL_NAME, height=20, width=20, members=groups)
+        self.env = Env(ep.MODEL_NAME, height=20, width=20, members=groups)
         ep.set_env_attrs()
 
-    def tear_down(self):
+    def tearDown(self):
         self.sal = None
         self.bob = None
         self.azi = None
