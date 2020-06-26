@@ -87,7 +87,8 @@
         "props": "models/props/segregation.props.json",
         "doc": "Thomas Schelling's famous model of neighborhood segregation.",
         "source": "https://github.com/gcallah/indras_net/blob/master/models/segregation.py",
-        "graph": "scatter"
+        "graph": "scatter",
+        "active": true
       },
       {
         "model ID": 9,
@@ -116,6 +117,16 @@
         "props": "epidemics/props/epidemic.props.json",
         "doc": "A model of the spread of an epidemic",
         "source": "https://github.com/gcallah/indras_net/blob/master/epidemics/epidemic.py",
+        "graph": "scatter",
+        "active": true
+      },
+      {
+        "model ID": 12,
+        "name": "An Abelian Sandpile",
+        "run": "sandpile",
+        "props": "models/props/sandpile.props.json",
+        "doc": "An Abelian sandpile model.",
+        "source": "https://github.com/gcallah/indras_net/blob/master/models/sandpile.py",
         "graph": "scatter",
         "active": true
       }
