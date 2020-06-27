@@ -22,6 +22,4 @@ def get_props(model_id, indra_dir):
 def put_props(model_id, payload, indra_dir):
     model = get_model(model_id, indra_dir=indra_dir)
     setup_dict[model["run"]](props=payload)
-    env = get_env()
-    print(env)
     return json_converter(get_env())
