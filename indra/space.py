@@ -679,7 +679,19 @@ class CompositeRegion(Region):
     def contains(self, coord):
         for region in self.composite:
             if (region.contains(coord)):
-                print(region.contains(coord))
+                return True
+        return False
+
+    def get_agents(self, exclude_self=False, pred=None):
+        agent_ls = []
+        for region in self.composite:
+            sub_agent_ls = region.get_agents(exclude_self=False, pred=pred)
+            agent_ls.extend(sub_agent_ls)
+        return agent_ls
+
+    def exists_neighbor(self, exclude_self=False, pred=None):
+        for region in self.composite:
+            if region.exists_neighbor(exclude_self=False, pred=pred):
                 return True
         return False
 
