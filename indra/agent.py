@@ -368,9 +368,8 @@ class Agent(object):
                         angle = self["angle"]
                     self.move(max_move=max_move, angle=angle)
                     moved = True
-            elif DEBUG:
-                user_log_notif("I'm "
-                               + self.name
+            elif DEBUG2:
+                user_log_notif("I'm " + self.name
                                + " and I have no action!")
         else:
             self.active = False

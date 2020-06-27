@@ -7,6 +7,7 @@ from indra.composite import Composite
 from indra.display_methods import CIRCLE
 from indra.env import Env
 from registry.registry import get_env, get_group, get_prop
+from registry.registry import user_log_notif
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import init_props
 
@@ -72,11 +73,19 @@ def sandpile_action(env):
 
     if DEBUG:
         print("Adding a grain to sandpile in position",
-              env.attrs["center_agent"].pos,
+              env.attrs["center"].pos,
               "which is in the group",
-              env.attrs["center_agent"].prim_group_nm())
-    add_grain(env.attrs["center_agent"])
+              env.attrs["center"].prim_group_nm())
+    add_grain(env.attrs["center"])
     return True
+
+
+def set_env_attrs():
+    user_log_notif("Setting env attrs for forest fire.")
+    width = get_prop('grid_width', DEF_WIDTH)
+    height = get_prop('grid_height', DEF_HEIGHT)
+    get_env().attrs["center"] = get_env().get_agent_at(height // 2,
+                                                       width // 2)
 
 
 def set_up(props=None):
@@ -103,8 +112,8 @@ def set_up(props=None):
                               "hide_legend": True},
                        random_placing=False
                        )
-    sandpile_env.attrs["center_agent"] = sandpile_env.get_agent_at(height // 2,
-                                                                   width // 2)
+    # these settings must be re-done every API re-load:
+    set_env_attrs()
     return sandpile_env, groups
 
 

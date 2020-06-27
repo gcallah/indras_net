@@ -35,6 +35,7 @@ from models.sandpile import main as sandmain
 from models.sandpile import set_up as sandset_up
 from models.sandpile import sandpile_action
 from models.sandpile import MODEL_NAME as SAMODEL_NAME
+from models.sandpile import set_env_attrs as sa_set_env_attrs
 from models.segregation import main as segmain
 from models.segregation import set_up as segset_up
 from models.segregation import seg_agent_action
@@ -61,12 +62,13 @@ from capital.trade_utils import seek_a_trade_w_comp
 
 env_attrs = {
     COMODEL_NAME: co_set_env_attrs,
+    CPMODEL_NAME: cp_set_env_attrs,
     EFMODEL_NAME: ef_set_env_attrs,
     EPMODEL_NAME: ep_set_env_attrs,
     FFMODEL_NAME: ff_set_env_attrs,
     FMMODEL_NAME: fm_set_env_attrs,
     MNMODEL_NAME: mn_set_env_attrs,
-    CPMODEL_NAME: cp_set_env_attrs,
+    SAMODEL_NAME: sa_set_env_attrs,
 }
 
 
@@ -76,7 +78,7 @@ rdict = {
     COMODEL_NAME: comain,
     "el_farol": efmain,
     "fashion": famain,
-    "fmarket": fmmain,
+    FMMODEL_NAME: fmmain,
     FFMODEL_NAME: ffmain,
     EPMODEL_NAME: epmain,
     SAMODEL_NAME: sandmain,
@@ -92,10 +94,10 @@ setup_dict = {
     COMODEL_NAME: coset_up,
     "el_farol": efset_up,
     "fashion": faset_up,
-    "fmarket": fmset_up,
+    FMMODEL_NAME: fmset_up,
     FFMODEL_NAME: ffset_up,
     EPMODEL_NAME: epset_up,
-    "sandpile": sandset_up,
+    SAMODEL_NAME: sandset_up,
     "segregation": segset_up,
     "wolfsheep": wsset_up,
     "money": mnset_up,
