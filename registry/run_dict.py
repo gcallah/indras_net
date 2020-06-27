@@ -71,28 +71,11 @@ env_attrs = {
     SAMODEL_NAME: sa_set_env_attrs,
 }
 
-
-rdict = {
-    "basic": bamain,
-    "bacteria": bactmain,
-    COMODEL_NAME: comain,
-    "el_farol": efmain,
-    "fashion": famain,
-    FMMODEL_NAME: fmmain,
-    FFMODEL_NAME: ffmain,
-    EPMODEL_NAME: epmain,
-    SAMODEL_NAME: sandmain,
-    "segregation": segmain,
-    "wolfsheep": wsmain,
-    "money": mnmain,
-    "complementary": cpmain,
-}
-
 setup_dict = {
     "basic": baset_up,
     "bacteria": bactset_up,
     COMODEL_NAME: coset_up,
-    "el_farol": efset_up,
+    EFMODEL_NAME: efset_up,
     "fashion": faset_up,
     FMMODEL_NAME: fmset_up,
     FFMODEL_NAME: ffset_up,
@@ -106,11 +89,11 @@ setup_dict = {
 
 action_dict = {
     "agent_action": agent_action,
+    "babysitter_action": babysitter_action,
     "bacterium_action": bacterium_action,
+    "central_bank_action": central_bank_action,
     "common_action": common_action,
     "coop_action": coop_action,
-    "babysitter_action": babysitter_action,
-    "central_bank_action": central_bank_action,
     "drinker_action": drinker_action,
     "follower_action": follower_action,
     "market_maker_action": market_maker_action,
