@@ -7,6 +7,7 @@ from unittest import TestCase, skip
 import models.wolfsheep as ws
 from indra.utils import get_props
 from models.wolfsheep import AGT_WOLF_NAME, AGT_SHEEP_NAME
+from models.wolfsheep import WOLF_GROUP, SHEEP_GROUP
 from models.wolfsheep import WOLF_LIFESPAN, SHEEP_LIFESPAN, SHEEP_REPRO_PERIOD
 from models.wolfsheep import WOLF_REPRO_PERIOD, eat, reproduce
 from models.wolfsheep import create_sheep, create_wolf, set_up
@@ -86,21 +87,21 @@ class WolfsheepTestCase(TestCase):
         self.sheep.die()
         self.assertEqual(False, isactive(self.sheep))
 
-    @skip("Must re-write for no global regime.")
+
     def test_reproduce(self):
         """
         Test to see if wolves reproduce at the right time.
         """
         self.wolf["time_to_repr"] = 0
         self.assertTrue(reproduce(self.wolf, create_wolf,
-                                  wolves_created, ws.wolves))
+                                  wolves_created, WOLF_GROUP))
         self.assertEqual(self.wolf["time_to_repr"], WOLF_REPRO_PERIOD)
 
-    @skip("Must re-write for no global regime.")
+
     def test_reproduce_nonzerotimetorepr(self):
         """
         Negative test to check the reproduction of wolves.
         """
         self.wolf["time_to_repr"] = 1
         self.assertFalse(reproduce(self.wolf, create_wolf,
-                                   wolves_created, ws.wolves))
+                                   wolves_created, WOLF_GROUP))
