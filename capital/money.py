@@ -94,6 +94,7 @@ def record_amt(pop_hist):
 def set_env_attrs():
     env = get_env()
     env.set_attr("pop_hist_func", record_amt)
+    env.set_attr("census_func", trade_report)
     tu.max_utils = MONEY_MAX_UTIL
 
 
@@ -110,7 +111,16 @@ def good_decay(goods):
     with AMT_AVAIL being adjusted by durability.
     """
     for good in goods:
-        goods[good][AMT_AVAIL] *= goods[good][DUR_DECR]
+        # Durability calculation needs to be updated
+        goods[good][AMT_AVAIL] = goods[good][DUR_DECR]
+
+
+def trade_report(env):
+    get_env()
+    trade_count_dic = {x: natures_goods[x]["trade_count"]
+                       for x in natures_goods}
+    return "Number of trades last period: " + "\n" \
+           + str(trade_count_dic) + "\n"
 
 
 def money_trader_action(agent):
@@ -120,14 +130,16 @@ def money_trader_action(agent):
     diff = {x: (dic1[x][AMT_AVAIL] - dic2[x][AMT_AVAIL])
             for x in dic1 if x in dic2}
     for good in diff:
-        decayed_amt = dic1[good][DUR_DECR] * dic1[good][AMT_AVAIL]
-        if (diff[good] != decayed_amt and diff[good] != 0):
+        # updated due to change in durability calculation
+        # decayed_amt = dic1[good][DUR_DECR] * dic1[good][AMT_AVAIL]
+        # if (diff[good] != decayed_amt and diff[good] != 0):
+        if diff[good] != 0:
             incr_trade_count(good)
-    print("TRADE COUNT")
-    for good in natures_goods:
-        print(good, " is traded ",
-              natures_goods[good]["trade_count"], " times")
-    good_decay(agent["goods"])
+    # print("TRADE COUNT")
+    # for good in natures_goods:
+    #     print(good, " is traded ",
+    #           natures_goods[good]["trade_count"], " times")
+    # good_decay(agent["goods"])
     return ret
 
 
