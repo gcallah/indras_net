@@ -96,6 +96,23 @@ def opposing_angle(pos1, pos2):
     return new_angle
 
 
+def get_move_angle(agent, agents_in_range):
+    vector_x = 0
+    vector_y = 0
+    for curr_agent in agents_in_range:
+        if(curr_agent.get_x() != agent.get_x()):
+            if ((curr_agent.get_x() - agent.get_x()) < 0):
+                vector_x -= 1/((curr_agent.get_x() - agent.get_x()) ** 2)
+            else:
+                vector_x += 1/((curr_agent.get_x() - agent.get_x()) ** 2)
+        if(curr_agent.get_y() != agent.get_y()):
+            if ((curr_agent.get_y() - agent.get_y()) < 0):
+                vector_y -= 1/((curr_agent.get_y() - agent.get_y()) ** 2)
+            else:
+                vector_y += 1/((curr_agent.get_y() - agent.get_y()) ** 2)
+    return opposing_angle([0, 0], [vector_x, vector_y])
+
+
 def is_isolated(agent):
     '''
     Checks if agent is maintaining distancing.
@@ -196,32 +213,8 @@ def people_action(agent):
         agents_in_range = []
         curr_region = CircularRegion(get_env(),
                                      agent.get_pos(), DEF_PERSON_MOVE*2)
-        '''
-        leaving old code to get agents in just in case
-        group_list = [get_group(HEALTHY), get_group(EXPOSED),
-                      get_group(INFECTED), get_group(CONTAGIOUS),
-                      get_group(DEAD), get_group(IMMUNE)]
-        for group in group_list:
-            for curr_agent in group:
-                if group[curr_agent].is_located():
-                    if curr_region.contains(group[curr_agent].get_pos()):
-                        agents_in_range.append(group[curr_agent])
-        '''
         agents_in_range = curr_region.get_agents(get_env(), True)
-        vector_x = 0
-        vector_y = 0
-        for curr_agent in agents_in_range:
-            if(curr_agent.get_x() != agent.get_x()):
-                if ((curr_agent.get_x() - agent.get_x()) < 0):
-                    vector_x -= 1/((curr_agent.get_x() - agent.get_x()) ** 2)
-                else:
-                    vector_x += 1/((curr_agent.get_x() - agent.get_x()) ** 2)
-            if(curr_agent.get_y() != agent.get_y()):
-                if ((curr_agent.get_y() - agent.get_y()) < 0):
-                    vector_y -= 1/((curr_agent.get_y() - agent.get_y()) ** 2)
-                else:
-                    vector_y += 1/((curr_agent.get_y() - agent.get_y()) ** 2)
-        new_angle = opposing_angle([0, 0], [vector_x, vector_y])
+        new_angle = get_move_angle(agent, agents_in_range)
         agent["angle"] = new_angle
     else:
         return True
