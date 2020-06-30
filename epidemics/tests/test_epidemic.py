@@ -88,16 +88,15 @@ class BasicTestCase(TestCase):
 
     @skip("envirement problem, need to clear region to test isolation")
     def test_is_not_quarantined(self):
-
         # nearby  means 1.8 away
         # create an envirement first
         
-
         self.healthy += self.sal
         self.contagious += self.azi
 
         self.bob.set_pos(0,0,0)
         self.azi.set_pos(0,0,1)
+        self.assertIsNone(self.azi)
         self.assertFalse(ep.is_isolated(self.azi),"Agent is 1 unit away, but is  quanrantined(1.8 normal)")
 
 

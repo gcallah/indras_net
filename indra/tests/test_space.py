@@ -6,7 +6,7 @@ from unittest import TestCase, main, skip
 
 from indra.agent import Agent, X, Y
 from indra.space import DEF_HEIGHT, DEF_WIDTH
-from indra.space import Space, distance, Region, CompositeRegion
+from indra.space import Space, distance, Region, CompositeRegion, CircularRegion
 from indra.tests.test_agent import create_newton, create_hardy, create_leibniz
 from indra.tests.test_agent import create_ramanujan
 
@@ -261,17 +261,7 @@ class SpaceTestCase(TestCase):
         self.assertTrue(test_reg.contains((0,0)))
         self.assertTrue(test_reg.contains((2,2)))
         self.assertFalse(test_reg.contains((3,3)))
-    
-    def test_composite_contains(self):
-        space = Space("test space")
-        test_reg1 = Region(space,(0,3),(3,3),(0,0),(3,0))
-        test_reg2 = Region(space,(4,10),(10,10),(4,4),(10,4))
-        test_reg3 = Region(space,(8,13),(9,13),(8,12),(9,12))
-        test_set = {test_reg1, test_reg2, test_reg3}
-        test_comp = CompositeRegion(test_set) 
-        self.assertTrue(test_comp.contains((5,5)))
-        self.assertFalse(test_comp.contains((9,13)))
-    
+
     def test_get_agent(self):
         space = Space("test space")
         test_reg = Region(space=space, center=(3,3), size=3)
@@ -291,7 +281,21 @@ class SpaceTestCase(TestCase):
         space.place_member(mbr=self.test_agent2, xy=(1,2))
         self.assertIsNotNone(test_reg.space.get_agent_at(0,1))
         self.assertTrue(test_reg.exists_neighbor())
+    
+    """
+    Tests for composite region
+    """
 
+    def test_composite_contains(self):
+        space = Space("test space")
+        test_reg1 = Region(space,(0,3),(3,3),(0,0),(3,0))
+        test_reg2 = Region(space,(4,10),(10,10),(4,4),(10,4))
+        test_reg3 = Region(space,(8,13),(9,13),(8,12),(9,12))
+        test_set = {test_reg1, test_reg2, test_reg3}
+        test_comp = CompositeRegion(test_set) 
+        self.assertTrue(test_comp.contains((5,5)))
+        self.assertFalse(test_comp.contains((9,13)))
+    
     def test_composite_get_agent(self):
         space1 = Space("test space1")
         test_reg1 = Region(space=space1, center=(3,3), size=3)
@@ -308,6 +312,32 @@ class SpaceTestCase(TestCase):
         test_set = {test_reg1, test_reg2}
         test_comp = CompositeRegion(test_set)
         self.assertTrue(len(test_comp.get_agents()) == 4)
+    
+    def test_composite_exists_neighbor(self):
+        space1 = Space("test space1")
+        test_reg1 = Region(space=space1, center=(3,3), size=3)
+        space1 += self.test_agent
+        space1 += self.test_agent2
+        space1.place_member(mbr=self.test_agent, xy=(0, 1))
+        space1.place_member(mbr=self.test_agent2, xy=(1,2))
+        space2 = Space("test space2")
+        test_reg2 = Region(space=space2, center=(7,7), size=3)
+        space2 += self.test_agent3
+        space2 += self.test_agent4
+        space2.place_member(mbr=self.test_agent3, xy=(8, 8))
+        space2.place_member(mbr=self.test_agent4, xy=(6,5))
+        test_set = {test_reg1, test_reg2}
+        test_comp = CompositeRegion(test_set)
+        self.assertTrue(test_comp.exists_neighbor())
+    
+    """
+    tests for circular region
+    """
+    
+    def test_check_out_bounds(self):
+        space = Space("test space")
+        test_reg = CircularRegion(space, center=(3,3), radius=2)
+        self.assertTrue(test_reg.check_out_bounds((12,12)))
 
 if __name__ == '__main__':
     main()

@@ -609,6 +609,14 @@ class Region():
                             return True
         return False
 
+    def get_ratio(self, group_one=None, group_two=None):
+        if group_one is None and group_two is None:
+            raise Exception("Enter at least single group")
+        elif group_one is not None and group_two is not None:
+            pass
+        elif group_one is None or group_two is None:
+            pass
+
     def calc_heat(self, group, coord):
         heat_strength = 0
         for heat in group:
@@ -637,9 +645,15 @@ class CircularRegion(Region):
         self.center = center
         self.radius = radius
 
+    def check_out_bounds(self, coord):
+        return out_of_bounds(coord[X], coord[Y], 0, 0,
+                             self.space.width,
+                             self.space.height)
+
     def contains(self, coord):
         if ((coord[X] - self.center[X]) ** 2
-                + (coord[Y] - self.center[Y]) ** 2 < self.radius ** 2):
+                + (coord[Y] - self.center[Y]) ** 2 < self.radius ** 2
+                and not self.check_out_bounds(coord)):
             return True
         return False
 
@@ -653,10 +667,10 @@ class CircularRegion(Region):
                 if curr_char.isdigit():
                     curr_num += curr_char
                 elif curr_char == ",":
-                    conv_coord[0] = int(curr_num)
+                    conv_coord[X] = int(curr_num)
                     curr_num = ""
                 elif curr_char == ")":
-                    conv_coord[1] = int(curr_num)
+                    conv_coord[Y] = int(curr_num)
             if self.contains(conv_coord):
                 potential_agent = self.space.get_agent_at(conv_coord[X],
                                                           conv_coord[Y])
