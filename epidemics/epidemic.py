@@ -59,7 +59,7 @@ IM = "5"
 
 STATE_TRANS = [
     # HE    EX   IN   CN   DE    IM
-    [0.98, 0.02, 0.0, 0.0, 0.0,  0.0],  # HE
+    [1.0, 0.0, 0.0, 0.0, 0.0,  0.0],  # HE
     [DEF_EX_HE_TRANS,  0.0,  DEF_INFEC, 0.0, 0.0,  0.0],  # EX
     [0.0,  0.0,  0.0, 1.0, 0.0,  0.0],  # IN
     [0.0,  0.0,  0.0, 0.0, DEF_DEATH_RATE, DEF_SURV_RATE],  # CN

@@ -420,7 +420,13 @@ class ScatterPlot():
             self.legend.append(var)
             (x_array, y_array) = self.get_arrays(varieties, var)
             if len(x_array) <= 0:  # no data to graph!
-                return
+                '''
+                I am creating a single "position" for an agent that cannot
+                be seen. This seems to fix the issue of colors being
+                missmatched in the occasion that a group has no agents.
+                '''
+                x_array = [-1]
+                y_array = [-1]
             elif len(x_array) != len(y_array):
                 logging.debug("Array length mismatch in scatter plot")
                 return
