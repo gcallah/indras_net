@@ -333,23 +333,29 @@ def utility_delta(agent, good, change):
 
 
 def adj_add_good(agent, good, amt, comp=None):
-    if not comp:
-        agent["util"] += utility_delta(agent, good, amt)
-        agent["goods"][good][AMT_AVAIL] += amt
-    else:
-        adj_add_good_w_comp(agent, good, amt)
-
-
-def adj_add_good_w_comp(agent, good, amt):
     agent["util"] += utility_delta(agent, good, amt)
     old_amt = agent["goods"][good][AMT_AVAIL]
-    if old_amt == 0 and amt > 0 and agent[GOODS][good]['incr'] != 0:
-        incr_util(agent[GOODS], good, amt=amt*STEEP_GRADIENT)
+    agent["goods"][good][AMT_AVAIL] += amt
+    if comp:
+        adj_add_good_w_comp(agent, good, amt, old_amt)
+
+
+def new_good(old_amt, amt):
+    return old_amt == 0 and amt > 0
+
+
+def is_compl_good(agent, good):
+    return agent[GOODS][good]['incr'] != 0
+
+
+def adj_add_good_w_comp(agent, good, amt, old_amt):
+    if new_good(old_amt, amt):
+        if is_compl_good(agent, good):
+            incr_util(agent[GOODS], good, amt=amt*STEEP_GRADIENT)
+        # now increase utility of this good's complements:
         for comp in agent[GOODS][good][COMPLEMENTS]:
             incr_util(agent[GOODS], comp, amt=amt*STEEP_GRADIENT)
         print(agent[GOODS])
-    agent["goods"][good][AMT_AVAIL] += amt
-#     agent["goods"][good]["incr"] = 0
     for g in agent[GOODS]:
         if agent[GOODS][g][AMT_AVAIL] == 0:
             agent[GOODS][g]['incr'] = 0
