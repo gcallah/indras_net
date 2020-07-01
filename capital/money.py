@@ -91,13 +91,6 @@ def record_amt(pop_hist):
             pop_hist.record_pop(good, natures_goods[good][TRADE_COUNT])
 
 
-def set_env_attrs():
-    env = get_env()
-    env.set_attr("pop_hist_func", record_amt)
-    env.set_attr("census_func", trade_report)
-    tu.max_utils = MONEY_MAX_UTIL
-
-
 def incr_trade_count(good):
     """
     This function will increment the local trade_count by 1
@@ -167,11 +160,17 @@ def nature_to_traders(traders, nature):
         print(repr(traders[trader]))
 
 
+def set_env_attrs():
+    env = get_env()
+    env.set_attr("pop_hist_func", record_amt)
+    env.set_attr("census_func", trade_report)
+    tu.max_utils = MONEY_MAX_UTIL
+
+
 def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    # global max_util -> not in use now
     init_props(MODEL_NAME, props, model_dir="capital")
     traders = Composite("Traders",
                         member_creator=create_trader,

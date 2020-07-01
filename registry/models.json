@@ -108,7 +108,7 @@
         "doc": "Test Carl Menger's theory of how money emerges",
         "source": "https://github.com/gcallah/indras_net/blob/master/capital/money.py",
         "graph": "line",
-        "active": false
+        "active": true
       },
       {
         "model ID": 11,
