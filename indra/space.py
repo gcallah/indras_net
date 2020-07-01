@@ -428,7 +428,6 @@ class Space(Composite):
         """
         region = Region(space=self, center=(agent.get_x(), agent.get_y()),
                         size=hood_size)
-        region.check_bounds()
         members = region.get_agents(exclude_self=True, pred=None)
         return Composite("Moore neighbors", members=members)
 
@@ -610,12 +609,27 @@ class Region():
         return False
 
     def get_ratio(self, group_one=None, group_two=None):
+        STATE = "state"
         if group_one is None and group_two is None:
             raise Exception("Enter at least single group")
         elif group_one is not None and group_two is not None:
-            pass
+            group_one_num = len(self.get_agents(exclude_self=False,
+                                pred=lambda agent: agent[STATE] == group_one))
+            group_two_num = len(self.get_agents(exclude_self=False,
+                                pred=lambda agent: agent[STATE] == group_two))
+            return group_one_num / group_two_num
         elif group_one is None or group_two is None:
-            pass
+            agent_num = len(self.get_agents(exclude_self=False, pred=None))
+            if group_two is None:
+                group_num = len(self.get_agents(exclude_self=False,
+                                pred=lambda agent: agent[STATE] == group_one))
+            elif group_one is None:
+                group_num = len(self.get_agents(exclude_self=False,
+                                pred=lambda agent: agent[STATE] == group_two))
+            if agent_num == 0:
+                raise Exception("No agents found")
+            else:
+                return group_num / agent_num
 
     def calc_heat(self, group, coord):
         heat_strength = 0
