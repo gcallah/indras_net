@@ -86,31 +86,27 @@ class BasicTestCase(TestCase):
         self.sal.set_pos(0,0)
         self.asserIsNotNone(self.sal.get_pos())
 
-    @skip("envirement problem, need to clear region to test isolation")
+    # @skip("envirement problem, need to clear region to test isolation")
     def test_is_not_quarantined(self):
-        # nearby  means 1.8 away
-        # create an envirement first
-        
+
+        # default max social dist is 1.8 unit.
         self.healthy += self.sal
         self.contagious += self.azi
-
-        self.bob.set_pos(0,0,0)
-        self.azi.set_pos(0,0,1)
-        self.assertIsNone(self.azi)
+        self.env.place_member(self.sal,(0,0))
+        self.env.place_member(self.azi,(0,0))
+        self.assertIsNotNone(self.azi)
         self.assertFalse(ep.is_isolated(self.azi),"Agent is 1 unit away, but is  quanrantined(1.8 normal)")
 
 
-    @skip("envirement problem, need to clear region to test isolation")
+    @skip("envirement problem,  The distance is returning zero despite 5 unit distance between agents")
     def test_is_quarantined(self):
-        # nearby  means 1.8 away
-        # create an envirement first
 
-        self.healthy += self.sal
+        # default max social dist is 1.8 unit.
         self.contagious += self.azi
-        self.sal.set_pos(0,0,5)
-        self.azi.set_pos(0,0,0)
-
-        self.assertTrue(ep.is_isolated(azi), "agent is 5 units away but is not qurantined(1.8 normal)")
+        self.healthy += self.sal
+        self.env.place_member(self.sal,(0,0))
+        self.env.place_member(self.azi,(0,5))
+        self.assertTrue(ep.is_isolated(self.azi), "agent is 5 units away but is not qurantined(1.8 normal)")
 
     def test_main(self):
         self.assertEqual(ep.main(), 0)
