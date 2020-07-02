@@ -228,20 +228,6 @@ class Space(Composite):
     def get_col_view(self, x, y, distance):
         pass
 
-    def get_moore_hood_idx(self, x, y, distance=1):
-        """
-        J & K: THIS WILL GO AWAY!
-        Return set of coords (x1, x2, y1, y2) that are the
-        corners of a square... *unless* those corners could
-        be off the grid. In that case, pull them back in bounds.
-        """
-        low_x = x - distance
-        high_x = x + distance
-        low_y = y - distance
-        high_y = y + distance
-        return (self.constrain_x(low_x), self.constrain_x(high_x),
-                self.constrain_y(low_y), self.constrain_y(high_y))
-
     def gen_new_pos(self, mbr, max_move):
         """
         Generate new random position within max_move of current pos.
@@ -622,7 +608,7 @@ class Region():
             if DEBUG2:
                 print("agent_num length: " + str(agent_num))
             if agent_num == 0:
-                raise 1
+                return 1
             if pred_two is None:
                 group_num = len(self.get_agents(exclude_self=True,
                                 pred=pred_one))
