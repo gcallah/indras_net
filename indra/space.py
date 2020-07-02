@@ -608,28 +608,28 @@ class Region():
                             return True
         return False
 
-    def get_ratio(self, group_one=None, group_two=None):
-        STATE = "state"
-        if group_one is None and group_two is None:
+    def get_ratio(self, pred_one=None, pred_two=None):
+        if pred_one is None and pred_two is None:
             raise Exception("Enter at least single group")
-        elif group_one is not None and group_two is not None:
-            group_one_num = len(self.get_agents(exclude_self=False,
-                                pred=lambda agent: agent[STATE] == group_one))
-            group_two_num = len(self.get_agents(exclude_self=False,
-                                pred=lambda agent: agent[STATE] == group_two))
+        elif pred_one is not None and pred_two is not None:
+            group_one_num = len(self.get_agents(exclude_self=True,
+                                pred=pred_one))
+            group_two_num = len(self.get_agents(exclude_self=True,
+                                pred=pred_two))
             return group_one_num / group_two_num
-        elif group_one is None or group_two is None:
-            agent_num = len(self.get_agents(exclude_self=False, pred=None))
-            if group_two is None:
-                group_num = len(self.get_agents(exclude_self=False,
-                                pred=lambda agent: agent[STATE] == group_one))
-            elif group_one is None:
-                group_num = len(self.get_agents(exclude_self=False,
-                                pred=lambda agent: agent[STATE] == group_two))
+        elif pred_one is None or pred_two is None:
+            agent_num = len(self.get_agents(exclude_self=True, pred=None))
+            if DEBUG2:
+                print("agent_num length: " + str(agent_num))
             if agent_num == 0:
-                raise Exception("No agents found")
-            else:
-                return group_num / agent_num
+                raise 1
+            if pred_two is None:
+                group_num = len(self.get_agents(exclude_self=True,
+                                pred=pred_one))
+            elif pred_one is None:
+                group_num = len(self.get_agents(exclude_self=True,
+                                pred=pred_two))
+            return group_num / agent_num
 
     def calc_heat(self, group, coord):
         heat_strength = 0
