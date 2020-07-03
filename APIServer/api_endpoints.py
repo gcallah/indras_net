@@ -134,7 +134,7 @@ env = api.model("env", {
 })
 
 
-@api.route('/models/menu/run/<int:run_time>')
+@api.route('/models/run/<int:run_time>')
 class RunModel(Resource):
     @api.expect(env)
     def put(self, run_time):

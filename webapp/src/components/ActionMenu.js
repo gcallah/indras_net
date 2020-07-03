@@ -157,7 +157,7 @@ class ActionMenu extends Component {
     this.setState({ loadingData: true });
     try {
       const res = await axios.put(
-        `${API_SERVER}run/${String(periodNum)}`,
+        `${config.API_URL}models/run/${String(periodNum)}`,
         envFile,
         periodNum,
       );
