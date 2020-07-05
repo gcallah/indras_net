@@ -136,7 +136,7 @@ def money_trader_action(agent):
     return ret
 
 
-def create_trader(name, i):
+def create_trader(name, i, props=None):
     """
     A func to create a trader.
     """
@@ -167,16 +167,34 @@ def set_env_attrs():
     tu.max_utils = MONEY_MAX_UTIL
 
 
+def check_props():
+    """
+    A func to delete properties of goods in nature_goods
+    dictionary if the user want to disable them.
+    """
+    div = get_prop('divisibility')
+    dua = get_prop('durability')
+    trans = get_prop('transportability')
+    for goods in natures_goods:
+        if div == 0 and "divisibility" in natures_goods[goods]:
+            del natures_goods[goods]["divisibility"]
+        if dua == 0 and DUR_DECR in natures_goods[goods]:
+            del natures_goods[goods][DUR_DECR]
+        if trans == 0 and "transportability" in natures_goods[goods]:
+            del natures_goods[goods]["transportability"]
+
+
 def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    init_props(MODEL_NAME, props, model_dir="capital")
+    pa = init_props(MODEL_NAME, props, model_dir="capital")
     traders = Composite("Traders",
                         member_creator=create_trader,
+                        props=pa,
                         num_members=get_prop('num_traders',
                                              DEF_NUM_TRADERS))
-
+    check_props()
     nature_to_traders(traders, natures_goods)
 
     Env(MODEL_NAME,
