@@ -17,5 +17,27 @@
     "atype": "INT",
     "hival": 8,
     "lowval": 3
+  },
+  "divisibility": {
+    "val": 1,
+    "question": "Do you want to enable divisibility? (1/0 Yes/No)",
+    "atype": "INT",
+    "hival": 1,
+    "lowval": 0
+  },
+  "durability": {
+    "val": 1,
+    "question": "Do you want to enable durability? (1/0 Yes/No)",
+    "atype": "INT",
+    "hival": 1,
+    "lowval": 0
+  },
+  "transportability": {
+    "val": 1,
+    "question": "Do you want to enable transportability? (1/0 Yes/No)",
+    "atype": "INT",
+    "hival": 1,
+    "lowval": 0
   }
+
 }
