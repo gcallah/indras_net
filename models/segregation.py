@@ -90,7 +90,6 @@ def create_resident(name, i, group=BLUE):
     """
     Creates agent of specified color type
     """
-
     if group == BLUE:
         grp_idx = BLUE_GRP_IDX
         mean_tol = get_prop('mean_tol', DEF_TOLERANCE)

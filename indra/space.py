@@ -11,7 +11,7 @@ from random import randint
 
 from indra.agent import is_composite, AgentEncoder, X, Y
 from indra.composite import Composite
-from registry.registry import register, get_registration, get_group
+from registry.registry import register, get_registration, get_group, get_env
 from indra.user import user_debug, user_log, user_log_warn
 
 DEF_WIDTH = 10
@@ -484,6 +484,29 @@ class Space(Composite):
         return self.constrain_x(new_x), self.constrain_y(new_y)
 
 
+def gen_region_name(NW=None, NE=None, SW=None,
+                    SE=None, center=None, size=None):
+    if center is None:
+        return str(NW) + "," + str(NE) + "," + str(SW) + "," + str(SE)
+    else:
+        return str(center) + "," + str(size)
+
+
+"""
+instead of direct call to constructor, call region_factory():
+we will need a region_dict
+looks something like:
+def region_factory( PARAMS! ):
+    region_name = gen_region_name( PARAMS! - space)
+    if region_name in region_dict:
+        return region_dict[region_name]
+    else:
+        new_reg = Region( PARAMS! )
+        region_dict[region_name] = new_reg
+        return new_reg
+"""
+
+
 class Region():
     """
     This is the base of all regions used for neighborhoods, obstacles,
@@ -496,34 +519,41 @@ class Region():
 
     def __init__(self, space=None, NW=None, NE=None, SW=None,
                  SE=None, center=None, size=None):
+        # alternate structure?
+        # self.corners[NW] = nw
+        self.name = gen_region_name(NW, NE, SW, SE, center, size)
+        if (space is None):
+            space = get_env()
+        self.space = space
         if (center is not None and size is not None):
-            if (NW is not None or NE is not None or SW is not None
-                    or SE is not None):
-                raise Exception("Extra coordinate entered")
-            if (space is None):
-                raise Exception("Space not added as parameter")
             self.NW = (center[X] - size, center[Y] + size)
             self.NE = (center[X] + size + 1, center[Y] + size)
             self.SW = (center[X] - size, center[Y] - size - 1)
             self.SE = (center[X] + size + 1, center[Y] - size - 1)
-            self.width = size * 2 + 1
-            self.height = size * 2 + 1
             self.center = center
-            self.space = space
         else:
-            if (center is not None or size is not None):
-                raise Exception("center or size added when not necessary")
-            if (space is None):
-                raise Exception("Space not added as parameter")
             self.NW = NW
             self.NE = NE
             self.SW = SW
             self.SE = SE
-            self.width = abs(self.NW[X] - self.NE[X])
-            self.height = abs(self.NW[Y] - self.SW[Y])
             self.center = None
-            self.space = space
         self.check_bounds()
+        self.width = abs(self.NW[X] - self.NE[X])
+        self.height = abs(self.NW[Y] - self.SW[Y])
+
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        s = "width: " + str(self.width)
+        s += "height: " + str(self.height) + "\n"
+        s += "============" + "\n"
+        s += "NW: " + str(self.NW) + "\n"
+        s += "NE: " + str(self.NE) + "\n"
+        s += "SW: " + str(self.SW) + "\n"
+        s += "SE: " + str(self.SE) + "\n"
+        s += "===========" + "\n"
+        return s
 
     def contains(self, coord):
         if (coord[X] >= self.NW[X]) and (coord[X] < self.NE[X]):
@@ -544,14 +574,7 @@ class Region():
     def get_agents(self, exclude_self=False, pred=None):
         agent_ls = []
         if DEBUG2:
-            print("width: " + str(self.width))
-            print("height: " + str(self.height))
-            print("============")
-            print("NW: " + str(self.NW))
-            print("NE: " + str(self.NE))
-            print("SW: " + str(self.SW))
-            print("SE: " + str(self.SE))
-            print("===========")
+            print(self.__repr__())
         for y in range(self.height):
             y_coord = self.SW[Y] + y + 1
             for x in range(self.width):
@@ -570,14 +593,7 @@ class Region():
 
     def exists_neighbor(self, exclude_self=False, pred=None):
         if DEBUG2:
-            print("width: " + str(self.width))
-            print("height: " + str(self.height))
-            print("============")
-            print("NW: " + str(self.NW))
-            print("NE: " + str(self.NE))
-            print("SW: " + str(self.SW))
-            print("SE: " + str(self.SE))
-            print("===========")
+            print(self.__repr__())
         for y in range(self.height):
             y_coord = self.SW[Y] + y + 1
             for x in range(self.width):
@@ -594,28 +610,20 @@ class Region():
                             return True
         return False
 
-    def get_ratio(self, pred_one=None, pred_two=None):
-        if pred_one is None and pred_two is None:
-            raise Exception("Enter at least single group")
-        elif pred_one is not None and pred_two is not None:
-            group_one_num = len(self.get_agents(exclude_self=True,
-                                pred=pred_one))
-            group_two_num = len(self.get_agents(exclude_self=True,
-                                pred=pred_two))
-            return group_one_num / group_two_num
-        elif pred_one is None or pred_two is None:
-            agent_num = len(self.get_agents(exclude_self=True, pred=None))
+    def get_ratio(self, pred_one, pred_two=None):
+        if pred_one is None:
+            raise Exception("Pass at least a single predicate to get_ratio")
+        numerator = len(self.get_agents(exclude_self=True, pred=pred_one))
+        if pred_two is not None:
+            denominator = len(self.get_agents(exclude_self=True,
+                              pred=pred_two))
+        else:
+            denominator = len(self.get_agents(exclude_self=True, pred=None))
             if DEBUG2:
-                print("agent_num length: " + str(agent_num))
-            if agent_num == 0:
-                return 1
-            if pred_two is None:
-                group_num = len(self.get_agents(exclude_self=True,
-                                pred=pred_one))
-            elif pred_one is None:
-                group_num = len(self.get_agents(exclude_self=True,
-                                pred=pred_two))
-            return group_num / agent_num
+                print("denominator length: " + str(denominator))
+        if denominator == 0:
+            return 1
+        return numerator / denominator
 
     def calc_heat(self, group, coord):
         heat_strength = 0
@@ -644,6 +652,7 @@ class CircularRegion(Region):
         self.space = space
         self.center = center
         self.radius = radius
+        self.name = "Circle"
 
     def check_out_bounds(self, coord):
         return out_of_bounds(coord[X], coord[Y], 0, 0,
@@ -663,6 +672,10 @@ class CircularRegion(Region):
             # Need to convert coord string into an x and a y value:
             conv_coord = [0, 0]
             curr_num = ""
+            # make this a function get_xy_from_str()
+            # parts = coord.split(",")
+            # conv_coord[X] = int(parts[0])
+            # conv_coord[Y] = int(parts[1])
             for curr_char in coord:
                 if curr_char.isdigit():
                     curr_num += curr_char
