@@ -597,6 +597,26 @@ class Region():
                             agent_ls.append(potential_neighbor)
         return agent_ls
 
+    def get_num_of_agents(self, exclude_self=False, pred=None):
+        agent_num = 0
+        if DEBUG2:
+            print(self.__repr__())
+        for y in range(self.height):
+            y_coord = self.SW[Y] + y + 1
+            for x in range(self.width):
+                x_coord = self.SW[X] + x
+                if DEBUG2:
+                    print("(x,y): " + str((x_coord, y_coord)))
+                potential_neighbor = self.space.get_agent_at(x_coord, y_coord)
+                if potential_neighbor is not None:
+                    if pred is None or pred(potential_neighbor):
+                        if (x_coord, y_coord) is self.center:
+                            if exclude_self is False:
+                                agent_num += 1
+                        else:
+                            agent_num += 1
+        return agent_num
+
     def exists_neighbor(self, exclude_self=False, pred=None):
         if DEBUG2:
             print(self.__repr__())
@@ -619,12 +639,12 @@ class Region():
     def get_ratio(self, pred_one, pred_two=None):
         if pred_one is None:
             raise Exception("Pass at least a single predicate to get_ratio")
-        numerator = len(self.get_agents(exclude_self=True, pred=pred_one))
+        numerator = self.get_num_of_agents(exclude_self=True, pred=pred_one)
         if pred_two is not None:
-            denominator = len(self.get_agents(exclude_self=True,
-                              pred=pred_two))
+            denominator = self.get_num_of_agents(exclude_self=True,
+                                                 pred=pred_two)
         else:
-            denominator = len(self.get_agents(exclude_self=True, pred=None))
+            denominator = self.get_num_of_agents(exclude_self=True, pred=None)
             if DEBUG2:
                 print("denominator length: " + str(denominator))
         if denominator == 0:

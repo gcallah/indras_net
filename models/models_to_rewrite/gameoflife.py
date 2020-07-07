@@ -8,6 +8,7 @@ from indra.display_methods import BLACK, SQUARE
 from indra.env import Env
 from indra.registry import get_env
 from indra.utils import get_props
+from indra.space import Region
 
 MODEL_NAME = "gameoflife"
 DEBUG = False  # Turns debugging code on or off
@@ -36,12 +37,11 @@ def apply_live_rules(agent):
     The agent passed in should be alive, meaning its color should be black.
     """
     global groups
-
-    num_live_neighbors = 0
-    for neighbor in agent.neighbors:
-        if (agent.neighbors[neighbor].primary_group() == groups[0]
-                and agent.neighbors[neighbor].get_pos() != agent.get_pos()):
-            num_live_neighbors += 1
+    
+    curr_region = Region(space=get_env(), center.agent.get_pos(),
+                         size=1)
+    num_live_neighbors = curr_region.get_num_of_agents(exclude_self=True,
+                         pred=lambda agent: agent.primary_group() == groups[0])
     if (num_live_neighbors != 2 and num_live_neighbors != 3):
         return True
     else:
