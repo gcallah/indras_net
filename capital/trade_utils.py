@@ -351,9 +351,9 @@ def is_compl_good(agent, good):
     return agent[GOODS][good]['incr'] != 0
 
 
-def good_not_have(agent, g):
+def good_all_gone(agent, g):
     '''
-    check if this agent no longer have this good
+    Check if this agent no longer has this good
     '''
     return agent[GOODS][g][AMT_AVAIL] == 0
 
@@ -374,6 +374,6 @@ def adj_add_good_w_comp(agent, good, amt, old_amt):
             incr_util(agent[GOODS], comp, amt=amt * STEEP_GRADIENT)
         print(agent[GOODS])
 
-    if good_not_have(agent, good):
+    if good_all_gone(agent, good):
         for comp in compl_lst(agent, good):
             agent[GOODS][comp]['incr'] = 0

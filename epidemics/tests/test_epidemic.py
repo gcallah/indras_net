@@ -35,7 +35,6 @@ class BasicTestCase(TestCase):
 
 
         # create custumized envirements envirements
-        
 
         self.healthy = Composite(ep.HEALTHY, state=ep.HE)
         groups.append(self.healthy)
@@ -46,10 +45,10 @@ class BasicTestCase(TestCase):
         groups.append(Composite(ep.CONTAGIOUS, state=ep.CN))
         groups.append(Composite(ep.DEAD, state=ep.DE))
         groups.append(Composite(ep.IMMUNE, state=ep.IM))
-        # you could do this also:
-        # exposed = self.env[ep.EXPOSED]
 
         self.env = Env(ep.MODEL_NAME, height=20, width=20, members=groups)
+        # you could do this also:
+        self.exposed = self.env[ep.EXPOSED]
         ep.set_env_attrs()
 
     def tearDown(self):
@@ -57,6 +56,7 @@ class BasicTestCase(TestCase):
         self.bob = None
         self.azi = None
         self.healthy = None
+        self.contagious = None
         self.env = None
 
     def test_healthy(self):
