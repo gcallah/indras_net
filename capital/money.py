@@ -34,7 +34,7 @@ natures_goods = {
             "incr": 0, DUR_DECR: 0.8, "divisibility": 1.0,
             "trade_count": 0, "is_allocated": False, },
     "gold": {AMT_AVAIL: 8, UTIL_FUNC: GEN_UTIL_FUNC,
-             "incr": 0, DUR_DECR: 1.0, "divisibility": 0.1,
+             "incr": 0, DUR_DECR: 1.0, "divisibility": 0.01,
              "trade_count": 0, "is_allocated": False, },
     "cheese": {AMT_AVAIL: 2, UTIL_FUNC: GEN_UTIL_FUNC,
                "incr": 0, DUR_DECR: 0.8, "divisibility": 0.4,
