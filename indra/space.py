@@ -91,6 +91,12 @@ def fill_neighbor_coords(agent, height, include_self):
     return agent_x, agent_y, neighbor_y_coords
 
 
+def get_xy_from_str(coord_str):
+    parts = coord_str[1:-1]
+    parts = parts.split(",")
+    return [int(parts[0]), int(parts[1])]
+
+
 class Space(Composite):
     """
     A collection of entities that share a space.
@@ -669,21 +675,7 @@ class CircularRegion(Region):
     def get_agents(self, exclude_self=False, pred=None):
         agent_ls = []
         for coord in self.space.locations:
-            # Need to convert coord string into an x and a y value:
-            conv_coord = [0, 0]
-            curr_num = ""
-            # make this a function get_xy_from_str()
-            # parts = coord.split(",")
-            # conv_coord[X] = int(parts[0])
-            # conv_coord[Y] = int(parts[1])
-            for curr_char in coord:
-                if curr_char.isdigit():
-                    curr_num += curr_char
-                elif curr_char == ",":
-                    conv_coord[X] = int(curr_num)
-                    curr_num = ""
-                elif curr_char == ")":
-                    conv_coord[Y] = int(curr_num)
+            conv_coord = get_xy_from_str(coord)
             if self.contains(conv_coord):
                 potential_agent = self.space.get_agent_at(conv_coord[X],
                                                           conv_coord[Y])
