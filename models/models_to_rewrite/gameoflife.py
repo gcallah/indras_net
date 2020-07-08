@@ -43,7 +43,7 @@ def apply_live_rules(agent):
                                                        == get_group(BLACK))
     if DEBUG:
         print("agent at (x,y): ", agent.get_pos(),
-               "has this many neighbors: ", num_live_neighbors)
+              "has this many neighbors: ", num_live_neighbors)
     if (num_live_neighbors != 2 and num_live_neighbors != 3):
         return True
     else:
@@ -59,7 +59,9 @@ def apply_dead_rules(new_x, new_y):
     curr_region = Region(space=get_env(), center=(new_x, new_y),
                          size=1)
     num_live_neighbors = curr_region.get_num_of_agents(exclude_self=True,
-                         pred=lambda agent: agent.primary_group() == get_group(BLACK))
+                                                       pred=lambda agent:
+                                                       agent.primary_group()
+                                                       == get_group(BLACK))
     if num_live_neighbors == 3:
         return True
     else:
@@ -81,7 +83,7 @@ def check_for_new_agents(agent):
                     if apply_dead_rules(new_x, new_y):
                         to_come_alive.append((new_x, new_y))
                         if DEBUG:
-                            print("to come alive being append to:(x,y)", 
+                            print("to come alive being append to:(x,y)",
                                   (new_x, new_y))
     return to_come_alive
 
@@ -96,7 +98,6 @@ def gameoflife_action(biosphere):
     global to_die
     global reset_lists
     b = get_group(BLACK)
-    
     for agent_pos in to_come_alive:
         if DEBUG:
             print("Agent at", agent_pos, "will come alive")
@@ -185,8 +186,8 @@ def populate_board_n_horizontal_row(width, height, n=10):
     b = get_group(BLACK)
     for r in range(right):
         agent_loc.append((center[0] + r, center[1]))
-    for l in range(1, left):
-        agent_loc.append((center[0] - l, center[1]))
+    for le in range(1, left):
+        agent_loc.append((center[0] - le, center[1]))
     for loc in agent_loc:
         agent = create_game_cell(loc[0], loc[1])
         b += agent

@@ -489,6 +489,14 @@ class Space(Composite):
         new_y += int(math.sin(math.radians(angle)) * max_move)
         return self.constrain_x(new_x), self.constrain_y(new_y)
 
+    def exists_neighbor(self, agent, pred=None, exclude_self=True, size=1):
+        region = Region(space=self, center=(agent.get_x(), agent.get_y()),
+                        size=size)
+        if region.get_num_of_agents(exclude_self=exclude_self, pred=pred) > 0:
+            return True
+        else:
+            return False
+
 
 def gen_region_name(NW=None, NE=None, SW=None,
                     SE=None, center=None, size=None):

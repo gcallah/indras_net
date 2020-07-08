@@ -271,6 +271,7 @@ class SpaceTestCase(TestCase):
         space.place_member(mbr=self.test_agent2, xy=(1,2))
         self.assertTrue(len(test_reg.get_agents()) == 2)
 
+    @skip("moving method above one level: region to space")
     def test_exists_neighbor(self):
         space = Space("test space")
         test_reg = Region(space,(0,3),(3,3),(0,0),(3,0))
