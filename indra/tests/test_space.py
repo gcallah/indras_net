@@ -301,14 +301,14 @@ class SpaceTestCase(TestCase):
         test_reg1 = Region(space=space1, center=(3,3), size=3)
         space1 += self.test_agent
         space1 += self.test_agent2
-        space1.place_member(mbr=self.test_agent, xy=(0, 1))
-        space1.place_member(mbr=self.test_agent2, xy=(1,2))
+        space1.place_member(mbr=self.test_agent, xy=(2, 3))
+        space1.place_member(mbr=self.test_agent2, xy=(3,4))
         space2 = Space("test space2")
         test_reg2 = Region(space=space2, center=(7,7), size=3)
         space2 += self.test_agent3
         space2 += self.test_agent4
         space2.place_member(mbr=self.test_agent3, xy=(8, 8))
-        space2.place_member(mbr=self.test_agent4, xy=(6,5))
+        space2.place_member(mbr=self.test_agent4, xy=(6,6))
         test_set = {test_reg1, test_reg2}
         test_comp = CompositeRegion(test_set)
         self.assertTrue(len(test_comp.get_agents()) == 4)

@@ -537,12 +537,14 @@ class Region():
             self.SW = (center[X] - size, center[Y] - size - 1)
             self.SE = (center[X] + size + 1, center[Y] - size - 1)
             self.center = center
+            self.size = size
         else:
             self.NW = NW
             self.NE = NE
             self.SW = SW
             self.SE = SE
             self.center = None
+            self.size = None
         self.check_bounds()
         self.width = abs(self.NW[X] - self.NE[X])
         self.height = abs(self.NW[Y] - self.SW[Y])
@@ -568,14 +570,23 @@ class Region():
         return False
 
     def check_bounds(self):
+        old_NE = self.NE
+        old_SW = self.SW
+        old_SE = self.SE
         self.NW = (self.space.constrain_x(self.NW[X]),
                    self.space.constrain_y(self.NW[Y]))
-        self.NE = (self.space.constrain_x(self.NE[X]) + 1,
+        self.NE = (self.space.constrain_x(self.NE[X]),
                    self.space.constrain_y(self.NE[Y]))
         self.SW = (self.space.constrain_x(self.SW[X]),
-                   self.space.constrain_y(self.SW[Y]) - 1)
-        self.SE = (self.space.constrain_x(self.SE[X]) + 1,
-                   self.space.constrain_y(self.SE[Y]) - 1)
+                   self.space.constrain_y(self.SW[Y]))
+        self.SE = (self.space.constrain_x(self.SE[X]),
+                   self.space.constrain_y(self.SE[Y]))
+        if self.NE != old_NE:
+            self.NE = (self.NE[X] + 1, self.NE[Y])
+        if self.SW != old_SW:
+            self.SW = (self.SW[X], self.SW[Y] - 1)
+        if self.SE != old_SE:
+            self.SE = (self.SE[X] + 1, self.SE[Y] - 1)
 
     def get_agents(self, exclude_self=False, pred=None):
         agent_ls = []
@@ -590,7 +601,7 @@ class Region():
                 potential_neighbor = self.space.get_agent_at(x_coord, y_coord)
                 if potential_neighbor is not None:
                     if pred is None or pred(potential_neighbor):
-                        if (x_coord, y_coord) is self.center:
+                        if (x_coord, y_coord) == self.center:
                             if exclude_self is False:
                                 agent_ls.append(potential_neighbor)
                         else:
@@ -610,10 +621,14 @@ class Region():
                 potential_neighbor = self.space.get_agent_at(x_coord, y_coord)
                 if potential_neighbor is not None:
                     if pred is None or pred(potential_neighbor):
-                        if (x_coord, y_coord) is self.center:
+                        if (x_coord, y_coord) == self.center:
                             if exclude_self is False:
+                                if DEBUG2:
+                                    print("agent added: ", (x_coord, y_coord))
                                 agent_num += 1
                         else:
+                            if DEBUG2:
+                                print("agent added: ", (x_coord, y_coord))
                             agent_num += 1
         return agent_num
 
@@ -629,7 +644,7 @@ class Region():
                 potential_neighbor = self.space.get_agent_at(x_coord, y_coord)
                 if potential_neighbor is not None:
                     if pred is None or pred(potential_neighbor):
-                        if (x_coord, y_coord) is self.center:
+                        if (x_coord, y_coord) == self.center:
                             if exclude_self is False:
                                 return True
                         else:
