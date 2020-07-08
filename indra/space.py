@@ -22,7 +22,7 @@ MAX_HEIGHT = 200
 
 DEF_MAX_MOVE = 2
 
-DEBUG = False
+DEBUG = True
 DEBUG2 = False
 
 
@@ -32,6 +32,11 @@ def out_of_bounds(x, y, x1, y1, x2, y2):
     """
     return (x < x1 or x >= x2
             or y < y1 or y >= y2)
+
+
+def debug_agent_pos(agent):
+    if DEBUG:
+        print(str(agent), "with id", id(agent), "is at", agent.get_pos())
 
 
 def bound(point, lower, upper):
@@ -47,6 +52,8 @@ def distance(a1, a2):
     if (not a1.is_located()) or (not a2.is_located()):
         return 0.0
     else:
+        debug_agent_pos(a1)
+        debug_agent_pos(a2)
         return sqrt(
             ((a2.get_x() - a1.get_x()) ** 2)
             + ((a2.get_y() - a1.get_y()) ** 2)
@@ -228,10 +235,10 @@ class Space(Composite):
         """
         return bound(y, 0, self.height - 1)
 
-    def get_row_view(self, x, y, distance):
+    def get_row_view(self, x, y, dist):
         pass
 
-    def get_col_view(self, x, y, distance):
+    def get_col_view(self, x, y, dist):
         pass
 
     def gen_new_pos(self, mbr, max_move):
@@ -464,11 +471,17 @@ class Space(Composite):
         closest = None
         min_distance_seen = MAX_WIDTH * MAX_HEIGHT
         for key, other_nm in self.locations.items():
+            if DEBUG:
+                print("Checking ", other_nm, "for closeness")
             other = get_registration(other_nm)
             if other is agent or other is None:
                 continue
             d = distance(agent, other)
+            if DEBUG:
+                print("Distance to ", other_nm, "is", d)
             if d < min_distance_seen:
+                if DEBUG:
+                    print("Replacing closest with", other_nm)
                 min_distance_seen = d
                 closest = other
         return closest
@@ -654,12 +667,10 @@ class Region():
     def calc_heat(self, group, coord):
         heat_strength = 0
         for heat in group:
-            distance = sqrt(
-                ((coord[X] - group[heat].get_x()) ** 2)
-                + ((coord[Y] - group[heat].get_y()) ** 2)
-            )
-            if distance != 0:
-                heat_strength += 1 / ((distance) ** 2)
+            dist = sqrt(((coord[X] - group[heat].get_x()) ** 2)
+                        + ((coord[Y] - group[heat].get_y()) ** 2))
+            if dist != 0:
+                heat_strength += 1 / (dist ** 2)
             else:
                 heat_strength += sys.maxsize
         heat_strength *= -1

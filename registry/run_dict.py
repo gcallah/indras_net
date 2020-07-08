@@ -39,7 +39,7 @@ from models.wolfsheep import sheep_action, wolf_action
 from models.wolfsheep import create_sheep, create_wolf
 from models.wolfsheep import MODEL_NAME as WO_MODEL_NAME
 from epidemics.epidemic import set_up as ep_set_up
-from epidemics.epidemic import people_action
+from epidemics.epidemic import person_action
 from epidemics.epidemic import set_env_attrs as ep_set_env_attrs
 from epidemics.epidemic import MODEL_NAME as EP_MODEL_NAME
 from capital.money import set_up as mn_set_up
@@ -98,7 +98,7 @@ action_dict = {
     "seg_agent_action": seg_agent_action,
     "tsetter_action": tsetter_action,
     "tree_action": tree_action,
-    "people_action": people_action,
+    "person_action": person_action,
     "trend_follower_action": trend_follower_action,
     "value_investor_action": value_investor_action,
     "money_trader_action": money_trader_action,

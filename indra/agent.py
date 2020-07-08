@@ -32,6 +32,9 @@ INF = sys.maxsize  # really any very big number would do here!
 
 DEF_MAX_MOVE = None
 
+MOVE = False
+DONT_MOVE = True
+
 
 def prob_state_trans(curr_state, states):
     """
