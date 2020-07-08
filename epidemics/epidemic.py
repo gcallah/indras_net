@@ -170,8 +170,7 @@ def epidemic_report(env):
     result += "New deaths: " + str(curr_deaths) + "\n"
     result += "Total cases: " + \
         str(get_env().get_attr("total_cases")) + "\n"
-    result += "New cases: " + str(curr_infected) + "\n"
-    result += "Ro value: " + str(Ro) + "\n"
+    result += "R0 value: " + str(Ro) + "\n"
 
     return result
 

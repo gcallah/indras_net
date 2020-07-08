@@ -77,25 +77,12 @@ def seg_agent_action(agent):
     and those in my group, and get the ratio.
     """
     agent_group = agent.group_name()
-    # ratio_same = 1  # default to don't move!
-    # neighbors = get_env().get_moore_hood(agent, hood_size=agent['hood_size'])
-    # num_same = 0
     curr_region = Region(space=get_env(), center=agent.get_pos(),
                          size=agent['hood_size'])
     ratio_num = curr_region.get_ratio(pred_one=lambda agent:
                                       agent.group_name() == agent_group)
     if DEBUG2:
         print("Prototype test" + str(ratio_num))
-    """
-    for neighbor in neighbors:
-        if neighbors[neighbor].group_name() == agent_group:
-            num_same += 1
-    if len(neighbors) != 0:
-        ratio_same = num_same / len(neighbors)
-        if DEBUG2:
-            print("Neighbors length: " + str(len(neighbors)))
-            print("ratio same = ", ratio_same)
-    """
     return env_favorable(ratio_num, agent[TOLERANCE])
 
 
@@ -103,7 +90,6 @@ def create_resident(name, i, group=BLUE):
     """
     Creates agent of specified color type
     """
-
     if group == BLUE:
         grp_idx = BLUE_GRP_IDX
         mean_tol = get_prop('mean_tol', DEF_TOLERANCE)

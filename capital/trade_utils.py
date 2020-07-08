@@ -208,7 +208,7 @@ def equal_dist(num_trader, to_goods, from_goods, comp=None):
     to_goods = trader[GOODS], from_goods = avail_goods
     """
     for good in from_goods:
-        amt = from_goods[good][AMT_AVAIL]/num_trader
+        amt = from_goods[good][AMT_AVAIL] / num_trader
         transfer(to_goods, from_goods, good, amt, comp=comp)
 
 
@@ -226,7 +226,7 @@ def goods_to_str(goods):
     take a goods dict to string
     """
     string = ', '.join([str(goods[k][AMT_AVAIL]) + " " + str(k)
-                       for k in goods.keys()])
+                        for k in goods.keys()])
     return string
 
 
@@ -345,25 +345,35 @@ def new_good(old_amt, amt):
 
 
 def is_compl_good(agent, good):
+    '''
+    check if this good is a comp of other goods that the agent have
+    '''
     return agent[GOODS][good]['incr'] != 0
+
+
+def good_all_gone(agent, g):
+    '''
+    Check if this agent no longer has this good
+    '''
+    return agent[GOODS][g][AMT_AVAIL] == 0
+
+
+def compl_lst(agent, good):
+    '''
+    return the complimentary list of this good
+    '''
+    return agent[GOODS][good][COMPLEMENTS]
 
 
 def adj_add_good_w_comp(agent, good, amt, old_amt):
     if new_good(old_amt, amt):
         if is_compl_good(agent, good):
-            incr_util(agent[GOODS], good, amt=amt*STEEP_GRADIENT)
+            incr_util(agent[GOODS], good, amt=amt * STEEP_GRADIENT)
         # now increase utility of this good's complements:
-        for comp in agent[GOODS][good][COMPLEMENTS]:
-            incr_util(agent[GOODS], comp, amt=amt*STEEP_GRADIENT)
+        for comp in compl_lst(agent, good):
+            incr_util(agent[GOODS], comp, amt=amt * STEEP_GRADIENT)
         print(agent[GOODS])
-    for g in agent[GOODS]:
-        if agent[GOODS][g][AMT_AVAIL] == 0:
-            agent[GOODS][g]['incr'] = 0
-            comp_list = agent["goods"][good][COMPLEMENTS]
-            for comp in comp_list:
-                agent["goods"][comp]['incr'] = 0
-        if agent[GOODS][g][AMT_AVAIL] > 0:
-            agent[GOODS][g]['incr'] += amt * STEEP_GRADIENT
-            comp_list = agent["goods"][good][COMPLEMENTS]
-            for comp in comp_list:
-                agent["goods"][comp]['incr'] += STEEP_GRADIENT * amt
+
+    if good_all_gone(agent, good):
+        for comp in compl_lst(agent, good):
+            agent[GOODS][comp]['incr'] = 0
