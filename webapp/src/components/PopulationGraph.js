@@ -9,6 +9,9 @@ function PopulationGraph(props) {
   const colors = ['red', 'green', 'blue', 'black', 'purple', 'magenta', 'orange'];
   let thisColor = 0;
   const { loadingData } = props;
+  // customized color for fashion model
+  const fashionGroups = ['Blue Followers', 'Blue Trendsetters', 'Red Followers', 'Red Trendsetters'];
+  const fashionColors = ['blue', 'navy', 'red', 'darkred'];
   if (loadingData) {
     const data = [];
     const env = props.envFile.pop_hist.pops;
@@ -17,7 +20,8 @@ function PopulationGraph(props) {
     Object.keys(env).forEach((group, iGroup) => {
       data.push({
         name: group,
-        color: colors[thisColor % NUM_COLORS],
+        color: fashionGroups.includes(group)
+          ? fashionColors[fashionGroups.indexOf(group)] : colors[thisColor % NUM_COLORS],
         data: {},
       });
       // modify individual 'data' dictionary of each pops
