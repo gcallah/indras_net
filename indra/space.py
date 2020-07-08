@@ -22,7 +22,7 @@ MAX_HEIGHT = 200
 
 DEF_MAX_MOVE = 2
 
-DEBUG = True
+DEBUG = False
 DEBUG2 = False
 
 
