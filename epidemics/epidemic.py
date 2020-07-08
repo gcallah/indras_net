@@ -3,7 +3,7 @@ A model to simulate the spread of virus in a city.
 """
 from math import atan, degrees
 
-from indra.agent import Agent
+from indra.agent import Agent, MOVE, DONT_MOVE
 from indra.agent import prob_state_trans, set_trans
 from indra.composite import Composite
 from indra.display_methods import RED, GREEN, BLACK
@@ -18,9 +18,6 @@ from indra.space import distance, CircularRegion
 MODEL_NAME = "epidemic"
 DEBUG = False  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
-
-NEARBY = 1.8
-
 
 # Constants that are re-analyzed in setup
 DEF_DIM = 30
@@ -117,8 +114,18 @@ def is_isolated(agent):
     '''
     Checks if agent is maintaining distancing.
     '''
-    return (distance(get_env().get_closest_agent(agent), agent) >=
-            get_prop('distancing', DEF_DISTANCING))
+    desired_space = get_prop('distancing', DEF_DISTANCING)
+    if desired_space < 1:
+        return True
+
+    print("Env in is_isolated = ", str(get_env()))
+    closest_agent = get_env().get_closest_agent(agent)
+    if closest_agent is None:
+        return True
+
+    dist = distance(agent, closest_agent)
+    print(str(agent), "is ", dist, "from ", str(closest_agent))
+    return (dist >= desired_space)
 
 
 def is_healthy(agent, *args):
@@ -160,24 +167,34 @@ def epidemic_report(env):
 
     result = "Current period: " + str(periods-1) + "\n"
     result += "New cases: " + str(curr_infected) + "\n"
-    result += "Current cases: " + str(pop_hist[INFECTED][periods - 2]) + "\n"
 
     if curr_infected > 0:
         cases = get_env().get_attr("total_cases")
         get_env().set_attr("total_cases", cases + curr_infected)
 
-    result += "Total deaths: " + str(total_deaths) + "\n"
-    result += "New deaths: " + str(curr_deaths) + "\n"
     result += "Total cases: " + \
         str(get_env().get_attr("total_cases")) + "\n"
+    result += "New deaths: " + str(curr_deaths) + "\n"
+    result += "Total deaths: " + str(total_deaths) + "\n"
     result += "R0 value: " + str(Ro) + "\n"
 
     return result
 
 
-def people_action(agent):
+def social_distancing(agent):
     """
-    This is what people do each turn in the city.
+    This function sets a new angle for the agent's movement.
+    """
+    curr_region = CircularRegion(get_env(),
+                                 agent.get_pos(), DEF_PERSON_MOVE*2)
+    agents_in_range = curr_region.get_agents(get_env(), True)
+    new_angle = get_move_angle(agent, agents_in_range)
+    agent["angle"] = new_angle
+
+
+def person_action(agent):
+    """
+    This is what people do each turn in the epidemic.
     """
     old_state = agent[STATE]
     if is_healthy(agent):
@@ -202,25 +219,18 @@ def people_action(agent):
         group_map = get_env().get_attr(GROUP_MAP)
         if group_map is None:
             user_log_err("group_map is None!")
-            return True
+            return DONT_MOVE
         agent.has_acted = True
         get_env().add_switch(agent,
                              group_map[old_state],
                              group_map[agent[STATE]])
 
-    if(not is_isolated(agent) and agent.is_located()):
-        agents_in_range = []
-        curr_region = CircularRegion(get_env(),
-                                     agent.get_pos(), DEF_PERSON_MOVE*2)
-        agents_in_range = curr_region.get_agents(get_env(), True)
-        new_angle = get_move_angle(agent, agents_in_range)
-        agent["angle"] = new_angle
-    else:
-        return True
-    if agent[STATE] == DE:
-        return True
-    else:
-        return False
+    if is_dead(agent):
+        return DONT_MOVE
+
+    if not is_isolated(agent):
+        social_distancing(agent)
+    return MOVE
 
 
 def create_person(name, i, state=HE):
@@ -228,17 +238,15 @@ def create_person(name, i, state=HE):
     Create a new person!
     By default, they start out healthy.
     """
-    name = PERSON_PREFIX
-
-    person = Agent(name + str(i), action=people_action,
-                   attrs={STATE: state, "save_neighbors": True})
-    person["angle"] = None
-    person["max_move"] = get_prop('person_move', DEF_PERSON_MOVE)
+    person = Agent(name + str(i), action=person_action,
+                   attrs={STATE: state, "angle": None,
+                          "max_move":
+                          get_prop('person_move', DEF_PERSON_MOVE)})
     return person
 
 
 def set_env_attrs():
-    user_log_notif("Setting env attrs for basic epidemic.")
+    user_log_notif("Setting env attrs for " + MODEL_NAME)
     env = get_env()
     env.set_attr(GROUP_MAP,
                  {HE: HEALTHY,
