@@ -71,8 +71,11 @@ def tree_action(agent):
     """
     old_state = agent["state"]
     if is_healthy(agent):
-        #  if get_env().exists_neighbor(is_on_fire):
-        #      agent["state"] = NF
+        if get_env().exists_neighbor(agent, pred=is_on_fire):
+            if DEBUG2:
+                user_log_notif("Setting nearby tree on fire!")
+            agent["state"] = NF
+        """
         neighbors = get_env().get_moore_hood(agent)
         if neighbors is not None:
             nearby_fires = neighbors.subset(is_on_fire, agent)
@@ -80,7 +83,7 @@ def tree_action(agent):
                 if DEBUG2:
                     user_log_notif("Setting nearby tree on fire!")
                 agent["state"] = NF
-
+        """
     # if we didn't catch on fire above, do probabilistic transition:
     if old_state == agent["state"]:
         # we gotta do these str/int shenanigans with state cause
