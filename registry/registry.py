@@ -157,6 +157,12 @@ class Registry(object):
     def __getitem__(self, key):
         return self.agents[key]
 
+    def __delitem__(self, key):
+        del self.agents[key]
+
+    def clear(self):
+        self.agents.clear()
+
     def get(self, key, default=None):
         if key in self.agents:
             return self.__getitem__(key)
@@ -171,8 +177,8 @@ class Registry(object):
                               format(key), RuntimeWarning)
         else:
             pass
-            # this fails the tests at the moment, so we need to debug
-            # it is the tests that have a problem!
+            # The problem with this exception is that tests
+            # must clear the registry each test!
             # raise KeyError("The key \"{}\" already exists in the registry"
             #                .format(key))
 
@@ -201,3 +207,7 @@ def get_registration(key):
         return registry[key]
     else:
         return None
+
+
+def clear_registry():
+    registry.clear()

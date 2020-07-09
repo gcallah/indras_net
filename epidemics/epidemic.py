@@ -118,13 +118,11 @@ def is_isolated(agent):
     if desired_space < 1:
         return True
 
-    print("Env in is_isolated = ", str(get_env()))
     closest_agent = get_env().get_closest_agent(agent)
     if closest_agent is None:
         return True
 
     dist = distance(agent, closest_agent)
-    print(str(agent), "is ", dist, "from ", str(closest_agent))
     return (dist >= desired_space)
 
 

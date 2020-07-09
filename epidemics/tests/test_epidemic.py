@@ -4,9 +4,10 @@ from unittest import TestCase, main, skip
 from indra.composite import Composite
 from indra.env import Env
 from indra.space import debug_agent_pos
+from registry.registry import clear_registry
 import epidemics.epidemic as ep
 """
-This is for persoanl reference
+This is for personal reference
 HEalthy = "0"
 EXposed = "1"
 INfected = "2"
@@ -15,10 +16,24 @@ DEad = "4"
 IMmune = "5"
 """
 
+DEBUG = False
+
+
+def header(s):
+    print("\n==================")
+    print(s)
+    print("==================")
+
+
+def agent_debug(agent):
+    if DEBUG:
+        print("Agent", str(agent), "with id:", id(agent))
+
 
 def create_sal():
-    print("Creating Saliou0")
-    return ep.create_person("Saliou", 0, ep.HE)
+    sal = ep.create_person("Saliou", 0, ep.HE)
+    agent_debug(sal)
+    return sal
 
 
 def create_bob():
@@ -26,12 +41,14 @@ def create_bob():
 
 
 def create_azi():
-    print("Creating Aziz2")
-    return ep.create_person("Aziz", 2, ep.CN)
+    azi = ep.create_person("Aziz", 2, ep.CN)
+    agent_debug(azi)
+    return azi
 
 
 class EpidemicTestCase(TestCase):
     def setUp(self):
+        header("Running set up")
         groups = []
         self.sal = create_sal()
         self.bob = create_bob()
@@ -54,36 +71,28 @@ class EpidemicTestCase(TestCase):
         ep.set_env_attrs()
 
     def tearDown(self):
+        header("Running tear down")
         self.sal = None
         self.bob = None
         self.azi = None
         self.healthy = None
         self.contagious = None
         self.env = None
+        clear_registry()
 
-    @skip("Trying to fix is quarantined.")
     def test_healthy(self):
-        # create people and test their attrubutes
+        header("Running test_healthy")
+        # create people and test their attributes
         self.assertTrue(ep.is_healthy(self.sal))
 
-    @skip("Trying to fix is quarantined.")
     def test_not_healthy(self):
         self.assertFalse(ep.is_healthy(self.bob))
 
-    @skip("Trying to fix is quarantined.")
     def test_contagious(self):
         self.assertTrue(ep.is_contagious(self.azi))
 
-    @skip("Trying to fix is quarantined.")
-    def test_same_person(self):
-        self.assertIs(self.azi, self.azi)
-
-    @skip("Trying to fix is quarantined.")
-    def test_not_same_agent(self):
-        self.assertIsNot(self.azi, self.bob)
-
-    @skip("environment problem, need to clear region to test isolation")
     def test_is_not_quarantined(self):
+        header("Running test_is_not_quarantined")
         # default max social dist is ep.DEF_DISTANCING unit.
         self.env.place_member(self.sal, xy=(0, 0))
         self.env.place_member(self.azi, xy=(0, 1))
@@ -91,17 +100,18 @@ class EpidemicTestCase(TestCase):
         debug_agent_pos(self.azi)
         self.assertFalse(ep.is_isolated(self.azi))
 
-    @skip("environment problem,  The distance is returning zero despite suifficient unit distance between agents")
     def test_is_quarantined(self):
+        header("Running test_is_quarantined")
         # default max social dist is ep.DEF_DISTANCING unit.
         far_away = ep.DEF_DISTANCING * 2
         self.env.place_member(self.sal, xy=(0, 0))
         self.env.place_member(self.azi, xy=(0, far_away))
+        debug_agent_pos(self.sal)
+        debug_agent_pos(self.azi)
         self.assertTrue(ep.is_isolated(self.azi),
                         "agent is " + str(far_away)
                         + " units away but is not quarantined")
 
-    @skip("Trying to fix is quarantined.")
     def test_main(self):
         self.assertEqual(ep.main(), 0)
 

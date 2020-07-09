@@ -331,12 +331,13 @@ class Space(Composite):
         """
         old_loc = str((ox, oy))
         new_loc = str((nx, ny))
-        if old_loc not in self.locations:
-            user_log_warn("Trying to move unlocated agent "
-                          + agent_name + " at " + old_loc)
-        elif new_loc not in self.locations:
-            self.locations[new_loc] = self.locations[old_loc]
-            del self.locations[old_loc]
+        if new_loc not in self.locations:
+            if old_loc not in self.locations:
+                user_log_warn("Trying to move agent not in locations: "
+                              + agent_name + " at " + old_loc)
+            else:
+                self.locations[new_loc] = self.locations[old_loc]
+                del self.locations[old_loc]
         else:
             user_debug("Trying to place agent in occupied space.")
 
@@ -505,10 +506,7 @@ class Space(Composite):
     def exists_neighbor(self, agent, pred=None, exclude_self=True, size=1):
         region = Region(space=self, center=(agent.get_x(), agent.get_y()),
                         size=size)
-        if region.get_num_of_agents(exclude_self=exclude_self, pred=pred) > 0:
-            return True
-        else:
-            return False
+        return region.exists_neighbor(exclude_self=exclude_self, pred=pred)
 
 
 def gen_region_name(NW=None, NE=None, SW=None,
