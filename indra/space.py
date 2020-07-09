@@ -508,6 +508,11 @@ class Space(Composite):
                         size=size)
         return region.exists_neighbor(exclude_self=exclude_self, pred=pred)
 
+    def neighbor_ratio(self, agent, pred_one, pred_two=None, size=1):
+        region = Region(space=self, center=(agent.get_x(), agent.get_y()),
+                        size=size)
+        return region.get_ratio(pred_one, pred_two=pred_two)
+
 
 def gen_region_name(NW=None, NE=None, SW=None,
                     SE=None, center=None, size=None):
