@@ -11,7 +11,8 @@ from indra.utils import init_props
 from indra.space import Region
 
 MODEL_NAME = "gameoflife"
-DEBUG = True  # Turns debugging code on or off
+DEBUG = False  # Turns debugging code on or off
+DEBUG2 = False
 DEF_HEIGHT = 30
 DEF_WIDTH = 30
 BLACK = "Black"
@@ -38,10 +39,8 @@ def apply_live_rules(agent):
     curr_region = Region(space=get_env(), center=agent.get_pos(),
                          size=1)
     num_live_neighbors = curr_region.get_num_of_agents(exclude_self=True,
-                                                       pred=lambda agent:
-                                                       agent.primary_group()
-                                                       == get_group(BLACK))
-    if DEBUG:
+                                                       pred=None)
+    if DEBUG2:
         print("agent at (x,y): ", agent.get_pos(),
               "has this many neighbors: ", num_live_neighbors)
     if (num_live_neighbors != 2 and num_live_neighbors != 3):
@@ -59,9 +58,10 @@ def apply_dead_rules(new_x, new_y):
     curr_region = Region(space=get_env(), center=(new_x, new_y),
                          size=1)
     num_live_neighbors = curr_region.get_num_of_agents(exclude_self=True,
-                                                       pred=lambda agent:
-                                                       agent.primary_group()
-                                                       == get_group(BLACK))
+                                                       pred=None)
+    if DEBUG:
+        print("agent at (x,y): ", (new_x, new_y),
+              "has this many neighbors: ", num_live_neighbors)
     if num_live_neighbors == 3:
         return True
     else:
@@ -70,7 +70,8 @@ def apply_dead_rules(new_x, new_y):
 
 def check_for_new_agents(agent):
     global to_come_alive
-
+    if DEBUG:
+        print("checking_for_new_agents!")
     curr_x = agent.get_x()
     curr_y = agent.get_y()
     for y in ([-1, 0, 1]):
@@ -80,9 +81,21 @@ def check_for_new_agents(agent):
                 new_y = curr_y + y
                 potential_new_agent = get_env().get_agent_at(new_x, new_y)
                 if potential_new_agent is None:
+                    if DEBUG:
+                        print("=================")
+                        print("Check for new agents at: ", (new_x, new_y))
+                        print("apply_dead_rules check: ",
+                              apply_dead_rules(new_x, new_y))
+                        print("Checking (16,16): ",
+                              get_env().get_agent_at(16, 16))
+                        if (get_env().get_agent_at(16, 16) is not None):
+                            print("Checkgin (16,16) group: ",
+                                  get_env().get_agent_at(16, 16)
+                                  .primary_group())
+                        print("=================")
                     if apply_dead_rules(new_x, new_y):
                         to_come_alive.append((new_x, new_y))
-                        if DEBUG:
+                        if DEBUG2:
                             print("to come alive being append to:(x,y)",
                                   (new_x, new_y))
     return to_come_alive
@@ -133,7 +146,7 @@ def game_agent_action(agent):
 
     check_for_new_agents(agent)
     if apply_live_rules(agent):
-        if DEBUG:
+        if DEBUG2:
             print("To die being appended to (x,y):", agent.get_pos())
         to_die.append(agent)
     return True

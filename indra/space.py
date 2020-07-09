@@ -652,7 +652,9 @@ class Region():
                                 agent_num += 1
                         else:
                             if DEBUG2:
-                                print("agent added: ", (x_coord, y_coord))
+                                print("agent counter get_num_of_agents: ",
+                                      (x_coord, y_coord))
+                                print(potential_neighbor.primary_group())
                             agent_num += 1
         return agent_num
 
