@@ -3,7 +3,7 @@ A model to simulate the spread of virus in a city.
 """
 from math import atan, degrees
 
-from indra.agent import Agent, MOVE, DONT_MOVE
+from indra.agent import Agent, MOVE, DONT_MOVE, X, Y
 from indra.agent import prob_state_trans, set_trans
 from indra.composite import Composite
 from indra.display_methods import RED, GREEN, BLACK
@@ -69,17 +69,22 @@ GROUP_MAP = "group_map"
 STATE = "state"
 
 
+def degrees_between(x_dif, y_dif):
+    return degrees(atan(y_dif / x_dif))
+
+
 def opposing_angle(pos1, pos2):
     '''
-    Returns the angle of the other_agent relative to the agent
+    Returns the inverse of the angle of
+    the other_agent relative to the agent.
     '''
-    x_dif = pos2[0] - pos1[0]
-    y_dif = pos2[1] - pos1[1]
+    x_dif = pos2[X] - pos1[X]
+    y_dif = pos2[Y] - pos1[Y]
     if (x_dif != 0 and y_dif != 0):
         if (x_dif > 0):
-            new_angle = 180 + degrees(atan(y_dif / x_dif))
+            new_angle = 180 + degrees_between(x_dif, y_dif)
         else:
-            new_angle = degrees(atan(y_dif / x_dif))
+            new_angle = degrees_between(x_dif, y_dif)
     elif (y_dif != 0):
         if(y_dif > 0):
             new_angle = 270
