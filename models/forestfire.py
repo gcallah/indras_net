@@ -5,6 +5,7 @@ A model to simulate the spread of fire in a forest.
 from indra.agent import Agent
 from indra.agent import prob_state_trans, set_trans
 from indra.composite import Composite
+from indra.space import exists_neighbor
 from indra.display_methods import RED, GREEN, BLACK
 from indra.display_methods import SPRINGGREEN, TOMATO, TREE
 from indra.env import Env
@@ -14,7 +15,7 @@ from indra.utils import init_props
 
 MODEL_NAME = "forestfire"
 DEBUG = False  # turns debugging code on or off
-DEBUG2 = False  # turns deeper debugging code on or off
+DEBUG2 = True  # turns deeper debugging code on or off
 
 NEARBY = 1.8
 
@@ -71,7 +72,7 @@ def tree_action(agent):
     """
     old_state = agent["state"]
     if is_healthy(agent):
-        if get_env().exists_neighbor(agent, pred=is_on_fire):
+        if exists_neighbor(agent, pred=is_on_fire):
             if DEBUG2:
                 user_log_notif("Setting nearby tree on fire!")
             agent["state"] = NF

@@ -104,6 +104,14 @@ def get_xy_from_str(coord_str):
     return [int(parts[0]), int(parts[1])]
 
 
+def exists_neighbor(agent, pred=None, exclude_self=True, size=1,
+                    region_type=None):
+    return get_env().exists_neighbor(agent, pred=pred,
+                                     exclude_self=exclude_self,
+                                     size=size,
+                                     region_type=region_type)
+
+
 class Space(Composite):
     """
     A collection of entities that share a space.
@@ -503,7 +511,8 @@ class Space(Composite):
         new_y += int(math.sin(math.radians(angle)) * max_move)
         return self.constrain_x(new_x), self.constrain_y(new_y)
 
-    def exists_neighbor(self, agent, pred=None, exclude_self=True, size=1):
+    def exists_neighbor(self, agent, pred=None, exclude_self=True, size=1,
+                        region_type=None):
         region = Region(space=self, center=(agent.get_x(), agent.get_y()),
                         size=size)
         return region.exists_neighbor(exclude_self=exclude_self, pred=pred)
