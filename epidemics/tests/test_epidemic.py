@@ -129,7 +129,9 @@ class EpidemicTestCase(TestCase):
     @skip("tp complete later")
     def test_dead_action(self):
         pass
-    def test_close_contagion_action(self)
+    
+    @skip("tp complete later")
+    def test_close_contagion_action(self):
         pass
   
     def test_main(self):
