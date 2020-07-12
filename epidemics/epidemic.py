@@ -13,7 +13,7 @@ from indra.env import Env
 from registry.registry import get_env, get_prop
 from registry.registry import user_log_err, run_notice, user_log_notif
 from indra.utils import init_props
-from indra.space import distance, CircularRegion
+from indra.space import distance, CircularRegion, exists_neighbor
 
 MODEL_NAME = "epidemic"
 DEBUG = False  # turns debugging code on or off
@@ -201,13 +201,10 @@ def person_action(agent):
     """
     old_state = agent[STATE]
     if is_healthy(agent):
-        neighbors = get_env().get_moore_hood(agent)
-        if neighbors is not None:
-            nearby_virus = neighbors.subset(is_contagious, agent)
-            if len(nearby_virus) > 0:
-                if DEBUG2:
-                    user_log_notif("Exposing nearby people!")
-                agent[STATE] = EX
+        if exists_neighbor(agent, pred=is_contagious):
+            if DEBUG2:
+                user_log_notif("Exposing nearby people!")
+            agent[STATE] = EX
 
     # if we didn't catch disease above, do probabilistic transition:
     if old_state == agent[STATE]:
