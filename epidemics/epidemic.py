@@ -32,6 +32,7 @@ DEF_EX_HE_TRANS = 1 - DEF_INFEC
 DEF_PERSON_MOVE = 3
 DEF_DISTANCING = 2
 DEF_INFEC = 0.02
+DEF_INFEC_DIST = 1
 
 PERSON_PREFIX = "Person"
 
@@ -201,7 +202,8 @@ def person_action(agent):
     """
     old_state = agent[STATE]
     if is_healthy(agent):
-        if exists_neighbor(agent, pred=is_contagious):
+        if exists_neighbor(agent, pred=is_contagious, size=get_prop(
+                            'infection_distance', DEF_INFEC_DIST)):
             if DEBUG2:
                 user_log_notif("Exposing nearby people!")
             agent[STATE] = EX
