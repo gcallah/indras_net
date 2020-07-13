@@ -112,6 +112,11 @@ def exists_neighbor(agent, pred=None, exclude_self=True, size=1,
                                      region_type=region_type)
 
 
+def neighbor_ratio(agent, pred_one, pred_two=None, size=1, region_type=None):
+    return get_env().neighbor_ratio(agent, pred_one, pred_two=pred_two,
+                                    size=size, region_type=region_type)
+
+
 class Space(Composite):
     """
     A collection of entities that share a space.
@@ -517,7 +522,8 @@ class Space(Composite):
                         size=size)
         return region.exists_neighbor(exclude_self=exclude_self, pred=pred)
 
-    def neighbor_ratio(self, agent, pred_one, pred_two=None, size=1):
+    def neighbor_ratio(self, agent, pred_one, pred_two=None, size=1,
+                       region_type=None):
         region = Region(space=self, center=(agent.get_x(), agent.get_y()),
                         size=size)
         return region.get_ratio(pred_one, pred_two=pred_two)

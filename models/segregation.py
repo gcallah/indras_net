@@ -11,6 +11,7 @@ from indra.env import Env
 from registry.registry import get_env, get_prop
 from registry.registry import run_notice
 from indra.utils import init_props
+from indra.space import neighbor_ratio
 
 MODEL_NAME = "segregation"
 DEBUG = True  # Turns debugging code on or off
@@ -76,9 +77,9 @@ def seg_agent_action(agent):
     and those in my group, and get the ratio.
     """
     agent_group = agent.group_name()
-    ratio_num = get_env().neighbor_ratio(agent, lambda agent:
-                                         agent.group_name() == agent_group,
-                                         size=agent['hood_size'])
+    ratio_num = neighbor_ratio(agent, lambda agent:
+                               agent.group_name() == agent_group,
+                               size=agent['hood_size'])
     if DEBUG2:
         print("ratio test" + str(ratio_num))
     return env_favorable(ratio_num, agent[TOLERANCE])
