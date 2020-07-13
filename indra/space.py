@@ -4,7 +4,6 @@ of agents related spatially.
 """
 import json
 import math
-import sys
 from functools import wraps
 from math import sqrt
 from random import randint
@@ -711,25 +710,6 @@ class Region():
         if denominator == 0:
             return 1
         return numerator / denominator
-
-    def calc_heat(self, group, coord):
-        heat_strength = 0
-        for heat in group:
-            dist = sqrt(((coord[X] - group[heat].get_x()) ** 2)
-                        + ((coord[Y] - group[heat].get_y()) ** 2))
-            if dist != 0:
-                heat_strength += 1 / (dist ** 2)
-            else:
-                heat_strength += sys.maxsize
-        heat_strength *= -1
-        return heat_strength
-
-    def heatmap(self, group):
-        heat_map_ls = []
-        for y in range(self.height):
-            for x in range(self.width):
-                heat_map_ls.append(self.calc_heat(group, (x, y)))
-        return heat_map_ls
 
 
 class CircularRegion(Region):
