@@ -285,8 +285,8 @@ def rec_offer(agent, their_good, their_amt, counterparty, comp=False):
                 loss += agent[GOODS][my_good]["incr"]
 
             print("my good: " + my_good + "; his good: " + their_good
-                  + ", I gain: " + str(round(gain,2)) +
-                  " and lose: " + str(round(loss,2)))
+                  + ", I gain: " + str(round(gain, 2)) +
+                  " and lose: " + str(round(loss, 2)))
             if gain > loss:
                 if rec_reply(counterparty, their_good,
                              their_amt, my_good, my_amt, comp=comp):
