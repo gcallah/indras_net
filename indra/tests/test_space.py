@@ -225,7 +225,6 @@ class SpaceTestCase(TestCase):
         (x, y) = (self.newton.get_x(), self.newton.get_y())
         self.assertFalse(self.space.is_empty(x, y))
 
-    @skip("Skipping von neumann test")
     def test_get_vonneumann_hood(self):
         """
         Get von Neumann neighborhood.
@@ -255,6 +254,21 @@ class SpaceTestCase(TestCase):
     """
     Tests for regions
     """
+    def test_check_bounds(self):
+        space = Space("test space")
+        test_reg = Region(space,(0,3),(3,3),(0,0),(3,0))
+        self.assertTrue(test_reg.NW == (0,3))
+        self.assertTrue(test_reg.NE == (3,3))
+        self.assertTrue(test_reg.SW == (0,0))
+        self.assertTrue(test_reg.SE == (3,0))
+        test_reg2 = Region(space,(0,5),(12,5),(0,0),(12,0))
+        self.assertTrue(test_reg2.NW == (0,5))
+        self.assertTrue(test_reg2.NE == (10,5))
+        self.assertTrue(test_reg2.SW == (0,0))
+        print(test_reg2.SW)
+        print(test_reg2.SE)
+        self.assertTrue(test_reg2.SE == (10,0))
+
     def test_contains(self):
         space = Space("test space")
         test_reg = Region(space,(0,3),(3,3),(0,0),(3,0))
@@ -271,7 +285,6 @@ class SpaceTestCase(TestCase):
         space.place_member(mbr=self.test_agent2, xy=(1,2))
         self.assertTrue(len(test_reg.get_agents()) == 2)
 
-    @skip("moving method above one level: region to space")
     def test_exists_neighbor(self):
         space = Space("test space")
         test_reg = Region(space,(0,3),(3,3),(0,0),(3,0))

@@ -620,12 +620,17 @@ class Region():
                    self.space.constrain_y(self.SW[Y]))
         self.SE = (self.space.constrain_x(self.SE[X]),
                    self.space.constrain_y(self.SE[Y]))
-        if self.NE != old_NE:
+        if self.NE[X] != old_NE[X]:
             self.NE = (self.NE[X] + 1, self.NE[Y])
-        if self.SW != old_SW:
+        if self.SW[Y] != old_SW[Y]:
             self.SW = (self.SW[X], self.SW[Y] - 1)
         if self.SE != old_SE:
-            self.SE = (self.SE[X] + 1, self.SE[Y] - 1)
+            if self.SE[X] != old_SE[X] and self.SE[Y] != old_SE[Y]:
+                self.SE = (self.SE[X] + 1, self.SE[Y] - 1)
+            elif self.SE[X] != old_SE[X]:
+                self.SE = (self.SE[X] + 1, self.SE[Y])
+            else:
+                self.SE = (self.SE[X], self.SE[Y] - 1)
 
     def get_agents(self, exclude_self=False, pred=None):
         agent_ls = []
