@@ -61,5 +61,12 @@
     "atype": "DBL",
     "hival": 1,
     "lowval": 0
+  },
+  "infection_distance": {
+    "val": 1,
+    "question": "Over what distance can the disease be transmitted?",
+    "atype": "INT",
+    "hival": 5,
+    "lowval": 0
   }
 }
