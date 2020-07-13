@@ -34,6 +34,9 @@ from models.sandpile import set_env_attrs as sa_set_env_attrs
 from models.segregation import set_up as se_set_up
 from models.segregation import seg_agent_action
 from models.segregation import MODEL_NAME as SE_MODEL_NAME
+from models.wolfram import set_up as wf_set_up
+from models.wolfram import wolfram_action as wf_action
+from models.wolfram import MODEL_NAME as WF_MODEL_NAME
 from models.wolfsheep import set_up as ws_set_up
 from models.wolfsheep import sheep_action, wolf_action
 from models.wolfsheep import create_sheep, create_wolf
@@ -78,6 +81,7 @@ setup_dict = {
     SA_MODEL_NAME: sa_set_up,
     SE_MODEL_NAME: se_set_up,
     WO_MODEL_NAME: ws_set_up,
+    WF_MODEL_NAME: wf_set_up,
 }
 
 action_dict = {
@@ -93,6 +97,7 @@ action_dict = {
     "nutrient_action": nutrient_action,
     "sheep_action": sheep_action,
     "wolf_action": wolf_action,
+    "wolfram_action": wf_action,
     "toxin_action": toxin_action,
     "sandpile_action": sandpile_action,
     "seg_agent_action": seg_agent_action,

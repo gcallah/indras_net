@@ -11,7 +11,7 @@ from indra.display_methods import BLACK, WHITE, SQUARE
 from indra.env import Env
 from indra.space import DEF_WIDTH
 from indra.utils import init_props
-from registry.registry import get_prop, get_env, get_group
+from registry.registry import get_prop, get_env, get_group, clear_registry
 from registry.registry import set_env_attr, get_env_attr, get_registration
 
 MODEL_NAME = "wolfram"
@@ -66,7 +66,6 @@ def next_color(rule_dict, left, middle, right):
         and returns the color that the agent in the next row should be
         based on the rule number picked by the user.
     """
-    # print("left-{}, middle-{}, right-{}".format(left, middle, right))
     return rule_dict[str((left, middle, right))]
 
 
@@ -100,38 +99,44 @@ def wolfram_action(wolf_env: Env):
     """
     The action that will be taken every period.
     """
+    # print_registry_key()
     row_above_idx = get_env_attr("prev_row_idx")
-    active_row_idx = row_above_idx - 1
 
-    wolf_env.user.tell("\nChecking agents in row " + str(active_row_idx)
-                       + " against the rule...")
+    active_row_idx = wolf_env.height - wolf_env.get_periods()
+
+    wolf_env.user.tell("Checking agents in row {} against the rule {}".format(active_row_idx, get_env_attr("rule_num")))
     if active_row_idx < 1:
         gone_far_enough()
         return DONT_MOVE
     else:
+        next_row_idx = active_row_idx - 1
+
+        next_row = wolf_env.get_row_hood(next_row_idx)
+
         left_color = agent_color(x=0, y=active_row_idx)
 
         x = 0
-        active_row = wolf_env.get_row_hood(active_row_idx)
+
         row_above = wolf_env.get_row_hood(row_above_idx)
+
         for agent_nm in row_above:
             if DEBUG:
                 print("Checking agent at", row_above[agent_nm])
             if (x > 0) and (x < wolf_env.width - 1):
                 middle_color = agent_color(agent_nm=agent_nm)
-                right_color = agent_color(x=x+1, y=active_row_idx)
+                right_color = agent_color(x=x + 1, y=active_row_idx)
                 if DEBUG:
                     print("  Left: %d, middle: %d, right: %d" %
                           (left_color, middle_color, right_color))
                 if next_color(get_env_attr("rule_dict"),
                               left_color, middle_color, right_color):
-                    wolf_env.add_switch(active_row[
-                                        agent_nm_from_xy(x, active_row_idx)],
+                    wolf_env.add_switch(next_row[
+                                            agent_nm_from_xy(x, next_row_idx)],
                                         get_group(WHITE), get_group(BLACK))
                 left_color = middle_color
             x += 1
 
-    set_env_attr("prev_row_idx", active_row_idx)
+    set_env_attr("prev_row_idx", next_row_idx)
     return DONT_MOVE
 
 
@@ -139,7 +144,7 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-
+    clear_registry()
     init_props(MODEL_NAME, props)
 
     width = get_prop('grid_width', DEF_WIDTH)
@@ -173,6 +178,7 @@ def set_up(props=None):
     '''
     top_center_agent = wolfram_env.get_agent_at(width // 2, top_row())
     switch(top_center_agent.name, WHITE, BLACK)
+
     # top row is the "previous" because we just processed it
     set_env_attr("prev_row_idx", top_row())
 
