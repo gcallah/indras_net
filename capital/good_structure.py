@@ -8,7 +8,7 @@ from PIL import Image
 class GoodStruct:
 
     def __init__(self):
-        self.G = nx.DiGraph()
+        self.G = nx.MultiDiGraph()
 
     def add_node(self, node):
         self.G.add_node(node)
@@ -69,9 +69,24 @@ class GoodStruct:
         '''
         get weight of the edge between node1 and node2
         '''
-        return self.G[node1][node2]['weight']
+        return self.G[node1][node2][0]['weight']
+
+    def max_neighbors(self, node):
+        '''
+        Iterate over neighbors in a breadth-first-search starting at node,
+        and return the max of the weights
+        '''
+        ls_neighbors = self.neighbors(node)
+        ls_weights = {}
+        for i in ls_neighbors:
+            ls_weights[i] = self.get_weight(node, i)
+        max_util_node = max(ls_weights, key=ls_weights.get)
+        return ls_weights[max_util_node]
 
     def show_graph_png(self):
+        '''
+        show the png of the good structure graph
+        '''
         img = Image.open('graph.png')
         img.show()
 
@@ -89,7 +104,7 @@ def main():
 
     goods.add_edge("land", "oven", weight=2)
     goods.add_edge("oven", "land", weight=4)
-    goods.add_edge("land", "refrigerator", weight=2)
+    goods.add_edge("land", "refrigerator", weight=4)
     goods.add_edge("refrigerator", "land", weight=4)
 
     goods.add_edge("cheese", "refrigerator", weight=4)
@@ -105,7 +120,8 @@ def main():
     print("edges:", goods.edges(), "\n")
     print("number of nodes:", len(goods), "\n")
     print("graph as a string:", goods, "\n")
-    print("neighbors of piassa:", goods.neighbors("pizza base"), "\n")
+    print("neighbors of piazza:", goods.neighbors("pizza base"), "\n")
+
     print("weight from land to oven:", goods.get_weight('land', 'oven'))
     print("weight from oven to land:", goods.get_weight('oven', 'land'))
 
@@ -116,6 +132,9 @@ def main():
 
     print("weight from \'sun light' to \'lamp':",
           goods.get_weight("sun light", "lamp"))
+
+    print(goods.max_neighbors("land"))
+
     goods.draw_graph()
     goods.show_graph_png()
 
