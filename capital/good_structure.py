@@ -1,13 +1,14 @@
 import networkx as nx
 # %matplotlib inline
 import matplotlib.pyplot as plt
+from PIL import Image
 # from networkx.drawing.nx_agraph import graphviz_layout
 
 
 class GoodStruct:
 
     def __init__(self):
-        self.G = nx.Graph()
+        self.G = nx.DiGraph()
 
     def add_node(self, node):
         self.G.add_node(node)
@@ -70,6 +71,10 @@ class GoodStruct:
         '''
         return self.G[node1][node2]['weight']
 
+    def show_graph_png(self):
+        img = Image.open('graph.png')
+        img.show()
+
 
 def main():
     goods = GoodStruct()
@@ -82,8 +87,11 @@ def main():
     goods.add_node("lamp")
     goods.add_node("sun light")
 
-    goods.add_edge("land", "oven", weight=4)
-    goods.add_edge("land", "refrigerator", weight=4)
+    goods.add_edge("land", "oven", weight=2)
+    goods.add_edge("oven", "land", weight=4)
+    goods.add_edge("land", "refrigerator", weight=2)
+    goods.add_edge("refrigerator", "land", weight=4)
+
     goods.add_edge("cheese", "refrigerator", weight=4)
     goods.add_edge("peperoni", "refrigerator", weight=4)
     goods.add_edge("pizza base", "oven", weight=4)
@@ -99,9 +107,17 @@ def main():
     print("graph as a string:", goods, "\n")
     print("neighbors of piassa:", goods.neighbors("pizza base"), "\n")
     print("weight from land to oven:", goods.get_weight('land', 'oven'))
+    print("weight from oven to land:", goods.get_weight('oven', 'land'))
+
+    print("weight from refrigerator to land:",
+          goods.get_weight('refrigerator', 'land'))
+    print("weight from land to refrigerator:",
+          goods.get_weight('land', 'refrigerator'))
+
     print("weight from \'sun light' to \'lamp':",
           goods.get_weight("sun light", "lamp"))
     goods.draw_graph()
+    goods.show_graph_png()
 
 
 if __name__ == '__main__':
