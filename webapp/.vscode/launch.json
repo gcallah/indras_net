@@ -1,21 +1,12 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "gcc build and debug active file",
-            "type": "cppdbg",
+            "name": "Chrome",
+            "type": "chrome",
             "request": "launch",
-            "program": "${fileDirname}/${fileBasenameNoExtension}",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "lldb",
-            "preLaunchTask": "gcc build active file"
+            "url": "http://localhost:3000",
+            "webRoot": "${workspaceRoot}/src"
         }
     ]
 }
