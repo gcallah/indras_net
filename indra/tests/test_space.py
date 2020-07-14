@@ -265,8 +265,6 @@ class SpaceTestCase(TestCase):
         self.assertTrue(test_reg2.NW == (0,5))
         self.assertTrue(test_reg2.NE == (10,5))
         self.assertTrue(test_reg2.SW == (0,0))
-        print(test_reg2.SW)
-        print(test_reg2.SE)
         self.assertTrue(test_reg2.SE == (10,0))
 
     def test_contains(self):
@@ -283,8 +281,20 @@ class SpaceTestCase(TestCase):
         space += self.test_agent2
         space.place_member(mbr=self.test_agent, xy=(0, 1))
         space.place_member(mbr=self.test_agent2, xy=(1,2))
-        self.assertTrue(len(test_reg.get_agents()) == 2)
-
+        agent_ls = []
+        agent_ls.append(self.test_agent)
+        agent_ls.append(self.test_agent2)
+        self.assertTrue(test_reg.get_agents() == agent_ls)
+    
+    def test_get_num_of_agents(self):
+        space = Space("test space")
+        test_reg = Region(space=space, center=(3,3), size=3)
+        space += self.test_agent
+        space += self.test_agent2
+        space.place_member(mbr=self.test_agent, xy=(0, 1))
+        space.place_member(mbr=self.test_agent2, xy=(9,9))
+        self.assertTrue(test_reg.get_num_of_agents() == 1)
+        
     def test_exists_neighbor(self):
         space = Space("test space")
         test_reg = Region(space,(0,3),(3,3),(0,0),(3,0))
@@ -295,7 +305,7 @@ class SpaceTestCase(TestCase):
         space.place_member(mbr=self.test_agent2, xy=(1,2))
         self.assertIsNotNone(test_reg.space.get_agent_at(0,1))
         self.assertTrue(test_reg.exists_neighbor())
-    
+
     """
     Tests for composite region
     """
