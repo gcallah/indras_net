@@ -4,7 +4,6 @@ of agents related spatially.
 """
 import json
 import math
-import sys
 from functools import wraps
 from math import sqrt
 from random import randint
@@ -110,6 +109,11 @@ def exists_neighbor(agent, pred=None, exclude_self=True, size=1,
                                      exclude_self=exclude_self,
                                      size=size,
                                      region_type=region_type)
+
+
+def neighbor_ratio(agent, pred_one, pred_two=None, size=1, region_type=None):
+    return get_env().neighbor_ratio(agent, pred_one, pred_two=pred_two,
+                                    size=size, region_type=region_type)
 
 
 class Space(Composite):
@@ -517,7 +521,8 @@ class Space(Composite):
                         size=size)
         return region.exists_neighbor(exclude_self=exclude_self, pred=pred)
 
-    def neighbor_ratio(self, agent, pred_one, pred_two=None, size=1):
+    def neighbor_ratio(self, agent, pred_one, pred_two=None, size=1,
+                       region_type=None):
         region = Region(space=self, center=(agent.get_x(), agent.get_y()),
                         size=size)
         return region.get_ratio(pred_one, pred_two=pred_two)
@@ -614,12 +619,17 @@ class Region():
                    self.space.constrain_y(self.SW[Y]))
         self.SE = (self.space.constrain_x(self.SE[X]),
                    self.space.constrain_y(self.SE[Y]))
-        if self.NE != old_NE:
+        if self.NE[X] != old_NE[X]:
             self.NE = (self.NE[X] + 1, self.NE[Y])
-        if self.SW != old_SW:
+        if self.SW[Y] != old_SW[Y]:
             self.SW = (self.SW[X], self.SW[Y] - 1)
         if self.SE != old_SE:
-            self.SE = (self.SE[X] + 1, self.SE[Y] - 1)
+            if self.SE[X] != old_SE[X] and self.SE[Y] != old_SE[Y]:
+                self.SE = (self.SE[X] + 1, self.SE[Y] - 1)
+            elif self.SE[X] != old_SE[X]:
+                self.SE = (self.SE[X] + 1, self.SE[Y])
+            else:
+                self.SE = (self.SE[X], self.SE[Y] - 1)
 
     def get_agents(self, exclude_self=False, pred=None):
         agent_ls = []
@@ -700,25 +710,6 @@ class Region():
         if denominator == 0:
             return 1
         return numerator / denominator
-
-    def calc_heat(self, group, coord):
-        heat_strength = 0
-        for heat in group:
-            dist = sqrt(((coord[X] - group[heat].get_x()) ** 2)
-                        + ((coord[Y] - group[heat].get_y()) ** 2))
-            if dist != 0:
-                heat_strength += 1 / (dist ** 2)
-            else:
-                heat_strength += sys.maxsize
-        heat_strength *= -1
-        return heat_strength
-
-    def heatmap(self, group):
-        heat_map_ls = []
-        for y in range(self.height):
-            for x in range(self.width):
-                heat_map_ls.append(self.calc_heat(group, (x, y)))
-        return heat_map_ls
 
 
 class CircularRegion(Region):

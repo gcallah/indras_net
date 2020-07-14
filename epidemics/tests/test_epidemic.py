@@ -89,6 +89,7 @@ class EpidemicTestCase(TestCase):
         self.assertFalse(ep.is_healthy(self.bob))
 
     def test_contagious(self):
+
         self.assertTrue(ep.is_contagious(self.azi))
 
     def test_is_not_quarantined(self):
@@ -112,6 +113,27 @@ class EpidemicTestCase(TestCase):
                         "agent is " + str(far_away)
                         + " units away but is not quarantined")
 
+    @skip("I can't test this yet cause I can't use make, try it if you can")
+    def test_is_infecting(self):
+        #are the contagious agents successfully infecting the healthy?
+        header("Running test_is_infecting")
+        # default max social dist is ep.DEF_DISTANCING unit.
+        close = ep.DEF_DISTANCING * .5
+        self.env.place_member(self.sal, xy=(0, 0))
+        self.env.place_member(self.azi, xy=(0, close))
+        debug_agent_pos(self.sal)
+        debug_agent_pos(self.azi)
+        ep.person_action(self.sal)
+        self.assertFalse(ep.is_healthy(self.sal))
+       
+    @skip("tp complete later")
+    def test_dead_action(self):
+        pass
+    
+    @skip("tp complete later")
+    def test_close_contagion_action(self):
+        pass
+  
     def test_main(self):
         self.assertEqual(ep.main(), 0)
 

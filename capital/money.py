@@ -27,6 +27,19 @@ DUR_DECR = "durability_decrement"
 TRADE_COUNT = "trade_count"
 INIT_COUNT = 0  # a starting point for trade_count
 
+# a counter for counting number of continuous periods with no trade
+eq_count = 0
+# a dictionary storing the "trade_count" for each good from the last period
+prev_trade = {'cow': 0,
+              'gold': 0,
+              'cheese': 0,
+              'banana': 0,
+              'diamond': 0,
+              'avocado': 0,
+              'stone': 0,
+              'milk': 0,
+              }
+
 # these are the goods we hand out at the start:
 natures_goods = {
     # add initial value to this data?
@@ -109,9 +122,19 @@ def good_decay(goods):
 
 
 def trade_report(env):
+    global prev_trade, eq_count
     get_env()
     trade_count_dic = {x: natures_goods[x]["trade_count"]
                        for x in natures_goods}
+    if trade_count_dic == prev_trade:
+        eq_count += 1
+    else:
+        eq_count = 0
+    # number '4' may be changed
+    if eq_count >= 4:
+        print("No trade between agents for", eq_count,
+              "periods. Equilibrium may be reached.")
+    prev_trade = trade_count_dic
     return "Number of trades last period: " + "\n" \
            + str(trade_count_dic) + "\n"
 

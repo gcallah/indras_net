@@ -13,7 +13,7 @@ from indra.env import Env
 from registry.registry import get_env, get_prop
 from registry.registry import user_log_err, run_notice, user_log_notif
 from indra.utils import init_props
-from indra.space import distance, CircularRegion
+from indra.space import CircularRegion, exists_neighbor
 
 MODEL_NAME = "epidemic"
 DEBUG = False  # turns debugging code on or off
@@ -32,6 +32,7 @@ DEF_EX_HE_TRANS = 1 - DEF_INFEC
 DEF_PERSON_MOVE = 3
 DEF_DISTANCING = 2
 DEF_INFEC = 0.02
+DEF_INFEC_DIST = 1
 
 PERSON_PREFIX = "Person"
 
@@ -119,16 +120,8 @@ def is_isolated(agent):
     '''
     Checks if agent is maintaining distancing.
     '''
-    desired_space = get_prop('distancing', DEF_DISTANCING)
-    if desired_space < 1:
-        return True
-
-    closest_agent = get_env().get_closest_agent(agent)
-    if closest_agent is None:
-        return True
-
-    dist = distance(agent, closest_agent)
-    return (dist >= desired_space)
+    return not exists_neighbor(agent,
+                               size=get_prop('distancing', DEF_DISTANCING))
 
 
 def is_healthy(agent, *args):
@@ -201,13 +194,11 @@ def person_action(agent):
     """
     old_state = agent[STATE]
     if is_healthy(agent):
-        neighbors = get_env().get_moore_hood(agent)
-        if neighbors is not None:
-            nearby_virus = neighbors.subset(is_contagious, agent)
-            if len(nearby_virus) > 0:
-                if DEBUG2:
-                    user_log_notif("Exposing nearby people!")
-                agent[STATE] = EX
+        if exists_neighbor(agent, pred=is_contagious, size=get_prop(
+                            'infection_distance', DEF_INFEC_DIST)):
+            if DEBUG2:
+                user_log_notif("Exposing nearby people!")
+            agent[STATE] = EX
 
     # if we didn't catch disease above, do probabilistic transition:
     if old_state == agent[STATE]:
