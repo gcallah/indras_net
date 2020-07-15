@@ -254,6 +254,7 @@ class SpaceTestCase(TestCase):
     """
     Tests for regions
     """
+
     def test_check_bounds(self):
         space = Space("test space")
         test_reg = Region(space,(0,3),(3,3),(0,0),(3,0))
@@ -305,7 +306,26 @@ class SpaceTestCase(TestCase):
         space.place_member(mbr=self.test_agent2, xy=(1,2))
         self.assertIsNotNone(test_reg.space.get_agent_at(0,1))
         self.assertTrue(test_reg.exists_neighbor())
-
+    
+    # @skip("Skipping test for now") 
+    def test_get_ratio(self):
+        space = Space("test space")
+        test_reg = Region(space,(0,7),(7,7),(0,0),(7,0))
+        space += self.test_agent
+        space += self.test_agent2
+        space += self.test_agent3
+        space += self.test_agent4
+        space.place_member(mbr=self.test_agent, xy=(3, 3))
+        space.place_member(mbr=self.test_agent2, xy=(3,4))
+        space.place_member(mbr=self.test_agent3, xy=(4,4))
+        space.place_member(mbr=self.test_agent4, xy=(5,5))
+        self.assertTrue(test_reg.get_ratio(lambda agent: True) == 1)
+        self.assertTrue(test_reg.get_ratio(lambda agent: False) == 0)
+        self.assertTrue(test_reg.get_ratio(lambda agent: False,
+                                           lambda agent: True) == 0)
+        self.assertTrue(test_reg.get_ratio(lambda agent: True,
+                                           lambda agent: False) == 1)
+   
     """
     Tests for composite region
     """

@@ -24,6 +24,8 @@ DEF_MAX_MOVE = 2
 DEBUG = False
 DEBUG2 = False
 
+region_dict = {}
+
 
 def out_of_bounds(x, y, x1, y1, x2, y2):
     """
@@ -131,7 +133,6 @@ class Space(Composite):
                          reg=False)
 
         self.type = type(self).__name__
-
         if serial_obj is not None:
             self.restore(serial_obj)
         else:
@@ -540,15 +541,31 @@ def gen_region_name(NW=None, NE=None, SW=None,
 instead of direct call to constructor, call region_factory():
 we will need a region_dict
 looks something like:
-def region_factory( PARAMS! ):
-    region_name = gen_region_name( PARAMS! - space)
+def region_factory(space=None, NW=None, NE=NOne, SW=None,
+                   SE=None, center=None, size=None):
+    region_name = gen_region_name(NW=NW, NE=NE, SW=SW, SE=SE,
+                                  center=center, size=size)
     if region_name in region_dict:
         return region_dict[region_name]
     else:
-        new_reg = Region( PARAMS! )
+        new_reg = Region(space=space, NW=NW, NE=NE, SW=SW, SE=SE,
+                         center=center, size=size)
         region_dict[region_name] = new_reg
         return new_reg
 """
+
+
+def region_factory(space=None, NW=None, NE=None, SW=None,
+                   SE=None, center=None, size=None):
+    region_name = gen_region_name(NW=NW, NE=NE, SW=SW, SE=SE,
+                                  center=center, size=size)
+    if region_name in region_dict:
+        return region_dict[region_name]
+    else:
+        new_reg = Region(space=space, NW=NW, NE=NE, SW=SW, SE=SE,
+                         center=center, size=size)
+        region_dict[region_name] = new_reg
+        return new_reg
 
 
 class Region():
