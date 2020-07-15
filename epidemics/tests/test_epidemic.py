@@ -16,7 +16,7 @@ DEad = "4"
 IMmune = "5"
 """
 
-DEBUG = False
+DEBUG = True
 
 
 def header(s):
@@ -27,7 +27,9 @@ def header(s):
 
 def agent_debug(agent):
     if DEBUG:
-        print("Agent", str(agent), "with id:", id(agent))
+        print("Agent", str(agent), "with id:", id(agent), "Position: ",agent.get_pos())
+
+        
 
 
 def create_sal():
@@ -37,7 +39,9 @@ def create_sal():
 
 
 def create_bob():
-    return ep.create_person("Bob", 1, ep.IN)
+    bob = ep.create_person("Bob", 1, ep.IN)
+    agent_debug(bob)
+    return bob
 
 
 def create_azi():
@@ -53,7 +57,6 @@ class EpidemicTestCase(TestCase):
         self.sal = create_sal()
         self.bob = create_bob()
         self.azi = create_azi()
-
         # create customized enviroment
         self.healthy = Composite(ep.HEALTHY, members=[self.sal])
         groups.append(self.healthy)
@@ -64,10 +67,7 @@ class EpidemicTestCase(TestCase):
         groups.append(Composite(ep.CONTAGIOUS, members=[self.azi]))
         groups.append(Composite(ep.DEAD))
         groups.append(Composite(ep.IMMUNE))
-
         self.env = Env("Test env", height=20, width=20, members=groups)
-        # you could do this also:
-        # self.exposed = self.env[ep.EXPOSED]
         ep.set_env_attrs()
 
     def tearDown(self):
@@ -89,7 +89,6 @@ class EpidemicTestCase(TestCase):
         self.assertFalse(ep.is_healthy(self.bob))
 
     def test_contagious(self):
-
         self.assertTrue(ep.is_contagious(self.azi))
 
     def test_is_not_quarantined(self):
@@ -111,32 +110,32 @@ class EpidemicTestCase(TestCase):
         debug_agent_pos(self.azi)
         self.assertTrue(ep.is_isolated(self.azi),
                         "agent is " + str(far_away)
-                        + " units away but is not quarantined")
+                        + "units away but is not quarantined")
 
-    @skip("I can't test this yet cause I can't use make, try it if you can")
     def test_is_infecting(self):
         #are the contagious agents successfully infecting the healthy?
         header("Running test_is_infecting")
         # default max social dist is ep.DEF_DISTANCING unit.
-        close = ep.DEF_DISTANCING * .5
-        self.env.place_member(self.sal, xy=(0, 0))
+        close = ep.DEF_INFEC_DIST // 2
+        self.env.place_member(self.sal, xy=(0, ep.DEF_INFEC_DIST))
         self.env.place_member(self.azi, xy=(0, close))
         debug_agent_pos(self.sal)
         debug_agent_pos(self.azi)
         ep.person_action(self.sal)
-        self.assertFalse(ep.is_healthy(self.sal))
-       
-    @skip("tp complete later")
+        ep.person_action(self.azi)
+        self.assertFalse(ep.is_healthy(self.azi),
+                        "agent is " + str(close) + \
+                        " units away from a contagious agent but is not exposed")
+
     def test_dead_action(self):
         pass
     
-    @skip("tp complete later")
+    @skip("to complete later")
     def test_close_contagion_action(self):
         pass
-  
+    
     def test_main(self):
         self.assertEqual(ep.main(), 0)
-
 
 if __name__ == '__main__':
     main()
