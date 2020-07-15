@@ -13,7 +13,7 @@ from indra.env import Env
 from registry.registry import get_env, get_prop
 from registry.registry import user_log_err, run_notice, user_log_notif
 from indra.utils import init_props
-from indra.space import distance, CircularRegion, exists_neighbor
+from indra.space import CircularRegion, exists_neighbor
 
 MODEL_NAME = "epidemic"
 DEBUG = False  # turns debugging code on or off
@@ -120,16 +120,8 @@ def is_isolated(agent):
     '''
     Checks if agent is maintaining distancing.
     '''
-    desired_space = get_prop('distancing', DEF_DISTANCING)
-    if desired_space < 1:
-        return True
-
-    closest_agent = get_env().get_closest_agent(agent)
-    if closest_agent is None:
-        return True
-
-    dist = distance(agent, closest_agent)
-    return (dist >= desired_space)
+    return not exists_neighbor(agent,
+                               size=get_prop('distancing', DEF_DISTANCING))
 
 
 def is_healthy(agent, *args):

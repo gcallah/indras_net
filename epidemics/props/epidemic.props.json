@@ -44,7 +44,7 @@
     "distancing": {
     "val": 2,
     "question": "What is the social distancing distance?",
-    "atype": "DBL",
+    "atype": "INT",
     "hival": 6,
     "lowval": 0
   },
