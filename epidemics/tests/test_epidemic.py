@@ -16,7 +16,7 @@ DEad = "4"
 IMmune = "5"
 """
 
-DEBUG = True
+DEBUG = False
 
 
 def header(s):
@@ -39,7 +39,7 @@ def create_sal():
 
 
 def create_bob():
-    bob = ep.create_person("Bob", 1, ep.IN)
+    bob = ep.create_person("Bob", 1, ep.DE)
     agent_debug(bob)
     return bob
 
@@ -95,7 +95,7 @@ class EpidemicTestCase(TestCase):
         header("Running test_is_not_quarantined")
         # default max social dist is ep.DEF_DISTANCING unit.
         self.env.place_member(self.sal, xy=(0, 0))
-        self.env.place_member(self.azi, xy=(0, 1))
+        self.env.place_member(self.azi, xy=(0, ep.DEF_DISTANCING//2))
         debug_agent_pos(self.sal)
         debug_agent_pos(self.azi)
         self.assertFalse(ep.is_isolated(self.azi))
@@ -116,23 +116,31 @@ class EpidemicTestCase(TestCase):
         #are the contagious agents successfully infecting the healthy?
         header("Running test_is_infecting")
         # default max social dist is ep.DEF_DISTANCING unit.
-        close = ep.DEF_INFEC_DIST // 2
-        self.env.place_member(self.sal, xy=(0, ep.DEF_INFEC_DIST))
+        close = ep.DEF_DISTANCING // 2
+        self.env.place_member(self.sal, xy=(0,0))
         self.env.place_member(self.azi, xy=(0, close))
         debug_agent_pos(self.sal)
-        debug_agent_pos(self.azi)
         ep.person_action(self.sal)
         ep.person_action(self.azi)
         self.assertFalse(ep.is_healthy(self.azi),
-                        "agent is " + str(close) + \
+                        "agent is " + str(close) + 
                         " units away from a contagious agent but is not exposed")
 
     def test_dead_action(self):
-        pass
-    
-    @skip("to complete later")
+        #dead_people shoudn't move
+        header("Running test_dead_action ")
+        self.env.place_member(self.sal, xy=(0, 0))
+        debug_agent_pos(self.bob)
+        self.assertIs(ep.DONT_MOVE,ep.person_action(self.bob)) 
     def test_close_contagion_action(self):
-        pass
+        #Will agents move away if they are are not isolated
+        header("Running test_is_infecting")
+        # default max social dist is ep.DEF_DISTANCING unit.
+        close = ep.DEF_DISTANCING // 2
+        self.env.place_member(self.sal, xy=(0,0))
+        self.env.place_member(self.azi, xy=(0, close))
+        debug_agent_pos(self.sal)
+        self.assertIs(ep.MOVE,ep.person_action(self.sal))
     
     def test_main(self):
         self.assertEqual(ep.main(), 0)
