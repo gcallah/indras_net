@@ -87,7 +87,7 @@ tests: pytests jstests dockertests
 
 python: pytests github
 
-js: jstests webapp
+js: jstests webapp github
 	git add $(WEB_STATIC)/js/*js
 	git add $(WEB_STATIC)/js/*map
 	git add $(WEB_STATIC)/css/*
