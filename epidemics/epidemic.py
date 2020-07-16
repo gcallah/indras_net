@@ -213,7 +213,6 @@ def person_action(agent):
                             r = random()
                             if inverse_square_val/100 > r:
                                 agent[STATE] = EX
-                                print("yay")
 
     # if we didn't catch disease above, do probabilistic transition:
     if old_state == agent[STATE]:
@@ -314,8 +313,7 @@ def set_up(props=None):
                             member_creator=create_person,
                             num_members=1,
                             state=IM))
-    print(type(groups[0]))
-    print(type(groups))
+
     Env(MODEL_NAME, height=city_height, width=city_width, members=groups)
     set_env_attrs()
 
