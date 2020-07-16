@@ -110,7 +110,7 @@ def is_depleted(goods_dict):
     return True
 
 
-def transfer(to_goods, from_goods, good_nm, amt=None, comp=None):
+def transfer(to_goods, from_goods, good_nm, amt=None, comp=False):
     """
     Transfer goods between two goods dicts.
     Use `amt` if it is not None.
@@ -161,11 +161,23 @@ def get_rand_good(goods_dict, nonzero=False):
         return good
 
 
-def incr_util(good_dict, good, amt=None):
-    if amt:
-        good_dict[good]["incr"] += amt
+def incr_util(good_dict, good, amt=None, agent=None, graph=False, comp=None):
+    '''
+    if graph=True, increase the utility according to
+    the weight of edge in the graph
+    '''
+    if graph:
+        good_graph = agent["graph"]
+        if comp:
+            incr = good_graph.get_weight(good, comp)
+        else:
+            incr = good_graph.max_neighbors(good)
+        good_dict[good]["incr"] += incr
     else:
-        good_dict[good]["incr"] += 1
+        if amt:
+            good_dict[good]["incr"] += amt
+        else:
+            good_dict[good]["incr"] += 1
 
 
 def amt_adjust(trader, good):
@@ -202,7 +214,7 @@ def endow(trader, avail_goods, equal=False, rand=False, comp=False):
             transfer(trader[GOODS], avail_goods, good2acquire, comp=comp)
 
 
-def equal_dist(num_trader, to_goods, from_goods, comp=None):
+def equal_dist(num_trader, to_goods, from_goods, comp=False):
     """
     each trader get equal amount of goods
     to_goods = trader[GOODS], from_goods = avail_goods
@@ -212,7 +224,7 @@ def equal_dist(num_trader, to_goods, from_goods, comp=None):
         transfer(to_goods, from_goods, good, amt, comp=comp)
 
 
-def rand_dist(to_goods, from_goods, comp=None):
+def rand_dist(to_goods, from_goods, comp=False):
     """
     select random good by random amount and transfer to trader
     """
@@ -298,7 +310,7 @@ def rec_offer(agent, their_good, their_amt, counterparty, comp=False):
     return REJECT
 
 
-def rec_reply(agent, my_good, my_amt, their_good, their_amt, comp=None):
+def rec_reply(agent, my_good, my_amt, their_good, their_amt, comp=False):
     gain = utility_delta(agent, their_good, their_amt)
     loss = utility_delta(agent, my_good, -my_amt)
     if comp:
@@ -368,10 +380,12 @@ def compl_lst(agent, good):
 def adj_add_good_w_comp(agent, good, amt, old_amt):
     if new_good(old_amt, amt):
         if is_compl_good(agent, good):
-            incr_util(agent[GOODS], good, amt=amt * STEEP_GRADIENT)
+            incr_util(agent[GOODS], good, amt=amt *
+                      STEEP_GRADIENT, agent=agent, graph=True)
         # now increase utility of this good's complements:
         for comp in compl_lst(agent, good):
-            incr_util(agent[GOODS], comp, amt=amt * STEEP_GRADIENT)
+            incr_util(agent[GOODS], comp, amt=amt *
+                      STEEP_GRADIENT, agent=agent, graph=True, comp=good)
         print(agent[GOODS])
 
     if good_all_gone(agent, good):
