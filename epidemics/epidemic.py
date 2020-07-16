@@ -13,7 +13,8 @@ from indra.env import Env
 from registry.registry import get_env, get_prop
 from registry.registry import user_log_err, run_notice, user_log_notif
 from indra.utils import init_props
-from indra.space import CircularRegion, exists_neighbor
+from indra.space import CircularRegion, exists_neighbor, distance
+from random import random
 
 MODEL_NAME = "epidemic"
 DEBUG = False  # turns debugging code on or off
@@ -199,6 +200,20 @@ def person_action(agent):
             if DEBUG2:
                 user_log_notif("Exposing nearby people!")
             agent[STATE] = EX
+        else:
+            for curr_group in list(get_env().get_members().items()):
+                for curr_agent_tuple in list(curr_group[1].get_members()
+                                             .items()):
+                    curr_agent = curr_agent_tuple[1]
+                    curr_distance = (distance(curr_agent, agent) -
+                                     DEF_INFEC_DIST)
+                    if curr_distance > 0:
+                        inverse_square_val = 1/(curr_distance ** 2)
+                        if inverse_square_val > 0:
+                            r = random()
+                            if inverse_square_val/100 > r:
+                                agent[STATE] = EX
+                                print("yay")
 
     # if we didn't catch disease above, do probabilistic transition:
     if old_state == agent[STATE]:
@@ -299,6 +314,8 @@ def set_up(props=None):
                             member_creator=create_person,
                             num_members=1,
                             state=IM))
+    print(type(groups[0]))
+    print(type(groups))
     Env(MODEL_NAME, height=city_height, width=city_width, members=groups)
     set_env_attrs()
 
