@@ -7,6 +7,7 @@ from unittest import TestCase, main, skip
 from indra.agent import Agent, X, Y
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.space import Space, distance, Region, CompositeRegion, CircularRegion
+from indra.space import region_factory
 from indra.tests.test_agent import create_newton, create_hardy, create_leibniz
 from indra.tests.test_agent import create_ramanujan
 
@@ -254,6 +255,11 @@ class SpaceTestCase(TestCase):
     """
     Tests for regions
     """
+    def test_region_factory(self):
+        space = Space("test space")
+        region_one = region_factory(space,(0,3),(3,3),(0,0),(3,0))
+        region_two = region_factory(space,(0,3),(3,3),(0,0),(3,0))
+        self.assertTrue(region_one is region_two)
 
     def test_check_bounds(self):
         space = Space("test space")

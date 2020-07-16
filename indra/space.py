@@ -518,14 +518,16 @@ class Space(Composite):
 
     def exists_neighbor(self, agent, pred=None, exclude_self=True, size=1,
                         region_type=None):
-        region = Region(space=self, center=(agent.get_x(), agent.get_y()),
-                        size=size)
+        region = region_factory(space=self, center=(agent.get_x(),
+                                agent.get_y()),
+                                size=size)
         return region.exists_neighbor(exclude_self=exclude_self, pred=pred)
 
     def neighbor_ratio(self, agent, pred_one, pred_two=None, size=1,
                        region_type=None):
-        region = Region(space=self, center=(agent.get_x(), agent.get_y()),
-                        size=size)
+        region = region_factory(space=self, center=(agent.get_x(),
+                                agent.get_y()),
+                                size=size)
         return region.get_ratio(pred_one, pred_two=pred_two)
 
 
@@ -535,24 +537,6 @@ def gen_region_name(NW=None, NE=None, SW=None,
         return str(NW) + "," + str(NE) + "," + str(SW) + "," + str(SE)
     else:
         return str(center) + "," + str(size)
-
-
-"""
-instead of direct call to constructor, call region_factory():
-we will need a region_dict
-looks something like:
-def region_factory(space=None, NW=None, NE=NOne, SW=None,
-                   SE=None, center=None, size=None):
-    region_name = gen_region_name(NW=NW, NE=NE, SW=SW, SE=SE,
-                                  center=center, size=size)
-    if region_name in region_dict:
-        return region_dict[region_name]
-    else:
-        new_reg = Region(space=space, NW=NW, NE=NE, SW=SW, SE=SE,
-                         center=center, size=size)
-        region_dict[region_name] = new_reg
-        return new_reg
-"""
 
 
 def region_factory(space=None, NW=None, NE=None, SW=None,
