@@ -17,7 +17,7 @@ from registry.registry import user_tell, run_notice
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import init_props
 
-MODEL_NAME = "basic"
+MODEL_NAME = "height"
 DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
@@ -25,21 +25,41 @@ DEF_NUM_BLUE = 10
 
 DEF_NUM_RED = 10
 
+DEF_DURATION = 5
 
-def agent_action(agent):
+
+def geneng_action(agent):
     """
     Just a silly agent action function for basic model.
     """
-    user_tell("I'm " + agent.name + " and I'm acting.")
+    user_tell("I'm " + agent.name + " and I'm genetic engineering.")
     # return False means to move
     return MOVE
 
 
-def create_agent(name, i, props=None):
+def natural_action(agent):
+    """
+    Just a silly agent action function for basic model.
+    """
+    user_tell("I'm " + agent.name + " and I'm all natural.")
+    # return False means to move
+    return MOVE
+
+
+def create_geneng(name, i, props=None):
     """
     Create an agent.
     """
-    return Agent(name + str(i), action=agent_action)
+    return Agent(name + str(i), action=geneng_action,
+                 duration=DEF_DURATION)
+
+
+def create_natural(name, i, props=None):
+    """
+    Create an agent.
+    """
+    return Agent(name + str(i), action=natural_action,
+                 duration=DEF_DURATION)
 
 
 def set_up(props=None):
@@ -47,17 +67,17 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     init_props(MODEL_NAME, props)
-    blue_group = Composite("Blues", {"color": BLUE},
-                           member_creator=create_agent,
-                           num_members=get_prop('num_blue', DEF_NUM_BLUE))
-    red_group = Composite("Reds", {"color": RED},
-                          member_creator=create_agent,
-                          num_members=get_prop('num_red', DEF_NUM_RED))
+    geneng_group = Composite("Genetic Engineering", {"color": BLUE},
+                             member_creator=create_geneng,
+                             num_members=get_prop('num_blue', DEF_NUM_BLUE))
+    natural_group = Composite("Natural", {"color": RED},
+                              member_creator=create_natural,
+                              num_members=get_prop('num_red', DEF_NUM_RED))
 
     Env(MODEL_NAME,
         height=get_prop('grid_height', DEF_HEIGHT),
         width=get_prop('grid_width', DEF_WIDTH),
-        members=[blue_group, red_group])
+        members=[geneng_group, natural_group])
 
 
 def main():

@@ -1,7 +1,7 @@
 import networkx as nx
 # %matplotlib inline
 import matplotlib.pyplot as plt
-from PIL import Image
+# from PIL import Image
 # from networkx.drawing.nx_agraph import graphviz_layout
 
 
@@ -86,9 +86,9 @@ class GoodStruct:
     def show_graph_png(self):
         '''
         show the png of the good structure graph
-        '''
         img = Image.open('graph.png')
         img.show()
+        '''
 
 
 def main():
