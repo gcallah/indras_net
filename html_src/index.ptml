@@ -48,6 +48,10 @@
     flexibility in front-ends: anyone can use our agent engine on the server
     with whatever front-end they choose to build.
   </p>
+ 
+  <p>
+  More on ABM <a href="notebooks/IntroToABM.ipynb">here</a>.
+  </p>
 
   <p>
    The name "Indra" was given to this project because its design was inspired
