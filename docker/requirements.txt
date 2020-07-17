@@ -1,7 +1,7 @@
 ipython
 matplotlib
 scipy
-numpy=1.19
+numpy=1.19.0
 flask
 werkzeug==0.16.1
 flask_restplus
