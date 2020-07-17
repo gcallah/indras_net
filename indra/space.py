@@ -24,6 +24,8 @@ DEF_MAX_MOVE = 2
 DEBUG = False
 DEBUG2 = False
 
+region_dict = {}
+
 
 def out_of_bounds(x, y, x1, y1, x2, y2):
     """
@@ -131,7 +133,6 @@ class Space(Composite):
                          reg=False)
 
         self.type = type(self).__name__
-
         if serial_obj is not None:
             self.restore(serial_obj)
         else:
@@ -517,14 +518,16 @@ class Space(Composite):
 
     def exists_neighbor(self, agent, pred=None, exclude_self=True, size=1,
                         region_type=None):
-        region = Region(space=self, center=(agent.get_x(), agent.get_y()),
-                        size=size)
+        region = region_factory(space=self, center=(agent.get_x(),
+                                agent.get_y()),
+                                size=size)
         return region.exists_neighbor(exclude_self=exclude_self, pred=pred)
 
     def neighbor_ratio(self, agent, pred_one, pred_two=None, size=1,
                        region_type=None):
-        region = Region(space=self, center=(agent.get_x(), agent.get_y()),
-                        size=size)
+        region = region_factory(space=self, center=(agent.get_x(),
+                                agent.get_y()),
+                                size=size)
         return region.get_ratio(pred_one, pred_two=pred_two)
 
 
@@ -536,19 +539,17 @@ def gen_region_name(NW=None, NE=None, SW=None,
         return str(center) + "," + str(size)
 
 
-"""
-instead of direct call to constructor, call region_factory():
-we will need a region_dict
-looks something like:
-def region_factory( PARAMS! ):
-    region_name = gen_region_name( PARAMS! - space)
+def region_factory(space=None, NW=None, NE=None, SW=None,
+                   SE=None, center=None, size=None):
+    region_name = gen_region_name(NW=NW, NE=NE, SW=SW, SE=SE,
+                                  center=center, size=size)
     if region_name in region_dict:
         return region_dict[region_name]
     else:
-        new_reg = Region( PARAMS! )
+        new_reg = Region(space=space, NW=NW, NE=NE, SW=SW, SE=SE,
+                         center=center, size=size)
         region_dict[region_name] = new_reg
         return new_reg
-"""
 
 
 class Region():

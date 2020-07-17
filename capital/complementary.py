@@ -13,6 +13,7 @@ from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import init_props
 from capital.trade_utils import seek_a_trade_w_comp
 from capital.trade_utils import UTIL_FUNC, AMT_AVAIL
+import capital.good_structure as gs
 import capital.trade_utils as tu
 
 MODEL_NAME = "complementary"
@@ -30,6 +31,38 @@ COMPLEMENTS = "complementaries"
 def allocate_resources(trader, avail_goods,
                        equal=False, rand=False):
     tu.endow(trader, avail_goods, equal=equal, rand=rand, comp=True)
+
+
+def create_graph():
+    goods = gs.GoodStruct()
+    goods.add_node("truck")
+    goods.add_node("fuel")
+    goods.add_node("land")
+
+    goods.add_edge("truck", "fuel", weight=4)
+    goods.add_edge("truck", "land", weight=4)
+
+    goods.add_edge("fuel", "truck", weight=4)
+    goods.add_edge("fuel", "land", weight=4)
+
+    goods.add_edge("land", "truck", weight=4)
+    goods.add_edge("land", "fuel", weight=4)
+
+    goods.add_node("penguin")
+    goods.add_node("pet_food")
+    goods.add_node("meat")
+
+    goods.add_edge("penguin", "pet_food", weight=4)
+    goods.add_edge("penguin", "meat", weight=4)
+
+    goods.add_edge("pet_food", "penguin", weight=4)
+    goods.add_edge("pet_food", "meat", weight=4)
+
+    goods.add_edge("meat", "penguin", weight=4)
+    goods.add_edge("meat", "pet_food", weight=4)
+
+    goods.draw_graph()
+    return goods
 
 
 def create_trader(name, i, props=None):
@@ -61,6 +94,7 @@ def create_trader(name, i, props=None):
                                            "incr": 0,
                                            COMPLEMENTS: ["penguin",
                                                          "pet_food"]}},
+                        "graph": create_graph(),
                         "util": 0,
                         "pre_trade_util": 0,
                         "trades_with": "trader"})
@@ -87,34 +121,34 @@ def set_up(props=None):
     set_env_attrs()
     num_resources = get_prop('num_resources', DEF_NUM_RESOURCES)
     MKT_GOODS = {
-                 "truck": {AMT_AVAIL: num_resources,
-                           UTIL_FUNC: "steep_util_func",
-                           "incr": 0,
-                           COMPLEMENTS: ["fuel", "land"]},
-                 "penguin": {AMT_AVAIL: num_resources,
-                             UTIL_FUNC: "steep_util_func",
-                             "incr": 0,
-                             COMPLEMENTS: ["pet_food",
-                                           "meat"]},
-                 "pet_food": {AMT_AVAIL: num_resources,
-                              UTIL_FUNC: "steep_util_func",
-                              "incr": 0,
-                              COMPLEMENTS: ["penguin",
-                                            "meat"]},
-                 "fuel": {AMT_AVAIL: num_resources,
-                          UTIL_FUNC: "steep_util_func",
-                          "incr": 0,
-                          COMPLEMENTS: ["truck", "land"]},
-                 "land": {AMT_AVAIL: num_resources,
-                          UTIL_FUNC: "steep_util_func",
-                          "incr": 0,
-                          COMPLEMENTS: ["truck", "fuel"]},
-                 "meat": {AMT_AVAIL: num_resources,
-                          UTIL_FUNC: "steep_util_func",
-                          "incr": 0,
-                          COMPLEMENTS: ["penguin",
-                                        "pet_food"]}
-                }
+        "truck": {AMT_AVAIL: num_resources,
+                  UTIL_FUNC: "steep_util_func",
+                  "incr": 0,
+                  COMPLEMENTS: ["fuel", "land"]},
+        "penguin": {AMT_AVAIL: num_resources,
+                    UTIL_FUNC: "steep_util_func",
+                    "incr": 0,
+                    COMPLEMENTS: ["pet_food",
+                                  "meat"]},
+        "pet_food": {AMT_AVAIL: num_resources,
+                     UTIL_FUNC: "steep_util_func",
+                     "incr": 0,
+                     COMPLEMENTS: ["penguin",
+                                   "meat"]},
+        "fuel": {AMT_AVAIL: num_resources,
+                 UTIL_FUNC: "steep_util_func",
+                 "incr": 0,
+                 COMPLEMENTS: ["truck", "land"]},
+        "land": {AMT_AVAIL: num_resources,
+                 UTIL_FUNC: "steep_util_func",
+                 "incr": 0,
+                 COMPLEMENTS: ["truck", "fuel"]},
+        "meat": {AMT_AVAIL: num_resources,
+                 UTIL_FUNC: "steep_util_func",
+                 "incr": 0,
+                 COMPLEMENTS: ["penguin",
+                               "pet_food"]}
+    }
     for trader in trader_group:
         for i in range(len(MKT_GOODS) // num_traders):
             allocate_resources(trader_group[trader], MKT_GOODS)

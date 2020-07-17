@@ -342,3 +342,6 @@ class Composite(Agent):
 
     def get_marker(self):
         return self.attrs.get("marker", None)
+
+    def get_members(self):
+        return self.members
