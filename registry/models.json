@@ -129,6 +129,16 @@
         "source": "https://github.com/gcallah/indras_net/blob/master/models/sandpile.py",
         "graph": "scatter",
         "active": true
+      },
+      {
+        "model ID": 13,
+        "name": "Wolfram's Rules",
+        "run": "wolfram",
+        "props": "models/props/wolfram.props.json",
+        "doc": "Steven Wolfram's cellular automatota.",
+        "source": "https://github.com/gcallah/indras_net/blob/master/models/wolfram.py",
+        "graph": "scatter",
+        "active": true
       }
     ]
   }
