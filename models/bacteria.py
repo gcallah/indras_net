@@ -16,7 +16,7 @@ from indra.space import DEF_HEIGHT, DEF_WIDTH, distance
 from indra.utils import init_props
 
 MODEL_NAME = "bacteria"
-DEBUG = False  # turns debugging code on or off
+DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
 BACTERIA = "Bacteria"
@@ -73,7 +73,6 @@ def bacterium_action(agent, **kwargs):
     toxin_level = calc_toxin(get_group(TOXINS), agent)
     nutrient_level = calc_nutrient(
         get_group(NUTRIENTS), agent)
-
     if agent["prev_toxicity"] is not None:
         toxin_change = toxin_level - agent["prev_toxicity"]
     else:

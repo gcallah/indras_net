@@ -1,5 +1,5 @@
 """
-This is the test suite for space.py.
+This is the test suite for bacteria model.
 """
 
 from unittest import TestCase, main, skip
@@ -8,7 +8,7 @@ from propargs.propargs import PropArgs
 
 import models.bacteria as ba
 from indra.composite import Composite
-from models.bacteria import set_up, create_bacterium, create_toxin, calc_toxin
+from models.bacteria import set_up, create_bacterium, create_toxin, calc_toxin,get_group
 from models.bacteria import create_nutrient, bacterium_action, calc_nutrient
 from models.bacteria import TOXINS, NUTRIENTS, BACTERIA
 
@@ -78,8 +78,7 @@ class BacteriaTestCase(TestCase):
             nutrients_group += create_nutrient("nutrients", i)
         nutrient_strength = calc_nutrient(nutrients_group, bacterium)
         self.assertTrue(nutrient_strength > 0)
-
-    @skip("Must re-examine this test.")
+    @skip("The tests passes in local test but travis fails to import some moduls")
     def test_bacterium_action(self):
         """
         Test if the previous nutricity and toxicity of the bacterium
@@ -88,12 +87,17 @@ class BacteriaTestCase(TestCase):
         toxins_group = Composite(TOXINS)
         # nutrients_group = Composite("nutrients")
         nutrients_group = Composite(NUTRIENTS)
-        bacterium = create_bacterium(BACTERIA, 0)
-        bacterium["prev_toxicity"] = 0
-        bacterium["prev_nutricity"] = 0
-        bacterium_action(bacterium)
-        self.assertTrue(bacterium["prev_nutricity"] > 0)
-        self.assertTrue(bacterium["prev_toxicity"] < 0)
+        self.bacterium["prev_toxicity"] = 0
+        self.bacterium["prev_nutricity"] = 0
+        toxin_level = ba.calc_toxin(get_group(TOXINS),self.bacterium)
+        nutrient_level = ba.calc_nutrient(
+        get_group(NUTRIENTS), self.bacterium)
+        print("toxin_level: ", toxin_level, "nurient_level",nutrient_level)
+        toxins_group += self.toxin
+        nutrients_group += self.nutrient
+        bacterium_action(self.bacterium)
+        self.assertTrue(self.bacterium["prev_nutricity"] > 0)
+        self.assertTrue(self.bacterium["prev_toxicity"] < 0)
 
     if __name__ == '__main__':
         main()
