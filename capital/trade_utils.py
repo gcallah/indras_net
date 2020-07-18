@@ -279,7 +279,8 @@ def seek_a_trade_w_comp(agent):
 
 def rec_offer(agent, their_good, their_amt, counterparty, comp=False):
     """
-    Receive an offer: we don't need to ever change my_amt
+    trader2 receiv es an offer.
+    We don't need to ever change my_amt
     in this function, because if the counter-party can't bid enough
     for a single unit, no trade is possible.
     """
@@ -311,6 +312,9 @@ def rec_offer(agent, their_good, their_amt, counterparty, comp=False):
 
 
 def rec_reply(agent, my_good, my_amt, their_good, their_amt, comp=False):
+    """
+    trader1 evaluates trader2's offer here:
+    """
     gain = utility_delta(agent, their_good, their_amt)
     loss = utility_delta(agent, my_good, -my_amt)
     if comp:
@@ -319,6 +323,7 @@ def rec_reply(agent, my_good, my_amt, their_good, their_amt, comp=False):
     if gain > abs(loss):
         return ACCEPT
     else:
+        # this will call a halt to negotiations on this good:
         return INADEQ
 
 
