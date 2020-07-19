@@ -5,7 +5,7 @@ of agents related spatially.
 import json
 import math
 from functools import wraps
-from math import sqrt
+from math import sqrt, atan, degrees
 from random import randint
 
 from indra.agent import is_composite, AgentEncoder, X, Y
@@ -116,6 +116,35 @@ def exists_neighbor(agent, pred=None, exclude_self=True, size=1,
 def neighbor_ratio(agent, pred_one, pred_two=None, size=1, region_type=None):
     return get_env().neighbor_ratio(agent, pred_one, pred_two=pred_two,
                                     size=size, region_type=region_type)
+
+
+def degrees_between(x_dif, y_dif):
+    return degrees(atan(y_dif / x_dif))
+
+
+def opposing_angle(pos1, pos2):
+    '''
+    Returns the inverse of the angle of
+    the other_agent relative to the agent.
+    '''
+    x_dif = pos2[X] - pos1[X]
+    y_dif = pos2[Y] - pos1[Y]
+    if (x_dif != 0 and y_dif != 0):
+        if (x_dif > 0):
+            new_angle = 180 + degrees_between(x_dif, y_dif)
+        else:
+            new_angle = degrees_between(x_dif, y_dif)
+    elif (y_dif != 0):
+        if(y_dif > 0):
+            new_angle = 270
+        else:
+            new_angle = 90
+    else:
+        if(x_dif > 0):
+            new_angle = 180
+        else:
+            new_angle = 0
+    return new_angle
 
 
 class Space(Composite):

@@ -1,9 +1,8 @@
 """
 A model to simulate the spread of virus in a city.
 """
-from math import atan, degrees
 
-from indra.agent import Agent, MOVE, DONT_MOVE, X, Y
+from indra.agent import Agent, MOVE, DONT_MOVE
 from indra.agent import prob_state_trans, set_trans
 from indra.composite import Composite
 from indra.display_methods import RED, GREEN, BLACK
@@ -13,7 +12,8 @@ from indra.env import Env
 from registry.registry import get_env, get_prop
 from registry.registry import user_log_err, run_notice, user_log_notif
 from indra.utils import init_props
-from indra.space import CircularRegion, exists_neighbor, distance
+from indra.space import CircularRegion, exists_neighbor
+from indra.space import distance, opposing_angle
 from random import random
 
 MODEL_NAME = "epidemic"
@@ -69,35 +69,6 @@ STATE_TRANS = [
 
 GROUP_MAP = "group_map"
 STATE = "state"
-
-
-def degrees_between(x_dif, y_dif):
-    return degrees(atan(y_dif / x_dif))
-
-
-def opposing_angle(pos1, pos2):
-    '''
-    Returns the inverse of the angle of
-    the other_agent relative to the agent.
-    '''
-    x_dif = pos2[X] - pos1[X]
-    y_dif = pos2[Y] - pos1[Y]
-    if (x_dif != 0 and y_dif != 0):
-        if (x_dif > 0):
-            new_angle = 180 + degrees_between(x_dif, y_dif)
-        else:
-            new_angle = degrees_between(x_dif, y_dif)
-    elif (y_dif != 0):
-        if(y_dif > 0):
-            new_angle = 270
-        else:
-            new_angle = 90
-    else:
-        if(x_dif > 0):
-            new_angle = 180
-        else:
-            new_angle = 0
-    return new_angle
 
 
 def get_move_angle(agent, agents_in_range):
