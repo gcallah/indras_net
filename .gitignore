@@ -54,3 +54,4 @@ APIServer/.coverage
 precache-manifest.*
 /webapp/coverage/*
 .idea
+**/*.coverage

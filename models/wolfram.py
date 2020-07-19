@@ -11,7 +11,7 @@ from indra.display_methods import BLACK, WHITE, SQUARE
 from indra.env import Env
 from indra.space import DEF_WIDTH
 from indra.utils import init_props
-from registry.registry import get_prop, get_env, get_group, clear_registry
+from registry.registry import get_prop, get_env, get_group
 from registry.registry import set_env_attr, get_env_attr, get_registration
 
 MODEL_NAME = "wolfram"
@@ -104,7 +104,10 @@ def wolfram_action(wolf_env: Env):
 
     active_row_idx = wolf_env.height - wolf_env.get_periods()
 
-    wolf_env.user.tell("Checking agents in row {} against the rule {}".format(active_row_idx, get_env_attr("rule_num")))
+    wolf_env.user.tell(
+        "Checking agents in row {} against the rule {}"
+            .format(active_row_idx, get_env_attr("rule_num")))
+
     if active_row_idx < 1:
         gone_far_enough()
         return DONT_MOVE
