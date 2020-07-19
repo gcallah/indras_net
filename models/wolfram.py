@@ -144,7 +144,6 @@ def set_up(props=None):
     """
     A func to set up run that can also be used by test code.
     """
-    clear_registry()
     init_props(MODEL_NAME, props)
 
     width = get_prop('grid_width', DEF_WIDTH)

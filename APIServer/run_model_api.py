@@ -3,6 +3,7 @@
 This module restores an env from json and runs it.
 """
 from APIServer.api_utils import json_converter
+from registry.registry import clear_registry
 from registry.run_dict import env_attrs
 from indra.env import Env
 from indra.user import user_log_notif
@@ -13,6 +14,7 @@ def run_model_put(payload, run_time):
     We create a dummy env that fills itself in to create
     the real env from the payload.
     """
+    clear_registry()
     env = Env(name='temp name', serial_obj=payload)
     user_log_notif("Searching env attributes for " + env.name)
     if env.name in env_attrs:
