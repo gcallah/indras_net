@@ -1,6 +1,8 @@
 """
 This file contains general functions useful in trading goods.
 """
+from indra.agent import MOVE
+from indra.user import user_debug
 from registry.registry import get_env
 import random
 import copy
@@ -142,13 +144,13 @@ def get_rand_good(goods_dict, nonzero=False):
     """
     What should this do with empty dict?
     """
-    # print("Calling get_rand_good()")
+    # user_debug("Calling get_rand_good()")
     if goods_dict is None or not len(goods_dict):
         return None
     else:
         if nonzero and is_depleted(goods_dict):
             # we can't allocate what we don't have!
-            print("Goods are depleted!")
+            user_debug("Goods are depleted!")
             return None
 
         goods_list = list(goods_dict.keys())
@@ -249,13 +251,35 @@ def answer_to_str(ans):
     return answer_dict[ans]
 
 
+def trade_debug(agent1, agent2, good1, good2, amt1, amt2, gain, loss):
+    if DEBUG:
+        user_debug(f"{agent1.name} is offering {amt1} of {good1} to "
+                   + f"{agent2.name} for {amt2} of {good2} with a "
+                   + f"gain of {round(gain, 2)} and "
+                   + f"a loss of {round(loss, 2)}")
+
+
+def trader_debug(agent):
+    if DEBUG:
+        user_debug(f"{agent.name} has {goods_to_str(agent[GOODS])}")
+
+
+def offer_debug(agent, their_good, their_amt, counterparty=None):
+    if DEBUG:
+        if counterparty is None:
+            counterparty = "Unknown"
+        user_debug(f"{agent.name} has received an offer of {their_amt} "
+                   + f" of {their_good} from {counterparty}")
+
+
 def negotiate(trader1, trader2, comp=False, amt=1):
     # this_good is a dict
+    user_debug(f"{trader1.name} is entering negotiations with {trader2.name}")
     for this_good in trader1["goods"]:
         amt = amt_adjust(trader1, this_good)
         while trader1["goods"][this_good][AMT_AVAIL] >= amt:
             # we want to offer "divisibility" amount extra each loop
-            ans = rec_offer(trader2, this_good, amt, trader1, comp=comp)
+            ans = send_offer(trader2, this_good, amt, trader1, comp=comp)
             # Besides acceptance or rejection, the offer can be inadequate!
             if ans == ACCEPT or ans == REJECT:
                 break
@@ -266,40 +290,37 @@ def seek_a_trade(agent, comp=False):
     nearby_agent = get_env().get_closest_agent(agent)
     if nearby_agent is not None:
         negotiate(agent, nearby_agent, comp)
-        if DEBUG:
-            print("I'm", agent.name,
-                  "I have", goods_to_str(agent[GOODS]))
-    # return False means to move
-    return False
+        return MOVE
 
 
 def seek_a_trade_w_comp(agent):
     return seek_a_trade(agent, comp=True)
 
 
-def rec_offer(agent, their_good, their_amt, counterparty, comp=False):
+def send_offer(agent, their_good, their_amt, counterparty, comp=False):
     """
-    trader2 receiv es an offer.
+    agent receives an offer sent by counterparty.
     We don't need to ever change my_amt
     in this function, because if the counter-party can't bid enough
     for a single unit, no trade is possible.
     """
+    offer_debug(agent, their_good, their_amt, counterparty)
     my_amt = 1
     gain = utility_delta(agent, their_good, their_amt)
     if comp:
         gain += agent[GOODS][their_good]["incr"]
-        print(their_good, agent[GOODS][their_good]['incr'])
     for my_good in agent["goods"]:
         # adjust my_amt if "divisibility" is one of the attributes
         my_amt = amt_adjust(agent, my_good)
+        # don't bother trading identical goods AND we must have some
+        # of any good we will trade
         if my_good != their_good and agent["goods"][my_good][AMT_AVAIL] > 0:
             loss = -utility_delta(agent, my_good, -my_amt)
             if comp:
                 loss += agent[GOODS][my_good]["incr"]
 
-            print("my good: " + my_good + "; his good: " + their_good
-                  + ", I gain: " + str(round(gain, 2)) +
-                  " and lose: " + str(round(loss, 2)))
+            trade_debug(agent, counterparty, my_good, their_good, my_amt,
+                        their_amt, gain, loss)
             if gain > loss:
                 if rec_reply(counterparty, their_good,
                              their_amt, my_good, my_amt, comp=comp):
@@ -307,7 +328,11 @@ def rec_offer(agent, their_good, their_amt, counterparty, comp=False):
                           counterparty, their_good, their_amt, comp=comp)
                     return ACCEPT
                 else:
-                    return INADEQ
+                    return REJECT
+            else:
+                return INADEQ
+    if DEBUG:
+        user_debug(f"{agent} is rejecting all offers of {their_good}")
     return REJECT
 
 
@@ -315,6 +340,7 @@ def rec_reply(agent, my_good, my_amt, their_good, their_amt, comp=False):
     """
     trader1 evaluates trader2's offer here:
     """
+    offer_debug(agent, their_good, their_amt)
     gain = utility_delta(agent, their_good, their_amt)
     loss = utility_delta(agent, my_good, -my_amt)
     if comp:
@@ -391,7 +417,7 @@ def adj_add_good_w_comp(agent, good, amt, old_amt):
         for comp in compl_lst(agent, good):
             incr_util(agent[GOODS], comp, amt=amt *
                       STEEP_GRADIENT, agent=agent, graph=True, comp=good)
-        print(agent[GOODS])
+        user_debug(agent[GOODS])
 
     if good_all_gone(agent, good):
         for comp in compl_lst(agent, good):

@@ -4,7 +4,7 @@ Places two groups of agents in the enviornment randomly
 and moves them around randomly.
 """
 
-from indra.agent import Agent
+from indra.agent import Agent, MOVE
 from indra.composite import Composite
 from indra.env import Env
 from registry.registry import get_env, get_prop
@@ -12,7 +12,7 @@ from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import init_props
 import capital.trade_utils as tu
 from capital.trade_utils import seek_a_trade, GEN_UTIL_FUNC
-from capital.trade_utils import AMT_AVAIL, endow, UTIL_FUNC
+from capital.trade_utils import AMT_AVAIL, endow, UTIL_FUNC, trader_debug
 import copy
 
 MODEL_NAME = "money"
@@ -43,12 +43,14 @@ prev_trade = {'cow': 0,
 # these are the goods we hand out at the start:
 natures_goods = {
     # add initial value to this data?
-    "cow": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
+    "cow": {AMT_AVAIL: 2, UTIL_FUNC: GEN_UTIL_FUNC,
             "incr": 0, DUR_DECR: 0.8, "divisibility": 1.0,
             "trade_count": 0, "is_allocated": False, },
-    "gold": {AMT_AVAIL: 8, UTIL_FUNC: GEN_UTIL_FUNC,
-             "incr": 0, DUR_DECR: 1.0, "divisibility": 0.01,
+    "gold": {AMT_AVAIL: 2, UTIL_FUNC: GEN_UTIL_FUNC,
+             "incr": 0, DUR_DECR: 1.0, "divisibility": 0.5,
              "trade_count": 0, "is_allocated": False, },
+}
+"""
     "cheese": {AMT_AVAIL: 2, UTIL_FUNC: GEN_UTIL_FUNC,
                "incr": 0, DUR_DECR: 0.8, "divisibility": 0.4,
                "trade_count": 0, "is_allocated": False, },
@@ -67,7 +69,7 @@ natures_goods = {
     "milk": {AMT_AVAIL: 8, UTIL_FUNC: GEN_UTIL_FUNC,
              "incr": 0, DUR_DECR: 0.2, "divisibility": 0.15,
              "trade_count": 0, "is_allocated": False, },
-}
+"""
 
 
 class Good:
@@ -140,23 +142,15 @@ def trade_report(env):
 
 
 def money_trader_action(agent):
+    trader_debug(agent)
     dic1 = copy.deepcopy(agent["goods"])
-    ret = seek_a_trade(agent)
-    dic2 = copy.deepcopy(agent["goods"])
-    diff = {x: (dic1[x][AMT_AVAIL] - dic2[x][AMT_AVAIL])
-            for x in dic1 if x in dic2}
+    seek_a_trade(agent)
+    diff = {x: (dic1[x][AMT_AVAIL] - agent["goods"][x][AMT_AVAIL])
+            for x in dic1 if x in agent["goods"]}
     for good in diff:
-        # updated due to change in durability calculation
-        # decayed_amt = dic1[good][DUR_DECR] * dic1[good][AMT_AVAIL]
-        # if (diff[good] != decayed_amt and diff[good] != 0):
         if diff[good] != 0:
             incr_trade_count(good)
-    # print("TRADE COUNT")
-    # for good in natures_goods:
-    #     print(good, " is traded ",
-    #           natures_goods[good]["trade_count"], " times")
-    # good_decay(agent["goods"])
-    return ret
+    return MOVE
 
 
 def create_trader(name, i, props=None):

@@ -11,7 +11,6 @@ from capital.complementary import COMPLEMENTS, DEF_NUM_RESOURCES
 from capital.trade_utils import AMT_AVAIL, seek_a_trade
 from capital.trade_utils import gen_util_func, trade, DEF_MAX_UTIL
 from capital.trade_utils import UTIL_FUNC, GEN_UTIL_FUNC, AMT_AVAIL
-# from capital.trade_utils import rec_offer, utility_delta, adj_add_good
 
 
 class tradeTestCase(TestCase):

@@ -7,7 +7,7 @@ from unittest import TestCase, main, skip
 import capital.edgeworthbox as edge
 from capital.trade_utils import AMT_AVAIL, seek_a_trade
 from capital.trade_utils import gen_util_func, trade, DEF_MAX_UTIL
-from capital.trade_utils import rec_offer, utility_delta, adj_add_good
+from capital.trade_utils import send_offer, utility_delta, adj_add_good
 
 
 class EdgeworthboxTestCase(TestCase):
@@ -26,10 +26,10 @@ class EdgeworthboxTestCase(TestCase):
         self.assertEqual(agent1["goods"]["wine"][AMT_AVAIL], 0)
         self.assertEqual(agent2["goods"]["cheese"][AMT_AVAIL], 0)
 
-    def test_rec_offer(self):
+    def test_send_offer(self):
         agent1 = edge.create_wagent('Wine holders', 0)
         agent2 = edge.create_cagent('Cheese holders', 0)
-        ans = rec_offer(agent1, "cheese", 1, agent2)
+        ans = send_offer(agent1, "cheese", 1, agent2)
         self.assertEqual(agent1["goods"]["cheese"][AMT_AVAIL], 1)
         self.assertEqual(agent2["goods"]["wine"][AMT_AVAIL], 1)
 

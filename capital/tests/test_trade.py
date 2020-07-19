@@ -10,7 +10,7 @@ import capital.trade_utils as tu
 
 from capital.trade_utils import AMT_AVAIL, seek_a_trade
 from capital.trade_utils import gen_util_func, trade, DEF_MAX_UTIL
-from capital.trade_utils import rec_offer, utility_delta, adj_add_good
+from capital.trade_utils import utility_delta, adj_add_good
 
 
 class tradeTestCase(TestCase):
