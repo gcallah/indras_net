@@ -27,7 +27,7 @@ class GoodStruct:
         # nx.get_edge_attributes(self.G,'weight'))
         # nx.draw_networkx_labels(self.G,pos) # node lables
 
-        plt.savefig('graph.png')
+        # plt.savefig('graph.png')
 
     def __str__(self):
         return str(self.nodes())
