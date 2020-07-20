@@ -28,7 +28,7 @@ DEF_NUM_RED = 10
 DEF_DURATION = 5
 
 
-def geneng_action(agent):
+def geneng_action(agent, **kwargs):
     """
     Just a silly agent action function for basic model.
     """
@@ -37,7 +37,7 @@ def geneng_action(agent):
     return MOVE
 
 
-def natural_action(agent):
+def natural_action(agent, **kwargs):
     """
     Just a silly agent action function for basic model.
     """

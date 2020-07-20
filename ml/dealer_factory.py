@@ -35,7 +35,7 @@ DEF_CORRELATIONS = {
 emoji_list = list(DEF_CORRELATIONS.keys())
 
 
-def dealer_action(agent):
+def dealer_action(agent, **kwargs):
     return False
 
 

@@ -142,7 +142,7 @@ def create_value_investor(name, i):
     return value_investor
 
 
-def market_maker_action(agent):
+def market_maker_action(agent, **kwargs):
     # Determine the current price asset
     market_maker = get_env()[MARKET_MAKER]
 
@@ -163,7 +163,7 @@ def market_maker_action(agent):
     return True
 
 
-def trend_follower_action(agent):
+def trend_follower_action(agent, **kwargs):
     # Determine if trend followers should buy
     # or sell the stock
     market_maker = get_env()[MARKET_MAKER]
@@ -177,7 +177,7 @@ def trend_follower_action(agent):
     return True
 
 
-def value_investor_action(agent):
+def value_investor_action(agent, **kwargs):
     # Determine if value investors should buy or sell the stock
     market_maker = get_env()[MARKET_MAKER]
 

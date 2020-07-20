@@ -70,7 +70,7 @@ def get_going_out(co_op_members):
     return co_op_members.subset(wants_to_go_out)
 
 
-def coop_action(coop_env):
+def coop_action(coop_env, **kwargs):
     sitters = get_sitters(get_group(CO_OP_MEMBERS))
     going_out = get_going_out(get_group(CO_OP_MEMBERS))
 
@@ -106,7 +106,7 @@ def coop_report(coop_env):
     pass
 
 
-def babysitter_action(agent):
+def babysitter_action(agent, **kwargs):
     """
     Co-op members act as follows:
     if their holding coupons are less than desired cash balance, they babysit,
@@ -122,7 +122,7 @@ def babysitter_action(agent):
     return True
 
 
-def central_bank_action(agent):
+def central_bank_action(agent, **kwargs):
     """
     If exchanges are down "enough", distribute coupons!
     Enough is a parameter.

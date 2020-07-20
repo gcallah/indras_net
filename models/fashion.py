@@ -98,14 +98,14 @@ def env_unfavorable(my_color, my_pref, op1, op2):
         return op2(my_pref, (NEUTRAL + TOO_SMALL))
 
 
-def follower_action(agent):
+def follower_action(agent, **kwargs):
     return common_action(agent,
                          get_group(RED_TSETTERS),
                          get_group(BLUE_TSETTERS),
                          lt, gt)
 
 
-def tsetter_action(agent):
+def tsetter_action(agent, **kwargs):
     return common_action(agent,
                          get_group(RED_FOLLOWERS),
                          get_group(BLUE_FOLLOWERS),

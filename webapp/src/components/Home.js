@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Loader, Dimmer } from 'semantic-ui-react';
-import ListGroup from 'react-bootstrap/ListGroup';
+import { ListGroup, Button } from 'react-bootstrap';
 import Col from 'react-bootstrap/Col';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
@@ -21,6 +21,7 @@ class Home extends Component {
       allItems: [],
       loadingData: false,
       apiFailed: false,
+      loadingList: false,
       dataForCarousel: [
         { image: sandpileImg, title: 'by Seth Terashima' },
         { image: sandpile1Img, title: 'by Colt Browninga' },
@@ -55,7 +56,7 @@ class Home extends Component {
 
   render() {
     const {
-      loadingData, dataForCarousel, allItems, apiFailed,
+      loadingData, dataForCarousel, allItems, apiFailed, loadingList,
     } = this.state;
     if (apiFailed) {
       return <h1>404 Error</h1>;
@@ -75,9 +76,15 @@ class Home extends Component {
         <div className="row">
           <Col sm={12} lg={4} className="mb-5">
             {this.renderChooseModelProp()}
-            <ListGroup>
-              {/* Show the models if "active" is missing or is set to true */}
-              {Object.keys(allItems).map((item) => (!('active' in allItems[item])
+            <Button variant="outline-primary" onClick={() => this.setState({ loadingList: true })}>
+              Choose...
+            </Button>
+            {
+              loadingList
+                ? (
+                  <ListGroup>
+                    {/* Show the models if "active" is missing or is set to true */}
+                    {Object.keys(allItems).map((item) => (!('active' in allItems[item])
                 || allItems[item].active === true ? (
                   <OverlayTrigger
                     key={`${allItems[item].name}-tooltip`}
@@ -100,8 +107,10 @@ class Home extends Component {
                       {allItems[item].name}
                     </Link>
                   </OverlayTrigger>
-                ) : null))}
-            </ListGroup>
+                      ) : null))}
+                  </ListGroup>
+                ) : null
+}
           </Col>
           <Col sm={12} lg={{ cols: 6, span: 6, offset: 2 }}>
             <Carousel

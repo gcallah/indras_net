@@ -65,7 +65,7 @@ def topple(agent):
         add_grain(agent.neighbors[neighbor])
 
 
-def sandpile_action(env):
+def sandpile_action(env, **kwargs):
     """
     The action that will be taken avery period.
     Adds a grain to the center agent.

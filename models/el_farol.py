@@ -69,7 +69,7 @@ def discourage(unwanted):
     return discouraged
 
 
-def drinker_action(agent):
+def drinker_action(agent, **kwargs):
     drinkers = get_group(DRINKERS)
     non_drinkers = get_group(NON_DRINKERS)
 

@@ -1,4 +1,4 @@
-JSLINT = ./node_modules/.bin/eslint
+JSLINT = ./node_modules/.bin/eslint --fix
 JSFILES = src
 
 tests: lint jstests

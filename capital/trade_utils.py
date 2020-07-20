@@ -286,14 +286,14 @@ def negotiate(trader1, trader2, comp=False, amt=1):
             amt += amt
 
 
-def seek_a_trade(agent, comp=False):
+def seek_a_trade(agent, comp=False, **kwargs):
     nearby_agent = get_env().get_closest_agent(agent)
     if nearby_agent is not None:
         negotiate(agent, nearby_agent, comp)
         return MOVE
 
 
-def seek_a_trade_w_comp(agent):
+def seek_a_trade_w_comp(agent, **kwargs):
     return seek_a_trade(agent, comp=True)
 
 

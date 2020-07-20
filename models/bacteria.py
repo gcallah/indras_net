@@ -70,7 +70,11 @@ def bacterium_action(agent, **kwargs):
     if DEBUG:
         user_tell("I'm " + agent.name + " and I'm hungry.")
 
-    toxin_level = calc_toxin(get_group(TOXINS), agent)
+    api_key = None
+    if "api_key" in kwargs:
+        api_key = kwargs["api_key"]
+
+    toxin_level = calc_toxin(get_group(TOXINS, api_key=api_key), agent)
     nutrient_level = calc_nutrient(
         get_group(NUTRIENTS), agent)
     if agent["prev_toxicity"] is not None:

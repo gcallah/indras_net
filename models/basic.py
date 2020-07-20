@@ -26,7 +26,7 @@ DEF_NUM_BLUE = 10
 DEF_NUM_RED = 10
 
 
-def agent_action(agent):
+def agent_action(agent, **kwargs):
     """
     Just a silly agent action function for basic model.
     """
