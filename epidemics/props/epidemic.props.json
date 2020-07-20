@@ -34,6 +34,13 @@
     "hival": 1,
     "lowval": 0
   },
+    "contagious_duration": {
+    "val": 2,
+    "question": "What is the duration of the infectious period?",
+    "atype": "INT",
+    "hival": 20,
+    "lowval": 1
+  },
   "infec": {
     "val": 0.5,
     "question": "What is the rate of infection if exposed?",

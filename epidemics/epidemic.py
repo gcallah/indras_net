@@ -21,19 +21,22 @@ DEBUG = False  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
 # Constants that are re-analyzed in setup
+DEF_CON_DUR = 2
+DEF_CON_PROB = 1 - (1 / DEF_CON_DUR)
 DEF_DIM = 30
 DEF_DENSITY = .44
-DEF_DEATH_RATE = .06
+DEF_DEATH_RATE = (1 / DEF_CON_DUR) * .06
 DEF_INFEC = 0.5
 DEF_IMMUNE_PER = 10
 DEF_IM_HE_TRANS = 1 / DEF_IMMUNE_PER
 DEF_IM_STAY = 1 - DEF_IM_HE_TRANS
-DEF_SURV_RATE = 1 - DEF_DEATH_RATE
+DEF_SURV_RATE = (1 / DEF_CON_DUR) - DEF_DEATH_RATE
 DEF_EX_HE_TRANS = 1 - DEF_INFEC
 DEF_PERSON_MOVE = 3
 DEF_DISTANCING = 2
 DEF_INFEC = 0.02
 DEF_INFEC_DIST = 1
+
 
 PERSON_PREFIX = "Person"
 
@@ -59,9 +62,9 @@ IM = "5"
 STATE_TRANS = [
     # HE    EX   IN   CN   DE    IM
     [1.0, 0.0, 0.0, 0.0, 0.0,  0.0],  # HE
-    [DEF_EX_HE_TRANS,  0.0,  DEF_INFEC, 0.0, 0.0,  0.0],  # EX
+    [DEF_EX_HE_TRANS, 0.0,  DEF_INFEC, 0.0, 0.0,  0.0],  # EX
     [0.0,  0.0,  0.0, 1.0, 0.0,  0.0],  # IN
-    [0.0,  0.0,  0.0, 0.0, DEF_DEATH_RATE, DEF_SURV_RATE],  # CN
+    [0.0,  0.0,  0.0, DEF_CON_PROB, DEF_DEATH_RATE, DEF_SURV_RATE],  # CN
     [0.0,  0.0,  0.0, 0.0, 1.0,  0.0],  # DE
     [DEF_IM_HE_TRANS,  0.0,  0.0, 0.0, 0.0,  DEF_IM_STAY],  # IM
 ]
@@ -250,12 +253,16 @@ def set_up(props=None):
     immune_per = get_prop('immune_per', DEF_IMMUNE_PER)
     death_rate = get_prop('death_rate', DEF_DEATH_RATE)
     initial_infected = get_prop('initial_infected', DEF_INFEC)
+    contagious_duration = get_prop('contagious_duration', DEF_CON_DUR)
     infec = get_prop('infec', DEF_INFEC)
     immune_rate = 1 / immune_per
 
     # Replace state trans values with updated values
+
     set_trans(STATE_TRANS, EX, IN, infec, HE)
-    set_trans(STATE_TRANS, CN, DE, death_rate, IM)
+    set_trans(STATE_TRANS, CN, DE, (1/contagious_duration) * death_rate)
+    set_trans(STATE_TRANS, CN, IM, (1/contagious_duration) * (1 - death_rate))
+    set_trans(STATE_TRANS, CN, CN, 1 - (1/contagious_duration))
     set_trans(STATE_TRANS, IM, HE, immune_rate, IM)
 
     pop_cnt = int(city_height * city_width * city_density)
