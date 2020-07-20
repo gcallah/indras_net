@@ -79,6 +79,9 @@ def get_env_attr(key, default=None):
     A convenience function, since this will be
     used often.
     """
+    if _the_env is None:
+        raise Exception("You are trying to get an env attr before "
+                        + "the env has been created.")
     return _the_env.get_attr(key, default)
 
 
@@ -87,6 +90,9 @@ def set_env_attr(key, val):
     A convenience function, since this will be
     used often.
     """
+    if _the_env is None:
+        raise Exception("You are trying to set an env attr before "
+                        + "the env has been created.")
     return _the_env.set_attr(key, val)
 
 
