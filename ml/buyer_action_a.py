@@ -68,7 +68,7 @@ def buy_from_dealer(agent, my_dealer):
               str(my_dealer["emojis"]))
 
 
-def training_action(agent):
+def training_action(agent, **kwargs):
     print("_" * 20)
     print("Agent: " + agent.name)
     my_dealer = get_env().get_neighbor_of_groupX(agent,
@@ -102,7 +102,7 @@ def evaluate_dealer_emoji(buyer, dealer):
     return is_good_buy
 
 
-def strategic_action(agent):
+def strategic_action(agent, **kwargs):
     my_dealer = get_env().get_neighbor_of_groupX(agent,
                                                  get_group(DEALER_GRP),
                                                  hood_size=4)
@@ -120,7 +120,7 @@ def strategic_action(agent):
     return False
 
 
-def buyer_action(agent):  # how to write this testcase
+def buyer_action(agent, **kwargs):  # how to write this testcase
     """
     This functions lets buyer
     to decides whether wants to buy a car or not

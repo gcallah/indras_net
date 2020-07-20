@@ -222,7 +222,7 @@ class Env(Space):
     def get_periods(self):
         return self.pop_hist.periods
 
-    def __call__(self):
+    def __call__(self, **kwargs):
         """
         Calling the env makes it run. If we are on a terminal, we ask the user
         to put up a menu and choose. For tests, we just run N (default) turns.
@@ -310,7 +310,7 @@ class Env(Space):
                 else:
                     self.pop_hist.record_pop(mbr, 0)
 
-    def runN(self, periods=DEF_TIME):
+    def runN(self, periods=DEF_TIME, api_key=None):
         """
             Run our model for N periods.
             Return the total number of actions taken.
@@ -325,7 +325,7 @@ class Env(Space):
             self.handle_switches()
             self.handle_pop_hist()
 
-            (a, m) = super().__call__()
+            (a, m) = super().__call__(api_key=api_key)
             num_acts += a
             num_moves += m
             census_rpt = self.get_census(num_moves)

@@ -66,7 +66,7 @@ def is_on_fire(agent, *args):
     return agent["state"] == OF
 
 
-def tree_action(agent):
+def tree_action(agent, **kwargs):
     """
     This is what trees do each turn in the forest.
     """

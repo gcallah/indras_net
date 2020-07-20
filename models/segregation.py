@@ -69,7 +69,7 @@ def env_favorable(hood_ratio, my_tolerance):
     return hood_ratio >= my_tolerance
 
 
-def seg_agent_action(agent):
+def seg_agent_action(agent, **kwargs):
     """
     If the agent is surrounded by more "others" than it
     is comfortable with, the agent will move.

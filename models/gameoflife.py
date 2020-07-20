@@ -78,7 +78,7 @@ def check_for_new_agents(agent):
     return to_come_alive
 
 
-def gameoflife_action(biosphere):
+def gameoflife_action(biosphere, **kwargs):
     """
     The action that will be taken every period for the enviornment.
     Loops through the list of agents that has to come alive and die

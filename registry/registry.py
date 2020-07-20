@@ -107,7 +107,7 @@ def add_group(name, grp):
     _groups_dict[name] = grp
 
 
-def get_group(name):
+def get_group(name, api_key=None):
     return _groups_dict.get(name, None)
 
 

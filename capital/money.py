@@ -141,7 +141,7 @@ def trade_report(env):
            + str(trade_count_dic) + "\n"
 
 
-def money_trader_action(agent):
+def money_trader_action(agent, **kwargs):
     trader_debug(agent)
     dic1 = copy.deepcopy(agent["goods"])
     seek_a_trade(agent)

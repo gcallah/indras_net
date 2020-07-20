@@ -84,7 +84,7 @@ def reproduce(agent, create_func, num_created, group):
         return False
 
 
-def sheep_action(agent):
+def sheep_action(agent, **kwargs):
     global sheep_created
 
     agent["time_to_repr"] -= 1
@@ -92,7 +92,7 @@ def sheep_action(agent):
     return False
 
 
-def wolf_action(agent):
+def wolf_action(agent, **kwargs):
     global wolves_created
 
     prey = get_prey(agent, get_group(SHEEP_GROUP))

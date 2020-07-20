@@ -44,7 +44,7 @@ def dict_to_string(dict):
                     for good, amt in dict.items())
 
 
-def entr_action(agent):
+def entr_action(agent, **kwargs):
     if agent["cash"] > 0:
         nearby_rholder = get_env().get_neighbor_of_groupX(agent,
                                                           resource_holders,
@@ -110,7 +110,7 @@ def entr_action(agent):
     return True
 
 
-def rholder_action(agent):
+def rholder_action(agent, **kwargs):
     if agent["resources"]:
         get_env().user.tell("I'm " + agent.name
                             + " and I've got resources. I have "

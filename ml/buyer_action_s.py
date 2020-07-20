@@ -151,7 +151,7 @@ def buy_from_dealer(agent, dealer):
     agent["car_life"] = dealer["avg_car_life"]
 
 
-def buyer_action(agent):
+def buyer_action(agent, **kwargs):
     '''This functions lets buyer
     to decides whether wants to buy a car or not'''
     print("_" * 20)

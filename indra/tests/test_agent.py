@@ -22,15 +22,15 @@ STATE_TRANS = [
 ]
 
 
-def newt_action(agent):
+def newt_action(agent, **kwargs):
     print("I'm " + agent.name + " and I'm inventing modern mechanics!")
 
 
-def leib_action(agent):
+def leib_action(agent, **kwargs):
     print("I'm " + agent.name + " and I'm inventing calculus!")
 
 
-def ram_action(agent):
+def ram_action(agent, **kwargs):
     print("I'm " + agent.name + " and my duration is only: " +
           str(agent.duration))
 

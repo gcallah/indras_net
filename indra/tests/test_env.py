@@ -23,7 +23,7 @@ Y = 1
 ENV_ACT_RET = 10
 
 
-def env_action(env):
+def env_action(env, **kwargs):
     env.duration = ENV_ACT_RET
 
 

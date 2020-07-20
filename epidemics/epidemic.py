@@ -163,7 +163,7 @@ def social_distancing(agent):
     agent["angle"] = new_angle
 
 
-def person_action(agent):
+def person_action(agent, **kwargs):
     """
     This is what people do each turn in the epidemic.
     """
