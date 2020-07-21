@@ -665,7 +665,6 @@ class Region():
 
     def check_save_neighbors(self, agent, exclude_self=True):
         if (agent.get("save_neighbors", True) and len(self.agent_ls) == 0):
-            print("check_save_neighbors being called")
             self.agents_move = False
             for y in range(self.height):
                 y_coord = self.SW[Y] + y + 1
@@ -801,18 +800,14 @@ class Region():
         if pred_one is None:
             raise Exception("Pass at least a single predicate to get_ratio")
         numerator = self.get_num_of_agents(exclude_self=True, pred=pred_one)
-        print("numer", numerator)
         if pred_two is not None:
-            print("YEYEOOO STarts here")
             denominator = self.get_num_of_agents(exclude_self=True,
                                                  pred=pred_two)
-            print("denom:", denominator)
         else:
             denominator = self.get_num_of_agents(exclude_self=True, pred=None)
             if DEBUG2:
                 print("denominator length: " + str(denominator))
         if denominator == 0:
-            print("DIVIDING BY ZERO")
             return 1
         return numerator / denominator
 
