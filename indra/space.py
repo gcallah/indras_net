@@ -678,6 +678,7 @@ class Region():
                                 self.agent_ls.append(potential_neighbor)
                         else:
                             self.agent_ls.append(potential_neighbor)
+        return self.agent_ls
 
     def get_agents(self, exclude_self=False, pred=None):
         agent_ls = []
@@ -711,7 +712,7 @@ class Region():
         elif self.agents_move is False and len(self.agent_ls) > 0:
             for agent in self.agent_ls:
                 if pred is None or pred(agent):
-                    if agent.pos == self.center:
+                    if self.center is not None and agent.pos == self.center:
                         if exclude_self is False:
                             agent_ls.append(agent)
                     else:
@@ -753,8 +754,11 @@ class Region():
                                 agent_num += 1
         elif self.agents_move is False and len(self.agent_ls) > 0:
             for agent in self.agent_ls:
+                if DEBUG2:
+                    print(agent)
+                    print(agent.pos)
                 if pred is None or pred(agent):
-                    if agent.pos == self.center:
+                    if self.center is not None and agent.pos == self.center:
                         if exclude_self is False:
                             agent_num += 1
                     else:
@@ -790,8 +794,9 @@ class Region():
                 print("exists_neighbor quick method being called")
             for agent in self.agent_ls:
                 if pred is None or pred(agent):
-                    if agent.pos == self.center and exclude_self is True:
-                        return True
+                    if self.center is not None and agent.pos == self.center:
+                        if exclude_self is False:
+                            return True
                     else:
                         return True
         return False
