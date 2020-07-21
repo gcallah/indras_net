@@ -75,5 +75,12 @@
     "atype": "INT",
     "hival": 5,
     "lowval": 0
+  },
+ "mask_rate": {
+    "val": 0.5,
+    "question": "What percent of people wear masks?",
+    "atype": "DBL",
+    "hival": 1,
+    "lowval": 0
   }
 }
