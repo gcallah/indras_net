@@ -36,7 +36,7 @@ DEF_PERSON_MOVE = 3
 DEF_DISTANCING = 2
 DEF_INFEC = 0.02
 DEF_INFEC_DIST = 1
-
+DEF_MASK_RATE = 0.5
 
 PERSON_PREFIX = "Person"
 
@@ -169,8 +169,13 @@ def person_action(agent, **kwargs):
     """
     old_state = agent[STATE]
     if is_healthy(agent):
-        if exists_neighbor(agent, pred=is_contagious, size=get_prop(
-                            'infection_distance', DEF_INFEC_DIST)):
+        distance_mod = 1
+        if agent["is_wearing_mask"]:
+            distance_mod = 0.5
+        if exists_neighbor(agent, pred=is_contagious,
+                           size=int(get_prop('infection_distance',
+                                             DEF_INFEC_DIST) *
+                                    distance_mod)):
             if DEBUG2:
                 user_log_notif("Exposing nearby people!")
             agent[STATE] = EX
@@ -182,7 +187,8 @@ def person_action(agent, **kwargs):
                     curr_distance = (distance(curr_agent, agent) -
                                      DEF_INFEC_DIST)
                     if curr_distance > 0:
-                        inverse_square_val = 1/(curr_distance ** 2)
+                        inverse_square_val = ((1/(curr_distance ** 2)) *
+                                              distance_mod)
                         if inverse_square_val > 0:
                             r = random()
                             if inverse_square_val/100 > r:
@@ -220,10 +226,15 @@ def create_person(name, i, state=HE):
     Create a new person!
     By default, they start out healthy.
     """
+    mask_chance = random()
+    mask_bool = False
+    if mask_chance < get_prop("mask_rate", DEF_MASK_RATE):
+        mask_bool = True
     person = Agent(name + str(i), action=person_action,
                    attrs={STATE: state, "angle": None,
                           "max_move":
-                          get_prop('person_move', DEF_PERSON_MOVE)})
+                          get_prop('person_move', DEF_PERSON_MOVE),
+                          "is_wearing_mask": mask_bool})
     return person
 
 
