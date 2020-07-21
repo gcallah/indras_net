@@ -15,7 +15,7 @@ from indra.utils import init_props
 
 MODEL_NAME = "forestfire"
 DEBUG = False  # turns debugging code on or off
-DEBUG2 = True  # turns deeper debugging code on or off
+DEBUG2 = False  # turns deeper debugging code on or off
 
 NEARBY = 1.8
 

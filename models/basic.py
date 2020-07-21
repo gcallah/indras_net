@@ -18,7 +18,7 @@ from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import init_props
 
 MODEL_NAME = "basic"
-DEBUG = True  # turns debugging code on or off
+DEBUG = False  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
 DEF_NUM_BLUE = 10

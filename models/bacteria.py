@@ -16,7 +16,7 @@ from indra.space import DEF_HEIGHT, DEF_WIDTH, distance
 from indra.utils import init_props
 
 MODEL_NAME = "bacteria"
-DEBUG = True  # turns debugging code on or off
+DEBUG = False  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
 BACTERIA = "Bacteria"
