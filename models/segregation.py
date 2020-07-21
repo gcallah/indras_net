@@ -14,7 +14,7 @@ from indra.utils import init_props
 from indra.space import neighbor_ratio
 
 MODEL_NAME = "segregation"
-DEBUG = True  # Turns debugging code on or off
+DEBUG = False  # Turns debugging code on or off
 DEBUG2 = False  # Turns deeper debugging code on or off
 
 NUM_RED = 250

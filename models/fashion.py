@@ -18,8 +18,8 @@ from indra.space import in_hood
 from indra.utils import init_props
 
 MODEL_NAME = "fashion"
-DEBUG = True  # turns debugging code on or off
-DEBUG2 = True  # turns deeper debugging code on or off
+DEBUG = False  # turns debugging code on or off
+DEBUG2 = False  # turns deeper debugging code on or off
 
 NUM_TSETTERS = 5
 NUM_FOLLOWERS = 55

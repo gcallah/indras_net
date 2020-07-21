@@ -250,7 +250,9 @@ class Env(Space):
         """
         grp_nm = agent_by_name(group)
         self.womb.append(grp_nm)
-        user_log_notif("An agent was added to the womb for " + grp_nm)
+        if DEBUG:
+            user_log_notif("An agent was added to the womb for "
+                           + grp_nm)
 
     def pending_switches(self):
         return str(len(self.switches))
