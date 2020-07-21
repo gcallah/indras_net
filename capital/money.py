@@ -13,7 +13,7 @@ from indra.utils import init_props
 import capital.trade_utils as tu
 from capital.trade_utils import seek_a_trade, GEN_UTIL_FUNC
 from capital.trade_utils import AMT_AVAIL, endow, UTIL_FUNC, trader_debug
-import copy
+# import copy
 
 MODEL_NAME = "money"
 DEBUG = True  # turns debugging code on or off
@@ -43,33 +43,31 @@ prev_trade = {'cow': 0,
 # these are the goods we hand out at the start:
 natures_goods = {
     # add initial value to this data?
-    "cow": {AMT_AVAIL: 2, UTIL_FUNC: GEN_UTIL_FUNC,
+    "cow": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
             "incr": 0, DUR_DECR: 0.8, "divisibility": 1.0,
             "trade_count": 0, "is_allocated": False, },
-    "gold": {AMT_AVAIL: 2, UTIL_FUNC: GEN_UTIL_FUNC,
-             "incr": 0, DUR_DECR: 1.0, "divisibility": 0.5,
+    "gold": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
+             "incr": 0, DUR_DECR: 1.0, "divisibility": 0.05,
              "trade_count": 0, "is_allocated": False, },
-}
-"""
-    "cheese": {AMT_AVAIL: 2, UTIL_FUNC: GEN_UTIL_FUNC,
+    "cheese": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
                "incr": 0, DUR_DECR: 0.8, "divisibility": 0.4,
                "trade_count": 0, "is_allocated": False, },
-    "banana": {AMT_AVAIL: 7, UTIL_FUNC: GEN_UTIL_FUNC,
-               "incr": 0, DUR_DECR: 0.2, "divisibility": 0.2,
-               "trade_count": 0, "is_allocated": False, },
-    "diamond": {AMT_AVAIL: 8, UTIL_FUNC: GEN_UTIL_FUNC,
-                "incr": 0, DUR_DECR: 1.0, "divisibility": 0.8,
-                "trade_count": 0, "is_allocated": False, },
-    "avocado": {AMT_AVAIL: 5, UTIL_FUNC: GEN_UTIL_FUNC,
-                "incr": 0, DUR_DECR: 0.3, "divisibility": 0.5,
-                "trade_count": 0, "is_allocated": False, },
-    "stone": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
-              "incr": 0, DUR_DECR: 1.0, "divisibility": 1.0,
-              "trade_count": 0, "is_allocated": False, },
-    "milk": {AMT_AVAIL: 8, UTIL_FUNC: GEN_UTIL_FUNC,
-             "incr": 0, DUR_DECR: 0.2, "divisibility": 0.15,
-             "trade_count": 0, "is_allocated": False, },
-"""
+    # "banana": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
+    #            "incr": 0, DUR_DECR: 0.2, "divisibility": 0.2,
+    #            "trade_count": 0, "is_allocated": False, },
+    # "diamond": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
+    #             "incr": 0, DUR_DECR: 1.0, "divisibility": 0.8,
+    #             "trade_count": 0, "is_allocated": False, },
+    # "avocado": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
+    #             "incr": 0, DUR_DECR: 0.3, "divisibility": 0.5,
+    #             "trade_count": 0, "is_allocated": False, },
+    # "stone": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
+    #           "incr": 0, DUR_DECR: 1.0, "divisibility": 1.0,
+    #           "trade_count": 0, "is_allocated": False, },
+    # "milk": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
+    #          "incr": 0, DUR_DECR: 0.2, "divisibility": 0.15,
+    #          "trade_count": 0, "is_allocated": False, },
+}
 
 
 class Good:
@@ -106,11 +104,11 @@ def record_amt(pop_hist):
             pop_hist.record_pop(good, natures_goods[good][TRADE_COUNT])
 
 
-def incr_trade_count(good):
+def incr_trade_count(good, amt):
     """
     This function will increment the local trade_count by 1
     """
-    natures_goods[good]["trade_count"] += 1
+    natures_goods[good]["trade_count"] += amt
 
 
 def good_decay(goods):
@@ -142,14 +140,15 @@ def trade_report(env):
 
 
 def money_trader_action(agent, **kwargs):
+    print("called!!", agent.name)
     trader_debug(agent)
-    dic1 = copy.deepcopy(agent["goods"])
     seek_a_trade(agent)
-    diff = {x: (dic1[x][AMT_AVAIL] - agent["goods"][x][AMT_AVAIL])
-            for x in dic1 if x in agent["goods"]}
-    for good in diff:
-        if diff[good] != 0:
-            incr_trade_count(good)
+    for good in natures_goods:
+        # update current period's trade count in natures_good
+        natures_goods[good][TRADE_COUNT] += agent["goods"][good][TRADE_COUNT]
+        # return agent's trade_count to 0
+        agent["goods"][good][TRADE_COUNT] = 0
+        print(good, natures_goods[good][TRADE_COUNT])
     return MOVE
 
 

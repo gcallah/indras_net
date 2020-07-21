@@ -253,7 +253,7 @@ def answer_to_str(ans):
 
 def trade_debug(agent1, agent2, good1, good2, amt1, amt2, gain, loss):
     if DEBUG:
-        user_debug(f"{agent1.name} is offering {amt1} of {good1} to "
+        user_debug(f"       {agent1.name} is offering {amt1} of {good1} to "
                    + f"{agent2.name} for {amt2} of {good2} with a "
                    + f"gain of {round(gain, 2)} and "
                    + f"a loss of {round(loss, 2)}")
@@ -268,22 +268,24 @@ def offer_debug(agent, their_good, their_amt, counterparty=None):
     if DEBUG:
         if counterparty is None:
             counterparty = "Unknown"
-        user_debug(f"{agent.name} has received an offer of {their_amt} "
-                   + f" of {their_good} from {counterparty}")
+        user_debug(f"       {agent.name} has received an offer of {their_amt} "
+                   + f"of {their_good} from {counterparty}")
 
 
 def negotiate(trader1, trader2, comp=False, amt=1):
     # this_good is a dict
-    user_debug(f"{trader1.name} is entering negotiations with {trader2.name}")
+    user_debug(f"   {trader1.name} is entering negotiations with" +
+               f"{trader2.name}")
     for this_good in trader1["goods"]:
         amt = amt_adjust(trader1, this_good)
+        incr = amt
         while trader1["goods"][this_good][AMT_AVAIL] >= amt:
             # we want to offer "divisibility" amount extra each loop
             ans = send_offer(trader2, this_good, amt, trader1, comp=comp)
             # Besides acceptance or rejection, the offer can be inadequate!
             if ans == ACCEPT or ans == REJECT:
                 break
-            amt += amt
+            amt += incr
 
 
 def seek_a_trade(agent, comp=False, **kwargs):
@@ -326,10 +328,18 @@ def send_offer(agent, their_good, their_amt, counterparty, comp=False):
                              their_amt, my_good, my_amt, comp=comp):
                     trade(agent, my_good, my_amt,
                           counterparty, their_good, their_amt, comp=comp)
+                    # both goods' trade_count will be increased in sender's dic
+                    item = list(agent["goods"])[0]
+                    if "trade_count" in agent["goods"][item]:
+                        counterparty["goods"][my_good]["trade_count"] += 1
+                        counterparty["goods"][their_good]["trade_count"] += 1
+                    print("RESULT:", agent.name, "accepts the offer\n")
                     return ACCEPT
                 else:
+                    print("RESULT:", agent.name, "rejects the offer\n")
                     return REJECT
             else:
+                print("RESULT: offer is inadquet\n")
                 return INADEQ
     if DEBUG:
         user_debug(f"{agent} is rejecting all offers of {their_good}")
@@ -340,9 +350,11 @@ def rec_reply(agent, my_good, my_amt, their_good, their_amt, comp=False):
     """
     trader1 evaluates trader2's offer here:
     """
-    offer_debug(agent, their_good, their_amt)
+    # offer_debug(agent, their_good, their_amt)
     gain = utility_delta(agent, their_good, their_amt)
     loss = utility_delta(agent, my_good, -my_amt)
+    user_debug(f"       {agent.name} is evaluating the offer with gain:" +
+               f"{gain}, loss: {loss}")
     if comp:
         gain += agent[GOODS][their_good]["incr"]
         loss -= agent[GOODS][my_good]["incr"]
