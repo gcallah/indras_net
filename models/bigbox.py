@@ -196,8 +196,8 @@ def town_action(town):
     box = get_env()
     if town.get_periods() == period:
         new_bb = create_bb("Big Box")
-        #set_env_attr()
-        #groups[BB_INDX] += new_bb
+        # set_env_attr()
+        # groups[BB_INDX] += new_bb
         # How do we add group to the environment
         box.attrs["bb_group"] += 1
         town.place_member(new_bb)
@@ -212,7 +212,7 @@ def set_up(props=None):
     global store_census
     global period
     global bb_capital
-    # set_env_attr , gget_attr 
+    # set_env_attr , gget_attr
 
     init_props(MODEL_NAME, props)
 
@@ -230,7 +230,7 @@ def set_up(props=None):
                                member_creator=create_consumer,
                                num_members=num_consumers)
     bb_group = Composite("Big box", {"color": BLUE})
-    #groups = [consumer_group, bb_group]
+    # groups = [consumer_group, bb_group]
     groups = []
     for stores in range(0, len(mp_stores)):
         store_name = list(mp_stores.keys())[stores]
