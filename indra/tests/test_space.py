@@ -314,8 +314,11 @@ class SpaceTestCase(TestCase):
         space.place_member(mbr=self.test_agent2, xy=(1,2))
         self.assertIsNotNone(test_reg.space.get_agent_at(0,1))
         self.assertTrue(test_reg.exists_neighbor())
-    
+
     def test_get_ratio(self):
+        """
+        Test ratio of agents passing certain predicates.
+        """
         space = Space("test space")
         test_reg = Region(space,(0,7),(7,7),(0,0),(7,0))
         space += self.test_agent
@@ -333,7 +336,7 @@ class SpaceTestCase(TestCase):
         #                                   pred_two=lambda agent: True) == 0)
         self.assertTrue(test_reg.get_ratio(lambda agent: True,
                                            lambda agent: False) == 1)
-   
+
     """
     Tests for composite region
     """
@@ -364,7 +367,7 @@ class SpaceTestCase(TestCase):
         test_set = {test_reg1, test_reg2}
         test_comp = CompositeRegion(test_set)
         self.assertTrue(len(test_comp.get_agents()) == 4)
-    
+
     def test_composite_exists_neighbor(self):
         space1 = Space("test space1")
         test_reg1 = Region(space=space1, center=(3,3), size=3)
