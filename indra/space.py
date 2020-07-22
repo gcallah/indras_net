@@ -467,6 +467,7 @@ class Space(Composite):
                        include_self=False, hood_size=1):
         """
         Takes in an agent and returns a Composite of its Moore neighbors.
+        Should call the region_factory!
         """
         region = Region(space=self, center=(agent.get_x(), agent.get_y()),
                         size=hood_size)

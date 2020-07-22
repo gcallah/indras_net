@@ -14,7 +14,7 @@ from registry.registry import register, get_registration, get_env
 from registry.registry import get_group, user_log_notif, user_log_err
 from indra.utils import get_func_name
 
-DEBUG = True  # turns debugging code on or off
+DEBUG = False  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
 # x and y indices
