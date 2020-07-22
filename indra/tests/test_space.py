@@ -328,9 +328,8 @@ class SpaceTestCase(TestCase):
         space.place_member(mbr=self.test_agent4, xy=(5,5))
         self.assertTrue(test_reg.get_ratio(lambda agent: True) == 1)
         self.assertTrue(test_reg.get_ratio(lambda agent: False) == 0)
-        #print(test_reg.get_num_of_agents(exclude_self=True, pred=lambda agent: True))
-        #self.assertTrue(test_reg.get_ratio(pred_one=lambda agent: False,
-        #                                   pred_two=lambda agent: True) == 0)
+        self.assertTrue(test_reg.get_ratio(lambda agent: False,
+                                           lambda agent: True) == 0)
         self.assertTrue(test_reg.get_ratio(lambda agent: True,
                                            lambda agent: False) == 1)
    
