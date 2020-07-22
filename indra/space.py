@@ -4,7 +4,6 @@ of agents related spatially.
 """
 import json
 import math
-from functools import wraps
 from math import sqrt, atan, degrees
 from random import randint
 
@@ -72,18 +71,6 @@ def in_hood(agent, other, hood_sz):
               + " and " + str(other) + " is "
               + str(d))
     return d < hood_sz
-
-
-def use_saved_hood(hood_func):
-    @wraps(hood_func)
-    def wrapper(*args, **kwargs):
-        agent = args[1]
-        if (agent.get("save_neighbors", False) and agent.neighbors is not
-                None):
-            return agent.neighbors
-        return hood_func(*args, **kwargs)
-
-    return wrapper
 
 
 def fill_neighbor_coords(agent, height, include_self):
@@ -403,7 +390,6 @@ class Space(Composite):
             row_hood.name = "Row neighbors"
             return row_hood
 
-    @use_saved_hood
     def get_x_hood(self, agent, width=1, pred=None, include_self=False,
                    save_neighbors=False):
         """
@@ -428,7 +414,6 @@ class Space(Composite):
             return x_hood
 
     # for now, let's slow down and not use the saved hood!
-    @use_saved_hood
     def get_y_hood(self, agent, height=1, pred=None, include_self=False,
                    save_neighbors=False):
         """
@@ -451,7 +436,6 @@ class Space(Composite):
             agent.neighbors = y_hood
         return y_hood
 
-    @use_saved_hood
     def get_vonneumann_hood(self, agent, pred=None, save_neighbors=False):
         """
         Takes in an agent and returns a Composite of its
@@ -462,11 +446,11 @@ class Space(Composite):
             agent.neighbors = vonneumann_hood
         return vonneumann_hood
 
-    @use_saved_hood
     def get_moore_hood(self, agent, pred=None, save_neighbors=False,
                        include_self=False, hood_size=1):
         """
         Takes in an agent and returns a Composite of its Moore neighbors.
+        Should call the region_factory!
         """
         region = Region(space=self, center=(agent.get_x(), agent.get_y()),
                         size=hood_size)
@@ -550,7 +534,7 @@ class Space(Composite):
         region = region_factory(space=self, center=(agent.get_x(),
                                 agent.get_y()),
                                 size=size)
-        return region.exists_neighbor(exclude_self=exclude_self, pred=pred)
+        return region.exists_agent(exclude_self=exclude_self, pred=pred)
 
     def neighbor_ratio(self, agent, pred_one, pred_two=None, size=1,
                        region_type=None):
@@ -592,7 +576,7 @@ class Region():
     """
 
     def __init__(self, space=None, NW=None, NE=None, SW=None,
-                 SE=None, center=None, size=None):
+                 SE=None, center=None, size=None, agents_move=True):
         # alternate structure?
         # self.corners[NW] = nw
         self.name = gen_region_name(NW, NE, SW, SE, center, size)
@@ -616,8 +600,11 @@ class Region():
         self.check_bounds()
         self.width = abs(self.NW[X] - self.NE[X])
         self.height = abs(self.NW[Y] - self.SW[Y])
-        self.agent_ls = []
-        self.agents_move = True
+        self.agents_move = agents_move
+        if self.agents_move:
+            self.my_agents = []
+        else:
+            self.my_agents = self._load_agents()
 
     def __str__(self):
         return self.name
@@ -664,7 +651,7 @@ class Region():
                 self.SE = (self.SE[X], self.SE[Y] - 1)
 
     def check_save_neighbors(self, agent, exclude_self=True):
-        if (agent.get("save_neighbors", True) and len(self.agent_ls) == 0):
+        if (agent.get("save_neighbors", True) and len(self.my_agents) == 0):
             self.agents_move = False
             for y in range(self.height):
                 y_coord = self.SW[Y] + y + 1
@@ -675,19 +662,76 @@ class Region():
                     if potential_neighbor is not None:
                         if (x_coord, y_coord) == self.center:
                             if exclude_self is False:
-                                self.agent_ls.append(potential_neighbor)
+                                self.my_agents.append(potential_neighbor)
                         else:
-                            self.agent_ls.append(potential_neighbor)
-        return self.agent_ls
+                            self.my_agents.append(potential_neighbor)
+        return self.my_agents
+
+    def _load_agents(self, exclude_self=False):
+        """
+        This fills self.my_agents with all neighbors, and maybe the center
+        agents, depending upon `exclude_self`.
+        """
+        for y in range(self.height):
+            y_coord = self.SW[Y] + y + 1
+            for x in range(self.width):
+                x_coord = self.SW[X] + x
+                if (x_coord, y_coord) == self.center and exclude_self is True:
+                    continue
+                potential_neighbor = self.space.get_agent_at(x_coord,
+                                                             y_coord)
+                if potential_neighbor is not None:
+                    self.my_agents.append(potential_neighbor)
+
+    def _load_agents_if_necc(self, exclude_self=True, pred=None):
+        """
+        Load the neighboring agents if we ain't got 'em already.
+        """
+        if self.agents_move is True:
+            self.my_agents = []
+            self._load_agents(exclude_self=exclude_self)
+
+    def _apply_pred_if_necc(self, pred):
+        these_agents = []
+        if pred is not None:
+            these_agents = [agent for agent in self.my_agents if pred(agent)]
+        else:
+            these_agents = self.my_agents
+        return these_agents
+
+    def get_my_agents(self, exclude_self=False, pred=None):
+        """
+        Get agents in region filtered by `pred()`:
+            if agents don't move, use saved set.
+        """
+        self._load_agents_if_necc(exclude_self=exclude_self)
+        return self._apply_pred_if_necc(pred)
+
+    def get_num_agents(self, exclude_self=False, pred=None):
+        self._load_agents_if_necc(exclude_self=exclude_self)
+        return len(self._apply_pred_if_necc(pred))
+
+    def exists_agent(self, exclude_self=True, pred=None):
+        self._load_agents_if_necc(exclude_self=exclude_self)
+        if pred is None:
+            return len(self.my_agents) > 0
+        else:
+            for agent in self.my_agents:
+                if pred(agent):
+                    return True
+        return False
 
     def get_agents(self, exclude_self=False, pred=None):
-        agent_ls = []
+        """
+        Replace with above if it works!
+        """
+        my_agents = []
         if (self.agents_move is False and pred is None
-                and len(self.agent_ls) > 0):
-            return self.agent_ls
+                and len(self.my_agents) > 0):
+            return self.my_agents
         if DEBUG2:
             print(self.__repr__())
-        if self.agents_move is True or len(self.agent_ls) == 0:
+        if self.agents_move is True or len(self.my_agents) == 0:
             for y in range(self.height):
                 y_coord = self.SW[Y] + y + 1
                 for x in range(self.width):
@@ -700,35 +744,35 @@ class Region():
                         if pred is None or pred(potential_neighbor):
                             if (x_coord, y_coord) == self.center:
                                 if exclude_self is False:
-                                    agent_ls.append(potential_neighbor)
+                                    my_agents.append(potential_neighbor)
                             else:
-                                agent_ls.append(potential_neighbor)
+                                my_agents.append(potential_neighbor)
                             if potential_neighbor.get("save_neighbors", True):
                                 self.agents_move = False
             if self.agents_move is False:
                 if DEBUG2:
-                    print("self.agent_ls is saved!")
-                self.agent_ls = agent_ls
-        elif self.agents_move is False and len(self.agent_ls) > 0:
-            for agent in self.agent_ls:
+                    print("self.my_agents is saved!")
+                self.my_agents = my_agents
+        elif self.agents_move is False and len(self.my_agents) > 0:
+            for agent in self.my_agents:
                 if pred is None or pred(agent):
                     if self.center is not None and agent.pos == self.center:
                         if exclude_self is False:
-                            agent_ls.append(agent)
+                            my_agents.append(agent)
                     else:
-                        agent_ls.append(agent)
+                        my_agents.append(agent)
             if DEBUG2:
-                print("get_agents self.agent_ls is being looped through")
-        return agent_ls
+                print("get_agents self.my_agents is being looped through")
+        return my_agents
 
     def get_num_of_agents(self, exclude_self=False, pred=None):
         agent_num = 0
         if DEBUG2:
             print(self.__repr__())
         if (self.agents_move is False and pred is None
-                and len(self.agent_ls) > 0):
-            return len(self.agent_ls)
-        if self.agents_move is True or len(self.agent_ls) == 0:
+                and len(self.my_agents) > 0):
+            return len(self.my_agents)
+        if self.agents_move is True or len(self.my_agents) == 0:
             for y in range(self.height):
                 y_coord = self.SW[Y] + y + 1
                 for x in range(self.width):
@@ -752,11 +796,8 @@ class Region():
                                     print("agent counter get_num_of_agents: ",
                                           (x_coord, y_coord))
                                 agent_num += 1
-        elif self.agents_move is False and len(self.agent_ls) > 0:
-            for agent in self.agent_ls:
-                if DEBUG2:
-                    print(agent)
-                    print(agent.pos)
+        elif self.agents_move is False and len(self.my_agents) > 0:
+            for agent in self.my_agents:
                 if pred is None or pred(agent):
                     if self.center is not None and agent.pos == self.center:
                         if exclude_self is False:
@@ -769,9 +810,9 @@ class Region():
         if DEBUG2:
             print(self.__repr__())
         if (self.agents_move is False and pred is None
-                and len(self.agent_ls) > 0):
+                and len(self.my_agents) > 0):
             return True
-        if self.agents_move is True or len(self.agent_ls) == 0:
+        if self.agents_move is True or len(self.my_agents) == 0:
             for y in range(self.height):
                 y_coord = self.SW[Y] + y + 1
                 for x in range(self.width):
@@ -789,10 +830,10 @@ class Region():
                                     return True
                             else:
                                 return True
-        elif self.agents_move is False and len(self.agent_ls) > 0:
+        elif self.agents_move is False and len(self.my_agents) > 0:
             if DEBUG2:
                 print("exists_neighbor quick method being called")
-            for agent in self.agent_ls:
+            for agent in self.my_agents:
                 if pred is None or pred(agent):
                     if self.center is not None and agent.pos == self.center:
                         if exclude_self is False:
@@ -804,14 +845,12 @@ class Region():
     def get_ratio(self, pred_one, pred_two=None):
         if pred_one is None:
             raise Exception("Pass at least a single predicate to get_ratio")
-        numerator = self.get_num_of_agents(exclude_self=True, pred=pred_one)
-        if pred_two is not None:
-            denominator = self.get_num_of_agents(exclude_self=True,
-                                                 pred=pred_two)
-        else:
-            denominator = self.get_num_of_agents(exclude_self=True, pred=None)
-            if DEBUG2:
-                print("denominator length: " + str(denominator))
+        numerator = self.get_num_agents(exclude_self=True, pred=pred_one)
+        denominator = self.get_num_agents(exclude_self=True,
+                                          pred=pred_two)
+        if DEBUG2:
+            print("numerator length: " + str(numerator))
+            print("denominator length: " + str(denominator))
         if denominator == 0:
             return 1
         return numerator / denominator
@@ -837,7 +876,7 @@ class CircularRegion(Region):
         return False
 
     def get_agents(self, exclude_self=False, pred=None):
-        agent_ls = []
+        my_agents = []
         for coord in self.space.locations:
             conv_coord = get_xy_from_str(coord)
             if self.contains(conv_coord):
@@ -845,10 +884,10 @@ class CircularRegion(Region):
                                                           conv_coord[Y])
                 if pred is None or pred is True:
                     if (conv_coord == self.center) and (exclude_self is False):
-                        agent_ls.append(potential_agent)
+                        my_agents.append(potential_agent)
                     else:
-                        agent_ls.append(potential_agent)
-        return agent_ls
+                        my_agents.append(potential_agent)
+        return my_agents
 
 
 class CompositeRegion(Region):
@@ -866,11 +905,11 @@ class CompositeRegion(Region):
         return False
 
     def get_agents(self, exclude_self=False, pred=None):
-        agent_ls = []
+        my_agents = []
         for region in self.composite:
-            sub_agent_ls = region.get_agents(exclude_self=False, pred=pred)
-            agent_ls.extend(sub_agent_ls)
-        return agent_ls
+            sub_my_agents = region.get_agents(exclude_self=False, pred=pred)
+            my_agents.extend(sub_my_agents)
+        return my_agents
 
     def exists_neighbor(self, exclude_self=False, pred=None):
         for region in self.composite:
