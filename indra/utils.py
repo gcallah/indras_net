@@ -2,9 +2,12 @@
 This file contains miscellaneous.
 """
 import os
+import pdb
 import random
 
 from propargs.propargs import PropArgs
+
+from registry.execution_registry import execution_registry
 from registry.registry import set_propargs
 
 
@@ -45,7 +48,8 @@ def init_props(model_nm, props=None, model_dir="models",
                                    skip_user_questions=skip_user_questions)
 
     # we keep props available in registry:
-    set_propargs(pa)
+    execution_registry.set_propargs(int(props["execution_key"].val), pa)
+    # set_propargs(pa)
     return pa
 
 

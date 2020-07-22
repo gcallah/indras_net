@@ -14,7 +14,6 @@ def run_model_put(payload, run_time):
     We create a dummy env that fills itself in to create
     the real env from the payload.
     """
-    clear_registry()
     env = Env(name='temp name', serial_obj=payload)
     user_log_notif("Searching env attributes for " + env.name)
     if env.name in env_attrs:

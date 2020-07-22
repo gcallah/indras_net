@@ -1,6 +1,7 @@
 # Indra API server
 import logging
 import os
+import pdb
 
 from flask import Flask
 from flask_cors import CORS
@@ -9,7 +10,7 @@ from flask_restplus import Resource, Api, fields
 from APIServer.model_creator_api import get_model_creator
 from APIServer.model_creator_api import put_model_creator
 from APIServer.models_api import get_models
-from APIServer.props_api import get_props, put_props
+from APIServer.props_api import get_props_for_current_execution, put_props
 from APIServer.run_model_api import run_model_put
 from indra.user import APIUser
 
@@ -22,6 +23,7 @@ user = APIUser("Dennis", None)
 # the hard-coded dir is needed for Python Anywhere, until
 # we figure out how to get the env var set there.
 indra_dir = os.getenv("INDRA_HOME", "/home/indrasnet/indras_net")
+
 
 
 @api.route('/test', endpoint="test",
@@ -107,7 +109,7 @@ class Props(Resource):
         """
         Get the list of properties (parameters) for a model.
         """
-        return get_props(model_id, indra_dir)
+        return get_props_for_current_execution(model_id, indra_dir)
 
     @api.expect(props)
     def put(self, model_id):

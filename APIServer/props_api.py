@@ -2,17 +2,22 @@ import json
 
 from APIServer.api_utils import json_converter, err_return
 from APIServer.models_api import get_model
+from registry.execution_registry import execution_registry
 from registry.registry import get_env
 from registry.run_dict import setup_dict
-
+import pdb
 ENV_INSTANCE = 0
 
 
-def get_props(model_id, indra_dir):
+def get_props_for_current_execution(model_id, indra_dir):
     try:
+        execution_key = execution_registry.create_new_execution_registry()
         model = get_model(model_id, indra_dir=indra_dir)
         with open(indra_dir + "/" + model["props"]) as file:
-            return json.loads(file.read())
+            props = json.loads(file.read())
+        execution_registry.set_propargs(execution_key, props)
+        props["execution_key"] = execution_registry.get_execution_key_as_prop(execution_key)
+        return props
     except (IndexError, KeyError, ValueError):
         return err_return("Invalid model id " + str(model_id))
     except FileNotFoundError:  # noqa: F821
@@ -22,4 +27,4 @@ def get_props(model_id, indra_dir):
 def put_props(model_id, payload, indra_dir):
     model = get_model(model_id, indra_dir=indra_dir)
     setup_dict[model["run"]](props=payload)
-    return json_converter(get_env())
+    return json_converter(get_env(), execution_key=payload["execution_key"].val)
