@@ -9,6 +9,7 @@ from propargs.propargs import PropArgs
 
 from registry.execution_registry import execution_registry
 from registry.registry import set_propargs
+from registry.execution_registry import COMMANDLINE_EXECUTION_KEY
 
 
 def gaussian(mean, sigma, trim_at_zero=True):
@@ -38,6 +39,7 @@ def get_prop_path(model_name, model_dir="models"):
 def init_props(model_nm, props=None, model_dir="models",
                skip_user_questions=False):
     props_file = get_prop_path(model_nm, model_dir=model_dir)
+    execution_key = COMMANDLINE_EXECUTION_KEY if props is None else int(props["execution_key"].val)
     if props is None:
         pa = PropArgs.create_props(model_nm,
                                    ds_file=props_file,
@@ -48,8 +50,7 @@ def init_props(model_nm, props=None, model_dir="models",
                                    skip_user_questions=skip_user_questions)
 
     # we keep props available in registry:
-    execution_registry.set_propargs(int(props["execution_key"].val), pa)
-    # set_propargs(pa)
+    execution_registry.set_propargs(execution_key, pa)
     return pa
 
 

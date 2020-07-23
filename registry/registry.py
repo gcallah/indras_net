@@ -5,7 +5,10 @@ This class will appear as a dictionary, but with the right sort of default
 behaviors that we need for our registry.
 """
 import json
+import pdb
 import warnings
+
+from registry.execution_registry import execution_registry
 
 REGISTRY = "Registry"
 
@@ -70,30 +73,24 @@ def set_env(env):
     _the_env = env
 
 
-def get_env():
-    return _the_env
+def get_env(execution_key=None):
+    return execution_registry.get_registered_env(execution_key)
 
 
-def get_env_attr(key, default=None):
+def get_env_attr(execution_key, key, default=None):
     """
     A convenience function, since this will be
     used often.
     """
-    if _the_env is None:
-        raise Exception("You are trying to get an env attr before "
-                        + "the env has been created.")
-    return _the_env.get_attr(key, default)
+    return execution_registry.get_registered_env(execution_key).get_attr(key, default)
 
 
-def set_env_attr(key, val):
+def set_env_attr(execution_key, key, val):
     """
     A convenience function, since this will be
     used often.
     """
-    if _the_env is None:
-        raise Exception("You are trying to set an env attr before "
-                        + "the env has been created.")
-    return _the_env.set_attr(key, val)
+    return execution_registry.get_registered_env(execution_key).set_attr(key, val)
 
 
 """
@@ -102,13 +99,12 @@ Our singleton dict for groups.
 _groups_dict = {}
 
 
-def add_group(name, grp):
-    global _groups_dict
-    _groups_dict[name] = grp
+def add_group(name, grp, execution_key=None):
+    execution_registry.set_group(execution_key, name, grp)
 
 
-def get_group(name, api_key=None):
-    return _groups_dict.get(name, None)
+def get_group(name, execution_key=None):
+    return execution_registry.get_registered_group(execution_key, group_name=name)
 
 
 """
@@ -133,15 +129,20 @@ def get_propargs():
     return _the_props
 
 
-def get_prop(key, default_val=None):
+def get_prop(execution_key, prop_key, default_val=None):
     """
     Get a particular property.
     If key is missing (or no props) return default_val.
     """
-    if _the_props is None:
+    prop_value = execution_registry.get_propargs(execution_key).get(prop_key, default_val)
+    if prop_value is None:
         return default_val
     else:
-        return _the_props.get(key, default_val)
+        return prop_value
+    # if _the_props is None:
+    #     return default_val
+    # else:
+    #     return _the_props.get(key, default_val)
 
 
 class Registry(object):
@@ -151,6 +152,7 @@ class Registry(object):
     registered here. If they are already registered, they will
     ignore the newly registered object, and leave the old value in place.
     """
+
     def __init__(self):
         self.agents = {}
 
@@ -204,15 +206,12 @@ class Registry(object):
 registry = Registry()
 
 
-def register(key, val):
-    registry[key] = val
+def register(name_of_entity, entity, execution_key=None):
+    execution_registry.register_agent(execution_key, name_of_entity, entity)
 
 
-def get_registration(key):
-    if key in registry:
-        return registry[key]
-    else:
-        return None
+def get_registration(name_of_entity, execution_key=None):
+    return execution_registry.get_registered_agent(execution_key, name_of_entity)
 
 
 def clear_registry():

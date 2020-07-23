@@ -135,12 +135,12 @@ def opposing_angle(pos1, pos2):
         else:
             new_angle = degrees_between(x_dif, y_dif)
     elif (y_dif != 0):
-        if(y_dif > 0):
+        if (y_dif > 0):
             new_angle = 270
         else:
             new_angle = 90
     else:
-        if(x_dif > 0):
+        if (x_dif > 0):
             new_angle = 180
         else:
             new_angle = 0
@@ -156,11 +156,11 @@ class Space(Composite):
 
     def __init__(self, name, width=DEF_WIDTH, height=DEF_HEIGHT,
                  attrs=None, members=None, action=None,
-                 random_placing=True, serial_obj=None, reg=True):
+                 random_placing=True, serial_obj=None, reg=True, **kwargs):
         super().__init__(name, attrs=attrs, members=members,
                          action=action, serial_obj=serial_obj,
-                         reg=False)
-
+                         reg=False, **kwargs)
+        self.execution_key = kwargs["execution_key"]
         self.type = type(self).__name__
         if serial_obj is not None:
             self.restore(serial_obj)
@@ -176,7 +176,7 @@ class Space(Composite):
             else:
                 self.consec_place_members(self.members)
         if reg:
-            register(self.name, self)
+            register(self.name, self, execution_key=self.execution_key)
 
     def restore(self, serial_obj):
         self.from_json(serial_obj)
@@ -316,7 +316,7 @@ class Space(Composite):
         if self.is_empty(x, y):
             return None
         agent_nm = self.locations[str((x, y))]
-        return get_registration(agent_nm)
+        return get_registration(agent_nm, execution_key=self.execution_key)
 
     def place_member(self, mbr, max_move=None, xy=None):
         """
@@ -413,7 +413,7 @@ class Space(Composite):
         get_x_hood would return (-1, 0) and (1, 0).
         """
         if agent is not None:
-            x_hood = Composite("x neighbors")
+            x_hood = Composite("x neighbors", execution_key=self.execution_key)
             agent_x, agent_y, neighbor_x_coords \
                 = fill_neighbor_coords(agent,
                                        width,
@@ -437,7 +437,7 @@ class Space(Composite):
         For example, if the agent is located at (0, 0),
         get_y_hood would return agents at (0, 2) and (0, 1).
         """
-        y_hood = Composite("y neighbors")
+        y_hood = Composite("y neighbors", execution_key=self.execution_key)
         agent_x, agent_y, neighbor_y_coords \
             = fill_neighbor_coords(agent,
                                    height,
@@ -471,7 +471,7 @@ class Space(Composite):
         region = Region(space=self, center=(agent.get_x(), agent.get_y()),
                         size=hood_size)
         members = region.get_agents(exclude_self=True, pred=None)
-        return Composite("Moore neighbors", members=members)
+        return Composite("Moore neighbors", members=members, execution_key=self.execution_key)
 
     def get_square_hood(self, agent, pred=None, save_neighbors=False,
                         include_self=False, hood_size=1):
@@ -499,7 +499,7 @@ class Space(Composite):
                                     hood_size=hood_size)
         if isinstance(group, str):
             # lookup group by name
-            group = get_group(group)
+            group = get_group(group, self.execution_key)
             if group is None:
                 return None
         for agent_name in hood:
@@ -516,7 +516,7 @@ class Space(Composite):
         for key, other_nm in self.locations.items():
             if DEBUG:
                 print("Checking ", other_nm, "for closeness")
-            other = get_registration(other_nm)
+            other = get_registration(self.execution_key, other_nm)
             if other is agent or other is None:
                 continue
             d = distance(agent, other)
@@ -548,14 +548,14 @@ class Space(Composite):
     def exists_neighbor(self, agent, pred=None, exclude_self=True, size=1,
                         region_type=None):
         region = region_factory(space=self, center=(agent.get_x(),
-                                agent.get_y()),
+                                                    agent.get_y()),
                                 size=size)
         return region.exists_neighbor(exclude_self=exclude_self, pred=pred)
 
     def neighbor_ratio(self, agent, pred_one, pred_two=None, size=1,
                        region_type=None):
         region = region_factory(space=self, center=(agent.get_x(),
-                                agent.get_y()),
+                                                    agent.get_y()),
                                 size=size)
         return region.get_ratio(pred_one, pred_two=pred_two)
 
@@ -592,12 +592,13 @@ class Region():
     """
 
     def __init__(self, space=None, NW=None, NE=None, SW=None,
-                 SE=None, center=None, size=None):
+                 SE=None, center=None, size=None, **kwargs):
         # alternate structure?
         # self.corners[NW] = nw
+        self.execution_key = kwargs["execution_key"]
         self.name = gen_region_name(NW, NE, SW, SE, center, size)
         if (space is None):
-            space = get_env()
+            space = get_env(self.execution_key)
         self.space = space
         if (center is not None and size is not None):
             self.NW = (center[X] - size, center[Y] + size)
@@ -635,7 +636,7 @@ class Region():
 
     def contains(self, coord):
         if (coord[X] >= self.NW[X]) and (coord[X] < self.NE[X]):
-            if(coord[Y] >= self.SW[Y]) and (coord[Y] < self.NE[Y]):
+            if (coord[Y] >= self.SW[Y]) and (coord[Y] < self.NE[Y]):
                 return True
         return False
 

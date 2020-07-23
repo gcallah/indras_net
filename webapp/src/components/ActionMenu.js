@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ListGroup from 'react-bootstrap/ListGroup';
 import axios from 'axios';
 import autoBind from 'react-autobind';
+import PropTypes from 'prop-types';
 import PageLoader from './PageLoader';
 import PopulationGraph from './PopulationGraph';
 import ScatterPlot from './ScatterPlot';
@@ -44,7 +45,12 @@ class ActionMenu extends Component {
   async componentDidMount() {
     try {
       document.title = 'Indra | Menu';
-      const m = await axios.get(API_SERVER);
+      const { location } = this.props;
+      const { state } = location;
+      const { envFile } = state;
+      /* eslint-disable */
+      const { execution_key } = envFile;
+      const m = await axios.get(`${API_SERVER}${execution_key}`);
       this.setState({
         menu: m.data,
         name: localStorage.getItem('name'),
@@ -281,9 +287,22 @@ class ActionMenu extends Component {
   }
 }
 
-ActionMenu.propTypes = {};
+ActionMenu.propTypes = {
+  location: PropTypes.shape({
+    state: PropTypes.shape({
+      envFile: PropTypes.object,
+    }),
+  }),
+  /* eslint-disable */
+  history: PropTypes.object,
+};
 
 ActionMenu.defaultProps = {
+  location: {
+    state: {
+      envFile: {},
+    },
+  },
   history: {},
 };
 

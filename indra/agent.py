@@ -124,18 +124,18 @@ def split(agent1, agent2):
         return True
 
 
-def switch(agent_nm, grp1_nm, grp2_nm):
+def switch(agent_nm, grp1_nm, grp2_nm, execution_key=None):
     """
     Move agent from grp1 to grp2.
     We first must recover agent objects from the registry.
     """
-    agent = get_registration(agent_nm)
+    agent = get_registration(agent_nm, execution_key=execution_key)
     if agent is None:
         user_log_notif("In switch; could not find agent: " + str(agent))
-    grp1 = get_group(grp1_nm)
+    grp1 = get_group(grp1_nm, execution_key=execution_key)
     if grp1 is None:
         user_log_notif("In switch; could not find from group: " + str(grp1))
-    grp2 = get_group(grp2_nm)
+    grp2 = get_group(grp2_nm, execution_key=execution_key)
     if grp2 is None:
         user_log_notif("In switch; could not find to group: " + str(grp2))
     split_em = split(grp1, agent)
@@ -179,9 +179,9 @@ class Agent(object):
     """
 
     def __init__(self, name, attrs=None, action=None, duration=INF,
-                 prim_group=None, serial_obj=None, reg=True):
+                 prim_group=None, serial_obj=None, reg=True, **kwargs):
         self.registry = {}
-
+        self.execution_key=kwargs["execution_key"]
         if serial_obj is not None:
             self.restore(serial_obj)
         else:
@@ -201,7 +201,7 @@ class Agent(object):
 
             self.prim_group = None if prim_group is None else str(prim_group)
         if reg:
-            register(self.name, self)
+            register(self.name, self, execution_key=self.execution_key)
 
     def set_prim_group(self, group):
         """
@@ -275,7 +275,7 @@ class Agent(object):
         return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
 
     def primary_group(self):
-        return get_group(self.prim_group)
+        return get_group(self.prim_group, execution_key=self.execution_key)
 
     def group_name(self):
         return self.prim_group

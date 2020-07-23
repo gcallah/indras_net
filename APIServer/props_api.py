@@ -5,7 +5,7 @@ from APIServer.models_api import get_model
 from registry.execution_registry import execution_registry
 from registry.registry import get_env
 from registry.run_dict import setup_dict
-import pdb
+
 ENV_INSTANCE = 0
 
 
@@ -25,6 +25,7 @@ def get_props_for_current_execution(model_id, indra_dir):
 
 
 def put_props(model_id, payload, indra_dir):
+    execution_key = payload["execution_key"].get("val")
     model = get_model(model_id, indra_dir=indra_dir)
     setup_dict[model["run"]](props=payload)
-    return json_converter(get_env(), execution_key=payload["execution_key"].val)
+    return json_converter(get_env(execution_key=execution_key), execution_key=execution_key)

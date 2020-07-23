@@ -43,8 +43,8 @@ class Composite(Agent):
         self.members = OrderedDict()
         super().__init__(name, attrs=attrs, duration=duration,
                          action=action, serial_obj=serial_obj,
-                         reg=False)
-
+                         reg=False, **kwargs)
+        self.execution_key = kwargs["execution_key"]
         self.type = type(self).__name__
 
         if serial_obj is not None:
@@ -64,7 +64,7 @@ class Composite(Agent):
                 for i in range(num_members):
                     join(self, member_creator(self.name, i, **kwargs))
         if reg:
-            add_group(self.name, self)
+            add_group(self.name, self, execution_key=self.execution_key)
 
     def restore(self, serial_obj):
         """

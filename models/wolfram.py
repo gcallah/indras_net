@@ -4,6 +4,7 @@ Wolfram's cellular automata model.
 
 import ast
 import os
+import pdb
 
 from indra.agent import Agent, switch, DONT_MOVE
 from indra.composite import Composite
@@ -13,6 +14,7 @@ from indra.space import DEF_WIDTH
 from indra.utils import init_props
 from registry.registry import get_prop, get_env, get_group
 from registry.registry import set_env_attr, get_env_attr, get_registration
+from registry.execution_registry import COMMANDLINE_EXECUTION_KEY
 
 MODEL_NAME = "wolfram"
 DEBUG = False  # Turns debugging code on or off
@@ -23,20 +25,20 @@ W = 0
 B = 1
 
 
-def create_wolf_cell(x, y):
+def create_wolf_cell(x, y, execution_key=None):
     """
     Create an agent with the passed x, y value as its name.
     """
-    return Agent(name=("(%d,%d)" % (x, y)))
+    return Agent(name=("(%d,%d)" % (x, y)), execution_key=execution_key)
 
 
-def get_color(group):
+def get_color(group, execution_key=None):
     """
     Returns W or B, W for white and B for black
         when passed in a group.
     W and B are integer values:- 0 and 1, respectively.
     """
-    if group == get_group(WHITE):
+    if group == get_group(WHITE, execution_key):
         return W
     else:
         return B
@@ -73,8 +75,8 @@ def agent_nm_from_xy(x, y):
     return ("(%d,%d)" % (x, y))
 
 
-def top_row():
-    return get_env().height - 1
+def top_row(execution_key=None):
+    return get_env(execution_key=execution_key).height - 1
 
 
 def gone_far_enough():
@@ -88,25 +90,26 @@ def gone_far_enough():
     get_env().exclude_menu_item("run")
 
 
-def agent_color(x=None, y=None, agent_nm=None):
+def agent_color(x=None, y=None, agent_nm=None, execution_key=None):
     if x is not None:
         agent_nm = agent_nm_from_xy(x, y)
-    agent = get_registration(agent_nm)
-    return get_color(agent.primary_group())
+    agent = get_registration(agent_nm, execution_key)
+    return get_color(agent.primary_group(), execution_key)
 
 
 def wolfram_action(wolf_env: Env, **kwargs):
     """
     The action that will be taken every period.
     """
-    # print_registry_key()
-    row_above_idx = get_env_attr("prev_row_idx")
+    execution_key = kwargs["execution_key"]
+
+    row_above_idx = get_env_attr(execution_key, "prev_row_idx")
 
     active_row_idx = wolf_env.height - wolf_env.get_periods()
 
     wolf_env.user.tell(
         "Checking agents in row {} against the rule {}"
-            .format(active_row_idx, get_env_attr("rule_num")))
+            .format(active_row_idx, get_env_attr(execution_key, "rule_num")))
 
     if active_row_idx < 1:
         gone_far_enough()
@@ -116,7 +119,7 @@ def wolfram_action(wolf_env: Env, **kwargs):
 
         next_row = wolf_env.get_row_hood(next_row_idx)
 
-        left_color = agent_color(x=0, y=active_row_idx)
+        left_color = agent_color(x=0, y=active_row_idx, execution_key=execution_key)
 
         x = 0
 
@@ -126,20 +129,20 @@ def wolfram_action(wolf_env: Env, **kwargs):
             if DEBUG:
                 print("Checking agent at", row_above[agent_nm])
             if (x > 0) and (x < wolf_env.width - 1):
-                middle_color = agent_color(agent_nm=agent_nm)
-                right_color = agent_color(x=x + 1, y=active_row_idx)
+                middle_color = agent_color(agent_nm=agent_nm, execution_key=execution_key)
+                right_color = agent_color(x=x + 1, y=active_row_idx, execution_key=execution_key)
                 if DEBUG:
                     print("  Left: %d, middle: %d, right: %d" %
                           (left_color, middle_color, right_color))
-                if next_color(get_env_attr("rule_dict"),
+                if next_color(get_env_attr(execution_key, "rule_dict"),
                               left_color, middle_color, right_color):
                     wolf_env.add_switch(next_row[
                                             agent_nm_from_xy(x, next_row_idx)],
-                                        get_group(WHITE), get_group(BLACK))
+                                        get_group(WHITE, execution_key), get_group(BLACK, execution_key))
                 left_color = middle_color
             x += 1
 
-    set_env_attr("prev_row_idx", next_row_idx)
+    set_env_attr(execution_key, "prev_row_idx", next_row_idx)
     return DONT_MOVE
 
 
@@ -148,16 +151,17 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     init_props(MODEL_NAME, props)
+    execution_key = int(props["execution_key"].val) if props is not None else COMMANDLINE_EXECUTION_KEY
 
-    width = get_prop('grid_width', DEF_WIDTH)
+    width = get_prop(execution_key, 'grid_width', DEF_WIDTH)
     height = (width // 2) + (width % 2)
 
-    groups = [Composite(WHITE, {"color": WHITE}),
-              Composite(BLACK, {"color": BLACK, "marker": SQUARE})]
+    groups = [Composite(WHITE, {"color": WHITE}, execution_key=execution_key),
+              Composite(BLACK, {"color": BLACK, "marker": SQUARE}, execution_key=execution_key)]
 
     for y in range(height):
         for x in range(width):
-            groups[W] += create_wolf_cell(x, y)
+            groups[W] += create_wolf_cell(x, y, execution_key)
     wolfram_env = Env(MODEL_NAME,
                       action=wolfram_action,
                       height=height,
@@ -166,9 +170,11 @@ def set_up(props=None):
                       attrs={"size": 50,
                              "hide_grid_lines": True,
                              "hide_legend": True},
-                      random_placing=False)
+                      random_placing=False,
+                      execution_key=execution_key
+                      )
 
-    rule_num = get_prop('rule_number', DEF_RULE)
+    rule_num = get_prop(execution_key, 'rule_number', DEF_RULE)
     wolfram_env.set_attr("rule_num", rule_num)
     wolfram_env.set_attr("rule_dict", get_rule(rule_num))
     wolfram_env.exclude_menu_item("line_graph")
@@ -178,16 +184,16 @@ def set_up(props=None):
     Using add switch doesn't process the switch until after
     the environment is executed which breaks the model.
     '''
-    top_center_agent = wolfram_env.get_agent_at(width // 2, top_row())
-    switch(top_center_agent.name, WHITE, BLACK)
+    top_center_agent = wolfram_env.get_agent_at(width // 2, top_row(execution_key))
+    switch(top_center_agent.name, WHITE, BLACK, execution_key=execution_key)
 
     # top row is the "previous" because we just processed it
-    set_env_attr("prev_row_idx", top_row())
+    set_env_attr(execution_key, "prev_row_idx", top_row(execution_key))
 
 
 def main():
     set_up()
-    get_env()()
+    get_env(execution_key=COMMANDLINE_EXECUTION_KEY)()
     return 0
 
 

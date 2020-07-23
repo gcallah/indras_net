@@ -13,17 +13,15 @@ from APIServer.models_api import get_models
 from APIServer.props_api import get_props_for_current_execution, put_props
 from APIServer.run_model_api import run_model_put
 from indra.user import APIUser
+from registry.execution_registry import execution_registry
 
 app = Flask(__name__)
 CORS(app)
 api = Api(app)
 
-user = APIUser("Dennis", None)
-
 # the hard-coded dir is needed for Python Anywhere, until
 # we figure out how to get the env var set there.
 indra_dir = os.getenv("INDRA_HOME", "/home/indrasnet/indras_net")
-
 
 
 @api.route('/test', endpoint="test",
@@ -109,7 +107,10 @@ class Props(Resource):
         """
         Get the list of properties (parameters) for a model.
         """
-        return get_props_for_current_execution(model_id, indra_dir)
+
+        props = get_props_for_current_execution(model_id, indra_dir)
+        user = APIUser("Dennis", None, execution_key=props["execution_key"].get("val"))
+        return props
 
     @api.expect(props)
     def put(self, model_id):
@@ -120,14 +121,14 @@ class Props(Resource):
         return put_props(model_id, api.payload, indra_dir)
 
 
-@api.route('/models/menu/')
+@api.route('/models/menu/<int:execution_id>')
 class ModelMenu(Resource):
-    global user
 
-    def get(self):
+    def get(self, execution_id):
         """
         This returns the menu with which a model interacts with a user.
         """
+        user = execution_registry.get_registered_agent(execution_id, "Dennis")
         return user()
 
 
