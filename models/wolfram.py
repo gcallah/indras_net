@@ -14,7 +14,7 @@ from indra.space import DEF_WIDTH
 from indra.utils import init_props
 from registry.registry import get_prop, get_env, get_group
 from registry.registry import set_env_attr, get_env_attr, get_registration
-from registry.execution_registry import COMMANDLINE_EXECUTION_KEY
+from registry.execution_registry import COMMANDLINE_EXECUTION_KEY, EXECUTION_KEY_NAME
 
 MODEL_NAME = "wolfram"
 DEBUG = False  # Turns debugging code on or off
@@ -101,7 +101,7 @@ def wolfram_action(wolf_env: Env, **kwargs):
     """
     The action that will be taken every period.
     """
-    execution_key = kwargs["execution_key"]
+    execution_key = kwargs[EXECUTION_KEY_NAME]
 
     row_above_idx = get_env_attr(execution_key, "prev_row_idx")
 
@@ -151,7 +151,7 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     init_props(MODEL_NAME, props)
-    execution_key = int(props["execution_key"].val) if props is not None else COMMANDLINE_EXECUTION_KEY
+    execution_key = int(props[EXECUTION_KEY_NAME].val) if props is not None else COMMANDLINE_EXECUTION_KEY
 
     width = get_prop(execution_key, 'grid_width', DEF_WIDTH)
     height = (width // 2) + (width % 2)

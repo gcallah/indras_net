@@ -7,13 +7,14 @@ from flask import Flask
 from flask_cors import CORS
 from flask_restplus import Resource, Api, fields
 
+from APIServer.api_utils import err_return
 from APIServer.model_creator_api import get_model_creator
 from APIServer.model_creator_api import put_model_creator
 from APIServer.models_api import get_models
 from APIServer.props_api import get_props_for_current_execution, put_props
 from APIServer.run_model_api import run_model_put
 from indra.user import APIUser
-from registry.execution_registry import execution_registry
+from registry.execution_registry import execution_registry, EXECUTION_KEY_NAME
 
 app = Flask(__name__)
 CORS(app)
@@ -109,7 +110,7 @@ class Props(Resource):
         """
 
         props = get_props_for_current_execution(model_id, indra_dir)
-        user = APIUser("Dennis", None, execution_key=props["execution_key"].get("val"))
+        user = APIUser("Dennis", None, execution_key=props[EXECUTION_KEY_NAME].get("val"))
         return props
 
     @api.expect(props)
@@ -146,6 +147,17 @@ class RunModel(Resource):
         """
         return run_model_put(api.payload, run_time)
 
+
+@api.route('/registry/clear/<int:execution_key>')
+class ClearRegistry(Resource):
+
+    def get(self, execution_key):
+        print("Clearing registry for key - {}".format(execution_registry))
+        try:
+            execution_registry.clear_data_for_execution_key(execution_key)
+        except KeyError:
+            return err_return("Key - {} does not exist in registry".format(execution_key))
+        return {'success': True}
 
 if __name__ == "__main__":
     logging.warning("Warning: you should use api.sh to run the server.")

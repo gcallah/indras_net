@@ -1,4 +1,3 @@
-
 """
 This module restores an env from json and runs it.
 """
@@ -8,17 +7,15 @@ from registry.registry import clear_registry
 from registry.run_dict import env_attrs
 from indra.env import Env
 from indra.user import user_log_notif
-import pdb
+from registry.execution_registry import EXECUTION_KEY_NAME
 
 def run_model_put(payload, run_time):
     """
     We create a dummy env that fills itself in to create
     the real env from the payload.
     """
-    # env = Env(name='temp name', serial_obj=payload)
-    # pdb.set_trace()
-    execution_key=payload.get("execution_key")
-    env = execution_registry.get_registered_env(execution_key)
+    execution_key = payload.get(EXECUTION_KEY_NAME)
+    env = Env(name="temp_env", serial_obj=payload, execution_key=execution_key)
     user_log_notif("Searching env attributes for " + env.name)
     if env.name in env_attrs:
         user_log_notif("Loading env attributes for " + env.name)

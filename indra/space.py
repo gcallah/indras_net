@@ -11,6 +11,7 @@ from random import randint
 from indra.agent import is_composite, AgentEncoder, X, Y
 from indra.composite import Composite
 from registry.registry import register, get_registration, get_group, get_env
+from registry.execution_registry import EXECUTION_KEY_NAME
 from indra.user import user_debug, user_log, user_log_warn
 
 DEF_WIDTH = 10
@@ -160,7 +161,7 @@ class Space(Composite):
         super().__init__(name, attrs=attrs, members=members,
                          action=action, serial_obj=serial_obj,
                          reg=False, **kwargs)
-        self.execution_key = kwargs["execution_key"]
+        self.execution_key = kwargs[EXECUTION_KEY_NAME]
         self.type = type(self).__name__
         if serial_obj is not None:
             self.restore(serial_obj)
@@ -595,7 +596,7 @@ class Region():
                  SE=None, center=None, size=None, **kwargs):
         # alternate structure?
         # self.corners[NW] = nw
-        self.execution_key = kwargs["execution_key"]
+        self.execution_key = kwargs[EXECUTION_KEY_NAME]
         self.name = gen_region_name(NW, NE, SW, SE, center, size)
         if (space is None):
             space = get_env(self.execution_key)

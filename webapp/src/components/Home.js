@@ -14,6 +14,8 @@ import mandelobrotImg from './images/mendelobrot_sq.jpg';
 import './styles.css';
 import config from '../config';
 
+const CLEAR_REGISTRY_API = `${config.API_URL}registry/clear/`;
+
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -38,6 +40,22 @@ class Home extends Component {
       document.title = 'Home';
       const res = await axios.get(`${this.api_server}models`);
       this.setState({ allItems: res.data, loadingData: false });
+
+      // clear any previous envFile stored in localstorage
+      // also clear the registry in the backend.
+      const envFileString = localStorage.getItem('envFile');
+      if (envFileString !== null && envFileString !== undefined) {
+        const envFile = JSON.parse(envFileString);
+        /* eslint-disable */
+        const { execution_key } = envFile;
+        const clearExecutionRegistryResponse = await axios.get(
+          `${CLEAR_REGISTRY_API}${execution_key}`,
+        );
+        // not doing anything with the response.
+        // allow the frontend to continue functioning.
+        // there should be a error reporting mechanism here to notify
+        // admins that a particular key was not cleared.
+      }
     } catch (e) {
       history.push('/errorCatching');
     }
@@ -56,7 +74,11 @@ class Home extends Component {
 
   render() {
     const {
-      loadingData, dataForCarousel, allItems, apiFailed, loadingList,
+      loadingData,
+      dataForCarousel,
+      allItems,
+      apiFailed,
+      loadingList,
     } = this.state;
     if (apiFailed) {
       return <h1>404 Error</h1>;
@@ -76,41 +98,41 @@ class Home extends Component {
         <div className="row">
           <Col sm={12} lg={4} className="mb-5">
             {this.renderChooseModelProp()}
-            <Button variant="outline-primary" onClick={() => this.setState({ loadingList: true })}>
+            <Button
+              variant="outline-primary"
+              onClick={() => this.setState({ loadingList: true })}
+            >
               Choose...
             </Button>
-            {
-              loadingList
-                ? (
-                  <ListGroup>
-                    {/* Show the models if "active" is missing or is set to true */}
-                    {Object.keys(allItems).map((item) => (!('active' in allItems[item])
-                || allItems[item].active === true ? (
-                  <OverlayTrigger
-                    key={`${allItems[item].name}-tooltip`}
-                    placement="right"
-                    overlay={<Tooltip>{allItems[item].doc}</Tooltip>}
-                  >
-                    <Link
-                      to={{
-                        pathname: `/models/props/${allItems[item]['model ID']}`,
-                      }}
-                      className="text-primary p-3 list-group-item list-group-item-action link"
-                      key={allItems[item].name}
-                      onClick={() => this.handleClick(
-                        allItems[item]['model ID'],
-                        allItems[item].name,
-                        allItems[item].source,
-                        allItems[item].graph,
-                      )}
+            {loadingList ? (
+              <ListGroup>
+                {/* Show the models if "active" is missing or is set to true */}
+                {Object.keys(allItems).map((item) => (!('active' in allItems[item])
+                  || allItems[item].active === true ? (
+                    <OverlayTrigger
+                      key={`${allItems[item].name}-tooltip`}
+                      placement="right"
+                      overlay={<Tooltip>{allItems[item].doc}</Tooltip>}
                     >
-                      {allItems[item].name}
-                    </Link>
-                  </OverlayTrigger>
-                      ) : null))}
-                  </ListGroup>
-                ) : null
-}
+                      <Link
+                        to={{
+                          pathname: `/models/props/${allItems[item]['model ID']}`,
+                        }}
+                        className="text-primary p-3 list-group-item list-group-item-action link"
+                        key={allItems[item].name}
+                        onClick={() => this.handleClick(
+                          allItems[item]['model ID'],
+                          allItems[item].name,
+                          allItems[item].source,
+                          allItems[item].graph,
+                        )}
+                      >
+                        {allItems[item].name}
+                      </Link>
+                    </OverlayTrigger>
+                  ) : null))}
+              </ListGroup>
+            ) : null}
           </Col>
           <Col sm={12} lg={{ cols: 6, span: 6, offset: 2 }}>
             <Carousel

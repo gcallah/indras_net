@@ -12,7 +12,7 @@ from types import FunctionType
 # import logging
 import indra.display_methods as disp
 import registry.registry as regis
-from registry.execution_registry import execution_registry
+from registry.execution_registry import execution_registry, EXECUTION_KEY_NAME
 from registry.registry import get_prop
 from indra.agent import join, switch, Agent, AgentEncoder
 from indra.space import Space
@@ -114,7 +114,7 @@ class Env(Space):
         super().__init__(name, action=action,
                          random_placing=random_placing, serial_obj=serial_obj,
                          reg=False, members=members, **kwargs)
-        self.execution_key = kwargs["execution_key"]
+        self.execution_key = kwargs[EXECUTION_KEY_NAME]
         self.type = type(self).__name__
         self.user_type = os.getenv("user_type", TERMINAL)
         # this func is only used once, so no need to restore it
@@ -190,7 +190,7 @@ class Env(Space):
         self.plot_title = serial_obj["plot_title"]
         nm = serial_obj["user"]["name"]
         msg = serial_obj["user"]["user_msgs"]
-        self.user = APIUser(nm, self)
+        self.user = APIUser(nm, self, execution_key=self.execution_key)
         self.user.tell(msg)
         self.name = serial_obj["name"]
         self.switches = serial_obj["switches"]

@@ -9,7 +9,7 @@ from copy import copy
 from random import choice
 
 from indra.agent import Agent, join, INF, is_composite, AgentEncoder
-
+from registry.execution_registry import EXECUTION_KEY_NAME
 from registry.registry import add_group
 from indra.utils import get_func_name
 
@@ -44,7 +44,7 @@ class Composite(Agent):
         super().__init__(name, attrs=attrs, duration=duration,
                          action=action, serial_obj=serial_obj,
                          reg=False, **kwargs)
-        self.execution_key = kwargs["execution_key"]
+        self.execution_key = kwargs[EXECUTION_KEY_NAME]
         self.type = type(self).__name__
 
         if serial_obj is not None:
@@ -91,9 +91,9 @@ class Composite(Agent):
         for nm in serial_obj["members"]:
             member = serial_obj["members"][nm]
             if member["type"] == "Agent":
-                self.members[nm] = Agent(name=nm, serial_obj=member)
+                self.members[nm] = Agent(name=nm, serial_obj=member, execution_key=self.execution_key)
             elif member["type"] == "Composite":
-                self.members[nm] = Composite(name=nm, serial_obj=member)
+                self.members[nm] = Composite(name=nm, serial_obj=member, execution_key=self.execution_key)
         mem_create_nm = serial_obj["member_creator"]
         if mem_create_nm in member_creator_dict:
             self.member_creator = member_creator_dict[mem_create_nm]

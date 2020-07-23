@@ -24,7 +24,6 @@ const API_SERVER = `${config.API_URL}models/menu/`;
 class ActionMenu extends Component {
   constructor(props) {
     super(props);
-    autoBind(this);
     this.state = {
       menu: {},
       loadingData: true,
@@ -40,9 +39,11 @@ class ActionMenu extends Component {
       loadingLogs: false,
       activeDisplay: null,
     };
+    autoBind(this);
   }
 
   async componentDidMount() {
+    console.log('Component ActionMenu mounted');
     try {
       document.title = 'Indra | Menu';
       const { location } = this.props;
@@ -53,17 +54,17 @@ class ActionMenu extends Component {
       const m = await axios.get(`${API_SERVER}${execution_key}`);
       this.setState({
         menu: m.data,
-        name: localStorage.getItem('name'),
-        source: localStorage.getItem('source'),
-        envFile: JSON.parse(localStorage.getItem('envFile')),
-        msg: JSON.parse(localStorage.getItem('envFile')).user.user_msgs,
+        name: localStorage.getItem("name"),
+        source: localStorage.getItem("source"),
+        envFile: JSON.parse(localStorage.getItem("envFile")),
+        msg: JSON.parse(localStorage.getItem("envFile")).user.user_msgs,
         loadingData: false,
       });
     } catch (error) {
       return false;
     }
-    const defaultGraph = localStorage.getItem('graph');
-    if (defaultGraph === 'scatter') {
+    const defaultGraph = localStorage.getItem("graph");
+    if (defaultGraph === "scatter") {
       this.setState({
         loadingScatter: true,
         activeDisplay: SCATTER,
@@ -88,14 +89,14 @@ class ActionMenu extends Component {
   viewSource = async () => {
     try {
       const { source } = this.state;
-      const splitSource = source.split('/');
+      const splitSource = source.split("/");
       const filename = splitSource[splitSource.length - 1];
       const res = await axios.get(
-        `https://raw.githubusercontent.com/gcallah/indras_net/master/models/${filename}`,
+        `https://raw.githubusercontent.com/gcallah/indras_net/master/models/${filename}`
       );
       return res.data;
     } catch (error) {
-      return 'Something has gone wrong.';
+      return "Something has gone wrong.";
     }
   };
 
@@ -107,12 +108,12 @@ class ActionMenu extends Component {
     const valid = this.checkValidity(e.target.value);
     if (valid === 0) {
       this.setState({
-        errorMessage: '**Please input an integer',
+        errorMessage: "**Please input an integer",
         disabledButton: true,
       });
     } else {
       this.setState({
-        errorMessage: '',
+        errorMessage: "",
         disabledButton: false,
       });
     }
@@ -165,7 +166,7 @@ class ActionMenu extends Component {
       const res = await axios.put(
         `${config.API_URL}models/run/${String(periodNum)}`,
         envFile,
-        periodNum,
+        periodNum
       );
 
       this.setState({
@@ -190,7 +191,7 @@ class ActionMenu extends Component {
      * However, we keep one of the graphs (Population graph or Scatter plot)
      * disabled based on "graph" field from models.json
      */
-    const defaultGraph = localStorage.getItem('graph');
+    const defaultGraph = localStorage.getItem("graph");
     const { activeDisplay } = this.state;
     return (
       <ListGroup.Item
@@ -198,8 +199,8 @@ class ActionMenu extends Component {
         as="li"
         active={activeDisplay === action}
         disabled={
-          (action === SCATTER && defaultGraph === 'line')
-          || (action === POP && defaultGraph === 'scatter')
+          (action === SCATTER && defaultGraph === "line") ||
+          (action === POP && defaultGraph === "scatter")
         }
         key={key}
         onClick={() => this.handleClick(action)}
@@ -236,24 +237,26 @@ class ActionMenu extends Component {
       <div className="row margin-bottom-80">
         <div className="col w-25">
           <ListGroup>
-            {Object.keys(menu).map((item, i) => (menu[item].id > 1
-              ? this.MenuItem(
-                i,
-                menu[item].id,
-                menu[item].question,
-                menu[item].func,
-              )
-              : null))}
+            {Object.keys(menu).map((item, i) =>
+              menu[item].id > 1
+                ? this.MenuItem(
+                    i,
+                    menu[item].id,
+                    menu[item].question,
+                    menu[item].func
+                  )
+                : null
+            )}
           </ListGroup>
         </div>
       </div>
     );
   };
 
+  
+
   render() {
-    const {
-      loadingData, msg, disabledButton, errorMessage,
-    } = this.state;
+    const { loadingData, msg, disabledButton, errorMessage } = this.state;
     if (loadingData) {
       return <PageLoader />;
     }
