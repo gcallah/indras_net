@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Loader, Dimmer } from 'semantic-ui-react';
-import { ListGroup, Button } from 'react-bootstrap';
+import { ListGroup, Dropdown } from 'react-bootstrap';
 import Col from 'react-bootstrap/Col';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
@@ -21,7 +21,6 @@ class Home extends Component {
       allItems: [],
       loadingData: false,
       apiFailed: false,
-      loadingList: false,
       dataForCarousel: [
         { image: sandpileImg, title: 'by Seth Terashima' },
         { image: sandpile1Img, title: 'by Colt Browninga' },
@@ -76,41 +75,38 @@ class Home extends Component {
         <div className="row">
           <Col sm={12} lg={4} className="mb-5">
             {this.renderChooseModelProp()}
-            <Button variant="outline-primary" onClick={() => this.setState({ loadingList: true })}>
-              Choose...
-            </Button>
-            {
-              loadingList
-                ? (
-                  <ListGroup>
-                    {/* Show the models if "active" is missing or is set to true */}
-                    {Object.keys(allItems).map((item) => (!('active' in allItems[item])
+            <Dropdown>
+              <Dropdown.Toggle variant="outline-dark" id="dropdown-basic">
+                Choose...
+              </Dropdown.Toggle>
+              
+              <Dropdown.Menu>
+                {Object.keys(allItems).map((item) => (!('active' in allItems[item])
                 || allItems[item].active === true ? (
-                  <OverlayTrigger
-                    key={`${allItems[item].name}-tooltip`}
-                    placement="right"
-                    overlay={<Tooltip>{allItems[item].doc}</Tooltip>}
+                <OverlayTrigger
+                  key={`${allItems[item].name}-tooltip`}
+                  placement="right"
+                  overlay={<Tooltip>{allItems[item].doc}</Tooltip>}
+                >
+                     <Link
+                    to={{
+                      pathname: `/models/props/${allItems[item]['model ID']}`,
+                    }}
+                    className="link text-dark dropdown-item"
+                    key={allItems[item].name}
+                    onClick={() => this.handleClick(
+                      allItems[item]['model ID'],
+                      allItems[item].name,
+                      allItems[item].source,
+                      allItems[item].graph,
+                    )}
                   >
-                    <Link
-                      to={{
-                        pathname: `/models/props/${allItems[item]['model ID']}`,
-                      }}
-                      className="text-primary p-3 list-group-item list-group-item-action link"
-                      key={allItems[item].name}
-                      onClick={() => this.handleClick(
-                        allItems[item]['model ID'],
-                        allItems[item].name,
-                        allItems[item].source,
-                        allItems[item].graph,
-                      )}
-                    >
-                      {allItems[item].name}
-                    </Link>
-                  </OverlayTrigger>
-                      ) : null))}
-                  </ListGroup>
-                ) : null
-}
+                    {allItems[item].name}
+                  </Link>
+                </OverlayTrigger>
+                    ) : null))}
+              </Dropdown.Menu>
+            </Dropdown>
           </Col>
           <Col sm={12} lg={{ cols: 6, span: 6, offset: 2 }}>
             <Carousel
