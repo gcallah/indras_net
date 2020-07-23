@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Loader, Dimmer } from 'semantic-ui-react';
-import { ListGroup, Dropdown } from 'react-bootstrap';
+import { Dropdown } from 'react-bootstrap';
 import Col from 'react-bootstrap/Col';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
@@ -55,7 +55,10 @@ class Home extends Component {
 
   render() {
     const {
-      loadingData, dataForCarousel, allItems, apiFailed, loadingList,
+      loadingData,
+      dataForCarousel,
+      allItems,
+      apiFailed,
     } = this.state;
     if (apiFailed) {
       return <h1>404 Error</h1>;
@@ -79,32 +82,31 @@ class Home extends Component {
               <Dropdown.Toggle variant="outline-dark" id="dropdown-basic">
                 Choose...
               </Dropdown.Toggle>
-              
               <Dropdown.Menu>
                 {Object.keys(allItems).map((item) => (!('active' in allItems[item])
-                || allItems[item].active === true ? (
-                <OverlayTrigger
-                  key={`${allItems[item].name}-tooltip`}
-                  placement="right"
-                  overlay={<Tooltip>{allItems[item].doc}</Tooltip>}
-                >
-                     <Link
-                    to={{
-                      pathname: `/models/props/${allItems[item]['model ID']}`,
-                    }}
-                    className="link text-dark dropdown-item"
-                    key={allItems[item].name}
-                    onClick={() => this.handleClick(
-                      allItems[item]['model ID'],
-                      allItems[item].name,
-                      allItems[item].source,
-                      allItems[item].graph,
-                    )}
-                  >
-                    {allItems[item].name}
-                  </Link>
-                </OverlayTrigger>
-                    ) : null))}
+                  || allItems[item].active === true ? (
+                    <OverlayTrigger
+                      key={`${allItems[item].name}-tooltip`}
+                      placement="right"
+                      overlay={<Tooltip>{allItems[item].doc}</Tooltip>}
+                    >
+                      <Link
+                        to={{
+                          pathname: `/models/props/${allItems[item]['model ID']}`,
+                        }}
+                        className="link text-dark dropdown-item"
+                        key={allItems[item].name}
+                        onClick={() => this.handleClick(
+                          allItems[item]['model ID'],
+                          allItems[item].name,
+                          allItems[item].source,
+                          allItems[item].graph,
+                        )}
+                      >
+                        {allItems[item].name}
+                      </Link>
+                    </OverlayTrigger>
+                  ) : null))}
               </Dropdown.Menu>
             </Dropdown>
           </Col>
