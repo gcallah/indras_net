@@ -6,7 +6,6 @@ import json
 import math
 from math import sqrt, atan, degrees
 from random import randint
-
 from indra.agent import is_composite, AgentEncoder, X, Y
 from indra.composite import Composite
 from registry.registry import register, get_registration, get_group, get_env
@@ -455,7 +454,7 @@ class Space(Composite):
         region = region_factory(space=self,
                                 center=(agent.get_x(), agent.get_y()),
                                 size=hood_size)
-        members = region.get_agents(exclude_self=True, pred=None)
+        members = region.get_agents(exclude_self=not save_neighbors, pred=pred)
         return Composite("Moore neighbors", members=members)
 
     def get_square_hood(self, agent, pred=None, save_neighbors=False,
