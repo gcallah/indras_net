@@ -12,6 +12,7 @@ import numpy as np
 
 from registry.registry import register, get_registration, get_env
 from registry.registry import get_group, user_log_notif, user_log_err
+from registry.execution_registry import EXECUTION_KEY_NAME
 from indra.utils import get_func_name
 
 DEBUG = True  # turns debugging code on or off
@@ -181,7 +182,7 @@ class Agent(object):
     def __init__(self, name, attrs=None, action=None, duration=INF,
                  prim_group=None, serial_obj=None, reg=True, **kwargs):
         self.registry = {}
-        self.execution_key=kwargs["execution_key"]
+        self.execution_key=kwargs[EXECUTION_KEY_NAME]
         if serial_obj is not None:
             self.restore(serial_obj)
         else:

@@ -16,8 +16,8 @@ from indra.utils import get_func_name
 DEBUG = False
 
 
-def grp_from_nm_dict(nm, dictionary):
-    grp = Composite(nm)
+def grp_from_nm_dict(nm, dictionary, execution_key=None):
+    grp = Composite(nm, execution_key=execution_key)
     grp.members = dictionary
     return grp
 
@@ -197,7 +197,7 @@ class Composite(Agent):
             new_dict.update(other.members)
         else:
             new_dict[other.name] = other
-        new_grp = grp_from_nm_dict(self.name + "+" + other.name, new_dict)
+        new_grp = grp_from_nm_dict(self.name + "+" + other.name, new_dict, execution_key=self.execution_key)
         self.add_group(new_grp)
         other.add_group(new_grp)
         return new_grp

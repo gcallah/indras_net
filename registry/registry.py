@@ -5,7 +5,6 @@ This class will appear as a dictionary, but with the right sort of default
 behaviors that we need for our registry.
 """
 import json
-import pdb
 import warnings
 
 from registry.execution_registry import execution_registry

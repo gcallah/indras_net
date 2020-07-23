@@ -180,7 +180,7 @@ class Env(Space):
             self.user = TermUser(getpass.getuser(), self,  execution_key=self.execution_key)
             self.user.tell("Welcome to Indra, " + str(self.user) + "!")
         elif self.user_type == TEST:
-            self.user = TestUser(getpass.getuser(), self)
+            self.user = TestUser(getpass.getuser(), self, execution_key=self.execution_key)
         elif self.user_type == API:
             self.user = APIUser(getpass.getuser(), self, execution_key=self.execution_key)
 
@@ -289,7 +289,7 @@ class Env(Space):
                 if group is not None and group.member_creator is not None:
                     group.num_members_ever += 1
                     agent = group.member_creator("", group.num_members_ever)
-                    regis.register(agent.name, agent)
+                    regis.register(agent.name, agent, execution_key=self.execution_key)
                     join(group, agent)
             self.womb.clear()
 

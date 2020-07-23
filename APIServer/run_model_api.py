@@ -19,7 +19,7 @@ def run_model_put(payload, run_time):
     user_log_notif("Searching env attributes for " + env.name)
     if env.name in env_attrs:
         user_log_notif("Loading env attributes for " + env.name)
-        env_attrs[env.name]()
+        env_attrs[env.name](execution_key=execution_key)
         user_log_notif("Attributes for " + env.name + repr(env.attrs))
     else:
         user_log_notif(env.name + " not found in env_attrs")
