@@ -452,8 +452,9 @@ class Space(Composite):
         Takes in an agent and returns a Composite of its Moore neighbors.
         Should call the region_factory!
         """
-        region = Region(space=self, center=(agent.get_x(), agent.get_y()),
-                        size=hood_size)
+        region = region_factory(space=self,
+                                center=(agent.get_x(), agent.get_y()),
+                                size=hood_size)
         members = region.get_agents(exclude_self=True, pred=None)
         return Composite("Moore neighbors", members=members)
 
@@ -534,7 +535,7 @@ class Space(Composite):
         region = region_factory(space=self, center=(agent.get_x(),
                                 agent.get_y()),
                                 size=size)
-        return region.exists_agent(exclude_self=exclude_self, pred=pred)
+        return region.exists_neighbor(exclude_self=exclude_self, pred=pred)
 
     def neighbor_ratio(self, agent, pred_one, pred_two=None, size=1,
                        region_type=None):
@@ -650,22 +651,6 @@ class Region():
             else:
                 self.SE = (self.SE[X], self.SE[Y] - 1)
 
-    def check_save_neighbors(self, agent, exclude_self=True):
-        if (agent.get("save_neighbors", True) and len(self.my_agents) == 0):
-            self.agents_move = False
-            for y in range(self.height):
-                y_coord = self.SW[Y] + y + 1
-                for x in range(self.width):
-                    x_coord = self.SW[X] + x
-                    potential_neighbor = self.space.get_agent_at(x_coord,
-                                                                 y_coord)
-                    if potential_neighbor is not None:
-                        if (x_coord, y_coord) == self.center:
-                            if exclude_self is False:
-                                self.my_agents.append(potential_neighbor)
-                        else:
-                            self.my_agents.append(potential_neighbor)
-
     def _load_agents(self, exclude_self=False):
         """
         This fills self.my_agents with all neighbors, and maybe the center
@@ -698,7 +683,7 @@ class Region():
             these_agents = self.my_agents
         return these_agents
 
-    def get_my_agents(self, exclude_self=False, pred=None):
+    def get_agents(self, exclude_self=False, pred=None):
         """
         Get agents in region filtered by `pred()`:
             if agents don't move, use saved set.
@@ -706,11 +691,11 @@ class Region():
         self._load_agents_if_necc(exclude_self=exclude_self)
         return self._apply_pred_if_necc(pred)
 
-    def get_num_agents(self, exclude_self=False, pred=None):
+    def get_num_of_agents(self, exclude_self=False, pred=None):
         self._load_agents_if_necc(exclude_self=exclude_self)
         return len(self._apply_pred_if_necc(pred))
 
-    def exists_agent(self, exclude_self=True, pred=None):
+    def exists_neighbor(self, exclude_self=True, pred=None):
         self._load_agents_if_necc(exclude_self=exclude_self)
         if pred is None:
             return len(self.my_agents) > 0
@@ -720,132 +705,12 @@ class Region():
                     return True
         return False
 
-    def get_agents(self, exclude_self=False, pred=None):
-        """
-        Replace with above if it works!
-        """
-        my_agents = []
-        if (self.agents_move is False and pred is None
-                and len(self.my_agents) > 0):
-            return self.my_agents
-        if DEBUG2:
-            print(self.__repr__())
-        if self.agents_move is True or len(self.my_agents) == 0:
-            for y in range(self.height):
-                y_coord = self.SW[Y] + y + 1
-                for x in range(self.width):
-                    x_coord = self.SW[X] + x
-                    if DEBUG2:
-                        print("(x,y): " + str((x_coord, y_coord)))
-                    potential_neighbor = self.space.get_agent_at(x_coord,
-                                                                 y_coord)
-                    if potential_neighbor is not None:
-                        if pred is None or pred(potential_neighbor):
-                            if (x_coord, y_coord) == self.center:
-                                if exclude_self is False:
-                                    my_agents.append(potential_neighbor)
-                            else:
-                                my_agents.append(potential_neighbor)
-                            if potential_neighbor.get("save_neighbors", True):
-                                self.agents_move = False
-            if self.agents_move is False:
-                if DEBUG2:
-                    print("self.my_agents is saved!")
-                self.my_agents = my_agents
-        elif self.agents_move is False and len(self.my_agents) > 0:
-            for agent in self.my_agents:
-                if pred is None or pred(agent):
-                    if agent.pos == self.center:
-                        if exclude_self is False:
-                            my_agents.append(agent)
-                    else:
-                        my_agents.append(agent)
-            if DEBUG2:
-                print("get_agents self.my_agents is being looped through")
-        return my_agents
-
-    def get_num_of_agents(self, exclude_self=False, pred=None):
-        agent_num = 0
-        if DEBUG2:
-            print(self.__repr__())
-        if (self.agents_move is False and pred is None
-                and len(self.my_agents) > 0):
-            return len(self.my_agents)
-        if self.agents_move is True or len(self.my_agents) == 0:
-            for y in range(self.height):
-                y_coord = self.SW[Y] + y + 1
-                for x in range(self.width):
-                    x_coord = self.SW[X] + x
-                    if DEBUG2:
-                        print("(x,y): " + str((x_coord, y_coord)))
-                    potential_neighbor = self.space.get_agent_at(x_coord,
-                                                                 y_coord)
-                    if potential_neighbor is not None:
-                        self.check_save_neighbors(potential_neighbor,
-                                                  exclude_self)
-                        if pred is None or pred(potential_neighbor):
-                            if (x_coord, y_coord) == self.center:
-                                if exclude_self is False:
-                                    if DEBUG2:
-                                        print("agent added: ", (x_coord,
-                                                                y_coord))
-                                    agent_num += 1
-                            else:
-                                if DEBUG2:
-                                    print("agent counter get_num_of_agents: ",
-                                          (x_coord, y_coord))
-                                agent_num += 1
-        elif self.agents_move is False and len(self.my_agents) > 0:
-            for agent in self.my_agents:
-                if pred is None or pred(agent):
-                    if agent.pos == self.center:
-                        if exclude_self is False:
-                            agent_num += 1
-                    else:
-                        agent_num += 1
-        return agent_num
-
-    def exists_neighbor(self, exclude_self=False, pred=None):
-        if DEBUG2:
-            print(self.__repr__())
-        if (self.agents_move is False and pred is None
-                and len(self.my_agents) > 0):
-            return True
-        if self.agents_move is True or len(self.my_agents) == 0:
-            for y in range(self.height):
-                y_coord = self.SW[Y] + y + 1
-                for x in range(self.width):
-                    x_coord = self.SW[X] + x
-                    if DEBUG2:
-                        print("(x,y): " + str((x_coord, y_coord)))
-                    potential_neighbor = self.space.get_agent_at(x_coord,
-                                                                 y_coord)
-                    if potential_neighbor is not None:
-                        self.check_save_neighbors(potential_neighbor,
-                                                  exclude_self)
-                        if pred is None or pred(potential_neighbor):
-                            if (x_coord, y_coord) == self.center:
-                                if exclude_self is False:
-                                    return True
-                            else:
-                                return True
-        elif self.agents_move is False and len(self.my_agents) > 0:
-            if DEBUG2:
-                print("exists_neighbor quick method being called")
-            for agent in self.my_agents:
-                if pred is None or pred(agent):
-                    if agent.pos == self.center and exclude_self is True:
-                        return True
-                    else:
-                        return True
-        return False
-
     def get_ratio(self, pred_one, pred_two=None):
         if pred_one is None:
             raise Exception("Pass at least a single predicate to get_ratio")
-        numerator = self.get_num_agents(exclude_self=True, pred=pred_one)
-        denominator = self.get_num_agents(exclude_self=True,
-                                          pred=pred_two)
+        numerator = self.get_num_of_agents(exclude_self=True, pred=pred_one)
+        denominator = self.get_num_of_agents(exclude_self=True,
+                                             pred=pred_two)
         if DEBUG2:
             print("numerator length: " + str(numerator))
             print("denominator length: " + str(denominator))
