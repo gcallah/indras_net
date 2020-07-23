@@ -3,16 +3,17 @@
 """
 import math
 
-from indra.agent import Agent, X, Y
+from indra.agent import Agent, X, Y, MOVE
 from indra.composite import Composite
 from indra.display_methods import BLUE, TREE
 from indra.env import Env
-from indra.registry import get_registration, get_env
+from registry.registry import get_env
+from registry.registry import run_notice
 from indra.space import DEF_HEIGHT, DEF_WIDTH, distance
 from indra.utils import get_props
 
 MODEL_NAME = "flocking"
-DEBUG = False  # turns debugging code on or off
+DEBUG = True  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
 BIRD_GROUP = "Birds"
@@ -23,8 +24,6 @@ BIRD_MAX_MOVE = 1
 
 HALF_CIRCLE = 180
 FULL_CIRCLE = 360
-
-flock = None
 
 
 def invert_direction(angle):
@@ -49,13 +48,15 @@ def calc_angle(agent1, agent2):
     return angle
 
 
-def bird_action(this_bird):
+def bird_action(this_bird, **kwargs):
     """
     Finds the closest agent to the current agent and calculates
     the distance between the two, inverting the direction if the
     distance is too close.
     """
-    nearest_bird = this_bird.locator.get_closest_agent(this_bird)
+    if DEBUG:
+        print(str(this_bird), " is at ", this_bird.get_pos())
+    nearest_bird = get_env().get_closest_agent(this_bird)
     if nearest_bird is not None:
         curr_distance = distance(this_bird, nearest_bird)
         if DEBUG:
@@ -72,7 +73,7 @@ def bird_action(this_bird):
         if curr_distance < DEF_DESIRED_DISTANCE:
             this_bird["angle"] = invert_direction(this_bird["angle"])
 
-    return False
+    return MOVE
 
 
 def create_bird(name, i, props=None):
@@ -99,18 +100,11 @@ def set_up(props=None):
         height=pa.get('grid_height', DEF_HEIGHT),
         width=pa.get('grid_width', DEF_WIDTH),
         members=[flock])
-    return (flock)
-
-
-def restore_globals(env):
-    global flock
-    flock = get_registration(BIRD_GROUP)
 
 
 def main():
-    global flock
-
-    (flock) = set_up()
+    set_up()
+    run_notice(MODEL_NAME)
     get_env()()
     return 0
 
