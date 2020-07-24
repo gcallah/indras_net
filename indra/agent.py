@@ -180,28 +180,32 @@ class Agent(object):
 
     def __init__(self, name, attrs=None, action=None, duration=INF,
                  prim_group=None, serial_obj=None, reg=True):
-        self.registry = {}
-
+        # either construct agent from JSON:
         if serial_obj is not None:
             self.restore(serial_obj)
-        else:
-            self.type = type(self).__name__
-            self.name = name
-            self.action_key = None
-            self.action = action
-            if action is not None:
-                self.action_key = get_func_name(action)
-            self.duration = duration
-            self.neighbors = None
-            self.attrs = {}
-            if attrs is not None:
-                self.attrs = attrs
-            self.active = True
-            self.pos = None
-
-            self.prim_group = None if prim_group is None else str(prim_group)
+        else:  # or build it anew:
+            self._construct_anew(name, attrs=attrs, action=action,
+                                 duration=duration, prim_group=prim_group,
+                                 reg=reg)
         if reg:
             register(self.name, self)
+
+    def _construct_anew(self, name, attrs=None, action=None,
+                        duration=INF, prim_group=None, reg=True):
+        self.type = type(self).__name__
+        self.name = name
+        self.action_key = None
+        self.action = action
+        if action is not None:
+            self.action_key = get_func_name(action)
+        self.duration = duration
+        self.neighbors = None
+        self.attrs = {}
+        if attrs is not None:
+            self.attrs = attrs
+        self.active = True
+        self.pos = None
+        self.prim_group = None if prim_group is None else str(prim_group)
 
     def set_prim_group(self, group):
         """

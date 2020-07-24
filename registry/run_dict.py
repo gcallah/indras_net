@@ -1,5 +1,16 @@
 """
 The file to register functions we need to restore at run time.
+
+What we need in here for a new online model:
+
+- the model's name
+- all action functions -- reg them in `action_dict`
+- the model's `set_up()` function -- reg it in `setup_dict`
+- the model's `set_env_attrs()` function, IF it exists
+  (not every model needs one -- only to restore special functions to the
+  env)
+  reg it in `env_attrs`
+
 """
 from models.bacteria import bacterium_action, toxin_action, nutrient_action
 from models.bacteria import set_up as ba_set_up

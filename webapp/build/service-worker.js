@@ -14,11 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-<<<<<<< HEAD
-  "/indras_net/precache-manifest.b990bddca5d520c4151e43f66a921053.js"
-=======
-  "/indras_net/precache-manifest.4312f27552959d8719e459fefe00cd4f.js"
->>>>>>> fd083d41cd876b08f5bfcfe14540bcb33ab6ef3d
+  "/indras_net/precache-manifest.ff25b0b2ff0ade4f6e737f4ed1bbe6a0.js"
 );
 
 self.addEventListener('message', (event) => {
@@ -39,5 +35,5 @@ workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
 
 workbox.routing.registerNavigationRoute(workbox.precaching.getCacheKeyForURL("/indras_net/index.html"), {
   
-  blacklist: [/^\/_/,/\/[^\/?]+\.[^\/]+$/],
+  blacklist: [/^\/_/,/\/[^/?]+\.[^/]+$/],
 });
