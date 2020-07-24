@@ -719,11 +719,18 @@ class Region():
 
 
 class CircularRegion(Region):
-    def __init__(self, space, center, radius):
+    def __init__(self, space=None, center=None, radius=None, agents_move=True):
+        if (space is None):
+            space = get_env()
         self.space = space
         self.center = center
         self.radius = radius
         self.name = "Circle"
+        self.agents_move = agents_move
+        if self.agents_move:
+            self.my_agents = []
+        else:
+            self.my_agents = self._load_agents()
 
     def check_out_bounds(self, coord):
         return out_of_bounds(coord[X], coord[Y], 0, 0,
@@ -737,19 +744,33 @@ class CircularRegion(Region):
             return True
         return False
 
-    def get_agents(self, exclude_self=False, pred=None):
-        my_agents = []
+    def _load_agents(self, exclude_self=True):
         for coord in self.space.locations:
             conv_coord = get_xy_from_str(coord)
             if self.contains(conv_coord):
                 potential_agent = self.space.get_agent_at(conv_coord[X],
                                                           conv_coord[Y])
-                if pred is None or pred is True:
-                    if (conv_coord == self.center) and (exclude_self is False):
-                        my_agents.append(potential_agent)
-                    else:
-                        my_agents.append(potential_agent)
-        return my_agents
+                if (conv_coord == self.center) and (exclude_self is True):
+                    continue
+                else:
+                    self.my_agents.append(potential_agent)
+
+    def _load_agents_if_necc(self, exclude_self=True, pred=None):
+        if self.agents_move is True:
+            self.my_agents = []
+            self._load_agents(exclude_self=exclude_self)
+
+    def _apply_pred_if_necc(self, pred):
+        these_agents = []
+        if pred is not None:
+            these_agents = [agent for agent in self.my_agents if pred(agent)]
+        else:
+            these_agents = self.my_agents
+        return these_agents
+
+    def get_agents(self, exclude_self=False, pred=None):
+        self._load_agents_if_necc(exclude_self=exclude_self)
+        return self._apply_pred_if_necc(pred)
 
 
 class CompositeRegion(Region):

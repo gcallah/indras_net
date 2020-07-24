@@ -158,7 +158,7 @@ def social_distancing(agent):
     """
     curr_region = CircularRegion(get_env(),
                                  agent.get_pos(), DEF_PERSON_MOVE*2)
-    agents_in_range = curr_region.get_agents(get_env(), True)
+    agents_in_range = curr_region.get_agents(get_env(), pred=None)
     new_angle = get_move_angle(agent, agents_in_range)
     agent["angle"] = new_angle
 
