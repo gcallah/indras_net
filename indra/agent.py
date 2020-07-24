@@ -192,21 +192,20 @@ class Agent(object):
 
     def _construct_anew(self, name, attrs=None, action=None,
                         duration=INF, prim_group=None, reg=True):
-            self.type = type(self).__name__
-            self.name = name
-            self.action_key = None
-            self.action = action
-            if action is not None:
-                self.action_key = get_func_name(action)
-            self.duration = duration
-            self.neighbors = None
-            self.attrs = {}
-            if attrs is not None:
-                self.attrs = attrs
-            self.active = True
-            self.pos = None
-
-            self.prim_group = None if prim_group is None else str(prim_group)
+        self.type = type(self).__name__
+        self.name = name
+        self.action_key = None
+        self.action = action
+        if action is not None:
+            self.action_key = get_func_name(action)
+        self.duration = duration
+        self.neighbors = None
+        self.attrs = {}
+        if attrs is not None:
+            self.attrs = attrs
+        self.active = True
+        self.pos = None
+        self.prim_group = None if prim_group is None else str(prim_group)
 
     def set_prim_group(self, group):
         """
