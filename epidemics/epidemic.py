@@ -249,7 +249,6 @@ def set_env_attrs():
                   DE: DEAD,
                   IM: IMMUNE})
     env.set_attr("census_func", epidemic_report)
-    env.set_attr("total_cases", 0)
 
 
 def set_up(props=None):
@@ -304,6 +303,7 @@ def set_up(props=None):
                             state=IM))
 
     Env(MODEL_NAME, height=city_height, width=city_width, members=groups)
+    get_env().set_attr("total_cases", 0)
     set_env_attrs()
 
 
