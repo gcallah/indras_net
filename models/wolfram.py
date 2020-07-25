@@ -103,13 +103,14 @@ def wolfram_action(wolf_env: Env, **kwargs):
     """
     execution_key = kwargs[EXECUTION_KEY_NAME]
 
-    row_above_idx = get_env_attr(execution_key, "prev_row_idx")
+    row_above_idx = get_env_attr("prev_row_idx", execution_key=execution_key)
 
     active_row_idx = wolf_env.height - wolf_env.get_periods()
 
     wolf_env.user.tell(
         "Checking agents in row {} against the rule {}"
-            .format(active_row_idx, get_env_attr(execution_key, "rule_num")))
+            .format(active_row_idx,
+                    get_env_attr("rule_num", execution_key=execution_key)))
 
     if active_row_idx < 1:
         gone_far_enough()
@@ -137,8 +138,9 @@ def wolfram_action(wolf_env: Env, **kwargs):
                 if DEBUG:
                     print("  Left: %d, middle: %d, right: %d" %
                           (left_color, middle_color, right_color))
-                if next_color(get_env_attr(execution_key, "rule_dict"),
-                              left_color, middle_color, right_color):
+                if next_color(
+                        get_env_attr("rule_dict", execution_key=execution_key),
+                        left_color, middle_color, right_color):
                     wolf_env.add_switch(next_row[
                                             agent_nm_from_xy(x, next_row_idx)],
                                         get_group(WHITE, execution_key),
@@ -146,7 +148,7 @@ def wolfram_action(wolf_env: Env, **kwargs):
                 left_color = middle_color
             x += 1
 
-    set_env_attr(execution_key, "prev_row_idx", next_row_idx)
+    set_env_attr("prev_row_idx", next_row_idx, execution_key=execution_key)
     return DONT_MOVE
 
 
@@ -195,7 +197,8 @@ def set_up(props=None):
     switch(top_center_agent.name, WHITE, BLACK, execution_key=execution_key)
 
     # top row is the "previous" because we just processed it
-    set_env_attr(execution_key, "prev_row_idx", top_row(execution_key))
+    set_env_attr("prev_row_idx", top_row(execution_key),
+                 execution_key=execution_key)
 
 
 def main():
