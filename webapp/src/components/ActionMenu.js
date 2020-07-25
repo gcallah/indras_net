@@ -13,7 +13,7 @@ import RunModelButton from './RunModelButton';
 import './styles.css';
 import config from '../config';
 import LogsViewer from './LogsViewer';
-
+/* eslint-disable */
 const POP = 2;
 const SCATTER = 3;
 const DATA = 4;
@@ -39,6 +39,7 @@ class ActionMenu extends Component {
       loadingScatter: false,
       loadingLogs: false,
       activeDisplay: null,
+      execution_key: this.props.location.state.envFile.execution_key
     };
     autoBind(this);
   }
@@ -46,12 +47,7 @@ class ActionMenu extends Component {
   async componentDidMount() {
     try {
       document.title = 'Indra | Menu';
-      const { location } = this.props;
-      const { state } = location;
-      const { envFile } = state;
-      /* eslint-disable */
-      const { execution_key } = envFile;
-      const m = await axios.get(`${API_SERVER}${execution_key}`);
+      const m = await axios.get(`${API_SERVER}${this.state.execution_key}`);
       this.setState({
         menu: m.data,
         name: localStorage.getItem("name"),
@@ -178,11 +174,12 @@ class ActionMenu extends Component {
 
   sendNumPeriods = async () => {
     const { periodNum, envFile } = this.state;
+    const envFileWithExecutionKey = {...envFile, "execution_key": this.state.execution_key}
     this.setState({ loadingData: true });
     try {
       const res = await axios.put(
         `${config.API_URL}models/run/${String(periodNum)}`,
-        envFile,
+        envFileWithExecutionKey,
         periodNum
       );
 
