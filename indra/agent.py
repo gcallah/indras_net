@@ -12,7 +12,8 @@ import numpy as np
 
 from registry.registry import register, get_registration, get_env
 from registry.registry import get_group, user_log_notif, user_log_err
-from registry.execution_registry import EXECUTION_KEY_NAME
+from registry.execution_registry import EXECUTION_KEY_NAME, \
+    COMMANDLINE_EXECUTION_KEY
 from indra.utils import get_func_name
 
 DEBUG = True  # turns debugging code on or off
@@ -182,7 +183,12 @@ class Agent(object):
     def __init__(self, name, attrs=None, action=None, duration=INF,
                  prim_group=None, serial_obj=None, reg=True, **kwargs):
         self.registry = {}
-        self.execution_key=kwargs[EXECUTION_KEY_NAME]
+
+        self.execution_key = COMMANDLINE_EXECUTION_KEY
+
+        if EXECUTION_KEY_NAME in kwargs:
+            self.execution_key = kwargs[EXECUTION_KEY_NAME]
+
         if serial_obj is not None:
             self.restore(serial_obj)
         else:
@@ -288,6 +294,7 @@ class Agent(object):
         """
         Should be used to decorate any function that uses pos[X] or pos[Y]
         """
+
         @wraps(fn)
         def wrapper(*args, **kwargs):
             # args[0] is self!
@@ -297,6 +304,7 @@ class Agent(object):
                              + fn.__name__)
                 return 0
             return fn(*args, **kwargs)
+
         return wrapper
 
     def set_pos(self, locator, x, y):

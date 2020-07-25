@@ -2,12 +2,11 @@
 This module restores an env from json and runs it.
 """
 from APIServer.api_utils import json_converter
-from registry.execution_registry import execution_registry
-from registry.registry import clear_registry
 from registry.run_dict import env_attrs
 from indra.env import Env
 from indra.user import user_log_notif
 from registry.execution_registry import EXECUTION_KEY_NAME
+
 
 def run_model_put(payload, run_time):
     """

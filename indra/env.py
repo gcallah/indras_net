@@ -5,14 +5,14 @@ of agents that share a timeline and a Space.
 import getpass
 import json
 import os
-import pdb
 from types import FunctionType
 
 # we mean to add logging soon!
 # import logging
 import indra.display_methods as disp
 import registry.registry as regis
-from registry.execution_registry import execution_registry, EXECUTION_KEY_NAME
+from registry.execution_registry import execution_registry,\
+    EXECUTION_KEY_NAME, COMMANDLINE_EXECUTION_KEY
 from registry.registry import get_prop
 from indra.agent import join, switch, Agent, AgentEncoder
 from indra.space import Space
@@ -114,7 +114,9 @@ class Env(Space):
         super().__init__(name, action=action,
                          random_placing=random_placing, serial_obj=serial_obj,
                          reg=False, members=members, **kwargs)
-        self.execution_key = kwargs[EXECUTION_KEY_NAME]
+        self.execution_key = COMMANDLINE_EXECUTION_KEY
+        if EXECUTION_KEY_NAME in kwargs:
+            self.execution_key = kwargs[EXECUTION_KEY_NAME]
         self.type = type(self).__name__
         self.user_type = os.getenv("user_type", TERMINAL)
         # this func is only used once, so no need to restore it
@@ -143,9 +145,9 @@ class Env(Space):
             return default
 
     def set_menu_excludes(self):
-        if not get_prop(self.execution_key, 'use_line', True):
+        if not get_prop('use_line', True, execution_key=self.execution_key):
             self.exclude_menu_item("line_graph")
-        if not get_prop(self.execution_key, 'use_scatter', True):
+        if not get_prop('use_scatter', True, execution_key=self.execution_key):
             self.exclude_menu_item("scatter_plot")
 
     def construct_anew(self, line_data_func=None, exclude_member=None,
@@ -177,12 +179,15 @@ class Env(Space):
 
     def handle_user_type(self):
         if self.user_type == TERMINAL:
-            self.user = TermUser(getpass.getuser(), self,  execution_key=self.execution_key)
+            self.user = TermUser(getpass.getuser(), self,
+                                 execution_key=self.execution_key)
             self.user.tell("Welcome to Indra, " + str(self.user) + "!")
         elif self.user_type == TEST:
-            self.user = TestUser(getpass.getuser(), self, execution_key=self.execution_key)
+            self.user = TestUser(getpass.getuser(), self,
+                                 execution_key=self.execution_key)
         elif self.user_type == API:
-            self.user = APIUser(getpass.getuser(), self, execution_key=self.execution_key)
+            self.user = APIUser(getpass.getuser(), self,
+                                execution_key=self.execution_key)
 
     def from_json(self, serial_obj):
         super().from_json(serial_obj)
@@ -230,7 +235,7 @@ class Env(Space):
         to put up a menu and choose. For tests, we just run N (default) turns.
         """
         if (self.user is None) or (self.user_type == TEST):
-            self.runN()
+            self.runN(execution_key=self.execution_key)
         else:
             while True:
                 # run until user exit!
@@ -260,7 +265,7 @@ class Env(Space):
         return str(len(self.switches))
 
     def rpt_switches(self):
-        return "# switches = " + self.pending_switches() + "; id: "\
+        return "# switches = " + self.pending_switches() + "; id: " \
                + str(id(self.switches))
 
     def add_switch(self, agent, from_grp, to_grp):
@@ -289,7 +294,8 @@ class Env(Space):
                 if group is not None and group.member_creator is not None:
                     group.num_members_ever += 1
                     agent = group.member_creator("", group.num_members_ever)
-                    regis.register(agent.name, agent, execution_key=self.execution_key)
+                    regis.register(agent.name, agent,
+                                   execution_key=self.execution_key)
                     join(group, agent)
             self.womb.clear()
 

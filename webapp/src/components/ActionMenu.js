@@ -43,7 +43,6 @@ class ActionMenu extends Component {
   }
 
   async componentDidMount() {
-    console.log('Component ActionMenu mounted');
     try {
       document.title = 'Indra | Menu';
       const { location } = this.props;

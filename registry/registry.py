@@ -7,7 +7,8 @@ behaviors that we need for our registry.
 import json
 import warnings
 
-from registry.execution_registry import execution_registry
+from registry.execution_registry import execution_registry, \
+    COMMANDLINE_EXECUTION_KEY
 
 REGISTRY = "Registry"
 
@@ -72,24 +73,27 @@ def set_env(env):
     _the_env = env
 
 
-def get_env(execution_key=None):
+def get_env(execution_key=COMMANDLINE_EXECUTION_KEY):
     return execution_registry.get_registered_env(execution_key)
 
 
-def get_env_attr(execution_key, key, default=None):
+def get_env_attr(key, execution_key=COMMANDLINE_EXECUTION_KEY):
+    """
+    A convenience function, since this will be
+    used often.
+    Returns None by default if env is not registered in any key
+    """
+    return execution_registry.get_registered_env(execution_key).get_attr(key,
+                                                                         None)
+
+
+def set_env_attr(key, val, execution_key=COMMANDLINE_EXECUTION_KEY):
     """
     A convenience function, since this will be
     used often.
     """
-    return execution_registry.get_registered_env(execution_key).get_attr(key, default)
-
-
-def set_env_attr(execution_key, key, val):
-    """
-    A convenience function, since this will be
-    used often.
-    """
-    return execution_registry.get_registered_env(execution_key).set_attr(key, val)
+    return execution_registry.get_registered_env(execution_key).set_attr(key,
+                                                                         val)
 
 
 """
@@ -98,12 +102,13 @@ Our singleton dict for groups.
 _groups_dict = {}
 
 
-def add_group(name, grp, execution_key=None):
+def add_group(name, grp, execution_key=COMMANDLINE_EXECUTION_KEY):
     execution_registry.set_group(execution_key, name, grp)
 
 
-def get_group(name, execution_key=None):
-    return execution_registry.get_registered_group(execution_key, group_name=name)
+def get_group(name, execution_key=COMMANDLINE_EXECUTION_KEY):
+    return execution_registry.get_registered_group(group_name=name,
+                                                   key=execution_key)
 
 
 """
@@ -128,16 +133,18 @@ def get_propargs():
     return _the_props
 
 
-def get_prop(execution_key, prop_key, default_val=None):
+def get_prop(prop_key, default_val=None,
+             execution_key=COMMANDLINE_EXECUTION_KEY):
     """
     Get a particular property.
     If key is missing (or no props) return default_val.
     """
-    prop_value = execution_registry.get_propargs(execution_key).get(prop_key, default_val)
-    if prop_value is None:
+    prop_args = execution_registry.get_propargs(key=execution_key,
+                                                default_propargs=None)
+    if prop_args is None:
         return default_val
     else:
-        return prop_value
+        return prop_args.get(prop_key, default_val)
     # if _the_props is None:
     #     return default_val
     # else:
@@ -205,12 +212,14 @@ class Registry(object):
 registry = Registry()
 
 
-def register(name_of_entity, entity, execution_key=None):
-    execution_registry.register_agent(execution_key, name_of_entity, entity)
+def register(name_of_entity, entity, execution_key=COMMANDLINE_EXECUTION_KEY):
+    execution_registry.register_agent(name_of_entity, entity,
+                                      key=execution_key)
 
 
-def get_registration(name_of_entity, execution_key=None):
-    return execution_registry.get_registered_agent(execution_key, name_of_entity)
+def get_registration(name_of_entity, execution_key=COMMANDLINE_EXECUTION_KEY):
+    return execution_registry.get_registered_agent(name_of_entity,
+                                                   key=execution_key)
 
 
 def clear_registry():

@@ -6,7 +6,8 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import CIRCLE
 from indra.env import Env
-from registry.execution_registry import COMMANDLINE_EXECUTION_KEY, EXECUTION_KEY_NAME
+from registry.execution_registry import \
+    COMMANDLINE_EXECUTION_KEY, EXECUTION_KEY_NAME
 from registry.registry import get_env, get_group, get_prop
 from registry.registry import user_log_notif
 from indra.space import DEF_HEIGHT, DEF_WIDTH
@@ -38,9 +39,11 @@ def add_grain(agent, execution_key=None):
     if DEBUG:
         print("Agent at", agent.pos, "is changing from",
               agent.prim_group_nm(), "to", next_group_idx)
-    get_env(execution_key).add_switch(agent,
-                                      get_group(str(curr_group_idx), execution_key),
-                                      get_group(str(next_group_idx), execution_key))
+    get_env(execution_key)\
+        .add_switch(agent,
+                    get_group(str(curr_group_idx), execution_key),
+                    get_group(str(next_group_idx), execution_key))
+
     agent.set_prim_group(str(next_group_idx))
     if DEBUG:
         print("Agent at", agent.pos, "has changed to", agent.prim_group_nm())
@@ -83,10 +86,14 @@ def sandpile_action(env, **kwargs):
 
 def set_env_attrs(execution_key=None):
     user_log_notif("Setting env attrs for forest fire.")
-    width = get_prop(execution_key, 'grid_width', DEF_WIDTH)
-    height = get_prop(execution_key, 'grid_height', DEF_HEIGHT)
-    get_env(execution_key).attrs["center"] = get_env(execution_key).get_agent_at(height // 2,
-                                                                                 width // 2)
+    width = get_prop('grid_width',
+                     DEF_WIDTH,
+                     execution_key=execution_key)
+    height = get_prop('grid_height',
+                      DEF_HEIGHT,
+                      execution_key=execution_key)
+    get_env(execution_key).attrs["center"] = get_env(execution_key)\
+        .get_agent_at(height // 2, width // 2)
 
 
 def set_up(props=None):
@@ -95,14 +102,16 @@ def set_up(props=None):
     """
 
     init_props(MODEL_NAME, props)
-    execution_key = int(props[EXECUTION_KEY_NAME].val) if props is not None else COMMANDLINE_EXECUTION_KEY
+    execution_key = int(props[EXECUTION_KEY_NAME].val) \
+        if props is not None else COMMANDLINE_EXECUTION_KEY
 
-    width = get_prop(execution_key, 'grid_width', DEF_WIDTH)
-    height = get_prop(execution_key, 'grid_height', DEF_HEIGHT)
+    width = get_prop('grid_width', DEF_WIDTH, execution_key=execution_key)
+    height = get_prop('grid_height', DEF_HEIGHT, execution_key=execution_key)
     groups = []
 
     for i in range(NUM_GROUPS):
-        groups.append(Composite(str(i), {"marker": CIRCLE}, execution_key=execution_key))
+        groups.append(
+            Composite(str(i), {"marker": CIRCLE}, execution_key=execution_key))
     for y in range(height):
         for x in range(width):
             groups[0] += create_grain(x, y, execution_key=execution_key)

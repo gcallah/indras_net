@@ -26,8 +26,9 @@ class ExecutionRegistry(object):
         self.registries[key] = {}
         return key
 
-    def __set_value_at_key(self, key, value, object_to_register):
-        key = int(key)
+    def __set_value_at_key(self, key=COMMANDLINE_EXECUTION_KEY, value=None, object_to_register=None):
+        if isinstance(key, str):
+            key = int(key)
         if key not in self.registries:
             raise KeyError(
                 "key - {} does not exist in the Execution registry. "
@@ -55,38 +56,39 @@ class ExecutionRegistry(object):
                 )
             )
 
-    def get_propargs(self, key):
+    def get_propargs(self, key=COMMANDLINE_EXECUTION_KEY, default_propargs=None):
         self.does_key_exists(key)
         if "props" not in self.registries[key]:
-            raise KeyError(
-                "Props have not been registered for key-{}. Maybe you forgot to call set_propargs".format(key))
+            return default_propargs
+            # raise KeyError(
+            #     "Props have not been registered for key-{}. Maybe you forgot to call set_propargs".format(key))
         return self.registries[key]["props"]
 
-    def register_agent(self, key, key_to_register_agent_with, agent):
+    def register_agent(self, key_to_register_agent_with, agent, key=COMMANDLINE_EXECUTION_KEY):
         self.does_key_exists(key)
         if "agents" not in self.registries[key]:
             self.registries[key]["agents"] = {}
         self.registries[key]["agents"][key_to_register_agent_with] = agent
 
-    def get_registered_agent(self, key, agent_name):
+    def get_registered_agent(self, agent_name, key=COMMANDLINE_EXECUTION_KEY):
         self.does_key_exists(key)
         if agent_name not in self.registries[key]["agents"]:
             raise KeyError("Agent with name - {} is not registered with key")
         return self.registries[key]["agents"][agent_name]
 
-    def get_registered_env(self, key):
+    def get_registered_env(self, key=COMMANDLINE_EXECUTION_KEY):
         self.does_key_exists(key)
         if "env" not in self.registries[key]:
             raise KeyError("No env registered for key - {}. Maybe you forgot to call set_env".format(key))
         return self.registries[key]["env"]
 
-    def get_registered_user(self, key):
+    def get_registered_user(self, key=COMMANDLINE_EXECUTION_KEY):
         self.does_key_exists(key)
         if "user" not in self.registries[key]:
             raise KeyError("No user registered for key - {}. Maybe you forgot to call set_user".format(key))
         return self.registries[key]["user"]
 
-    def get_registered_group(self, key, group_name):
+    def get_registered_group(self, group_name, key=COMMANDLINE_EXECUTION_KEY):
         self.does_key_exists(key)
         if group_name not in self.registries[key]:
             raise KeyError("Group - {} not registered for execution against execution_key - {}".format(group_name, key))

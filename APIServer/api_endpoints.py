@@ -1,7 +1,6 @@
 # Indra API server
 import logging
 import os
-import pdb
 
 from flask import Flask
 from flask_cors import CORS
@@ -109,8 +108,10 @@ class Props(Resource):
         Get the list of properties (parameters) for a model.
         """
 
-        props = get_props_for_current_execution(model_id, indra_dir)
-        user = APIUser("Dennis", None, execution_key=props[EXECUTION_KEY_NAME].get("val"))
+        props = \
+            get_props_for_current_execution(model_id, indra_dir)
+        APIUser("Dennis", None,
+                execution_key=props[EXECUTION_KEY_NAME].get("val"))
         return props
 
     @api.expect(props)
@@ -129,7 +130,8 @@ class ModelMenu(Resource):
         """
         This returns the menu with which a model interacts with a user.
         """
-        user = execution_registry.get_registered_agent(execution_id, "Dennis")
+        user = execution_registry\
+            .get_registered_agent("Dennis", key=execution_id)
         return user()
 
 
@@ -154,10 +156,13 @@ class ClearRegistry(Resource):
     def get(self, execution_key):
         print("Clearing registry for key - {}".format(execution_registry))
         try:
-            execution_registry.clear_data_for_execution_key(execution_key)
+            execution_registry\
+                .clear_data_for_execution_key(execution_key)
         except KeyError:
-            return err_return("Key - {} does not exist in registry".format(execution_key))
+            return err_return(
+                "Key - {} does not exist in registry".format(execution_key))
         return {'success': True}
+
 
 if __name__ == "__main__":
     logging.warning("Warning: you should use api.sh to run the server.")

@@ -8,6 +8,8 @@ from abc import abstractmethod
 from IPython import embed
 
 from indra.agent import Agent
+from registry.execution_registry import EXECUTION_KEY_NAME, \
+    COMMANDLINE_EXECUTION_KEY
 from registry.registry import get_env, set_user
 import registry.registry as reg
 
@@ -70,7 +72,8 @@ def run(user, test_run=False, execution_key=None):
     else:
         steps = DEF_STEPS
 
-    acts = get_env(execution_key=execution_key).runN(periods=steps, execution_key=execution_key)
+    acts = get_env(execution_key=execution_key)\
+        .runN(periods=steps, execution_key=execution_key)
     return acts
 
 
@@ -79,7 +82,7 @@ def leave(user, **kwargs):
     return USER_EXIT
 
 
-def scatter_plot(user, update=False, execution_key=None):
+def scatter_plot(user, update=False, execution_key=COMMANDLINE_EXECUTION_KEY):
     return get_env(execution_key=execution_key).scatter_graph()
 
 
@@ -188,7 +191,10 @@ class TermUser(User):
 
     def __init__(self, name, env, **kwargs):
         super().__init__(name, env, **kwargs)
-        self.execution_key = kwargs["execution_key"]
+
+        self.execution_key = COMMANDLINE_EXECUTION_KEY
+        if EXECUTION_KEY_NAME in kwargs:
+            self.execution_key = kwargs["execution_key"]
         self.menu_title = "Menu of Actions"
         self.stars = "*" * len(self.menu_title)
         self.exclude_menu_item("source")
@@ -258,7 +264,8 @@ class TermUser(User):
                         if item["func"] == "scatter_plot":
                             self.show_scatter_plot = True
                             self.show_line_graph = False
-                        return menu_functions[item["func"]](self, execution_key=self.execution_key)
+                        return menu_functions[item["func"]](
+                            self, execution_key=self.execution_key)
             self.tell_err(str(c) + " is an invalid option. "
                           + "Please enter a valid option.")
         else:

@@ -11,7 +11,8 @@ from random import randint
 from indra.agent import is_composite, AgentEncoder, X, Y
 from indra.composite import Composite
 from registry.registry import register, get_registration, get_group, get_env
-from registry.execution_registry import EXECUTION_KEY_NAME
+from registry.execution_registry import EXECUTION_KEY_NAME, \
+    COMMANDLINE_EXECUTION_KEY
 from indra.user import user_debug, user_log, user_log_warn
 
 DEF_WIDTH = 10
@@ -161,7 +162,11 @@ class Space(Composite):
         super().__init__(name, attrs=attrs, members=members,
                          action=action, serial_obj=serial_obj,
                          reg=False, **kwargs)
-        self.execution_key = kwargs[EXECUTION_KEY_NAME]
+
+        self.execution_key = COMMANDLINE_EXECUTION_KEY
+        if EXECUTION_KEY_NAME in kwargs:
+            self.execution_key = kwargs[EXECUTION_KEY_NAME]
+
         self.type = type(self).__name__
         if serial_obj is not None:
             self.restore(serial_obj)
@@ -472,7 +477,8 @@ class Space(Composite):
         region = Region(space=self, center=(agent.get_x(), agent.get_y()),
                         size=hood_size)
         members = region.get_agents(exclude_self=True, pred=None)
-        return Composite("Moore neighbors", members=members, execution_key=self.execution_key)
+        return Composite("Moore neighbors", members=members,
+                         execution_key=self.execution_key)
 
     def get_square_hood(self, agent, pred=None, save_neighbors=False,
                         include_self=False, hood_size=1):
@@ -517,7 +523,8 @@ class Space(Composite):
         for key, other_nm in self.locations.items():
             if DEBUG:
                 print("Checking ", other_nm, "for closeness")
-            other = get_registration(self.execution_key, other_nm)
+            other = get_registration(other_nm,
+                                     execution_key=self.execution_key)
             if other is agent or other is None:
                 continue
             d = distance(agent, other)
@@ -596,7 +603,9 @@ class Region():
                  SE=None, center=None, size=None, **kwargs):
         # alternate structure?
         # self.corners[NW] = nw
-        self.execution_key = kwargs[EXECUTION_KEY_NAME]
+        self.execution_key = COMMANDLINE_EXECUTION_KEY
+        if EXECUTION_KEY_NAME in kwargs:
+            self.execution_key = kwargs[EXECUTION_KEY_NAME]
         self.name = gen_region_name(NW, NE, SW, SE, center, size)
         if (space is None):
             space = get_env(self.execution_key)

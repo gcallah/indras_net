@@ -12,6 +12,8 @@ from indra.display_methods import BLUE, GREEN, RED
 from indra.env import Env
 from registry.registry import get_env, get_group, get_prop
 from registry.registry import user_tell, run_notice
+from registry.execution_registry import \
+    EXECUTION_KEY_NAME, COMMANDLINE_EXECUTION_KEY
 from indra.space import DEF_HEIGHT, DEF_WIDTH, distance
 from indra.utils import init_props
 
@@ -70,11 +72,12 @@ def bacterium_action(agent, **kwargs):
     if DEBUG:
         user_tell("I'm " + agent.name + " and I'm hungry.")
 
-    api_key = None
-    if "api_key" in kwargs:
-        api_key = kwargs["api_key"]
+    execution_key = COMMANDLINE_EXECUTION_KEY
+    if EXECUTION_KEY_NAME in kwargs:
+        execution_key = kwargs[EXECUTION_KEY_NAME]
 
-    toxin_level = calc_toxin(get_group(TOXINS, api_key=api_key), agent)
+    toxin_level = calc_toxin(get_group(TOXINS, execution_key=execution_key),
+                             agent)
     nutrient_level = calc_nutrient(
         get_group(NUTRIENTS), agent)
     if agent["prev_toxicity"] is not None:
