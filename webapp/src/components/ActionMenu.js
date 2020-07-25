@@ -20,6 +20,7 @@ const DATA = 4;
 const SOURCE = 5;
 const LOG = 6;
 const API_SERVER = `${config.API_URL}models/menu/`;
+const CLEAR_REGISTRY_API = `${config.API_URL}registry/clear/`;
 
 class ActionMenu extends Component {
   constructor(props) {
@@ -83,6 +84,23 @@ class ActionMenu extends Component {
       return false;
     }
     return true;
+  }
+
+  async componentWillUnmount() {
+    // clear any previous envFile stored in localstorage
+    // also clear the registry in the backend.
+    const { location } = this.props;
+    const { state } = location;
+    const { envFile } = state;
+    /* eslint-disable */
+    const { execution_key } = envFile;
+    const clearExecutionRegistryResponse = await axios.get(
+      `${CLEAR_REGISTRY_API}${execution_key}`
+    );
+    // not doing anything with the response.
+    // allow the frontend to continue functioning.
+    // there should be a error reporting mechanism here to notify
+    // admins that a particular key was not cleared.
   }
 
   viewSource = async () => {
@@ -251,8 +269,6 @@ class ActionMenu extends Component {
       </div>
     );
   };
-
-  
 
   render() {
     const { loadingData, msg, disabledButton, errorMessage } = this.state;

@@ -14,8 +14,6 @@ import mandelobrotImg from './images/mendelobrot_sq.jpg';
 import './styles.css';
 import config from '../config';
 
-const CLEAR_REGISTRY_API = `${config.API_URL}registry/clear/`;
-
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -40,22 +38,6 @@ class Home extends Component {
       document.title = 'Home';
       const res = await axios.get(`${this.api_server}models`);
       this.setState({ allItems: res.data, loadingData: false });
-
-      // clear any previous envFile stored in localstorage
-      // also clear the registry in the backend.
-      const envFileString = localStorage.getItem('envFile');
-      if (envFileString !== null && envFileString !== undefined) {
-        const envFile = JSON.parse(envFileString);
-        /* eslint-disable */
-        const { execution_key } = envFile;
-        const clearExecutionRegistryResponse = await axios.get(
-          `${CLEAR_REGISTRY_API}${execution_key}`,
-        );
-        // not doing anything with the response.
-        // allow the frontend to continue functioning.
-        // there should be a error reporting mechanism here to notify
-        // admins that a particular key was not cleared.
-      }
     } catch (e) {
       history.push('/errorCatching');
     }
