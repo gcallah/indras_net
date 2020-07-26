@@ -461,7 +461,8 @@ class Space(Composite):
                                 center=(agent.get_x(), agent.get_y()),
                                 size=hood_size)
         members = region.get_agents(exclude_self=not save_neighbors, pred=pred)
-        return Composite("Moore neighbors", members=members, execution_key=self.execution_key)
+        return Composite("Moore neighbors",
+                         members=members, execution_key=self.execution_key)
 
     def get_square_hood(self, agent, pred=None, save_neighbors=False,
                         include_self=False, hood_size=1):
@@ -722,7 +723,7 @@ class Region():
         numerator = len([agent for agent in ratio_agents if pred_one(agent)])
         if pred_two is not None:
             denominator = len([agent for agent in ratio_agents
-                              if pred_two(agent)])
+                               if pred_two(agent)])
         else:
             denominator = len(ratio_agents)
         """
