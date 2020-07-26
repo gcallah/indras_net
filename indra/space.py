@@ -553,14 +553,14 @@ def gen_region_name(NW=None, NE=None, SW=None,
 
 
 def region_factory(space=None, NW=None, NE=None, SW=None,
-                   SE=None, center=None, size=None):
+                   SE=None, center=None, size=None, agents_move=True):
     region_name = gen_region_name(NW=NW, NE=NE, SW=SW, SE=SE,
                                   center=center, size=size)
     if region_name in region_dict:
         return region_dict[region_name]
     else:
         new_reg = Region(space=space, NW=NW, NE=NE, SW=SW, SE=SE,
-                         center=center, size=size)
+                         center=center, size=size, agents_move=agents_move)
         region_dict[region_name] = new_reg
         return new_reg
 
@@ -707,12 +707,21 @@ class Region():
     def get_ratio(self, pred_one, pred_two=None):
         if pred_one is None:
             raise Exception("Pass at least a single predicate to get_ratio")
+        self._load_agents_if_necc(exclude_self=True)
+        ratio_agents = self.my_agents
+        numerator = len([agent for agent in ratio_agents if pred_one(agent)])
+        if pred_two is not None:
+            denominator = len([agent for agent in ratio_agents
+                              if pred_two(agent)])
+        else:
+            denominator = len(ratio_agents)
+        """
         numerator = self.get_num_of_agents(exclude_self=True, pred=pred_one)
-        denominator = self.get_num_of_agents(exclude_self=True,
-                                             pred=pred_two)
+        denominator = self.get_num_of_agents(exclude_self=True, pred=pred_two)
         if DEBUG2:
             print("numerator length: " + str(numerator))
             print("denominator length: " + str(denominator))
+        """
         if denominator == 0:
             return 1
         return numerator / denominator
