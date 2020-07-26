@@ -158,7 +158,7 @@ def social_distancing(agent):
     """
     curr_region = CircularRegion(get_env(),
                                  agent.get_pos(), DEF_PERSON_MOVE*2)
-    agents_in_range = curr_region.get_agents(get_env(), True)
+    agents_in_range = curr_region.get_agents(get_env(), pred=None)
     new_angle = get_move_angle(agent, agents_in_range)
     agent["angle"] = new_angle
 
@@ -249,7 +249,6 @@ def set_env_attrs():
                   DE: DEAD,
                   IM: IMMUNE})
     env.set_attr("census_func", epidemic_report)
-    env.set_attr("total_cases", 0)
 
 
 def set_up(props=None):
@@ -304,6 +303,7 @@ def set_up(props=None):
                             state=IM))
 
     Env(MODEL_NAME, height=city_height, width=city_width, members=groups)
+    get_env().set_attr("total_cases", 0)
     set_env_attrs()
 
 

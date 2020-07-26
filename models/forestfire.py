@@ -82,8 +82,9 @@ def tree_action(agent, **kwargs):
         # JSON only allows strings as dict keys
         agent["state"] = str(prob_state_trans(int(old_state),
                                               get_env_attr(TRANS_TABLE)))
-        if agent["state"] == NF:
-            user_log_notif("Tree spontaneously catching fire.")
+        if DEBUG2:
+            if agent["state"] == NF:
+                user_log_notif("Tree spontaneously catching fire.")
 
     if old_state != agent["state"]:
         # if we entered a new state, then...

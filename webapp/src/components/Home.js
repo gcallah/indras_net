@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Loader, Dimmer } from 'semantic-ui-react';
-import { ListGroup, Button } from 'react-bootstrap';
+import { Dropdown } from 'react-bootstrap';
 import Col from 'react-bootstrap/Col';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
@@ -21,7 +21,6 @@ class Home extends Component {
       allItems: [],
       loadingData: false,
       apiFailed: false,
-      loadingList: false,
       dataForCarousel: [
         { image: sandpileImg, title: 'by Seth Terashima' },
         { image: sandpile1Img, title: 'by Colt Browninga' },
@@ -60,7 +59,6 @@ class Home extends Component {
       dataForCarousel,
       allItems,
       apiFailed,
-      loadingList,
     } = this.state;
     if (apiFailed) {
       return <h1>404 Error</h1>;
@@ -80,15 +78,11 @@ class Home extends Component {
         <div className="row">
           <Col sm={12} lg={4} className="mb-5">
             {this.renderChooseModelProp()}
-            <Button
-              variant="outline-primary"
-              onClick={() => this.setState({ loadingList: true })}
-            >
-              Choose...
-            </Button>
-            {loadingList ? (
-              <ListGroup>
-                {/* Show the models if "active" is missing or is set to true */}
+            <Dropdown>
+              <Dropdown.Toggle variant="outline-dark" id="dropdown-basic">
+                Choose...
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
                 {Object.keys(allItems).map((item) => (!('active' in allItems[item])
                   || allItems[item].active === true ? (
                     <OverlayTrigger
@@ -100,7 +94,7 @@ class Home extends Component {
                         to={{
                           pathname: `/models/props/${allItems[item]['model ID']}`,
                         }}
-                        className="text-primary p-3 list-group-item list-group-item-action link"
+                        className="link text-dark dropdown-item"
                         key={allItems[item].name}
                         onClick={() => this.handleClick(
                           allItems[item]['model ID'],
@@ -113,8 +107,8 @@ class Home extends Component {
                       </Link>
                     </OverlayTrigger>
                   ) : null))}
-              </ListGroup>
-            ) : null}
+              </Dropdown.Menu>
+            </Dropdown>
           </Col>
           <Col sm={12} lg={{ cols: 6, span: 6, offset: 2 }}>
             <Carousel

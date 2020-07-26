@@ -16,7 +16,7 @@ from registry.execution_registry import EXECUTION_KEY_NAME, \
     COMMANDLINE_EXECUTION_KEY
 from indra.utils import get_func_name
 
-DEBUG = True  # turns debugging code on or off
+DEBUG = False  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
 # x and y indices
@@ -191,24 +191,29 @@ class Agent(object):
 
         if serial_obj is not None:
             self.restore(serial_obj)
-        else:
-            self.type = type(self).__name__
-            self.name = name
-            self.action_key = None
-            self.action = action
-            if action is not None:
-                self.action_key = get_func_name(action)
-            self.duration = duration
-            self.neighbors = None
-            self.attrs = {}
-            if attrs is not None:
-                self.attrs = attrs
-            self.active = True
-            self.pos = None
-
-            self.prim_group = None if prim_group is None else str(prim_group)
+        else:  # or build it anew:
+            self._construct_anew(name, attrs=attrs, action=action,
+                                 duration=duration, prim_group=prim_group,
+                                 reg=reg)
         if reg:
             register(self.name, self, execution_key=self.execution_key)
+
+    def _construct_anew(self, name, attrs=None, action=None,
+                        duration=INF, prim_group=None, reg=True):
+        self.type = type(self).__name__
+        self.name = name
+        self.action_key = None
+        self.action = action
+        if action is not None:
+            self.action_key = get_func_name(action)
+        self.duration = duration
+        self.neighbors = None
+        self.attrs = {}
+        if attrs is not None:
+            self.attrs = attrs
+        self.active = True
+        self.pos = None
+        self.prim_group = None if prim_group is None else str(prim_group)
 
     def set_prim_group(self, group):
         """

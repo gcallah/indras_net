@@ -30,8 +30,6 @@ def agent_debug(agent):
     if DEBUG:
         print("Agent", str(agent), "with id:", id(agent), "Position: ",agent.get_pos())
 
-        
-
 
 def create_sal():
     sal = ep.create_person("Saliou", 0, ep.HE)
