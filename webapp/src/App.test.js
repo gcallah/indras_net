@@ -74,7 +74,7 @@ describe('<App/>', () => {
 
     it('ActionMenu route renders <ActionMenu/> component', () => {
       const component = mount(
-        <MemoryRouter initialEntries={['/models/menu/abc']}>
+        <MemoryRouter initialEntries={[{ pathname: '/models/menu/abc', state: { envFile: { execution_key: 123 } } }]}>
           <IndraRoutes />
         </MemoryRouter>,
       );

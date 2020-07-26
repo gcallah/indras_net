@@ -1,28 +1,29 @@
 {
   "files": {
-    "main.css": "/indras_net/static/css/main.9462842e.chunk.css",
-    "main.js": "/indras_net/static/js/main.02f200ab.chunk.js",
-    "main.js.map": "/indras_net/static/js/main.02f200ab.chunk.js.map",
-    "runtime-main.js": "/indras_net/static/js/runtime-main.f17cb719.js",
-    "runtime-main.js.map": "/indras_net/static/js/runtime-main.f17cb719.js.map",
-    "static/css/2.f085c4f0.chunk.css": "/indras_net/static/css/2.f085c4f0.chunk.css",
-    "static/js/2.d074f1fe.chunk.js": "/indras_net/static/js/2.d074f1fe.chunk.js",
-    "static/js/2.d074f1fe.chunk.js.map": "/indras_net/static/js/2.d074f1fe.chunk.js.map",
+    "main.css": "/indras_net/static/css/main.39a4a351.chunk.css",
+    "main.js": "/indras_net/static/js/main.017bd1ae.chunk.js",
+    "main.js.map": "/indras_net/static/js/main.017bd1ae.chunk.js.map",
+    "runtime-main.js": "/indras_net/static/js/runtime-main.9f0c9c69.js",
+    "runtime-main.js.map": "/indras_net/static/js/runtime-main.9f0c9c69.js.map",
+    "static/css/2.1c7e4381.chunk.css": "/indras_net/static/css/2.1c7e4381.chunk.css",
+    "static/js/2.d9439618.chunk.js": "/indras_net/static/js/2.d9439618.chunk.js",
+    "static/js/2.d9439618.chunk.js.map": "/indras_net/static/js/2.d9439618.chunk.js.map",
     "index.html": "/indras_net/index.html",
-    "precache-manifest.7cc95eff095c13bd3b6ed9ed83dc7f1e.js": "/indras_net/precache-manifest.7cc95eff095c13bd3b6ed9ed83dc7f1e.js",
+    "precache-manifest.0e5185de6ed9296278b4b89c84e5b459.js": "/indras_net/precache-manifest.0e5185de6ed9296278b4b89c84e5b459.js",
     "service-worker.js": "/indras_net/service-worker.js",
-    "static/css/2.f085c4f0.chunk.css.map": "/indras_net/static/css/2.f085c4f0.chunk.css.map",
-    "static/css/main.9462842e.chunk.css.map": "/indras_net/static/css/main.9462842e.chunk.css.map",
+    "static/css/2.1c7e4381.chunk.css.map": "/indras_net/static/css/2.1c7e4381.chunk.css.map",
+    "static/css/main.39a4a351.chunk.css.map": "/indras_net/static/css/main.39a4a351.chunk.css.map",
+    "static/js/2.d9439618.chunk.js.LICENSE.txt": "/indras_net/static/js/2.d9439618.chunk.js.LICENSE.txt",
     "static/media/Sandpile.jpg": "/indras_net/static/media/Sandpile.090bc1a0.jpg",
     "static/media/mendelobrot_sq.jpg": "/indras_net/static/media/mendelobrot_sq.875dd8b8.jpg",
     "static/media/sandpile_2.png": "/indras_net/static/media/sandpile_2.d38b3fb1.png",
     "static/media/slick-theme.css": "/indras_net/static/media/slick.f97e3bbf.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.f17cb719.js",
-    "static/css/2.f085c4f0.chunk.css",
-    "static/js/2.d074f1fe.chunk.js",
-    "static/css/main.9462842e.chunk.css",
-    "static/js/main.02f200ab.chunk.js"
+    "static/js/runtime-main.9f0c9c69.js",
+    "static/css/2.1c7e4381.chunk.css",
+    "static/js/2.d9439618.chunk.js",
+    "static/css/main.39a4a351.chunk.css",
+    "static/js/main.017bd1ae.chunk.js"
   ]
 }
