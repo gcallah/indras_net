@@ -95,9 +95,9 @@ js: jstests webapp
 	git add $(REACT_BUILD)/static/js/*js
 	git add $(REACT_BUILD)/static/js/*map
 	git add $(REACT_BUILD)/$(REACT_MAIN)
-	cd $(REACT_TOP); npm run deploy
 	- git commit -a
 	git push origin master
+	cd $(REACT_TOP); npm run deploy
 	
 pytests: FORCE
 	cd epidemics; make tests
