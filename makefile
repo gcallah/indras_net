@@ -87,7 +87,7 @@ tests: pytests jstests dockertests
 
 python: pytests github
 
-js: jstests webapp github
+js: jstests webapp 
 	git add $(WEB_STATIC)/js/*js
 	git add $(WEB_STATIC)/js/*map
 	git add $(WEB_STATIC)/css/*
@@ -96,7 +96,9 @@ js: jstests webapp github
 	git add $(REACT_BUILD)/static/js/*map
 	git add $(REACT_BUILD)/$(REACT_MAIN)
 	cd $(REACT_TOP); npm run deploy
-
+	- git commit -a
+	git push origin master
+	
 pytests: FORCE
 	cd epidemics; make tests
 	cd models; make tests
