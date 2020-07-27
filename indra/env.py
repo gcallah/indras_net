@@ -11,6 +11,8 @@ from types import FunctionType
 # import logging
 import indra.display_methods as disp
 import registry.registry as regis
+from registry.execution_registry import execution_registry,\
+    EXECUTION_KEY_NAME, COMMANDLINE_EXECUTION_KEY
 from registry.registry import get_prop
 from indra.agent import join, switch, Agent, AgentEncoder
 from indra.space import Space
@@ -112,7 +114,9 @@ class Env(Space):
         super().__init__(name, action=action,
                          random_placing=random_placing, serial_obj=serial_obj,
                          reg=False, members=members, **kwargs)
-
+        self.execution_key = COMMANDLINE_EXECUTION_KEY
+        if EXECUTION_KEY_NAME in kwargs:
+            self.execution_key = kwargs[EXECUTION_KEY_NAME]
         self.type = type(self).__name__
         self.user_type = os.getenv("user_type", TERMINAL)
         # this func is only used once, so no need to restore it
@@ -127,9 +131,9 @@ class Env(Space):
                                 census, pop_hist_func)
 
         self.set_menu_excludes()
-
         # now we set our global singleton:
-        regis.set_env(self)
+        execution_registry.set_env(self.execution_key, self)
+        # regis.set_env(self)
 
     def set_attr(self, key, val):
         self.attrs[key] = val
@@ -141,9 +145,9 @@ class Env(Space):
             return default
 
     def set_menu_excludes(self):
-        if not get_prop('use_line', True):
+        if not get_prop('use_line', True, execution_key=self.execution_key):
             self.exclude_menu_item("line_graph")
-        if not get_prop('use_scatter', True):
+        if not get_prop('use_scatter', True, execution_key=self.execution_key):
             self.exclude_menu_item("scatter_plot")
 
     def construct_anew(self, line_data_func=None, exclude_member=None,
@@ -175,12 +179,15 @@ class Env(Space):
 
     def handle_user_type(self):
         if self.user_type == TERMINAL:
-            self.user = TermUser(getpass.getuser(), self)
+            self.user = TermUser(getpass.getuser(), self,
+                                 execution_key=self.execution_key)
             self.user.tell("Welcome to Indra, " + str(self.user) + "!")
         elif self.user_type == TEST:
-            self.user = TestUser(getpass.getuser(), self)
+            self.user = TestUser(getpass.getuser(), self,
+                                 execution_key=self.execution_key)
         elif self.user_type == API:
-            self.user = APIUser(getpass.getuser(), self)
+            self.user = APIUser(getpass.getuser(), self,
+                                execution_key=self.execution_key)
 
     def from_json(self, serial_obj):
         super().from_json(serial_obj)
@@ -188,7 +195,7 @@ class Env(Space):
         self.plot_title = serial_obj["plot_title"]
         nm = serial_obj["user"]["name"]
         msg = serial_obj["user"]["user_msgs"]
-        self.user = APIUser(nm, self)
+        self.user = APIUser(nm, self, execution_key=self.execution_key)
         self.user.tell(msg)
         self.name = serial_obj["name"]
         self.switches = serial_obj["switches"]
@@ -228,7 +235,7 @@ class Env(Space):
         to put up a menu and choose. For tests, we just run N (default) turns.
         """
         if (self.user is None) or (self.user_type == TEST):
-            self.runN()
+            self.runN(execution_key=self.execution_key)
         else:
             while True:
                 # run until user exit!
@@ -258,7 +265,7 @@ class Env(Space):
         return str(len(self.switches))
 
     def rpt_switches(self):
-        return "# switches = " + self.pending_switches() + "; id: "\
+        return "# switches = " + self.pending_switches() + "; id: " \
                + str(id(self.switches))
 
     def add_switch(self, agent, from_grp, to_grp):
@@ -287,7 +294,8 @@ class Env(Space):
                 if group is not None and group.member_creator is not None:
                     group.num_members_ever += 1
                     agent = group.member_creator("", group.num_members_ever)
-                    regis.register(agent.name, agent)
+                    regis.register(agent.name, agent,
+                                   execution_key=self.execution_key)
                     join(group, agent)
             self.womb.clear()
 
@@ -297,7 +305,7 @@ class Env(Space):
             user_log_notif("Switching " + self.pending_switches()
                            + " agents between groups")
             for (agent_nm, from_grp_nm, to_grp_nm) in self.switches:
-                switch(agent_nm, from_grp_nm, to_grp_nm)
+                switch(agent_nm, from_grp_nm, to_grp_nm, self.execution_key)
                 self.num_switches += 1
             self.switches.clear()
 
@@ -312,7 +320,7 @@ class Env(Space):
                 else:
                     self.pop_hist.record_pop(mbr, 0)
 
-    def runN(self, periods=DEF_TIME, api_key=None):
+    def runN(self, periods=DEF_TIME, execution_key=None):
         """
             Run our model for N periods.
             Return the total number of actions taken.
@@ -327,7 +335,7 @@ class Env(Space):
             self.handle_switches()
             self.handle_pop_hist()
 
-            (a, m) = super().__call__(api_key=api_key)
+            (a, m) = super().__call__(execution_key=execution_key)
             num_acts += a
             num_moves += m
             census_rpt = self.get_census(num_moves)

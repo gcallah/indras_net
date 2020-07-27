@@ -8,7 +8,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import BLACK, BLUE, GRAY, GREEN, RED, TAN, YELLOW
 from indra.env import Env
-from registry.registry import get_env, get_prop, get_group, set_env_attr
+from registry.registry import get_env, get_prop, get_group
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import init_props
 
@@ -30,12 +30,7 @@ EXPENSE_INDX = 0
 CAPITAL_INDX = 1
 COLOR_INDX = 2
 
-mp_pref = None
-hood_size = None
 bb_capital = 2000
-
-period = None
-store_census = None
 
 # The data below creates store types with default values.
 # "Store type":
@@ -94,10 +89,10 @@ def create_bb(name):
     """
     Create a big box store.
     """
-    global bb_capital
+    box = get_env()
 
     bb_book = {"expense": 150,
-               "capital": bb_capital}
+               "capital": box.get_attr(bb_capital)}
     return Agent(name=name, attrs=bb_book, action=bb_action)
 
 
@@ -113,12 +108,12 @@ def get_util(store):
     """
     Get utility depending on the store type.
     """
-    global mp_pref
-
+    # box = get_env()
     if store.primary_group() == get_group(BB_INDX):
         return calc_util(store)
     else:
-        return calc_util(store) + mp_pref
+        # return calc_util(store) + box.get_attr(mp_pref)
+        return calc_util(store) + None
 
 
 def consumer_action(consumer):
@@ -126,9 +121,10 @@ def consumer_action(consumer):
     Check shops near consumer and
     consumer decide where to shop at.
     """
-    global hood_size
+    # box = get_env()
     nearby_neighbors = get_env().get_moore_hood(
-        consumer, hood_size=hood_size)
+        # consumer, hood_size=box.get_attr(hood_size))
+        consumer, hood_size=None)
     store_to_go = None
     max_util = 0.0
     for neighbors in nearby_neighbors:
@@ -192,13 +188,10 @@ def town_action(town):
     check the period and decide when to add
     the big box store
     """
-    global period
     box = get_env()
-    if town.get_periods() == period:
+    # if town.get_periods() == box.get_attr(period):
+    if town.get_periods() == 1:
         new_bb = create_bb("Big Box")
-        # set_env_attr()
-        # groups[BB_INDX] += new_bb
-        # How do we add group to the environment
         box.attrs["bb_group"] += 1
         town.place_member(new_bb)
 
@@ -207,12 +200,6 @@ def set_up(props=None):
     """
     Create an Env for Big box.
     """
-    global mp_pref
-    global hood_size
-    global store_census
-    global period
-    global bb_capital
-    # set_env_attr , gget_attr
 
     init_props(MODEL_NAME, props)
 
@@ -239,13 +226,17 @@ def set_up(props=None):
     for m in range(0, num_mp):
         rand = random.randint(2, len(groups) - 1)
         groups[rand] += create_mp(groups[rand], m)
-    Env("Town",
-        action=town_action,
-        members=groups,
-        height=height,
-        width=width)
-    set_env_attr("consumer_group", consumer_group)
-    set_env_attr("bb_group", bb_group)
+    box = Env(MODEL_NAME,
+              action=town_action,
+              members=groups,
+              height=height,
+              width=width)
+    box.set_attr("consumer_group", consumer_group)
+    box.set_attr("bb_group", bb_group)
+    box.set_attr("hood_size", hood_size)
+    box.set_attr("mp_pref", mp_pref)
+    box.set_attr("period", period)
+    box.set_attr("bb_capital", bb_capital)
     return (groups)
 
 

@@ -12,6 +12,8 @@ import numpy as np
 
 from registry.registry import register, get_registration, get_env
 from registry.registry import get_group, user_log_notif, user_log_err
+from registry.execution_registry import EXECUTION_KEY_NAME, \
+    COMMANDLINE_EXECUTION_KEY
 from indra.utils import get_func_name
 
 DEBUG = False  # turns debugging code on or off
@@ -124,18 +126,18 @@ def split(agent1, agent2):
         return True
 
 
-def switch(agent_nm, grp1_nm, grp2_nm):
+def switch(agent_nm, grp1_nm, grp2_nm, execution_key=None):
     """
     Move agent from grp1 to grp2.
     We first must recover agent objects from the registry.
     """
-    agent = get_registration(agent_nm)
+    agent = get_registration(agent_nm, execution_key=execution_key)
     if agent is None:
         user_log_notif("In switch; could not find agent: " + str(agent))
-    grp1 = get_group(grp1_nm)
+    grp1 = get_group(grp1_nm, execution_key=execution_key)
     if grp1 is None:
         user_log_notif("In switch; could not find from group: " + str(grp1))
-    grp2 = get_group(grp2_nm)
+    grp2 = get_group(grp2_nm, execution_key=execution_key)
     if grp2 is None:
         user_log_notif("In switch; could not find to group: " + str(grp2))
     split_em = split(grp1, agent)
@@ -179,29 +181,39 @@ class Agent(object):
     """
 
     def __init__(self, name, attrs=None, action=None, duration=INF,
-                 prim_group=None, serial_obj=None, reg=True):
+                 prim_group=None, serial_obj=None, reg=True, **kwargs):
         self.registry = {}
+
+        self.execution_key = COMMANDLINE_EXECUTION_KEY
+
+        if EXECUTION_KEY_NAME in kwargs:
+            self.execution_key = kwargs[EXECUTION_KEY_NAME]
 
         if serial_obj is not None:
             self.restore(serial_obj)
-        else:
-            self.type = type(self).__name__
-            self.name = name
-            self.action_key = None
-            self.action = action
-            if action is not None:
-                self.action_key = get_func_name(action)
-            self.duration = duration
-            self.neighbors = None
-            self.attrs = {}
-            if attrs is not None:
-                self.attrs = attrs
-            self.active = True
-            self.pos = None
-
-            self.prim_group = None if prim_group is None else str(prim_group)
+        else:  # or build it anew:
+            self._construct_anew(name, attrs=attrs, action=action,
+                                 duration=duration, prim_group=prim_group,
+                                 reg=reg)
         if reg:
-            register(self.name, self)
+            register(self.name, self, execution_key=self.execution_key)
+
+    def _construct_anew(self, name, attrs=None, action=None,
+                        duration=INF, prim_group=None, reg=True):
+        self.type = type(self).__name__
+        self.name = name
+        self.action_key = None
+        self.action = action
+        if action is not None:
+            self.action_key = get_func_name(action)
+        self.duration = duration
+        self.neighbors = None
+        self.attrs = {}
+        if attrs is not None:
+            self.attrs = attrs
+        self.active = True
+        self.pos = None
+        self.prim_group = None if prim_group is None else str(prim_group)
 
     def set_prim_group(self, group):
         """
@@ -275,7 +287,7 @@ class Agent(object):
         return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
 
     def primary_group(self):
-        return get_group(self.prim_group)
+        return get_group(self.prim_group, execution_key=self.execution_key)
 
     def group_name(self):
         return self.prim_group
@@ -287,6 +299,7 @@ class Agent(object):
         """
         Should be used to decorate any function that uses pos[X] or pos[Y]
         """
+
         @wraps(fn)
         def wrapper(*args, **kwargs):
             # args[0] is self!
@@ -296,6 +309,7 @@ class Agent(object):
                              + fn.__name__)
                 return 0
             return fn(*args, **kwargs)
+
         return wrapper
 
     def set_pos(self, locator, x, y):

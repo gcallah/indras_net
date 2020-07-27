@@ -9,15 +9,16 @@ from copy import copy
 from random import choice
 
 from indra.agent import Agent, join, INF, is_composite, AgentEncoder
-
+from registry.execution_registry import EXECUTION_KEY_NAME, \
+    COMMANDLINE_EXECUTION_KEY
 from registry.registry import add_group
 from indra.utils import get_func_name
 
 DEBUG = False
 
 
-def grp_from_nm_dict(nm, dictionary):
-    grp = Composite(nm)
+def grp_from_nm_dict(nm, dictionary, execution_key=COMMANDLINE_EXECUTION_KEY):
+    grp = Composite(nm, execution_key=execution_key)
     grp.members = dictionary
     return grp
 
@@ -41,9 +42,14 @@ class Composite(Agent):
 
         self.num_members_ever = 0
         self.members = OrderedDict()
+        self.execution_key = COMMANDLINE_EXECUTION_KEY
+
+        if EXECUTION_KEY_NAME in kwargs:
+            self.execution_key = kwargs[EXECUTION_KEY_NAME]
+
         super().__init__(name, attrs=attrs, duration=duration,
                          action=action, serial_obj=serial_obj,
-                         reg=False)
+                         reg=False, **kwargs)
 
         self.type = type(self).__name__
 
@@ -64,7 +70,7 @@ class Composite(Agent):
                 for i in range(num_members):
                     join(self, member_creator(self.name, i, **kwargs))
         if reg:
-            add_group(self.name, self)
+            add_group(self.name, self, execution_key=self.execution_key)
 
     def restore(self, serial_obj):
         """
@@ -91,9 +97,11 @@ class Composite(Agent):
         for nm in serial_obj["members"]:
             member = serial_obj["members"][nm]
             if member["type"] == "Agent":
-                self.members[nm] = Agent(name=nm, serial_obj=member)
+                self.members[nm] = Agent(name=nm, serial_obj=member,
+                                         execution_key=self.execution_key)
             elif member["type"] == "Composite":
-                self.members[nm] = Composite(name=nm, serial_obj=member)
+                self.members[nm] = Composite(name=nm, serial_obj=member,
+                                             execution_key=self.execution_key)
         mem_create_nm = serial_obj["member_creator"]
         if mem_create_nm in member_creator_dict:
             self.member_creator = member_creator_dict[mem_create_nm]
@@ -197,7 +205,8 @@ class Composite(Agent):
             new_dict.update(other.members)
         else:
             new_dict[other.name] = other
-        new_grp = grp_from_nm_dict(self.name + "+" + other.name, new_dict)
+        new_grp = grp_from_nm_dict(self.name + "+" + other.name, new_dict,
+                                   execution_key=self.execution_key)
         self.add_group(new_grp)
         other.add_group(new_grp)
         return new_grp

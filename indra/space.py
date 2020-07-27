@@ -6,10 +6,11 @@ import json
 import math
 from math import sqrt, atan, degrees
 from random import randint
-
 from indra.agent import is_composite, AgentEncoder, X, Y
 from indra.composite import Composite
 from registry.registry import register, get_registration, get_group, get_env
+from registry.execution_registry import EXECUTION_KEY_NAME, \
+    COMMANDLINE_EXECUTION_KEY
 from indra.user import user_debug, user_log, user_log_warn
 
 DEF_WIDTH = 10
@@ -122,12 +123,12 @@ def opposing_angle(pos1, pos2):
         else:
             new_angle = degrees_between(x_dif, y_dif)
     elif (y_dif != 0):
-        if(y_dif > 0):
+        if (y_dif > 0):
             new_angle = 270
         else:
             new_angle = 90
     else:
-        if(x_dif > 0):
+        if (x_dif > 0):
             new_angle = 180
         else:
             new_angle = 0
@@ -143,10 +144,14 @@ class Space(Composite):
 
     def __init__(self, name, width=DEF_WIDTH, height=DEF_HEIGHT,
                  attrs=None, members=None, action=None,
-                 random_placing=True, serial_obj=None, reg=True):
+                 random_placing=True, serial_obj=None, reg=True, **kwargs):
         super().__init__(name, attrs=attrs, members=members,
                          action=action, serial_obj=serial_obj,
-                         reg=False)
+                         reg=False, **kwargs)
+
+        self.execution_key = COMMANDLINE_EXECUTION_KEY
+        if EXECUTION_KEY_NAME in kwargs:
+            self.execution_key = kwargs[EXECUTION_KEY_NAME]
 
         self.type = type(self).__name__
         if serial_obj is not None:
@@ -163,7 +168,7 @@ class Space(Composite):
             else:
                 self.consec_place_members(self.members)
         if reg:
-            register(self.name, self)
+            register(self.name, self, execution_key=self.execution_key)
 
     def restore(self, serial_obj):
         self.from_json(serial_obj)
@@ -303,7 +308,7 @@ class Space(Composite):
         if self.is_empty(x, y):
             return None
         agent_nm = self.locations[str((x, y))]
-        return get_registration(agent_nm)
+        return get_registration(agent_nm, execution_key=self.execution_key)
 
     def place_member(self, mbr, max_move=None, xy=None):
         """
@@ -399,7 +404,7 @@ class Space(Composite):
         get_x_hood would return (-1, 0) and (1, 0).
         """
         if agent is not None:
-            x_hood = Composite("x neighbors")
+            x_hood = Composite("x neighbors", execution_key=self.execution_key)
             agent_x, agent_y, neighbor_x_coords \
                 = fill_neighbor_coords(agent,
                                        width,
@@ -422,7 +427,7 @@ class Space(Composite):
         For example, if the agent is located at (0, 0),
         get_y_hood would return agents at (0, 2) and (0, 1).
         """
-        y_hood = Composite("y neighbors")
+        y_hood = Composite("y neighbors", execution_key=self.execution_key)
         agent_x, agent_y, neighbor_y_coords \
             = fill_neighbor_coords(agent,
                                    height,
@@ -455,8 +460,9 @@ class Space(Composite):
         region = region_factory(space=self,
                                 center=(agent.get_x(), agent.get_y()),
                                 size=hood_size)
-        members = region.get_agents(exclude_self=True, pred=None)
-        return Composite("Moore neighbors", members=members)
+        members = region.get_agents(exclude_self=not save_neighbors, pred=pred)
+        return Composite("Moore neighbors",
+                         members=members, execution_key=self.execution_key)
 
     def get_square_hood(self, agent, pred=None, save_neighbors=False,
                         include_self=False, hood_size=1):
@@ -484,7 +490,7 @@ class Space(Composite):
                                     hood_size=hood_size)
         if isinstance(group, str):
             # lookup group by name
-            group = get_group(group)
+            group = get_group(group, self.execution_key)
             if group is None:
                 return None
         for agent_name in hood:
@@ -501,7 +507,8 @@ class Space(Composite):
         for key, other_nm in self.locations.items():
             if DEBUG:
                 print("Checking ", other_nm, "for closeness")
-            other = get_registration(other_nm)
+            other = get_registration(other_nm,
+                                     execution_key=self.execution_key)
             if other is agent or other is None:
                 continue
             d = distance(agent, other)
@@ -533,14 +540,14 @@ class Space(Composite):
     def exists_neighbor(self, agent, pred=None, exclude_self=True, size=1,
                         region_type=None):
         region = region_factory(space=self, center=(agent.get_x(),
-                                agent.get_y()),
+                                                    agent.get_y()),
                                 size=size)
         return region.exists_neighbor(exclude_self=exclude_self, pred=pred)
 
     def neighbor_ratio(self, agent, pred_one, pred_two=None, size=1,
                        region_type=None):
         region = region_factory(space=self, center=(agent.get_x(),
-                                agent.get_y()),
+                                                    agent.get_y()),
                                 size=size)
         return region.get_ratio(pred_one, pred_two=pred_two)
 
@@ -554,14 +561,14 @@ def gen_region_name(NW=None, NE=None, SW=None,
 
 
 def region_factory(space=None, NW=None, NE=None, SW=None,
-                   SE=None, center=None, size=None):
+                   SE=None, center=None, size=None, agents_move=True):
     region_name = gen_region_name(NW=NW, NE=NE, SW=SW, SE=SE,
                                   center=center, size=size)
     if region_name in region_dict:
         return region_dict[region_name]
     else:
         new_reg = Region(space=space, NW=NW, NE=NE, SW=SW, SE=SE,
-                         center=center, size=size)
+                         center=center, size=size, agents_move=agents_move)
         region_dict[region_name] = new_reg
         return new_reg
 
@@ -577,12 +584,15 @@ class Region():
     """
 
     def __init__(self, space=None, NW=None, NE=None, SW=None,
-                 SE=None, center=None, size=None, agents_move=True):
+                 SE=None, center=None, size=None, agents_move=True, **kwargs):
         # alternate structure?
         # self.corners[NW] = nw
+        self.execution_key = COMMANDLINE_EXECUTION_KEY
+        if EXECUTION_KEY_NAME in kwargs:
+            self.execution_key = kwargs[EXECUTION_KEY_NAME]
         self.name = gen_region_name(NW, NE, SW, SE, center, size)
         if (space is None):
-            space = get_env()
+            space = get_env(self.execution_key)
         self.space = space
         if (center is not None and size is not None):
             self.NW = (center[X] - size, center[Y] + size)
@@ -623,7 +633,7 @@ class Region():
 
     def contains(self, coord):
         if (coord[X] >= self.NW[X]) and (coord[X] < self.NE[X]):
-            if(coord[Y] >= self.SW[Y]) and (coord[Y] < self.NE[Y]):
+            if (coord[Y] >= self.SW[Y]) and (coord[Y] < self.NE[Y]):
                 return True
         return False
 
@@ -708,23 +718,39 @@ class Region():
     def get_ratio(self, pred_one, pred_two=None):
         if pred_one is None:
             raise Exception("Pass at least a single predicate to get_ratio")
+        self._load_agents_if_necc(exclude_self=True)
+        ratio_agents = self.my_agents
+        numerator = len([agent for agent in ratio_agents if pred_one(agent)])
+        if pred_two is not None:
+            denominator = len([agent for agent in ratio_agents
+                               if pred_two(agent)])
+        else:
+            denominator = len(ratio_agents)
+        """
         numerator = self.get_num_of_agents(exclude_self=True, pred=pred_one)
-        denominator = self.get_num_of_agents(exclude_self=True,
-                                             pred=pred_two)
+        denominator = self.get_num_of_agents(exclude_self=True, pred=pred_two)
         if DEBUG2:
             print("numerator length: " + str(numerator))
             print("denominator length: " + str(denominator))
+        """
         if denominator == 0:
             return 1
         return numerator / denominator
 
 
 class CircularRegion(Region):
-    def __init__(self, space, center, radius):
+    def __init__(self, space=None, center=None, radius=None, agents_move=True):
+        if (space is None):
+            space = get_env()
         self.space = space
         self.center = center
         self.radius = radius
         self.name = "Circle"
+        self.agents_move = agents_move
+        if self.agents_move:
+            self.my_agents = []
+        else:
+            self.my_agents = self._load_agents()
 
     def check_out_bounds(self, coord):
         return out_of_bounds(coord[X], coord[Y], 0, 0,
@@ -738,19 +764,33 @@ class CircularRegion(Region):
             return True
         return False
 
-    def get_agents(self, exclude_self=False, pred=None):
-        my_agents = []
+    def _load_agents(self, exclude_self=True):
         for coord in self.space.locations:
             conv_coord = get_xy_from_str(coord)
             if self.contains(conv_coord):
                 potential_agent = self.space.get_agent_at(conv_coord[X],
                                                           conv_coord[Y])
-                if pred is None or pred is True:
-                    if (conv_coord == self.center) and (exclude_self is False):
-                        my_agents.append(potential_agent)
-                    else:
-                        my_agents.append(potential_agent)
-        return my_agents
+                if (conv_coord == self.center) and (exclude_self is True):
+                    continue
+                else:
+                    self.my_agents.append(potential_agent)
+
+    def _load_agents_if_necc(self, exclude_self=True, pred=None):
+        if self.agents_move is True:
+            self.my_agents = []
+            self._load_agents(exclude_self=exclude_self)
+
+    def _apply_pred_if_necc(self, pred):
+        these_agents = []
+        if pred is not None:
+            these_agents = [agent for agent in self.my_agents if pred(agent)]
+        else:
+            these_agents = self.my_agents
+        return these_agents
+
+    def get_agents(self, exclude_self=False, pred=None):
+        self._load_agents_if_necc(exclude_self=exclude_self)
+        return self._apply_pred_if_necc(pred)
 
 
 class CompositeRegion(Region):

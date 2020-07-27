@@ -41,6 +41,7 @@ class Test(TestCase):
         self.model_menu = ModelMenu(Resource)
         self.run = RunModel(Resource)
         self.models = load_models(indra_dir)
+        self.execution_key = self.props.get(13).get("execution_key").get("val")
 
     def test_load_models(self):
         """
@@ -105,7 +106,7 @@ class Test(TestCase):
         """
         Testing whether we are getting the menu.
         """
-        rv = self.model_menu.get()
+        rv = self.model_menu.get(execution_id=self.execution_key)
         test_menu_file = indra_dir + "/indra/menu.json"
         with open(test_menu_file) as file:
             test_menu = json.loads(file.read())["menu_database"]

@@ -4,6 +4,7 @@ from unittest import TestCase, main, skip
 from indra.composite import Composite
 from indra.env import Env
 from indra.space import debug_agent_pos
+from registry.execution_registry import execution_registry
 from registry.registry import clear_registry
 import epidemics.epidemic as ep
 """

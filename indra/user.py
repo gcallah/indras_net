@@ -8,6 +8,8 @@ from abc import abstractmethod
 from IPython import embed
 
 from indra.agent import Agent
+from registry.execution_registry import EXECUTION_KEY_NAME, \
+    COMMANDLINE_EXECUTION_KEY
 from registry.registry import get_env, set_user
 import registry.registry as reg
 
@@ -53,11 +55,11 @@ def run_notice(model_nm):
     return reg.user_log_notif(model_nm)
 
 
-def not_impl(user):
+def not_impl(user, **kwargs):
     return reg.not_impl(user)
 
 
-def run(user, test_run=False):
+def run(user, test_run=False, execution_key=None):
     # steps = 0
     # acts = 0
     if not test_run:
@@ -70,28 +72,29 @@ def run(user, test_run=False):
     else:
         steps = DEF_STEPS
 
-    acts = get_env().runN(periods=steps)
+    acts = get_env(execution_key=execution_key)\
+        .runN(periods=steps, execution_key=execution_key)
     return acts
 
 
-def leave(user):
+def leave(user, **kwargs):
     user.tell("Goodbye, " + user.name + ", I will miss you!")
     return USER_EXIT
 
 
-def scatter_plot(user, update=False):
-    return get_env().scatter_graph()
+def scatter_plot(user, update=False, execution_key=COMMANDLINE_EXECUTION_KEY):
+    return get_env(execution_key=execution_key).scatter_graph()
 
 
-def line_graph(user, update=False):
+def line_graph(user, update=False, execution_key=None):
     if update:
         user.tell("Updating the line graph.")
     else:
         user.tell("Drawing a line graph.")
-    return get_env().line_graph()
+    return get_env(execution_key=execution_key).line_graph()
 
 
-def debug(user):
+def debug(user, **kwargs):
     embed()
     return 0
 
@@ -188,6 +191,10 @@ class TermUser(User):
 
     def __init__(self, name, env, **kwargs):
         super().__init__(name, env, **kwargs)
+
+        self.execution_key = COMMANDLINE_EXECUTION_KEY
+        if EXECUTION_KEY_NAME in kwargs:
+            self.execution_key = kwargs["execution_key"]
         self.menu_title = "Menu of Actions"
         self.stars = "*" * len(self.menu_title)
         self.exclude_menu_item("source")
@@ -241,7 +248,7 @@ class TermUser(User):
         if self.show_line_graph:
             line_graph(self, update=True)
         if self.show_scatter_plot:
-            scatter_plot(self, update=True)
+            scatter_plot(self, update=True, execution_key=self.execution_key)
         self.tell("Please choose a number from the menu above:")
         c = input()
         if not c or c.isspace():
@@ -257,7 +264,8 @@ class TermUser(User):
                         if item["func"] == "scatter_plot":
                             self.show_scatter_plot = True
                             self.show_line_graph = False
-                        return menu_functions[item["func"]](self)
+                        return menu_functions[item["func"]](
+                            self, execution_key=self.execution_key)
             self.tell_err(str(c) + " is an invalid option. "
                           + "Please enter a valid option.")
         else:

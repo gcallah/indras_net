@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ListGroup from 'react-bootstrap/ListGroup';
 import axios from 'axios';
 import autoBind from 'react-autobind';
+import PropTypes from 'prop-types';
 import PageLoader from './PageLoader';
 import PopulationGraph from './PopulationGraph';
 import ScatterPlot from './ScatterPlot';
@@ -12,18 +13,18 @@ import RunModelButton from './RunModelButton';
 import './styles.css';
 import config from '../config';
 import LogsViewer from './LogsViewer';
-
+/* eslint-disable */
 const POP = 2;
 const SCATTER = 3;
 const DATA = 4;
 const SOURCE = 5;
 const LOG = 6;
 const API_SERVER = `${config.API_URL}models/menu/`;
+const CLEAR_REGISTRY_API = `${config.API_URL}registry/clear/`;
 
 class ActionMenu extends Component {
   constructor(props) {
     super(props);
-    autoBind(this);
     this.state = {
       menu: {},
       loadingData: true,
@@ -38,26 +39,28 @@ class ActionMenu extends Component {
       loadingScatter: false,
       loadingLogs: false,
       activeDisplay: null,
+      execution_key: this.props.location.state.envFile.execution_key
     };
+    autoBind(this);
   }
 
   async componentDidMount() {
     try {
       document.title = 'Indra | Menu';
-      const m = await axios.get(API_SERVER);
+      const m = await axios.get(`${API_SERVER}${this.state.execution_key}`);
       this.setState({
         menu: m.data,
-        name: localStorage.getItem('name'),
-        source: localStorage.getItem('source'),
-        envFile: JSON.parse(localStorage.getItem('envFile')),
-        msg: JSON.parse(localStorage.getItem('envFile')).user.user_msgs,
+        name: localStorage.getItem("name"),
+        source: localStorage.getItem("source"),
+        envFile: JSON.parse(localStorage.getItem("envFile")),
+        msg: JSON.parse(localStorage.getItem("envFile")).user.user_msgs,
         loadingData: false,
       });
     } catch (error) {
       return false;
     }
-    const defaultGraph = localStorage.getItem('graph');
-    if (defaultGraph === 'scatter') {
+    const defaultGraph = localStorage.getItem("graph");
+    if (defaultGraph === "scatter") {
       this.setState({
         loadingScatter: true,
         activeDisplay: SCATTER,
@@ -79,17 +82,34 @@ class ActionMenu extends Component {
     return true;
   }
 
+  async componentWillUnmount() {
+    // clear any previous envFile stored in localstorage
+    // also clear the registry in the backend.
+    const { location } = this.props;
+    const { state } = location;
+    const { envFile } = state;
+    /* eslint-disable */
+    const { execution_key } = envFile;
+    const clearExecutionRegistryResponse = await axios.get(
+      `${CLEAR_REGISTRY_API}${execution_key}`
+    );
+    // not doing anything with the response.
+    // allow the frontend to continue functioning.
+    // there should be a error reporting mechanism here to notify
+    // admins that a particular key was not cleared.
+  }
+
   viewSource = async () => {
     try {
       const { source } = this.state;
-      const splitSource = source.split('/');
+      const splitSource = source.split("/");
       const filename = splitSource[splitSource.length - 1];
       const res = await axios.get(
-        `https://raw.githubusercontent.com/gcallah/indras_net/master/models/${filename}`,
+        `https://raw.githubusercontent.com/gcallah/indras_net/master/models/${filename}`
       );
       return res.data;
     } catch (error) {
-      return 'Something has gone wrong.';
+      return "Something has gone wrong.";
     }
   };
 
@@ -101,12 +121,12 @@ class ActionMenu extends Component {
     const valid = this.checkValidity(e.target.value);
     if (valid === 0) {
       this.setState({
-        errorMessage: '**Please input an integer',
+        errorMessage: "**Please input an integer",
         disabledButton: true,
       });
     } else {
       this.setState({
-        errorMessage: '',
+        errorMessage: "",
         disabledButton: false,
       });
     }
@@ -154,12 +174,13 @@ class ActionMenu extends Component {
 
   sendNumPeriods = async () => {
     const { periodNum, envFile } = this.state;
+    const envFileWithExecutionKey = {...envFile, "execution_key": this.state.execution_key}
     this.setState({ loadingData: true });
     try {
       const res = await axios.put(
         `${config.API_URL}models/run/${String(periodNum)}`,
-        envFile,
-        periodNum,
+        envFileWithExecutionKey,
+        periodNum
       );
 
       this.setState({
@@ -184,7 +205,7 @@ class ActionMenu extends Component {
      * However, we keep one of the graphs (Population graph or Scatter plot)
      * disabled based on "graph" field from models.json
      */
-    const defaultGraph = localStorage.getItem('graph');
+    const defaultGraph = localStorage.getItem("graph");
     const { activeDisplay } = this.state;
     return (
       <ListGroup.Item
@@ -192,8 +213,8 @@ class ActionMenu extends Component {
         as="li"
         active={activeDisplay === action}
         disabled={
-          (action === SCATTER && defaultGraph === 'line')
-          || (action === POP && defaultGraph === 'scatter')
+          (action === SCATTER && defaultGraph === "line") ||
+          (action === POP && defaultGraph === "scatter")
         }
         key={key}
         onClick={() => this.handleClick(action)}
@@ -230,14 +251,16 @@ class ActionMenu extends Component {
       <div className="row margin-bottom-80">
         <div className="col w-25">
           <ListGroup>
-            {Object.keys(menu).map((item, i) => (menu[item].id > 1
-              ? this.MenuItem(
-                i,
-                menu[item].id,
-                menu[item].question,
-                menu[item].func,
-              )
-              : null))}
+            {Object.keys(menu).map((item, i) =>
+              menu[item].id > 1
+                ? this.MenuItem(
+                    i,
+                    menu[item].id,
+                    menu[item].question,
+                    menu[item].func
+                  )
+                : null
+            )}
           </ListGroup>
         </div>
       </div>
@@ -245,9 +268,7 @@ class ActionMenu extends Component {
   };
 
   render() {
-    const {
-      loadingData, msg, disabledButton, errorMessage,
-    } = this.state;
+    const { loadingData, msg, disabledButton, errorMessage } = this.state;
     if (loadingData) {
       return <PageLoader />;
     }
@@ -281,9 +302,22 @@ class ActionMenu extends Component {
   }
 }
 
-ActionMenu.propTypes = {};
+ActionMenu.propTypes = {
+  location: PropTypes.shape({
+    state: PropTypes.shape({
+      envFile: PropTypes.object,
+    }),
+  }),
+  /* eslint-disable */
+  history: PropTypes.object,
+};
 
 ActionMenu.defaultProps = {
+  location: {
+    state: {
+      envFile: {},
+    },
+  },
   history: {},
 };
 

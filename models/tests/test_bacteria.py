@@ -78,7 +78,7 @@ class BacteriaTestCase(TestCase):
             nutrients_group += create_nutrient("nutrients", i)
         nutrient_strength = calc_nutrient(nutrients_group, bacterium)
         self.assertTrue(nutrient_strength > 0)
-    @skip("The tests passes in local test but travis fails to import some moduls")
+
     def test_bacterium_action(self):
         """
         Test if the previous nutricity and toxicity of the bacterium

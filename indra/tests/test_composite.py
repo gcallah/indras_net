@@ -31,9 +31,8 @@ def max_duration(agent, duration):
     return agent.duration <= duration
 
 
-def create_calcguys():
-    return Composite(CALC_GUYS, members=[create_newton(),
-                                         create_leibniz()])
+def create_calcguys(members=[create_newton(), create_leibniz()]):
+    return Composite(CALC_GUYS, members=members)
 
 
 def create_cambguys():
@@ -71,7 +70,7 @@ class CompositeTestCase(TestCase):
     def setUp(self):
         self.hardy = create_hardy()
         self.newton = create_newton()
-        self.calc = create_calcguys()
+        self.calc = create_calcguys(members=[self.newton, create_leibniz()])
         self.camb = create_cambguys()
         self.mathgrp = create_mathgrp()
         self.mathguys = create_mathguys()
