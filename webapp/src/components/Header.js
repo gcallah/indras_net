@@ -19,12 +19,12 @@ function Header() {
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
           <Nav.Link
-            as={Link}
-            to="https://gcallah.github.io/indras_net/index.html"
+            // as={Link}
+            href="https://gcallah.github.io/indras_net/index.html"
           >
             ABOUT
           </Nav.Link>
-          <Nav.Link as={Link} to="https://github.com/gcallah/indras_net/">
+          <Nav.Link href="https://github.com/gcallah/indras_net/">
             SOURCE CODE
           </Nav.Link>
         </Nav>
