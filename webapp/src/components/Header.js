@@ -1,6 +1,5 @@
 import React from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 
 let home = '/';
 if (process.env.NODE_ENV === 'production') {
@@ -11,7 +10,7 @@ function Header() {
   return (
     <Navbar bg="light" expand="lg">
       <Nav className="mr-auto">
-        <Nav.Link as={Link} to={home}>
+        <Nav.Link href={home}>
           HOME
         </Nav.Link>
       </Nav>
