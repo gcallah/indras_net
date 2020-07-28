@@ -459,8 +459,9 @@ class Space(Composite):
         """
         region = region_factory(space=self,
                                 center=(agent.get_x(), agent.get_y()),
-                                size=hood_size)
-        members = region.get_agents(exclude_self=not save_neighbors, pred=pred)
+                                size=hood_size,
+                                agents_move=not save_neighbors)
+        members = region.get_agents(exclude_self=not include_self, pred=pred)
         return Composite("Moore neighbors",
                          members=members, execution_key=self.execution_key)
 
