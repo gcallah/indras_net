@@ -12,7 +12,7 @@
     "lowval": 2
   },
   "num_traders": {
-    "val": 3,
+    "val": 4,
     "question": "How many traders do you want?",
     "atype": "INT",
     "hival": 8,
@@ -20,21 +20,21 @@
   },
   "divisibility": {
     "val": 1,
-    "question": "Do you want to enable divisibility? (1/0 Yes/No)",
+    "question": "Do you want to consider divisibility? (1/0 Yes/No)",
     "atype": "INT",
     "hival": 1,
     "lowval": 0
   },
   "durability": {
-    "val": 1,
-    "question": "Do you want to enable durability? (1/0 Yes/No)",
+    "val": 0,
+    "question": "Do you want to consider durability? (1/0 Yes/No)",
     "atype": "INT",
     "hival": 1,
     "lowval": 0
   },
   "transportability": {
-    "val": 1,
-    "question": "Do you want to enable transportability? (1/0 Yes/No)",
+    "val": 0,
+    "question": "Do you want to consider transportability? (1/0 Yes/No)",
     "atype": "INT",
     "hival": 1,
     "lowval": 0
