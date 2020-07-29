@@ -1,14 +1,3 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <link href="style.css" rel="stylesheet" type="text/css"/>
-        <title>
-            The Origin of Money: An Agent-Based Model
-        </title>
-    </head>
-
-    <body>
 # The Origin of Money: An Agent-Based Model
 
 Eugene Callahan and Peiwen Tang
@@ -114,6 +103,3 @@ high saleableness
 - We track how many times each good trades.
 - A good "becomes money" as it comes close to being 
   one side of every trade.
-
-    </body>
-</html>
