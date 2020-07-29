@@ -134,7 +134,6 @@ def epidemic_report(env):
     curr_infected = max(0, curr_infected)
     a = max(1, (pop_hist[INFECTED][periods-1]) /
             max(1, pop_hist[INFECTED][periods-2]))
-    print("a: " + str(a))
 
     if(periods > 2):
         R0_old = get_env().get_attr("R0")
@@ -144,7 +143,6 @@ def epidemic_report(env):
             R0 = R0_old
     else:
         R0 = 0
-    print("R0: " + str(R0))
     get_env().set_attr("R0", R0)
     result = "Current period: " + str(periods-1) + "\n"
     result += "New cases: " + str(curr_infected) + "\n"
