@@ -9,7 +9,8 @@ from indra.display_methods import RED, GREEN, BLACK
 from indra.display_methods import TOMATO
 from indra.display_methods import BLUE, YELLOW
 from indra.env import Env
-from registry.registry import get_env, get_prop
+from registry.execution_registry import COMMANDLINE_EXECUTION_KEY
+from registry.registry import get_env, get_prop, set_env_attr
 from registry.registry import user_log_err, run_notice, user_log_notif
 from indra.utils import init_props
 from indra.space import CircularRegion, exists_neighbor
@@ -246,17 +247,16 @@ def create_person(name, i, state=HE):
     return person
 
 
-def set_env_attrs():
+def set_env_attrs(execution_key=COMMANDLINE_EXECUTION_KEY):
     user_log_notif("Setting env attrs for " + MODEL_NAME)
-    env = get_env()
-    env.set_attr(GROUP_MAP,
+    set_env_attr(GROUP_MAP,
                  {HE: HEALTHY,
                   EX: EXPOSED,
                   IN: INFECTED,
                   CN: CONTAGIOUS,
                   DE: DEAD,
-                  IM: IMMUNE})
-    env.set_attr("census_func", epidemic_report)
+                  IM: IMMUNE}, execution_key)
+    set_env_attr("census_func", epidemic_report, execution_key)
 
 
 def set_up(props=None):

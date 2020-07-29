@@ -2,10 +2,7 @@ import React from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-let home = '/';
-if (process.env.NODE_ENV === 'production') {
-  home = 'https://gcallah.github.io/indras_net/webapp.html#/';
-}
+const home = '/';
 
 function Header() {
   return (
