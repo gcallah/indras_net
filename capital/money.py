@@ -7,7 +7,8 @@ and moves them around randomly.
 from indra.agent import Agent, MOVE
 from indra.composite import Composite
 from indra.env import Env
-from registry.registry import get_env, get_prop
+from registry.execution_registry import COMMANDLINE_EXECUTION_KEY
+from registry.registry import get_env, get_prop, set_env_attr
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import init_props
 import capital.trade_utils as tu
@@ -176,10 +177,12 @@ def nature_to_traders(traders, nature):
         print(repr(traders[trader]))
 
 
-def set_env_attrs():
-    env = get_env()
-    env.set_attr("pop_hist_func", record_amt)
-    env.set_attr("census_func", trade_report)
+def set_env_attrs(execution_key=COMMANDLINE_EXECUTION_KEY):
+    set_env_attr("pop_hist_func", record_amt, execution_key)
+    set_env_attr("census_func", trade_report, execution_key)
+    # env = get_env()
+    # env.set_attr("pop_hist_func", record_amt)
+    # env.set_attr("census_func", trade_report)
     tu.max_utils = MONEY_MAX_UTIL
 
 

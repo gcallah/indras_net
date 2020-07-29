@@ -12,6 +12,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import BLUE, RED
 from indra.env import Env
+from registry.execution_registry import COMMANDLINE_EXECUTION_KEY
 from registry.registry import get_env, get_group, get_prop, set_env_attr
 from registry.registry import user_tell, run_notice, user_log_notif
 from indra.space import DEF_HEIGHT, DEF_WIDTH
@@ -138,10 +139,10 @@ def attendance_report(env):
            + ": " + str(env.attrs[ATTENDANCE]))
 
 
-def set_env_attrs():
+def set_env_attrs(execution_key=COMMANDLINE_EXECUTION_KEY):
     user_log_notif("Setting env attrs for " + MODEL_NAME)
-    set_env_attr("pop_hist_func", attendance)
-    set_env_attr("census_func", attendance_report)
+    set_env_attr("pop_hist_func", attendance, execution_key)
+    set_env_attr("census_func", attendance_report, execution_key)
 
 
 def set_up(props=None):

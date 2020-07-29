@@ -11,6 +11,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import RED, GREEN
 from indra.env import Env, UNLIMITED
+from registry.execution_registry import COMMANDLINE_EXECUTION_KEY
 from registry.registry import get_env, get_group, get_prop
 from registry.registry import get_env_attr, set_env_attr
 from registry.registry import user_tell, run_notice, user_log_notif
@@ -170,11 +171,14 @@ def create_central_bank(name, i):
     return central_bank
 
 
-def set_env_attrs():
+def set_env_attrs(execution_key=COMMANDLINE_EXECUTION_KEY):
     user_log_notif("Setting env attrs for " + MODEL_NAME)
-    env = get_env()
-    env.set_attr("pop_hist_func", record_exchanges)
-    env.set_attr("census_func", coop_report)
+    set_env_attr("pop_hist_func", record_exchanges,
+                 execution_key=execution_key)
+    set_env_attr("census_func", coop_report, execution_key=execution_key)
+    # env = get_env()
+    # env.set_attr("pop_hist_func", record_exchanges)
+    # env.set_attr("census_func", coop_report)
 
 
 def set_up(props=None):
