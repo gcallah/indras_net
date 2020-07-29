@@ -243,12 +243,12 @@ class ModelDetail extends Component {
 ModelDetail.propTypes = {
   history: PropTypes.shape(),
   location: PropTypes.shape({
-    state: {
-      menuId: PropTypes.string,
+    state: PropTypes.shape({
+      menuId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
       name: PropTypes.string,
       source: PropTypes.string,
       graph: PropTypes.string,
-    },
+    }),
   }),
   match: PropTypes.shape({
     params: PropTypes.shape({
