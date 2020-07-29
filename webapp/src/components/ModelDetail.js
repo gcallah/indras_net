@@ -11,22 +11,23 @@ const apiServer = `${config.API_URL}models/props/`;
 class ModelDetail extends Component {
   constructor(props) {
     super(props);
-
+    const initialModelDetailState = this.getInitialModelDetails();
     this.state = {
       modelDetails: {},
       loadingData: false,
       disabledButton: false,
-      envFile: {},
+      ...initialModelDetailState,
     };
   }
 
   async componentDidMount() {
     const { history } = this.props;
+    const { menuId } = this.state;
     try {
       document.title = 'Indra | Property';
       this.setState({ loadingData: true });
       const properties = await axios.get(
-        `${apiServer}${localStorage.getItem('menu_id')}`,
+        `${apiServer}${menuId}`,
       );
       this.setState({ modelDetails: properties.data });
       this.states(properties.data);
@@ -35,6 +36,30 @@ class ModelDetail extends Component {
     } catch (e) {
       history.push('/errorCatching');
     }
+  }
+
+  getInitialModelDetails() {
+    const { location, history, match } = this.props;
+    let initialState;
+    try {
+      const { state } = location;
+      if (state === undefined) {
+      // this is undefined when someone tried to open the model in a new tab from the home screen.
+        const menuId = parseInt(match.params.id, 10);
+        const modalDetails = JSON.parse(localStorage.getItem('indra_model_details')).filter((item) => item['model ID'] === menuId)[0];
+        initialState = {
+          menuId,
+          name: modalDetails.name,
+          source: modalDetails.source,
+          graph: modalDetails.graph,
+        };
+      } else {
+        initialState = state;
+      }
+    } catch (err) {
+      history.push('/errorCatching');
+    }
+    return initialState;
   }
 
   states = (data) => {
@@ -123,21 +148,24 @@ class ModelDetail extends Component {
 
   handleSubmit = async (event) => {
     event.preventDefault();
-    const { modelDetails } = this.state;
+    const {
+      modelDetails, menuId, name, source, graph,
+    } = this.state;
     const { history } = this.props;
     try {
       const res = await axios.put(
-        apiServer + localStorage.getItem('menu_id'),
+        apiServer + menuId,
         modelDetails,
       );
-      const itemId = localStorage.getItem('menu_id');
-      this.setState({ envFile: res.data });
-      const { envFile } = this.state;
-      localStorage.setItem('envFile', JSON.stringify(envFile));
+      const itemId = menuId;
+      const envFile = res.data;
       history.push({
         pathname: `/models/menu/${itemId.toString(10)}`,
         state: {
           envFile,
+          name,
+          source,
+          graph,
         },
       });
     } catch (e) {
@@ -145,13 +173,14 @@ class ModelDetail extends Component {
     }
   };
 
-  renderHeader = () => (
-    <h1 className="header" style={{ textAlign: 'center', fontWeight: '200' }}>
-      {`Please set the parameters for the ${localStorage.getItem(
-        'name',
-      )} model`}
-    </h1>
-  );
+  renderHeader = () => {
+    const { name } = this.state;
+    return (
+      <h1 className="header" style={{ textAlign: 'center', fontWeight: '200' }}>
+        {`Please set the parameters for the ${name} model`}
+      </h1>
+    );
+  };
 
   renderSubmitButton = () => {
     const { disabledButton } = this.state;
@@ -213,10 +242,31 @@ class ModelDetail extends Component {
 
 ModelDetail.propTypes = {
   history: PropTypes.shape(),
+  location: PropTypes.shape({
+    state: PropTypes.shape({
+      menuId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      name: PropTypes.string,
+      source: PropTypes.string,
+      graph: PropTypes.string,
+    }),
+  }),
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      id: PropTypes.string,
+    }),
+  }),
 };
 
 ModelDetail.defaultProps = {
   history: {},
+  location: {
+    state: {},
+  },
+  match: {
+    params: {
+      id: '',
+    },
+  },
 };
 
 export default ModelDetail;

@@ -154,7 +154,7 @@ class RunModel(Resource):
 class ClearRegistry(Resource):
 
     def get(self, execution_key):
-        print("Clearing registry for key - {}".format(execution_registry))
+        print("Clearing registry for key - {}".format(execution_key))
         try:
             execution_registry\
                 .clear_data_for_execution_key(execution_key)

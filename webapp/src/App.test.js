@@ -60,7 +60,13 @@ describe('<App/>', () => {
 
     it('ModelDetail route renders <ModelDetail/> component', () => {
       const component = mount(
-        <MemoryRouter initialEntries={['/models/props/abc']}>
+        <MemoryRouter initialEntries={[{
+          pathname: '/models/props/2',
+          state: {
+            menuId: 2, name: 'test_name', source: 'test_source', graph: 'test_graph', envFile: { execution_key: 123 },
+          },
+        }]}
+        >
           <IndraRoutes />
         </MemoryRouter>,
       );

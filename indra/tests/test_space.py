@@ -5,11 +5,13 @@ This is the test suite for space.py.
 from unittest import TestCase, main, skip
 
 from indra.agent import Agent, X, Y
+from indra.env import Env
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.space import Space, distance, Region, CompositeRegion, CircularRegion
 from indra.space import region_factory
 from indra.tests.test_agent import create_newton, create_hardy, create_leibniz
 from indra.tests.test_agent import create_ramanujan
+from indra.env import Env
 
 REP_RAND_TESTS = 20
 
@@ -37,6 +39,7 @@ def create_teeny_space():
 
 class SpaceTestCase(TestCase):
     def setUp(self):
+        self.env = Env("test_env")
         (self.space, self.newton) = create_space()
         self.teeny_space = create_teeny_space()
         self.test_agent = Agent("test agent")
@@ -45,12 +48,14 @@ class SpaceTestCase(TestCase):
         self.test_agent4 = Agent("test agent 4")
 
     def tearDown(self):
+        self.env = None
         self.space = None
         self.teeny_space = None
         self.test_agent = None
         self.test_agent2 = None
         self.test_agent3 = None
         self.test_agent4 = None
+        self.env = None
 
     def test_get_closest_agent(self):
         closest = self.space.get_closest_agent(self.newton)
