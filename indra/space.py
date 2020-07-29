@@ -554,7 +554,9 @@ class Space(Composite):
                        region_type=None):
         region = region_factory(space=self, center=(agent.get_x(),
                                                     agent.get_y()),
-                                size=size)
+                                size=size,
+                                agents_move=not agent.get("save_neighbors",
+                                                          False))
         return region.get_ratio(pred_one, pred_two=pred_two)
 
 
