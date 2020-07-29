@@ -5,6 +5,7 @@ This is the test suite for space.py.
 from unittest import TestCase, main, skip
 
 from indra.agent import Agent, X, Y
+from indra.env import Env
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.space import Space, distance, Region, CompositeRegion, CircularRegion
 from indra.space import region_factory
@@ -37,6 +38,7 @@ def create_teeny_space():
 
 class SpaceTestCase(TestCase):
     def setUp(self):
+        self.env = Env("test_env")
         (self.space, self.newton) = create_space()
         self.teeny_space = create_teeny_space()
         self.test_agent = Agent("test agent")
@@ -45,6 +47,7 @@ class SpaceTestCase(TestCase):
         self.test_agent4 = Agent("test agent 4")
 
     def tearDown(self):
+        self.env = None
         self.space = None
         self.teeny_space = None
         self.test_agent = None

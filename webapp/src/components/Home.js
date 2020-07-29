@@ -37,17 +37,13 @@ class Home extends Component {
       document.title = 'Home';
       const res = await axios.get(`${this.api_server}models`);
       this.setState({ allItems: res.data, loadingData: false });
+      // setting this so model properties like name, graph etc are access
+      // in all tabs of a browser
+      localStorage.setItem('indra_model_details', JSON.stringify(res.data));
     } catch (e) {
       history.push('/errorCatching');
     }
   }
-
-  handleClick = (id, name, source, graph) => {
-    localStorage.setItem('menu_id', id);
-    localStorage.setItem('name', name);
-    localStorage.setItem('source', source);
-    localStorage.setItem('graph', graph);
-  };
 
   renderChooseModelProp = () => (
     <h1 className="small-header">Please choose a model: </h1>
@@ -55,10 +51,7 @@ class Home extends Component {
 
   render() {
     const {
-      loadingData,
-      dataForCarousel,
-      allItems,
-      apiFailed,
+      loadingData, dataForCarousel, allItems, apiFailed,
     } = this.state;
     if (apiFailed) {
       return <h1>404 Error</h1>;
@@ -93,15 +86,15 @@ class Home extends Component {
                       <Link
                         to={{
                           pathname: `/models/props/${allItems[item]['model ID']}`,
+                          state: {
+                            menuId: allItems[item]['model ID'],
+                            name: allItems[item].name,
+                            source: allItems[item].source,
+                            graph: allItems[item].graph,
+                          },
                         }}
                         className="link text-dark dropdown-item"
                         key={allItems[item].name}
-                        onClick={() => this.handleClick(
-                          allItems[item]['model ID'],
-                          allItems[item].name,
-                          allItems[item].source,
-                          allItems[item].graph,
-                        )}
                       >
                         {allItems[item].name}
                       </Link>
