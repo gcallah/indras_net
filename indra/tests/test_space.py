@@ -11,6 +11,7 @@ from indra.space import Space, distance, Region, CompositeRegion, CircularRegion
 from indra.space import region_factory
 from indra.tests.test_agent import create_newton, create_hardy, create_leibniz
 from indra.tests.test_agent import create_ramanujan
+from indra.env import Env
 
 REP_RAND_TESTS = 20
 
@@ -54,6 +55,7 @@ class SpaceTestCase(TestCase):
         self.test_agent2 = None
         self.test_agent3 = None
         self.test_agent4 = None
+        self.env = None
 
     def test_get_closest_agent(self):
         closest = self.space.get_closest_agent(self.newton)

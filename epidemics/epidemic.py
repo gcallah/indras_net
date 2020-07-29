@@ -15,6 +15,7 @@ from indra.utils import init_props
 from indra.space import CircularRegion, exists_neighbor
 from indra.space import distance, opposing_angle
 from random import random
+from math import log
 
 MODEL_NAME = "epidemic"
 DEBUG = False  # turns debugging code on or off
@@ -65,7 +66,7 @@ STATE_TRANS = [
     [DEF_EX_HE_TRANS, 0.0,  DEF_INFEC, 0.0, 0.0,  0.0],  # EX
     [0.0,  0.0,  0.0, 1.0, 0.0,  0.0],  # IN
     [0.0,  0.0,  0.0, DEF_CON_PROB, DEF_DEATH_RATE, DEF_SURV_RATE],  # CN
-    [0.0,  0.0,  0.0, 0.0, 1.0,  0.0],  # DE
+    [0.0,  0.0,  0.0, 0.0, 1.0,  0.0],  # DEi
     [DEF_IM_HE_TRANS,  0.0,  0.0, 0.0, 0.0,  DEF_IM_STAY],  # IM
 ]
 
@@ -125,17 +126,24 @@ def epidemic_report(env):
     pop_hist = get_env().pop_hist
 
     periods = len(pop_hist[INFECTED])
-
+    print("period: " + str(periods))
     total_deaths = pop_hist[DEAD][periods-1]
     curr_deaths = total_deaths - pop_hist[DEAD][periods - 2]
     curr_infected = pop_hist[INFECTED][periods-1] - \
         pop_hist[INFECTED][periods - 2]
     curr_infected = max(0, curr_infected)
-    if(pop_hist[INFECTED][periods - 2] > 0):
-        Ro = curr_infected / pop_hist[INFECTED][periods - 2]
-    else:
-        Ro = 0.0
+    a = max(1, (pop_hist[INFECTED][periods-1]) /
+            max(1, pop_hist[INFECTED][periods-2]))
 
+    if(periods > 2):
+        R0_old = get_env().get_attr("R0")
+        if(a != 1 and a != 2):
+            R0 = R0_old - ((a - 2 + a ** (-R0_old)) / (log(a) * (a - 2)))
+        else:
+            R0 = R0_old
+    else:
+        R0 = 0
+    get_env().set_attr("R0", R0)
     result = "Current period: " + str(periods-1) + "\n"
     result += "New cases: " + str(curr_infected) + "\n"
 
@@ -147,7 +155,7 @@ def epidemic_report(env):
         str(get_env().get_attr("total_cases")) + "\n"
     result += "New deaths: " + str(curr_deaths) + "\n"
     result += "Total deaths: " + str(total_deaths) + "\n"
-    result += "R0 value: " + str(Ro) + "\n"
+    result += "R0 value: " + str(R0) + "\n"
 
     return result
 
