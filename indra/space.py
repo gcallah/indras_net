@@ -540,9 +540,14 @@ class Space(Composite):
 
     def exists_neighbor(self, agent, pred=None, exclude_self=True, size=1,
                         region_type=None):
+        if DEBUG2:
+            print("agent save_neighbor false is", agent.get("save_neighbors",
+                                                            False))
         region = region_factory(space=self, center=(agent.get_x(),
                                                     agent.get_y()),
-                                size=size)
+                                size=size,
+                                agents_move=not agent.get("save_neighbors",
+                                                          False))
         return region.exists_neighbor(exclude_self=exclude_self, pred=pred)
 
     def neighbor_ratio(self, agent, pred_one, pred_two=None, size=1,
@@ -613,10 +618,9 @@ class Region():
         self.width = abs(self.NW[X] - self.NE[X])
         self.height = abs(self.NW[Y] - self.SW[Y])
         self.agents_move = agents_move
-        if self.agents_move:
-            self.my_agents = []
-        else:
-            self.my_agents = self._load_agents()
+        self.my_agents = []
+        if not self.agents_move:
+            self._load_agents()
 
     def __str__(self):
         return self.name
@@ -667,6 +671,8 @@ class Region():
         This fills self.my_agents with all neighbors, and maybe the center
         agents, depending upon `exclude_self`.
         """
+        if DEBUG2:
+            print("calling _load_agents in space.py")
         for y in range(self.height):
             y_coord = self.SW[Y] + y + 1
             for x in range(self.width):
