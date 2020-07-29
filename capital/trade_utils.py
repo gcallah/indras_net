@@ -26,6 +26,8 @@ COMPLEMENTS = "complementaries"
 DEF_MAX_UTIL = 20  # this should be set by the models that use this module
 DIM_UTIL_BASE = 1.1  # we should experiment with this!
 
+DIGITS_TO_RIGHT = 2
+
 max_util = DEF_MAX_UTIL
 
 
@@ -79,6 +81,27 @@ def get_util_func(fname):
         }
     A trader is an object that can be indexed to yield a goods dictionary.
 """
+
+
+def trade_debug(agent1, agent2, good1, good2, amt1, amt2, gain, loss):
+    if DEBUG:
+        user_debug(f"       {agent1.name} is offering {amt1} of {good1} to "
+                   + f"{agent2.name} for {amt2} of {good2} with a "
+                   + f"gain of {round(gain, 2)} and "
+                   + f"a loss of {round(loss, 2)}")
+
+
+def trader_debug(agent):
+    if DEBUG:
+        user_debug(f"{agent.name} has {goods_to_str(agent[GOODS])}")
+
+
+def offer_debug(agent, their_good, their_amt, counterparty=None):
+    if DEBUG:
+        if counterparty is None:
+            counterparty = "Unknown"
+        user_debug(f"       {agent.name} has received an offer of {their_amt} "
+                   + f"of {their_good} from {counterparty}")
 
 
 def is_complement(trader, good, comp):
@@ -190,7 +213,7 @@ def amt_adjust(trader, good):
     """
     item = list(trader["goods"])[0]
     if "divisibility" in trader["goods"][item]:
-        return trader["goods"][good]["divisibility"]
+        return round(trader["goods"][good]["divisibility"], DIGITS_TO_RIGHT)
     else:
         return 1
 
@@ -251,32 +274,19 @@ def answer_to_str(ans):
     return answer_dict[ans]
 
 
-def trade_debug(agent1, agent2, good1, good2, amt1, amt2, gain, loss):
-    if DEBUG:
-        user_debug(f"       {agent1.name} is offering {amt1} of {good1} to "
-                   + f"{agent2.name} for {amt2} of {good2} with a "
-                   + f"gain of {round(gain, 2)} and "
-                   + f"a loss of {round(loss, 2)}")
-
-
-def trader_debug(agent):
-    if DEBUG:
-        user_debug(f"{agent.name} has {goods_to_str(agent[GOODS])}")
-
-
-def offer_debug(agent, their_good, their_amt, counterparty=None):
-    if DEBUG:
-        if counterparty is None:
-            counterparty = "Unknown"
-        user_debug(f"       {agent.name} has received an offer of {their_amt} "
-                   + f"of {their_good} from {counterparty}")
+def rand_goods_list(goods):
+    rand_list = list(goods.keys())
+    random.shuffle(rand_list)
+    return rand_list
 
 
 def negotiate(trader1, trader2, comp=False, amt=1):
     # this_good is a dict
     user_debug(f"   {trader1.name} is entering negotiations with" +
                f"{trader2.name}")
-    for this_good in trader1["goods"]:
+    # we randomize to eliminate bias towards earlier goods in list
+    rand_goods = rand_goods_list(trader1["goods"])
+    for this_good in rand_goods:
         amt = amt_adjust(trader1, this_good)
         incr = amt
         while trader1["goods"][this_good][AMT_AVAIL] >= amt:
@@ -299,65 +309,67 @@ def seek_a_trade_w_comp(agent, **kwargs):
     return seek_a_trade(agent, comp=True)
 
 
-def send_offer(agent, their_good, their_amt, counterparty, comp=False):
+def send_offer(trader2, their_good, their_amt, counterparty, comp=False):
     """
-    agent receives an offer sent by counterparty.
+    trader2 receives an offer sent by counterparty.
     We don't need to ever change my_amt
     in this function, because if the counter-party can't bid enough
     for a single unit, no trade is possible.
     """
-    offer_debug(agent, their_good, their_amt, counterparty)
+    offer_debug(trader2, their_good, their_amt, counterparty)
     my_amt = 1
-    gain = utility_delta(agent, their_good, their_amt)
+    gain = utility_delta(trader2, their_good, their_amt)
     if comp:
-        gain += agent[GOODS][their_good]["incr"]
-    for my_good in agent["goods"]:
+        gain += trader2[GOODS][their_good]["incr"]
+    # we randomize to eliminate bias towards earlier goods in list
+    rand_goods = rand_goods_list(trader2["goods"])
+    for my_good in rand_goods:
         # adjust my_amt if "divisibility" is one of the attributes
-        my_amt = amt_adjust(agent, my_good)
+        my_amt = amt_adjust(trader2, my_good)
         # don't bother trading identical goods AND we must have some
         # of any good we will trade
-        if my_good != their_good and agent["goods"][my_good][AMT_AVAIL] > 0:
-            loss = -utility_delta(agent, my_good, -my_amt)
+        if my_good != their_good and trader2["goods"][my_good][AMT_AVAIL] > 0:
+            loss = -utility_delta(trader2, my_good, -my_amt)
             if comp:
-                loss += agent[GOODS][my_good]["incr"]
+                loss += trader2[GOODS][my_good]["incr"]
 
-            trade_debug(agent, counterparty, my_good, their_good, my_amt,
+            trade_debug(trader2, counterparty, my_good, their_good, my_amt,
                         their_amt, gain, loss)
             if gain > loss:
-                if rec_reply(counterparty, their_good,
-                             their_amt, my_good, my_amt, comp=comp):
-                    trade(agent, my_good, my_amt,
+                if send_reply(counterparty, their_good,
+                              their_amt, my_good, my_amt, comp=comp):
+                    trade(trader2, my_good, my_amt,
                           counterparty, their_good, their_amt, comp=comp)
                     # both goods' trade_count will be increased in sender's dic
-                    item = list(agent["goods"])[0]
-                    if "trade_count" in agent["goods"][item]:
+                    item = list(trader2["goods"])[0]
+                    if "trade_count" in trader2["goods"][item]:
                         counterparty["goods"][my_good]["trade_count"] += 1
                         counterparty["goods"][their_good]["trade_count"] += 1
-                    print("RESULT:", agent.name, "accepts the offer\n")
+                    print("RESULT:", trader2.name, "accepts the offer\n")
                     return ACCEPT
                 else:
-                    print("RESULT:", agent.name, "rejects the offer\n")
+                    print("RESULT:", trader2.name, "rejects the offer\n")
                     return REJECT
             else:
-                print("RESULT: offer is inadquet\n")
+                print("RESULT: offer is inadequate\n")
                 return INADEQ
     if DEBUG:
-        user_debug(f"{agent} is rejecting all offers of {their_good}")
+        user_debug(f"{trader2} is rejecting all offers of {their_good}")
     return REJECT
 
 
-def rec_reply(agent, my_good, my_amt, their_good, their_amt, comp=False):
+def send_reply(trader1, my_good, my_amt, their_good, their_amt, comp=False):
     """
     trader1 evaluates trader2's offer here:
     """
-    # offer_debug(agent, their_good, their_amt)
-    gain = utility_delta(agent, their_good, their_amt)
-    loss = utility_delta(agent, my_good, -my_amt)
-    user_debug(f"       {agent.name} is evaluating the offer with gain:" +
-               f"{gain}, loss: {loss}")
+    # offer_debug(trader1, their_good, their_amt)
+    gain = utility_delta(trader1, their_good, their_amt)
+    loss = utility_delta(trader1, my_good, -my_amt)
+    user_debug(f"       {trader1.name} is evaluating the offer with gain: " +
+               f"{round(gain, 2)}, loss: {round(loss, 2)}")
     if comp:
-        gain += agent[GOODS][their_good]["incr"]
-        loss -= agent[GOODS][my_good]["incr"]
+        gain += trader1[GOODS][their_good]["incr"]
+        loss -= trader1[GOODS][my_good]["incr"]
     if gain > abs(loss):
         return ACCEPT
     else:
