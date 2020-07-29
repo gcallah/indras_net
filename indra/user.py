@@ -86,7 +86,7 @@ def scatter_plot(user, update=False, execution_key=COMMANDLINE_EXECUTION_KEY):
     return get_env(execution_key=execution_key).scatter_graph()
 
 
-def line_graph(user, update=False, execution_key=None):
+def line_graph(user, update=False, execution_key=COMMANDLINE_EXECUTION_KEY):
     if update:
         user.tell("Updating the line graph.")
     else:
