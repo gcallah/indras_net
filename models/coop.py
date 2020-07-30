@@ -12,7 +12,7 @@ from indra.composite import Composite
 from indra.display_methods import RED, GREEN
 from indra.env import Env, UNLIMITED
 from registry.execution_registry import COMMANDLINE_EXECUTION_KEY, \
-    EXECUTION_KEY_NAME
+    EXECUTION_KEY_NAME, check_and_get_execution_key_from_args
 from registry.registry import get_env, get_group, get_prop
 from registry.registry import get_env_attr, set_env_attr
 from registry.registry import user_tell, run_notice, user_log_notif
@@ -157,13 +157,6 @@ def central_bank_action(agent, **kwargs):
              get_env_attr("last_per_exchg", execution_key=execution_key)])
         distribute_coupons(agent, execution_key=execution_key)
     return True
-
-
-def check_and_get_execution_key_from_args(kwargs):
-    execution_key = COMMANDLINE_EXECUTION_KEY
-    if EXECUTION_KEY_NAME in kwargs:
-        execution_key = kwargs[EXECUTION_KEY_NAME]
-    return execution_key
 
 
 def create_babysitter(name, i, **kwargs):

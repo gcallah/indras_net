@@ -118,14 +118,20 @@ class ExecutionRegistry(object):
 
 def is_model_ported_to_new_registry(model_id=None, model_name=None):
     if model_id is not None:
-        return model_id not in [2, 3, 4, 5, 6, 7, 8, 9,
+        return model_id not in [3, 4, 5, 6, 7, 8, 9,
                                 10, 11]
     elif model_name is not None:
-        return model_name not in ["bacteria", "fmarket",
+        return model_name not in ["fmarket",
                                   "el_farol", "fashion", "wolfsheep",
                                   "forestfire", "segregation", "complementary",
-                                  "money", "epidemic", "sandpile", "wolfram"]
+                                  "money", "epidemic"]
     return False
 
+
+def check_and_get_execution_key_from_args(kwargs):
+    execution_key = COMMANDLINE_EXECUTION_KEY
+    if EXECUTION_KEY_NAME in kwargs:
+        execution_key = kwargs[EXECUTION_KEY_NAME]
+    return execution_key
 
 execution_registry = ExecutionRegistry()
