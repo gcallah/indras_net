@@ -122,7 +122,7 @@ def is_dead(agent, *args):
     return agent[STATE] == DE
 
 
-def epidemic_report(env):
+def epidemic_report(env, execution_key=COMMANDLINE_EXECUTION_KEY):
     # taking data for each period using pop_hist
     pop_hist = get_env().pop_hist
 

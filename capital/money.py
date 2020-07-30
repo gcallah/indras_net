@@ -98,7 +98,7 @@ def initial_amt(pop_hist):
             pop_hist.record_pop(good, INIT_COUNT)
 
 
-def record_amt(pop_hist):
+def record_amt(pop_hist, execution_key=COMMANDLINE_EXECUTION_KEY):
     """
     This is our hook into the env to record the number of trades each
     period.
@@ -126,7 +126,7 @@ def good_decay(goods):
         goods[good][AMT_AVAIL] = goods[good][DUR_DECR]
 
 
-def trade_report(env):
+def trade_report(env, execution_key=COMMANDLINE_EXECUTION_KEY):
     global prev_trade, eq_count
     get_env()
     trade_count_dic = {x: natures_goods[x]["trade_count"]

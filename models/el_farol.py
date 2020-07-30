@@ -128,12 +128,12 @@ def setup_attendance(pop_hist):
     pop_hist.record_pop(BAR_ATTEND, 0)
 
 
-def attendance(pop_hist):
+def attendance(pop_hist, execution_key=COMMANDLINE_EXECUTION_KEY):
     pop_hist.record_pop(BAR_ATTEND,
                         get_env().attrs[ATTENDANCE])
 
 
-def attendance_report(env):
+def attendance_report(env, execution_key=COMMANDLINE_EXECUTION_KEY):
     return("El Farol attendees on day "
            + str(env.get_periods())
            + ": " + str(env.attrs[ATTENDANCE]))

@@ -11,6 +11,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import BLUE, RED
 from indra.env import Env, UNLIMITED
+from registry.execution_registry import COMMANDLINE_EXECUTION_KEY
 from registry.registry import get_env, get_prop
 from registry.registry import run_notice, user_log_notif
 from indra.utils import gaussian
@@ -71,7 +72,7 @@ def sell(agent):
         agent["num_stock"] -= DEF_NUM_ASSET
 
 
-def market_report(env):
+def market_report(env, execution_key=COMMANDLINE_EXECUTION_KEY):
     market_maker = get_env()[MARKET_MAKER]
     return "Asset price on the market: " \
            + str(round(market_maker["asset_price"], 4)) + "\n"
@@ -196,7 +197,7 @@ def initial_price(pop_hist):
     pop_hist.record_pop(ASSET_PRICE, DEF_PRICE)
 
 
-def record_price(pop_hist):
+def record_price(pop_hist, execution_key=COMMANDLINE_EXECUTION_KEY):
     """
     This is our hook into the env to record the number of exchanges each
     period.

@@ -240,7 +240,7 @@ class Agent(object):
         We use `registry.get_env()` to return whatever
         the registry has.
         """
-        return get_env()
+        return get_env(execution_key=self.execution_key)
 
     @property
     def locator(self):
