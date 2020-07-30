@@ -248,7 +248,7 @@ class Agent(object):
         This is the locator property.
         We are cutting this over to just be the env!
         """
-        return get_env()
+        return get_env(execution_key=self.execution_key)
 
     def restore(self, serial_obj):
         self.from_json(serial_obj)
