@@ -133,10 +133,11 @@ def epidemic_report(env, execution_key=COMMANDLINE_EXECUTION_KEY):
     curr_infected = pop_hist[INFECTED][periods-1] - \
         pop_hist[INFECTED][periods - 2]
     curr_infected = max(0, curr_infected)
-    a = max(1, (pop_hist[INFECTED][periods-1]) /
-            max(1, pop_hist[INFECTED][periods-2]))
 
     if(periods > 2):
+        a = max(1, (pop_hist[INFECTED][periods-1] +
+                    get_env().get_attr("total_cases")) /
+                max(1, get_env().get_attr("total_cases")))
         R0_old = get_env().get_attr("R0")
         if(a != 1 and a != 2):
             R0 = R0_old - ((a - 2 + a ** (-R0_old)) / (log(a) * (a - 2)))
