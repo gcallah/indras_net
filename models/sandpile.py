@@ -84,7 +84,7 @@ def sandpile_action(env, **kwargs):
     return True
 
 
-def set_env_attrs(execution_key=None):
+def set_env_attrs(execution_key=COMMANDLINE_EXECUTION_KEY):
     user_log_notif("Setting env attrs for forest fire.")
     width = get_prop('grid_width',
                      DEF_WIDTH,

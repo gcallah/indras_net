@@ -105,7 +105,7 @@ def gameoflife_action(biosphere, **kwargs):
     return True
 
 
-def game_agent_action(agent):
+def game_agent_action(agent, **kwargs):
     """
     The action that will be taken every period for the agents.
     Checks its Moore neighborhood and checks the number of neighbors to
