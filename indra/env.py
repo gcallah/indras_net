@@ -297,6 +297,8 @@ class Env(Space):
                     regis.register(agent.name, agent,
                                    execution_key=self.execution_key)
                     join(group, agent)
+                if self.random_placing:
+                    self.place_member(agent, None)
             self.womb.clear()
 
     def handle_switches(self):

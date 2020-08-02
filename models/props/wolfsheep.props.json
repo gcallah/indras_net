@@ -1,27 +1,34 @@
 {
   "grid_height": {
-    "val": 20,
+    "val": 4,
     "question": "What is the grid height?",
     "atype": "INT",
     "hival": 100,
     "lowval": 2
   },
   "grid_width": {
-    "val": 20,
+    "val": 4,
     "question": "What is the grid width?",
     "atype": "INT",
     "hival": 100,
     "lowval": 2
   },
+  "prey_dist": {
+    "val": 1,
+    "question": "How close must a sheep be to a wolf to be eaten?",
+    "atype": "INT",
+    "hival": 10,
+    "lowval": 1
+  },
   "num_sheep": {
-    "val": 80,
+    "val": 4,
     "question": "How many sheep do you want?",
     "atype": "INT",
     "hival": 100,
     "lowval": 1
   },
   "num_wolves": {
-    "val": 20,
+    "val": 2,
     "question": "How many wolves do you want?",
     "atype": "INT",
     "hival": 100,
