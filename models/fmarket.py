@@ -11,8 +11,9 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import BLUE, RED
 from indra.env import Env, UNLIMITED
-from registry.execution_registry import COMMANDLINE_EXECUTION_KEY
-from registry.registry import get_env, get_prop
+from registry.execution_registry import COMMANDLINE_EXECUTION_KEY, \
+    EXECUTION_KEY_NAME, check_and_get_execution_key_from_args
+from registry.registry import get_env, get_prop, set_env_attr
 from registry.registry import run_notice, user_log_notif
 from indra.utils import gaussian
 from indra.utils import init_props
@@ -52,8 +53,9 @@ def trend_direction(agent, cur_price, price_hist):
         return 0
 
 
-def buy(agent):
-    market_maker = get_env()[MARKET_MAKER]
+def buy(agent, **kwargs):
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    market_maker = get_env(execution_key=execution_key)[MARKET_MAKER]
 
     price = market_maker["asset_price"] * DEF_NUM_ASSET
     if agent["capital"] >= price:
@@ -62,8 +64,9 @@ def buy(agent):
         market_maker["buy"] += 1
 
 
-def sell(agent):
-    market_maker = get_env()[MARKET_MAKER]
+def sell(agent, **kwargs):
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    market_maker = get_env(execution_key=execution_key)[MARKET_MAKER]
 
     price = market_maker["asset_price"] * DEF_NUM_ASSET
     if agent["num_stock"] >= DEF_NUM_ASSET:
@@ -73,7 +76,7 @@ def sell(agent):
 
 
 def market_report(env, execution_key=COMMANDLINE_EXECUTION_KEY):
-    market_maker = get_env()[MARKET_MAKER]
+    market_maker = get_env(execution_key=execution_key)[MARKET_MAKER]
     return "Asset price on the market: " \
            + str(round(market_maker["asset_price"], 4)) + "\n"
 
@@ -98,11 +101,13 @@ def calc_price_change(ratio, min_price_move=DEF_MIN_PRICE_MOVE,
     return direction * min(max_price_move, min_price_move * ratio)
 
 
-def create_market_maker(name):
+def create_market_maker(name, **kwargs):
     """
     Create a market maker.
     """
-    market_maker = Agent(name, action=market_maker_action)
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    market_maker = Agent(name, action=market_maker_action,
+                         execution_key=execution_key)
     market_maker["buy"] = 0
     market_maker["sell"] = 0
     market_maker["asset_price"] = DEF_PRICE
@@ -111,14 +116,18 @@ def create_market_maker(name):
     return market_maker
 
 
-def create_trend_follower(name, i):
+def create_trend_follower(name, i, **kwargs):
     """
     Create a trend follower.
     """
-    average_period = get_prop("average_period", DEF_PERIODS)
-    dev = get_prop("deviation_follower", DEF_SIGMA)
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    average_period = get_prop("average_period", DEF_PERIODS,
+                              execution_key=execution_key)
+    dev = get_prop("deviation_follower", DEF_SIGMA,
+                   execution_key=execution_key)
     trend_follower = Agent(name + str(i),
-                           action=trend_follower_action)
+                           action=trend_follower_action,
+                           execution_key=execution_key)
     trend_follower["change_period"] = gaussian(average_period, dev)
 
     trend_follower["capital"] = DEF_CAPITAL
@@ -126,13 +135,17 @@ def create_trend_follower(name, i):
     return trend_follower
 
 
-def create_value_investor(name, i):
+def create_value_investor(name, i, **kwargs):
     """
     Create a value investor.
     """
-    value_investor = Agent(name + str(i), action=value_investor_action)
-    mean_price = get_prop("discount", DEF_DISCOUNT)
-    dev = get_prop("deviation_investor", DEF_SIGMA)
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    value_investor = Agent(name + str(i), action=value_investor_action,
+                           execution_key=execution_key)
+    mean_price = get_prop("discount", DEF_DISCOUNT,
+                          execution_key=execution_key)
+    dev = get_prop("deviation_investor", DEF_SIGMA,
+                   execution_key=execution_key)
     low_val_percentage = gaussian(mean_price, dev)
     high_val_percentage = gaussian(mean_price, dev)
     value_investor["low_price"] = DEF_REAL_VALUE * (1 - low_val_percentage)
@@ -145,7 +158,8 @@ def create_value_investor(name, i):
 
 def market_maker_action(agent, **kwargs):
     # Determine the current price asset
-    market_maker = get_env()[MARKET_MAKER]
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    market_maker = get_env(execution_key=execution_key)[MARKET_MAKER]
 
     market_maker["prev_asset_price"] = market_maker["asset_price"]
     ratio = 1
@@ -167,25 +181,27 @@ def market_maker_action(agent, **kwargs):
 def trend_follower_action(agent, **kwargs):
     # Determine if trend followers should buy
     # or sell the stock
-    market_maker = get_env()[MARKET_MAKER]
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    market_maker = get_env(execution_key=execution_key)[MARKET_MAKER]
 
     if trend_direction(agent, market_maker["asset_price"],
                        market_maker["price_hist"]) == 1:
-        buy(agent)
+        buy(agent, **kwargs)
     else:
-        sell(agent)
+        sell(agent, **kwargs)
 
     return True
 
 
 def value_investor_action(agent, **kwargs):
     # Determine if value investors should buy or sell the stock
-    market_maker = get_env()[MARKET_MAKER]
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    market_maker = get_env(execution_key=execution_key)[MARKET_MAKER]
 
     if market_maker["asset_price"] >= agent["high_price"]:
-        sell(agent)
+        sell(agent, **kwargs)
     elif market_maker["asset_price"] <= agent["low_price"]:
-        buy(agent)
+        buy(agent, **kwargs)
 
     return True
 
@@ -202,15 +218,14 @@ def record_price(pop_hist, execution_key=COMMANDLINE_EXECUTION_KEY):
     This is our hook into the env to record the number of exchanges each
     period.
     """
-    market_maker = get_env()[MARKET_MAKER]
+    market_maker = get_env(execution_key=execution_key)[MARKET_MAKER]
     pop_hist.record_pop(ASSET_PRICE, market_maker["asset_price"])
 
 
-def set_env_attrs():
+def set_env_attrs(execution_key=COMMANDLINE_EXECUTION_KEY):
     user_log_notif("Setting env attrs for " + MODEL_NAME)
-    env = get_env()
-    env.set_attr("pop_hist_func", record_price)
-    env.set_attr("census_func", market_report)
+    set_env_attr("pop_hist_func", record_price, execution_key=execution_key)
+    set_env_attr("census_func", market_report, execution_key=execution_key)
 
 
 def set_up(props=None):
@@ -218,24 +233,33 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     init_props(MODEL_NAME, props)
+    execution_key = int(props[EXECUTION_KEY_NAME].val) \
+        if props is not None else COMMANDLINE_EXECUTION_KEY
     groups = []
 
     groups.append(Composite("value_investors", {"color": BLUE},
                             member_creator=create_value_investor,
                             num_members=get_prop("value_investors",
-                                                 DEF_NUM_VALUE_INVESTOR)))
+                                                 DEF_NUM_VALUE_INVESTOR,
+                                                 execution_key=execution_key),
+                            execution_key=execution_key)
+                  )
     groups.append(Composite("trend_followers", {"color": RED},
                             member_creator=create_trend_follower,
                             num_members=get_prop("trend_followers",
-                                                 DEF_NUM_TREND_FOLLOWER)))
+                                                 DEF_NUM_TREND_FOLLOWER,
+                                                 execution_key=execution_key),
+                            execution_key=execution_key),
+                  )
     groups.append(create_market_maker(MARKET_MAKER))
     Env(MODEL_NAME,
         members=groups,
         width=UNLIMITED,
         height=UNLIMITED,
-        pop_hist_setup=initial_price)
-    get_env().exclude_menu_item("scatter_plot")
-    set_env_attrs()
+        pop_hist_setup=initial_price,
+        execution_key=execution_key)
+    get_env(execution_key=execution_key).exclude_menu_item("scatter_plot")
+    set_env_attrs(execution_key=execution_key)
 
 
 def main():
