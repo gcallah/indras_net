@@ -12,7 +12,7 @@ from models.wolfsheep import WOLF_LIFESPAN, SHEEP_LIFESPAN, SHEEP_REPRO_PERIOD
 from models.wolfsheep import WOLF_REPRO_PERIOD, eat, reproduce
 from models.wolfsheep import create_sheep, create_wolf, set_up
 from models.wolfsheep import wolf_action, sheep_action
-from models.wolfsheep import isactive, wolves_created
+from models.wolfsheep import isactive
 
 TEST_SNUM = 3
 TEST_WNUM = 3
@@ -93,8 +93,7 @@ class WolfsheepTestCase(TestCase):
         Test to see if wolves reproduce at the right time.
         """
         self.wolf["time_to_repr"] = 0
-        self.assertTrue(reproduce(self.wolf, create_wolf,
-                                  wolves_created, WOLF_GROUP))
+        self.assertTrue(reproduce(self.wolf, create_wolf, WOLF_GROUP))
         self.assertEqual(self.wolf["time_to_repr"], WOLF_REPRO_PERIOD)
 
 
@@ -103,5 +102,4 @@ class WolfsheepTestCase(TestCase):
         Negative test to check the reproduction of wolves.
         """
         self.wolf["time_to_repr"] = 1
-        self.assertFalse(reproduce(self.wolf, create_wolf,
-                                   wolves_created, WOLF_GROUP))
+        self.assertFalse(reproduce(self.wolf, create_wolf, WOLF_GROUP))
