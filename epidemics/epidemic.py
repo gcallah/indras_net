@@ -145,6 +145,8 @@ def epidemic_report(env, execution_key=COMMANDLINE_EXECUTION_KEY):
             R0 = R0_old
     else:
         R0 = 0
+    if R0 < 0:
+        R0 = R0_old
     get_env().set_attr("R0", R0)
     result = "Current period: " + str(periods-1) + "\n"
     result += "New cases: " + str(curr_infected) + "\n"
@@ -177,15 +179,14 @@ def person_action(agent, **kwargs):
     """
     This is what people do each turn in the epidemic.
     """
+    infec_dist = get_prop('infection_distance', DEF_INFEC_DIST)
     old_state = agent[STATE]
     if is_healthy(agent):
         distance_mod = 1
         if agent["is_wearing_mask"]:
             distance_mod = 0.5
         if exists_neighbor(agent, pred=is_contagious,
-                           size=int(get_prop('infection_distance',
-                                             DEF_INFEC_DIST) *
-                                    distance_mod)):
+                           size=int(infec_dist * distance_mod)):
             if DEBUG2:
                 user_log_notif("Exposing nearby people!")
             agent[STATE] = EX
@@ -196,7 +197,8 @@ def person_action(agent, **kwargs):
                     curr_agent = curr_agent_tuple[1]
                     curr_distance = (distance(curr_agent, agent) -
                                      DEF_INFEC_DIST)
-                    if curr_distance > 0:
+                    if (curr_distance > infec_dist and
+                       curr_distance <= (infec_dist * 2)):
                         inverse_square_val = ((1/(curr_distance ** 2)) *
                                               distance_mod)
                         if inverse_square_val > 0:
