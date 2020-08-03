@@ -9,12 +9,14 @@ from indra.display_methods import RED, GREEN, BLACK
 from indra.display_methods import TOMATO
 from indra.display_methods import BLUE, YELLOW
 from indra.env import Env
-from registry.registry import get_env, get_prop
+from registry.execution_registry import COMMANDLINE_EXECUTION_KEY
+from registry.registry import get_env, get_prop, set_env_attr
 from registry.registry import user_log_err, run_notice, user_log_notif
 from indra.utils import init_props
 from indra.space import CircularRegion, exists_neighbor
 from indra.space import distance, opposing_angle
 from random import random
+from math import log
 
 MODEL_NAME = "epidemic"
 DEBUG = False  # turns debugging code on or off
@@ -65,7 +67,7 @@ STATE_TRANS = [
     [DEF_EX_HE_TRANS, 0.0,  DEF_INFEC, 0.0, 0.0,  0.0],  # EX
     [0.0,  0.0,  0.0, 1.0, 0.0,  0.0],  # IN
     [0.0,  0.0,  0.0, DEF_CON_PROB, DEF_DEATH_RATE, DEF_SURV_RATE],  # CN
-    [0.0,  0.0,  0.0, 0.0, 1.0,  0.0],  # DE
+    [0.0,  0.0,  0.0, 0.0, 1.0,  0.0],  # DEi
     [DEF_IM_HE_TRANS,  0.0,  0.0, 0.0, 0.0,  DEF_IM_STAY],  # IM
 ]
 
@@ -120,22 +122,30 @@ def is_dead(agent, *args):
     return agent[STATE] == DE
 
 
-def epidemic_report(env):
+def epidemic_report(env, execution_key=COMMANDLINE_EXECUTION_KEY):
     # taking data for each period using pop_hist
     pop_hist = get_env().pop_hist
 
     periods = len(pop_hist[INFECTED])
-
+    print("period: " + str(periods))
     total_deaths = pop_hist[DEAD][periods-1]
     curr_deaths = total_deaths - pop_hist[DEAD][periods - 2]
     curr_infected = pop_hist[INFECTED][periods-1] - \
         pop_hist[INFECTED][periods - 2]
     curr_infected = max(0, curr_infected)
-    if(pop_hist[INFECTED][periods - 2] > 0):
-        Ro = curr_infected / pop_hist[INFECTED][periods - 2]
-    else:
-        Ro = 0.0
 
+    if(periods > 2):
+        a = max(1, (pop_hist[INFECTED][periods-1] +
+                    get_env().get_attr("total_cases")) /
+                max(1, get_env().get_attr("total_cases")))
+        R0_old = get_env().get_attr("R0")
+        if(a != 1 and a != 2):
+            R0 = R0_old - ((a - 2 + a ** (-R0_old)) / (log(a) * (a - 2)))
+        else:
+            R0 = R0_old
+    else:
+        R0 = 0
+    get_env().set_attr("R0", R0)
     result = "Current period: " + str(periods-1) + "\n"
     result += "New cases: " + str(curr_infected) + "\n"
 
@@ -147,7 +157,7 @@ def epidemic_report(env):
         str(get_env().get_attr("total_cases")) + "\n"
     result += "New deaths: " + str(curr_deaths) + "\n"
     result += "Total deaths: " + str(total_deaths) + "\n"
-    result += "R0 value: " + str(Ro) + "\n"
+    result += "R0 value: " + str(R0) + "\n"
 
     return result
 
@@ -238,17 +248,16 @@ def create_person(name, i, state=HE):
     return person
 
 
-def set_env_attrs():
+def set_env_attrs(execution_key=COMMANDLINE_EXECUTION_KEY):
     user_log_notif("Setting env attrs for " + MODEL_NAME)
-    env = get_env()
-    env.set_attr(GROUP_MAP,
+    set_env_attr(GROUP_MAP,
                  {HE: HEALTHY,
                   EX: EXPOSED,
                   IN: INFECTED,
                   CN: CONTAGIOUS,
                   DE: DEAD,
-                  IM: IMMUNE})
-    env.set_attr("census_func", epidemic_report)
+                  IM: IMMUNE}, execution_key)
+    set_env_attr("census_func", epidemic_report, execution_key)
 
 
 def set_up(props=None):

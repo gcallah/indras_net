@@ -24,6 +24,8 @@ DEF_MAX_MOVE = 2
 DEBUG = False
 DEBUG2 = False
 
+FAR_AWAY = 100000000   # Just some very big number!
+
 region_dict = {}
 
 
@@ -48,10 +50,10 @@ def distance(a1, a2):
     """
     We're going to return the distance between two objects. That calculation
     is easy if they are both located in space, but what if one of them is
-    not? For now, we will return 0, but is that right?
+    not? For now, we will return FAR_AWAY, but is that right?
     """
     if (not a1.is_located()) or (not a2.is_located()):
-        return 0.0
+        return FAR_AWAY
     else:
         debug_agent_pos(a1)
         debug_agent_pos(a2)
@@ -163,6 +165,7 @@ class Space(Composite):
             self.locations = {}
             # by making two class methods for rand_place_members and
             # place_member, we allow two places to override
+            self.random_placing = random_placing
             if random_placing:
                 self.rand_place_members(self.members)
             else:
@@ -179,14 +182,16 @@ class Space(Composite):
         rep["width"] = self.width
         rep["height"] = self.height
         rep["locations"] = self.locations
-
+        rep["random_placing"] = self.random_placing
         return rep
 
-    def from_json(self, serial_space):
-        super().from_json(serial_space)
-        self.width = serial_space["width"]
-        self.height = serial_space["height"]
-        self.locations = serial_space["locations"]
+    def from_json(self, rep):
+        super().from_json(rep)
+        self.type = rep["type"]
+        self.width = rep["width"]
+        self.height = rep["height"]
+        self.locations = rep["locations"]
+        self.random_placing = rep["random_placing"]
 
     def __repr__(self):
         return json.dumps(self.to_json(), cls=AgentEncoder, indent=4)
@@ -201,7 +206,13 @@ class Space(Composite):
         """
         Is da grid full?
         """
-        return len(self.locations) >= self.grid_size()
+        if len(self.locations) >= self.grid_size():
+            if DEBUG2:
+                print("num locations =", len(self.locations),
+                      "; grid size =", self.grid_size())
+            return True
+        else:
+            return False
 
     def rand_place_members(self, members, max_move=None):
         """
@@ -318,7 +329,7 @@ class Space(Composite):
         `xy` must be a tuple!
         """
         if self.is_full():
-            user_log("Can't fit no more folks in this space!")
+            user_log("Can't fit more agents in this space!")
             return None
         if not is_composite(mbr):
             if xy is not None:
@@ -459,8 +470,9 @@ class Space(Composite):
         """
         region = region_factory(space=self,
                                 center=(agent.get_x(), agent.get_y()),
-                                size=hood_size)
-        members = region.get_agents(exclude_self=not save_neighbors, pred=pred)
+                                size=hood_size,
+                                agents_move=not save_neighbors)
+        members = region.get_agents(exclude_self=not include_self, pred=pred)
         return Composite("Moore neighbors",
                          members=members, execution_key=self.execution_key)
 
@@ -539,16 +551,23 @@ class Space(Composite):
 
     def exists_neighbor(self, agent, pred=None, exclude_self=True, size=1,
                         region_type=None):
+        if DEBUG2:
+            print("agent save_neighbor false is", agent.get("save_neighbors",
+                                                            False))
         region = region_factory(space=self, center=(agent.get_x(),
                                                     agent.get_y()),
-                                size=size)
+                                size=size,
+                                agents_move=not agent.get("save_neighbors",
+                                                          False))
         return region.exists_neighbor(exclude_self=exclude_self, pred=pred)
 
     def neighbor_ratio(self, agent, pred_one, pred_two=None, size=1,
                        region_type=None):
         region = region_factory(space=self, center=(agent.get_x(),
                                                     agent.get_y()),
-                                size=size)
+                                size=size,
+                                agents_move=not agent.get("save_neighbors",
+                                                          False))
         return region.get_ratio(pred_one, pred_two=pred_two)
 
 
@@ -612,10 +631,9 @@ class Region():
         self.width = abs(self.NW[X] - self.NE[X])
         self.height = abs(self.NW[Y] - self.SW[Y])
         self.agents_move = agents_move
-        if self.agents_move:
-            self.my_agents = []
-        else:
-            self.my_agents = self._load_agents()
+        self.my_agents = []
+        if not self.agents_move:
+            self._load_agents()
 
     def __str__(self):
         return self.name
@@ -666,6 +684,8 @@ class Region():
         This fills self.my_agents with all neighbors, and maybe the center
         agents, depending upon `exclude_self`.
         """
+        if DEBUG2:
+            print("calling _load_agents in space.py")
         for y in range(self.height):
             y_coord = self.SW[Y] + y + 1
             for x in range(self.width):
@@ -726,13 +746,6 @@ class Region():
                                if pred_two(agent)])
         else:
             denominator = len(ratio_agents)
-        """
-        numerator = self.get_num_of_agents(exclude_self=True, pred=pred_one)
-        denominator = self.get_num_of_agents(exclude_self=True, pred=pred_two)
-        if DEBUG2:
-            print("numerator length: " + str(numerator))
-            print("denominator length: " + str(denominator))
-        """
         if denominator == 0:
             return 1
         return numerator / denominator

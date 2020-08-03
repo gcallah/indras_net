@@ -12,6 +12,8 @@ from indra.agent import Agent, MOVE
 from indra.composite import Composite
 from indra.display_methods import RED, BLUE
 from indra.env import Env
+from registry.execution_registry import COMMANDLINE_EXECUTION_KEY, \
+    EXECUTION_KEY_NAME
 from registry.registry import get_env, get_prop
 from registry.registry import user_tell, run_notice
 from indra.space import DEF_HEIGHT, DEF_WIDTH
@@ -35,11 +37,11 @@ def agent_action(agent, **kwargs):
     return MOVE
 
 
-def create_agent(name, i, props=None):
+def create_agent(name, i, **kwargs):
     """
     Create an agent.
     """
-    return Agent(name + str(i), action=agent_action)
+    return Agent(name + str(i), action=agent_action, kwargs=kwargs)
 
 
 def set_up(props=None):
@@ -47,17 +49,25 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     init_props(MODEL_NAME, props)
+    execution_key = int(props[EXECUTION_KEY_NAME].val) \
+        if props is not None else COMMANDLINE_EXECUTION_KEY
+
     blue_group = Composite("Blues", {"color": BLUE},
                            member_creator=create_agent,
-                           num_members=get_prop('num_blue', DEF_NUM_BLUE))
+                           num_members=get_prop('num_blue', DEF_NUM_BLUE,
+                                                execution_key=execution_key),
+                           execution_key=execution_key)
     red_group = Composite("Reds", {"color": RED},
                           member_creator=create_agent,
-                          num_members=get_prop('num_red', DEF_NUM_RED))
+                          num_members=get_prop('num_red', DEF_NUM_RED,
+                                               execution_key=execution_key),
+                          execution_key=execution_key)
 
     Env(MODEL_NAME,
-        height=get_prop('grid_height', DEF_HEIGHT),
-        width=get_prop('grid_width', DEF_WIDTH),
-        members=[blue_group, red_group])
+        height=get_prop('grid_height', DEF_HEIGHT,
+                        execution_key=execution_key),
+        width=get_prop('grid_width', DEF_WIDTH, execution_key=execution_key),
+        members=[blue_group, red_group], execution_key=execution_key)
 
 
 def main():

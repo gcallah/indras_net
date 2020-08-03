@@ -7,13 +7,13 @@ and moves them around randomly.
 from indra.agent import Agent, MOVE
 from indra.composite import Composite
 from indra.env import Env
-from registry.registry import get_env, get_prop
+from registry.execution_registry import COMMANDLINE_EXECUTION_KEY
+from registry.registry import get_env, get_prop, set_env_attr
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import init_props
 import capital.trade_utils as tu
 from capital.trade_utils import seek_a_trade, GEN_UTIL_FUNC
 from capital.trade_utils import AMT_AVAIL, endow, UTIL_FUNC, trader_debug
-# import copy
 
 MODEL_NAME = "money"
 DEBUG = True  # turns debugging code on or off
@@ -46,26 +46,26 @@ natures_goods = {
     "cow": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
             "incr": 0, DUR_DECR: 0.8, "divisibility": 1.0,
             "trade_count": 0, "is_allocated": False, },
-    "gold": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
-             "incr": 0, DUR_DECR: 1.0, "divisibility": 0.05,
-             "trade_count": 0, "is_allocated": False, },
     "cheese": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
-               "incr": 0, DUR_DECR: 0.8, "divisibility": 0.4,
+               "incr": 0, DUR_DECR: 0.8, "divisibility": 1.0,
                "trade_count": 0, "is_allocated": False, },
-    # "banana": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
-    #            "incr": 0, DUR_DECR: 0.2, "divisibility": 0.2,
-    #            "trade_count": 0, "is_allocated": False, },
+    "gold": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
+             "incr": 0, DUR_DECR: 1.0, "divisibility": 0.1,
+             "trade_count": 0, "is_allocated": False, },
+    "banana": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
+               "incr": 0, DUR_DECR: 0.2, "divisibility": 1.0,
+               "trade_count": 0, "is_allocated": False, },
     # "diamond": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
-    #             "incr": 0, DUR_DECR: 1.0, "divisibility": 0.8,
+    #             "incr": 0, DUR_DECR: 1.0, "divisibility": 1.0,
     #             "trade_count": 0, "is_allocated": False, },
     # "avocado": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
-    #             "incr": 0, DUR_DECR: 0.3, "divisibility": 0.5,
+    #             "incr": 0, DUR_DECR: 0.3, "divisibility": 1.0,
     #             "trade_count": 0, "is_allocated": False, },
     # "stone": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
     #           "incr": 0, DUR_DECR: 1.0, "divisibility": 1.0,
     #           "trade_count": 0, "is_allocated": False, },
     # "milk": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
-    #          "incr": 0, DUR_DECR: 0.2, "divisibility": 0.15,
+    #          "incr": 0, DUR_DECR: 0.2, "divisibility": 1.0,
     #          "trade_count": 0, "is_allocated": False, },
 }
 
@@ -84,6 +84,11 @@ class Good:
         self.age += 1
 
 
+def debug_header(str):
+    hdr = "*" * len(str)
+    print("\n", hdr, "\n", str, "\n")
+
+
 def initial_amt(pop_hist):
     """
     Set up our pop hist object to record amount traded per period.
@@ -93,7 +98,7 @@ def initial_amt(pop_hist):
             pop_hist.record_pop(good, INIT_COUNT)
 
 
-def record_amt(pop_hist):
+def record_amt(pop_hist, execution_key=COMMANDLINE_EXECUTION_KEY):
     """
     This is our hook into the env to record the number of trades each
     period.
@@ -121,7 +126,7 @@ def good_decay(goods):
         goods[good][AMT_AVAIL] = goods[good][DUR_DECR]
 
 
-def trade_report(env):
+def trade_report(env, execution_key=COMMANDLINE_EXECUTION_KEY):
     global prev_trade, eq_count
     get_env()
     trade_count_dic = {x: natures_goods[x]["trade_count"]
@@ -133,14 +138,14 @@ def trade_report(env):
     # number '4' may be changed
     if eq_count >= 4:
         print("No trade between agents for", eq_count,
-              "periods. Equilibrium may be reached.")
+              "periods. Equilibrium may have been reached.")
     prev_trade = trade_count_dic
     return "Number of trades last period: " + "\n" \
            + str(trade_count_dic) + "\n"
 
 
 def money_trader_action(agent, **kwargs):
-    print("called!!", agent.name)
+    debug_header("Trader action called for: " + agent.name)
     trader_debug(agent)
     seek_a_trade(agent)
     for good in natures_goods:
@@ -176,10 +181,12 @@ def nature_to_traders(traders, nature):
         print(repr(traders[trader]))
 
 
-def set_env_attrs():
-    env = get_env()
-    env.set_attr("pop_hist_func", record_amt)
-    env.set_attr("census_func", trade_report)
+def set_env_attrs(execution_key=COMMANDLINE_EXECUTION_KEY):
+    set_env_attr("pop_hist_func", record_amt, execution_key)
+    set_env_attr("census_func", trade_report, execution_key)
+    # env = get_env()
+    # env.set_attr("pop_hist_func", record_amt)
+    # env.set_attr("census_func", trade_report)
     tu.max_utils = MONEY_MAX_UTIL
 
 

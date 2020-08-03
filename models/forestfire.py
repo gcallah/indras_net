@@ -9,6 +9,7 @@ from indra.space import exists_neighbor
 from indra.display_methods import RED, GREEN, BLACK
 from indra.display_methods import SPRINGGREEN, TOMATO, TREE
 from indra.env import Env
+from registry.execution_registry import COMMANDLINE_EXECUTION_KEY
 from registry.registry import get_env, get_prop, set_env_attr, get_env_attr
 from registry.registry import user_log_err, run_notice, user_log_notif
 from indra.utils import init_props
@@ -112,7 +113,7 @@ def plant_tree(name, i, state=HE):
                         "save_neighbors": True})
 
 
-def set_env_attrs():
+def set_env_attrs(execution_key=COMMANDLINE_EXECUTION_KEY):
     """
     I actually don't think we need to do this here!
     It can be done once in set_up().
@@ -123,7 +124,7 @@ def set_env_attrs():
                   NF: NEW_FIRE,
                   OF: ON_FIRE,
                   BO: BURNED_OUT,
-                  NG: NEW_GROWTH})
+                  NG: NEW_GROWTH}, execution_key)
 
 
 def set_up(props=None):

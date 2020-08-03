@@ -12,7 +12,10 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import BLUE, RED
 from indra.env import Env
-from registry.registry import get_env, get_group, get_prop, set_env_attr
+from registry.execution_registry import COMMANDLINE_EXECUTION_KEY, \
+    EXECUTION_KEY_NAME, check_and_get_execution_key_from_args
+from registry.registry import get_env, get_group, get_prop, set_env_attr, \
+    get_env_attr
 from registry.registry import user_tell, run_notice, user_log_notif
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import init_props
@@ -45,13 +48,14 @@ def get_decision(agent):
     return random.random() <= agent[MOTIV]
 
 
-def discourage(unwanted):
+def discourage(unwanted, **kwargs):
     """
     Discourages extra drinkers from going to the bar by decreasing motivation.
     Chooses drinkers randomly from the drinkers that went to the bar.
     """
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
     discouraged = 0
-    drinkers = get_group(DRINKERS)
+    drinkers = get_group(DRINKERS, execution_key=execution_key)
     while unwanted:
         if DEBUG:
             user_tell("The members are: " + drinkers.members)
@@ -70,54 +74,60 @@ def discourage(unwanted):
 
 
 def drinker_action(agent, **kwargs):
-    drinkers = get_group(DRINKERS)
-    non_drinkers = get_group(NON_DRINKERS)
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+
+    drinkers = get_group(DRINKERS, execution_key=execution_key)
+    non_drinkers = get_group(NON_DRINKERS, execution_key=execution_key)
 
     changed = True
     decision = get_decision(agent)
-    bar = get_env()
+    bar = get_env(execution_key=execution_key)
     bar.attrs[AGENTS_DECIDED] += 1
-
-    attendance = bar.get_attr(ATTENDANCE, 0)
-    opt_occupancy = bar.get_attr(OPT_OCCUPANCY)
-    agents_decided = bar.get_attr(AGENTS_DECIDED)
-    if agents_decided == bar.get_attr(POPULATION, 0):
+    attendance = get_env_attr(key=ATTENDANCE, execution_key=execution_key,
+                              default_value=0)
+    opt_occupancy = get_env_attr(OPT_OCCUPANCY, execution_key=execution_key)
+    agents_decided = get_env_attr(AGENTS_DECIDED, execution_key=execution_key)
+    if agents_decided == get_env_attr(POPULATION, execution_key=execution_key,
+                                      default_value=0):
         if attendance > opt_occupancy:
             extras = attendance - opt_occupancy
-            discourage(extras)
-        bar.set_attr(AGENTS_DECIDED, 0)
-        bar.set_attr(ATTENDANCE, 0)
+            discourage(extras, **kwargs)
+        set_env_attr(AGENTS_DECIDED, 0, execution_key=execution_key)
+        set_env_attr(ATTENDANCE, 0, execution_key=execution_key)
 
     if decision:
-        bar.set_attr(ATTENDANCE, attendance + 1)
+        set_env_attr(ATTENDANCE, attendance + 1, execution_key=execution_key)
         if agent.primary_group() == non_drinkers:
             changed = False
-            get_env().add_switch(agent, non_drinkers,
-                                 drinkers)
+            get_env(execution_key=execution_key).add_switch(agent,
+                                                            non_drinkers,
+                                                            drinkers)
     else:
         if agent.primary_group() == drinkers:
             changed = False
-            get_env().add_switch(agent, drinkers,
-                                 non_drinkers)
+            get_env(execution_key=execution_key).add_switch(agent, drinkers,
+                                                            non_drinkers)
 
     # return False means to move
     return changed
 
 
-def create_drinker(name, i, props=None):
+def create_drinker(name, i, **kwargs):
     """
     Create an agent.
     """
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
     return Agent(name + str(i), action=drinker_action,
-                 attrs={MOTIV: DEF_MOTIV})
+                 attrs={MOTIV: DEF_MOTIV}, execution_key=execution_key)
 
 
-def create_non_drinker(name, i, props=None):
+def create_non_drinker(name, i, **kwargs):
     """
     Create an agent.
     """
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
     return Agent(name + str(i), action=drinker_action,
-                 attrs={MOTIV: DEF_MOTIV})
+                 attrs={MOTIV: DEF_MOTIV}, execution_key=execution_key)
 
 
 def setup_attendance(pop_hist):
@@ -127,21 +137,21 @@ def setup_attendance(pop_hist):
     pop_hist.record_pop(BAR_ATTEND, 0)
 
 
-def attendance(pop_hist):
+def attendance(pop_hist, execution_key=COMMANDLINE_EXECUTION_KEY):
     pop_hist.record_pop(BAR_ATTEND,
-                        get_env().attrs[ATTENDANCE])
+                        get_env(execution_key=execution_key).attrs[ATTENDANCE])
 
 
-def attendance_report(env):
-    return("El Farol attendees on day "
-           + str(env.get_periods())
-           + ": " + str(env.attrs[ATTENDANCE]))
+def attendance_report(env, execution_key=COMMANDLINE_EXECUTION_KEY):
+    return ("El Farol attendees on day "
+            + str(env.get_periods())
+            + ": " + str(env.attrs[ATTENDANCE]))
 
 
-def set_env_attrs():
+def set_env_attrs(execution_key=COMMANDLINE_EXECUTION_KEY):
     user_log_notif("Setting env attrs for " + MODEL_NAME)
-    set_env_attr("pop_hist_func", attendance)
-    set_env_attr("census_func", attendance_report)
+    set_env_attr("pop_hist_func", attendance, execution_key)
+    set_env_attr("census_func", attendance_report, execution_key)
 
 
 def set_up(props=None):
@@ -149,27 +159,36 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     init_props(MODEL_NAME, props)
+    execution_key = int(props[EXECUTION_KEY_NAME].val) \
+        if props is not None else COMMANDLINE_EXECUTION_KEY
 
+    population_prop = \
+        get_prop('population', DEF_POPULATION, execution_key=execution_key)
     drinkers = Composite(DRINKERS, {"color": RED},
                          member_creator=create_drinker,
-                         num_members=get_prop('population',
-                                              DEF_POPULATION) // 2)
+                         num_members=population_prop // 2,
+                         execution_key=execution_key)
 
     non_drinkers = Composite(NON_DRINKERS, {"color": BLUE},
                              member_creator=create_non_drinker,
-                             num_members=get_prop('population',
-                                                  DEF_POPULATION) // 2)
-    bar = Env(MODEL_NAME,
-              height=get_prop('grid_height', DEF_HEIGHT),
-              width=get_prop('grid_width', DEF_WIDTH),
-              members=[drinkers, non_drinkers],
-              pop_hist_setup=setup_attendance)
+                             num_members=population_prop // 2,
+                             execution_key=execution_key)
+    Env(MODEL_NAME,
+        height=get_prop('grid_height', DEF_HEIGHT,
+                        execution_key=execution_key),
+        width=get_prop('grid_width', DEF_WIDTH,
+                       execution_key=execution_key),
+        members=[drinkers, non_drinkers],
+        pop_hist_setup=setup_attendance,
+        execution_key=execution_key)
+
     population = len(drinkers) + len(non_drinkers)
-    bar.set_attr(POPULATION, population)
-    bar.set_attr(OPT_OCCUPANCY, int(population * DEF_MOTIV))
-    bar.set_attr(AGENTS_DECIDED, 0)
-    bar.set_attr(ATTENDANCE, 0)
-    set_env_attrs()
+    set_env_attr(POPULATION, population, execution_key=execution_key)
+    set_env_attr(OPT_OCCUPANCY, int(population * DEF_MOTIV),
+                 execution_key=execution_key)
+    set_env_attr(AGENTS_DECIDED, 0, execution_key=execution_key)
+    set_env_attr(ATTENDANCE, 0, execution_key=execution_key)
+    set_env_attrs(execution_key=execution_key)
 
 
 def main():

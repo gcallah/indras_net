@@ -11,6 +11,8 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import RED, GREEN
 from indra.env import Env, UNLIMITED
+from registry.execution_registry import COMMANDLINE_EXECUTION_KEY, \
+    EXECUTION_KEY_NAME, check_and_get_execution_key_from_args
 from registry.registry import get_env, get_group, get_prop
 from registry.registry import get_env_attr, set_env_attr
 from registry.registry import user_tell, run_notice, user_log_notif
@@ -53,13 +55,15 @@ def initial_exchanges(pop_hist):
     pop_hist.record_pop("Exchanges", 0)
 
 
-def record_exchanges(pop_hist):
+def record_exchanges(pop_hist, **kwargs):
     """
     This is our hook into the env to record the number of exchanges each
     period.
     """
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
     pop_hist.record_pop("Exchanges",
-                        get_env_attr("last_per_exchg"))
+                        get_env_attr("last_per_exchg",
+                                     execution_key=execution_key))
 
 
 def get_sitters(co_op_members):
@@ -71,8 +75,11 @@ def get_going_out(co_op_members):
 
 
 def coop_action(coop_env, **kwargs):
-    sitters = get_sitters(get_group(CO_OP_MEMBERS))
-    going_out = get_going_out(get_group(CO_OP_MEMBERS))
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    sitters = get_sitters(
+        get_group(CO_OP_MEMBERS, execution_key=execution_key))
+    going_out = get_going_out(
+        get_group(CO_OP_MEMBERS, execution_key=execution_key))
 
     exchanges = min(len(sitters), len(going_out))
     sitter_agents = [agent for agent in sitters]
@@ -83,25 +90,27 @@ def coop_action(coop_env, **kwargs):
         sitters[sitter]['coupons'] += 1
         going_out[outer]['coupons'] -= 1
 
-    set_env_attr("last_per_exchg", exchanges)
+    set_env_attr("last_per_exchg", exchanges, execution_key=execution_key)
     set_env_attr("last_per_unemp",
-                 max(len(sitters), len(going_out)) - exchanges)
+                 max(len(sitters), len(going_out)) - exchanges,
+                 execution_key=execution_key)
     return True
 
 
-def distribute_coupons(agent):
+def distribute_coupons(agent, execution_key=COMMANDLINE_EXECUTION_KEY):
     """
     Distribute coupons from central bank randomly to each babysitter.
     Coupons are gaussian distributed based on extra_coupons and extra_dev.
     """
-    co_op_members = get_group(CO_OP_MEMBERS)
+    co_op_members = get_group(CO_OP_MEMBERS, execution_key=execution_key)
     for bbsit in co_op_members:
         co_op_members[bbsit]['coupons'] += int(gaussian(
             agent["extra_coupons"], agent["extra_dev"]))
 
 
-def coop_report(coop_env):
-    num_babysitter = len(get_sitters(get_group(CO_OP_MEMBERS)))
+def coop_report(coop_env, execution_key=COMMANDLINE_EXECUTION_KEY):
+    num_babysitter = len(
+        get_sitters(get_group(CO_OP_MEMBERS, execution_key=execution_key)))
     return 'Number of babysitters is: ' + str(num_babysitter) + '\n'
     pass
 
@@ -127,10 +136,15 @@ def central_bank_action(agent, **kwargs):
     If exchanges are down "enough", distribute coupons!
     Enough is a parameter.
     """
-    CB_interven_pts = get_env_attr("CB_interven_pts")
-    set_env_attr("num_rounds", get_env_attr("num_rounds") + 1)
-    co_op_mbrs = get_group(CO_OP_MEMBERS)
-    unemp_rate = get_env_attr("last_per_unemp", 0) / len(co_op_mbrs) * 100
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    CB_interven_pts = get_env_attr("CB_interven_pts",
+                                   execution_key=execution_key)
+    set_env_attr("num_rounds",
+                 get_env_attr("num_rounds", execution_key=execution_key) + 1,
+                 execution_key=execution_key)
+    co_op_mbrs = get_group(CO_OP_MEMBERS, execution_key=execution_key)
+    unemp_rate = get_env_attr("last_per_unemp", execution_key=execution_key,
+                              default_value=0) / len(co_op_mbrs) * 100
     unemp_threshold = agent["percent_change"]
     if unemp_rate >= unemp_threshold:
         user_tell("Unemployment has risen to "
@@ -138,43 +152,53 @@ def central_bank_action(agent, **kwargs):
                   + " more than default value "
                   + str(unemp_threshold)
                   + " CB Intervened")
-        CB_interven_pts.append([get_env_attr("num_rounds"),
-                                get_env_attr("last_per_exchg")])
-        distribute_coupons(agent)
+        CB_interven_pts.append(
+            [get_env_attr("num_rounds", execution_key=execution_key),
+             get_env_attr("last_per_exchg", execution_key=execution_key)])
+        distribute_coupons(agent, execution_key=execution_key)
     return True
 
 
-def create_babysitter(name, i):
+def create_babysitter(name, i, **kwargs):
     """
     Create a babysitter.
     """
-    babysitter = Agent(name + str(i), action=babysitter_action)
-    mean_coupons = get_prop("average_coupons", DEF_COUPON)
-    dev = get_prop("deviation", DEF_SIGMA)
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    babysitter = Agent(name + str(i), action=babysitter_action,
+                       execution_key=execution_key)
+    mean_coupons = get_prop("average_coupons", DEF_COUPON,
+                            execution_key=execution_key)
+    dev = get_prop("deviation", DEF_SIGMA, execution_key=execution_key)
     babysitter["goal"] = None
     babysitter['coupons'] = int(gaussian(mean_coupons, dev))
     babysitter['desired_cash'] = get_prop("desired_cash",
-                                          DEF_DESIRED_CASH_BAL)
+                                          DEF_DESIRED_CASH_BAL,
+                                          execution_key=execution_key)
     return babysitter
 
 
-def create_central_bank(name, i):
+def create_central_bank(name, i, **kwargs):
     """
     Create the central bank to distribute the coupons
     """
-    central_bank = Agent(name, action=central_bank_action)
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    central_bank = Agent(name, action=central_bank_action,
+                         execution_key=execution_key)
     central_bank["percent_change"] = get_prop("percent_change",
-                                              DEF_PERCENT)
-    central_bank["extra_coupons"] = get_prop("extra_coupons", DEF_COUPON)
-    central_bank["extra_dev"] = get_prop("extra_deviation", DEF_SIGMA)
+                                              DEF_PERCENT,
+                                              execution_key=execution_key)
+    central_bank["extra_coupons"] = get_prop("extra_coupons", DEF_COUPON,
+                                             execution_key=execution_key)
+    central_bank["extra_dev"] = get_prop("extra_deviation", DEF_SIGMA,
+                                         execution_key=execution_key)
     return central_bank
 
 
-def set_env_attrs():
+def set_env_attrs(execution_key=COMMANDLINE_EXECUTION_KEY):
     user_log_notif("Setting env attrs for " + MODEL_NAME)
-    env = get_env()
-    env.set_attr("pop_hist_func", record_exchanges)
-    env.set_attr("census_func", coop_report)
+    set_env_attr("pop_hist_func", record_exchanges,
+                 execution_key=execution_key)
+    set_env_attr("census_func", coop_report, execution_key=execution_key)
 
 
 def set_up(props=None):
@@ -182,16 +206,21 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     init_props(MODEL_NAME, props)
+    execution_key = int(props[EXECUTION_KEY_NAME].val) \
+        if props is not None else COMMANDLINE_EXECUTION_KEY
 
-    num_members = get_prop('num_babysitter', DEF_BABYSITTER)
+    num_members = get_prop('num_babysitter', DEF_BABYSITTER,
+                           execution_key=execution_key)
     co_op_members = Composite(CO_OP_MEMBERS,
                               {"color": RED},
                               num_members=num_members,
-                              member_creator=create_babysitter)
+                              member_creator=create_babysitter,
+                              execution_key=execution_key)
     central_bank = Composite("central_bank",
                              {"color": GREEN},
                              num_members=1,
-                             member_creator=create_central_bank)
+                             member_creator=create_central_bank,
+                             execution_key=execution_key)
 
     Env(MODEL_NAME, members=[co_op_members, central_bank],
         action=coop_action, width=UNLIMITED,
@@ -200,8 +229,8 @@ def set_up(props=None):
         attrs={"last_per_exchg": 0,
                "last_per_unemp": 0,
                "num_rounds": 0,
-               "CB_interven_pts": []})
-    set_env_attrs()
+               "CB_interven_pts": []}, execution_key=execution_key)
+    set_env_attrs(execution_key=execution_key)
 
 
 def main():

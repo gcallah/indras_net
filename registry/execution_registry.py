@@ -8,10 +8,12 @@ COMMANDLINE_EXECUTION_KEY = 0
 
 EXECUTION_KEY_NAME = "execution_key"
 
+
 class ExecutionRegistry(object):
     def __init__(self):
         self.registries = {}
         self.registries[COMMANDLINE_EXECUTION_KEY] = {}
+        print("Creating default  registry")
 
     def get_unique_key(self):
         key = random.randint(1, BILLION)
@@ -26,14 +28,11 @@ class ExecutionRegistry(object):
         self.registries[key] = {}
         return key
 
-    def __set_value_at_key(self, key=COMMANDLINE_EXECUTION_KEY, value=None, object_to_register=None):
+    def __set_value_at_key(self, key=COMMANDLINE_EXECUTION_KEY, value=None,
+                           object_to_register=None):
         if isinstance(key, str):
             key = int(key)
-        if key not in self.registries:
-            raise KeyError(
-                "key - {} does not exist in the Execution registry. "
-                "Maybe you forgot to call create_new_execution_registry".format(
-                    key))
+        self.does_key_exists(key)
         self.registries[key][value] = object_to_register
 
     def set_user(self, key, user):
@@ -51,20 +50,20 @@ class ExecutionRegistry(object):
     def does_key_exists(self, key):
         if key not in self.registries:
             raise KeyError(
-                "key - {} does not exist in registry. Maybe you forgot to call create_new_execution_registry".format(
-                    key
-                )
+                "key - {} does not exist in registry. "
+                "Maybe you forgot to call create_new_execution_registry".format
+                (key)
             )
 
-    def get_propargs(self, key=COMMANDLINE_EXECUTION_KEY, default_propargs=None):
+    def get_propargs(self, key=COMMANDLINE_EXECUTION_KEY,
+                     default_propargs=None):
         self.does_key_exists(key)
         if "props" not in self.registries[key]:
             return default_propargs
-            # raise KeyError(
-            #     "Props have not been registered for key-{}. Maybe you forgot to call set_propargs".format(key))
         return self.registries[key]["props"]
 
-    def register_agent(self, key_to_register_agent_with, agent, key=COMMANDLINE_EXECUTION_KEY):
+    def register_agent(self, key_to_register_agent_with, agent,
+                       key=COMMANDLINE_EXECUTION_KEY):
         self.does_key_exists(key)
         if "agents" not in self.registries[key]:
             self.registries[key]["agents"] = {}
@@ -73,25 +72,33 @@ class ExecutionRegistry(object):
     def get_registered_agent(self, agent_name, key=COMMANDLINE_EXECUTION_KEY):
         self.does_key_exists(key)
         if agent_name not in self.registries[key]["agents"]:
-            raise KeyError("Agent with name - {} is not registered with key")
+            raise KeyError(
+                "Agent with name - {} is not registered with key - {}".format(
+                    agent_name, key))
         return self.registries[key]["agents"][agent_name]
 
     def get_registered_env(self, key=COMMANDLINE_EXECUTION_KEY):
         self.does_key_exists(key)
         if "env" not in self.registries[key]:
-            raise KeyError("No env registered for key - {}. Maybe you forgot to call set_env".format(key))
+            raise KeyError(
+                "No env registered for key - {}. Maybe you forgot to call set_env".format(
+                    key))
         return self.registries[key]["env"]
 
     def get_registered_user(self, key=COMMANDLINE_EXECUTION_KEY):
         self.does_key_exists(key)
         if "user" not in self.registries[key]:
-            raise KeyError("No user registered for key - {}. Maybe you forgot to call set_user".format(key))
+            raise KeyError(
+                "No user registered for key - {}. Maybe you forgot to call set_user".format(
+                    key))
         return self.registries[key]["user"]
 
     def get_registered_group(self, group_name, key=COMMANDLINE_EXECUTION_KEY):
         self.does_key_exists(key)
         if group_name not in self.registries[key]:
-            raise KeyError("Group - {} not registered for execution against execution_key - {}".format(group_name, key))
+            raise KeyError(
+                "Group - {} not registered for execution against execution_key - {}".format(
+                    group_name, key))
 
         return self.registries[key].get(group_name)
 
@@ -104,8 +111,26 @@ class ExecutionRegistry(object):
         }
 
     def clear_data_for_execution_key(self, key):
-        self.does_key_exists(key)
-        del self.registries[key]
+        if key != COMMANDLINE_EXECUTION_KEY:
+            self.does_key_exists(key)
+            del self.registries[key]
 
+
+def is_model_ported_to_new_registry(model_id=None, model_name=None):
+    if model_id is not None:
+        return model_id not in [5, 6, 7, 8, 9,
+                                10, 11]
+    elif model_name is not None:
+        return model_name not in ["fashion", "wolfsheep",
+                                  "forestfire", "segregation", "complementary",
+                                  "money", "epidemic"]
+    return False
+
+
+def check_and_get_execution_key_from_args(kwargs):
+    execution_key = COMMANDLINE_EXECUTION_KEY
+    if EXECUTION_KEY_NAME in kwargs:
+        execution_key = kwargs[EXECUTION_KEY_NAME]
+    return execution_key
 
 execution_registry = ExecutionRegistry()

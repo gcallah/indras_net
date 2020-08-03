@@ -1,16 +1,14 @@
 import React from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
-let home = '/';
-if (process.env.NODE_ENV === 'production') {
-  home = 'https://gcallah.github.io/indras_net/webapp.html#/';
-}
+const home = '/';
 
 function Header() {
   return (
     <Navbar bg="light" expand="lg">
       <Nav className="mr-auto">
-        <Nav.Link href={home}>
+        <Nav.Link as={Link} to={home}>
           HOME
         </Nav.Link>
       </Nav>
@@ -18,7 +16,6 @@ function Header() {
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
           <Nav.Link
-            // as={Link}
             href="https://gcallah.github.io/indras_net/index.html"
           >
             ABOUT

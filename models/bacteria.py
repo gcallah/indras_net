@@ -13,7 +13,8 @@ from indra.env import Env
 from registry.registry import get_env, get_group, get_prop
 from registry.registry import user_tell, run_notice
 from registry.execution_registry import \
-    EXECUTION_KEY_NAME, COMMANDLINE_EXECUTION_KEY
+    EXECUTION_KEY_NAME, COMMANDLINE_EXECUTION_KEY, \
+    check_and_get_execution_key_from_args
 from indra.space import DEF_HEIGHT, DEF_WIDTH, distance
 from indra.utils import init_props
 
@@ -79,7 +80,7 @@ def bacterium_action(agent, **kwargs):
     toxin_level = calc_toxin(get_group(TOXINS, execution_key=execution_key),
                              agent)
     nutrient_level = calc_nutrient(
-        get_group(NUTRIENTS), agent)
+        get_group(NUTRIENTS, execution_key=execution_key), agent)
     if agent["prev_toxicity"] is not None:
         toxin_change = toxin_level - agent["prev_toxicity"]
     else:
@@ -122,35 +123,44 @@ def nutrient_action(agent, **kwargs):
     return False
 
 
-def create_bacterium(name, i):
+def create_bacterium(name, i, **kwargs):
     """
     Create a baterium.
     """
-    bacterium = Agent(name + str(i), action=bacterium_action)
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    bacterium = Agent(name + str(i), action=bacterium_action,
+                      execution_key=execution_key)
     bacterium["prev_toxicity"] = None
     bacterium["prev_nutricity"] = None
     bacterium["angle"] = None
     bacterium["max_move"] = get_prop("bacterium_move",
-                                     DEF_BACTERIUM_MOVE)
+                                     DEF_BACTERIUM_MOVE,
+                                     execution_key=execution_key)
     return bacterium
 
 
-def create_toxin(name, i):
+def create_toxin(name, i, **kwargs):
     """
     Create a toxin.
     """
-    toxin = Agent(name + str(i), action=toxin_action)
-    toxin["max_move"] = get_prop("toxin_move", DEF_TOXIN_MOVE)
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    toxin = Agent(name + str(i), action=toxin_action,
+                  execution_key=execution_key)
+    toxin["max_move"] = get_prop("toxin_move", DEF_TOXIN_MOVE,
+                                 execution_key=execution_key)
     return toxin
 
 
-def create_nutrient(name, i):
+def create_nutrient(name, i, **kwargs):
     """
     Create a nutrient.
     """
-    nutrient = Agent(name + str(i), action=nutrient_action)
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    nutrient = Agent(name + str(i), action=nutrient_action,
+                     execution_key=execution_key)
     nutrient["max_move"] = get_prop("nutrient_move",
-                                    DEF_NUTRIENT_MOVE)
+                                    DEF_NUTRIENT_MOVE,
+                                    execution_key=execution_key)
     return nutrient
 
 
@@ -159,24 +169,32 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     init_props(MODEL_NAME, props)
-
+    execution_key = int(props[EXECUTION_KEY_NAME].val) \
+        if props is not None else COMMANDLINE_EXECUTION_KEY
     toxins = Composite(TOXINS, {"color": RED},
                        member_creator=create_toxin,
-                       num_members=get_prop('num_toxins', NUM_TOXINS))
+                       num_members=get_prop('num_toxins', NUM_TOXINS,
+                                            execution_key=execution_key),
+                       execution_key=execution_key)
 
     nutrients = Composite(NUTRIENTS, {"color": GREEN},
                           member_creator=create_nutrient,
-                          num_members=get_prop('num_nutrients', NUM_TOXINS))
+                          num_members=get_prop('num_nutrients', NUM_TOXINS,
+                                               execution_key=execution_key),
+                          execution_key=execution_key)
 
     bacteria = Composite(BACTERIA, {"color": BLUE},
                          member_creator=create_bacterium,
                          num_members=get_prop('num_toxins',
-                                              DEF_NUM_BACT))
+                                              DEF_NUM_BACT,
+                                              execution_key=execution_key),
+                         execution_key=execution_key)
 
     Env(MODEL_NAME,
-        height=get_prop('grid_height', DEF_HEIGHT),
-        width=get_prop('grid_width', DEF_WIDTH),
-        members=[toxins, nutrients, bacteria])
+        height=get_prop('grid_height', DEF_HEIGHT,
+                        execution_key=execution_key),
+        width=get_prop('grid_width', DEF_WIDTH, execution_key=execution_key),
+        members=[toxins, nutrients, bacteria], execution_key=execution_key)
 
 
 def main():

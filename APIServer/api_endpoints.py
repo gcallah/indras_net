@@ -13,7 +13,8 @@ from APIServer.models_api import get_models
 from APIServer.props_api import get_props_for_current_execution, put_props
 from APIServer.run_model_api import run_model_put
 from indra.user import APIUser
-from registry.execution_registry import execution_registry, EXECUTION_KEY_NAME
+from registry.execution_registry import execution_registry, \
+    EXECUTION_KEY_NAME, COMMANDLINE_EXECUTION_KEY
 
 app = Flask(__name__)
 CORS(app)
@@ -22,6 +23,13 @@ api = Api(app)
 # the hard-coded dir is needed for Python Anywhere, until
 # we figure out how to get the env var set there.
 indra_dir = os.getenv("INDRA_HOME", "/home/indrasnet/indras_net")
+
+'''
+We can remove this after all models have been ported to new execution
+registry system
+'''
+APIUser("Dennis", None,
+        execution_key=COMMANDLINE_EXECUTION_KEY)
 
 
 @api.route('/test', endpoint="test",
@@ -130,7 +138,7 @@ class ModelMenu(Resource):
         """
         This returns the menu with which a model interacts with a user.
         """
-        user = execution_registry\
+        user = execution_registry \
             .get_registered_agent("Dennis", key=execution_id)
         return user()
 
@@ -154,9 +162,9 @@ class RunModel(Resource):
 class ClearRegistry(Resource):
 
     def get(self, execution_key):
-        print("Clearing registry for key - {}".format(execution_registry))
+        print("Clearing registry for key - {}".format(execution_key))
         try:
-            execution_registry\
+            execution_registry \
                 .clear_data_for_execution_key(execution_key)
         except KeyError:
             return err_return(

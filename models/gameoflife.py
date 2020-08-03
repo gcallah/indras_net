@@ -2,11 +2,12 @@
 Conway's Game of Life model.
 """
 
-from indra.agent import Agent
+from indra.agent import Agent, X, Y
 from indra.composite import Composite
 from indra.display_methods import SQUARE
 from indra.env import Env
 from registry.registry import get_env, get_prop, get_group
+from registry.registry import get_env_attr, set_env_attr
 from indra.utils import init_props
 from indra.space import Region
 
@@ -15,9 +16,15 @@ DEBUG = False  # Turns debugging code on or off
 DEF_HEIGHT = 30
 DEF_WIDTH = 30
 BLACK = "Black"
-reset_lists = False
-to_come_alive = []
-to_die = []
+
+LIVE = True
+DIE = False
+
+
+def reset_env_attrs():
+    set_env_attr("to_come_alive", [])
+    set_env_attr("to_die", [])
+    set_env_attr("reset_lists", False)
 
 
 def create_game_cell(x, y):
@@ -29,7 +36,7 @@ def create_game_cell(x, y):
                  attrs={"save_neighbors": True})
 
 
-def apply_live_rules(agent):
+def live_or_die(agent):
     """
     Apply the rules for live agents.
     The agent passed in should be alive, meaning its color should be black.
@@ -39,9 +46,9 @@ def apply_live_rules(agent):
     num_live_neighbors = curr_region.get_num_of_agents(exclude_self=True,
                                                        pred=None)
     if (num_live_neighbors != 2 and num_live_neighbors != 3):
-        return True
+        return DIE
     else:
-        return False
+        return LIVE
 
 
 def apply_dead_rules(new_x, new_y):
@@ -62,8 +69,6 @@ def apply_dead_rules(new_x, new_y):
 
 
 def check_for_new_agents(agent):
-    global to_come_alive
-
     curr_x = agent.get_x()
     curr_y = agent.get_y()
     for y in ([-1, 0, 1]):
@@ -74,8 +79,7 @@ def check_for_new_agents(agent):
                 potential_new_agent = get_env().get_agent_at(new_x, new_y)
                 if potential_new_agent is None:
                     if apply_dead_rules(new_x, new_y):
-                        to_come_alive.append((new_x, new_y))
-    return to_come_alive
+                        get_env_attr("to_come_alive").append((new_x, new_y))
 
 
 def gameoflife_action(biosphere, **kwargs):
@@ -84,54 +88,47 @@ def gameoflife_action(biosphere, **kwargs):
     Loops through the list of agents that has to come alive and die
         and carries out the corresponding action.
     """
-    global to_come_alive
-    global to_die
-    global reset_lists
     b = get_group(BLACK)
-    for agent_pos in to_come_alive:
+    # for the next loop, why not use the womb?
+    for agent_pos in get_env_attr("to_come_alive"):
         if DEBUG:
             print("Agent at", agent_pos, "will come alive")
-        if biosphere.get_agent_at(agent_pos[0], agent_pos[1]) is None:
-            agent = create_game_cell(agent_pos[0], agent_pos[1])
+        if biosphere.get_agent_at(agent_pos[X], agent_pos[Y]) is None:
+            agent = create_game_cell(agent_pos[X], agent_pos[Y])
             b += agent
-            biosphere.place_member(agent, xy=(agent_pos[0], agent_pos[1]))
-    for agent in to_die:
+            biosphere.place_member(agent, xy=(agent_pos[X], agent_pos[Y]))
+    for agent in get_env_attr("to_die"):
         if not isinstance(agent, tuple):
             if DEBUG:
-                print("Agent at", to_die[agent], "will die")
+                print("Agent at", get_env_attr("to_die[agent]"), "will die")
             agent.die()
+            # we shouldn't need to do the following:
             b.del_member(agent)
-    reset_lists = True
     return True
 
 
-def game_agent_action(agent):
+def game_agent_action(agent, **kwargs):
     """
     The action that will be taken every period for the agents.
     Checks its Moore neighborhood and checks the number of neighbors to
         the rules of Game of Life.
     """
-    global to_come_alive
-    global to_die
-    global reset_lists
 
-    if reset_lists:
-        to_come_alive = []
-        to_die = []
-        reset_lists = False
+    if get_env_attr("reset_lists"):
+        reset_env_attrs()
 
     check_for_new_agents(agent)
-    if apply_live_rules(agent):
-        to_die.append(agent)
+    if live_or_die(agent) == DIE:
+        get_env_attr("to_die").append(agent)
     return True
 
 
 def populate_board_glider(width, height):
     b = get_group(BLACK)
     center = [width // 2, height // 2]
-    agent_loc = [(center[0], center[1]), (center[0] - 1, center[1] + 1),
-                 (center[0] + 1, center[1] + 1),
-                 (center[0] + 1, center[1]), (center[0], center[1] - 1)]
+    agent_loc = [(center[X], center[Y]), (center[X] - 1, center[1] + 1),
+                 (center[X] + 1, center[Y] + 1),
+                 (center[X] + 1, center[Y]), (center[X], center[1] - 1)]
     for loc in agent_loc:
         agent = create_game_cell(loc[0], loc[1])
         b += agent
@@ -140,11 +137,11 @@ def populate_board_glider(width, height):
 
 def populate_board_small_exploder(width, height):
     center = [width // 2, height // 2]
-    agent_loc = [(center[0], center[1]), (center[0], center[1] + 1),
-                 (center[0] - 1, center[1]),
-                 (center[0] + 1, center[1]), (center[0] - 1, center[1] - 1),
-                 (center[0] + 1, center[1] - 1),
-                 (center[0], center[1] - 2)]
+    agent_loc = [(center[X], center[Y]), (center[X], center[1] + 1),
+                 (center[X] - 1, center[Y]),
+                 (center[X] + 1, center[Y]), (center[X] - 1, center[1] - 1),
+                 (center[X] + 1, center[Y] - 1),
+                 (center[X], center[Y] - 2)]
     b = get_group(BLACK)
     for loc in agent_loc:
         agent = create_game_cell(loc[0], loc[1])
@@ -154,11 +151,11 @@ def populate_board_small_exploder(width, height):
 
 def populate_board_exploder(width, height):
     center = [width // 2, height // 2]
-    agent_loc = [(center[0], center[1]), (center[0], center[1] - 4)]
+    agent_loc = [(center[X], center[Y]), (center[X], center[1] - 4)]
     b = get_group(BLACK)
     for i in range(0, 5):
-        agent_loc.append((center[0] - 2, center[1] - i))
-        agent_loc.append((center[0] + 2, center[1] - i))
+        agent_loc.append((center[X] - 2, center[Y] - i))
+        agent_loc.append((center[X] + 2, center[Y] - i))
     for loc in agent_loc:
         agent = create_game_cell(loc[0], loc[1])
         b += agent
@@ -172,24 +169,26 @@ def populate_board_n_horizontal_row(width, height, n=10):
     left = n // 2
     b = get_group(BLACK)
     for rht in range(right):
-        agent_loc.append((center[0] + rht, center[1]))
+        agent_loc.append((center[X] + rht, center[Y]))
     for lft in range(1, left):
-        agent_loc.append((center[0] - lft, center[1]))
+        agent_loc.append((center[X] - lft, center[Y]))
     for loc in agent_loc:
-        agent = create_game_cell(loc[0], loc[1])
+        agent = create_game_cell(loc[X], loc[Y])
         b += agent
         get_env().place_member(agent, xy=loc)
 
 
 def populate_board_lightweight_spaceship(width, height):
     center = [width // 2, height // 2]
-    agent_loc = [(center[0], center[1]), (center[0] - 1, center[1]),
-                 (center[0] - 2, center[1]),
-                 (center[0] - 3, center[1]), (center[0], center[1] - 1),
-                 (center[0], center[1] - 2),
-                 (center[0] - 4, center[1] - 1),
-                 (center[0] - 1, center[1] - 3),
-                 (center[0] - 4, center[1] - 3)]
+    agent_loc = [(center[X], center[Y]),
+                 (center[X] - 1, center[Y]),
+                 (center[X] - 2, center[Y]),
+                 (center[X] - 3, center[Y]),
+                 (center[X], center[Y] - 1),
+                 (center[X], center[Y] - 2),
+                 (center[X] - 4, center[Y] - 1),
+                 (center[X] - 1, center[Y] - 3),
+                 (center[X] - 4, center[Y] - 3)]
     b = get_group(BLACK)
     for loc in agent_loc:
         agent = create_game_cell(loc[0], loc[1])
@@ -198,30 +197,34 @@ def populate_board_lightweight_spaceship(width, height):
 
 
 def populate_board_tumbler(width, height):
+    """
+    Tumbler is a classic GOL pattern.
+    But this must be recoded to eliminate all the hard-coding of positions.
+    """
     center = [width // 2, height // 2]
-    # this code is clearly awful: we must re-code this
-    # per the mathematical pattern underlying this crap
     b = get_group(BLACK)
-    agent_loc = [(center[0] - 1, center[1]), (center[0] - 2, center[1]),
-                 (center[0] + 1, center[1]),
-                 (center[0] + 2, center[1]), (center[0] - 1, center[1] - 1),
-                 (center[0] - 2, center[1] - 1),
-                 (center[0] + 1, center[1] - 1),
-                 (center[0] + 2, center[1] - 1),
-                 (center[0] - 1, center[1] - 2),
-                 (center[0] - 1, center[1] - 3),
-                 (center[0] - 1, center[1] - 4),
-                 (center[0] + 1, center[1] - 2),
-                 (center[0] + 1, center[1] - 3),
-                 (center[0] + 1, center[1] - 4),
-                 (center[0] - 3, center[1] - 3),
-                 (center[0] - 3, center[1] - 4),
-                 (center[0] - 3, center[1] - 5),
-                 (center[0] - 2, center[1] - 5),
-                 (center[0] + 3, center[1] - 3),
-                 (center[0] + 3, center[1] - 4),
-                 (center[0] + 3, center[1] - 5),
-                 (center[0] + 2, center[1] - 5)]
+    agent_loc = [(center[X] - 1, center[Y]),
+                 (center[X] - 2, center[Y]),
+                 (center[X] + 1, center[Y]),
+                 (center[X] + 2, center[Y]),
+                 (center[X] - 1, center[Y] - 1),
+                 (center[X] - 2, center[Y] - 1),
+                 (center[X] + 1, center[Y] - 1),
+                 (center[X] + 2, center[Y] - 1),
+                 (center[X] - 1, center[Y] - 2),
+                 (center[X] - 1, center[Y] - 3),
+                 (center[X] - 1, center[Y] - 4),
+                 (center[X] + 1, center[Y] - 2),
+                 (center[X] + 1, center[Y] - 3),
+                 (center[X] + 1, center[Y] - 4),
+                 (center[X] - 3, center[Y] - 3),
+                 (center[X] - 3, center[Y] - 4),
+                 (center[X] - 3, center[Y] - 5),
+                 (center[X] - 2, center[Y] - 5),
+                 (center[X] + 3, center[Y] - 3),
+                 (center[X] + 3, center[Y] - 4),
+                 (center[X] + 3, center[Y] - 5),
+                 (center[X] + 2, center[Y] - 5)]
 
     for loc in agent_loc:
         agent = create_game_cell(loc[0], loc[1])
@@ -261,17 +264,11 @@ def set_up(props=None):
         random_placing=False)
 
     populate_board_dict[simulation](width, height)
-
-    return groups
-
-
-def restore_globals(env):
-    pass
+    reset_env_attrs()
 
 
 def main():
-    global groups
-    (groups) = set_up()
+    set_up()
     get_env()()
     return 0
 

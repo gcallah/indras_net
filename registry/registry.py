@@ -77,14 +77,15 @@ def get_env(execution_key=COMMANDLINE_EXECUTION_KEY):
     return execution_registry.get_registered_env(execution_key)
 
 
-def get_env_attr(key, execution_key=COMMANDLINE_EXECUTION_KEY):
+def get_env_attr(key, execution_key=COMMANDLINE_EXECUTION_KEY,
+                 default_value=None):
     """
     A convenience function, since this will be
     used often.
     Returns None by default if env is not registered in any key
     """
-    return execution_registry.get_registered_env(execution_key).get_attr(key,
-                                                                         None)
+    return execution_registry.get_registered_env(execution_key)\
+        .get_attr(key, default=default_value)
 
 
 def set_env_attr(key, val, execution_key=COMMANDLINE_EXECUTION_KEY):

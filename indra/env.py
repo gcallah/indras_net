@@ -11,7 +11,7 @@ from types import FunctionType
 # import logging
 import indra.display_methods as disp
 import registry.registry as regis
-from registry.execution_registry import execution_registry,\
+from registry.execution_registry import execution_registry, \
     EXECUTION_KEY_NAME, COMMANDLINE_EXECUTION_KEY
 from registry.registry import get_prop
 from indra.agent import join, switch, Agent, AgentEncoder
@@ -297,6 +297,8 @@ class Env(Space):
                     regis.register(agent.name, agent,
                                    execution_key=self.execution_key)
                     join(group, agent)
+                if self.random_placing:
+                    self.place_member(agent, None)
             self.womb.clear()
 
     def handle_switches(self):
@@ -312,7 +314,8 @@ class Env(Space):
     def handle_pop_hist(self):
         self.pop_hist.add_period()
         if "pop_hist_func" in self.attrs:
-            self.attrs["pop_hist_func"](self.pop_hist)
+            self.attrs["pop_hist_func"](self.pop_hist,
+                                        execution_key=self.execution_key)
         else:
             for mbr in self.pop_hist.pops:
                 if mbr in self.members and self.is_mbr_comp(mbr):
@@ -355,7 +358,8 @@ class Env(Space):
         census_func overrides the default behavior.
         """
         if CENSUS_FUNC in self.attrs:
-            return self.attrs[CENSUS_FUNC](self)
+            return self.attrs[CENSUS_FUNC](self,
+                                           execution_key=self.execution_key)
         else:
             SEP_STR = "==================\n"
             census_str = ("\nTotal census for period "
