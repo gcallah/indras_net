@@ -8,6 +8,8 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import RED, BLUE
 from indra.env import Env
+from registry.execution_registry import COMMANDLINE_EXECUTION_KEY, \
+    EXECUTION_KEY_NAME, check_and_get_execution_key_from_args
 from registry.registry import get_env, get_prop
 from registry.registry import run_notice
 from indra.utils import init_props
@@ -76,26 +78,31 @@ def seg_agent_action(agent, **kwargs):
     The whole idea here is to count those in other group
     and those in my group, and get the ratio.
     """
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
     agent_group = agent.group_name()
-    ratio_num = neighbor_ratio(agent, lambda agent:
-                               agent.group_name() == agent_group,
-                               size=agent['hood_size'])
+    ratio_num = neighbor_ratio(agent,
+                               lambda agent: agent.group_name() == agent_group,
+                               size=agent['hood_size'],
+                               execution_key=execution_key)
     if DEBUG2:
         print("ratio test" + str(ratio_num))
     return env_favorable(ratio_num, agent[TOLERANCE])
 
 
-def create_resident(name, i, group=BLUE):
+def create_resident(name, i, group=BLUE, **kwargs):
     """
     Creates agent of specified color type
     """
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
     if group == BLUE:
         grp_idx = BLUE_GRP_IDX
-        mean_tol = get_prop('mean_tol', DEF_TOLERANCE)
+        mean_tol = get_prop('mean_tol', DEF_TOLERANCE,
+                            execution_key=execution_key)
     else:
         grp_idx = RED_GRP_IDX
-        mean_tol = -get_prop('mean_tol', DEF_TOLERANCE)
-    dev = get_prop('deviation', DEF_SIGMA)
+        mean_tol = -get_prop('mean_tol', DEF_TOLERANCE,
+                             execution_key=execution_key)
+    dev = get_prop('deviation', DEF_SIGMA, execution_key=execution_key)
     this_tolerance = get_tolerance(mean_tol,
                                    dev)
     return Agent(name + str(i),
@@ -104,8 +111,9 @@ def create_resident(name, i, group=BLUE):
                         GRP_INDEX: grp_idx, "hood_changed": True,
                         "just_moved": False,
                         "hood_size": get_prop('hood_size',
-                                              DEF_HOOD_SIZE)
-                        }, )
+                                              DEF_HOOD_SIZE,
+                                              execution_key=execution_key)
+                        }, execution_key=execution_key)
 
 
 def set_up(props=None):
@@ -113,20 +121,27 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     init_props(MODEL_NAME, props)
+    execution_key = int(props[EXECUTION_KEY_NAME].val) \
+        if props is not None else COMMANDLINE_EXECUTION_KEY
     blue_agents = Composite(group_names[BLUE_GRP_IDX],
                             {"color": BLUE},
                             member_creator=create_resident,
                             num_members=get_prop('num_blue',
-                                                 NUM_BLUE),
-                            group=BLUE)
+                                                 NUM_BLUE,
+                                                 execution_key=execution_key),
+                            group=BLUE, execution_key=execution_key)
     red_agents = Composite(group_names[RED_GRP_IDX],
                            {"color": RED},
                            member_creator=create_resident,
-                           num_members=get_prop('num_red', NUM_RED),
-                           group=RED)
+                           num_members=get_prop('num_red', NUM_RED,
+                                                execution_key=execution_key),
+                           group=RED, execution_key=execution_key)
     city = Env(MODEL_NAME, members=[blue_agents, red_agents],
-               height=get_prop('grid_height', DEF_CITY_DIM),
-               width=get_prop('grid_width', DEF_CITY_DIM))
+               height=get_prop('grid_height', DEF_CITY_DIM,
+                               execution_key=execution_key),
+               width=get_prop('grid_width', DEF_CITY_DIM,
+                              execution_key=execution_key),
+               execution_key=execution_key)
     city.exclude_menu_item("line_graph")
 
 

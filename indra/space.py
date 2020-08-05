@@ -106,9 +106,14 @@ def exists_neighbor(agent, pred=None, exclude_self=True, size=1,
                          region_type=region_type)
 
 
-def neighbor_ratio(agent, pred_one, pred_two=None, size=1, region_type=None):
-    return get_env().neighbor_ratio(agent, pred_one, pred_two=pred_two,
-                                    size=size, region_type=region_type)
+def neighbor_ratio(agent, pred_one, pred_two=None, size=1, region_type=None,
+                   **kwargs):
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    return get_env(execution_key=execution_key) \
+        .neighbor_ratio(agent, pred_one,
+                        pred_two=pred_two,
+                        size=size,
+                        region_type=region_type)
 
 
 def degrees_between(x_dif, y_dif):
