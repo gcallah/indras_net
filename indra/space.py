@@ -10,7 +10,7 @@ from indra.agent import is_composite, AgentEncoder, X, Y
 from indra.composite import Composite
 from registry.registry import register, get_registration, get_group, get_env
 from registry.execution_registry import EXECUTION_KEY_NAME, \
-    COMMANDLINE_EXECUTION_KEY
+    COMMANDLINE_EXECUTION_KEY, check_and_get_execution_key_from_args
 from indra.user import user_debug, user_log, user_log_warn
 
 DEF_WIDTH = 10
@@ -24,7 +24,7 @@ DEF_MAX_MOVE = 2
 DEBUG = False
 DEBUG2 = False
 
-FAR_AWAY = 100000000   # Just some very big number!
+FAR_AWAY = 100000000  # Just some very big number!
 
 region_dict = {}
 
@@ -96,11 +96,14 @@ def get_xy_from_str(coord_str):
 
 
 def exists_neighbor(agent, pred=None, exclude_self=True, size=1,
-                    region_type=None):
-    return get_env().exists_neighbor(agent, pred=pred,
-                                     exclude_self=exclude_self,
-                                     size=size,
-                                     region_type=region_type)
+                    region_type=None, **kwargs):
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    return get_env(execution_key=execution_key) \
+        .exists_neighbor(agent,
+                         pred=pred,
+                         exclude_self=exclude_self,
+                         size=size,
+                         region_type=region_type)
 
 
 def neighbor_ratio(agent, pred_one, pred_two=None, size=1, region_type=None):

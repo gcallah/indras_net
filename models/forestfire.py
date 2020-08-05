@@ -9,7 +9,8 @@ from indra.space import exists_neighbor
 from indra.display_methods import RED, GREEN, BLACK
 from indra.display_methods import SPRINGGREEN, TOMATO, TREE
 from indra.env import Env
-from registry.execution_registry import COMMANDLINE_EXECUTION_KEY
+from registry.execution_registry import COMMANDLINE_EXECUTION_KEY, \
+    EXECUTION_KEY_NAME, check_and_get_execution_key_from_args
 from registry.registry import get_env, get_prop, set_env_attr, get_env_attr
 from registry.registry import user_log_err, run_notice, user_log_notif
 from indra.utils import init_props
@@ -71,9 +72,11 @@ def tree_action(agent, **kwargs):
     """
     This is what trees do each turn in the forest.
     """
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
     old_state = agent["state"]
     if is_healthy(agent):
-        if exists_neighbor(agent, pred=is_on_fire):
+        if exists_neighbor(agent, pred=is_on_fire,
+                           execution_key=execution_key):
             if DEBUG2:
                 user_log_notif("Setting nearby tree on fire!")
             agent["state"] = NF
@@ -81,16 +84,18 @@ def tree_action(agent, **kwargs):
     if old_state == agent["state"]:
         # we gotta do these str/int shenanigans with state cause
         # JSON only allows strings as dict keys
-        agent["state"] = str(prob_state_trans(int(old_state),
-                                              get_env_attr(TRANS_TABLE)))
+        agent["state"] = \
+            str(prob_state_trans(int(old_state),
+                                 get_env_attr(TRANS_TABLE,
+                                              execution_key=execution_key)))
         if DEBUG2:
             if agent["state"] == NF:
                 user_log_notif("Tree spontaneously catching fire.")
 
     if old_state != agent["state"]:
         # if we entered a new state, then...
-        env = get_env()
-        group_map = env.get_attr(GROUP_MAP)
+        env = get_env(execution_key=execution_key)
+        group_map = get_env_attr(GROUP_MAP, execution_key=execution_key)
         if group_map is None:
             user_log_err("group_map is None!")
             return True
@@ -101,16 +106,17 @@ def tree_action(agent, **kwargs):
     return True
 
 
-def plant_tree(name, i, state=HE):
+def plant_tree(name, i, state=HE, **kwargs):
     """
     Plant a new tree!
     By default, they start out healthy.
     """
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
     name = TREE_PREFIX
     return Agent(name + str(i),
                  action=tree_action,
                  attrs={"state": state,
-                        "save_neighbors": True})
+                        "save_neighbors": True}, execution_key=execution_key)
 
 
 def set_env_attrs(execution_key=COMMANDLINE_EXECUTION_KEY):
@@ -133,27 +139,37 @@ def set_up(props=None):
     """
     init_props(MODEL_NAME, props)
 
-    forest_height = get_prop('grid_height', DEF_DIM)
-    forest_width = get_prop('grid_width', DEF_DIM)
-    new_fire = get_prop('new_fire', DEF_NEW_FIRE)
+    execution_key = int(props[EXECUTION_KEY_NAME].val) \
+        if props is not None else COMMANDLINE_EXECUTION_KEY
+
+    forest_height = get_prop('grid_height', DEF_DIM,
+                             execution_key=execution_key)
+    forest_width = get_prop('grid_width', DEF_DIM, execution_key=execution_key)
+    new_fire = get_prop('new_fire', DEF_NEW_FIRE, execution_key=execution_key)
     set_trans(state_trans, HE, NF, float(new_fire), HE)
-    forest_density = get_prop('density', DEF_DENSITY)
+    forest_density = get_prop('density', DEF_DENSITY,
+                              execution_key=execution_key)
     tree_cnt = int(forest_height * forest_width * forest_density)
     groups = []
     groups.append(Composite(HEALTHY, {"color": GREEN, "marker": TREE},
-                  member_creator=plant_tree,
-                  num_members=tree_cnt))
-    groups.append(Composite(NEW_FIRE, {"color": TOMATO, "marker": TREE}))
-    groups.append(Composite(ON_FIRE, {"color": RED, "marker": TREE}))
-    groups.append(Composite(BURNED_OUT, {"color": BLACK, "marker": TREE}))
-    groups.append(Composite(NEW_GROWTH, {"color": SPRINGGREEN, "marker":
-                                         TREE}))
+                            member_creator=plant_tree,
+                            num_members=tree_cnt, execution_key=execution_key))
+    groups.append(Composite(NEW_FIRE, {"color": TOMATO, "marker": TREE},
+                            execution_key=execution_key))
+    groups.append(Composite(ON_FIRE, {"color": RED, "marker": TREE},
+                            execution_key=execution_key))
+    groups.append(Composite(BURNED_OUT, {"color": BLACK, "marker": TREE},
+                            execution_key=execution_key))
+    groups \
+        .append(Composite(NEW_GROWTH, {"color": SPRINGGREEN, "marker": TREE},
+                          execution_key=execution_key))
 
-    Env(MODEL_NAME, height=forest_height, width=forest_width, members=groups)
+    Env(MODEL_NAME, height=forest_height, width=forest_width, members=groups,
+        execution_key=execution_key)
     # the next set should just be done once:
-    set_env_attr(TRANS_TABLE, state_trans)
+    set_env_attr(TRANS_TABLE, state_trans, execution_key=execution_key)
     # whereas these settings must be re-done every API re-load:
-    set_env_attrs()
+    set_env_attrs(execution_key=execution_key)
 
 
 def main():
