@@ -118,11 +118,10 @@ class ExecutionRegistry(object):
 
 def is_model_ported_to_new_registry(model_id=None, model_name=None):
     if model_id is not None:
-        return model_id not in [6, 7, 8, 9,
+        return model_id not in [7, 8, 9,
                                 10, 11]
     elif model_name is not None:
-        return model_name not in ["wolfsheep",
-                                  "forestfire", "segregation", "complementary",
+        return model_name not in ["forestfire", "segregation", "complementary",
                                   "money", "epidemic"]
     return False
 
@@ -132,5 +131,6 @@ def check_and_get_execution_key_from_args(kwargs):
     if EXECUTION_KEY_NAME in kwargs:
         execution_key = kwargs[EXECUTION_KEY_NAME]
     return execution_key
+
 
 execution_registry = ExecutionRegistry()
