@@ -47,26 +47,26 @@ natures_goods = {
             "incr": 0, DUR_DECR: 0.8, "divisibility": 1.0,
             "trade_count": 0, "is_allocated": False, },
     "cheese": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
-               "incr": 0, DUR_DECR: 0.8, "divisibility": 1.0,
+               "incr": 0, DUR_DECR: 0.8, "divisibility": 0.4,
                "trade_count": 0, "is_allocated": False, },
     "gold": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
-             "incr": 0, DUR_DECR: 1.0, "divisibility": 0.1,
+             "incr": 0, DUR_DECR: 1.0, "divisibility": 0.05,
              "trade_count": 0, "is_allocated": False, },
     "banana": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
-               "incr": 0, DUR_DECR: 0.2, "divisibility": 1.0,
+               "incr": 0, DUR_DECR: 0.2, "divisibility": 0.2,
                "trade_count": 0, "is_allocated": False, },
-    # "diamond": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
-    #             "incr": 0, DUR_DECR: 1.0, "divisibility": 1.0,
-    #             "trade_count": 0, "is_allocated": False, },
-    # "avocado": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
-    #             "incr": 0, DUR_DECR: 0.3, "divisibility": 1.0,
-    #             "trade_count": 0, "is_allocated": False, },
-    # "stone": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
-    #           "incr": 0, DUR_DECR: 1.0, "divisibility": 1.0,
-    #           "trade_count": 0, "is_allocated": False, },
-    # "milk": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
-    #          "incr": 0, DUR_DECR: 0.2, "divisibility": 1.0,
-    #          "trade_count": 0, "is_allocated": False, },
+    "diamond": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
+                "incr": 0, DUR_DECR: 1.0, "divisibility": 0.8,
+                "trade_count": 0, "is_allocated": False, },
+    "avocado": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
+                "incr": 0, DUR_DECR: 0.3, "divisibility": 0.5,
+                "trade_count": 0, "is_allocated": False, },
+    "stone": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
+              "incr": 0, DUR_DECR: 1.0, "divisibility": 1.0,
+              "trade_count": 0, "is_allocated": False, },
+    "milk": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
+             "incr": 0, DUR_DECR: 0.2, "divisibility": 0.15,
+             "trade_count": 0, "is_allocated": False, },
 }
 
 
@@ -135,8 +135,8 @@ def trade_report(env, execution_key=COMMANDLINE_EXECUTION_KEY):
         eq_count += 1
     else:
         eq_count = 0
-    # number '4' may be changed
-    if eq_count >= 4:
+    # number '10' may be changed
+    if eq_count >= 10:
         print("No trade between agents for", eq_count,
               "periods. Equilibrium may have been reached.")
     prev_trade = trade_count_dic
@@ -153,7 +153,6 @@ def money_trader_action(agent, **kwargs):
         natures_goods[good][TRADE_COUNT] += agent["goods"][good][TRADE_COUNT]
         # return agent's trade_count to 0
         agent["goods"][good][TRADE_COUNT] = 0
-        print(good, natures_goods[good][TRADE_COUNT])
     return MOVE
 
 
