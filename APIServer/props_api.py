@@ -13,7 +13,10 @@ ENV_INSTANCE = 0
 
 def get_props_for_current_execution(model_id, indra_dir):
     try:
-        execution_key = execution_registry.create_new_execution_registry()
+        if not is_model_ported_to_new_registry(model_id):
+            execution_key = COMMANDLINE_EXECUTION_KEY
+        else:
+            execution_key = execution_registry.create_new_execution_registry()
         model = get_model(model_id, indra_dir=indra_dir)
         with open(indra_dir + "/" + model["props"]) as file:
             props = json.loads(file.read())

@@ -7,15 +7,31 @@ import CardWrapper from './CardWrapper';
 
 function ScatterPlot(props) {
   const { loadingData, envFile, id } = props;
+  const pointStyles = [
+    'circle',
+    'cross',
+    'crossRot',
+    'dash',
+    'line',
+    'rect',
+    'rectRounded',
+    'rectRot',
+    'star',
+    'triangle',
+  ];
   if (loadingData) {
     const env = envFile.members;
     const data = [];
+    const dataset = {
+      pointStyle: 'circle',
+    };
     Object.keys(env).forEach((group, iGroup) => {
       data.push({
         name: env[group].name,
         color: env[group].attrs.color,
         data: [],
       });
+      dataset.pointStyle = pointStyles.includes(env[group].attrs.marker) ? env[group].attrs.marker : 'circle';
       Object.keys(env[group].members).forEach((member) => {
         if (env[group].members[member].pos !== null) {
           data[iGroup].data.push(
@@ -26,7 +42,7 @@ function ScatterPlot(props) {
     });
     return (
       <CardWrapper title="Scatter Plot">
-        <ScatterChart data={data} width="600px" height="600px" />
+        <ScatterChart dataset={dataset} data={data} width="600px" height="600px" />
       </CardWrapper>
     );
   }

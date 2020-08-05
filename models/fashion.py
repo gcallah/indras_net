@@ -12,6 +12,8 @@ from indra.agent import ratio_to_sin
 from indra.composite import Composite
 from indra.display_methods import NAVY, DARKRED, RED, BLUE
 from indra.env import Env
+from registry.execution_registry import COMMANDLINE_EXECUTION_KEY, \
+    EXECUTION_KEY_NAME, check_and_get_execution_key_from_args
 from registry.registry import get_env, get_group, get_prop
 from registry.registry import run_notice, user_log_notif
 from indra.space import in_hood
@@ -99,25 +101,28 @@ def env_unfavorable(my_color, my_pref, op1, op2):
 
 
 def follower_action(agent, **kwargs):
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
     return common_action(agent,
-                         get_group(RED_TSETTERS),
-                         get_group(BLUE_TSETTERS),
-                         lt, gt)
+                         get_group(RED_TSETTERS, execution_key=execution_key),
+                         get_group(BLUE_TSETTERS, execution_key=execution_key),
+                         lt, gt, **kwargs)
 
 
 def tsetter_action(agent, **kwargs):
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
     return common_action(agent,
-                         get_group(RED_FOLLOWERS),
-                         get_group(BLUE_FOLLOWERS),
+                         get_group(RED_FOLLOWERS, execution_key=execution_key),
+                         get_group(BLUE_FOLLOWERS,
+                                   execution_key=execution_key),
                          gt,
-                         lt)
+                         lt, **kwargs)
 
 
-def common_action(agent, others_red, others_blue, op1, op2):
+def common_action(agent, others_red, others_blue, op1, op2, **kwargs):
     """
     The actions for both followers and trendsetters
     """
-
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
     num_others_red = len(others_red.subset(in_hood, agent, HOOD_SIZE))
     num_others_blue = len(others_blue.subset(in_hood, agent, HOOD_SIZE))
     total_others = num_others_red + num_others_blue
@@ -128,30 +133,32 @@ def common_action(agent, others_red, others_blue, op1, op2):
 
     agent[COLOR_PREF] = new_color_pref(agent[COLOR_PREF], env_color)
     if env_unfavorable(agent[DISPLAY_COLOR], agent[COLOR_PREF], op1, op2):
-        change_color(agent, get_env(), opp_group)
+        change_color(agent, get_env(execution_key=execution_key), opp_group)
         return True
     else:
         return False
 
 
-def create_tsetter(name, i, props=None, color=RED_SIN):
+def create_tsetter(name, i, props=None, color=RED_SIN, **kwargs):
     """
     Create a trendsetter: all RED to start.
     """
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
     return Agent(TSETTER_PRENM + str(i),
                  action=tsetter_action,
                  attrs={COLOR_PREF: color,
-                        DISPLAY_COLOR: color})
+                        DISPLAY_COLOR: color}, execution_key=execution_key)
 
 
-def create_follower(name, i, props=None, color=BLUE_SIN):
+def create_follower(name, i, props=None, color=BLUE_SIN, **kwargs):
     """
     Create a follower: all BLUE to start.
     """
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
     return Agent(FOLLOWER_PRENM + str(i),
                  action=follower_action,
                  attrs={COLOR_PREF: color,
-                        DISPLAY_COLOR: color})
+                        DISPLAY_COLOR: color}, execution_key=execution_key)
 
 
 def set_up(props=None):
@@ -159,21 +166,30 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     init_props(MODEL_NAME, props)
+    execution_key = int(props[EXECUTION_KEY_NAME].val) \
+        if props is not None else COMMANDLINE_EXECUTION_KEY
     groups = []
 
-    groups.append(Composite(BLUE_TSETTERS, {"color": NAVY}))
+    groups.append(
+        Composite(BLUE_TSETTERS, {"color": NAVY}, execution_key=execution_key))
     groups.append(Composite(RED_TSETTERS, {"color": DARKRED},
                             member_creator=create_tsetter,
                             num_members=get_prop('num_tsetters',
-                                                 NUM_TSETTERS)))
+                                                 NUM_TSETTERS,
+                                                 execution_key=execution_key),
+                            execution_key=execution_key))
 
-    groups.append(Composite(RED_FOLLOWERS, {"color": RED}))
+    groups.append(
+        Composite(RED_FOLLOWERS, {"color": RED}, execution_key=execution_key))
     groups.append(Composite(BLUE_FOLLOWERS, {"color": BLUE},
                             member_creator=create_follower,
                             num_members=get_prop('num_followers',
-                                                 NUM_FOLLOWERS)))
+                                                 NUM_FOLLOWERS,
+                                                 execution_key=execution_key),
+                            execution_key=execution_key))
 
-    Env(MODEL_NAME, members=groups, attrs={OPP_GROUP: opp_group})
+    Env(MODEL_NAME, members=groups, attrs={OPP_GROUP: opp_group},
+        execution_key=execution_key)
 
 
 def main():
