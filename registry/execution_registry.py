@@ -118,10 +118,10 @@ class ExecutionRegistry(object):
 
 def is_model_ported_to_new_registry(model_id=None, model_name=None):
     if model_id is not None:
-        return model_id not in [5, 6, 7, 8, 9,
+        return model_id not in [6, 7, 8, 9,
                                 10, 11]
     elif model_name is not None:
-        return model_name not in ["fashion", "wolfsheep",
+        return model_name not in ["wolfsheep",
                                   "forestfire", "segregation", "complementary",
                                   "money", "epidemic"]
     return False
