@@ -145,6 +145,23 @@ def opposing_angle(pos1, pos2):
     return new_angle
 
 
+def get_move_angle(agent, agents_in_range):
+    vector_x = 0
+    vector_y = 0
+    for curr_agent in agents_in_range:
+        if(curr_agent.get_x() != agent.get_x()):
+            if ((curr_agent.get_x() - agent.get_x()) < 0):
+                vector_x -= 1 / ((curr_agent.get_x() - agent.get_x()) ** 2)
+            else:
+                vector_x += 1 / ((curr_agent.get_x() - agent.get_x()) ** 2)
+        if(curr_agent.get_y() != agent.get_y()):
+            if ((curr_agent.get_y() - agent.get_y()) < 0):
+                vector_y -= 1 / ((curr_agent.get_y() - agent.get_y()) ** 2)
+            else:
+                vector_y += 1 / ((curr_agent.get_y() - agent.get_y()) ** 2)
+    return opposing_angle([0, 0], [vector_x, vector_y])
+
+
 class Space(Composite):
     """
     A collection of entities that share a space.

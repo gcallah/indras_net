@@ -14,7 +14,7 @@ from registry.registry import get_env, get_prop, set_env_attr
 from registry.registry import user_log_err, run_notice, user_log_notif
 from indra.utils import init_props
 from indra.space import CircularRegion, exists_neighbor
-from indra.space import distance, opposing_angle
+from indra.space import distance, get_move_angle
 from random import random
 from math import log
 
@@ -74,23 +74,6 @@ STATE_TRANS = [
 
 GROUP_MAP = "group_map"
 STATE = "state"
-
-
-def get_move_angle(agent, agents_in_range):
-    vector_x = 0
-    vector_y = 0
-    for curr_agent in agents_in_range:
-        if(curr_agent.get_x() != agent.get_x()):
-            if ((curr_agent.get_x() - agent.get_x()) < 0):
-                vector_x -= 1/((curr_agent.get_x() - agent.get_x()) ** 2)
-            else:
-                vector_x += 1/((curr_agent.get_x() - agent.get_x()) ** 2)
-        if(curr_agent.get_y() != agent.get_y()):
-            if ((curr_agent.get_y() - agent.get_y()) < 0):
-                vector_y -= 1/((curr_agent.get_y() - agent.get_y()) ** 2)
-            else:
-                vector_y += 1/((curr_agent.get_y() - agent.get_y()) ** 2)
-    return opposing_angle([0, 0], [vector_x, vector_y])
 
 
 def is_isolated(agent):
