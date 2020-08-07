@@ -10,7 +10,7 @@ from indra.agent import is_composite, AgentEncoder, X, Y
 from indra.composite import Composite
 from registry.registry import register, get_registration, get_group, get_env
 from registry.execution_registry import EXECUTION_KEY_NAME, \
-    COMMANDLINE_EXECUTION_KEY, check_and_get_execution_key_from_args
+    COMMANDLINE_EXECUTION_KEY, get_exec_key
 from indra.user import user_debug, user_log, user_log_warn
 
 DEF_WIDTH = 10
@@ -97,7 +97,7 @@ def get_xy_from_str(coord_str):
 
 def exists_neighbor(agent, pred=None, exclude_self=True, size=1,
                     region_type=None, **kwargs):
-    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    execution_key = get_exec_key(kwargs=kwargs)
     return get_env(execution_key=execution_key) \
         .exists_neighbor(agent,
                          pred=pred,
@@ -108,7 +108,7 @@ def exists_neighbor(agent, pred=None, exclude_self=True, size=1,
 
 def neighbor_ratio(agent, pred_one, pred_two=None, size=1, region_type=None,
                    **kwargs):
-    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    execution_key = get_exec_key(kwargs=kwargs)
     return get_env(execution_key=execution_key) \
         .neighbor_ratio(agent, pred_one,
                         pred_two=pred_two,
@@ -750,15 +750,19 @@ class Region():
         self._load_agents_if_necc(exclude_self=exclude_self)
         return len(self._apply_pred_if_necc(pred))
 
-    def exists_neighbor(self, exclude_self=True, pred=None):
-        self._load_agents_if_necc(exclude_self=exclude_self)
+    def get_neighbor(self, no_self=True, pred=None):
+        self._load_agents_if_necc(exclude_self=no_self)
         if pred is None:
-            return len(self.my_agents) > 0
+            if len(self.my_agents) > 0:
+                return self.my_agents[0]
         else:
             for agent in self.my_agents:
                 if pred(agent):
-                    return True
-        return False
+                    return agent
+        return None
+
+    def exists_neighbor(self, exclude_self=True, pred=None):
+        return self.get_neighbor(no_self=exclude_self, pred=pred) is not None
 
     def get_ratio(self, pred_one, pred_two=None):
         if pred_one is None:

@@ -126,6 +126,10 @@ def is_model_ported_to_new_registry(model_id=None, model_name=None):
     return False
 
 
+def get_exec_key(kwargs):
+    return check_and_get_execution_key_from_args(kwargs)
+
+
 def check_and_get_execution_key_from_args(kwargs):
     execution_key = COMMANDLINE_EXECUTION_KEY
     if EXECUTION_KEY_NAME in kwargs:
