@@ -604,7 +604,7 @@ class Space(Composite):
                                 size=size,
                                 agents_move=not agent.get("save_neighbors",
                                                           False))
-        return region.get_neighbor(exclude_self=exclude_self, pred=pred)
+        return region.get_neighbor(no_self=exclude_self, pred=pred)
 
     def neighbor_ratio(self, agent, pred_one, pred_two=None, size=1,
                        region_type=None):

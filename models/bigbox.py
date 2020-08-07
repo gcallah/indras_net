@@ -1,28 +1,29 @@
 """
 Big box model for simulating the behaviors of consumers.
 """
-
 import random
-
 from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import BLACK, BLUE, GRAY, GREEN, RED, TAN, YELLOW
 from indra.env import Env
-from registry.registry import get_env, get_prop, get_group
-from indra.space import DEF_HEIGHT, DEF_WIDTH
+from registry.registry import get_env, get_prop, get_group, get_env_attr
+from indra.space import DEF_HEIGHT, DEF_WIDTH, get_neighbor
 from indra.utils import init_props
 
 MODEL_NAME = "bigbox"
 NUM_OF_CONSUMERS = 50
 NUM_OF_MP = 8
-DEBUG = False
+DEBUG = True
 
 CONSUMER_INDX = 0
 BB_INDX = 1
 
 HOOD_SIZE = 2
+hood_size = 2
 MP_PREF = 0.1
+mp_pref = 0.1
 PERIOD = 7
+period = 7
 STANDARD = 200
 MULTIPLIER = 10
 
@@ -31,6 +32,7 @@ CAPITAL_INDX = 1
 COLOR_INDX = 2
 
 bb_capital = 2000
+item_needed = None
 
 # The data below creates store types with default values.
 # "Store type":
@@ -42,15 +44,18 @@ mp_stores = {"Bookshop": [65, 90, TAN],
              "Restaurant": [60, 100, YELLOW]}
 
 
-def sells_good(store, consumer):
+def sells_good(store):
     """
     Check if the store sells what the consumer wants.
     If BB return True else return whether seller sells that type.
+    We are going to use a global for item_needed: a kludge until
+    we come up with something better.
     """
+    global item_needed
     if store.primary_group() == get_group(BB_INDX):
         return True
     else:
-        if consumer["item needed"] in store.name:
+        if store.is_active() and item_needed in store.name:
             return True
         return False
 
@@ -67,6 +72,7 @@ def create_consumer(name, i, props=None):
     """
     Create consumers
     """
+    print("create consumer called")
     spending_power = random.randint(50, 70)
     consumer_books = {"spending power": spending_power,
                       "last util": 0.0,
@@ -89,14 +95,12 @@ def create_bb(name):
     """
     Create a big box store.
     """
-    box = get_env()
-
     bb_book = {"expense": 150,
-               "capital": box.get_attr(bb_capital)}
+               "capital": get_env_attr(bb_capital)}
     return Agent(name=name, attrs=bb_book, action=bb_action)
 
 
-def bb_action(bb):
+def bb_action(bb, **kwargs):
     """
     Deduct expenses from the capital of big box and
     check if big box goes out of business.
@@ -108,38 +112,27 @@ def get_util(store):
     """
     Get utility depending on the store type.
     """
-    # box = get_env()
     if store.primary_group() == get_group(BB_INDX):
         return calc_util(store)
     else:
-        # return calc_util(store) + box.get_attr(mp_pref)
-        return calc_util(store) + None
+        return calc_util(store) + get_env_attr(mp_pref)
 
 
-def consumer_action(consumer):
+def consumer_action(consumer, **kwargs):
     """
     Check shops near consumer and
     consumer decide where to shop at.
     """
-    # box = get_env()
-    nearby_neighbors = get_env().get_moore_hood(
-        # consumer, hood_size=box.get_attr(hood_size))
-        consumer, hood_size=None)
-    store_to_go = None
-    max_util = 0.0
-    for neighbors in nearby_neighbors:
-        neighbor = nearby_neighbors[neighbors]
-        if (neighbor.is_active() and (neighbor.primary_group()
-                                      != get_group(CONSUMER_INDX))):
-            if sells_good(neighbor, consumer):
-                curr_store_util = get_util(neighbor)
-                if curr_store_util > max_util:
-                    max_util = curr_store_util
-                    store_to_go = neighbor
-    if store_to_go is not None:
-        transaction(store_to_go, consumer)
+    print("consumer action called")
+    global item_needed
+    item_needed = consumer["item needed"]
+    shop_at = get_neighbor(consumer, pred=sells_good)
+    if shop_at is not None:
+        # needs to be revisited
+        # max_util = 0.0
+        transaction(shop_at, consumer)
         if DEBUG:
-            print("     someone shopped at ", store_to_go)
+            print("     someone shopped at ",   shop_at)
     consumer["item needed"] = get_rand_good_type()
     return False
 
@@ -159,7 +152,7 @@ def calc_util(stores):
     return random.random()
 
 
-def mp_action(mp):
+def mp_action(mp, **kwargs):
     """
     Deduct expenses from mom and pop stores and
     check if mom and pop store goes out of business.
@@ -168,31 +161,31 @@ def mp_action(mp):
     return common_action(mp)
 
 
-def common_action(obj):
+def common_action(business):
     """
     Common action to deduct expenses and
     check whether the entity goes out of business
     """
-    obj["capital"] -= obj["expense"]
+    print(business, "has expense of ", business["expense"])
+    business["capital"] -= business["expense"]
     if DEBUG:
-        print("       ", obj, "has a capital of ", obj["capital"])
-    if obj["capital"] <= 0:
-        obj.die()
+        print("       ", business, "has a capital of ", business["capital"])
+    if business["capital"] <= 0:
+        business.die()
         if DEBUG:
-            print("       ", obj, "is out of business.")
+            print("       ", business, "is out of business.")
     return True
 
 
-def town_action(town):
+def town_action(town, **kwargs):
     """
     check the period and decide when to add
     the big box store
     """
     box = get_env()
-    # if town.get_periods() == box.get_attr(period):
-    if town.get_periods() == 1:
+    if town.get_periods() == box.get_attr(period):
         new_bb = create_bb("Big Box")
-        box.attrs["bb_group"] += 1
+        box.attrs["bb_group"] += new_bb
         town.place_member(new_bb)
 
 
@@ -217,8 +210,7 @@ def set_up(props=None):
                                member_creator=create_consumer,
                                num_members=num_consumers)
     bb_group = Composite("Big box", {"color": BLUE})
-    # groups = [consumer_group, bb_group]
-    groups = []
+    groups = [consumer_group, bb_group]
     for stores in range(0, len(mp_stores)):
         store_name = list(mp_stores.keys())[stores]
         groups.append(Composite(store_name,
@@ -237,7 +229,6 @@ def set_up(props=None):
     box.set_attr("mp_pref", mp_pref)
     box.set_attr("period", period)
     box.set_attr("bb_capital", bb_capital)
-    return (groups)
 
 
 def main():
