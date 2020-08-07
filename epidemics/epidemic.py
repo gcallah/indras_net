@@ -9,7 +9,8 @@ from indra.display_methods import RED, GREEN, BLACK
 from indra.display_methods import TOMATO
 from indra.display_methods import BLUE, YELLOW
 from indra.env import Env
-from registry.execution_registry import COMMANDLINE_EXECUTION_KEY
+from registry.execution_registry import COMMANDLINE_EXECUTION_KEY, \
+    EXECUTION_KEY_NAME, check_and_get_execution_key_from_args
 from registry.registry import get_env, get_prop, set_env_attr
 from registry.registry import user_log_err, run_notice, user_log_notif
 from indra.utils import init_props
@@ -60,28 +61,29 @@ CN = "3"
 DE = "4"
 IM = "5"
 
-
 STATE_TRANS = [
     # HE    EX   IN   CN   DE    IM
-    [1.0, 0.0, 0.0, 0.0, 0.0,  0.0],  # HE
-    [DEF_EX_HE_TRANS, 0.0,  DEF_INFEC, 0.0, 0.0,  0.0],  # EX
-    [0.0,  0.0,  0.0, 1.0, 0.0,  0.0],  # IN
-    [0.0,  0.0,  0.0, DEF_CON_PROB, DEF_DEATH_RATE, DEF_SURV_RATE],  # CN
-    [0.0,  0.0,  0.0, 0.0, 1.0,  0.0],  # DEi
-    [DEF_IM_HE_TRANS,  0.0,  0.0, 0.0, 0.0,  DEF_IM_STAY],  # IM
+    [1.0, 0.0, 0.0, 0.0, 0.0, 0.0],  # HE
+    [DEF_EX_HE_TRANS, 0.0, DEF_INFEC, 0.0, 0.0, 0.0],  # EX
+    [0.0, 0.0, 0.0, 1.0, 0.0, 0.0],  # IN
+    [0.0, 0.0, 0.0, DEF_CON_PROB, DEF_DEATH_RATE, DEF_SURV_RATE],  # CN
+    [0.0, 0.0, 0.0, 0.0, 1.0, 0.0],  # DEi
+    [DEF_IM_HE_TRANS, 0.0, 0.0, 0.0, 0.0, DEF_IM_STAY],  # IM
 ]
-
 
 GROUP_MAP = "group_map"
 STATE = "state"
 
 
-def is_isolated(agent):
+def is_isolated(agent, **kwargs):
     '''
     Checks if agent is maintaining distancing.
     '''
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
     return not exists_neighbor(agent,
-                               size=get_prop('distancing', DEF_DISTANCING))
+                               size=get_prop('distancing', DEF_DISTANCING,
+                                             execution_key=execution_key),
+                               execution_key=execution_key)
 
 
 def is_healthy(agent, *args):
@@ -107,22 +109,24 @@ def is_dead(agent, *args):
 
 def epidemic_report(env, execution_key=COMMANDLINE_EXECUTION_KEY):
     # taking data for each period using pop_hist
-    pop_hist = get_env().pop_hist
+    pop_hist = get_env(execution_key=execution_key).pop_hist
 
     periods = len(pop_hist[INFECTED])
     print("period: " + str(periods))
-    total_deaths = pop_hist[DEAD][periods-1]
+    total_deaths = pop_hist[DEAD][periods - 1]
     curr_deaths = total_deaths - pop_hist[DEAD][periods - 2]
-    curr_infected = pop_hist[INFECTED][periods-1] - \
-        pop_hist[INFECTED][periods - 2]
+    curr_infected = pop_hist[INFECTED][periods - 1] - pop_hist[INFECTED][
+        periods - 2]
     curr_infected = max(0, curr_infected)
 
-    if(periods > 2):
-        a = max(1, (pop_hist[INFECTED][periods-1] +
-                    get_env().get_attr("total_cases")) /
-                max(1, get_env().get_attr("total_cases")))
-        R0_old = get_env().get_attr("R0")
-        if(a != 1 and a != 2):
+    if periods > 2:
+        a = max(1, (pop_hist[INFECTED][periods - 1] +
+                    get_env(execution_key=execution_key).get_attr(
+                        "total_cases")) /
+                max(1, get_env(execution_key=execution_key).get_attr(
+                    "total_cases")))
+        R0_old = get_env(execution_key=execution_key).get_attr("R0")
+        if (a != 1 and a != 2):
             R0 = R0_old - ((a - 2 + a ** (-R0_old)) / (log(a) * (a - 2)))
         else:
             R0 = R0_old
@@ -130,16 +134,18 @@ def epidemic_report(env, execution_key=COMMANDLINE_EXECUTION_KEY):
         R0 = 0
     if R0 < 0:
         R0 = R0_old
-    get_env().set_attr("R0", R0)
-    result = "Current period: " + str(periods-1) + "\n"
+    get_env(execution_key=execution_key).set_attr("R0", R0)
+    result = "Current period: " + str(periods - 1) + "\n"
     result += "New cases: " + str(curr_infected) + "\n"
 
     if curr_infected > 0:
-        cases = get_env().get_attr("total_cases")
-        get_env().set_attr("total_cases", cases + curr_infected)
+        cases = get_env(execution_key=execution_key).get_attr("total_cases")
+        get_env(execution_key=execution_key).set_attr("total_cases",
+                                                      cases + curr_infected)
 
     result += "Total cases: " + \
-        str(get_env().get_attr("total_cases")) + "\n"
+              str(get_env(execution_key=execution_key).get_attr(
+                  "total_cases")) + "\n"
     result += "New deaths: " + str(curr_deaths) + "\n"
     result += "Total deaths: " + str(total_deaths) + "\n"
     result += "R0 value: " + str(R0) + "\n"
@@ -147,13 +153,15 @@ def epidemic_report(env, execution_key=COMMANDLINE_EXECUTION_KEY):
     return result
 
 
-def social_distancing(agent):
+def social_distancing(agent, **kwargs):
     """
     This function sets a new angle for the agent's movement.
     """
-    curr_region = CircularRegion(get_env(),
-                                 agent.get_pos(), DEF_PERSON_MOVE*2)
-    agents_in_range = curr_region.get_agents(get_env(), pred=None)
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    curr_region = CircularRegion(get_env(execution_key=execution_key),
+                                 agent.get_pos(), DEF_PERSON_MOVE * 2)
+    agents_in_range = curr_region.get_agents(
+        get_env(execution_key=execution_key), pred=None)
     new_angle = get_move_angle(agent, agents_in_range)
     agent["angle"] = new_angle
 
@@ -162,31 +170,35 @@ def person_action(agent, **kwargs):
     """
     This is what people do each turn in the epidemic.
     """
-    infec_dist = get_prop('infection_distance', DEF_INFEC_DIST)
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    infec_dist = get_prop('infection_distance', DEF_INFEC_DIST,
+                          execution_key=execution_key)
     old_state = agent[STATE]
     if is_healthy(agent):
         distance_mod = 1
         if agent["is_wearing_mask"]:
             distance_mod = 0.5
         if exists_neighbor(agent, pred=is_contagious,
-                           size=int(infec_dist * distance_mod)):
+                           size=int(infec_dist * distance_mod),
+                           execution_key=execution_key):
             if DEBUG2:
                 user_log_notif("Exposing nearby people!")
             agent[STATE] = EX
         else:
-            for curr_group in list(get_env().get_members().items()):
-                for curr_agent_tuple in list(curr_group[1].get_members()
-                                             .items()):
+            for curr_group in list(get_env(
+                    execution_key=execution_key).get_members().items()):
+                for curr_agent_tuple in \
+                        list(curr_group[1].get_members().items()):
                     curr_agent = curr_agent_tuple[1]
                     curr_distance = (distance(curr_agent, agent) -
                                      DEF_INFEC_DIST)
                     if (curr_distance > infec_dist and
-                       curr_distance <= (infec_dist * 2)):
-                        inverse_square_val = ((1/(curr_distance ** 2)) *
+                            curr_distance <= (infec_dist * 2)):
+                        inverse_square_val = ((1 / (curr_distance ** 2)) *
                                               distance_mod)
                         if inverse_square_val > 0:
                             r = random()
-                            if inverse_square_val/100 > r:
+                            if inverse_square_val / 100 > r:
                                 agent[STATE] = EX
 
     # if we didn't catch disease above, do probabilistic transition:
@@ -199,37 +211,42 @@ def person_action(agent, **kwargs):
 
     if old_state != agent[STATE]:
         # if we entered a new state, then...
-        group_map = get_env().get_attr(GROUP_MAP)
+        group_map = get_env(execution_key=execution_key).get_attr(GROUP_MAP)
         if group_map is None:
             user_log_err("group_map is None!")
             return DONT_MOVE
         agent.has_acted = True
-        get_env().add_switch(agent,
-                             group_map[old_state],
-                             group_map[agent[STATE]])
+        get_env(execution_key=execution_key).add_switch(agent,
+                                                        group_map[old_state],
+                                                        group_map[
+                                                            agent[STATE]])
 
     if is_dead(agent):
         return DONT_MOVE
 
-    if not is_isolated(agent):
-        social_distancing(agent)
+    if not is_isolated(agent, **kwargs):
+        social_distancing(agent, **kwargs)
     return MOVE
 
 
-def create_person(name, i, state=HE):
+def create_person(name, i, state=HE, **kwargs):
     """
     Create a new person!
     By default, they start out healthy.
     """
+    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
     mask_chance = random()
     mask_bool = False
-    if mask_chance < get_prop("mask_rate", DEF_MASK_RATE):
+    if mask_chance < get_prop("mask_rate", DEF_MASK_RATE,
+                              execution_key=execution_key):
         mask_bool = True
     person = Agent(name + str(i), action=person_action,
                    attrs={STATE: state, "angle": None,
                           "max_move":
-                          get_prop('person_move', DEF_PERSON_MOVE),
-                          "is_wearing_mask": mask_bool})
+                              get_prop('person_move', DEF_PERSON_MOVE,
+                                       execution_key=execution_key),
+                          "is_wearing_mask": mask_bool},
+                   execution_key=execution_key)
     return person
 
 
@@ -251,22 +268,31 @@ def set_up(props=None):
     """
     init_props(MODEL_NAME, props, model_dir="epidemics")
 
-    city_height = get_prop('grid_height', DEF_DIM)
-    city_width = get_prop('grid_width', DEF_DIM)
-    city_density = get_prop('density', DEF_DENSITY)
-    immune_per = get_prop('immune_per', DEF_IMMUNE_PER)
-    death_rate = get_prop('death_rate', DEF_DEATH_RATE)
-    initial_infected = get_prop('initial_infected', DEF_INFEC)
-    contagious_duration = get_prop('contagious_duration', DEF_CON_DUR)
-    infec = get_prop('infec', DEF_INFEC)
+    execution_key = int(props[EXECUTION_KEY_NAME].val) \
+        if props is not None else COMMANDLINE_EXECUTION_KEY
+
+    city_height = get_prop('grid_height', DEF_DIM, execution_key=execution_key)
+    city_width = get_prop('grid_width', DEF_DIM, execution_key=execution_key)
+    city_density = get_prop('density', DEF_DENSITY,
+                            execution_key=execution_key)
+    immune_per = get_prop('immune_per', DEF_IMMUNE_PER,
+                          execution_key=execution_key)
+    death_rate = get_prop('death_rate', DEF_DEATH_RATE,
+                          execution_key=execution_key)
+    initial_infected = get_prop('initial_infected', DEF_INFEC,
+                                execution_key=execution_key)
+    contagious_duration = get_prop('contagious_duration', DEF_CON_DUR,
+                                   execution_key=execution_key)
+    infec = get_prop('infec', DEF_INFEC, execution_key=execution_key)
     immune_rate = 1 / immune_per
 
     # Replace state trans values with updated values
 
     set_trans(STATE_TRANS, EX, IN, infec, HE)
-    set_trans(STATE_TRANS, CN, DE, (1/contagious_duration) * death_rate)
-    set_trans(STATE_TRANS, CN, IM, (1/contagious_duration) * (1 - death_rate))
-    set_trans(STATE_TRANS, CN, CN, 1 - (1/contagious_duration))
+    set_trans(STATE_TRANS, CN, DE, (1 / contagious_duration) * death_rate)
+    set_trans(STATE_TRANS, CN, IM,
+              (1 / contagious_duration) * (1 - death_rate))
+    set_trans(STATE_TRANS, CN, CN, 1 - (1 / contagious_duration))
     set_trans(STATE_TRANS, IM, HE, immune_rate, IM)
 
     pop_cnt = int(city_height * city_width * city_density)
@@ -274,31 +300,32 @@ def set_up(props=None):
     groups.append(Composite(HEALTHY, {"color": GREEN},
                             member_creator=create_person,
                             num_members=int(pop_cnt * (1 - initial_infected)),
-                            state=HE))
+                            state=HE, execution_key=execution_key))
     groups.append(Composite(EXPOSED, {"color": YELLOW},
                             member_creator=create_person,
                             num_members=1,
-                            state=EX))
+                            state=EX, execution_key=execution_key))
     groups.append(Composite(INFECTED, {"color": TOMATO},
                             member_creator=create_person,
                             num_members=int(pop_cnt * initial_infected),
-                            state=IN))
+                            state=IN, execution_key=execution_key))
     groups.append(Composite(CONTAGIOUS, {"color": RED},
                             member_creator=create_person,
                             num_members=1,
-                            state=CN))
+                            state=CN, execution_key=execution_key))
     groups.append(Composite(DEAD, {"color": BLACK},
                             member_creator=create_person,
                             num_members=1,
-                            state=DE))
+                            state=DE, execution_key=execution_key))
     groups.append(Composite(IMMUNE, {"color": BLUE},
                             member_creator=create_person,
                             num_members=1,
-                            state=IM))
+                            state=IM, execution_key=execution_key))
 
-    Env(MODEL_NAME, height=city_height, width=city_width, members=groups)
-    get_env().set_attr("total_cases", 0)
-    set_env_attrs()
+    Env(MODEL_NAME, height=city_height, width=city_width, members=groups,
+        execution_key=execution_key)
+    get_env(execution_key=execution_key).set_attr("total_cases", 0)
+    set_env_attrs(execution_key=execution_key)
 
 
 def main():
