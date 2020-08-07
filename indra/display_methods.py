@@ -94,15 +94,21 @@ NUM_COLORS = len(colors)
 X = 0
 Y = 1
 
-DEFAULT_MARKER = '8'
-SQUARE = 's'
-TREE = '^'
-CIRCLE = 'o'
+DEFAULT_MARKER = 'default'
+SQUARE = 'square'
+TREE = 'tree'
+CIRCLE = 'circle'
+PERSON = 'person'
+DECEASED = 'deceased'
 
-markers = {DEFAULT_MARKER: "8",
-           SQUARE: "s",
-           TREE: "^",
-           CIRCLE: "o"
+seaborn_markers = {'8': '8', 's': 's', '^': '^', 'o': 'o', 'x': 'x'}
+
+markers = {DEFAULT_MARKER: '8',
+           SQUARE: 's',
+           TREE: '^',
+           CIRCLE: 'o',
+           PERSON: 'o',
+           DECEASED: 'x',
            }
 
 
@@ -182,10 +188,12 @@ def get_color(var, i):
 
 def get_marker(var, i):
     if "marker" in var:
-        # Make sure it's a valid marker
+        print("Getting a marker of", var["marker"])
         if var["marker"] in markers:
-            return var["marker"]
-    return DEFAULT_MARKER
+            mark = markers[var["marker"]]
+            print("from markers, result = ", mark)
+            return mark
+    return markers[DEFAULT_MARKER]
 
 
 def assemble_lgraph_data(key, values, color, data=None):
@@ -359,7 +367,8 @@ class ScatterPlot():
 
         g = sns.scatterplot("x", "y", data=self.scats,
                             hue="color", palette=colors_dict,
-                            style="marker", markers=markers, s=size)
+                            style="marker", markers=seaborn_markers,
+                            s=size)
         if attrs is not None:
             """
             By default:
@@ -431,11 +440,12 @@ class ScatterPlot():
                 logging.debug("Array length mismatch in scatter plot")
                 return
             color = get_color(varieties[var], i)
-            marker = get_marker(varieties[var], i)
+            # marker = get_marker(varieties[var], i)
+            # print("After call to get_marker(), marker =", marker)
             scat = pd.DataFrame({"x": pd.Series(x_array),
                                  "y": pd.Series(y_array),
                                  "color": color,
-                                 "marker": marker,
+                                 # "marker": '^',
                                  "var": var})
             self.scats = self.scats.append(scat, ignore_index=True,
                                            sort=False)
