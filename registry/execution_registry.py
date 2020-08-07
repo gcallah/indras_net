@@ -119,10 +119,10 @@ class ExecutionRegistry(object):
 def is_model_ported_to_new_registry(model_id=None, model_name=None):
     if model_id is not None:
         return model_id not in [9,
-                                10, 11]
+                                10]
     elif model_name is not None:
         return model_name not in ["complementary",
-                                  "money", "epidemic"]
+                                  "money"]
     return False
 
 
