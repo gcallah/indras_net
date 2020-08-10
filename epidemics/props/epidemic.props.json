@@ -14,28 +14,28 @@
     "lowval": 2
   },
   "immune_per": {
-    "val": 10,
+    "val": 40,
     "question": "What is mean period of immunity?",
     "atype": "INT",
     "hival": 100,
     "lowval": 1
   },
   "density": {
-    "val": 0.44,
+    "val": 0.2,
     "question": "What density of people in the city would you like?",
     "atype": "DBL",
     "hival": 1,
     "lowval": 0
   },
     "death_rate": {
-    "val": 0.06,
+    "val": 0.04,
     "question": "What is the death rate of the virus?",
     "atype": "DBL",
     "hival": 1,
     "lowval": 0
   },
     "contagious_duration": {
-    "val": 2,
+    "val": 5,
     "question": "What is the duration of the infectious period?",
     "atype": "INT",
     "hival": 20,
@@ -49,7 +49,7 @@
     "lowval": 0
   },
     "distancing": {
-    "val": 2,
+    "val": 3,
     "question": "What is the social distancing distance?",
     "atype": "INT",
     "hival": 6,
@@ -70,14 +70,14 @@
     "lowval": 0
   },
   "infection_distance": {
-    "val": 1,
+    "val": 2,
     "question": "Over what distance can the disease be transmitted?",
     "atype": "INT",
     "hival": 5,
     "lowval": 0
   },
  "mask_rate": {
-    "val": 0.5,
+    "val": 0.75,
     "question": "What percent of people wear masks?",
     "atype": "DBL",
     "hival": 1,
