@@ -101,7 +101,7 @@ CIRCLE = 'circle'
 PERSON = 'person'
 DECEASED = 'deceased'
 
-seaborn_markers = {'8': '8', 's': 's', '^': '^', 'o': 'o', 'x': 'x'}
+seaborn_markers = ['8', 's', '^', 'o', 'x']
 
 markers = {DEFAULT_MARKER: '8',
            SQUARE: 's',
