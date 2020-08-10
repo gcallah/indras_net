@@ -19,6 +19,14 @@ function ScatterPlot(props) {
     'star',
     'triangle',
   ];
+  const markerMap = {
+    tree: 'triangle',
+    square: 'rect',
+    person: 'circle',
+    deceased: 'circle',
+    circle: 'circle',
+    default: 'circle',
+  };
   if (loadingData) {
     const env = envFile.members;
     const data = [];
@@ -31,7 +39,8 @@ function ScatterPlot(props) {
         color: env[group].attrs.color,
         data: [],
       });
-      dataset.pointStyle = pointStyles.includes(env[group].attrs.marker) ? env[group].attrs.marker : 'circle';
+      const markerProp = env[group].attrs.marker;
+      dataset.pointStyle = markerProp in markerMap ? markerMap[env[group].attrs.marker] : 'circle';
       Object.keys(env[group].members).forEach((member) => {
         if (env[group].members[member].pos !== null) {
           data[iGroup].data.push(
