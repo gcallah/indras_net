@@ -24,13 +24,13 @@ DEBUG = False  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
 # Constants that are re-analyzed in setup
-DEF_CON_DUR = 5
+DEF_CON_DUR = 4
 DEF_CON_PROB = 1 - (1 / DEF_CON_DUR)
 DEF_DIM = 30
 DEF_DENSITY = .20
 DEF_DEATH_RATE = (1 / DEF_CON_DUR) * .06
 DEF_INFEC = 0.5
-DEF_IMMUNE_PER = 40
+DEF_IMMUNE_PER = 45
 DEF_IM_HE_TRANS = 1 / DEF_IMMUNE_PER
 DEF_IM_STAY = 1 - DEF_IM_HE_TRANS
 DEF_SURV_RATE = (1 / DEF_CON_DUR) - DEF_DEATH_RATE

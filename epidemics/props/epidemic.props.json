@@ -14,7 +14,7 @@
     "lowval": 2
   },
   "immune_per": {
-    "val": 40,
+    "val": 45,
     "question": "What is mean period of immunity?",
     "atype": "INT",
     "hival": 100,
@@ -35,7 +35,7 @@
     "lowval": 0
   },
     "contagious_duration": {
-    "val": 5,
+    "val": 4,
     "question": "What is the duration of the infectious period?",
     "atype": "INT",
     "hival": 20,
