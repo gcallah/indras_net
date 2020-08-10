@@ -98,7 +98,7 @@ class EpidemicTestCase(TestCase):
         debug_agent_pos(self.sal)
         debug_agent_pos(self.azi)
         self.assertFalse(ep.is_isolated(self.azi))
-    
+
     @skip("Test is failing on travis, but not locally.")
     def test_is_quarantined(self):
         header("Running test_is_quarantined")
