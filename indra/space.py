@@ -637,6 +637,16 @@ def region_factory(space=None, NW=None, NE=None, SW=None,
         return new_reg
 
 
+def return_region(space=None, NW=None, NE=None, SW=None,
+                  SE=None, center=None, size=None, agents_move=True):
+    region_name = gen_region_name(NW=NW, NE=NE, SW=SW, SE=SE,
+                                  center=center, size=size)
+    if region_name in region_dict:
+        return region_dict[region_name]
+    else:
+        raise Exception("Attempting to return a region that doesn't exist")
+
+
 class Region():
     """
     This is the base of all regions used for neighborhoods, obstacles,
@@ -723,6 +733,10 @@ class Region():
                 self.SE = (self.SE[X] + 1, self.SE[Y])
             else:
                 self.SE = (self.SE[X], self.SE[Y] - 1)
+
+    def agents_move_switch(self):
+        self.agents_move = not self.agents_move
+        return self.agents_move
 
     def _load_agents(self, exclude_self=False):
         """
