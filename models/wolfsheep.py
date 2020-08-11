@@ -53,6 +53,7 @@ def eat(agent, prey):
     if DEBUG:
         user_tell(str(agent) + " is eating " + str(prey))
     agent.duration += prey.duration
+    get_env().rem_member(prey.get_x(), prey.get_y())
     prey.die()
 
 
