@@ -1,6 +1,6 @@
 TESTDIR = tests
 PYLINT = flake8
-PYLINTFLAGS = --exclude=interactive.py,__main__.py
+PYLINTFLAGS = --exclude=__main__.py
 PYTHONFILES = $(shell ls *.py)
 TEST_FILES = $(shell ls $(TESTDIR)/test_*.py)
 export user_type = test

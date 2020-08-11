@@ -255,7 +255,10 @@ class Env(Space):
         Put a child agent in the womb.
         group: which group will add new agent
         """
-        grp_nm = agent_by_name(group)
+        if isinstance(group, str):
+            grp_nm = group
+        else:
+            grp_nm = agent_by_name(group)
         self.womb.append(grp_nm)
         if DEBUG:
             user_log_notif("An agent was added to the womb for "
@@ -306,9 +309,6 @@ class Env(Space):
 
     def handle_switches(self):
         if self.switches is not None:
-            user_log_notif("In handle: " + self.rpt_switches())
-            user_log_notif("Switching " + self.pending_switches()
-                           + " agents between groups")
             for (agent_nm, from_grp_nm, to_grp_nm) in self.switches:
                 switch(agent_nm, from_grp_nm, to_grp_nm, self.execution_key)
                 self.num_switches += 1
