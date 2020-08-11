@@ -97,7 +97,7 @@ def agent_color(x=None, y=None, agent_nm=None, execution_key=None):
     return get_color(agent.primary_group(), execution_key)
 
 
-def wolfram_action(wolf_env: Env, **kwargs):
+def wolfram_action(wolf_env, **kwargs):
     """
     The action that will be taken every period.
     """
