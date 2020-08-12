@@ -26,7 +26,17 @@ DEBUG2 = False
 
 FAR_AWAY = 100000000  # Just some very big number!
 
+ALL_FULL = "Can't fit more agents in this space!"
+
 region_dict = {}
+
+
+class SpaceFull(Exception):
+    """
+    Exception to raise when a space fills up.
+    """
+    def __init__(self, message):
+        self.message = message
 
 
 def out_of_bounds(x, y, x1, y1, x2, y2):
@@ -365,8 +375,9 @@ class Space(Composite):
         `xy` must be a tuple!
         """
         if self.is_full():
-            user_log("Can't fit more agents in this space!")
-            return None
+            user_log(ALL_FULL)
+            raise(SpaceFull(ALL_FULL))
+
         if not is_composite(mbr):
             if xy is not None:
                 (x, y) = xy
