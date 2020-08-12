@@ -13,7 +13,6 @@ class ExecutionRegistry(object):
     def __init__(self):
         self.registries = {}
         self.registries[COMMANDLINE_EXECUTION_KEY] = {}
-        print("Creating default  registry")
 
     def get_unique_key(self):
         key = random.randint(1, BILLION)
@@ -118,11 +117,9 @@ class ExecutionRegistry(object):
 
 def is_model_ported_to_new_registry(model_id=None, model_name=None):
     if model_id is not None:
-        return model_id not in [9,
-                                10]
+        return model_id not in [9]
     elif model_name is not None:
-        return model_name not in ["complementary",
-                                  "money"]
+        return model_name not in ["complementary"]
     return False
 
 
