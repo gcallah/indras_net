@@ -5,8 +5,15 @@ from propargs.constants import *
 BILLION = 10 ** 9
 
 COMMANDLINE_EXECUTION_KEY = 0
+# establish shorter var name:
+CLI_EXEC_KEY = COMMANDLINE_EXECUTION_KEY
 
 EXECUTION_KEY_NAME = "execution_key"
+EXEC_KEY_NM = EXECUTION_KEY_NAME
+
+
+def init_exec_key(props=None):
+    return int(props[EXEC_KEY_NM].val) if props is not None else CLI_EXEC_KEY
 
 
 class ExecutionRegistry(object):
