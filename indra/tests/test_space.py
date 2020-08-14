@@ -288,6 +288,19 @@ class SpaceTestCase(TestCase):
         self.assertTrue(test_reg.contains((2,2)))
         self.assertFalse(test_reg.contains((3,3)))
     
+    def test_sub_reg(self):
+        space = Space("test space")
+        test_reg = Region(space=space, center=(3,3), size=5)
+        space += self.test_agent
+        space += self.test_agent2
+        space += self.test_agent3
+        space.place_member(mbr=self.test_agent, xy=(2, 2))
+        space.place_member(mbr=self.test_agent2, xy=(1,2))
+        space.place_member(mbr=self.test_agent3, xy=(7,7))
+        test_reg.create_sub_reg(space=space, center=(3,3), size=2)
+        for region in test_reg.my_sub_regs:
+            self.assertTrue(len(region.my_agents)==2)
+
     def test_get_agent(self):
         space = Space("test space")
         test_reg = Region(space=space, center=(3,3), size=3)
