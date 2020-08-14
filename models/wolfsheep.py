@@ -26,10 +26,10 @@ MEADOW_HEIGHT = 10
 MEADOW_WIDTH = 10
 
 WOLF_LIFESPAN = 5
-WOLF_REPRO_PERIOD = 11
+WOLF_REPRO_PERIOD = 2
 
 SHEEP_LIFESPAN = 8
-SHEEP_REPRO_PERIOD = 3
+SHEEP_REPRO_PERIOD = 2
 
 AGT_WOLF_NAME = "wolf"
 AGT_SHEEP_NAME = "sheep"
@@ -40,6 +40,7 @@ SHEEP_GROUP = "sheep"
 ERR_MSG = "Invalid agent name"
 
 TIME_TO_REPR = "time_to_repr"
+TIME_TO_EMIGRATE = "time_to_emigrate"
 
 
 def isactive(agent, *args):
@@ -56,8 +57,12 @@ def eat(agent, prey):
     if DEBUG:
         user_tell(str(agent) + " is eating " + str(prey))
     agent.duration += prey.duration
-    get_env().rem_member(prey.get_x(), prey.get_y())
-    prey.die()
+    rem_agent(prey)
+
+
+def rem_agent(agent):
+    get_env().rem_member(agent.get_x(), agent.get_y())
+    agent.die()
 
 
 class NoSheep(Exception):
@@ -90,8 +95,8 @@ def reproduce(agent, create_func, group, **kwargs):
     """
     execution_key = get_exec_key(kwargs=kwargs)
     if agent[TIME_TO_REPR] == 0:
-        if DEBUG2:
-            user_debug(str(agent) + " is having a baby!")
+        if DEBUG:
+            user_debug(str(agent.name) + " is having a baby!")
         get_env(execution_key=execution_key).add_child(group)
         agent[TIME_TO_REPR] = agent["orig_repr_time"]
         return True
@@ -102,21 +107,36 @@ def reproduce(agent, create_func, group, **kwargs):
 def sheep_action(agent, **kwargs):
     execution_key = get_exec_key(kwargs=kwargs)
     agent[TIME_TO_REPR] -= 1
-    reproduce(agent, create_sheep,
-              get_group(SHEEP_GROUP, execution_key=execution_key), **kwargs)
+    # sheep can have 1-3 babies at a time
+    num_of_babies = randint(1, 3)
+    while num_of_babies > 0:
+        reproduce(agent, create_sheep,
+                  get_group(SHEEP_GROUP, execution_key=execution_key),
+                  **kwargs)
+        num_of_babies -= 1
     return False
 
 
 def wolf_action(agent, **kwargs):
-    execution_key = get_exec_key(kwargs=kwargs)
-    prey = get_prey(agent, get_group(SHEEP_GROUP, execution_key=execution_key),
-                    **kwargs)
-    if prey is not None:
-        eat(agent, prey)
-    agent[TIME_TO_REPR] -= 1
-    reproduce(agent, create_wolf,
-              get_group(WOLF_GROUP, execution_key=execution_key), **kwargs)
-    return False
+    if agent.duration <= 0 or agent.duration == agent[TIME_TO_EMIGRATE]:
+        return rem_agent(agent)
+    else:
+        execution_key = get_exec_key(kwargs=kwargs)
+        prey = get_prey(agent,
+                        get_group(SHEEP_GROUP, execution_key=execution_key),
+                        **kwargs)
+        if prey is not None:
+            eat(agent, prey)
+        agent[TIME_TO_REPR] -= 1
+        # wolves can have a litter between 4 & 6 pups
+        num_of_babies = randint(4, 6)
+        while num_of_babies > 0:
+            reproduce(agent, create_wolf,
+                      get_group(WOLF_GROUP, execution_key=execution_key),
+                      **kwargs)
+            num_of_babies -= 1
+        agent.duration -= 1
+        return False
 
 
 def create_wolf(name, i, **kwargs):
@@ -125,11 +145,13 @@ def create_wolf(name, i, **kwargs):
     """
     execution_key = get_exec_key(kwargs=kwargs)
     time_to_repro = randint(1, WOLF_REPRO_PERIOD)
+    time_to_emigrate = randint(1, WOLF_REPRO_PERIOD)
     return Agent(AGT_WOLF_NAME + str(i),
                  duration=WOLF_LIFESPAN,
                  action=wolf_action,
                  attrs={TIME_TO_REPR: time_to_repro,
-                        "orig_repr_time": WOLF_REPRO_PERIOD},
+                        "orig_repr_time": WOLF_REPRO_PERIOD,
+                        TIME_TO_EMIGRATE: time_to_emigrate},
                  execution_key=execution_key)
 
 
