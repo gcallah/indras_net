@@ -8,6 +8,8 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import BLUE
 from indra.env import Env
+from registry.execution_registry import COMMANDLINE_EXECUTION_KEY, \
+    EXECUTION_KEY_NAME, get_exec_key
 from registry.registry import get_env, get_prop, user_log_notif
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import init_props
@@ -65,7 +67,8 @@ def create_graph():
     return goods
 
 
-def create_trader(name, i, props=None):
+def create_trader(name, i, **kwargs):
+    execution_key = get_exec_key(kwargs=kwargs)
     return Agent(name + str(i), action=seek_a_trade_w_comp,
                  attrs={"goods": {"truck": {AMT_AVAIL: 0,
                                             UTIL_FUNC: "steep_util_func",
@@ -97,10 +100,10 @@ def create_trader(name, i, props=None):
                         "graph": create_graph(),
                         "util": 0,
                         "pre_trade_util": 0,
-                        "trades_with": "trader"})
+                        "trades_with": "trader"}, execution_key=execution_key)
 
 
-def set_env_attrs():
+def set_env_attrs(execution_key=COMMANDLINE_EXECUTION_KEY):
     user_log_notif("Setting env attrs for " + MODEL_NAME)
 
 
@@ -109,17 +112,23 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     pa = init_props(MODEL_NAME, props, model_dir="capital")
-    num_traders = get_prop('num_traders', DEF_NUM_TRADER)
+    execution_key = int(props[EXECUTION_KEY_NAME].val) \
+        if props is not None else COMMANDLINE_EXECUTION_KEY
+    num_traders = get_prop('num_traders', DEF_NUM_TRADER,
+                           execution_key=execution_key)
     trader_group = Composite("trader", {"color": BLUE},
                              member_creator=create_trader,
                              props=pa,
-                             num_members=num_traders)
+                             num_members=num_traders,
+                             execution_key=execution_key)
     Env(MODEL_NAME,
-        height=get_prop('grid_height', DEF_HEIGHT),
-        width=get_prop('grid_width', DEF_WIDTH),
-        members=[trader_group])
-    set_env_attrs()
-    num_resources = get_prop('num_resources', DEF_NUM_RESOURCES)
+        height=get_prop('grid_height', DEF_HEIGHT,
+                        execution_key=execution_key),
+        width=get_prop('grid_width', DEF_WIDTH, execution_key=execution_key),
+        members=[trader_group], execution_key=execution_key)
+    set_env_attrs(execution_key=execution_key)
+    num_resources = get_prop('num_resources', DEF_NUM_RESOURCES,
+                             execution_key=execution_key)
     MKT_GOODS = {
         "truck": {AMT_AVAIL: num_resources,
                   UTIL_FUNC: "steep_util_func",
@@ -156,8 +165,6 @@ def set_up(props=None):
 
 
 def main():
-    global trader_group
-
     set_up()
 
     if DEBUG2:

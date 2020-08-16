@@ -5,15 +5,21 @@ from propargs.constants import *
 BILLION = 10 ** 9
 
 COMMANDLINE_EXECUTION_KEY = 0
+# establish shorter var name:
+CLI_EXEC_KEY = COMMANDLINE_EXECUTION_KEY
 
 EXECUTION_KEY_NAME = "execution_key"
+EXEC_KEY_NM = EXECUTION_KEY_NAME
+
+
+def init_exec_key(props=None):
+    return int(props[EXEC_KEY_NM].val) if props is not None else CLI_EXEC_KEY
 
 
 class ExecutionRegistry(object):
     def __init__(self):
         self.registries = {}
         self.registries[COMMANDLINE_EXECUTION_KEY] = {}
-        print("Creating default  registry")
 
     def get_unique_key(self):
         key = random.randint(1, BILLION)
@@ -118,11 +124,9 @@ class ExecutionRegistry(object):
 
 def is_model_ported_to_new_registry(model_id=None, model_name=None):
     if model_id is not None:
-        return model_id not in [9,
-                                10]
+        return model_id not in []
     elif model_name is not None:
-        return model_name not in ["complementary",
-                                  "money"]
+        return model_name not in []
     return False
 
 

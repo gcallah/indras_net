@@ -3,6 +3,7 @@ This file contains general functions useful in trading goods.
 """
 from indra.agent import MOVE
 from indra.user import user_debug
+from registry.execution_registry import get_exec_key
 from registry.registry import get_env
 import random
 import copy
@@ -29,7 +30,6 @@ DIM_UTIL_BASE = 1.1  # we should experiment with this!
 DIGITS_TO_RIGHT = 2
 
 max_util = DEF_MAX_UTIL
-
 
 """
 All utility functions must be registered here!
@@ -299,14 +299,16 @@ def negotiate(trader1, trader2, comp=False, amt=1):
 
 
 def seek_a_trade(agent, comp=False, **kwargs):
-    nearby_agent = get_env().get_closest_agent(agent)
+    execution_key = get_exec_key(kwargs=kwargs)
+    nearby_agent = get_env(execution_key=execution_key).get_closest_agent(
+        agent)
     if nearby_agent is not None:
         negotiate(agent, nearby_agent, comp)
         return MOVE
 
 
 def seek_a_trade_w_comp(agent, **kwargs):
-    return seek_a_trade(agent, comp=True)
+    return seek_a_trade(agent, comp=True, **kwargs)
 
 
 def send_offer(trader2, their_good, their_amt, counterparty, comp=False):
@@ -435,12 +437,14 @@ def compl_lst(agent, good):
 def adj_add_good_w_comp(agent, good, amt, old_amt):
     if new_good(old_amt, amt):
         if is_compl_good(agent, good):
-            incr_util(agent[GOODS], good, amt=amt *
-                      STEEP_GRADIENT, agent=agent, graph=True)
+            incr_util(agent[GOODS], good,
+                      amt=amt * STEEP_GRADIENT, agent=agent,
+                      graph=True)
         # now increase utility of this good's complements:
         for comp in compl_lst(agent, good):
-            incr_util(agent[GOODS], comp, amt=amt *
-                      STEEP_GRADIENT, agent=agent, graph=True, comp=good)
+            incr_util(agent[GOODS], comp,
+                      amt=amt * STEEP_GRADIENT, agent=agent,
+                      graph=True, comp=good)
         user_debug(agent[GOODS])
 
     if good_all_gone(agent, good):

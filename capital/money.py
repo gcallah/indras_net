@@ -7,7 +7,8 @@ and moves them around randomly.
 from indra.agent import Agent, MOVE
 from indra.composite import Composite
 from indra.env import Env
-from registry.execution_registry import COMMANDLINE_EXECUTION_KEY
+from registry.execution_registry import COMMANDLINE_EXECUTION_KEY, \
+    EXECUTION_KEY_NAME, get_exec_key
 from registry.registry import get_env, get_prop, set_env_attr
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import init_props
@@ -103,7 +104,7 @@ def record_amt(pop_hist, execution_key=COMMANDLINE_EXECUTION_KEY):
     This is our hook into the env to record the number of trades each
     period.
     """
-    get_env()
+    get_env(execution_key=execution_key)
     for good in natures_goods:
         if natures_goods[good]["is_allocated"] is True:
             pop_hist.record_pop(good, natures_goods[good][TRADE_COUNT])
@@ -128,7 +129,7 @@ def good_decay(goods):
 
 def trade_report(env, execution_key=COMMANDLINE_EXECUTION_KEY):
     global prev_trade, eq_count
-    get_env()
+    get_env(execution_key=execution_key)
     trade_count_dic = {x: natures_goods[x]["trade_count"]
                        for x in natures_goods}
     if trade_count_dic == prev_trade:
@@ -147,7 +148,7 @@ def trade_report(env, execution_key=COMMANDLINE_EXECUTION_KEY):
 def money_trader_action(agent, **kwargs):
     debug_header("Trader action called for: " + agent.name)
     trader_debug(agent)
-    seek_a_trade(agent)
+    seek_a_trade(agent, **kwargs)
     for good in natures_goods:
         # update current period's trade count in natures_good
         natures_goods[good][TRADE_COUNT] += agent["goods"][good][TRADE_COUNT]
@@ -156,16 +157,17 @@ def money_trader_action(agent, **kwargs):
     return MOVE
 
 
-def create_trader(name, i, props=None):
+def create_trader(name, i, **kwargs):
     """
     A func to create a trader.
     """
+    execution_key = get_exec_key(kwargs=kwargs)
     return Agent(name + str(i), action=money_trader_action,
                  # goods will now be a dictionary like:
                  # goods["cow"] = [cowA, cowB, cowC, etc.]
                  attrs={"goods": {},
                         "util": 0,
-                        "pre_trade_util": 0})
+                        "pre_trade_util": 0}, execution_key=execution_key)
 
 
 def nature_to_traders(traders, nature):
@@ -183,20 +185,18 @@ def nature_to_traders(traders, nature):
 def set_env_attrs(execution_key=COMMANDLINE_EXECUTION_KEY):
     set_env_attr("pop_hist_func", record_amt, execution_key)
     set_env_attr("census_func", trade_report, execution_key)
-    # env = get_env()
-    # env.set_attr("pop_hist_func", record_amt)
-    # env.set_attr("census_func", trade_report)
     tu.max_utils = MONEY_MAX_UTIL
 
 
-def check_props():
+def check_props(**kwargs):
     """
     A func to delete properties of goods in nature_goods
     dictionary if the user want to disable them.
     """
-    div = get_prop('divisibility')
-    dua = get_prop('durability')
-    trans = get_prop('transportability')
+    execution_key = get_exec_key(kwargs=kwargs)
+    div = get_prop('divisibility', execution_key=execution_key)
+    dua = get_prop('durability', execution_key=execution_key)
+    trans = get_prop('transportability', execution_key=execution_key)
     for goods in natures_goods:
         if div == 0 and "divisibility" in natures_goods[goods]:
             del natures_goods[goods]["divisibility"]
@@ -211,21 +211,27 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     pa = init_props(MODEL_NAME, props, model_dir="capital")
+    execution_key = int(props[EXECUTION_KEY_NAME].val) \
+        if props is not None else COMMANDLINE_EXECUTION_KEY
     traders = Composite("Traders",
                         member_creator=create_trader,
                         props=pa,
                         num_members=get_prop('num_traders',
-                                             DEF_NUM_TRADERS))
-    check_props()
+                                             DEF_NUM_TRADERS,
+                                             execution_key=execution_key),
+                        execution_key=execution_key)
+    check_props(execution_key=execution_key)
     nature_to_traders(traders, natures_goods)
 
     Env(MODEL_NAME,
-        height=get_prop('grid_height', DEF_HEIGHT),
-        width=get_prop('grid_width', DEF_WIDTH),
+        height=get_prop('grid_height', DEF_HEIGHT,
+                        execution_key=execution_key),
+        width=get_prop('grid_width', DEF_WIDTH, execution_key=execution_key),
         members=[traders],
         attrs={"goods": natures_goods},
-        pop_hist_setup=initial_amt)
-    set_env_attrs()
+        pop_hist_setup=initial_amt,
+        execution_key=execution_key)
+    set_env_attrs(execution_key=execution_key)
 
 
 def main():
