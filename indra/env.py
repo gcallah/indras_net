@@ -420,6 +420,29 @@ class Env(Space):
         else:
             return None
 
+    def bar_graph(self):
+        """
+        show the movements of population
+        """
+        if self.has_disp():
+            try:
+                # TODO: improve implementation of the iterator of composite?
+                periods, data = self.bar_data()
+                if periods is None:
+                    self.user.tell("No data to display.")
+                    return None
+
+                bar_graph = disp.BarGraph(self.plot_title,
+                                          data, periods,
+                                          is_headless=self.headless(),
+                                          attrs=self.attrs)
+                bar_graph.show()
+                return bar_graph
+            except Exception as e:
+                self.user.tell("Error when drawing line graph: " + str(e))
+        else:
+            return None
+
     def scatter_graph(self):
         """
         Show agent locations.
@@ -472,6 +495,29 @@ class Env(Space):
                     data[var]["color"] = self.get_color(var)
                     if not period:
                         period = len(data[var]["data"])
+        return period, data
+
+    def bar_data(self):
+        """
+        This is the data for our scatter plot.
+        This code assumes the env holds groups, and the groups
+        hold agents with positions.
+        This assumption is dangerous, and we should address it.
+        """
+        period = None
+        if self.exclude_member is not None:
+            exclude = self.exclude_member
+        else:
+            exclude = None
+
+        data = {}
+        for var in self.pop_hist.pops:
+            if var != exclude:
+                data[var] = {}
+                data[var]["data"] = self.pop_hist.pops[var]
+                data[var]["color"] = self.get_color(var)
+                if not period:
+                    period = self.pop_hist.get_periods()
         return period, data
 
     def plot_data(self):
