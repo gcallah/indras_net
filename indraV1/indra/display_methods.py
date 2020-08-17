@@ -120,12 +120,78 @@ def assemble_lgraph_data(key, values, color, data=None):
     # put our data in right form for line graph
     if data is None:
         data = {}
-
     data[key] = {}
     data[key]["data"] = values
     data[key]["color"] = color
     return data
 
+class BarGraph():
+    def __init__(self, title, varieties, data_points,
+                 anim=False, data_func=None, is_headless=False, legend_pos=4):
+        global anim_func
+
+        self.title = title
+        self.anim = anim
+        self.data_func = data_func
+        for i in varieties:
+            data_points = len(varieties[i]["data"])
+            break
+        self.draw_graph(data_points, varieties)
+        self.headless = is_headless
+
+        if anim and not self.headless:
+            anim_func = animation.FuncAnimation(self.fig,
+                                    self.update_plot,
+                                    frames=1000,
+                                    interval=500,
+                                    blit=False)
+
+    @expects_plt
+    def draw_graph(self, data_points, varieties):
+        """
+        Draw all elements of the graph.
+        """
+
+        self.fig, self.ax = plt.subplots()
+        
+        x = np.arange(1, len(data_points) + 1)
+
+        self.create_bars(x, self.ax, varieties)
+        self.ax.legend()
+        self.ax.set_title(self.title)
+    
+    @expects_plt
+    def create_bars(self,x,ax,varieties):
+        bar_coordinates = 0;
+        for i, var in enumerate(varieties):
+            data = varieties[var]["data"]
+            color = get_color(varieties[var], i)
+            y = np.array(data), 
+            ax.bar(x + bar_coordinates, label=var, c=color, width=0.25)
+            bar_coordinates += 0.25
+
+    @expects_plt
+    def show(self):
+        """
+        Display the barGraph.
+        """
+        if not self.headless:
+            plt.show()
+        else:
+            file = io.BytesIO()
+            plt.savefig(file, format="png")
+            return file
+
+    @expects_plt
+    def update_plot(self, i):
+        """
+        This is our animation function.
+        For line graphs, redraw the whole thing.
+        """
+        plt.clf()
+        (data_points, varieties) = self.data_func()
+        self.draw_graph(data_points, varieties)
+        self.show()
 
 class LineGraph():
     """

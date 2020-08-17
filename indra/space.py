@@ -26,7 +26,17 @@ DEBUG2 = False
 
 FAR_AWAY = 100000000  # Just some very big number!
 
+ALL_FULL = "Can't fit more agents in this space!"
+
 region_dict = {}
+
+
+class SpaceFull(Exception):
+    """
+    Exception to raise when a space fills up.
+    """
+    def __init__(self, message):
+        self.message = message
 
 
 def out_of_bounds(x, y, x1, y1, x2, y2):
@@ -365,8 +375,9 @@ class Space(Composite):
         `xy` must be a tuple!
         """
         if self.is_full():
-            user_log("Can't fit more agents in this space!")
-            return None
+            user_log(ALL_FULL)
+            raise(SpaceFull(ALL_FULL))
+
         if not is_composite(mbr):
             if xy is not None:
                 (x, y) = xy
@@ -687,6 +698,7 @@ class Region():
         self.height = abs(self.NW[Y] - self.SW[Y])
         self.agents_move = agents_move
         self.my_agents = []
+        self.my_sub_regs = []
         if not self.agents_move:
             self._load_agents()
 
@@ -734,9 +746,25 @@ class Region():
             else:
                 self.SE = (self.SE[X], self.SE[Y] - 1)
 
+    def create_sub_reg(self, space=None, NW=None, NE=None, SW=None,
+                       SE=None, center=None, size=None,
+                       agents_move=True):
+        if(size > self.size):
+            raise Exception("Creating sub_region bigger than main region")
+        self.my_sub_regs.append(region_factory(space=space, NW=NW, NE=NE,
+                                SW=SW, SE=SE, center=center, size=size,
+                                agents_move=agents_move))
+        self._load_agents()
+
     def agents_move_switch(self):
         self.agents_move = not self.agents_move
         return self.agents_move
+
+    def _load_sub_reg_agents(self, exclude_self=False):
+        for region in self.my_sub_regs:
+            for agent in self.my_agents:
+                if(region.contains(agent.get_pos())):
+                    region.my_agents.append(agent)
 
     def _load_agents(self, exclude_self=False):
         """
@@ -755,6 +783,7 @@ class Region():
                                                              y_coord)
                 if potential_neighbor is not None:
                     self.my_agents.append(potential_neighbor)
+        self._load_sub_reg_agents(exclude_self=exclude_self)
 
     def _load_agents_if_necc(self, exclude_self=True, pred=None):
         """
