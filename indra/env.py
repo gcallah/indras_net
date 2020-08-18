@@ -434,8 +434,7 @@ class Env(Space):
 
                 bar_graph = disp.BarGraph(self.plot_title,
                                           data, periods,
-                                          is_headless=self.headless(),
-                                          attrs=self.attrs)
+                                          is_headless=self.headless())
                 bar_graph.show()
                 return bar_graph
             except Exception as e:
