@@ -21,7 +21,7 @@ from math import log
 
 MODEL_NAME = "epidemic"
 DEBUG = False  # turns debugging code on or off
-DEBUG2 = False  # turns deeper debugging code on or off
+DEBUG2 = True  # turns deeper debugging code on or off
 
 # Constants that are re-analyzed in setup
 DEF_CON_DUR = 4
@@ -178,28 +178,26 @@ def person_action(agent, **kwargs):
         distance_mod = 1
         if agent["is_wearing_mask"]:
             distance_mod = 0.5
-        if exists_neighbor(agent, pred=is_contagious,
-                           size=int(infec_dist * distance_mod),
-                           execution_key=execution_key):
+        curr_reg = CircularRegion(center=agent.get_pos(),
+                                  radius=(2 * infec_dist * distance_mod))
+        sub_reg = curr_reg.create_sub_reg(center=agent.get_pos(),
+                                          radius=(infec_dist * distance_mod))
+        if sub_reg.exists_neighbor():
             if DEBUG2:
                 user_log_notif("Exposing nearby people!")
             agent[STATE] = EX
         else:
-            for curr_group in list(get_env(
-                    execution_key=execution_key).get_members().items()):
-                for curr_agent_tuple in \
-                        list(curr_group[1].get_members().items()):
-                    curr_agent = curr_agent_tuple[1]
-                    curr_distance = (distance(curr_agent, agent) -
-                                     DEF_INFEC_DIST)
-                    if (curr_distance > infec_dist and
-                            curr_distance <= (infec_dist * 2)):
-                        inverse_square_val = ((1 / (curr_distance ** 2)) *
-                                              distance_mod)
-                        if inverse_square_val > 0:
-                            r = random()
-                            if inverse_square_val / 100 > r:
-                                agent[STATE] = EX
+            for curr_agent in curr_reg.get_agents(exclude_self=True):
+                curr_distance = (distance(curr_agent, agent) -
+                                 DEF_INFEC_DIST)
+                if (curr_distance > infec_dist and
+                   curr_distance <= (infec_dist * 2)):
+                    inverse_square_val = ((1 / (curr_distance ** 2)) *
+                                          distance_mod)
+                    if inverse_square_val > 0:
+                        r = random()
+                        if inverse_square_val / 100 > r:
+                            agent[STATE] = EX
 
     # if we didn't catch disease above, do probabilistic transition:
     if old_state == agent[STATE]:

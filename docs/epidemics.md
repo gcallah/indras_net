@@ -46,7 +46,9 @@ than half the normal dead.
 -Increased to 0.20 (+0.14): Deaths doubled.
 
 Modifying population density:
-
+(Note: The baseline popualtion density of 0.44 seems to be very high.)
+-Decreased to 0.30 (-0.14): Deaths have halved.
+-Decreased 0.20 (-.24): Significant slowdown. Quarter of normal deaths.
 
 Modifying Duration of infectious period:
 -Decreased to 1 (-1): NO significant change.
@@ -54,3 +56,12 @@ Modifying Duration of infectious period:
 -Increased to 5 (+3): Slightly more deaths.
 -Increased to 10 (+8): Despite number of contagious jumping up, no
 significant changes to overall healthy or dead populatin.
+
+Current planned changes:
+-Decrease base density to 0.20
+-Increase immune period to 40.
+-Increase infectious period to 5.
+-Death rate decreased to 0.04.
+-Social Distancing increased to 3.
+-Infection distance increased to 2.
+-Increased percent of people wearing masks to 75.
