@@ -434,12 +434,11 @@ class Env(Space):
 
                 bar_graph = disp.BarGraph(self.plot_title,
                                           data, periods,
-                                          is_headless=self.headless(),
-                                          attrs=self.attrs)
+                                          is_headless=self.headless())
                 bar_graph.show()
                 return bar_graph
             except Exception as e:
-                self.user.tell("Error when drawing line graph: " + str(e))
+                self.user.tell("Error when drawing bar graph:" + str(e))
         else:
             return None
 
@@ -517,7 +516,7 @@ class Env(Space):
                 data[var]["data"] = self.pop_hist.pops[var]
                 data[var]["color"] = self.get_color(var)
                 if not period:
-                    period = self.pop_hist.get_periods()
+                    period = len(data[var]["data"])
         return period, data
 
     def plot_data(self):
