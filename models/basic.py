@@ -12,8 +12,8 @@ from indra.agent import Agent, MOVE
 from indra.composite import Composite
 from indra.display_methods import RED, BLUE
 from indra.env import Env
-from registry.execution_registry import COMMANDLINE_EXECUTION_KEY, \
-    EXECUTION_KEY_NAME
+from registry.execution_registry import CLI_EXEC_KEY, \
+    EXEC_KEY
 from registry.registry import get_env, get_prop
 from registry.registry import user_tell, run_notice
 from indra.space import DEF_HEIGHT, DEF_WIDTH
@@ -49,8 +49,8 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     init_props(MODEL_NAME, props)
-    execution_key = int(props[EXECUTION_KEY_NAME].val) \
-        if props is not None else COMMANDLINE_EXECUTION_KEY
+    execution_key = int(props[EXEC_KEY].val) \
+        if props is not None else CLI_EXEC_KEY
 
     blue_group = Composite("Blues", {"color": BLUE},
                            member_creator=create_agent,

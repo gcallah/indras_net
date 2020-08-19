@@ -12,8 +12,8 @@ from indra.agent import ratio_to_sin
 from indra.composite import Composite
 from indra.display_methods import NAVY, DARKRED, RED, BLUE
 from indra.env import Env
-from registry.execution_registry import COMMANDLINE_EXECUTION_KEY, \
-    EXECUTION_KEY_NAME, check_and_get_execution_key_from_args
+from registry.execution_registry import CLI_EXEC_KEY, \
+    EXEC_KEY, get_exec_key
 from registry.registry import get_env, get_group, get_prop
 from registry.registry import run_notice, user_log_notif
 from indra.space import in_hood
@@ -101,7 +101,7 @@ def env_unfavorable(my_color, my_pref, op1, op2):
 
 
 def follower_action(agent, **kwargs):
-    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    execution_key = get_exec_key(kwargs=kwargs)
     return common_action(agent,
                          get_group(RED_TSETTERS, execution_key=execution_key),
                          get_group(BLUE_TSETTERS, execution_key=execution_key),
@@ -109,7 +109,7 @@ def follower_action(agent, **kwargs):
 
 
 def tsetter_action(agent, **kwargs):
-    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    execution_key = get_exec_key(kwargs=kwargs)
     return common_action(agent,
                          get_group(RED_FOLLOWERS, execution_key=execution_key),
                          get_group(BLUE_FOLLOWERS,
@@ -122,7 +122,7 @@ def common_action(agent, others_red, others_blue, op1, op2, **kwargs):
     """
     The actions for both followers and trendsetters
     """
-    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    execution_key = get_exec_key(kwargs=kwargs)
     num_others_red = len(others_red.subset(in_hood, agent, HOOD_SIZE))
     num_others_blue = len(others_blue.subset(in_hood, agent, HOOD_SIZE))
     total_others = num_others_red + num_others_blue
@@ -143,7 +143,7 @@ def create_tsetter(name, i, props=None, color=RED_SIN, **kwargs):
     """
     Create a trendsetter: all RED to start.
     """
-    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    execution_key = get_exec_key(kwargs=kwargs)
     return Agent(TSETTER_PRENM + str(i),
                  action=tsetter_action,
                  attrs={COLOR_PREF: color,
@@ -154,7 +154,7 @@ def create_follower(name, i, props=None, color=BLUE_SIN, **kwargs):
     """
     Create a follower: all BLUE to start.
     """
-    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    execution_key = get_exec_key(kwargs=kwargs)
     return Agent(FOLLOWER_PRENM + str(i),
                  action=follower_action,
                  attrs={COLOR_PREF: color,
@@ -166,8 +166,8 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     init_props(MODEL_NAME, props)
-    execution_key = int(props[EXECUTION_KEY_NAME].val) \
-        if props is not None else COMMANDLINE_EXECUTION_KEY
+    execution_key = int(props[EXEC_KEY].val) \
+        if props is not None else CLI_EXEC_KEY
     groups = []
 
     groups.append(

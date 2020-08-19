@@ -7,8 +7,8 @@ and moves them around randomly.
 from indra.agent import Agent, MOVE
 from indra.composite import Composite
 from indra.env import Env
-from registry.execution_registry import COMMANDLINE_EXECUTION_KEY, \
-    EXECUTION_KEY_NAME, get_exec_key
+from registry.execution_registry import CLI_EXEC_KEY, \
+    EXEC_KEY, get_exec_key
 from registry.registry import get_env, get_prop, set_env_attr
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import init_props
@@ -99,7 +99,7 @@ def initial_amt(pop_hist):
             pop_hist.record_pop(good, INIT_COUNT)
 
 
-def record_amt(pop_hist, execution_key=COMMANDLINE_EXECUTION_KEY):
+def record_amt(pop_hist, execution_key=CLI_EXEC_KEY):
     """
     This is our hook into the env to record the number of trades each
     period.
@@ -127,7 +127,7 @@ def good_decay(goods):
         goods[good][AMT_AVAIL] = goods[good][DUR_DECR]
 
 
-def trade_report(env, execution_key=COMMANDLINE_EXECUTION_KEY):
+def trade_report(env, execution_key=CLI_EXEC_KEY):
     global prev_trade, eq_count
     get_env(execution_key=execution_key)
     trade_count_dic = {x: natures_goods[x]["trade_count"]
@@ -182,7 +182,7 @@ def nature_to_traders(traders, nature):
         print(repr(traders[trader]))
 
 
-def set_env_attrs(execution_key=COMMANDLINE_EXECUTION_KEY):
+def set_env_attrs(execution_key=CLI_EXEC_KEY):
     set_env_attr("pop_hist_func", record_amt, execution_key)
     set_env_attr("census_func", trade_report, execution_key)
     tu.max_utils = MONEY_MAX_UTIL
@@ -211,8 +211,8 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     pa = init_props(MODEL_NAME, props, model_dir="capital")
-    execution_key = int(props[EXECUTION_KEY_NAME].val) \
-        if props is not None else COMMANDLINE_EXECUTION_KEY
+    execution_key = int(props[EXEC_KEY].val) \
+        if props is not None else CLI_EXEC_KEY
     traders = Composite("Traders",
                         member_creator=create_trader,
                         props=pa,

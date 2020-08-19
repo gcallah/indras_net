@@ -13,8 +13,8 @@ from indra.env import Env
 from registry.registry import get_env, get_group, get_prop
 from registry.registry import user_tell, run_notice
 from registry.execution_registry import \
-    EXECUTION_KEY_NAME, COMMANDLINE_EXECUTION_KEY, \
-    check_and_get_execution_key_from_args
+    EXEC_KEY, CLI_EXEC_KEY, \
+    get_exec_key
 from indra.space import DEF_HEIGHT, DEF_WIDTH, distance
 from indra.utils import init_props
 
@@ -73,9 +73,9 @@ def bacterium_action(agent, **kwargs):
     if DEBUG:
         user_tell("I'm " + agent.name + " and I'm hungry.")
 
-    execution_key = COMMANDLINE_EXECUTION_KEY
-    if EXECUTION_KEY_NAME in kwargs:
-        execution_key = kwargs[EXECUTION_KEY_NAME]
+    execution_key = CLI_EXEC_KEY
+    if EXEC_KEY in kwargs:
+        execution_key = kwargs[EXEC_KEY]
 
     toxin_level = calc_toxin(get_group(TOXINS, execution_key=execution_key),
                              agent)
@@ -127,7 +127,7 @@ def create_bacterium(name, i, **kwargs):
     """
     Create a baterium.
     """
-    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    execution_key = get_exec_key(kwargs=kwargs)
     bacterium = Agent(name + str(i), action=bacterium_action,
                       execution_key=execution_key)
     bacterium["prev_toxicity"] = None
@@ -143,7 +143,7 @@ def create_toxin(name, i, **kwargs):
     """
     Create a toxin.
     """
-    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    execution_key = get_exec_key(kwargs=kwargs)
     toxin = Agent(name + str(i), action=toxin_action,
                   execution_key=execution_key)
     toxin["max_move"] = get_prop("toxin_move", DEF_TOXIN_MOVE,
@@ -155,7 +155,7 @@ def create_nutrient(name, i, **kwargs):
     """
     Create a nutrient.
     """
-    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    execution_key = get_exec_key(kwargs=kwargs)
     nutrient = Agent(name + str(i), action=nutrient_action,
                      execution_key=execution_key)
     nutrient["max_move"] = get_prop("nutrient_move",
@@ -169,8 +169,8 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     init_props(MODEL_NAME, props)
-    execution_key = int(props[EXECUTION_KEY_NAME].val) \
-        if props is not None else COMMANDLINE_EXECUTION_KEY
+    execution_key = int(props[EXEC_KEY].val) \
+        if props is not None else CLI_EXEC_KEY
     toxins = Composite(TOXINS, {"color": RED},
                        member_creator=create_toxin,
                        num_members=get_prop('num_toxins', NUM_TOXINS,

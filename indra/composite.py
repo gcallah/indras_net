@@ -9,15 +9,15 @@ from copy import copy
 from random import choice
 
 from indra.agent import Agent, join, INF, is_composite, AgentEncoder
-from registry.execution_registry import EXECUTION_KEY_NAME, \
-    COMMANDLINE_EXECUTION_KEY
+from registry.execution_registry import EXEC_KEY, \
+    CLI_EXEC_KEY
 from registry.registry import add_group
 from indra.utils import get_func_name
 
 DEBUG = False
 
 
-def grp_from_nm_dict(nm, dictionary, execution_key=COMMANDLINE_EXECUTION_KEY):
+def grp_from_nm_dict(nm, dictionary, execution_key=CLI_EXEC_KEY):
     grp = Composite(nm, execution_key=execution_key)
     grp.members = dictionary
     return grp
@@ -42,15 +42,15 @@ class Composite(Agent):
 
         self.num_members_ever = 0
         self.members = OrderedDict()
-        self.execution_key = COMMANDLINE_EXECUTION_KEY
+        self.execution_key = CLI_EXEC_KEY
 
-        if EXECUTION_KEY_NAME in kwargs:
-            self.execution_key = kwargs[EXECUTION_KEY_NAME]
+        if EXEC_KEY in kwargs:
+            self.execution_key = kwargs[EXEC_KEY]
 
         super().__init__(name, attrs=attrs, duration=duration,
                          action=action, serial_obj=serial_obj,
                          reg=False, **kwargs)
-
+        print("Composite has execution key -", self.execution_key)
         self.type = type(self).__name__
 
         if serial_obj is not None:

@@ -8,8 +8,8 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import BLUE
 from indra.env import Env
-from registry.execution_registry import COMMANDLINE_EXECUTION_KEY, \
-    EXECUTION_KEY_NAME, get_exec_key
+from registry.execution_registry import CLI_EXEC_KEY, \
+    EXEC_KEY, get_exec_key
 from registry.registry import get_env, get_prop, user_log_notif
 from indra.space import DEF_HEIGHT, DEF_WIDTH
 from indra.utils import init_props
@@ -103,7 +103,7 @@ def create_trader(name, i, **kwargs):
                         "trades_with": "trader"}, execution_key=execution_key)
 
 
-def set_env_attrs(execution_key=COMMANDLINE_EXECUTION_KEY):
+def set_env_attrs(execution_key=CLI_EXEC_KEY):
     user_log_notif("Setting env attrs for " + MODEL_NAME)
 
 
@@ -112,8 +112,8 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     pa = init_props(MODEL_NAME, props, model_dir="capital")
-    execution_key = int(props[EXECUTION_KEY_NAME].val) \
-        if props is not None else COMMANDLINE_EXECUTION_KEY
+    execution_key = int(props[EXEC_KEY].val) \
+        if props is not None else CLI_EXEC_KEY
     num_traders = get_prop('num_traders', DEF_NUM_TRADER,
                            execution_key=execution_key)
     trader_group = Composite("trader", {"color": BLUE},

@@ -7,7 +7,7 @@ from indra.composite import Composite
 from indra.display_methods import CIRCLE
 from indra.env import Env
 from registry.execution_registry import \
-    COMMANDLINE_EXECUTION_KEY, EXECUTION_KEY_NAME
+    CLI_EXEC_KEY, EXEC_KEY
 from registry.registry import get_env, get_group, get_prop
 from registry.registry import user_log_notif
 from indra.space import DEF_HEIGHT, DEF_WIDTH
@@ -74,7 +74,7 @@ def sandpile_action(env, **kwargs):
     The action that will be taken avery period.
     Adds a grain to the center agent.
     """
-    execution_key = kwargs[EXECUTION_KEY_NAME]
+    execution_key = kwargs[EXEC_KEY]
     if DEBUG:
         print("Adding a grain to sandpile in position",
               env.attrs["center"].pos,
@@ -84,7 +84,7 @@ def sandpile_action(env, **kwargs):
     return True
 
 
-def set_env_attrs(execution_key=COMMANDLINE_EXECUTION_KEY):
+def set_env_attrs(execution_key=CLI_EXEC_KEY):
     user_log_notif("Setting env attrs for forest fire.")
     width = get_prop('grid_width',
                      DEF_WIDTH,
@@ -102,8 +102,8 @@ def set_up(props=None):
     """
 
     init_props(MODEL_NAME, props)
-    execution_key = int(props[EXECUTION_KEY_NAME].val) \
-        if props is not None else COMMANDLINE_EXECUTION_KEY
+    execution_key = int(props[EXEC_KEY].val) \
+        if props is not None else CLI_EXEC_KEY
 
     width = get_prop('grid_width', DEF_WIDTH, execution_key=execution_key)
     height = get_prop('grid_height', DEF_HEIGHT, execution_key=execution_key)
@@ -133,7 +133,7 @@ def set_up(props=None):
 
 def main():
     set_up()
-    get_env(execution_key=COMMANDLINE_EXECUTION_KEY)()
+    get_env(execution_key=CLI_EXEC_KEY)()
     return 0
 
 

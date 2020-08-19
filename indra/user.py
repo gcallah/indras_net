@@ -8,8 +8,8 @@ from abc import abstractmethod
 from IPython import embed
 
 from indra.agent import Agent
-from registry.execution_registry import EXECUTION_KEY_NAME, \
-    COMMANDLINE_EXECUTION_KEY
+from registry.execution_registry import EXEC_KEY, \
+    CLI_EXEC_KEY
 from registry.registry import get_env, set_user
 import registry.registry as reg
 
@@ -82,11 +82,11 @@ def leave(user, **kwargs):
     return USER_EXIT
 
 
-def scatter_plot(user, update=False, execution_key=COMMANDLINE_EXECUTION_KEY):
+def scatter_plot(user, update=False, execution_key=CLI_EXEC_KEY):
     return get_env(execution_key=execution_key).scatter_graph()
 
 
-def line_graph(user, update=False, execution_key=COMMANDLINE_EXECUTION_KEY):
+def line_graph(user, update=False, execution_key=CLI_EXEC_KEY):
     if update:
         user.tell("Updating the line graph.")
     else:
@@ -94,7 +94,7 @@ def line_graph(user, update=False, execution_key=COMMANDLINE_EXECUTION_KEY):
     return get_env(execution_key=execution_key).line_graph()
 
 
-def bar_graph(user, update=False, execution_key=COMMANDLINE_EXECUTION_KEY):
+def bar_graph(user, update=False, execution_key=CLI_EXEC_KEY):
     if update:
         user.tell("Updating the bar graph.")
     else:
@@ -201,8 +201,8 @@ class TermUser(User):
     def __init__(self, name, env, **kwargs):
         super().__init__(name, env, **kwargs)
 
-        self.execution_key = COMMANDLINE_EXECUTION_KEY
-        if EXECUTION_KEY_NAME in kwargs:
+        self.execution_key = CLI_EXEC_KEY
+        if EXEC_KEY in kwargs:
             self.execution_key = kwargs["execution_key"]
         self.menu_title = "Menu of Actions"
         self.stars = "*" * len(self.menu_title)
