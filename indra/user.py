@@ -94,7 +94,7 @@ def line_graph(user, update=False, execution_key=CLI_EXEC_KEY):
     return get_env(execution_key=execution_key).line_graph()
 
 
-def bar_graph(user, update=False, execution_key=COMMANDLINE_EXECUTION_KEY):
+def bar_graph(user, update=False, execution_key=CLI_EXEC_KEY):
     if update:
         user.tell("Updating the bar graph.")
     else:
