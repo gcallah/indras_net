@@ -8,6 +8,7 @@ import io
 import logging
 import os
 from functools import wraps
+from matplotlib import animation
 
 from indra.user import TERMINAL, API
 
@@ -22,6 +23,7 @@ if user_type != API:
         import numpy as np
         import pandas as pd
         import seaborn as sns
+
         sns.set(style="darkgrid")
         plt.ion()
     except ImportError as e:
@@ -116,12 +118,14 @@ def expects_plt(fn):
     """
     Should be used to decorate any function that uses matplotlib's pyplot.
     """
+
     @wraps(fn)
     def wrapper(*args, **kwargs):
         if not plt_present:
             print("Matplotlib not detected.")
             return
         return fn(*args, **kwargs)
+
     return wrapper
 
 
@@ -208,10 +212,11 @@ def assemble_lgraph_data(key, values, color, data=None):
     data[key]["color"] = color
     return data
 
+
 class BarGraph():
     def __init__(self, title, varieties, data_points,
                  anim=False, data_func=None, is_headless=False, legend_pos=4):
-        
+
         global anim_func
         self.title = title
         self.anim = anim
@@ -224,10 +229,10 @@ class BarGraph():
 
         if anim and not self.headless:
             anim_func = animation.FuncAnimation(self.fig,
-                                    self.update_plot,
-                                    frames=1000,
-                                    interval=500,
-                                    blit=False)
+                                                self.update_plot,
+                                                frames=1000,
+                                                interval=500,
+                                                blit=False)
 
     @expects_plt
     def draw_graph(self, data_points, varieties):
@@ -236,22 +241,23 @@ class BarGraph():
         """
 
         self.fig, self.ax = plt.subplots()
-        
+
         x = np.arange(0, data_points)
 
         self.create_bars(x, self.ax, varieties)
         self.ax.legend()
         self.ax.set_title(self.title)
-    
+
     @expects_plt
-    def create_bars(self,x,ax,varieties):
-        bar_coordinates = 0;
+    def create_bars(self, x, ax, varieties):
+        bar_coordinates = 0
         for i, var in enumerate(varieties):
             if var != "Contagious":
                 data = varieties[var]["data"]
                 color = get_color(varieties[var], i)
-                y = np.array(data), 
-                ax.bar(x + bar_coordinates, height = data ,label=var, color=color, width=0.25)
+                # y = np.array(data),
+                ax.bar(x + bar_coordinates, height=data, label=var,
+                       color=color, width=0.25)
                 bar_coordinates += 0.2
 
     @expects_plt
@@ -276,6 +282,8 @@ class BarGraph():
         (data_points, varieties) = self.data_func()
         self.draw_graph(data_points, varieties)
         self.show()
+
+
 class LineGraph():
     """
     We create a class here to save state for animation.
@@ -403,6 +411,7 @@ class ScatterPlot():
     """
     We are going to use a class here to save state for our animation
     """
+
     @expects_plt
     def __init__(self, title, varieties, width, height, attrs,
                  anim=True, data_func=None, is_headless=False):
