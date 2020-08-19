@@ -128,8 +128,8 @@ def assemble_lgraph_data(key, values, color, data=None):
 class BarGraph():
     def __init__(self, title, varieties, data_points,
                  anim=False, data_func=None, is_headless=False, legend_pos=4):
+        
         global anim_func
-
         self.title = title
         self.anim = anim
         self.data_func = data_func
@@ -192,6 +192,7 @@ class BarGraph():
         (data_points, varieties) = self.data_func()
         self.draw_graph(data_points, varieties)
         self.show()
+
 
 class LineGraph():
     """

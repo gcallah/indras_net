@@ -94,6 +94,14 @@ def line_graph(user, update=False, execution_key=CLI_EXEC_KEY):
     return get_env(execution_key=execution_key).line_graph()
 
 
+def bar_graph(user, update=False, execution_key=COMMANDLINE_EXECUTION_KEY):
+    if update:
+        user.tell("Updating the bar graph.")
+    else:
+        user.tell("Drawing a bar graph.")
+    return get_env(execution_key=execution_key).bar_graph()
+
+
 def debug(user, **kwargs):
     embed()
     return 0
@@ -104,6 +112,7 @@ menu_functions = {
     "leave": leave,
     "scatter_plot": scatter_plot,
     "line_graph": line_graph,
+    "bar_graph": bar_graph,
     "debug": debug,
     "logs": not_impl,
 }
@@ -200,6 +209,7 @@ class TermUser(User):
         self.exclude_menu_item("source")
         self.show_line_graph = False
         self.show_scatter_plot = False
+        self.show_bar_graph = False
 
     def tell(self, msg, end='\n'):
         """
@@ -249,6 +259,8 @@ class TermUser(User):
             line_graph(self, update=True)
         if self.show_scatter_plot:
             scatter_plot(self, update=True, execution_key=self.execution_key)
+        if self.show_bar_graph:
+            bar_graph(self, update=True)
         self.tell("Please choose a number from the menu above:")
         c = input()
         if not c or c.isspace():
@@ -261,9 +273,14 @@ class TermUser(User):
                         if item["func"] == "line_graph":
                             self.show_line_graph = True
                             self.show_scatter_plot = False
+                            self.show_bar_graph = False
                         if item["func"] == "scatter_plot":
                             self.show_scatter_plot = True
                             self.show_line_graph = False
+                        if item["func"] == "bar_graph":
+                            self.show_bar_graph = True
+                            self.show_line_graph = False
+                            self.show_scatter_plot = False
                         return menu_functions[item["func"]](
                             self, execution_key=self.execution_key)
             self.tell_err(str(c) + " is an invalid option. "

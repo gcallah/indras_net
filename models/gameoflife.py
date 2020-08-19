@@ -10,6 +10,8 @@ from registry.registry import get_env, get_prop, get_group
 from registry.registry import get_env_attr, set_env_attr
 from indra.utils import init_props
 from indra.space import Region
+from registry.execution_registry import init_exec_key, get_exec_key
+from registry.execution_registry import CLI_EXEC_KEY
 
 MODEL_NAME = "gameoflife"
 DEBUG = False  # Turns debugging code on or off
@@ -17,8 +19,8 @@ DEF_HEIGHT = 30
 DEF_WIDTH = 30
 BLACK = "Black"
 
-LIVE = True
-DIE = False
+LIVE = True  # BLACK
+DIE = False  # WHITE
 
 
 def reset_env_attrs():
@@ -27,13 +29,14 @@ def reset_env_attrs():
     set_env_attr("reset_lists", False)
 
 
-def create_game_cell(x, y):
+def create_game_cell(x, y, execution_key=CLI_EXEC_KEY):
     """
     Create an agent with the passed x, y value as its name.
     """
     return Agent(name=("(%d,%d)" % (x, y)),
                  action=game_agent_action,
-                 attrs={"save_neighbors": True})
+                 attrs={"save_neighbors": True},
+                 execution_key=execution_key)
 
 
 def live_or_die(agent):
@@ -51,7 +54,11 @@ def live_or_die(agent):
         return LIVE
 
 
-def apply_dead_rules(new_x, new_y):
+def is_black(agent):
+    return agent.prim_group == BLACK
+
+
+def apply_dead_rules(new_x, new_y, execution_key=CLI_EXEC_KEY):
     """
     Apply the rules for dead agents.
     The agent passed in should be dead, meaning its color should be white.
@@ -59,9 +66,7 @@ def apply_dead_rules(new_x, new_y):
     curr_region = Region(space=get_env(), center=(new_x, new_y),
                          size=1)
     num_live_neighbors = curr_region.get_num_of_agents(exclude_self=True,
-                                                       pred=lambda agent:
-                                                       agent.primary_group()
-                                                       == get_group(BLACK))
+                                                       pred=is_black)
     if num_live_neighbors == 3:
         return True
     else:
@@ -88,7 +93,7 @@ def gameoflife_action(biosphere, **kwargs):
     Loops through the list of agents that has to come alive and die
         and carries out the corresponding action.
     """
-    b = get_group(BLACK)
+    b = get_group(BLACK, get_exec_key(kwargs))
     # for the next loop, why not use the womb?
     for agent_pos in get_env_attr("to_come_alive"):
         if DEBUG:
@@ -123,8 +128,8 @@ def game_agent_action(agent, **kwargs):
     return True
 
 
-def populate_board_glider(width, height):
-    b = get_group(BLACK)
+def populate_board_glider(width, height, execution_key=CLI_EXEC_KEY):
+    b = get_group(BLACK, execution_key)
     center = [width // 2, height // 2]
     agent_loc = [(center[X], center[Y]), (center[X] - 1, center[1] + 1),
                  (center[X] + 1, center[Y] + 1),
@@ -135,24 +140,24 @@ def populate_board_glider(width, height):
         get_env().place_member(agent, xy=loc)
 
 
-def populate_board_small_exploder(width, height):
+def populate_board_small_exploder(width, height, execution_key=CLI_EXEC_KEY):
     center = [width // 2, height // 2]
     agent_loc = [(center[X], center[Y]), (center[X], center[1] + 1),
                  (center[X] - 1, center[Y]),
                  (center[X] + 1, center[Y]), (center[X] - 1, center[1] - 1),
                  (center[X] + 1, center[Y] - 1),
                  (center[X], center[Y] - 2)]
-    b = get_group(BLACK)
+    b = get_group(BLACK, execution_key)
     for loc in agent_loc:
         agent = create_game_cell(loc[0], loc[1])
         b += agent
         get_env().place_member(agent, xy=loc)
 
 
-def populate_board_exploder(width, height):
+def populate_board_exploder(width, height, execution_key=CLI_EXEC_KEY):
     center = [width // 2, height // 2]
     agent_loc = [(center[X], center[Y]), (center[X], center[1] - 4)]
-    b = get_group(BLACK)
+    b = get_group(BLACK, execution_key)
     for i in range(0, 5):
         agent_loc.append((center[X] - 2, center[Y] - i))
         agent_loc.append((center[X] + 2, center[Y] - i))
@@ -162,12 +167,13 @@ def populate_board_exploder(width, height):
         get_env().place_member(agent, xy=loc)
 
 
-def populate_board_n_horizontal_row(width, height, n=10):
+def populate_board_n_horizontal_row(width, height, n=10,
+                                    execution_key=CLI_EXEC_KEY):
     center = [width // 2, height // 2]
     agent_loc = []
     right = (n // 2) + (n % 2)
     left = n // 2
-    b = get_group(BLACK)
+    b = get_group(BLACK, execution_key)
     for rht in range(right):
         agent_loc.append((center[X] + rht, center[Y]))
     for lft in range(1, left):
@@ -178,7 +184,8 @@ def populate_board_n_horizontal_row(width, height, n=10):
         get_env().place_member(agent, xy=loc)
 
 
-def populate_board_lightweight_spaceship(width, height):
+def populate_board_lightweight_spaceship(width, height,
+                                         execution_key=CLI_EXEC_KEY):
     center = [width // 2, height // 2]
     agent_loc = [(center[X], center[Y]),
                  (center[X] - 1, center[Y]),
@@ -189,20 +196,20 @@ def populate_board_lightweight_spaceship(width, height):
                  (center[X] - 4, center[Y] - 1),
                  (center[X] - 1, center[Y] - 3),
                  (center[X] - 4, center[Y] - 3)]
-    b = get_group(BLACK)
+    b = get_group(BLACK, execution_key)
     for loc in agent_loc:
         agent = create_game_cell(loc[0], loc[1])
         b += agent
         get_env().place_member(agent, xy=loc)
 
 
-def populate_board_tumbler(width, height):
+def populate_board_tumbler(width, height, execution_key=CLI_EXEC_KEY):
     """
     Tumbler is a classic GOL pattern.
     But this must be recoded to eliminate all the hard-coding of positions.
     """
     center = [width // 2, height // 2]
-    b = get_group(BLACK)
+    b = get_group(BLACK, execution_key)
     agent_loc = [(center[X] - 1, center[Y]),
                  (center[X] - 2, center[Y]),
                  (center[X] + 1, center[Y]),
@@ -247,10 +254,12 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     init_props(MODEL_NAME, props)
+    exec_key = init_exec_key(props)
     height = get_prop("grid_height", DEF_HEIGHT)
     width = get_prop("grid_width", DEF_WIDTH)
     simulation = get_prop("simulation", 0)
-    black = Composite("Black", {"color": BLACK, "marker": SQUARE})
+    black = Composite(BLACK, {"color": BLACK, "marker": SQUARE},
+                      execution_key=exec_key)
     groups = [black]
     Env("Game of Life",
         action=gameoflife_action,
@@ -261,7 +270,8 @@ def set_up(props=None):
                "change_grid_spacing": (0.5, 1),
                "hide_xy_ticks": True,
                "hide_legend": True},
-        random_placing=False)
+        random_placing=False,
+        execution_key=exec_key)
 
     populate_board_dict[simulation](width, height)
     reset_env_attrs()

@@ -652,6 +652,18 @@ def region_factory(space=None, NW=None, NE=None, SW=None,
         return new_reg
 
 
+def circ_region_factory(space=None, center=None,
+                        radius=None, agents_move=True):
+    region_name = gen_region_name(center=center, size=radius)
+    if region_name in region_dict:
+        return region_dict[region_name]
+    else:
+        new_reg = CircularRegion(space=space, center=center, radius=radius,
+                                 agents_move=agents_move)
+        region_dict[region_name] = new_reg
+        return new_reg
+
+
 def return_region(space=None, NW=None, NE=None, SW=None,
                   SE=None, center=None, size=None, agents_move=True):
     region_name = gen_region_name(NW=NW, NE=NE, SW=SW, SE=SE,
@@ -760,6 +772,7 @@ class Region():
                                                size=size,
                                                agents_move=agents_move))
         self._load_agents()
+        return self.my_sub_regs[-1]
 
     def agents_move_switch(self):
         self.agents_move = not self.agents_move
@@ -857,6 +870,7 @@ class CircularRegion(Region):
         self.radius = radius
         self.name = "Circle"
         self.agents_move = agents_move
+        self.my_sub_regs = []
         if self.agents_move:
             self.my_agents = []
         else:
@@ -873,6 +887,16 @@ class CircularRegion(Region):
                 and not self.check_out_bounds(coord)):
             return True
         return False
+
+    def create_sub_reg(self, space=None, center=None,
+                       radius=None, agents_move=True):
+        if(radius > self.radius):
+            raise Exception("Creating sub_region bigger than main region")
+        self.my_sub_regs.append(circ_region_factory(
+                                space=space, center=center, radius=radius,
+                                agents_move=agents_move))
+        self._load_agents()
+        return self.my_sub_regs[-1]
 
     def _load_agents(self, exclude_self=True):
         for coord in self.space.locations:

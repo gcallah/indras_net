@@ -17,16 +17,21 @@
         },
         {
             "id": 4,
+            "func": "bar_graph",
+            "question": "Display a bar graph"
+        },
+        {
+            "id": 5,
             "func": "debug",
             "question": "Examine model data"
         },
         {
-            "id": 5,
+            "id": 6,
             "func": "source",
             "question": "View the source code"
         },
         {
-            "id": 6,
+            "id": 7,
             "func": "logs",
             "question": "View log"
         },
