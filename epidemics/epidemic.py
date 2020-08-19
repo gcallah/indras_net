@@ -179,9 +179,11 @@ def person_action(agent, **kwargs):
         if agent["is_wearing_mask"]:
             distance_mod = 0.5
         curr_reg = CircularRegion(center=agent.get_pos(),
-                                  radius=(2 * infec_dist * distance_mod))
+                                  radius=(2 * infec_dist * distance_mod),
+                                  execution_key=execution_key)
         sub_reg = curr_reg.create_sub_reg(center=agent.get_pos(),
-                                          radius=(infec_dist * distance_mod))
+                                          radius=(infec_dist * distance_mod),
+                                          execution_key=execution_key)
         if sub_reg.exists_neighbor():
             if DEBUG2:
                 user_log_notif("Exposing nearby people!")
@@ -191,7 +193,7 @@ def person_action(agent, **kwargs):
                 curr_distance = (distance(curr_agent, agent) -
                                  DEF_INFEC_DIST)
                 if (curr_distance > infec_dist and
-                   curr_distance <= (infec_dist * 2)):
+                        curr_distance <= (infec_dist * 2)):
                     inverse_square_val = ((1 / (curr_distance ** 2)) *
                                           distance_mod)
                     if inverse_square_val > 0:

@@ -653,13 +653,13 @@ def region_factory(space=None, NW=None, NE=None, SW=None,
 
 
 def circ_region_factory(space=None, center=None,
-                        radius=None, agents_move=True):
+                        radius=None, agents_move=True, **kwargs):
     region_name = gen_region_name(center=center, size=radius)
     if region_name in region_dict:
         return region_dict[region_name]
     else:
         new_reg = CircularRegion(space=space, center=center, radius=radius,
-                                 agents_move=agents_move)
+                                 agents_move=agents_move, **kwargs)
         region_dict[region_name] = new_reg
         return new_reg
 
@@ -862,9 +862,11 @@ class Region():
 
 
 class CircularRegion(Region):
-    def __init__(self, space=None, center=None, radius=None, agents_move=True):
+    def __init__(self, space=None, center=None, radius=None, agents_move=True,
+                 **kwargs):
+        self.execution_key = get_exec_key(kwargs)
         if (space is None):
-            space = get_env()
+            space = get_env(execution_key=self.execution_key)
         self.space = space
         self.center = center
         self.radius = radius
@@ -889,12 +891,12 @@ class CircularRegion(Region):
         return False
 
     def create_sub_reg(self, space=None, center=None,
-                       radius=None, agents_move=True):
-        if(radius > self.radius):
+                       radius=None, agents_move=True, **kwargs):
+        if (radius > self.radius):
             raise Exception("Creating sub_region bigger than main region")
         self.my_sub_regs.append(circ_region_factory(
-                                space=space, center=center, radius=radius,
-                                agents_move=agents_move))
+            space=space, center=center, radius=radius,
+            agents_move=agents_move, **kwargs))
         self._load_agents()
         return self.my_sub_regs[-1]
 
