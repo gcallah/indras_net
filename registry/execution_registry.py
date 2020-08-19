@@ -4,22 +4,19 @@ from propargs.constants import *
 
 BILLION = 10 ** 9
 
-COMMANDLINE_EXECUTION_KEY = 0
-# establish shorter var name:
-CLI_EXEC_KEY = COMMANDLINE_EXECUTION_KEY
+CLI_EXEC_KEY = 0
 
-EXECUTION_KEY_NAME = "execution_key"
-EXEC_KEY_NM = EXECUTION_KEY_NAME
+EXEC_KEY = "execution_key"
 
 
 def init_exec_key(props=None):
-    return int(props[EXEC_KEY_NM].val) if props is not None else CLI_EXEC_KEY
+    return int(props[EXEC_KEY].val) if props is not None else CLI_EXEC_KEY
 
 
 class ExecutionRegistry(object):
     def __init__(self):
         self.registries = {}
-        self.registries[COMMANDLINE_EXECUTION_KEY] = {}
+        self.registries[CLI_EXEC_KEY] = {}
 
     def get_unique_key(self):
         key = random.randint(1, BILLION)
@@ -34,7 +31,7 @@ class ExecutionRegistry(object):
         self.registries[key] = {}
         return key
 
-    def __set_value_at_key(self, key=COMMANDLINE_EXECUTION_KEY, value=None,
+    def __set_value_at_key(self, key=CLI_EXEC_KEY, value=None,
                            object_to_register=None):
         if isinstance(key, str):
             key = int(key)
@@ -61,7 +58,7 @@ class ExecutionRegistry(object):
                 (key)
             )
 
-    def get_propargs(self, key=COMMANDLINE_EXECUTION_KEY,
+    def get_propargs(self, key=CLI_EXEC_KEY,
                      default_propargs=None):
         self.does_key_exists(key)
         if "props" not in self.registries[key]:
@@ -69,13 +66,13 @@ class ExecutionRegistry(object):
         return self.registries[key]["props"]
 
     def register_agent(self, key_to_register_agent_with, agent,
-                       key=COMMANDLINE_EXECUTION_KEY):
+                       key=CLI_EXEC_KEY):
         self.does_key_exists(key)
         if "agents" not in self.registries[key]:
             self.registries[key]["agents"] = {}
         self.registries[key]["agents"][key_to_register_agent_with] = agent
 
-    def get_registered_agent(self, agent_name, key=COMMANDLINE_EXECUTION_KEY):
+    def get_registered_agent(self, agent_name, key=CLI_EXEC_KEY):
         self.does_key_exists(key)
         if agent_name not in self.registries[key]["agents"]:
             raise KeyError(
@@ -83,7 +80,7 @@ class ExecutionRegistry(object):
                     agent_name, key))
         return self.registries[key]["agents"][agent_name]
 
-    def get_registered_env(self, key=COMMANDLINE_EXECUTION_KEY):
+    def get_registered_env(self, key=CLI_EXEC_KEY):
         self.does_key_exists(key)
         if "env" not in self.registries[key]:
             raise KeyError(
@@ -91,7 +88,7 @@ class ExecutionRegistry(object):
                     key))
         return self.registries[key]["env"]
 
-    def get_registered_user(self, key=COMMANDLINE_EXECUTION_KEY):
+    def get_registered_user(self, key=CLI_EXEC_KEY):
         self.does_key_exists(key)
         if "user" not in self.registries[key]:
             raise KeyError(
@@ -99,7 +96,7 @@ class ExecutionRegistry(object):
                     key))
         return self.registries[key]["user"]
 
-    def get_registered_group(self, group_name, key=COMMANDLINE_EXECUTION_KEY):
+    def get_registered_group(self, group_name, key=CLI_EXEC_KEY):
         self.does_key_exists(key)
         if group_name not in self.registries[key]:
             raise KeyError(
@@ -117,27 +114,15 @@ class ExecutionRegistry(object):
         }
 
     def clear_data_for_execution_key(self, key):
-        if key != COMMANDLINE_EXECUTION_KEY:
+        if key != CLI_EXEC_KEY:
             self.does_key_exists(key)
             del self.registries[key]
 
 
-def is_model_ported_to_new_registry(model_id=None, model_name=None):
-    if model_id is not None:
-        return model_id not in []
-    elif model_name is not None:
-        return model_name not in []
-    return False
-
-
 def get_exec_key(kwargs):
-    return check_and_get_execution_key_from_args(kwargs)
-
-
-def check_and_get_execution_key_from_args(kwargs):
-    execution_key = COMMANDLINE_EXECUTION_KEY
-    if EXECUTION_KEY_NAME in kwargs:
-        execution_key = kwargs[EXECUTION_KEY_NAME]
+    execution_key = CLI_EXEC_KEY
+    if EXEC_KEY in kwargs:
+        execution_key = kwargs[EXEC_KEY]
     return execution_key
 
 

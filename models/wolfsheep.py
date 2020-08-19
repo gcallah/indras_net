@@ -50,18 +50,19 @@ def isactive(agent, *args):
     return agent.is_active()
 
 
-def eat(agent, prey):
+def eat(agent, prey, **kwargs):
     """
      Wolf's duration increases by sheep's duration
      """
     if DEBUG:
         user_tell(str(agent) + " is eating " + str(prey))
     agent.duration += prey.duration
-    rem_agent(prey)
+    rem_agent(prey, **kwargs)
 
 
-def rem_agent(agent):
-    get_env().rem_member(agent.get_x(), agent.get_y())
+def rem_agent(agent, **kwargs):
+    exec_key = get_exec_key(kwargs)
+    get_env(execution_key=exec_key).rem_member(agent.get_x(), agent.get_y())
     agent.die()
 
 
@@ -69,6 +70,7 @@ class NoSheep(Exception):
     """
     Exception when all the sheep are eaten up.
     """
+
     def __init__(self, msg):
         self.message = msg
 
@@ -119,14 +121,14 @@ def sheep_action(agent, **kwargs):
 
 def wolf_action(agent, **kwargs):
     if agent.duration <= 0 or agent.duration == agent[TIME_TO_EMIGRATE]:
-        return rem_agent(agent)
+        return rem_agent(agent, **kwargs)
     else:
         execution_key = get_exec_key(kwargs=kwargs)
         prey = get_prey(agent,
                         get_group(SHEEP_GROUP, execution_key=execution_key),
                         **kwargs)
         if prey is not None:
-            eat(agent, prey)
+            eat(agent, prey, **kwargs)
         agent[TIME_TO_REPR] -= 1
         # wolves can have a litter between 4 & 6 pups
         num_of_babies = randint(4, 6)

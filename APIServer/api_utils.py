@@ -1,7 +1,7 @@
 import json
 
 from indra.agent import AgentEncoder
-from registry.execution_registry import COMMANDLINE_EXECUTION_KEY
+from registry.execution_registry import CLI_EXEC_KEY
 
 ERROR = "Error:"
 
@@ -12,7 +12,7 @@ def err_return(s):
     return {ERROR: s}
 
 
-def json_converter(obj, execution_key=COMMANDLINE_EXECUTION_KEY):
+def json_converter(obj, execution_key=CLI_EXEC_KEY):
     json_object = json.loads(json.dumps(obj.to_json(),
                                         cls=AgentEncoder, indent=4))
 

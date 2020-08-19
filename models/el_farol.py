@@ -12,8 +12,8 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import BLUE, RED
 from indra.env import Env
-from registry.execution_registry import COMMANDLINE_EXECUTION_KEY, \
-    EXECUTION_KEY_NAME, check_and_get_execution_key_from_args
+from registry.execution_registry import CLI_EXEC_KEY, \
+    EXEC_KEY, get_exec_key
 from registry.registry import get_env, get_group, get_prop, set_env_attr, \
     get_env_attr
 from registry.registry import user_tell, run_notice, user_log_notif
@@ -53,7 +53,7 @@ def discourage(unwanted, **kwargs):
     Discourages extra drinkers from going to the bar by decreasing motivation.
     Chooses drinkers randomly from the drinkers that went to the bar.
     """
-    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    execution_key = get_exec_key(kwargs=kwargs)
     discouraged = 0
     drinkers = get_group(DRINKERS, execution_key=execution_key)
     while unwanted:
@@ -74,7 +74,7 @@ def discourage(unwanted, **kwargs):
 
 
 def drinker_action(agent, **kwargs):
-    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    execution_key = get_exec_key(kwargs=kwargs)
 
     drinkers = get_group(DRINKERS, execution_key=execution_key)
     non_drinkers = get_group(NON_DRINKERS, execution_key=execution_key)
@@ -116,7 +116,7 @@ def create_drinker(name, i, **kwargs):
     """
     Create an agent.
     """
-    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    execution_key = get_exec_key(kwargs=kwargs)
     return Agent(name + str(i), action=drinker_action,
                  attrs={MOTIV: DEF_MOTIV}, execution_key=execution_key)
 
@@ -125,7 +125,7 @@ def create_non_drinker(name, i, **kwargs):
     """
     Create an agent.
     """
-    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    execution_key = get_exec_key(kwargs=kwargs)
     return Agent(name + str(i), action=drinker_action,
                  attrs={MOTIV: DEF_MOTIV}, execution_key=execution_key)
 
@@ -137,18 +137,18 @@ def setup_attendance(pop_hist):
     pop_hist.record_pop(BAR_ATTEND, 0)
 
 
-def attendance(pop_hist, execution_key=COMMANDLINE_EXECUTION_KEY):
+def attendance(pop_hist, execution_key=CLI_EXEC_KEY):
     pop_hist.record_pop(BAR_ATTEND,
                         get_env(execution_key=execution_key).attrs[ATTENDANCE])
 
 
-def attendance_report(env, execution_key=COMMANDLINE_EXECUTION_KEY):
+def attendance_report(env, execution_key=CLI_EXEC_KEY):
     return ("El Farol attendees on day "
             + str(env.get_periods())
             + ": " + str(env.attrs[ATTENDANCE]))
 
 
-def set_env_attrs(execution_key=COMMANDLINE_EXECUTION_KEY):
+def set_env_attrs(execution_key=CLI_EXEC_KEY):
     user_log_notif("Setting env attrs for " + MODEL_NAME)
     set_env_attr("pop_hist_func", attendance, execution_key)
     set_env_attr("census_func", attendance_report, execution_key)
@@ -159,8 +159,8 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     init_props(MODEL_NAME, props)
-    execution_key = int(props[EXECUTION_KEY_NAME].val) \
-        if props is not None else COMMANDLINE_EXECUTION_KEY
+    execution_key = int(props[EXEC_KEY].val) \
+        if props is not None else CLI_EXEC_KEY
 
     population_prop = \
         get_prop('population', DEF_POPULATION, execution_key=execution_key)

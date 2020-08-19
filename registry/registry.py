@@ -8,7 +8,7 @@ import json
 import warnings
 
 from registry.execution_registry import execution_registry, \
-    COMMANDLINE_EXECUTION_KEY
+    CLI_EXEC_KEY
 
 REGISTRY = "Registry"
 
@@ -73,11 +73,11 @@ def set_env(env):
     _the_env = env
 
 
-def get_env(execution_key=COMMANDLINE_EXECUTION_KEY):
+def get_env(execution_key=CLI_EXEC_KEY):
     return execution_registry.get_registered_env(execution_key)
 
 
-def get_env_attr(key, execution_key=COMMANDLINE_EXECUTION_KEY,
+def get_env_attr(key, execution_key=CLI_EXEC_KEY,
                  default_value=None):
     """
     A convenience function, since this will be
@@ -88,7 +88,7 @@ def get_env_attr(key, execution_key=COMMANDLINE_EXECUTION_KEY,
         .get_attr(key, default=default_value)
 
 
-def set_env_attr(key, val, execution_key=COMMANDLINE_EXECUTION_KEY):
+def set_env_attr(key, val, execution_key=CLI_EXEC_KEY):
     """
     A convenience function, since this will be
     used often.
@@ -103,11 +103,11 @@ Our singleton dict for groups.
 _groups_dict = {}
 
 
-def add_group(name, grp, execution_key=COMMANDLINE_EXECUTION_KEY):
+def add_group(name, grp, execution_key=CLI_EXEC_KEY):
     execution_registry.set_group(execution_key, name, grp)
 
 
-def get_group(name, execution_key=COMMANDLINE_EXECUTION_KEY):
+def get_group(name, execution_key=CLI_EXEC_KEY):
     return execution_registry.get_registered_group(group_name=name,
                                                    key=execution_key)
 
@@ -135,7 +135,7 @@ def get_propargs():
 
 
 def get_prop(prop_key, default_val=None,
-             execution_key=COMMANDLINE_EXECUTION_KEY):
+             execution_key=CLI_EXEC_KEY):
     """
     Get a particular property.
     If key is missing (or no props) return default_val.
@@ -213,12 +213,12 @@ class Registry(object):
 registry = Registry()
 
 
-def register(name_of_entity, entity, execution_key=COMMANDLINE_EXECUTION_KEY):
+def register(name_of_entity, entity, execution_key=CLI_EXEC_KEY):
     execution_registry.register_agent(name_of_entity, entity,
                                       key=execution_key)
 
 
-def get_registration(name_of_entity, execution_key=COMMANDLINE_EXECUTION_KEY):
+def get_registration(name_of_entity, execution_key=CLI_EXEC_KEY):
     return execution_registry.get_registered_agent(name_of_entity,
                                                    key=execution_key)
 

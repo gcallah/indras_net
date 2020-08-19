@@ -6,8 +6,8 @@ import random
 
 from propargs.propargs import PropArgs
 
-from registry.execution_registry import execution_registry, EXECUTION_KEY_NAME
-from registry.execution_registry import COMMANDLINE_EXECUTION_KEY
+from registry.execution_registry import execution_registry, EXEC_KEY
+from registry.execution_registry import CLI_EXEC_KEY
 
 
 def gaussian(mean, sigma, trim_at_zero=True):
@@ -37,8 +37,8 @@ def get_prop_path(model_name, model_dir="models"):
 def init_props(model_nm, props=None, model_dir="models",
                skip_user_questions=False):
     props_file = get_prop_path(model_nm, model_dir=model_dir)
-    execution_key = COMMANDLINE_EXECUTION_KEY if props is None else int(
-        props.get(EXECUTION_KEY_NAME).get("val"))
+    execution_key = CLI_EXEC_KEY if props is None else int(
+        props.get(EXEC_KEY).get("val"))
     if props is None:
         pa = PropArgs.create_props(model_nm,
                                    ds_file=props_file,

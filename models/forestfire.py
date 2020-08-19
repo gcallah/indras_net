@@ -9,8 +9,8 @@ from indra.space import exists_neighbor
 from indra.display_methods import RED, GREEN, BLACK
 from indra.display_methods import SPRINGGREEN, TOMATO, TREE
 from indra.env import Env
-from registry.execution_registry import COMMANDLINE_EXECUTION_KEY, \
-    EXECUTION_KEY_NAME, check_and_get_execution_key_from_args
+from registry.execution_registry import CLI_EXEC_KEY, \
+    EXEC_KEY, get_exec_key
 from registry.registry import get_env, get_prop, set_env_attr, get_env_attr
 from registry.registry import user_log_err, run_notice, user_log_notif
 from indra.utils import init_props
@@ -72,7 +72,7 @@ def tree_action(agent, **kwargs):
     """
     This is what trees do each turn in the forest.
     """
-    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    execution_key = get_exec_key(kwargs=kwargs)
     old_state = agent["state"]
     if is_healthy(agent):
         if exists_neighbor(agent, pred=is_on_fire,
@@ -111,7 +111,7 @@ def plant_tree(name, i, state=HE, **kwargs):
     Plant a new tree!
     By default, they start out healthy.
     """
-    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    execution_key = get_exec_key(kwargs=kwargs)
     name = TREE_PREFIX
     return Agent(name + str(i),
                  action=tree_action,
@@ -119,7 +119,7 @@ def plant_tree(name, i, state=HE, **kwargs):
                         "save_neighbors": True}, execution_key=execution_key)
 
 
-def set_env_attrs(execution_key=COMMANDLINE_EXECUTION_KEY):
+def set_env_attrs(execution_key=CLI_EXEC_KEY):
     """
     I actually don't think we need to do this here!
     It can be done once in set_up().
@@ -139,8 +139,8 @@ def set_up(props=None):
     """
     init_props(MODEL_NAME, props)
 
-    execution_key = int(props[EXECUTION_KEY_NAME].val) \
-        if props is not None else COMMANDLINE_EXECUTION_KEY
+    execution_key = int(props[EXEC_KEY].val) \
+        if props is not None else CLI_EXEC_KEY
 
     forest_height = get_prop('grid_height', DEF_DIM,
                              execution_key=execution_key)

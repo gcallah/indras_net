@@ -180,6 +180,7 @@ class ActionMenu extends Component {
 
   sendNumPeriods = async () => {
     const { periodNum, envFile, EXECUTION_KEY } = this.state;
+    console.log('Sending execution key', EXECUTION_KEY);
     const envFileWithExecutionKey = { ...envFile, execution_key: EXECUTION_KEY };
     this.setState({ loadingData: true });
     try {

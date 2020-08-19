@@ -12,7 +12,7 @@ from types import FunctionType
 import indra.display_methods as disp
 import registry.registry as regis
 from registry.execution_registry import execution_registry, \
-    EXECUTION_KEY_NAME, COMMANDLINE_EXECUTION_KEY
+    EXEC_KEY, CLI_EXEC_KEY
 from registry.registry import get_prop
 from indra.agent import join, switch, Agent, AgentEncoder
 from indra.space import Space
@@ -114,9 +114,10 @@ class Env(Space):
         super().__init__(name, action=action,
                          random_placing=random_placing, serial_obj=serial_obj,
                          reg=False, members=members, **kwargs)
-        self.execution_key = COMMANDLINE_EXECUTION_KEY
-        if EXECUTION_KEY_NAME in kwargs:
-            self.execution_key = kwargs[EXECUTION_KEY_NAME]
+        self.execution_key = CLI_EXEC_KEY
+        if EXEC_KEY in kwargs:
+            self.execution_key = kwargs[EXEC_KEY]
+        print("Env has execution key - ", self.execution_key)
         self.type = type(self).__name__
         self.user_type = os.getenv("user_type", TERMINAL)
         # this func is only used once, so no need to restore it
@@ -330,7 +331,7 @@ class Env(Space):
                 else:
                     self.pop_hist.record_pop(mbr, 0)
 
-    def runN(self, periods=DEF_TIME, execution_key=None):
+    def runN(self, periods=DEF_TIME, execution_key=CLI_EXEC_KEY):
         """
             Run our model for N periods.
             Return the total number of actions taken.
@@ -345,7 +346,7 @@ class Env(Space):
             self.handle_switches()
             self.handle_pop_hist()
 
-            (a, m) = super().__call__(execution_key=execution_key)
+            (a, m) = super().__call__(execution_key=self.execution_key)
             num_acts += a
             num_moves += m
             census_rpt = self.get_census(num_moves)

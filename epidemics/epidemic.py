@@ -9,8 +9,8 @@ from indra.display_methods import RED, GREEN, BLACK
 from indra.display_methods import TOMATO
 from indra.display_methods import BLUE, YELLOW
 from indra.env import Env
-from registry.execution_registry import COMMANDLINE_EXECUTION_KEY, \
-    EXECUTION_KEY_NAME, check_and_get_execution_key_from_args
+from registry.execution_registry import CLI_EXEC_KEY, \
+    EXEC_KEY, get_exec_key
 from registry.registry import get_env, get_prop, set_env_attr
 from registry.registry import user_log_err, run_notice, user_log_notif
 from indra.utils import init_props
@@ -79,7 +79,7 @@ def is_isolated(agent, **kwargs):
     '''
     Checks if agent is maintaining distancing.
     '''
-    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    execution_key = get_exec_key(kwargs=kwargs)
     return not exists_neighbor(agent,
                                size=get_prop('distancing', DEF_DISTANCING,
                                              execution_key=execution_key),
@@ -107,7 +107,7 @@ def is_dead(agent, *args):
     return agent[STATE] == DE
 
 
-def epidemic_report(env, execution_key=COMMANDLINE_EXECUTION_KEY):
+def epidemic_report(env, execution_key=CLI_EXEC_KEY):
     # taking data for each period using pop_hist
     pop_hist = get_env(execution_key=execution_key).pop_hist
 
@@ -157,7 +157,7 @@ def social_distancing(agent, **kwargs):
     """
     This function sets a new angle for the agent's movement.
     """
-    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    execution_key = get_exec_key(kwargs=kwargs)
     curr_region = CircularRegion(get_env(execution_key=execution_key),
                                  agent.get_pos(), DEF_PERSON_MOVE * 2)
     agents_in_range = curr_region.get_agents(
@@ -170,7 +170,7 @@ def person_action(agent, **kwargs):
     """
     This is what people do each turn in the epidemic.
     """
-    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    execution_key = get_exec_key(kwargs=kwargs)
     infec_dist = get_prop('infection_distance', DEF_INFEC_DIST,
                           execution_key=execution_key)
     old_state = agent[STATE]
@@ -234,7 +234,7 @@ def create_person(name, i, state=HE, **kwargs):
     Create a new person!
     By default, they start out healthy.
     """
-    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    execution_key = get_exec_key(kwargs=kwargs)
     mask_chance = random()
     mask_bool = False
     if mask_chance < get_prop("mask_rate", DEF_MASK_RATE,
@@ -250,7 +250,7 @@ def create_person(name, i, state=HE, **kwargs):
     return person
 
 
-def set_env_attrs(execution_key=COMMANDLINE_EXECUTION_KEY):
+def set_env_attrs(execution_key=CLI_EXEC_KEY):
     user_log_notif("Setting env attrs for " + MODEL_NAME)
     set_env_attr(GROUP_MAP,
                  {HE: HEALTHY,
@@ -268,8 +268,8 @@ def set_up(props=None):
     """
     init_props(MODEL_NAME, props, model_dir="epidemics")
 
-    execution_key = int(props[EXECUTION_KEY_NAME].val) \
-        if props is not None else COMMANDLINE_EXECUTION_KEY
+    execution_key = int(props[EXEC_KEY].val) \
+        if props is not None else CLI_EXEC_KEY
 
     city_height = get_prop('grid_height', DEF_DIM, execution_key=execution_key)
     city_width = get_prop('grid_width', DEF_DIM, execution_key=execution_key)

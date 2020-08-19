@@ -12,8 +12,8 @@ import numpy as np
 
 from registry.registry import register, get_registration, get_env
 from registry.registry import get_group, user_log_notif, user_log_err
-from registry.execution_registry import EXECUTION_KEY_NAME, \
-    COMMANDLINE_EXECUTION_KEY
+from registry.execution_registry import EXEC_KEY, \
+    CLI_EXEC_KEY
 from indra.utils import get_func_name
 
 DEBUG = False  # turns debugging code on or off
@@ -184,10 +184,10 @@ class Agent(object):
                  prim_group=None, serial_obj=None, reg=True, **kwargs):
         self.registry = {}
 
-        self.execution_key = COMMANDLINE_EXECUTION_KEY
+        self.execution_key = CLI_EXEC_KEY
 
-        if EXECUTION_KEY_NAME in kwargs:
-            self.execution_key = kwargs[EXECUTION_KEY_NAME]
+        if EXEC_KEY in kwargs:
+            self.execution_key = kwargs[EXEC_KEY]
 
         if serial_obj is not None:
             self.restore(serial_obj)

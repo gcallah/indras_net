@@ -11,8 +11,8 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import RED, GREEN
 from indra.env import Env, UNLIMITED
-from registry.execution_registry import COMMANDLINE_EXECUTION_KEY, \
-    EXECUTION_KEY_NAME, check_and_get_execution_key_from_args
+from registry.execution_registry import CLI_EXEC_KEY, \
+    EXEC_KEY, get_exec_key
 from registry.registry import get_env, get_group, get_prop
 from registry.registry import get_env_attr, set_env_attr
 from registry.registry import user_tell, run_notice, user_log_notif
@@ -60,7 +60,7 @@ def record_exchanges(pop_hist, **kwargs):
     This is our hook into the env to record the number of exchanges each
     period.
     """
-    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    execution_key = get_exec_key(kwargs=kwargs)
     pop_hist.record_pop("Exchanges",
                         get_env_attr("last_per_exchg",
                                      execution_key=execution_key))
@@ -75,7 +75,7 @@ def get_going_out(co_op_members):
 
 
 def coop_action(coop_env, **kwargs):
-    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    execution_key = get_exec_key(kwargs=kwargs)
     sitters = get_sitters(
         get_group(CO_OP_MEMBERS, execution_key=execution_key))
     going_out = get_going_out(
@@ -97,7 +97,7 @@ def coop_action(coop_env, **kwargs):
     return True
 
 
-def distribute_coupons(agent, execution_key=COMMANDLINE_EXECUTION_KEY):
+def distribute_coupons(agent, execution_key=CLI_EXEC_KEY):
     """
     Distribute coupons from central bank randomly to each babysitter.
     Coupons are gaussian distributed based on extra_coupons and extra_dev.
@@ -108,7 +108,7 @@ def distribute_coupons(agent, execution_key=COMMANDLINE_EXECUTION_KEY):
             agent["extra_coupons"], agent["extra_dev"]))
 
 
-def coop_report(coop_env, execution_key=COMMANDLINE_EXECUTION_KEY):
+def coop_report(coop_env, execution_key=CLI_EXEC_KEY):
     num_babysitter = len(
         get_sitters(get_group(CO_OP_MEMBERS, execution_key=execution_key)))
     return 'Number of babysitters is: ' + str(num_babysitter) + '\n'
@@ -136,7 +136,7 @@ def central_bank_action(agent, **kwargs):
     If exchanges are down "enough", distribute coupons!
     Enough is a parameter.
     """
-    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    execution_key = get_exec_key(kwargs=kwargs)
     CB_interven_pts = get_env_attr("CB_interven_pts",
                                    execution_key=execution_key)
     set_env_attr("num_rounds",
@@ -163,7 +163,7 @@ def create_babysitter(name, i, **kwargs):
     """
     Create a babysitter.
     """
-    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    execution_key = get_exec_key(kwargs=kwargs)
     babysitter = Agent(name + str(i), action=babysitter_action,
                        execution_key=execution_key)
     mean_coupons = get_prop("average_coupons", DEF_COUPON,
@@ -181,7 +181,7 @@ def create_central_bank(name, i, **kwargs):
     """
     Create the central bank to distribute the coupons
     """
-    execution_key = check_and_get_execution_key_from_args(kwargs=kwargs)
+    execution_key = get_exec_key(kwargs=kwargs)
     central_bank = Agent(name, action=central_bank_action,
                          execution_key=execution_key)
     central_bank["percent_change"] = get_prop("percent_change",
@@ -194,7 +194,7 @@ def create_central_bank(name, i, **kwargs):
     return central_bank
 
 
-def set_env_attrs(execution_key=COMMANDLINE_EXECUTION_KEY):
+def set_env_attrs(execution_key=CLI_EXEC_KEY):
     user_log_notif("Setting env attrs for " + MODEL_NAME)
     set_env_attr("pop_hist_func", record_exchanges,
                  execution_key=execution_key)
@@ -206,8 +206,8 @@ def set_up(props=None):
     A func to set up run that can also be used by test code.
     """
     init_props(MODEL_NAME, props)
-    execution_key = int(props[EXECUTION_KEY_NAME].val) \
-        if props is not None else COMMANDLINE_EXECUTION_KEY
+    execution_key = int(props[EXEC_KEY].val) \
+        if props is not None else CLI_EXEC_KEY
 
     num_members = get_prop('num_babysitter', DEF_BABYSITTER,
                            execution_key=execution_key)

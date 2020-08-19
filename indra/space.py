@@ -9,8 +9,8 @@ from random import randint
 from indra.agent import is_composite, AgentEncoder, X, Y
 from indra.composite import Composite
 from registry.registry import register, get_registration, get_group, get_env
-from registry.execution_registry import EXECUTION_KEY_NAME, \
-    COMMANDLINE_EXECUTION_KEY, get_exec_key
+from registry.execution_registry import EXEC_KEY, \
+    CLI_EXEC_KEY, get_exec_key
 from indra.user import user_debug, user_log, user_log_warn
 
 DEF_WIDTH = 10
@@ -35,6 +35,7 @@ class SpaceFull(Exception):
     """
     Exception to raise when a space fills up.
     """
+
     def __init__(self, message):
         self.message = message
 
@@ -170,12 +171,12 @@ def get_move_angle(agent, agents_in_range):
     vector_x = 0
     vector_y = 0
     for curr_agent in agents_in_range:
-        if(curr_agent.get_x() != agent.get_x()):
+        if (curr_agent.get_x() != agent.get_x()):
             if ((curr_agent.get_x() - agent.get_x()) < 0):
                 vector_x -= 1 / ((curr_agent.get_x() - agent.get_x()) ** 2)
             else:
                 vector_x += 1 / ((curr_agent.get_x() - agent.get_x()) ** 2)
-        if(curr_agent.get_y() != agent.get_y()):
+        if (curr_agent.get_y() != agent.get_y()):
             if ((curr_agent.get_y() - agent.get_y()) < 0):
                 vector_y -= 1 / ((curr_agent.get_y() - agent.get_y()) ** 2)
             else:
@@ -197,10 +198,10 @@ class Space(Composite):
                          action=action, serial_obj=serial_obj,
                          reg=False, **kwargs)
 
-        self.execution_key = COMMANDLINE_EXECUTION_KEY
-        if EXECUTION_KEY_NAME in kwargs:
-            self.execution_key = kwargs[EXECUTION_KEY_NAME]
-
+        self.execution_key = CLI_EXEC_KEY
+        if EXEC_KEY in kwargs:
+            self.execution_key = kwargs[EXEC_KEY]
+        print("Space has execution key- ", self.execution_key)
         self.type = type(self).__name__
         if serial_obj is not None:
             self.restore(serial_obj)
@@ -376,7 +377,7 @@ class Space(Composite):
         """
         if self.is_full():
             user_log(ALL_FULL)
-            raise(SpaceFull(ALL_FULL))
+            raise (SpaceFull(ALL_FULL))
 
         if not is_composite(mbr):
             if xy is not None:
@@ -605,7 +606,8 @@ class Space(Composite):
                                                     agent.get_y()),
                                 size=size,
                                 agents_move=not agent.get("save_neighbors",
-                                                          False))
+                                                          False),
+                                execution_key=self.execution_key)
         return region.exists_neighbor(exclude_self=exclude_self, pred=pred)
 
     def get_neighbor(self, agent, pred=None, exclude_self=True, size=1,
@@ -636,14 +638,16 @@ def gen_region_name(NW=None, NE=None, SW=None,
 
 
 def region_factory(space=None, NW=None, NE=None, SW=None,
-                   SE=None, center=None, size=None, agents_move=True):
+                   SE=None, center=None, size=None, agents_move=True,
+                   **kwargs):
     region_name = gen_region_name(NW=NW, NE=NE, SW=SW, SE=SE,
                                   center=center, size=size)
     if region_name in region_dict:
         return region_dict[region_name]
     else:
         new_reg = Region(space=space, NW=NW, NE=NE, SW=SW, SE=SE,
-                         center=center, size=size, agents_move=agents_move)
+                         center=center, size=size, agents_move=agents_move,
+                         **kwargs)
         region_dict[region_name] = new_reg
         return new_reg
 
@@ -672,9 +676,9 @@ class Region():
                  SE=None, center=None, size=None, agents_move=True, **kwargs):
         # alternate structure?
         # self.corners[NW] = nw
-        self.execution_key = COMMANDLINE_EXECUTION_KEY
-        if EXECUTION_KEY_NAME in kwargs:
-            self.execution_key = kwargs[EXECUTION_KEY_NAME]
+        self.execution_key = CLI_EXEC_KEY
+        if EXEC_KEY in kwargs:
+            self.execution_key = kwargs[EXEC_KEY]
         self.name = gen_region_name(NW, NE, SW, SE, center, size)
         if (space is None):
             space = get_env(self.execution_key)
@@ -749,11 +753,12 @@ class Region():
     def create_sub_reg(self, space=None, NW=None, NE=None, SW=None,
                        SE=None, center=None, size=None,
                        agents_move=True):
-        if(size > self.size):
+        if (size > self.size):
             raise Exception("Creating sub_region bigger than main region")
         self.my_sub_regs.append(region_factory(space=space, NW=NW, NE=NE,
-                                SW=SW, SE=SE, center=center, size=size,
-                                agents_move=agents_move))
+                                               SW=SW, SE=SE, center=center,
+                                               size=size,
+                                               agents_move=agents_move))
         self._load_agents()
 
     def agents_move_switch(self):
@@ -763,7 +768,7 @@ class Region():
     def _load_sub_reg_agents(self, exclude_self=False):
         for region in self.my_sub_regs:
             for agent in self.my_agents:
-                if(region.contains(agent.get_pos())):
+                if (region.contains(agent.get_pos())):
                     region.my_agents.append(agent)
 
     def _load_agents(self, exclude_self=False):

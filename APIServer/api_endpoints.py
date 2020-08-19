@@ -14,7 +14,7 @@ from APIServer.props_api import get_props_for_current_execution, put_props
 from APIServer.run_model_api import run_model_put
 from indra.user import APIUser
 from registry.execution_registry import execution_registry, \
-    EXECUTION_KEY_NAME, COMMANDLINE_EXECUTION_KEY
+    EXEC_KEY, CLI_EXEC_KEY
 
 app = Flask(__name__)
 CORS(app)
@@ -29,7 +29,7 @@ We can remove this after all models have been ported to new execution
 registry system
 '''
 APIUser("Dennis", None,
-        execution_key=COMMANDLINE_EXECUTION_KEY)
+        execution_key=CLI_EXEC_KEY)
 
 
 @api.route('/test', endpoint="test",
@@ -119,7 +119,7 @@ class Props(Resource):
         props = \
             get_props_for_current_execution(model_id, indra_dir)
         APIUser("Dennis", None,
-                execution_key=props[EXECUTION_KEY_NAME].get("val"))
+                execution_key=props[EXEC_KEY].get("val"))
         return props
 
     @api.expect(props)
