@@ -208,7 +208,74 @@ def assemble_lgraph_data(key, values, color, data=None):
     data[key]["color"] = color
     return data
 
+class BarGraph():
+    def __init__(self, title, varieties, data_points,
+                 anim=False, data_func=None, is_headless=False, legend_pos=4):
+        
+        global anim_func
+        self.title = title
+        self.anim = anim
+        self.data_func = data_func
+        for i in varieties:
+            data_points = len(varieties[i]["data"])
+            break
+        self.draw_graph(data_points, varieties)
+        self.headless = is_headless
 
+        if anim and not self.headless:
+            anim_func = animation.FuncAnimation(self.fig,
+                                    self.update_plot,
+                                    frames=1000,
+                                    interval=500,
+                                    blit=False)
+
+    @expects_plt
+    def draw_graph(self, data_points, varieties):
+        """
+        Draw all elements of the graph.
+        """
+
+        self.fig, self.ax = plt.subplots()
+        
+        x = np.arange(0, data_points)
+
+        self.create_bars(x, self.ax, varieties)
+        self.ax.legend()
+        self.ax.set_title(self.title)
+    
+    @expects_plt
+    def create_bars(self,x,ax,varieties):
+        bar_coordinates = 0;
+        for i, var in enumerate(varieties):
+            if var != "Contagious":
+                data = varieties[var]["data"]
+                color = get_color(varieties[var], i)
+                y = np.array(data), 
+                ax.bar(x + bar_coordinates, height = data ,label=var, color=color, width=0.25)
+                bar_coordinates += 0.2
+
+    @expects_plt
+    def show(self):
+        """
+        Display the barGraph.
+        """
+        if not self.headless:
+            plt.show()
+        else:
+            file = io.BytesIO()
+            plt.savefig(file, format="png")
+            return file
+
+    @expects_plt
+    def update_plot(self, i):
+        """
+        This is our animation function.
+        For line graphs, redraw the whole thing.
+        """
+        plt.clf()
+        (data_points, varieties) = self.data_func()
+        self.draw_graph(data_points, varieties)
+        self.show()
 class LineGraph():
     """
     We create a class here to save state for animation.
