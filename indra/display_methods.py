@@ -238,11 +238,17 @@ class BarGraph():
     def create_bars(self, x, ax, varieties):
         bar_coordinates = 0
         for i, var in enumerate(varieties):
-            if var != "Contagious":
+            if var != "Infected":
                 data = varieties[var]["data"]
                 color = get_color(varieties[var], i)
-                ax.bar(x + bar_coordinates,
-                       height=data, label=var, color=color, width=0.25)
+                if len(x) > 40:
+                    ax.bar(x[-40:] + bar_coordinates,
+                           height=data[-40:], label=var,
+                           color=color, width=.2)
+                else:
+                    ax.bar(x + bar_coordinates,
+                           height=data, label=var, color=color, width=.2)
+
                 bar_coordinates += 0.2
 
     @expects_plt
