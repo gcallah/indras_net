@@ -117,7 +117,6 @@ class Env(Space):
         self.execution_key = CLI_EXEC_KEY
         if EXEC_KEY in kwargs:
             self.execution_key = kwargs[EXEC_KEY]
-        print("Env has execution key - ", self.execution_key)
         self.type = type(self).__name__
         self.user_type = os.getenv("user_type", TERMINAL)
         # this func is only used once, so no need to restore it

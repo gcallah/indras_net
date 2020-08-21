@@ -50,7 +50,6 @@ class Composite(Agent):
         super().__init__(name, attrs=attrs, duration=duration,
                          action=action, serial_obj=serial_obj,
                          reg=False, **kwargs)
-        print("Composite has execution key -", self.execution_key)
         self.type = type(self).__name__
 
         if serial_obj is not None:

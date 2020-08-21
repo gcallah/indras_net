@@ -28,6 +28,7 @@ class ExecutionRegistry(object):
 
     def create_new_execution_registry(self):
         key = self.get_unique_key()
+        print("Creating new execution_registry with key-{}".format(key))
         self.registries[key] = {}
         return key
 

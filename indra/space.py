@@ -201,7 +201,6 @@ class Space(Composite):
         self.execution_key = CLI_EXEC_KEY
         if EXEC_KEY in kwargs:
             self.execution_key = kwargs[EXEC_KEY]
-        print("Space has execution key- ", self.execution_key)
         self.type = type(self).__name__
         if serial_obj is not None:
             self.restore(serial_obj)
