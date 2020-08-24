@@ -33,7 +33,6 @@ class ExecutionRegistry(object):
         key = self.get_unique_key()
         print("Creating new execution_registry with key-{}".format(key))
         self.registries[key] = {}
-        print("Registry has - ", self.registries.keys())
         return key
 
     def __set_value_at_key(self, key=CLI_EXEC_KEY, value=None,
@@ -56,6 +55,7 @@ class ExecutionRegistry(object):
         self.__set_value_at_key(key, 'props', propargs)
 
     def does_key_exists(self, key):
+        print("Registry has - ", self.registries.keys())
         if key not in self.registries:
             raise KeyError(
                 "key - {} does not exist in registry. "
