@@ -21,6 +21,8 @@ class ExecutionRegistry(object):
 
     def get_unique_key(self):
         key = random.randint(1, BILLION)
+        while key in self.registries.keys():
+            key = random.randint(1, BILLION)
         return key
 
     def register(self, agent_registry: registry):
