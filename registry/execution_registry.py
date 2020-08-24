@@ -30,6 +30,7 @@ class ExecutionRegistry(object):
         key = self.get_unique_key()
         print("Creating new execution_registry with key-{}".format(key))
         self.registries[key] = {}
+        print("Registry has - ", self.registries.keys())
         return key
 
     def __set_value_at_key(self, key=CLI_EXEC_KEY, value=None,
