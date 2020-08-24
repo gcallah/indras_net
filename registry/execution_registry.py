@@ -15,6 +15,7 @@ def init_exec_key(props=None):
 
 class ExecutionRegistry(object):
     def __init__(self):
+        print("Creating new registry")
         self.registries = {}
         self.registries[CLI_EXEC_KEY] = {}
 
@@ -118,6 +119,7 @@ class ExecutionRegistry(object):
     def clear_data_for_execution_key(self, key):
         if key != CLI_EXEC_KEY:
             self.does_key_exists(key)
+            print("Clearing key - {} from registry".format(key))
             del self.registries[key]
 
 
