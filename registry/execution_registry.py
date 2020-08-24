@@ -55,8 +55,8 @@ class ExecutionRegistry(object):
         self.__set_value_at_key(key, 'props', propargs)
 
     def does_key_exists(self, key):
-        print("Registry has - ", self.registries.keys())
         if key not in self.registries:
+            print("Registry has - ", self.registries.keys())
             raise KeyError(
                 "key - {} does not exist in registry. "
                 "Maybe you forgot to call create_new_execution_registry".format
