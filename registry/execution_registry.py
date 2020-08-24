@@ -131,5 +131,6 @@ def get_exec_key(kwargs):
         execution_key = kwargs[EXEC_KEY]
     return execution_key
 
+print('Setting up execution registry for the server')
 
 execution_registry = ExecutionRegistry()
