@@ -783,7 +783,7 @@ class Region():
                 if (region.contains(agent.get_pos())):
                     region.my_agents.append(agent)
 
-    def _load_agents(self, exclude_self=False):
+    def _load_agents(self, exclude_self=True):
         """
         This fills self.my_agents with all neighbors, and maybe the center
         agents, depending upon `exclude_self`.
@@ -905,7 +905,8 @@ class CircularRegion(Region):
             if self.contains(conv_coord):
                 potential_agent = self.space.get_agent_at(conv_coord[X],
                                                           conv_coord[Y])
-                if (conv_coord == self.center) and (exclude_self is True):
+                if ((conv_coord == list(self.center))
+                   and (exclude_self is True)):
                     continue
                 else:
                     self.my_agents.append(potential_agent)
@@ -923,7 +924,7 @@ class CircularRegion(Region):
             these_agents = self.my_agents
         return these_agents
 
-    def get_agents(self, exclude_self=False, pred=None):
+    def get_agents(self, exclude_self=True, pred=None):
         self._load_agents_if_necc(exclude_self=exclude_self)
         return self._apply_pred_if_necc(pred)
 
