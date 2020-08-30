@@ -17,7 +17,8 @@ DEBUG = True
 
 CONSUMER_INDX = 0
 BB_INDX = 1
-
+BIG_BOX = "Big box"
+CONSUMER = "Consumer"
 HOOD_SIZE = 2
 hood_size = 2
 MP_PREF = 0.1
@@ -52,7 +53,7 @@ def sells_good(store):
     we come up with something better.
     """
     global item_needed
-    if store.primary_group() == get_group(BB_INDX):
+    if store.primary_group() == get_group(BIG_BOX):
         return True
     else:
         if store.is_active() and item_needed in store.name:
@@ -96,7 +97,7 @@ def create_bb(name):
     Create a big box store.
     """
     bb_book = {"expense": 150,
-               "capital": get_env_attr(bb_capital)}
+               "capital": get_env_attr("bb_capital")}
     return Agent(name=name, attrs=bb_book, action=bb_action)
 
 
@@ -112,10 +113,10 @@ def get_util(store):
     """
     Get utility depending on the store type.
     """
-    if store.primary_group() == get_group(BB_INDX):
+    if store.primary_group() == get_group(BIG_BOX):
         return calc_util(store)
     else:
-        return calc_util(store) + get_env_attr(mp_pref)
+        return calc_util(store) + get_env_attr("mp_pref")
 
 
 def consumer_action(consumer, **kwargs):
@@ -123,13 +124,22 @@ def consumer_action(consumer, **kwargs):
     Check shops near consumer and
     consumer decide where to shop at.
     """
-    print("consumer action called")
+    print("consumer in consumer_action", consumer)
+    # curr_region = Region(space=get_env(), center=consumer.get_pos(), size=1)
     global item_needed
     item_needed = consumer["item needed"]
+    print("item needed is", item_needed)
+    # shop_at = curr_region.get_neighbor(consumer, pred=sells_good)
     shop_at = get_neighbor(consumer, pred=sells_good)
+    print("shop at is", shop_at)
+    if shop_at is None:
+        return False
+
+    max_util = 0.0
+    curr_store_util = get_util(shop_at)
+    if curr_store_util > max_util:
+        max_util = curr_store_util
     if shop_at is not None:
-        # needs to be revisited
-        # max_util = 0.0
         transaction(shop_at, consumer)
         if DEBUG:
             print("     someone shopped at ",   shop_at)
@@ -141,6 +151,7 @@ def transaction(store, consumer):
     """
     Add money to the store's capital from consumer.
     """
+    print("Store in transaction", store)
     store["capital"] += consumer["spending power"]
     # print("   ", consumer, "spend money at ", store)
 
@@ -183,7 +194,7 @@ def town_action(town, **kwargs):
     the big box store
     """
     box = get_env()
-    if town.get_periods() == box.get_attr(period):
+    if town.get_periods() == box.get_attr("period"):
         new_bb = create_bb("Big Box")
         box.attrs["bb_group"] += new_bb
         town.place_member(new_bb)
@@ -206,10 +217,10 @@ def set_up(props=None):
     bb_capital = multiplier * STANDARD
     period = get_prop("period", PERIOD)
 
-    consumer_group = Composite("Consumer", {"color": GRAY},
+    consumer_group = Composite(CONSUMER, {"color": GRAY},
                                member_creator=create_consumer,
                                num_members=num_consumers)
-    bb_group = Composite("Big box", {"color": BLUE})
+    bb_group = Composite(BIG_BOX, {"color": BLUE})
     groups = [consumer_group, bb_group]
     for stores in range(0, len(mp_stores)):
         store_name = list(mp_stores.keys())[stores]
@@ -218,11 +229,13 @@ def set_up(props=None):
     for m in range(0, num_mp):
         rand = random.randint(2, len(groups) - 1)
         groups[rand] += create_mp(groups[rand], m)
+    print("the groups are", groups)
     box = Env(MODEL_NAME,
               action=town_action,
               members=groups,
               height=height,
               width=width)
+    # not sure why these attributes should be strings  ?
     box.set_attr("consumer_group", consumer_group)
     box.set_attr("bb_group", bb_group)
     box.set_attr("hood_size", hood_size)
