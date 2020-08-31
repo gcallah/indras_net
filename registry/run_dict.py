@@ -38,6 +38,9 @@ from models.forestfire import set_up as ff_set_up
 from models.forestfire import tree_action
 from models.forestfire import MODEL_NAME as FF_MODEL_NAME
 from models.forestfire import set_env_attrs as ff_set_env_attrs
+from models.gameoflife import set_up as gl_set_up
+from models.gameoflife import gameoflife_action as gl_action
+from models.gameoflife import MODEL_NAME as GL_MODEL_NAME
 from models.sandpile import set_up as sa_set_up
 from models.sandpile import sandpile_action
 from models.sandpile import MODEL_NAME as SA_MODEL_NAME
@@ -88,6 +91,7 @@ setup_dict = {
     FA_MODEL_NAME: fa_set_up,
     FM_MODEL_NAME: fm_set_up,
     FF_MODEL_NAME: ff_set_up,
+    GL_MODEL_NAME: gl_set_up,
     MO_MODEL_NAME: mn_set_up,
     SA_MODEL_NAME: sa_set_up,
     SE_MODEL_NAME: se_set_up,
@@ -104,6 +108,7 @@ action_dict = {
     "coop_action": coop_action,
     "drinker_action": drinker_action,
     "follower_action": follower_action,
+    "gameoflife_action": gl_action,
     "market_maker_action": market_maker_action,
     "nutrient_action": nutrient_action,
     "sheep_action": sheep_action,

@@ -139,6 +139,16 @@
         "source": "https://github.com/gcallah/indras_net/blob/master/models/wolfram.py",
         "graph": "scatter",
         "active": true
+      },
+      {
+        "model ID": 14,
+        "name": "Game of Life Model",
+        "run": "gameoflife",
+        "props": "models/props/gameoflife.props.json",
+        "doc": "Conway's Game of Life model.",
+        "source": "https://github.com/gcallah/indras_net/blob/master/models/gameoflife.py",
+        "graph": "scatter",
+        "active": true
       }
     ]
   }
