@@ -23,5 +23,11 @@ def run_model_put(payload, run_time):
         user_log_notif("Attributes for " + env.name + repr(env.attrs))
     else:
         user_log_notif(env.name + " not found in env_attrs")
-    env.runN(periods=run_time, execution_key=execution_key)
+    try:
+        env.runN(periods=run_time, execution_key=execution_key)
+    except Exception as excp:
+        env.user.tell(str(excp))
+        env.user.tell("Halting Model!")
+        user_log_notif(str(excp))
+        user_log_notif("Halting Model!")
     return json_converter(env)

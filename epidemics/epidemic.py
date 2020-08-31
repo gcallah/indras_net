@@ -21,7 +21,8 @@ from math import log
 
 MODEL_NAME = "epidemic"
 DEBUG = False  # turns debugging code on or off
-DEBUG2 = True  # turns deeper debugging code on or off
+DEBUG2 = False  # turns deeper debugging code on or off
+DEBUGSPEED = False  # turns off extra print statements to speed up modeling.
 
 # Constants that are re-analyzed in setup
 DEF_CON_DUR = 4
@@ -136,18 +137,21 @@ def epidemic_report(env, execution_key=CLI_EXEC_KEY):
         R0 = R0_old
     get_env(execution_key=execution_key).set_attr("R0", R0)
     result = "Current period: " + str(periods - 1) + "\n"
-    result += "New cases: " + str(curr_infected) + "\n"
+    if DEBUGSPEED is False:
+        result += "New cases: " + str(curr_infected) + "\n"
 
-    if curr_infected > 0:
-        cases = get_env(execution_key=execution_key).get_attr("total_cases")
-        get_env(execution_key=execution_key).set_attr("total_cases",
-                                                      cases + curr_infected)
+        if curr_infected > 0:
+            cases = get_env(execution_key=execution_key).get_attr(
+                     "total_cases")
+            get_env(execution_key=execution_key).set_attr(
+                    "total_cases", cases + curr_infected)
 
-    result += "Total cases: " + \
-              str(get_env(execution_key=execution_key).get_attr(
-                  "total_cases")) + "\n"
-    result += "New deaths: " + str(curr_deaths) + "\n"
-    result += "Total deaths: " + str(total_deaths) + "\n"
+        result += "Total cases: " + \
+                  str(get_env(execution_key=execution_key).get_attr(
+                      "total_cases")) + "\n"
+        result += "New deaths: " + str(curr_deaths) + "\n"
+        result += "Total deaths: " + str(total_deaths) + "\n"
+
     result += "R0 value: " + str(R0) + "\n"
 
     return result
@@ -184,7 +188,8 @@ def person_action(agent, **kwargs):
         sub_reg = curr_reg.create_sub_reg(center=agent.get_pos(),
                                           radius=(infec_dist * distance_mod),
                                           execution_key=execution_key)
-        if sub_reg.exists_neighbor():
+        agent_list = sub_reg.get_agents(exclude_self=True)
+        if (agent_list is not None and (len(agent_list) > 0)):
             if DEBUG2:
                 user_log_notif("Exposing nearby people!")
             agent[STATE] = EX
