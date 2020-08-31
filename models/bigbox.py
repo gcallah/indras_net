@@ -13,7 +13,7 @@ from indra.utils import init_props
 MODEL_NAME = "bigbox"
 NUM_OF_CONSUMERS = 50
 NUM_OF_MP = 8
-DEBUG = True
+DEBUG = False
 
 CONSUMER_INDX = 0
 BB_INDX = 1
@@ -32,17 +32,18 @@ EXPENSE_INDX = 0
 CAPITAL_INDX = 1
 COLOR_INDX = 2
 
-bb_capital = 2000
+bb_capital = 1000
+bb_expense = 100
 item_needed = None
 
 # The data below creates store types with default values.
 # "Store type":
 # [expense, capital, color]
-mp_stores = {"Bookshop": [65, 90, TAN],
-             "Coffeeshop": [63, 100, BLACK],
-             "Grocery store": [67, 100, GREEN],
-             "Hardware": [60, 110, RED],
-             "Restaurant": [60, 100, YELLOW]}
+mp_stores = {"Bookshop": [20, 90, TAN],
+             "Coffeeshop": [22, 100, BLACK],
+             "Grocery store": [23, 100, GREEN],
+             "Hardware": [18, 110, RED],
+             "Restaurant": [25, 100, YELLOW]}
 
 
 def sells_good(store):
@@ -73,7 +74,6 @@ def create_consumer(name, i, props=None):
     """
     Create consumers
     """
-    print("create consumer called")
     spending_power = random.randint(50, 70)
     consumer_books = {"spending power": spending_power,
                       "last util": 0.0,
@@ -96,7 +96,7 @@ def create_bb(name):
     """
     Create a big box store.
     """
-    bb_book = {"expense": 150,
+    bb_book = {"expense": bb_expense,
                "capital": get_env_attr("bb_capital")}
     return Agent(name=name, attrs=bb_book, action=bb_action)
 
@@ -124,14 +124,9 @@ def consumer_action(consumer, **kwargs):
     Check shops near consumer and
     consumer decide where to shop at.
     """
-    print("consumer in consumer_action", consumer)
-    # curr_region = Region(space=get_env(), center=consumer.get_pos(), size=1)
     global item_needed
     item_needed = consumer["item needed"]
-    print("item needed is", item_needed)
-    # shop_at = curr_region.get_neighbor(consumer, pred=sells_good)
     shop_at = get_neighbor(consumer, pred=sells_good)
-    print("shop at is", shop_at)
     if shop_at is None:
         return False
 
@@ -139,10 +134,9 @@ def consumer_action(consumer, **kwargs):
     curr_store_util = get_util(shop_at)
     if curr_store_util > max_util:
         max_util = curr_store_util
-    if shop_at is not None:
-        transaction(shop_at, consumer)
-        if DEBUG:
-            print("     someone shopped at ",   shop_at)
+    transaction(shop_at, consumer)
+    if DEBUG:
+        print("     someone shopped at ",   shop_at)
     consumer["item needed"] = get_rand_good_type()
     return False
 
@@ -151,9 +145,7 @@ def transaction(store, consumer):
     """
     Add money to the store's capital from consumer.
     """
-    print("Store in transaction", store)
     store["capital"] += consumer["spending power"]
-    # print("   ", consumer, "spend money at ", store)
 
 
 def calc_util(stores):
@@ -177,7 +169,6 @@ def common_action(business):
     Common action to deduct expenses and
     check whether the entity goes out of business
     """
-    print(business, "has expense of ", business["expense"])
     business["capital"] -= business["expense"]
     if DEBUG:
         print("       ", business, "has a capital of ", business["capital"])
@@ -229,13 +220,11 @@ def set_up(props=None):
     for m in range(0, num_mp):
         rand = random.randint(2, len(groups) - 1)
         groups[rand] += create_mp(groups[rand], m)
-    print("the groups are", groups)
     box = Env(MODEL_NAME,
               action=town_action,
               members=groups,
               height=height,
               width=width)
-    # not sure why these attributes should be strings  ?
     box.set_attr("consumer_group", consumer_group)
     box.set_attr("bb_group", bb_group)
     box.set_attr("hood_size", hood_size)
