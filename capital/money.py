@@ -24,7 +24,7 @@ DEF_NUM_TRADERS = 4
 
 MONEY_MAX_UTIL = 100
 
-DUR_DECR = "durability_decrement"
+DUR = "durability"
 TRADE_COUNT = "trade_count"
 INIT_COUNT = 0  # a starting point for trade_count
 
@@ -45,28 +45,28 @@ prev_trade = {'cow': 0,
 natures_goods = {
     # add initial value to this data?
     "cow": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
-            "incr": 0, DUR_DECR: 0.8, "divisibility": 1.0,
+            "incr": 0, DUR: 0.8, "divisibility": 1.0,
             "trade_count": 0, "is_allocated": False, },
     "cheese": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
-               "incr": 0, DUR_DECR: 0.8, "divisibility": 0.4,
+               "incr": 0, DUR: 0.5, "divisibility": 0.4,
                "trade_count": 0, "is_allocated": False, },
     "gold": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
-             "incr": 0, DUR_DECR: 1.0, "divisibility": 0.05,
+             "incr": 0, DUR: 1.0, "divisibility": 0.05,
              "trade_count": 0, "is_allocated": False, },
     "banana": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
-               "incr": 0, DUR_DECR: 0.2, "divisibility": 0.2,
+               "incr": 0, DUR: 0.2, "divisibility": 0.2,
                "trade_count": 0, "is_allocated": False, },
     "diamond": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
-                "incr": 0, DUR_DECR: 1.0, "divisibility": 0.8,
+                "incr": 0, DUR: 1.0, "divisibility": 0.8,
                 "trade_count": 0, "is_allocated": False, },
     "avocado": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
-                "incr": 0, DUR_DECR: 0.3, "divisibility": 0.5,
+                "incr": 0, DUR: 0.3, "divisibility": 0.5,
                 "trade_count": 0, "is_allocated": False, },
     "stone": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
-              "incr": 0, DUR_DECR: 1.0, "divisibility": 1.0,
+              "incr": 0, DUR: 1.0, "divisibility": 1.0,
               "trade_count": 0, "is_allocated": False, },
     "milk": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
-             "incr": 0, DUR_DECR: 0.2, "divisibility": 0.15,
+             "incr": 0, DUR: 0.2, "divisibility": 0.15,
              "trade_count": 0, "is_allocated": False, },
 }
 
@@ -74,7 +74,7 @@ natures_goods = {
 class Good:
     def __init__(self, name, amt, age=0):
         self.amt = amt
-        self.dur_decr = natures_goods[name][DUR_DECR]
+        self.dur_decr = natures_goods[name][DUR]
         self.util_func = natures_goods[name][UTIL_FUNC]
         self.age = age
 
@@ -124,7 +124,7 @@ def good_decay(goods):
     """
     for good in goods:
         # Durability calculation needs to be updated
-        goods[good][AMT_AVAIL] = goods[good][DUR_DECR]
+        goods[good][AMT_AVAIL] = goods[good][DUR]
 
 
 def trade_report(env, execution_key=CLI_EXEC_KEY):
@@ -200,8 +200,8 @@ def check_props(**kwargs):
     for goods in natures_goods:
         if div == 0 and "divisibility" in natures_goods[goods]:
             del natures_goods[goods]["divisibility"]
-        if dua == 0 and DUR_DECR in natures_goods[goods]:
-            del natures_goods[goods][DUR_DECR]
+        if dua == 0 and DUR in natures_goods[goods]:
+            del natures_goods[goods][DUR]
         if trans == 0 and "transportability" in natures_goods[goods]:
             del natures_goods[goods]["transportability"]
 

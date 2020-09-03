@@ -387,6 +387,18 @@ def trade(agent, my_good, my_amt, counterparty,
     adj_add_good(counterparty, my_good, my_amt, comp=comp)
 
 
+def adjust_dura(trader, good, val):
+    """
+    This function will check if durability is an attribute of
+    the goods. If so, utility will be adjusted by durability.
+    """
+    item = list(trader["goods"])[0]
+    if "durability" in trader["goods"][item]:
+        return trader["goods"][good]["durability"]*val
+    else:
+        return val
+
+
 def utility_delta(agent, good, change):
     """
     We are going to determine the utility of goods gained
@@ -396,8 +408,9 @@ def utility_delta(agent, good, change):
     curr_good = agent["goods"][good]
     ufunc_name = curr_good[UTIL_FUNC]
     curr_amt = curr_good[AMT_AVAIL]
-    curr_util = get_util_func(ufunc_name)(curr_amt)
-    new_util = get_util_func(ufunc_name)(curr_amt + change)
+    curr_util = adjust_dura(agent, good, get_util_func(ufunc_name)(curr_amt))
+    new_util = adjust_dura(agent, good,
+                           get_util_func(ufunc_name)(curr_amt + change))
     return ((new_util + curr_util) / 2) * change
 
 

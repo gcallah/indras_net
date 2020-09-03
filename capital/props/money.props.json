@@ -26,7 +26,7 @@
     "lowval": 0
   },
   "durability": {
-    "val": 0,
+    "val": 1,
     "question": "Do you want to consider durability? (1/0 Yes/No)",
     "atype": "INT",
     "hival": 1,
