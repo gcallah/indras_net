@@ -208,7 +208,6 @@ class ActionMenu extends Component {
   timeout = (m) => new Promise((r) => setTimeout(r, m))
 
   continuousRun = async () => {
-    const { continuousRun } = this.state;
     this.setState(
       {
         continuousRun: true,
@@ -218,7 +217,8 @@ class ActionMenu extends Component {
       },
     );
     await this.timeout(200);
-    while (continuousRun) {
+    /* eslint-disable */
+    while (this.state.continuousRun) {
       // this.setState({periodNum: 1});
       this.sendNumPeriods();
       /* eslint-disable */
