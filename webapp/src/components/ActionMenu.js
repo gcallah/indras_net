@@ -42,6 +42,9 @@ class ActionMenu extends Component {
       loadingScatter: false,
       loadingLogs: false,
       activeDisplay: null,
+      continuousRun: true,
+      continuousRunDisabled: false,
+      initLoading: true,
       // need to check if this is undefined. redirection needs to happen if that is the case
       EXECUTION_KEY: envFile.execution_key,
     };
@@ -104,6 +107,7 @@ class ActionMenu extends Component {
     // there should be a error reporting mechanism here to notify
     // admins that a particular key was not cleared.
   }
+
 
   viewSource = async () => {
     try {
@@ -195,11 +199,41 @@ class ActionMenu extends Component {
         loadingData: false,
         msg: res.data.user.user_msgs,
       });
-      return true;
+      // return true;
     } catch (e) {
-      return false;
+      // return false;
     }
   };
+
+  timeout = (m) => new Promise((r) => setTimeout(r, m))
+
+  continuousRun = async () => {
+    const { continuousRun } = this.state;
+    this.setState(
+      {
+        continuousRun: true,
+        continuousRunDisabled: true,
+        periodNum: 1,
+        initLoading: false,
+      },
+    );
+    await this.timeout(200);
+    while (continuousRun) {
+      // this.setState({periodNum: 1});
+      this.sendNumPeriods();
+      /* eslint-disable */
+      await this.timeout(200);
+    }
+  }
+
+  stopRun = () => {
+    this.setState(
+      {
+        continuousRun: false,
+        continuousRunDisabled: false,
+      },
+    );
+  }
 
   renderHeader = () => {
     const { name } = this.state;
@@ -275,9 +309,9 @@ class ActionMenu extends Component {
 
   render() {
     const {
-      loadingData, msg, disabledButton, errorMessage,
+      loadingData, msg, disabledButton, errorMessage, initLoading, continuousRunDisabled,
     } = this.state;
-    if (loadingData) {
+    if (loadingData && initLoading) {
       return <PageLoader />;
     }
     return (
@@ -299,6 +333,21 @@ class ActionMenu extends Component {
                 sendNumPeriods={this.sendNumPeriods}
                 handleRunPeriod={this.handleRunPeriod}
               />
+              {/* eslint-disable */}
+              <button
+                onClick={this.continuousRun}
+                disabled={continuousRunDisabled}
+                className="btn btn-success m-2"
+              >
+                Continuous Run
+              </button>
+              {/* eslint-disable */}
+              <button
+                onClick={this.stopRun}
+                className="btn btn-danger m-2"
+              >
+                Stop
+              </button>
               <h3 className="margin-top-50 mb-4">Model Analysis:</h3>
             </div>
           </div>
