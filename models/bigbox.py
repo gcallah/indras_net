@@ -217,9 +217,12 @@ def set_up(props=None):
         store_name = list(mp_stores.keys())[stores]
         groups.append(Composite(store_name,
                                 {"color": mp_stores[store_name][COLOR_INDX]}))
-    for m in range(0, num_mp):
-        rand = random.randint(2, len(groups) - 1)
-        groups[rand] += create_mp(groups[rand], m)
+    for kind in range(0, len(mp_stores)):
+        groups[kind+2] += create_mp(groups[kind+2], kind)
+    if num_mp > len(mp_stores):
+        for mp in range(len(mp_stores), num_mp):
+            rand = random.randint(2, len(groups) - 1)
+            groups[rand] += create_mp(groups[rand], mp)
     box = Env(MODEL_NAME,
               action=town_action,
               members=groups,
