@@ -4,7 +4,7 @@ Big box model for simulating the behaviors of consumers.
 import random
 from indra.agent import Agent
 from indra.composite import Composite
-from indra.display_methods import BLACK, BLUE, GRAY, GREEN, RED, TAN, YELLOW
+from indra.display_methods import BLACK, BLUE, GRAY, GREEN, RED, ORANGE, YELLOW
 from indra.env import Env
 from registry.registry import get_env, get_prop, get_group, get_env_attr
 from indra.space import DEF_HEIGHT, DEF_WIDTH, get_neighbor
@@ -46,7 +46,7 @@ cs_goods = ["coffee"]
 gs_goods = ["groceries"]
 hw_goods = ["hardware"]
 rs_goods = ["meal"]
-mp_stores = {"Bookshop": [20, 90, TAN, bs_goods],
+mp_stores = {"Bookshop": [20, 90, ORANGE, bs_goods],
              "Coffeeshop": [22, 100, BLACK, cs_goods],
              "Grocery store": [23, 100, GREEN, gs_goods],
              "Hardware": [18, 110, RED, hw_goods],
