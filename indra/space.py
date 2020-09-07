@@ -128,6 +128,17 @@ def get_neighbor(agent, pred=None, exclude_self=True, size=1,
                       region_type=region_type)
 
 
+def get_num_of_neighbors(agent, exclude_self=False, pred=None, size=1,
+                         region_type=None, **kwargs):
+    exec_key = get_exec_key(kwargs=kwargs)
+    return get_env(execution_key=exec_key) \
+        .get_num_of_neighbors(agent,
+                              exclude_self=True,
+                              pred=None,
+                              size=size,
+                              region_type=region_type)
+
+
 def neighbor_ratio(agent, pred_one, pred_two=None, size=1, region_type=None,
                    **kwargs):
     execution_key = get_exec_key(kwargs=kwargs)
@@ -608,6 +619,15 @@ class Space(Composite):
                                                           False),
                                 execution_key=self.execution_key)
         return region.exists_neighbor(exclude_self=exclude_self, pred=pred)
+
+    def get_num_of_neighbors(self, agent, exclude_self=True, pred=None,
+                             size=1, region_type=None):
+        region = region_factory(space=self, center=(agent.get_x(),
+                                                    agent.get_y()),
+                                size=size,
+                                agents_move=not agent.get("save_neighbors",
+                                                          False))
+        return region.get_num_of_agents(no_self=exclude_self, pred=pred)
 
     def get_neighbor(self, agent, pred=None, exclude_self=True, size=1,
                      region_type=None):
