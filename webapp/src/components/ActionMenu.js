@@ -222,7 +222,7 @@ class ActionMenu extends Component {
       {
         continuousRun: true,
         continuousRunDisabled: true,
-        periodNum: 9999,
+        periodNum: 1,
         initLoading: false,
       },
     );
