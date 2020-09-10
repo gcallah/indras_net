@@ -49,6 +49,11 @@ def user_log_err(msg):
     return user_log("ERROR: " + msg)
 
 
+def log_err_and_tell_user(msg):
+    user_log_err(msg)
+    user_tell(msg)
+
+
 def user_log_warn(msg):
     return user_log("WARNING: " + msg)
 

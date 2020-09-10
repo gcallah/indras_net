@@ -135,15 +135,6 @@ class Env(Space):
         execution_registry.set_env(self.execution_key, self)
         # regis.set_env(self)
 
-    def set_attr(self, key, val):
-        self.attrs[key] = val
-
-    def get_attr(self, key, default=None):
-        if key in self.attrs:
-            return self.attrs[key]
-        else:
-            return default
-
     def set_menu_excludes(self):
         if not get_prop('use_line', True, execution_key=self.execution_key):
             self.exclude_menu_item("line_graph")

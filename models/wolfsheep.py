@@ -15,7 +15,7 @@ from registry.registry import user_tell, run_notice, user_debug
 from indra.utils import init_props
 
 MODEL_NAME = "wolfsheep"
-DEBUG = True  # turns debugging code on or off
+DEBUG = False  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
 # some default values:
