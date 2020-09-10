@@ -222,7 +222,7 @@ class ActionMenu extends Component {
       {
         continuousRun: true,
         continuousRunDisabled: true,
-        periodNum: 1,
+        periodNum: 9999,
         initLoading: false,
       },
     );
@@ -232,7 +232,13 @@ class ActionMenu extends Component {
       // this.setState({periodNum: 1});
       this.sendNumPeriods();
       /* eslint-disable */
-      await this.timeout(200);
+      while (this.state.loadingData){
+        await this.timeout(200);
+      /* eslint-disable */
+        console.log('still waiting for data...')
+      }
+      /* eslint-disable */
+      console.log('data arrived!!')
     }
   }
 
@@ -326,6 +332,9 @@ class ActionMenu extends Component {
     if (loadingData && initLoading) {
       return <PageLoader />;
     }
+    // if (loadingData && !initLoading){
+    //   return;
+    // }
     return (
       <div>
         {this.renderHeader()}
