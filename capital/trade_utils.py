@@ -7,6 +7,7 @@ from registry.execution_registry import get_exec_key
 from registry.registry import get_env
 import random
 import copy
+import math
 
 DEBUG = True
 
@@ -213,6 +214,11 @@ def amt_adjust(trader, good):
     """
     item = list(trader["goods"])[0]
     if "divisibility" in trader["goods"][item]:
+        # if the good is too old, set the avaliable amount to 0
+        # (good is no longer valid for trading)
+        if math.exp(-(1-trader["goods"][good]["durability"]) *
+           (trader["goods"][good]["age"]/10)) < 0.0001:
+            trader["goods"][good][AMT_AVAIL] = 0
         return round(trader["goods"][good]["divisibility"], DIGITS_TO_RIGHT)
     else:
         return 1
@@ -394,7 +400,8 @@ def adjust_dura(trader, good, val):
     """
     item = list(trader["goods"])[0]
     if "durability" in trader["goods"][item]:
-        return trader["goods"][good]["durability"]*val
+        return val*(trader["goods"][good]["durability"] **
+                    (trader["goods"][good]["age"]/5))
     else:
         return val
 

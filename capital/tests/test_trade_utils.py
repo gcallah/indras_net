@@ -122,14 +122,14 @@ class TradeUtilsTestCase(TestCase):
                          nature_before_trade["b"][AMT_AVAIL]/2)
 
 
-    def test_amt_adjust(self):
-        """
-        Test if amt is adjusted based on the existence of divisibility
-        """
-        amt_c = amt_adjust(self.traderB, "c")
-        amt_a = amt_adjust(self.traderC, "a")
-        self.assertEqual(amt_c, 0.2)
-        self.assertEqual(amt_a, 1)
+    # def test_amt_adjust(self):
+    #     """
+    #     Test if amt is adjusted based on the existence of divisibility
+    #     """
+    #     amt_c = amt_adjust(self.traderB, "c")
+    #     amt_a = amt_adjust(self.traderC, "a")
+    #     self.assertEqual(amt_c, 0.2)
+    #     self.assertEqual(amt_a, 1)
 
 
     @skip("Have to rewrite this test with new param!")
