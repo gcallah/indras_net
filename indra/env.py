@@ -255,10 +255,6 @@ class Env(Space):
             user_log_notif("An agent was added to the womb for "
                            + grp_nm)
 
-    def rem_member(self, posx, posy):
-        if (posx != 0) & (posy != 0):
-            return self.remove_location(posx, posy)
-
     def pending_switches(self):
         return str(len(self.switches))
 

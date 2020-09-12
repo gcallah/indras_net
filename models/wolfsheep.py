@@ -62,7 +62,7 @@ def eat(agent, prey, **kwargs):
 
 def rem_agent(agent, **kwargs):
     exec_key = get_exec_key(kwargs)
-    get_env(execution_key=exec_key).rem_member(agent.get_x(), agent.get_y())
+    get_env(execution_key=exec_key).remove_location(agent.get_pos())
     agent.die()
 
 
