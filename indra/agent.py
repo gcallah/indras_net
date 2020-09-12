@@ -452,6 +452,7 @@ class Agent(object):
 
     def die(self):
         self.duration = 0
+        self.pos = None
         self.active = False
 
     def del_group(self, group):
