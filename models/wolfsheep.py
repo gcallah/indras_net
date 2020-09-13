@@ -114,10 +114,10 @@ def sheep_action(agent, **kwargs):
         execution_key = get_exec_key(kwargs=kwargs)
         agent[TIME_TO_REPR] -= 1
         neighbors = get_num_of_neighbors(agent,
-                                       exclude_self=False,
-                                       pred=None, size=1,
-                                       region_type=None,
-                                       **kwargs)
+                                         exclude_self=False,
+                                         pred=None, size=1,
+                                         region_type=None,
+                                         **kwargs)
         if neighbors > TOO_CROWDED:
             agent.duration -= 1
         # sheep can have 1-3 babies at a time
