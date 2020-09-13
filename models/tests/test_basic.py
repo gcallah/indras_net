@@ -17,6 +17,9 @@ class BasicTestCase(TestCase):
         pass
 
     def test_main(self):
+        # a way to see what version nose is running:
+        import platform
+        print("Python version: ", platform.python_version())
         self.assertEqual(ba.main(), 0)
 
     if __name__ == '__main__':

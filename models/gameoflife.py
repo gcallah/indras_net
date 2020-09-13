@@ -132,7 +132,7 @@ def populate_board_glider(width, height, execution_key=CLI_EXEC_KEY):
     center = [width // 2, height // 2]
     agent_loc = get_agent_rules("glider", center)
     for loc in agent_loc:
-        agent = create_game_cell(loc[0], loc[1])
+        agent = create_game_cell(loc[X], loc[Y])
         b += agent
         get_env().place_member(agent, xy=loc)
 
@@ -142,7 +142,7 @@ def populate_board_small_exploder(width, height, execution_key=CLI_EXEC_KEY):
     agent_loc = get_agent_rules("small_exploder", center)
     b = get_group(BLACK, execution_key)
     for loc in agent_loc:
-        agent = create_game_cell(loc[0], loc[1])
+        agent = create_game_cell(loc[X], loc[Y])
         b += agent
         get_env().place_member(agent, xy=loc)
 
@@ -200,6 +200,27 @@ def populate_board_tumbler(width, height, execution_key=CLI_EXEC_KEY):
         agent = create_game_cell(loc[0], loc[1])
         b += agent
         get_env().place_member(agent, xy=loc)
+
+
+"""
+patterns = {
+    "glider": [
+            (center[X], center[Y]),
+            (center[X] - 1, center[1] + 1),
+            (center[X] + 1, center[Y] + 1),
+            (center[X] + 1, center[Y]),
+            (center[X], center[1] - 1)
+            ],
+    "etc": ...
+}
+
+def populate_board(width, height, pattern, execution_key=CLI_EXEC_KEY):
+    center = [width // 2, height // 2]
+    b = get_group(BLACK, execution_key)
+    for loc in patterns[pattern]:
+        # create cell, etc.
+
+"""
 
 
 def get_agent_rules(action, center):
