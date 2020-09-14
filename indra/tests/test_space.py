@@ -209,7 +209,7 @@ class SpaceTestCase(TestCase):
         Test removing location from locations.
         """
         (x, y) = (self.newton.get_x(), self.newton.get_y())
-        self.space.remove_location(x, y)
+        self.space.remove_location((x, y))
         self.assertTrue((x, y) not in self.space.locations)
 
     def test_move(self):

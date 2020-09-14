@@ -7,7 +7,7 @@ from indra.agent import Agent
 from indra.composite import Composite
 from indra.display_methods import TAN, GRAY
 from indra.env import Env
-from indra.space import SpaceFull
+from indra.space import SpaceFull, get_num_of_neighbors
 from registry.execution_registry import \
     get_exec_key, init_exec_key
 from registry.registry import get_prop, get_group, get_env, get_env_attr
@@ -22,6 +22,7 @@ DEBUG2 = False  # turns deeper debugging code on or off
 NUM_WOLVES = 8
 NUM_SHEEP = 28
 PREY_DIST = 3
+TOO_CROWDED = 5
 MEADOW_HEIGHT = 10
 MEADOW_WIDTH = 10
 
@@ -62,7 +63,7 @@ def eat(agent, prey, **kwargs):
 
 def rem_agent(agent, **kwargs):
     exec_key = get_exec_key(kwargs)
-    get_env(execution_key=exec_key).rem_member(agent.get_x(), agent.get_y())
+    get_env(execution_key=exec_key).remove_location(agent.get_pos())
     agent.die()
 
 
@@ -107,16 +108,27 @@ def reproduce(agent, create_func, group, **kwargs):
 
 
 def sheep_action(agent, **kwargs):
-    execution_key = get_exec_key(kwargs=kwargs)
-    agent[TIME_TO_REPR] -= 1
-    # sheep can have 1-3 babies at a time
-    num_of_babies = randint(1, 3)
-    while num_of_babies > 0:
-        reproduce(agent, create_sheep,
-                  get_group(SHEEP_GROUP, execution_key=execution_key),
-                  **kwargs)
-        num_of_babies -= 1
-    return False
+    if agent.duration <= 0:
+        return rem_agent(agent, **kwargs)
+    else:
+        execution_key = get_exec_key(kwargs=kwargs)
+        agent[TIME_TO_REPR] -= 1
+        neighbors = get_num_of_neighbors(agent,
+                                         exclude_self=False,
+                                         pred=None, size=1,
+                                         region_type=None,
+                                         **kwargs)
+        if neighbors > TOO_CROWDED:
+            agent.duration -= 1
+        # sheep can have 1-3 babies at a time
+        num_of_babies = randint(1, 3)
+        while num_of_babies > 0:
+            reproduce(agent, create_sheep,
+                      get_group(SHEEP_GROUP, execution_key=execution_key),
+                      **kwargs)
+            num_of_babies -= 1
+        agent.duration -= 1
+        return False
 
 
 def wolf_action(agent, **kwargs):

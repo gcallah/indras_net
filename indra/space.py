@@ -444,11 +444,15 @@ class Space(Composite):
         else:
             user_debug("Trying to place agent in occupied space.")
 
-    def remove_location(self, x, y):
+    def remove_location(self, coord):
         """
-        Remove a member from the locations.
+        Remove a member from locations.
         """
-        del self.locations[str((x, y))]
+        str_coord = str(coord)
+        if str_coord in self.locations:
+            del self.locations[str_coord]
+        else:
+            user_log_warn("Trying to remove unlocated agent from space.")
 
     def get_row_hood(self, row_num, pred=None, save_neighbors=False):
         """
@@ -627,7 +631,7 @@ class Space(Composite):
                                 size=size,
                                 agents_move=not agent.get("save_neighbors",
                                                           False))
-        return region.get_num_of_agents(no_self=exclude_self, pred=pred)
+        return region.get_num_of_agents(exclude_self=exclude_self, pred=pred)
 
     def get_neighbor(self, agent, pred=None, exclude_self=True, size=1,
                      region_type=None):

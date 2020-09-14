@@ -1,3 +1,5 @@
+#!/bin/bash
+
 export user_type="test"
 export test_dir="tests"
 export ignores="(scheduler|sandpile|fashion|bigbox)"
