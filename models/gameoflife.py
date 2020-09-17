@@ -128,42 +128,21 @@ def game_agent_action(agent, **kwargs):
 
 
 def populate_board_glider(width, height, execution_key=CLI_EXEC_KEY):
-    b = get_group(BLACK, execution_key)
-    center = [width // 2, height // 2]
-    agent_loc = get_agent_rules("glider", center)
-    for loc in agent_loc:
-        agent = create_game_cell(loc[X], loc[Y])
-        b += agent
-        get_env().place_member(agent, xy=loc)
+    populate_board("glider", width, height, execution_key)
 
 
 def populate_board_small_exploder(width, height, execution_key=CLI_EXEC_KEY):
-    center = [width // 2, height // 2]
-    agent_loc = get_agent_rules("small_exploder", center)
-    b = get_group(BLACK, execution_key)
-    for loc in agent_loc:
-        agent = create_game_cell(loc[X], loc[Y])
-        b += agent
-        get_env().place_member(agent, xy=loc)
+    populate_board("small_exploder", width, height, execution_key)
 
 
 def populate_board_exploder(width, height, execution_key=CLI_EXEC_KEY):
-    center = [width // 2, height // 2]
-    agent_loc = get_agent_rules("exploder", center)
-    b = get_group(BLACK, execution_key)
-    for i in range(0, 5):
-        agent_loc.append((center[X] - 2, center[Y] - i))
-        agent_loc.append((center[X] + 2, center[Y] - i))
-    for loc in agent_loc:
-        agent = create_game_cell(loc[0], loc[1])
-        b += agent
-        get_env().place_member(agent, xy=loc)
+    populate_board("exploder", width, height, execution_key)
 
 
 def populate_board_n_horizontal_row(width, height, n=10,
                                     execution_key=CLI_EXEC_KEY):
     center = [width // 2, height // 2]
-    agent_loc = get_agent_rules("horizontal_row", center)
+    agent_loc = populate_board("horizontal_row", center)
     right = (n // 2) + (n % 2)
     left = n // 2
     b = get_group(BLACK, execution_key)
@@ -179,13 +158,7 @@ def populate_board_n_horizontal_row(width, height, n=10,
 
 def populate_board_lightweight_spaceship(width, height,
                                          execution_key=CLI_EXEC_KEY):
-    center = [width // 2, height // 2]
-    agent_loc = get_agent_rules("spaceship", center)
-    b = get_group(BLACK, execution_key)
-    for loc in agent_loc:
-        agent = create_game_cell(loc[0], loc[1])
-        b += agent
-        get_env().place_member(agent, xy=loc)
+    populate_board("spaceship", width, height, execution_key)
 
 
 def populate_board_tumbler(width, height, execution_key=CLI_EXEC_KEY):
@@ -193,38 +166,12 @@ def populate_board_tumbler(width, height, execution_key=CLI_EXEC_KEY):
     Tumbler is a classic GOL pattern.
     But this must be recoded to eliminate all the hard-coding of positions.
     """
+    populate_board("tumbler", width, height, execution_key)
+
+
+def populate_board(action, width, height, execution_key=CLI_EXEC_KEY):
     center = [width // 2, height // 2]
-    b = get_group(BLACK, execution_key)
-    agent_loc = get_agent_rules("tumbler", center)
-    for loc in agent_loc:
-        agent = create_game_cell(loc[0], loc[1])
-        b += agent
-        get_env().place_member(agent, xy=loc)
-
-
-"""
-patterns = {
-    "glider": [
-            (center[X], center[Y]),
-            (center[X] - 1, center[1] + 1),
-            (center[X] + 1, center[Y] + 1),
-            (center[X] + 1, center[Y]),
-            (center[X], center[1] - 1)
-            ],
-    "etc": ...
-}
-
-def populate_board(width, height, pattern, execution_key=CLI_EXEC_KEY):
-    center = [width // 2, height // 2]
-    b = get_group(BLACK, execution_key)
-    for loc in patterns[pattern]:
-        # create cell, etc.
-
-"""
-
-
-def get_agent_rules(action, center):
-    agent_loc = {
+    patterns = {
         "glider": [
                 (center[X], center[Y]),
                 (center[X] - 1, center[1] + 1),
@@ -242,7 +189,18 @@ def get_agent_rules(action, center):
                             (center[X], center[Y] - 2)],
         "exploder": [
                     (center[X], center[Y]),
-                    (center[X], center[1] - 4)],
+                    (center[X], center[1] - 4),
+                    (center[X] - 2, center[Y]),
+                    (center[X] + 2, center[Y]),
+                    (center[X] - 2, center[Y] - 1),
+                    (center[X] + 2, center[Y] - 1),
+                    (center[X] - 2, center[Y] - 2),
+                    (center[X] + 2, center[Y] - 2),
+                    (center[X] - 2, center[Y] - 3),
+                    (center[X] + 2, center[Y] - 3),
+                    (center[X] - 2, center[Y] - 4),
+                    (center[X] + 2, center[Y] - 4)
+                    ],
         "horizontal_row": [],
         "spaceship": [
                     (center[X], center[Y]),
@@ -280,7 +238,12 @@ def get_agent_rules(action, center):
                     (center[X] + 2, center[Y] - 5)
                     ]
     }
-    return agent_loc[action]
+    agent_loc = patterns[action]
+    b = get_group(BLACK, execution_key)
+    for loc in agent_loc:
+        agent = create_game_cell(loc[X], loc[Y])
+        b += agent
+        get_env().place_member(agent, xy=loc)
 
 
 populate_board_dict = {

@@ -631,7 +631,7 @@ class Space(Composite):
                                 size=size,
                                 agents_move=not agent.get("save_neighbors",
                                                           False))
-        return region.get_num_of_agents(no_self=exclude_self, pred=pred)
+        return region.get_num_of_agents(exclude_self=exclude_self, pred=pred)
 
     def get_neighbor(self, agent, pred=None, exclude_self=True, size=1,
                      region_type=None):
