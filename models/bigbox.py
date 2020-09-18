@@ -15,6 +15,10 @@ NUM_OF_CONSUMERS = 50
 NUM_OF_MP = 8
 DEBUG = False
 
+# Why these values? Why not params to model?
+MIN_CONSUMER_SPENDING = 50
+MAX_CONSUMER_SPENDING = 70
+
 CONSUMER_INDX = 0
 BB_INDX = 1
 BIG_BOX = "Big box"
@@ -28,29 +32,31 @@ period = 7
 STANDARD = 200
 MULTIPLIER = 10
 
-EXPENSE_INDX = 0
-CAPITAL_INDX = 1
-COLOR_INDX = 2
-GOOD_INDX = 3
-
 bb_capital = 1000
 bb_expense = 100
 item_needed = None
 
-# The data below creates store types with default values.
-# "Store type":
-# [expense, capital, color, goods sold]
-cons_goods = ["books", "coffee", "groceries", "hardware", "meal"]
-bs_goods = ["books"]
-cs_goods = ["coffee"]
-gs_goods = ["groceries"]
-hw_goods = ["hardware"]
-rs_goods = ["meal"]
-mp_stores = {"Bookshop": [20, 90, ORANGE, bs_goods],
-             "Coffeeshop": [22, 100, BLACK, cs_goods],
-             "Grocery store": [23, 100, GREEN, gs_goods],
-             "Hardware": [18, 110, RED, hw_goods],
-             "Restaurant": [25, 100, YELLOW, rs_goods]}
+cons_goods = ["books", "coffee", "groceries", "hardware", "meals"]
+
+# we don't know where the expense and capital numbers come from!
+#  (Prof. C & Dennis)
+mp_stores = [
+    Composite("Bookshop",
+              attrs={"color": ORANGE, "per_expense": 20,
+                     "init_capital": 90, "goods_sold": ["books"], }),
+    Composite("Coffeeshop",
+              attrs={"color": BLACK, "per_expense": 22,
+                     "init_capital": 100, "goods_sold": ["coffee"], }),
+    Composite("Grocery store",
+              attrs={"color": GREEN, "per_expense": 23,
+                     "init_capital": 100, "goods_sold": ["groceries"], }),
+    Composite("Hardware",
+              attrs={"color": RED, "per_expense": 18,
+                     "init_capital": 110, "goods_sold": ["hardware"], }),
+    Composite("Restaurant",
+              attrs={"color": YELLOW, "per_expense": 25,
+                     "init_capital": 100, "goods_sold": ["meals"], }),
+]
 
 
 def sells_good(store):
@@ -61,17 +67,14 @@ def sells_good(store):
     we come up with something better.
     """
     global item_needed
-    if store.primary_group() == get_group(BIG_BOX):
+    store_grp = store.primary_group()
+    if str(store_grp) == BIG_BOX:
         return True
+    elif str(store_grp) == CONSUMER:
+        return False
     else:
-        store_name = store.name
-        str_name = ""
-        for ch in store_name:
-            if ch.isalpha():
-                str_name = "".join([str_name, ch])
-        if (str_name in mp_stores.keys()):
-            active = store.is_active
-            if active and item_needed in mp_stores[str_name][GOOD_INDX]:
+        if store.is_active():
+            if item_needed in store_grp.get_attr("goods_sold"):
                 return True
         return False
 
@@ -89,31 +92,33 @@ def create_consumer(name, i, props=None):
     """
     Create consumers
     """
-    spending_power = random.randint(50, 70)
+    spending_power = random.randint(MIN_CONSUMER_SPENDING,
+                                    MAX_CONSUMER_SPENDING)
     consumer_books = {"spending power": spending_power,
                       "last util": 0.0,
                       "item needed": get_rand_good()}
     return Agent(name + str(i), attrs=consumer_books, action=consumer_action)
 
 
-def create_mp(store_type, i):
+def create_mp(store_grp, i):
     """
     Create a mom and pop store.
     """
-    expense = mp_stores[str(store_type)]
-    name = str(store_type) + " " + str(i)
-    store_books = {"expense": expense[EXPENSE_INDX],
-                   "capital": expense[CAPITAL_INDX]}
-    return Agent(name=name, attrs=store_books, action=mp_action)
+    store_books = {"expense": store_grp.get_attr("per_expense"),
+                   "capital": store_grp.get_attr("init_capital")}
+    return Agent(name=str(store_grp) + " " + str(i),
+                 attrs=store_books,
+                 action=mp_action)
 
 
 def create_bb(name):
     """
     Create a big box store.
     """
-    bb_book = {"expense": bb_expense,
-               "capital": get_env_attr("bb_capital")}
-    return Agent(name=name, attrs=bb_book, action=bb_action)
+    return Agent(name=name,
+                 attrs={"expense": bb_expense,
+                        "capital": get_env_attr("bb_capital")},
+                 action=bb_action)
 
 
 def bb_action(bb, **kwargs):
@@ -228,16 +233,14 @@ def set_up(props=None):
                                num_members=num_consumers)
     bb_group = Composite(BIG_BOX, {"color": BLUE})
     groups = [consumer_group, bb_group]
-    for stores in range(0, len(mp_stores)):
-        store_name = list(mp_stores.keys())[stores]
-        groups.append(Composite(store_name,
-                                {"color": mp_stores[store_name][COLOR_INDX]}))
-    for kind in range(0, len(mp_stores)):
-        groups[kind+2] += create_mp(groups[kind+2], kind)
-    if num_mp > len(mp_stores):
-        for mp in range(len(mp_stores), num_mp):
-            rand = random.randint(2, len(groups) - 1)
-            groups[rand] += create_mp(groups[rand], mp)
+    # add mom and pop stores to groups:
+    groups.extend(mp_stores)
+
+    # loop over m&p store types and add stores:
+    for i in range(num_mp):
+        store_num = i % len(mp_stores)  # keep store_num in range
+        mp_stores[store_num] += create_mp(mp_stores[store_num], i)
+
     box = Env(MODEL_NAME,
               action=town_action,
               members=groups,
