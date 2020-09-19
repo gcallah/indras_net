@@ -4,7 +4,7 @@ Big box model for simulating the behaviors of consumers.
 import random
 from indra.agent import Agent
 from indra.composite import Composite
-from indra.display_methods import BLACK, BLUE, GRAY, GREEN, RED, ORANGE, YELLOW
+from indra.display_methods import BLACK, BLUE, GRAY, GREEN, RED, ORANGE, PURPLE
 from indra.env import Env
 from registry.registry import get_env, get_prop, get_group, get_env_attr
 from indra.space import DEF_HEIGHT, DEF_WIDTH, get_neighbor
@@ -19,16 +19,11 @@ DEBUG = False
 MIN_CONSUMER_SPENDING = 50
 MAX_CONSUMER_SPENDING = 70
 
-CONSUMER_INDX = 0
-BB_INDX = 1
 BIG_BOX = "Big box"
 CONSUMER = "Consumer"
 HOOD_SIZE = 2
-hood_size = 2
 MP_PREF = 0.1
-mp_pref = 0.1
 PERIOD = 7
-period = 7
 STANDARD = 200
 MULTIPLIER = 10
 
@@ -54,7 +49,7 @@ mp_stores = [
               attrs={"color": RED, "per_expense": 18,
                      "init_capital": 110, "goods_sold": ["hardware"], }),
     Composite("Restaurant",
-              attrs={"color": YELLOW, "per_expense": 25,
+              attrs={"color": PURPLE, "per_expense": 25,
                      "init_capital": 100, "goods_sold": ["meals"], }),
 ]
 
@@ -67,14 +62,13 @@ def sells_good(store):
     we come up with something better.
     """
     global item_needed
-    store_grp = store.primary_group()
-    if str(store_grp) == BIG_BOX:
+    if str(store.primary_group()) == BIG_BOX:
         return True
-    elif str(store_grp) == CONSUMER:
+    elif str(store.primary_group()) == CONSUMER:
         return False
     else:
         if store.is_active():
-            if item_needed in store_grp.get_attr("goods_sold"):
+            if item_needed in store.primary_group().get_attr("goods_sold"):
                 return True
         return False
 
@@ -104,10 +98,9 @@ def create_mp(store_grp, i):
     """
     Create a mom and pop store.
     """
-    store_books = {"expense": store_grp.get_attr("per_expense"),
-                   "capital": store_grp.get_attr("init_capital")}
     return Agent(name=str(store_grp) + " " + str(i),
-                 attrs=store_books,
+                 attrs={"expense": store_grp.get_attr("per_expense"),
+                        "capital": store_grp.get_attr("init_capital")},
                  action=mp_action)
 
 
