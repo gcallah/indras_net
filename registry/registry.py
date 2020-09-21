@@ -8,7 +8,7 @@ import json
 import warnings
 
 from registry.execution_registry import execution_registry, \
-    CLI_EXEC_KEY
+    CLI_EXEC_KEY, EXEC_KEY, get_exec_key
 
 REGISTRY = "Registry"
 
@@ -78,7 +78,9 @@ def set_env(env):
     _the_env = env
 
 
-def get_env(execution_key=CLI_EXEC_KEY):
+def get_env(execution_key=CLI_EXEC_KEY, **kwargs):
+    if kwargs is not None:
+        execution_key = get_exec_key(kwargs)
     return execution_registry.get_registered_env(execution_key)
 
 
@@ -112,7 +114,9 @@ def add_group(name, grp, execution_key=CLI_EXEC_KEY):
     execution_registry.set_group(execution_key, name, grp)
 
 
-def get_group(name, execution_key=CLI_EXEC_KEY):
+def get_group(name, execution_key=CLI_EXEC_KEY, **kwargs):
+    if kwargs is not None:
+        execution_key = get_exec_key(kwargs)
     return execution_registry.get_registered_group(group_name=name,
                                                    key=execution_key)
 
