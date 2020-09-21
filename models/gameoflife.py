@@ -139,21 +139,19 @@ def populate_board_exploder(width, height, execution_key=CLI_EXEC_KEY):
     populate_board("exploder", width, height, execution_key)
 
 
-def populate_board_n_horizontal_row(width, height, n=10,
-                                    execution_key=CLI_EXEC_KEY):
-    center = [width // 2, height // 2]
-    agent_loc = populate_board("horizontal_row", center)
-    right = (n // 2) + (n % 2)
-    left = n // 2
-    b = get_group(BLACK, execution_key)
+# def populate_board_n_horizontal_row(width, height, n=10,
+#                                     execution_key=CLI_EXEC_KEY):
+def populate_board_n_horizontal_row(width, height, execution_key=CLI_EXEC_KEY):
+    """
+    Default n = 10;
+    right = (n//2) + (n%2)
+    left = (n//2)
     for rht in range(right):
         agent_loc.append((center[X] + rht, center[Y]))
     for lft in range(1, left):
         agent_loc.append((center[X] - lft, center[Y]))
-    for loc in agent_loc:
-        agent = create_game_cell(loc[X], loc[Y])
-        b += agent
-        get_env().place_member(agent, xy=loc)
+    """
+    populate_board("horizontal_row", width, height, execution_key)
 
 
 def populate_board_lightweight_spaceship(width, height,
@@ -201,7 +199,17 @@ def populate_board(action, width, height, execution_key=CLI_EXEC_KEY):
                     (center[X] - 2, center[Y] - 4),
                     (center[X] + 2, center[Y] - 4)
                     ],
-        "horizontal_row": [],
+        "horizontal_row": [
+                            (center[X], center[Y]),
+                            (center[X] + 1, center[Y]),
+                            (center[X] - 1, center[Y]),
+                            (center[X] + 2, center[Y]),
+                            (center[X] - 2, center[Y]),
+                            (center[X] + 3, center[Y]),
+                            (center[X] - 3, center[Y]),
+                            (center[X] + 4, center[Y]),
+                            (center[X] - 4, center[Y]),
+                            ],
         "spaceship": [
                     (center[X], center[Y]),
                     (center[X] - 1, center[Y]),
