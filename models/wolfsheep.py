@@ -63,8 +63,10 @@ def eat(agent, prey, **kwargs):
 
 
 def rem_agent(agent, **kwargs):
-    exec_key = get_exec_key(kwargs)
-    get_env(execution_key=exec_key).remove_location(agent.get_pos())
+    # this should change to:
+    # get_env(kwargs).remove_location(agent.get_pos())
+
+    get_env(kwargs=kwargs).remove_location(agent.get_pos())
     agent.die()
 
 
@@ -82,10 +84,10 @@ def get_prey(agent, sheep, **kwargs):
         Wolves eat active sheep from the neighbourhood
     """
     exec_key = get_exec_key(kwargs=kwargs)
-    if len(get_group(SHEEP_GROUP, exec_key)) <= 0:
+    if len(get_group(SHEEP_GROUP, kwargs=kwargs)) <= 0:
         raise NoSheep("All out of sheep!")
 
-    return get_env(execution_key=exec_key) \
+    return get_env(kwargs=kwargs) \
         .get_neighbor_of_groupX(agent,
                                 SHEEP_GROUP,
                                 hood_size=get_env_attr(
@@ -108,7 +110,6 @@ def sheep_action(agent, **kwargs):
     if agent.duration <= 0:
         return rem_agent(agent, **kwargs)
     else:
-        execution_key = get_exec_key(kwargs=kwargs)
         agent[TIME_TO_REPR] -= 1
         neighbors = get_num_of_neighbors(agent,
                                          exclude_self=False,
@@ -119,7 +120,7 @@ def sheep_action(agent, **kwargs):
             agent.duration -= CROWDING_EFFECT
         if agent[TIME_TO_REPR] == 0:
             reproduce(agent, create_sheep,
-                      get_group(SHEEP_GROUP, execution_key=execution_key),
+                      get_group(SHEEP_GROUP, kwargs=kwargs),
                       **kwargs)
         return False
 
@@ -128,9 +129,8 @@ def wolf_action(agent, **kwargs):
     if agent.duration <= 0:
         return rem_agent(agent, **kwargs)
     else:
-        execution_key = get_exec_key(kwargs=kwargs)
         prey = get_prey(agent,
-                        get_group(SHEEP_GROUP, execution_key=execution_key),
+                        get_group(SHEEP_GROUP, kwargs=kwargs),
                         **kwargs)
         if prey is not None:
             eat(agent, prey, **kwargs)
@@ -139,7 +139,7 @@ def wolf_action(agent, **kwargs):
         agent[TIME_TO_REPR] -= 1
         if agent[TIME_TO_REPR] == 0:
             reproduce(agent, create_wolf,
-                      get_group(WOLF_GROUP, execution_key=execution_key),
+                      get_group(WOLF_GROUP, kwargs=kwargs),
                       **kwargs)
         return False
 
