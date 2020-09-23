@@ -1,129 +1,142 @@
 """
-Panic model.
+A model to simulate the spread of fire in a forest.
 """
 
 from indra.agent import Agent
 from indra.composite import Composite
-from indra.display_methods import RED, BLUE
+from indra.space import neighbor_ratio
+from indra.display_methods import RED, GREEN
+from indra.display_methods import TREE
 from indra.env import Env
 from registry.execution_registry import CLI_EXEC_KEY, \
     EXEC_KEY, get_exec_key
-from registry.registry import get_env, get_prop, set_env_attr
-from registry.registry import run_notice
+from registry.registry import get_env, get_prop, set_env_attr, get_env_attr
+from registry.registry import user_log_err, run_notice, user_log_notif
 from indra.utils import init_props
-from indra.space import neighbor_ratio
 
 MODEL_NAME = "panic"
-DEBUG = True  # Turns debugging code on or off
-DEBUG2 = True  # Turns deeper debugging code on or off
+DEBUG = False  # turns debugging code on or off
+DEBUG2 = False  # turns deeper debugging code on or off
 
-NUM_CALM_AGENTS = 500
-TOLERANCE = .5
+DEF_DIM = 30
+DEF_NUM_PEOPLE = DEF_DIM*2
 
-NUM_PANIC_AGENTS = 10
+AGENT_PREFIX = "Agent"
+THRESHHOLD = .5
 
-DEF_CITY_DIM = 40
-
-DEF_HOOD_SIZE = 1
-
-PANIC_GRP_IDX = 0
-CALM_GRP_IDX = 1
-
-HOOD_SIZE = 4
-
-NOT_ZERO = .001
-
-CALM_AGENTS = "Calm agents"
-PANIC_AGENTS = "Panic agents"
-GRP_INDEX = "grp_index"
-CALM = "Calm"
+# tree condition strings
+CALM = "Clam"
 PANIC = "Panic"
-STATES = "states"
 
-group_names = [CALM_AGENTS, PANIC_AGENTS]
+# state numbers: create as strings for JSON,
+# convert to int when we need 'em that way
+CM = "0"
+PN = "1"
 
-hood_size = None
-
-opp_group = None
+GROUP_MAP = "group_map"
 
 
-def panic_start(hood_ratio, my_tolerance):
+def is_calm(agent, *args):
     """
-    Is the environment to our agent's liking or not??
+    Checking whether the state is healthy or not
     """
-    return hood_ratio >= my_tolerance
+    return agent["state"] == CM
 
 
-def panic_agent_action(agent, **kwargs):
+def is_in_panic(agent, *args):
     """
-    If the agent is surrounded by more "others" than it
-    is comfortable with, the agent will move.
-    The whole idea here is to count those in other group
-    and those in my group, and get the ratio.
+    Checking whether the state is on fire or not
     """
-    execution_key = get_exec_key(kwargs=kwargs)
-    # agent_group = agent.group_name()
-    agent_group = agent["state"]
-    if agent_group == CALM:
-        ratio_num = neighbor_ratio(agent,
-                                   lambda agent: agent_group,
-                                   size=agent['hood_size'],
-                                   execution_key=execution_key)
-        # the ratio is always 1
-        print("the ration number is", ratio_num)
-        if panic_start(ratio_num, TOLERANCE):
-            print("Agents state is changed to panic")
-            agent["state"] = PANIC
-        if DEBUG2:
-            print("ratio test" + str(ratio_num))
-        return panic_start(ratio_num, TOLERANCE)
+    return agent["state"] == PN
 
 
-def create_resident(name, i, state=CALM, **kwargs):
+# we also need to set up a panic at some places on the map
+def agent_action(agent, **kwargs):
     """
-    Creates agent of specified color type
+    This is what trees do each turn in the forest.
     """
     execution_key = get_exec_key(kwargs=kwargs)
+    old_state = agent["state"]
+    if is_calm(agent):
+        # we need ration of panic neighbours to calm to be 1/2 in order for the
+        # agent to start panicking
+        if neighbor_ratio(agent, pred_one=is_calm, pred_two=is_in_panic,
+                          execution_key=execution_key) > THRESHHOLD:
+            if DEBUG2:
+                user_log_notif("Changing the agent's state to panic!")
+            agent["state"] = PN
+
+    if old_state != agent["state"]:
+        # if we entered a new state, then...
+        env = get_env(execution_key=execution_key)
+        group_map = get_env_attr(GROUP_MAP, execution_key=execution_key)
+        if group_map is None:
+            user_log_err("group_map is None!")
+            return True
+        agent.has_acted = True
+        env.add_switch(agent,
+                       group_map[old_state],
+                       group_map[agent["state"]])
+    return True
+
+
+# should we place panicking agents like in bigbox model after a certain period?
+def place_agent(name, i, state=CM, **kwargs):
+    """
+    Place a new agent.
+    By default, they start out calm.
+    """
+    execution_key = get_exec_key(kwargs=kwargs)
+    name = AGENT_PREFIX
     return Agent(name + str(i),
-                 action=panic_agent_action,
+                 action=agent_action,
                  attrs={"state": state,
-                        "hood_size": get_prop('hood_size',
-                                              DEF_HOOD_SIZE,
-                                              execution_key=execution_key),
-                        "save_neighbours": True}, execution_key=execution_key)
+                        "save_neighbors": True}, execution_key=execution_key)
+
+
+def set_env_attrs(execution_key=CLI_EXEC_KEY):
+    """
+    I actually don't think we need to do this here!
+    It can be done once in set_up().
+    """
+    user_log_notif("Setting env attrs for the panic model.")
+    set_env_attr(GROUP_MAP,
+                 {CM: CALM,
+                  PN: PANIC}, execution_key)
 
 
 def set_up(props=None):
     """
-    A func to set up run that can also be used by test code.
+    A func to set up a  run that can also be used by test code.
     """
     init_props(MODEL_NAME, props)
+
     execution_key = int(props[EXEC_KEY].val) \
         if props is not None else CLI_EXEC_KEY
-    calm = Composite(CALM, {"color": BLUE},
-                     member_creator=create_resident,
-                     num_members=get_prop('num_people',
-                                          NUM_CALM_AGENTS,
-                                          execution_key=execution_key),
-                     group=BLUE, execution_key=execution_key)
-    panic = Composite(PANIC, {"color": RED},
-                      member_creator=create_resident,
-                      num_members=NUM_PANIC_AGENTS,
-                      group=RED, execution_key=execution_key)
-    city = Env(MODEL_NAME, members=[calm, panic],
-               height=get_prop('grid_height', DEF_CITY_DIM,
-                               execution_key=execution_key),
-               width=get_prop('grid_width', DEF_CITY_DIM,
-                              execution_key=execution_key),
-               execution_key=execution_key)
-    set_env_attr(STATES, [CALM, PANIC], execution_key=execution_key)
-    city.exclude_menu_item("line_graph")
+
+    grid_height = get_prop('grid_height', DEF_DIM,
+                           execution_key=execution_key)
+    grid_width = get_prop('grid_width', DEF_DIM, execution_key=execution_key)
+    people_count = get_prop('num_people', DEF_NUM_PEOPLE,
+                            execution_key=execution_key)
+    # people_count = int(grid_height * grid_width)
+    groups = []
+    groups.append(Composite(CALM, {"color": GREEN, "marker": TREE},
+                            member_creator=place_agent,
+                            num_members=people_count,
+                            execution_key=execution_key))
+    groups.append(Composite(PANIC, {"color": RED, "marker": TREE},
+                            execution_key=execution_key))
+
+    Env(MODEL_NAME, height=grid_height, width=grid_width, members=groups,
+        execution_key=execution_key)
+    # whereas these settings must be re-done every API re-load:
+    set_env_attrs(execution_key=execution_key)
 
 
 def main():
     set_up()
     run_notice(MODEL_NAME)
-    # get_env() returns a callable object:
     get_env()()
     return 0
 
