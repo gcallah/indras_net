@@ -10,16 +10,17 @@ from indra.display_methods import TREE
 from indra.env import Env
 from registry.execution_registry import CLI_EXEC_KEY, \
     EXEC_KEY, get_exec_key
-from registry.registry import get_env, get_prop, set_env_attr, get_env_attr
-from registry.registry import user_log_err, run_notice, user_log_notif
+from registry.registry import get_env, get_prop
+from registry.registry import run_notice, user_log_notif
 from indra.utils import init_props
 
 MODEL_NAME = "panic"
 DEBUG = False  # turns debugging code on or off
-DEBUG2 = False  # turns deeper debugging code on or off
+DEBUG2 = True  # turns deeper debugging code on or off
 
 DEF_DIM = 30
 DEF_NUM_PEOPLE = DEF_DIM*2
+NUM_PANIC = 8
 
 AGENT_PREFIX = "Agent"
 THRESHHOLD = .5
@@ -32,8 +33,6 @@ PANIC = "Panic"
 # convert to int when we need 'em that way
 CM = "0"
 PN = "1"
-
-GROUP_MAP = "group_map"
 
 
 def is_calm(agent, *args):
@@ -56,7 +55,6 @@ def agent_action(agent, **kwargs):
     This is what trees do each turn in the forest.
     """
     execution_key = get_exec_key(kwargs=kwargs)
-    old_state = agent["state"]
     if is_calm(agent):
         # we need ration of panic neighbours to calm to be 1/2 in order for the
         # agent to start panicking
@@ -65,23 +63,11 @@ def agent_action(agent, **kwargs):
             if DEBUG2:
                 user_log_notif("Changing the agent's state to panic!")
             agent["state"] = PN
-
-    if old_state != agent["state"]:
-        # if we entered a new state, then...
-        env = get_env(execution_key=execution_key)
-        group_map = get_env_attr(GROUP_MAP, execution_key=execution_key)
-        if group_map is None:
-            user_log_err("group_map is None!")
-            return True
-        agent.has_acted = True
-        env.add_switch(agent,
-                       group_map[old_state],
-                       group_map[agent["state"]])
     return True
 
 
 # should we place panicking agents like in bigbox model after a certain period?
-def place_agent(name, i, state=CM, **kwargs):
+def place_agent(name, i, state=CALM, **kwargs):
     """
     Place a new agent.
     By default, they start out calm.
@@ -94,6 +80,7 @@ def place_agent(name, i, state=CM, **kwargs):
                         "save_neighbors": True}, execution_key=execution_key)
 
 
+'''
 def set_env_attrs(execution_key=CLI_EXEC_KEY):
     """
     I actually don't think we need to do this here!
@@ -103,6 +90,8 @@ def set_env_attrs(execution_key=CLI_EXEC_KEY):
     set_env_attr(GROUP_MAP,
                  {CM: CALM,
                   PN: PANIC}, execution_key)
+
+'''
 
 
 def set_up(props=None):
@@ -117,21 +106,21 @@ def set_up(props=None):
     grid_height = get_prop('grid_height', DEF_DIM,
                            execution_key=execution_key)
     grid_width = get_prop('grid_width', DEF_DIM, execution_key=execution_key)
-    people_count = get_prop('num_people', DEF_NUM_PEOPLE,
-                            execution_key=execution_key)
-    # people_count = int(grid_height * grid_width)
+    people_count = int(grid_height * grid_width)
     groups = []
     groups.append(Composite(CALM, {"color": GREEN, "marker": TREE},
                             member_creator=place_agent,
-                            num_members=people_count,
+                            num_members=people_count-60,
                             execution_key=execution_key))
     groups.append(Composite(PANIC, {"color": RED, "marker": TREE},
+                            member_creator=place_agent,
+                            num_members=60,
                             execution_key=execution_key))
 
     Env(MODEL_NAME, height=grid_height, width=grid_width, members=groups,
         execution_key=execution_key)
     # whereas these settings must be re-done every API re-load:
-    set_env_attrs(execution_key=execution_key)
+    # set_env_attrs(execution_key="execution_key")
 
 
 def main():
