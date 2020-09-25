@@ -254,9 +254,17 @@ def populate_board(action, width, height, execution_key=CLI_EXEC_KEY):
         get_env().place_member(agent, xy=loc)
 
 
+GLIDER = 0
+SMALL_EXPL = 1
+
+"""
 populate_board_dict = {
-    0: populate_board_glider,
-    1: populate_board_small_exploder,
+    GLIDER: "glider",
+"""
+
+populate_board_dict = {
+    GLIDER: populate_board_glider,
+    SMALL_EXPL: populate_board_small_exploder,
     2: populate_board_exploder,
     3: populate_board_n_horizontal_row,
     4: populate_board_lightweight_spaceship,
