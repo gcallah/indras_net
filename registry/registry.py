@@ -79,7 +79,7 @@ def set_env(env):
 
 
 def get_env(execution_key=CLI_EXEC_KEY, **kwargs):
-    if kwargs is not None:
+    if EXEC_KEY in kwargs:
         execution_key = get_exec_key(kwargs)
     return execution_registry.get_registered_env(execution_key)
 
@@ -115,7 +115,7 @@ def add_group(name, grp, execution_key=CLI_EXEC_KEY):
 
 
 def get_group(name, execution_key=CLI_EXEC_KEY, **kwargs):
-    if kwargs is not None:
+    if EXEC_KEY in kwargs:
         execution_key = get_exec_key(kwargs)
     return execution_registry.get_registered_group(group_name=name,
                                                    key=execution_key)
