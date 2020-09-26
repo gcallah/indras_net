@@ -1,6 +1,6 @@
 from registry import registry
 from numpy import random
-from propargs.constants import *
+from propargs.constants import VALUE, ATYPE, INT, HIVAL, LOWVAL
 
 BILLION = 10 ** 9
 
@@ -89,7 +89,7 @@ class ExecutionRegistry(object):
         self.does_key_exists(key)
         if "env" not in self.registries[key]:
             raise KeyError(
-                "No env registered for key - {}. Maybe you forgot to call set_env".format(
+                "No env registered for key {}.".format(
                     key))
         return self.registries[key]["env"]
 
@@ -97,7 +97,7 @@ class ExecutionRegistry(object):
         self.does_key_exists(key)
         if "user" not in self.registries[key]:
             raise KeyError(
-                "No user registered for key - {}. Maybe you forgot to call set_user".format(
+                "No user registered for key {}.".format(
                     key))
         return self.registries[key]["user"]
 
@@ -105,7 +105,7 @@ class ExecutionRegistry(object):
         self.does_key_exists(key)
         if group_name not in self.registries[key]:
             raise KeyError(
-                "Group - {} not registered for execution against execution_key - {}".format(
+                "Group {} not registered for execution against key {}".format(
                     group_name, key))
 
         return self.registries[key].get(group_name)
@@ -131,6 +131,6 @@ def get_exec_key(kwargs):
         execution_key = kwargs[EXEC_KEY]
     return execution_key
 
-print('Setting up execution registry for the server')
 
+print('Setting up execution registry for the server')
 execution_registry = ExecutionRegistry()
