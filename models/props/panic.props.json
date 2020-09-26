@@ -12,5 +12,12 @@
     "atype": "INT",
     "hival": 100,
     "lowval": 2
+  },
+  "per_panic": {
+      "val": 10,
+      "question": "What is the percentage of agents panicking",
+      "atype": "INT",
+      "hival": 100,
+      "lowval": 0
   }
 }

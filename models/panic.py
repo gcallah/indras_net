@@ -13,14 +13,15 @@ from registry.execution_registry import CLI_EXEC_KEY, \
 from registry.registry import get_env, get_prop
 from registry.registry import run_notice, user_log_notif
 from indra.utils import init_props
+import random
 
 MODEL_NAME = "panic"
 DEBUG = False  # turns debugging code on or off
 DEBUG2 = True  # turns deeper debugging code on or off
 
-DEF_DIM = 30
+DEF_DIM = 10
 DEF_NUM_PEOPLE = DEF_DIM*2
-NUM_PANIC = 8
+DEF_PANIC = .1
 
 AGENT_PREFIX = "Agent"
 THRESHHOLD = .5
@@ -106,16 +107,23 @@ def set_up(props=None):
     grid_height = get_prop('grid_height', DEF_DIM,
                            execution_key=execution_key)
     grid_width = get_prop('grid_width', DEF_DIM, execution_key=execution_key)
-    people_count = int(grid_height * grid_width)
+    per_panic = get_prop('per_panic', DEF_PANIC, execution_key=execution_key)
     groups = []
-    groups.append(Composite(CALM, {"color": GREEN, "marker": TREE},
-                            member_creator=place_agent,
-                            num_members=people_count-60,
-                            execution_key=execution_key))
-    groups.append(Composite(PANIC, {"color": RED, "marker": TREE},
-                            member_creator=place_agent,
-                            num_members=60,
-                            execution_key=execution_key))
+    calm = Composite(CALM, {"color": GREEN, "marker": TREE},
+                     execution_key=execution_key)
+    groups.append(calm)
+    panic = Composite(PANIC, {"color": RED, "marker": TREE},
+                      execution_key=execution_key)
+    groups.append(panic)
+    for x in range(grid_width):
+        for y in range(grid_height):
+            dist = random.random()
+            if per_panic < dist:
+                groups[int(PN)] += Agent(name=("(%d,%d)" % (x, y)),
+                                         execution_key=execution_key)
+            else:
+                groups[int(CM)] += Agent(name=("(%d,%d)" % (x, y)),
+                                         execution_key=execution_key)
 
     Env(MODEL_NAME, height=grid_height, width=grid_width, members=groups,
         execution_key=execution_key)
