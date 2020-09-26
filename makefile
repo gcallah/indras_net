@@ -101,6 +101,7 @@ js: jstests webapp
 	cd $(REACT_TOP); npm run deploy
 	
 pytests: FORCE
+	cd registry; make tests
 	cd epidemics; make tests
 	cd models; make tests
 	cd APIServer; make tests

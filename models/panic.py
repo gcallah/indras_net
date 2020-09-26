@@ -112,11 +112,23 @@ def set_up(props=None):
                             member_creator=place_agent,
                             num_members=people_count-60,
                             execution_key=execution_key))
-    groups.append(Composite(PANIC, {"color": RED, "marker": TREE},
-                            member_creator=place_agent,
-                            num_members=60,
-                            execution_key=execution_key))
+    panic = Composite(PANIC, {"color": RED, "marker": TREE},
+                      member_creator=place_agent,
+                      num_members=60,
+                      execution_key=execution_key))
+    groups.append(panic)
 
+    """
+    for y in range(height):
+        for x in range(width):
+            rand_val = random.random()  # between 0 and 1?
+            if rand_val < percent_panic:
+                # place this agent in panic group
+                panic += place_agent(x, y, execution_key)
+            else:
+                # place this agent in calm group
+                calm += place_agent(x, y, execution_key)
+    """
     Env(MODEL_NAME, height=grid_height, width=grid_width, members=groups,
         execution_key=execution_key)
     # whereas these settings must be re-done every API re-load:
