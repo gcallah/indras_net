@@ -10,7 +10,7 @@ from indra.display_methods import TREE
 from indra.env import Env
 from registry.execution_registry import CLI_EXEC_KEY, \
     EXEC_KEY, get_exec_key
-from registry.registry import get_env, get_prop
+from registry.registry import get_env, get_prop, set_env_attr
 from registry.registry import run_notice, user_log_notif
 from indra.utils import init_props
 import random
@@ -27,6 +27,7 @@ AGENT_PREFIX = "Agent"
 THRESHHOLD = .5
 
 # tree condition strings
+STATE = "state"
 CALM = "Clam"
 PANIC = "Panic"
 
@@ -40,6 +41,7 @@ def is_calm(agent, *args):
     """
     Checking whether the state is healthy or not
     """
+    print("the agent is ", agent)
     return agent["state"] == CM
 
 
@@ -55,27 +57,37 @@ def agent_action(agent, **kwargs):
     """
     This is what trees do each turn in the forest.
     """
+    print("AGENT ACTION CALLED")
     execution_key = get_exec_key(kwargs=kwargs)
-    if is_calm(agent):
-        # we need ration of panic neighbours to calm to be 1/2 in order for the
-        # agent to start panicking
-        if neighbor_ratio(agent, pred_one=is_calm, pred_two=is_in_panic,
-                          execution_key=execution_key) > THRESHHOLD:
-            if DEBUG2:
-                user_log_notif("Changing the agent's state to panic!")
-            agent["state"] = PN
+    # we need ration of panic neighbours to calm to be 1/2 in order for the
+    # agent to start panicking
+    print("if calm entered")
+    if neighbor_ratio(agent, pred_one=is_calm, pred_two=is_in_panic,
+                      execution_key=execution_key) > THRESHHOLD:
+        print("if ratio executed")
+        if DEBUG2:
+            user_log_notif("Changing the agent's state to panic!")
+            env = get_env(execution_key=execution_key)
+        agent["state"] = PN
+        agent.has_acted = True
+        env.add_switch(agent, CM, PN)
     return True
 
 
-# should we place panicking agents like in bigbox model after a certain period?
-def place_agent(name, i, state=CALM, **kwargs):
+def place_agent(name, state=CM, **kwargs):
     """
     Place a new agent.
     By default, they start out calm.
     """
     execution_key = get_exec_key(kwargs=kwargs)
     name = AGENT_PREFIX
-    return Agent(name + str(i),
+    if(state == CM):
+        return Agent(name,
+                     action=agent_action,
+                     attrs={"state": state,
+                            "save_neighbors": True},
+                     execution_key=execution_key)
+    return Agent(name,
                  action=agent_action,
                  attrs={"state": state,
                         "save_neighbors": True}, execution_key=execution_key)
@@ -108,6 +120,7 @@ def set_up(props=None):
                            execution_key=execution_key)
     grid_width = get_prop('grid_width', DEF_DIM, execution_key=execution_key)
     per_panic = get_prop('per_panic', DEF_PANIC, execution_key=execution_key)
+    per_panic = per_panic/100
     groups = []
     calm = Composite(CALM, {"color": GREEN, "marker": TREE},
                      execution_key=execution_key)
@@ -118,16 +131,19 @@ def set_up(props=None):
     for x in range(grid_width):
         for y in range(grid_height):
             dist = random.random()
-            if per_panic < dist:
+            if per_panic > dist:
                 groups[int(PN)] += Agent(name=("(%d,%d)" % (x, y)),
                                          execution_key=execution_key)
+                place_agent(("(%d,%d)" % (x, y)))
             else:
                 groups[int(CM)] += Agent(name=("(%d,%d)" % (x, y)),
                                          execution_key=execution_key)
-    Env(MODEL_NAME, height=grid_height, width=grid_width, members=groups,
+                place_agent(("(%d,%d)" % (x, y)))
+    Env(MODEL_NAME, action=agent_action, height=grid_height,
+        width=grid_width, members=groups,
         execution_key=execution_key)
     # whereas these settings must be re-done every API re-load:
-    # set_env_attrs(execution_key="execution_key")
+    set_env_attr(execution_key, CLI_EXEC_KEY)
 
 
 def main():
