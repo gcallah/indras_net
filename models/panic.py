@@ -131,12 +131,12 @@ def set_up(props=None):
         for y in range(grid_height):
             dist = random.random()
             if per_panic > dist:
-                groups[int(PN)] += Agent(name=("(%d,%d)" % (x, y)),
-                                         execution_key=execution_key)
+                panic += Agent(name=("(%d,%d)" % (x, y)),
+                               execution_key=execution_key)
                 place_agent(("(%d,%d)" % (x, y)))
             else:
-                groups[int(CM)] += Agent(name=("(%d,%d)" % (x, y)),
-                                         execution_key=execution_key)
+                calm += Agent(name=("(%d,%d)" % (x, y)),
+                              execution_key=execution_key)
                 place_agent(("(%d,%d)" % (x, y)))
     Env(MODEL_NAME, action=agent_action, height=grid_height,
         width=grid_width, members=groups,
