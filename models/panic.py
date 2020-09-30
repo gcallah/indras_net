@@ -2,7 +2,7 @@
 A model to simulate the spread of fire in a forest.
 """
 
-from indra.agent import Agent
+from indra.agent import Agent, DONT_MOVE
 from indra.composite import Composite
 from indra.space import neighbor_ratio
 from indra.display_methods import RED, GREEN
@@ -61,7 +61,6 @@ def agent_action(agent, **kwargs):
     execution_key = get_exec_key(kwargs=kwargs)
     # we need ration of panic neighbours to calm to be 1/2 in order for the
     # agent to start panicking
-    print("if calm entered")
     if neighbor_ratio(agent, pred_one=is_calm, pred_two=is_in_panic,
                       execution_key=execution_key) > THRESHHOLD:
         print("if ratio executed")
@@ -70,8 +69,8 @@ def agent_action(agent, **kwargs):
             env = get_env(execution_key=execution_key)
         agent["state"] = PN
         agent.has_acted = True
-        env.add_switch(agent, CM, PN)
-    return True
+        env.add_switch(agent, CALM, PANIC)
+    return DONT_MOVE
 
 
 def place_agent(name, state=CM, **kwargs):
