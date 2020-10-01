@@ -135,38 +135,6 @@ def game_agent_action(agent, **kwargs):
     return True
 
 
-def populate_board_exploder(width, height, execution_key=CLI_EXEC_KEY):
-    populate_board("exploder", width, height, execution_key)
-
-
-# def populate_board_n_horizontal_row(width, height, n=10,
-#                                     execution_key=CLI_EXEC_KEY):
-def populate_board_n_horizontal_row(width, height, execution_key=CLI_EXEC_KEY):
-    """
-    Default n = 10;
-    right = (n//2) + (n%2)
-    left = (n//2)
-    for rht in range(right):
-        agent_loc.append((center[X] + rht, center[Y]))
-    for lft in range(1, left):
-        agent_loc.append((center[X] - lft, center[Y]))
-    """
-    populate_board("horizontal_row", width, height, execution_key)
-
-
-def populate_board_lightweight_spaceship(width, height,
-                                         execution_key=CLI_EXEC_KEY):
-    populate_board("spaceship", width, height, execution_key)
-
-
-def populate_board_tumbler(width, height, execution_key=CLI_EXEC_KEY):
-    """
-    Tumbler is a classic GOL pattern.
-    But this must be recoded to eliminate all the hard-coding of positions.
-    """
-    populate_board("tumbler", width, height, execution_key)
-
-
 def populate_board(patterns, pattern_num, execution_key=CLI_EXEC_KEY):
     agent_locs = patterns[pattern_num]
     b = get_group(BLACK, execution_key)
