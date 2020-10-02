@@ -3,6 +3,7 @@ This module restores an env from json and runs it.
 """
 from APIServer.api_utils import json_converter
 from registry.run_dict import env_attrs
+from registry.registry import log_err_and_tell_user
 from indra.env import Env
 from indra.user import user_log_notif
 from registry.execution_registry import EXEC_KEY
@@ -26,8 +27,6 @@ def run_model_put(payload, run_time):
     try:
         env.runN(periods=run_time, execution_key=execution_key)
     except Exception as excp:
-        env.user.tell(str(excp))
-        env.user.tell("Halting Model!")
-        user_log_notif(str(excp))
-        user_log_notif("Halting Model!")
+        log_err_and_tell_user(str(excp))
+        log_err_and_tell_user("Halting Model!")
     return json_converter(env)

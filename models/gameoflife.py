@@ -1,7 +1,6 @@
 """
 Conway's Game of Life model.
 """
-
 from indra.agent import Agent, X, Y
 from indra.composite import Composite
 from indra.display_methods import SQUARE
@@ -21,6 +20,14 @@ BLACK = "Black"
 
 LIVE = True  # BLACK
 DIE = False  # WHITE
+
+# These are the indices for our patterns:
+GLIDER = 0
+SMALL_EXPL = 1
+EXPLODER = 2
+HORIZONTAL_ROW = 3
+SPACESHIP = 4
+TUMBLER = 5
 
 
 def reset_env_attrs():
@@ -128,125 +135,13 @@ def game_agent_action(agent, **kwargs):
     return True
 
 
-def populate_board_glider(width, height, execution_key=CLI_EXEC_KEY):
+def populate_board(patterns, pattern_num, execution_key=CLI_EXEC_KEY):
+    agent_locs = patterns[pattern_num]
     b = get_group(BLACK, execution_key)
-    center = [width // 2, height // 2]
-    agent_loc = [(center[X], center[Y]), (center[X] - 1, center[1] + 1),
-                 (center[X] + 1, center[Y] + 1),
-                 (center[X] + 1, center[Y]), (center[X], center[1] - 1)]
-    for loc in agent_loc:
-        agent = create_game_cell(loc[0], loc[1])
-        b += agent
-        get_env().place_member(agent, xy=loc)
-
-
-def populate_board_small_exploder(width, height, execution_key=CLI_EXEC_KEY):
-    center = [width // 2, height // 2]
-    agent_loc = [(center[X], center[Y]), (center[X], center[1] + 1),
-                 (center[X] - 1, center[Y]),
-                 (center[X] + 1, center[Y]), (center[X] - 1, center[1] - 1),
-                 (center[X] + 1, center[Y] - 1),
-                 (center[X], center[Y] - 2)]
-    b = get_group(BLACK, execution_key)
-    for loc in agent_loc:
-        agent = create_game_cell(loc[0], loc[1])
-        b += agent
-        get_env().place_member(agent, xy=loc)
-
-
-def populate_board_exploder(width, height, execution_key=CLI_EXEC_KEY):
-    center = [width // 2, height // 2]
-    agent_loc = [(center[X], center[Y]), (center[X], center[1] - 4)]
-    b = get_group(BLACK, execution_key)
-    for i in range(0, 5):
-        agent_loc.append((center[X] - 2, center[Y] - i))
-        agent_loc.append((center[X] + 2, center[Y] - i))
-    for loc in agent_loc:
-        agent = create_game_cell(loc[0], loc[1])
-        b += agent
-        get_env().place_member(agent, xy=loc)
-
-
-def populate_board_n_horizontal_row(width, height, n=10,
-                                    execution_key=CLI_EXEC_KEY):
-    center = [width // 2, height // 2]
-    agent_loc = []
-    right = (n // 2) + (n % 2)
-    left = n // 2
-    b = get_group(BLACK, execution_key)
-    for rht in range(right):
-        agent_loc.append((center[X] + rht, center[Y]))
-    for lft in range(1, left):
-        agent_loc.append((center[X] - lft, center[Y]))
-    for loc in agent_loc:
+    for loc in agent_locs:
         agent = create_game_cell(loc[X], loc[Y])
         b += agent
         get_env().place_member(agent, xy=loc)
-
-
-def populate_board_lightweight_spaceship(width, height,
-                                         execution_key=CLI_EXEC_KEY):
-    center = [width // 2, height // 2]
-    agent_loc = [(center[X], center[Y]),
-                 (center[X] - 1, center[Y]),
-                 (center[X] - 2, center[Y]),
-                 (center[X] - 3, center[Y]),
-                 (center[X], center[Y] - 1),
-                 (center[X], center[Y] - 2),
-                 (center[X] - 4, center[Y] - 1),
-                 (center[X] - 1, center[Y] - 3),
-                 (center[X] - 4, center[Y] - 3)]
-    b = get_group(BLACK, execution_key)
-    for loc in agent_loc:
-        agent = create_game_cell(loc[0], loc[1])
-        b += agent
-        get_env().place_member(agent, xy=loc)
-
-
-def populate_board_tumbler(width, height, execution_key=CLI_EXEC_KEY):
-    """
-    Tumbler is a classic GOL pattern.
-    But this must be recoded to eliminate all the hard-coding of positions.
-    """
-    center = [width // 2, height // 2]
-    b = get_group(BLACK, execution_key)
-    agent_loc = [(center[X] - 1, center[Y]),
-                 (center[X] - 2, center[Y]),
-                 (center[X] + 1, center[Y]),
-                 (center[X] + 2, center[Y]),
-                 (center[X] - 1, center[Y] - 1),
-                 (center[X] - 2, center[Y] - 1),
-                 (center[X] + 1, center[Y] - 1),
-                 (center[X] + 2, center[Y] - 1),
-                 (center[X] - 1, center[Y] - 2),
-                 (center[X] - 1, center[Y] - 3),
-                 (center[X] - 1, center[Y] - 4),
-                 (center[X] + 1, center[Y] - 2),
-                 (center[X] + 1, center[Y] - 3),
-                 (center[X] + 1, center[Y] - 4),
-                 (center[X] - 3, center[Y] - 3),
-                 (center[X] - 3, center[Y] - 4),
-                 (center[X] - 3, center[Y] - 5),
-                 (center[X] - 2, center[Y] - 5),
-                 (center[X] + 3, center[Y] - 3),
-                 (center[X] + 3, center[Y] - 4),
-                 (center[X] + 3, center[Y] - 5),
-                 (center[X] + 2, center[Y] - 5)]
-
-    for loc in agent_loc:
-        agent = create_game_cell(loc[0], loc[1])
-        b += agent
-        get_env().place_member(agent, xy=loc)
-
-
-populate_board_dict = {
-    0: populate_board_glider,
-    1: populate_board_small_exploder,
-    2: populate_board_exploder,
-    3: populate_board_n_horizontal_row,
-    4: populate_board_lightweight_spaceship,
-    5: populate_board_tumbler
-}
 
 
 def set_up(props=None):
@@ -273,7 +168,86 @@ def set_up(props=None):
         random_placing=False,
         execution_key=exec_key)
 
-    populate_board_dict[simulation](width, height)
+    center = (width // 2, height // 2)
+    patterns = [
+        [
+            (center[X], center[Y]),
+            (center[X] - 1, center[1] + 1),
+            (center[X] + 1, center[Y] + 1),
+            (center[X] + 1, center[Y]),
+            (center[X], center[1] - 1)
+        ],
+        [
+            (center[X], center[Y]),
+            (center[X], center[1] + 1),
+            (center[X] - 1, center[Y]),
+            (center[X] + 1, center[Y]),
+            (center[X] - 1, center[1] - 1),
+            (center[X] + 1, center[Y] - 1),
+            (center[X], center[Y] - 2)
+        ],
+        [
+            (center[X], center[Y]),
+            (center[X], center[1] - 4),
+            (center[X] - 2, center[Y]),
+            (center[X] + 2, center[Y]),
+            (center[X] - 2, center[Y] - 1),
+            (center[X] + 2, center[Y] - 1),
+            (center[X] - 2, center[Y] - 2),
+            (center[X] + 2, center[Y] - 2),
+            (center[X] - 2, center[Y] - 3),
+            (center[X] + 2, center[Y] - 3),
+            (center[X] - 2, center[Y] - 4),
+            (center[X] + 2, center[Y] - 4)
+        ],
+        [
+            (center[X], center[Y]),
+            (center[X] + 1, center[Y]),
+            (center[X] - 1, center[Y]),
+            (center[X] + 2, center[Y]),
+            (center[X] - 2, center[Y]),
+            (center[X] + 3, center[Y]),
+            (center[X] - 3, center[Y]),
+            (center[X] + 4, center[Y]),
+            (center[X] - 4, center[Y]),
+        ],
+        [
+            (center[X], center[Y]),
+            (center[X] - 1, center[Y]),
+            (center[X] - 2, center[Y]),
+            (center[X] - 3, center[Y]),
+            (center[X], center[Y] - 1),
+            (center[X], center[Y] - 2),
+            (center[X] - 4, center[Y] - 1),
+            (center[X] - 1, center[Y] - 3),
+            (center[X] - 4, center[Y] - 3)
+        ],
+        [
+            (center[X] - 1, center[Y]),
+            (center[X] - 2, center[Y]),
+            (center[X] + 1, center[Y]),
+            (center[X] + 2, center[Y]),
+            (center[X] - 1, center[Y] - 1),
+            (center[X] - 2, center[Y] - 1),
+            (center[X] + 1, center[Y] - 1),
+            (center[X] + 2, center[Y] - 1),
+            (center[X] - 1, center[Y] - 2),
+            (center[X] - 1, center[Y] - 3),
+            (center[X] - 1, center[Y] - 4),
+            (center[X] + 1, center[Y] - 2),
+            (center[X] + 1, center[Y] - 3),
+            (center[X] + 1, center[Y] - 4),
+            (center[X] - 3, center[Y] - 3),
+            (center[X] - 3, center[Y] - 4),
+            (center[X] - 3, center[Y] - 5),
+            (center[X] - 2, center[Y] - 5),
+            (center[X] + 3, center[Y] - 3),
+            (center[X] + 3, center[Y] - 4),
+            (center[X] + 3, center[Y] - 5),
+            (center[X] + 2, center[Y] - 5)
+        ]
+    ]
+    populate_board(patterns, simulation)
     reset_env_attrs()
 
 

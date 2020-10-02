@@ -1,3 +1,4 @@
+#!/Library/Frameworks/Python.framework/Versions/3.6/bin/python3
 """
     active: true,
     doc: A toy model to test the system.,

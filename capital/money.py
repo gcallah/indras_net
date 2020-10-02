@@ -7,6 +7,7 @@ and moves them around randomly.
 from indra.agent import Agent, MOVE
 from indra.composite import Composite
 from indra.env import Env
+from indra.display_methods import GREEN
 from registry.execution_registry import CLI_EXEC_KEY, \
     EXEC_KEY, get_exec_key
 from registry.registry import get_env, get_prop, set_env_attr
@@ -44,30 +45,39 @@ prev_trade = {'cow': 0,
 # these are the goods we hand out at the start:
 natures_goods = {
     # add initial value to this data?
-    "cow": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
+    # color choice isn't working yet, but we want to build it in
+    "cow": {AMT_AVAIL: 100, UTIL_FUNC: GEN_UTIL_FUNC,
             "incr": 0, DUR: 0.8, "divisibility": 1.0,
-            "trade_count": 0, "is_allocated": False, },
-    "cheese": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
+            "trade_count": 0, "is_allocated": False,
+            "age": 1, },
+    "cheese": {AMT_AVAIL: 100, UTIL_FUNC: GEN_UTIL_FUNC,
                "incr": 0, DUR: 0.5, "divisibility": 0.4,
-               "trade_count": 0, "is_allocated": False, },
-    "gold": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
+               "trade_count": 0, "is_allocated": False,
+               "age": 1, },
+    "gold": {AMT_AVAIL: 100, UTIL_FUNC: GEN_UTIL_FUNC,
              "incr": 0, DUR: 1.0, "divisibility": 0.05,
-             "trade_count": 0, "is_allocated": False, },
-    "banana": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
+             "trade_count": 0, "is_allocated": False,
+             "age": 1, },
+    "banana": {AMT_AVAIL: 100, UTIL_FUNC: GEN_UTIL_FUNC,
                "incr": 0, DUR: 0.2, "divisibility": 0.2,
-               "trade_count": 0, "is_allocated": False, },
-    "diamond": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
+               "trade_count": 0, "is_allocated": False,
+               "age": 1, },
+    "diamond": {AMT_AVAIL: 100, UTIL_FUNC: GEN_UTIL_FUNC,
                 "incr": 0, DUR: 1.0, "divisibility": 0.8,
-                "trade_count": 0, "is_allocated": False, },
-    "avocado": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
+                "trade_count": 0, "is_allocated": False,
+                "age": 1, },
+    "avocado": {AMT_AVAIL: 100, UTIL_FUNC: GEN_UTIL_FUNC,
                 "incr": 0, DUR: 0.3, "divisibility": 0.5,
-                "trade_count": 0, "is_allocated": False, },
-    "stone": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
+                "trade_count": 0, "is_allocated": False,
+                "age": 1, "color": GREEN},
+    "stone": {AMT_AVAIL: 100, UTIL_FUNC: GEN_UTIL_FUNC,
               "incr": 0, DUR: 1.0, "divisibility": 1.0,
-              "trade_count": 0, "is_allocated": False, },
-    "milk": {AMT_AVAIL: 10, UTIL_FUNC: GEN_UTIL_FUNC,
+              "trade_count": 0, "is_allocated": False,
+              "age": 1, },
+    "milk": {AMT_AVAIL: 100, UTIL_FUNC: GEN_UTIL_FUNC,
              "incr": 0, DUR: 0.2, "divisibility": 0.15,
-             "trade_count": 0, "is_allocated": False, },
+             "trade_count": 0, "is_allocated": False,
+             "age": 1, },
 }
 
 
@@ -154,6 +164,8 @@ def money_trader_action(agent, **kwargs):
         natures_goods[good][TRADE_COUNT] += agent["goods"][good][TRADE_COUNT]
         # return agent's trade_count to 0
         agent["goods"][good][TRADE_COUNT] = 0
+        # increment every good's age by one each period
+        agent["goods"][good]["age"] += 1
     return MOVE
 
 

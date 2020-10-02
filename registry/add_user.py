@@ -26,4 +26,3 @@ def user_log_notif(msg):
 
 def user_log_err(msg):
     return user_log("ERROR: " + msg)
-

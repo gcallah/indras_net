@@ -346,14 +346,24 @@ class Agent(object):
     def __getitem__(self, key):
         return self.attrs[key]
 
-    def get(self, key, default=None):
+    def __setitem__(self, key, value):
+        self.attrs[key] = value
+
+    def set_attr(self, key, val):
+        self.attrs[key] = val
+
+    def get_attr(self, key, default=None):
         if key in self.attrs:
-            return self.__getitem__(key)
+            return self.attrs[key]
         else:
             return default
 
-    def __setitem__(self, key, value):
-        self.attrs[key] = value
+    def get(self, key, default=None):
+        """
+        This is a call to get_attr() to not break existing code
+        that calls get().
+        """
+        self.get_attr(key, default=default)
 
     def __contains__(self, item):
         return item in self.attrs
@@ -442,6 +452,7 @@ class Agent(object):
 
     def die(self):
         self.duration = 0
+        self.pos = None
         self.active = False
 
     def del_group(self, group):

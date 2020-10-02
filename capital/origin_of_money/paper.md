@@ -235,6 +235,14 @@ These three key attributes will determine which good is likely to emergence into
 ## Results
 
 [Here we will discuss experiments with different parameters and so on.]
+- Isolation of Durability
+When a good is too decayed, its `amt_avaliable` will be set to zero by using the followinng code:
+```python
+if math.exp(-(1-trader["goods"][good]["durability"]) *
+           (trader["goods"][good]["age"]/10)) < 0.0001:
+            trader["goods"][good][AMT_AVAIL] = 0
+```
+Without this adjustment on `amt_avaliable`, when only applying the functionality of durability, we see that gold is traded very often (which is not surprising), but banana and milk are also extensively traded. The reason is that when these two items are too decayed, their utility delta will be very similar, and a lot of tradings will be exculsively between them, while gold, having a very optimal utility delta, can be too good for the banana holders to trade for.
 
 ## Conclusion
 

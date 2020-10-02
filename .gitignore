@@ -55,3 +55,9 @@ precache-manifest.*
 /webapp/coverage/*
 .idea
 **/*.coverage
+
+registry/db/*.json
+
+APIServer/APIServer.ini
+APIServer/APIServer.service
+APIServer/wsgi.py

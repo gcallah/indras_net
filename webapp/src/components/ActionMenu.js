@@ -5,6 +5,7 @@ import autoBind from 'react-autobind';
 import PropTypes from 'prop-types';
 import PageLoader from './PageLoader';
 import PopulationGraph from './PopulationGraph';
+import PopulationBarGraph from './PopulationBarGraph';
 import ScatterPlot from './ScatterPlot';
 import Debugger from './Debugger';
 import ModelStatusBox from './ModelStatusBox';
@@ -14,11 +15,14 @@ import './styles.css';
 import config from '../config';
 import LogsViewer from './LogsViewer';
 
+
 const POP = 2;
 const SCATTER = 3;
-const DATA = 4;
-const SOURCE = 5;
-const LOG = 6;
+const BAR = 4;
+// const DATA = 4;
+const DEBUG = 5;
+const SOURCE = 6;
+const LOG = 7;
 const API_SERVER = `${config.API_URL}models/menu/`;
 const CLEAR_REGISTRY_API = `${config.API_URL}registry/clear/`;
 
@@ -40,6 +44,7 @@ class ActionMenu extends Component {
       loadingDebugger: false,
       loadingPopulation: false,
       loadingScatter: false,
+      loadingBar: false,
       loadingLogs: false,
       activeDisplay: null,
       continuousRun: true,
@@ -61,6 +66,7 @@ class ActionMenu extends Component {
     try {
       document.title = 'Indra | Menu';
       const m = await axios.get(`${API_SERVER}${EXECUTION_KEY}`);
+      // debugger;
       this.setState({
         menu: m.data,
         name,
@@ -157,6 +163,7 @@ class ActionMenu extends Component {
       loadingScatter: false,
       loadingPopulation: false,
       loadingLogs: false,
+      loadingBar: false,
     });
     this.setState({
       activeDisplay: e,
@@ -168,7 +175,7 @@ class ActionMenu extends Component {
       case SCATTER:
         this.setState({ loadingScatter: true });
         break;
-      case DATA:
+      case DEBUG:
         this.setState({ loadingDebugger: true });
         break;
       case SOURCE:
@@ -176,6 +183,9 @@ class ActionMenu extends Component {
         break;
       case LOG:
         this.setState({ loadingLogs: true });
+        break;
+      case BAR:
+        this.setState({ loadingBar: true });
         break;
       default:
         break;
@@ -222,7 +232,13 @@ class ActionMenu extends Component {
       // this.setState({periodNum: 1});
       this.sendNumPeriods();
       /* eslint-disable */
-      await this.timeout(200);
+      while (this.state.loadingData){
+        await this.timeout(200);
+      /* eslint-disable */
+        console.log('still waiting for data...')
+      }
+      /* eslint-disable */
+      console.log('data arrived!!')
     }
   }
 
@@ -275,12 +291,14 @@ class ActionMenu extends Component {
       loadingPopulation,
       loadingScatter,
       loadingLogs,
+      loadingBar
     } = this.state;
     return (
       <div className="mt-5">
         <Debugger loadingData={loadingDebugger} envFile={envFile} />
         <SourceCodeViewer loadingData={loadingSourceCode} code={sourceCode} />
         <PopulationGraph loadingData={loadingPopulation} envFile={envFile} />
+        <PopulationBarGraph loadingData={loadingBar} envFile={envFile} />
         <ScatterPlot loadingData={loadingScatter} envFile={envFile} />
         <LogsViewer loadingData={loadingLogs} envFile={envFile} />
       </div>
@@ -314,6 +332,9 @@ class ActionMenu extends Component {
     if (loadingData && initLoading) {
       return <PageLoader />;
     }
+    // if (loadingData && !initLoading){
+    //   return;
+    // }
     return (
       <div>
         {this.renderHeader()}
