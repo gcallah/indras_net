@@ -7,6 +7,7 @@ and moves them around randomly.
 from indra.agent import Agent, MOVE
 from indra.composite import Composite
 from indra.env import Env
+from indra.display_methods import GREEN
 from registry.execution_registry import CLI_EXEC_KEY, \
     EXEC_KEY, get_exec_key
 from registry.registry import get_env, get_prop, set_env_attr
@@ -44,6 +45,7 @@ prev_trade = {'cow': 0,
 # these are the goods we hand out at the start:
 natures_goods = {
     # add initial value to this data?
+    # color choice isn't working yet, but we want to build it in
     "cow": {AMT_AVAIL: 100, UTIL_FUNC: GEN_UTIL_FUNC,
             "incr": 0, DUR: 0.8, "divisibility": 1.0,
             "trade_count": 0, "is_allocated": False,
@@ -67,7 +69,7 @@ natures_goods = {
     "avocado": {AMT_AVAIL: 100, UTIL_FUNC: GEN_UTIL_FUNC,
                 "incr": 0, DUR: 0.3, "divisibility": 0.5,
                 "trade_count": 0, "is_allocated": False,
-                "age": 1, },
+                "age": 1, "color": GREEN},
     "stone": {AMT_AVAIL: 100, UTIL_FUNC: GEN_UTIL_FUNC,
               "incr": 0, DUR: 1.0, "divisibility": 1.0,
               "trade_count": 0, "is_allocated": False,
