@@ -24,7 +24,7 @@ DEF_NUM_PEOPLE = DEF_DIM*2
 DEF_PANIC = .1
 
 AGENT_PREFIX = "Agent"
-THRESHHOLD = .5
+THRESHHOLD = 2
 
 # tree condition strings
 STATE = "state"
@@ -59,11 +59,14 @@ def agent_action(agent, **kwargs):
     execution_key = get_exec_key(kwargs=kwargs)
     # we need ration of panic neighbours to calm to be 1/2 in order for the
     # agent to start panicking
-    if neighbor_ratio(agent, pred_one=is_calm, pred_two=is_panicking,
-                      execution_key=execution_key) > THRESHHOLD:
+    ratio = neighbor_ratio(agent, pred_one=is_calm, pred_two=is_panicking,
+                           execution_key=execution_key)
+    print("The ratio is ", ratio)
+    if ratio > THRESHHOLD:
         if DEBUG2:
             user_log_notif("Changing the agent's state to panic!")
         env = get_env(execution_key=execution_key)
+        print("Agent's state is being changed to Panic")
         agent["state"] = PN
         agent.has_acted = True
         env.add_switch(agent, CALM, PANIC)
