@@ -56,17 +56,18 @@ def agent_action(agent, **kwargs):
     """
     This is what trees do each turn in the forest.
     """
+    print(agent.name)
     execution_key = get_exec_key(kwargs=kwargs)
     # we need ration of panic neighbours to calm to be 1/2 in order for the
     # agent to start panicking
     ratio = neighbor_ratio(agent, pred_one=is_calm, pred_two=is_panicking,
                            execution_key=execution_key)
-    print("The ratio is ", ratio)
+    # print("The ratio is ", ratio)
     if ratio > THRESHHOLD:
         if DEBUG2:
             user_log_notif("Changing the agent's state to panic!")
         env = get_env(execution_key=execution_key)
-        print("Agent's state is being changed to Panic")
+        # print("Agent's state is being changed to Panic")
         agent["state"] = PN
         agent.has_acted = True
         env.add_switch(agent, CALM, PANIC)
