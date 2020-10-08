@@ -17,14 +17,14 @@ import random
 
 MODEL_NAME = "panic"
 DEBUG = False  # turns debugging code on or off
-DEBUG2 = True  # turns deeper debugging code on or off
+DEBUG2 = False  # turns deeper debugging code on or off
 
 DEF_DIM = 10
 DEF_NUM_PEOPLE = DEF_DIM*2
 DEF_PANIC = .1
 
 AGENT_PREFIX = "Agent"
-THRESHHOLD = .5
+THRESHHOLD = 2
 
 # tree condition strings
 STATE = "state"
@@ -41,11 +41,10 @@ def is_calm(agent, *args):
     """
     Checking whether the state is healthy or not
     """
-    print("the agent is ", agent)
     return agent["state"] == CM
 
 
-def is_in_panic(agent, *args):
+def is_panicking(agent, *args):
     """
     Checking whether the state is on fire or not
     """
@@ -57,39 +56,46 @@ def agent_action(agent, **kwargs):
     """
     This is what trees do each turn in the forest.
     """
-    print("AGENT ACTION CALLED")
+    print(agent.name)
     execution_key = get_exec_key(kwargs=kwargs)
     # we need ration of panic neighbours to calm to be 1/2 in order for the
     # agent to start panicking
-    if neighbor_ratio(agent, pred_one=is_calm, pred_two=is_in_panic,
-                      execution_key=execution_key) > THRESHHOLD:
-        print("if ratio executed")
+    ratio = neighbor_ratio(agent, pred_one=is_calm, pred_two=is_panicking,
+                           execution_key=execution_key)
+    # print("The ratio is ", ratio)
+    if ratio > THRESHHOLD:
         if DEBUG2:
             user_log_notif("Changing the agent's state to panic!")
-            env = get_env(execution_key=execution_key)
+        env = get_env(execution_key=execution_key)
+        # print("Agent's state is being changed to Panic")
         agent["state"] = PN
         agent.has_acted = True
         env.add_switch(agent, CALM, PANIC)
     return DONT_MOVE
 
 
-def place_agent(name, state=CM, **kwargs):
+def place_agent(agent, state=CM, **kwargs):
     """
     Place a new agent.
     By default, they start out calm.
     """
     execution_key = get_exec_key(kwargs=kwargs)
+    loc = eval(agent.name)
     name = AGENT_PREFIX
     if(state == CM):
-        return Agent(name,
-                     action=agent_action,
-                     attrs={"state": state,
-                            "save_neighbors": True},
-                     execution_key=execution_key)
-    return Agent(name,
-                 action=agent_action,
-                 attrs={"state": state,
-                        "save_neighbors": True}, execution_key=execution_key)
+        agent = Agent(name,
+                      action=agent_action,
+                      attrs={"state": state,
+                             "save_neighbors": True},
+                      execution_key=execution_key)
+        get_env().place_member(agent, xy=loc)
+        return agent
+    agent = Agent(name,
+                  action=agent_action,
+                  attrs={"state": state,
+                         "save_neighbors": True}, execution_key=execution_key)
+    get_env().place_member(agent, xy=loc)
+    return agent
 
 
 '''
@@ -127,20 +133,34 @@ def set_up(props=None):
     panic = Composite(PANIC, {"color": RED, "marker": TREE},
                       execution_key=execution_key)
     groups.append(panic)
+
+    Env(MODEL_NAME, height=grid_height,
+        width=grid_width, members=groups,
+        execution_key=execution_key)
+
     for x in range(grid_width):
         for y in range(grid_height):
             dist = random.random()
             if per_panic > dist:
-                panic += Agent(name=("(%d,%d)" % (x, y)),
-                               execution_key=execution_key)
-                place_agent(("(%d,%d)" % (x, y)))
-            else:
-                calm += Agent(name=("(%d,%d)" % (x, y)),
+                agent = Agent(name=("(%d,%d)" % (x, y)),
+                              action=agent_action,
+                              attrs={"state": PN,
+                              "save_neighbors": True},
                               execution_key=execution_key)
-                place_agent(("(%d,%d)" % (x, y)))
-    Env(MODEL_NAME, action=agent_action, height=grid_height,
-        width=grid_width, members=groups,
-        execution_key=execution_key)
+                loc = eval(agent.name)
+                panic += agent
+                get_env().place_member(agent, xy=loc)
+                # place_agent(agent, state=PN)
+            else:
+                agent = Agent(name=("(%d,%d)" % (x, y)),
+                              action=agent_action,
+                              attrs={"state": CM,
+                              "save_neighbors": True},
+                              execution_key=execution_key)
+                loc = eval(agent.name)
+                calm += agent
+                get_env().place_member(agent, xy=loc)
+                # place_agent(agent)
     # whereas these settings must be re-done every API re-load:
     set_env_attr(execution_key, CLI_EXEC_KEY)
 
