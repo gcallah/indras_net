@@ -1,5 +1,5 @@
 """
-A model to simulate the spread of fire in a forest.
+A model to simulate the spread of panic.
 """
 
 from indra.agent import Agent, DONT_MOVE
@@ -47,7 +47,7 @@ def is_panicking(agent, *args):
 
 def agent_action(agent, **kwargs):
     """
-    This is what trees do each turn in the forest.
+    This is what agents do each turn.
     """
     execution_key = get_exec_key(kwargs=kwargs)
     print("The agent's position", agent.name)
@@ -65,7 +65,7 @@ def agent_action(agent, **kwargs):
 
 def set_up(props=None):
     """
-    A func to set up a  run that can also be used by test code.
+    A func to set up a run that can also be used by test code.
     """
     init_props(MODEL_NAME, props)
 
