@@ -31,20 +31,6 @@ AGENT_PREFIX = "Agent"
 THRESHHOLD = .2
 
 
-def is_calm(agent, *args):
-    """
-    Checking whether the state is healthy or not
-    """
-    return str(agent.primary_group()) == CALM
-
-
-def is_panicking(agent, *args):
-    """
-    Checking whether the state is on fire or not
-    """
-    return str(agent.primary_group()) == PANIC
-
-
 def agent_action(agent, **kwargs):
     """
     This is what agents do each turn.
