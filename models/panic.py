@@ -51,23 +51,18 @@ def is_panicking(agent, *args):
     return agent["state"] == PN
 
 
-# we also need to set up a panic at some places on the map
 def agent_action(agent, **kwargs):
     """
     This is what trees do each turn in the forest.
     """
     print(agent.name)
     execution_key = get_exec_key(kwargs=kwargs)
-    # we need ration of panic neighbours to calm to be 1/2 in order for the
-    # agent to start panicking
     ratio = neighbor_ratio(agent, pred_one=is_calm, pred_two=is_panicking,
                            execution_key=execution_key)
-    # print("The ratio is ", ratio)
     if ratio > THRESHHOLD:
         if DEBUG2:
             user_log_notif("Changing the agent's state to panic!")
         env = get_env(execution_key=execution_key)
-        # print("Agent's state is being changed to Panic")
         agent["state"] = PN
         agent.has_acted = True
         env.add_switch(agent, CALM, PANIC)
@@ -96,20 +91,6 @@ def place_agent(agent, state=CM, **kwargs):
                          "save_neighbors": True}, execution_key=execution_key)
     get_env().place_member(agent, xy=loc)
     return agent
-
-
-'''
-def set_env_attrs(execution_key=CLI_EXEC_KEY):
-    """
-    I actually don't think we need to do this here!
-    It can be done once in set_up().
-    """
-    user_log_notif("Setting env attrs for the panic model.")
-    set_env_attr(GROUP_MAP,
-                 {CM: CALM,
-                  PN: PANIC}, execution_key)
-
-'''
 
 
 def set_up(props=None):
@@ -150,7 +131,6 @@ def set_up(props=None):
                 loc = eval(agent.name)
                 panic += agent
                 get_env().place_member(agent, xy=loc)
-                # place_agent(agent, state=PN)
             else:
                 agent = Agent(name=("(%d,%d)" % (x, y)),
                               action=agent_action,
@@ -160,7 +140,6 @@ def set_up(props=None):
                 loc = eval(agent.name)
                 calm += agent
                 get_env().place_member(agent, xy=loc)
-                # place_agent(agent)
     # whereas these settings must be re-done every API re-load:
     set_env_attr(execution_key, CLI_EXEC_KEY)
 
