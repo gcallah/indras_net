@@ -28,12 +28,7 @@ DEF_NUM_PEOPLE = DEF_DIM*2
 DEF_PANIC = .1
 
 AGENT_PREFIX = "Agent"
-THRESHHOLD = 2
-
-# group numbers: create as strings for JSON,
-# convert to int when we need 'em that way
-CM = "0"
-PN = "1"
+THRESHHOLD = 3
 
 
 def is_calm(agent, *args):
@@ -47,7 +42,6 @@ def is_panicking(agent, *args):
     """
     Checking whether the state is on fire or not
     """
-    # print("primary group is", agent.primary_group())
     return str(agent.primary_group()) == PANIC
 
 
@@ -56,9 +50,7 @@ def agent_action(agent, **kwargs):
     This is what trees do each turn in the forest.
     """
     execution_key = get_exec_key(kwargs=kwargs)
-    # print("The state is", agent.primary_group())
-    # print("Agent is calm", is_calm(agent))
-    # print("Agent is panicking", is_panicking(agent))
+    print("The agent's position", agent.name)
     ratio = neighbor_ratio(agent, pred_one=is_calm, pred_two=is_panicking,
                            execution_key=execution_key)
     print("The ratio is", ratio)
@@ -96,7 +88,6 @@ def set_up(props=None):
     Env(MODEL_NAME, height=grid_height,
         width=grid_width, members=groups,
         execution_key=execution_key)
-
     for x in range(grid_width):
         for y in range(grid_height):
             dist = random.random()
