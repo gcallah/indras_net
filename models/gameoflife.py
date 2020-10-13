@@ -114,8 +114,8 @@ def gameoflife_action(biosphere, **kwargs):
             if DEBUG:
                 print("Agent at", get_env_attr("to_die[agent]"), "will die")
             agent.die()
-            # we shouldn't need to do the following:
-            b.del_member(agent)
+            if b.ismember(agent):
+                b.del_member(agent)
     return True
 
 
