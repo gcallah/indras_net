@@ -28,7 +28,7 @@ DEF_NUM_PEOPLE = DEF_DIM*2
 DEF_PANIC = .1
 
 AGENT_PREFIX = "Agent"
-THRESHHOLD = 3
+THRESHHOLD = .2
 
 
 def is_calm(agent, *args):
@@ -51,7 +51,7 @@ def agent_action(agent, **kwargs):
     """
     execution_key = get_exec_key(kwargs=kwargs)
     print("The agent's position", agent.name)
-    ratio = neighbor_ratio(agent, pred_one=is_calm, pred_two=is_panicking,
+    ratio = neighbor_ratio(agent, lambda agent: agent.group_name() == PANIC,
                            execution_key=execution_key)
     print("The ratio is", ratio)
     if ratio > THRESHHOLD:
