@@ -19,6 +19,10 @@ MODEL_NAME = "panic"
 DEBUG = False  # turns debugging code on or off
 DEBUG2 = False  # turns deeper debugging code on or off
 
+# agent groups
+CALM = "Calm"
+PANIC = "Panic"
+
 DEF_DIM = 10
 DEF_NUM_PEOPLE = DEF_DIM*2
 DEF_PANIC = .1
@@ -26,12 +30,7 @@ DEF_PANIC = .1
 AGENT_PREFIX = "Agent"
 THRESHHOLD = 2
 
-# tree condition strings
-STATE = "state"
-CALM = "Clam"
-PANIC = "Panic"
-
-# state numbers: create as strings for JSON,
+# group numbers: create as strings for JSON,
 # convert to int when we need 'em that way
 CM = "0"
 PN = "1"
@@ -41,56 +40,35 @@ def is_calm(agent, *args):
     """
     Checking whether the state is healthy or not
     """
-    return agent["state"] == CM
+    return str(agent.primary_group()) == CALM
 
 
 def is_panicking(agent, *args):
     """
     Checking whether the state is on fire or not
     """
-    return agent["state"] == PN
+    # print("primary group is", agent.primary_group())
+    return str(agent.primary_group()) == PANIC
 
 
 def agent_action(agent, **kwargs):
     """
     This is what trees do each turn in the forest.
     """
-    print(agent.name)
     execution_key = get_exec_key(kwargs=kwargs)
+    # print("The state is", agent.primary_group())
+    # print("Agent is calm", is_calm(agent))
+    # print("Agent is panicking", is_panicking(agent))
     ratio = neighbor_ratio(agent, pred_one=is_calm, pred_two=is_panicking,
                            execution_key=execution_key)
+    print("The ratio is", ratio)
     if ratio > THRESHHOLD:
         if DEBUG2:
             user_log_notif("Changing the agent's state to panic!")
         env = get_env(execution_key=execution_key)
-        agent["state"] = PN
         agent.has_acted = True
         env.add_switch(agent, CALM, PANIC)
     return DONT_MOVE
-
-
-def place_agent(agent, state=CM, **kwargs):
-    """
-    Place a new agent.
-    By default, they start out calm.
-    """
-    execution_key = get_exec_key(kwargs=kwargs)
-    loc = eval(agent.name)
-    name = AGENT_PREFIX
-    if(state == CM):
-        agent = Agent(name,
-                      action=agent_action,
-                      attrs={"state": state,
-                             "save_neighbors": True},
-                      execution_key=execution_key)
-        get_env().place_member(agent, xy=loc)
-        return agent
-    agent = Agent(name,
-                  action=agent_action,
-                  attrs={"state": state,
-                         "save_neighbors": True}, execution_key=execution_key)
-    get_env().place_member(agent, xy=loc)
-    return agent
 
 
 def set_up(props=None):
@@ -125,8 +103,6 @@ def set_up(props=None):
             if per_panic > dist:
                 agent = Agent(name=("(%d,%d)" % (x, y)),
                               action=agent_action,
-                              attrs={"state": PN,
-                              "save_neighbors": True},
                               execution_key=execution_key)
                 loc = eval(agent.name)
                 panic += agent
@@ -134,8 +110,6 @@ def set_up(props=None):
             else:
                 agent = Agent(name=("(%d,%d)" % (x, y)),
                               action=agent_action,
-                              attrs={"state": CM,
-                              "save_neighbors": True},
                               execution_key=execution_key)
                 loc = eval(agent.name)
                 calm += agent
