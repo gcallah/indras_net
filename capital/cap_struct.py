@@ -163,8 +163,9 @@ def create_rholder(name, i, props=None):
                             DEF_K_PRICE)
         for k in price_list.keys():
             price_list[k] = float("{0:.2f}".format(float(k_price
-                                                   * random.uniform(0.5,
-                                                                    1.5))))
+                                                         * random.uniform(0.5,
+                                                                          1.5)
+                                                         )))
 
     starting_cash = DEF_RHOLDER_CASH
     if props is not None:
