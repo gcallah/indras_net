@@ -1,4 +1,5 @@
 import networkx as nx
+from capital.trade_utils import AMT_AVAIL
 # import matplotlib.pyplot as plt
 
 
@@ -68,7 +69,7 @@ class GoodStruct:
         '''
         return self.G[node1][node2][0]['weight']
 
-    def max_neighbors(self, node):
+    def max_neighbors(self, node, goods):
         '''
         Iterate over neighbors in a breadth-first-search starting at node,
         and return the max of the weights
@@ -76,7 +77,8 @@ class GoodStruct:
         ls_neighbors = self.neighbors(node)
         ls_weights = {}
         for i in ls_neighbors:
-            ls_weights[i] = self.get_weight(node, i)
+            if goods[i][AMT_AVAIL]:
+                ls_weights[i] = self.get_weight(node, i)
         max_util_node = max(ls_weights, key=ls_weights.get)
         return ls_weights[max_util_node]
 

@@ -348,9 +348,9 @@ class Space(Composite):
         Generate new random position within max_move of current pos.
         """
         low_x = 0
-        high_x = self.width
+        high_x = self.width - 1
         low_y = 0
-        high_y = self.height
+        high_y = self.height - 1
         if max_move is not None and mbr.is_located():
             low_x = self.constrain_x(mbr.get_x() - max_move)
             high_x = self.constrain_x(mbr.get_x() + max_move)
@@ -676,7 +676,7 @@ def region_factory(space=None, NW=None, NE=None, SW=None,
 
 
 def circ_region_factory(space=None, center=None,
-                        radius=None, agents_move=True, **kwargs):
+                        radius=None, agents_move=False, **kwargs):
     region_name = gen_region_name(center=center, size=radius)
     if region_name in region_dict:
         return region_dict[region_name]
@@ -902,13 +902,12 @@ class CircularRegion(Region):
             self.my_agents = self._load_agents()
 
     def check_out_bounds(self, coord):
-        return out_of_bounds(coord[X], coord[Y], 0, 0,
-                             self.space.width,
+        return out_of_bounds(coord[X], coord[Y], 0, 0, self.space.width,
                              self.space.height)
 
     def contains(self, coord):
-        if ((coord[X] - self.center[X]) ** 2
-                + (coord[Y] - self.center[Y]) ** 2 < self.radius ** 2
+        if ((((coord[X] - self.center[X]) ** 2)
+                + ((coord[Y] - self.center[Y]) ** 2) < self.radius ** 2)
                 and not self.check_out_bounds(coord)):
             return True
         return False
@@ -924,9 +923,13 @@ class CircularRegion(Region):
         return self.my_sub_regs[-1]
 
     def _load_agents(self, exclude_self=True):
+        # We're going to loop across all locations
         for coord in self.space.locations:
+            contain_counter = 0
             conv_coord = get_xy_from_str(coord)
+            # and see if the location is in the region.
             if self.contains(conv_coord):
+                contain_counter += 1
                 potential_agent = self.space.get_agent_at(conv_coord[X],
                                                           conv_coord[Y])
                 if ((conv_coord == list(self.center))

@@ -75,6 +75,7 @@ colors = [PURPLE,
           WHITE
           ]
 
+# the following strnage mapping is for matplotlib:
 colors_dict = {"purple": PURPLE,
                "navy": NAVY,
                "blue": BLUE,
@@ -200,19 +201,6 @@ def get_marker(var, i):
     return markers[DEFAULT_MARKER]
 
 
-def assemble_lgraph_data(key, values, color, data=None):
-    """
-    Put our data in right form for line graph.
-    """
-    if data is None:
-        data = {}
-
-    data[key] = {}
-    data[key]["data"] = values
-    data[key]["color"] = color
-    return data
-
-
 class BarGraph():
     def __init__(self, title, varieties, data_points,
                  anim=False, data_func=None, is_headless=False, legend_pos=4):
@@ -303,13 +291,6 @@ class LineGraph():
             break
         self.headless = is_headless
         self.draw_graph(data_points, varieties, attrs)
-
-        # if anim and not self.headless:
-        #     anim_func = animation.FuncAnimation(self.fig,
-        #                                         self.update_plot,
-        #                                         frames=1000,
-        #                                         interval=500,
-        #                                         blit=False)
 
     @expects_plt
     def draw_graph(self, data_points, varieties, attrs):
