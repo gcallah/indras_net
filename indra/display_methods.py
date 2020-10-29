@@ -19,6 +19,10 @@ if user_type != API:
     try:
         import matplotlib.pyplot as plt
         # import matplotlib.animation as animation
+        import matplotlib
+        import sys
+        if sys.platform=="linux":
+            matplotlib.use('TKAgg')
         import numpy as np
         import pandas as pd
         import seaborn as sns
