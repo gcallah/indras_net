@@ -36,6 +36,7 @@ DEF_MAX_MOVE = None
 
 MOVE = False
 DONT_MOVE = True
+TIME_TO_DIE = "time_to_die"
 
 
 def prob_state_trans(curr_state, states):
@@ -188,7 +189,8 @@ class Agent(object):
 
         if EXEC_KEY in kwargs:
             self.execution_key = kwargs[EXEC_KEY]
-
+        if TIME_TO_DIE in kwargs:
+            self.time_to_die = kwargs[TIME_TO_DIE]
         if serial_obj is not None:
             self.restore(serial_obj)
         else:  # or build it anew:
