@@ -21,7 +21,7 @@ if user_type != API:
         # import matplotlib.animation as animation
         import matplotlib
         import sys
-        if sys.platform=="linux":
+        if sys.platform == "linux":
             matplotlib.use('TKAgg')
         import numpy as np
         import pandas as pd
