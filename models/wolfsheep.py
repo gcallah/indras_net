@@ -22,17 +22,18 @@ DEBUG2 = False  # turns deeper debugging code on or off
 NUM_WOLVES = 8
 NUM_SHEEP = 28
 PREY_DIST = 3
-TOO_CROWDED = 6
-CROWDING_EFFECT = 1
+TOO_CROWDED = 5
+CROWDING_EFFECT = 2
 MAX_ENERGY = 3
 MEADOW_HEIGHT = 10
 MEADOW_WIDTH = 10
 
-WOLF_LIFESPAN = 5
-WOLF_REPRO_PERIOD = 2
+WOLF_LIFESPAN = 4
+WOLF_REPRO_PERIOD = 4
+WOLF_TIME_TO_DIE = 8
 
-SHEEP_LIFESPAN = 8
-SHEEP_REPRO_PERIOD = 2
+SHEEP_LIFESPAN = 6
+SHEEP_REPRO_PERIOD = 3
 
 AGT_WOLF_NAME = "wolf"
 AGT_SHEEP_NAME = "sheep"
@@ -99,10 +100,9 @@ def reproduce(agent, create_func, group, **kwargs):
     """
     Agents reproduce when TIME_TO_REPR reaches 0
     """
-    execution_key = get_exec_key(kwargs=kwargs)
     if DEBUG:
         user_debug(str(agent.name) + " is having a baby!")
-    get_env(execution_key=execution_key).add_child(group)
+    get_env(kwargs=kwargs).add_child(group)
     agent[TIME_TO_REPR] = agent["orig_repr_time"]
 
 
@@ -126,7 +126,7 @@ def sheep_action(agent, **kwargs):
 
 
 def wolf_action(agent, **kwargs):
-    if agent.duration <= 0:
+    if agent.duration <= 0 or agent.time_to_die <= 0:
         return rem_agent(agent, **kwargs)
     else:
         prey = get_prey(agent,
@@ -135,8 +135,9 @@ def wolf_action(agent, **kwargs):
         if prey is not None:
             eat(agent, prey, **kwargs)
         else:
-            agent.duration /= 2
+            agent.duration -= 1
         agent[TIME_TO_REPR] -= 1
+        agent.time_to_die -= 1
         if agent[TIME_TO_REPR] == 0:
             reproduce(agent, create_wolf,
                       get_group(WOLF_GROUP, kwargs=kwargs),
@@ -156,7 +157,7 @@ def create_wolf(name, i, **kwargs):
                  action=wolf_action,
                  attrs={TIME_TO_REPR: time_to_repro,
                         "orig_repr_time": WOLF_REPRO_PERIOD},
-                 execution_key=execution_key)
+                 execution_key=execution_key, time_to_die=WOLF_TIME_TO_DIE)
 
 
 def create_sheep(name, i, **kwargs):
@@ -181,14 +182,14 @@ def set_up(props=None):
     exec_key = init_exec_key(props)
     members = []
     members.append(Composite(WOLF_GROUP,
-                             attrs={"color": TAN},
+                             attrs={"color": GRAY},
                              member_creator=create_wolf,
                              num_members=get_prop('num_wolves', NUM_WOLVES,
                                                   execution_key=exec_key),
                              execution_key=exec_key))
 
     members.append(Composite(SHEEP_GROUP,
-                             attrs={"color": GRAY},
+                             attrs={"color": TAN},
                              member_creator=create_sheep,
                              num_members=get_prop('num_sheep', NUM_SHEEP,
                                                   execution_key=exec_key),

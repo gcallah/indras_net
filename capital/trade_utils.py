@@ -197,7 +197,7 @@ def incr_util(good_dict, good, amt=None, agent=None, graph=False, comp=None):
         if comp:
             incr = good_graph.get_weight(good, comp)
         else:
-            incr = good_graph.max_neighbors(good)
+            incr = good_graph.max_neighbors(good, good_dict)
         good_dict[good]["incr"] += incr
     else:
         if amt:

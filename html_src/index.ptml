@@ -40,13 +40,12 @@
       a Web front-end
     </a>
     that will allow non-coders to build models, while at the same time
-    permitting coders to use Python for more flexibility in model creation.  It
-    will use our <a href="http://indrasnet.pythonanywhere.com">API Server</a>
-    to run the models. (The API server implements a
-    <a href="https://en.wikipedia.org/wiki/Representational_state_transfer">restful</a> interface.)
-    Having the backend as an API server will permit complete 
-    flexibility in front-ends: anyone can use our agent engine on the server
-    with whatever front-end they choose to build.
+    permitting coders to use Python for more flexibility in model creation.
+  </p>
+
+  <p>
+    <b>Note</b>: Our API server is temporarily down while we cut over to Indra
+    Version 3!
   </p>
  
   <p>
