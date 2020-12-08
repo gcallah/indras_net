@@ -13,7 +13,7 @@ nihilo*. Instead, one good would, over time, come to be understood as widely
 exchangeable: and that recognition, in itself, would make the good a more
 attractive acquisition in future possible exchanges.
 
-But Mener went further, and analyzed *why* certain goods were particularly
+But Menger went further, and analyzed *why* certain goods were particularly
 suited to take on the role of medium of exchange. Such properties as
 *divisibility*, *durability*, and *ease of transport* would all increase the
 likelihood that a good would emerge as a medium of exchange.
@@ -31,99 +31,51 @@ plausibility of Menger's theory.
 
 ## Menger
 
-I. Intro: 
+Started from the basic thinking that *a commodity should be given up by its owner in exchange for another more useful to him*, Menger looks back to the "uncoined state“, Menger traces the entities that were serves as a mean of exchange, and discovers the causes behind the evolution from goods to money.
+ 
+The intuitive thinking on pursuing trading is that one would like to seek for the opportunity to exchange in order to acquire what he/she directly want, and reject those are sufficiently supplied and not directly needed. However, such thinking would result to very limited number of bargains, because in reality, there are little chances that the factors of needed items meet: it is difficult to realize immediate barter as supply and demand do not always quantitatively coincide.
 
-Examples of medium of exchange: 
-cattle, skins, cubes of tea, slabs of salt, cowrie-shells, *precious metals
-
-II. attempts at solution hitherto:
-
-III. The Problem of the genesis of a Medium of exchange:
-exchange just such goods as he directly needs; reject no need at all, or already sufficiently provided.
-supply and demand do not quantitatively coincide
-different degrees of sale - ableness (Absatzfahigkeit) of commodities.
-
-IV. Commodities as More or Less saleable:
-error: definite
-*The price at which any one can at pleasure buy a commodity at a given market and a given point of time, 
-and the price at which he can dispose of the same at pleasure, are two essentially different magnitudes*
-wholesale && retail prices
-saleable: facility, diminution
-height of saleableness: not the fact that it may be disposed of
-at any price whatever -> (all equally saleable)
--> at every moment be easily and surely disposed of at a price corresponding to
-
-V. Concerning the Causes of the Different Degrees of saleableness in Commodities:
-circumstances (commodity command a sale):
-1. number of persons in want; extent and intensity (unsupplied/constantly recurring)
+Menger sees one underlying factor which stimulates trading: the different degrees of salebleness of commodities. He also pointed out an error in economics, that at it is incorrect to assume that *all commodities, at a definite point of time and in given market, may be mutually exchanged in definite quantities at will.* Menger sees that trading can hardly just follow our willingness, and there exists an gap between wholesale price and retail price in reality, that we are likely to bear a loss when selling an item compared to the cost at the time we purchase the same entity. However, as long as we can minimize the loss the we bear, we are more willing to obtain the item, no matter if the item is immediately needed by us.
+ 
+Consequently, the easiness of disposing the goods can greatly determines the salebleness. The following circumstances and limits Menger listed are factors that influence the degree of salebleness of goods, and they include buyers’ own interest (which can hardly be quantified by our model), goods’ characteristics (what we want to focus on), and external factors (which are hard to be implemented in our model). 
+ 
+Circumstances that affects the degrees of salebleness:
+1. number of persons in want of the item, and the extent and intensity of their want
 2. purchasing power
-3. available quantity - unsupplied want realation
+3. available quantity in relation to the want of the goods
 4. divisibility
 5. development of the market (speculation)
 6. number of the limitations (regulation)
 
-spatial limits of saleableness:
-1. want of the commodities is disturbed in space.
-2. goods lend themselves to transport & cost of transport incurred in proportion to their value
-3. the means of transport and of commerce generally are
-developed with respect to different classes of commodities
-4. local extension of organised markets and their inter-communication by “arbitrage”
-5. differences in the restrictions imposed upon commercial inter-communication
+Spatial limits of saleableness:
+1. By the degree to which the want of the commodities is disturbed in space.
+2. By the degree to which the goods lend themselves to transport,and the cost of transport incurred in proportion to their value.
+3. By the extent to which the means of transport and of commerce generally are developed with respect to differ- ent classes of commodities.
+4. By the local extension of organised markets and their inter-communication by “arbitrage.”
+5. By the differences in the restrictions imposed upon commercial inter-communication with respect to different goods, to interlocal and, in particular, in international trade.
 
-****time limits
-1. permanence in the need of them (their independence of fluctuation in the same).
-2. Their durability
+Time limits of saleableness:
+1. By permanence in the need of them (their independence of fluctuation in the same).
+2. Their durability, i.e., their suitableness for preservation.
 3. The cost of preserving and storing them. 
 4. The rate of interest.
 5. The periodicity of a market for the same.
-6. The development of speculation and in particular of time-bargains in connection with the same.
-7. The restrictions imposed politically and socially on their
-being transferred from one period of time to another.
+6. The development of speculation and in particular of time bargains in connection with the same.
+7. The restrictions imposed politically and socially on their being transferred from one period of time to another.
 
-VI. On the genesis of Media of exchange:
-not highly saleable -> exchange
-more surely and economically
-traffic in space & intervals of time
-*These wares would be qualified by their costliness, easy transportability, and fitness for preservation*
-in the interest of every one to accept in exchange for his own less saleable goods
-those he actually does readily accept.
+With the idea of salebalness, the mean of exchange is pushed to the next level. Under the above listed circumstances and limits, goods are divided into two categories: something one directly wants, or, something can be exchanged. When any one has brought goods not highly saleable to market, the idea uppermost in his mind is to exchange them. One reason is that the goods cannot be directly used by him/her. But another intriguing reason why one chose to purchase the item is that someone else may want it. As saleableness of goods encounter both objective (i.e. goods’ characteristics) and subjective (i.e. personal interest) factors, it can be greatly different for each one, and thus different people can have different levels of willingness to purchase/sell a goods.
 
-VII. The Process of Differentiation between Commodities which have become Media of exchange and the rest:
-"money" -> increasing their originally high saleableness
-brings other wares than money to market -> disadvantage
-individual bargainer has no control
-forthwith into other goods supplied at that market
-Compulsory purchase & sales
-difference in salebalness: gradual, certain aspect as something absolute
-superiority of the buyer over the seller
+*These wares would be qualified by their costliness, easy transportability, and fitness for preservation (in connection with the circumstance of their corresponding to a steady and widely distributed demand), to ensure to the possessor a power, not only “here” and “now” but as nearly as possible unlimited in space and time generally, over all other market-goods at economic prices.*
+ 
+Such thinking promotes barter, and at the end of the day, one can likely get what he/she wants after multiple exchanges.
+During the process of trading, with goods’ different saleableness, they could be differentiated into “money” and the rest: for means of “money”, we can see the pattern of maintaining or even increasing of their originally high saleableness; for those less saleable goods, there would be decreasing chances for them to be bartered.
+ 
+Precious metal is a significant means of exchanges hitherto, and it’s a good example of money under the theory of saleableness. Regarding to the three key underlying factors of salebleness, precious metal’s own characteristics cover all of them superbly:
+- Divisibility: The homogeneity of precious metal easily allows people to control the quality and weight when dividing with, without having unequal means of value on each portion;
+- Durability: Precious metal has almost ultimate durability and has little cost while preserving it;
+- Transportability: It is well distributed geographically, and with the advantage of its homogeneity, precious metal has low cost of transportation (because even for those heavier ones, we can divide it and carry a small chunk).
 
-VIII. how the Precious Metals Became Money:
-limits of the effective desire
-wide limits in time and space of the saleableness of the precious metals
-unlimited distribution in space of the need for them
-low cost of transport
-
-"The proportionately strong, persistent, and omnipresent desire on
-the part of the most effective bargainers has gone farther to
-exclude prices of the moment, of emergency, of acci- dent, in the
-case of the precious metals, than in the case of any other goods
-whatever, especially since these, by reason of their costliness,
-dura- bility, and easy preservation, had become the most popular
-vehicle for hoarding as well as the goods most highly favoured in
-commerce.  in the intention of exchanging them subsequently for
-other goods directly profitable to him"
-
-production, consumption, and exchange of the precious metals
-connected by: intrinsic grounds determining their exchange value
-
-- homogeneity of precious metals
-- serve as obligation
-- not difficult to recognise
-- easily controlled as to quality and weight
-
-IX. Influence of the Sovereign Power:
-social
-high saleableness
+Additionally, it’s not just the (spatial and time) ease of trading, but the low cost of converting precious metal, including the spending on preserving and transporting it, stipulates precious metal to become an optimal choice of money.
 
 ## Translating Menger into an Agent-Based Model
 
