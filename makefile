@@ -78,15 +78,13 @@ submods:
 
 # run tests then commit all, then push
 # add notebooks back in as target once debugged!
-prod: local pytests js github
+prod: local js github
 
 # run tests then push just what is already committed:
 prod1: tests
 	git push origin master
 
-tests: pytests jstests dockertests
-
-python: pytests github
+tests: jstests dockertests
 
 js: jstests webapp 
 	git add $(WEB_STATIC)/js/*js
@@ -100,15 +98,6 @@ js: jstests webapp
 	git push origin master
 	cd $(REACT_TOP); npm run deploy
 	
-pytests: FORCE
-	cd registry; make tests
-	cd epidemics; make tests
-	cd models; make tests
-	cd APIServer; make tests
-	cd indra; make tests
-	cd ml; make tests
-	cd capital; make tests
-
 jstests: FORCE
 	cd webapp; make tests
 
