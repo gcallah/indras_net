@@ -148,7 +148,7 @@
         "doc": "Conway's Game of Life model.",
         "source": "https://github.com/gcallah/indras_net/blob/master/models/gameoflife.py",
         "graph": "scatter",
-        "active": false
+        "active": true
       }
     ]
   }
