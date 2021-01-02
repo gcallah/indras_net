@@ -12,7 +12,7 @@
  * the prefix REACT_APP_
  * For more infromation - https://create-react-app.dev/docs/adding-custom-environment-variables/
  */
-let API_URL = 'https://indrasnet.pythonanywhere.com/';
+let API_URL = 'https://IndraABM.pythonanywhere.com/';
 
 if (process.env.REACT_APP_API_URL) {
   API_URL = process.env.REACT_APP_API_URL;
