@@ -35,7 +35,10 @@ class Home extends Component {
     try {
       this.setState({ loadingData: true });
       document.title = 'Home';
-      const res = await axios.get(`${this.api_server}models`);
+      // const modelTest = await axios.get("http://indraabm.pythonanywhere.com/models/True");
+      // console.log(modelTest);
+      const res = await axios.get(`${this.api_server}models/True`);
+      console.log(res);
       this.setState({ allItems: res.data, loadingData: false });
       // setting this so model properties like name, graph etc are access
       // in all tabs of a browser
