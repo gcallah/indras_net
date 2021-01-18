@@ -85,9 +85,9 @@ class Home extends Component {
                     >
                       <Link
                         to={{
-                          pathname: `/models/props/${allItems[item]['modelID']}`,
+                          pathname: `/models/props/${allItems[item].modelID}`,
                           state: {
-                            menuId: allItems[item]['modelID'],
+                            menuId: allItems[item].modelID,
                             name: allItems[item].name,
                             source: allItems[item].source,
                             graph: allItems[item].graph,

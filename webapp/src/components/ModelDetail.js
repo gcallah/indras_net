@@ -160,13 +160,11 @@ class ModelDetail extends Component {
       );
       const itemId = menuId;
       const envFile = res.data;
-      const exec_key = this.exec_key.val;
+      // const exec_key = this.exec_key.val;
       history.push({
-        // pathname: `/models/menu/${itemId.toString(10)}`,
+        pathname: `/models/menu/${itemId.toString(10)}`,
         // pathname: `/models/menu/${exec_key.toString(10)}`,
-        pathname: `/models/menu/${exec_key.toString(10)}`,
         state: {
-          exec_key,
           envFile,
           name,
           source,
