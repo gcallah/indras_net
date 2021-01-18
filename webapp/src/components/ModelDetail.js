@@ -32,6 +32,7 @@ class ModelDetail extends Component {
       this.setState({ modelDetails: properties.data });
       this.states(properties.data);
       this.errors(properties.data);
+      this.exec_key = properties.data.exec_key;
       this.setState({ loadingData: false });
     } catch (e) {
       history.push('/errorCatching');
@@ -159,9 +160,13 @@ class ModelDetail extends Component {
       );
       const itemId = menuId;
       const envFile = res.data;
+      const exec_key = this.exec_key.val;
       history.push({
-        pathname: `/models/menu/${itemId.toString(10)}`,
+        // pathname: `/models/menu/${itemId.toString(10)}`,
+        // pathname: `/models/menu/${exec_key.toString(10)}`,
+        pathname: `/models/menu/${exec_key.toString(10)}`,
         state: {
+          exec_key,
           envFile,
           name,
           source,
