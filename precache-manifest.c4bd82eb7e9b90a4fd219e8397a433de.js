@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "14a3f1c734ab8e39d8c2228238c21a80",
+    "revision": "a77edf98e3f7d7068d0dd56822768f0a",
     "url": "/indras_net/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/indras_net/static/css/2.a2d657ac.chunk.css"
   },
   {
-    "revision": "ce3b8612f24afc38b630",
+    "revision": "c00f3030b617d8cf8b9d",
     "url": "/indras_net/static/css/main.9462842e.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/indras_net/static/js/2.7cbe304f.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "ce3b8612f24afc38b630",
-    "url": "/indras_net/static/js/main.fd66736f.chunk.js"
+    "revision": "c00f3030b617d8cf8b9d",
+    "url": "/indras_net/static/js/main.ffeabb5c.chunk.js"
   },
   {
     "revision": "39a991ece2f972a3b1c6",
