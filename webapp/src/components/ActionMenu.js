@@ -51,12 +51,16 @@ class ActionMenu extends Component {
       continuousRunDisabled: false,
       initLoading: true,
       // need to check if this is undefined. redirection needs to happen if that is the case
-      EXECUTION_KEY: envFile.execution_key,
+      EXECUTION_KEY: envFile.exec_key,
+      // we need to get the exec key from the ModelDetail component
+      // EXECUTION_KEY: execKey,
     };
     autoBind(this);
   }
 
   async componentDidMount() {
+    // the EXECUTION KEY is correct now, we need to pass it to the get model menu
+    // endpoint
     const { EXECUTION_KEY } = this.state;
     const { location } = this.props;
     const { state } = location;
@@ -65,6 +69,8 @@ class ActionMenu extends Component {
     } = state;
     try {
       document.title = 'Indra | Menu';
+      // you need to pass the execution key that you get from put_props
+      // which is in ModelDetail, the current execution key is undefined
       const m = await axios.get(`${API_SERVER}${EXECUTION_KEY}`);
       // debugger;
       this.setState({
@@ -194,7 +200,6 @@ class ActionMenu extends Component {
 
   sendNumPeriods = async () => {
     const { periodNum, envFile, EXECUTION_KEY } = this.state;
-    console.log('Sending execution key', EXECUTION_KEY);
     const envFileWithExecutionKey = { ...envFile, execution_key: EXECUTION_KEY };
     this.setState({ loadingData: true });
     try {

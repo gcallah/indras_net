@@ -32,7 +32,6 @@ class ModelDetail extends Component {
       this.setState({ modelDetails: properties.data });
       this.states(properties.data);
       this.errors(properties.data);
-      this.exec_key = properties.data.exec_key;
       this.setState({ loadingData: false });
     } catch (e) {
       history.push('/errorCatching');
@@ -154,21 +153,22 @@ class ModelDetail extends Component {
     } = this.state;
     const { history } = this.props;
     try {
+      // res gives us back the model returned from put props
       const res = await axios.put(
         apiServer + menuId,
         modelDetails,
       );
       const itemId = menuId;
       const envFile = res.data;
-      // const exec_key = this.exec_key.val;
+      const execKey = res.data.exec_key;
       history.push({
         pathname: `/models/menu/${itemId.toString(10)}`,
-        // pathname: `/models/menu/${exec_key.toString(10)}`,
         state: {
           envFile,
           name,
           source,
           graph,
+          execKey,
         },
       });
     } catch (e) {
@@ -187,6 +187,7 @@ class ModelDetail extends Component {
 
   renderSubmitButton = () => {
     const { disabledButton } = this.state;
+    // console.log(this.state);
     return (
       <button
         type="button"
