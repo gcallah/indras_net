@@ -28,7 +28,7 @@ function ScatterPlot(props) {
     default: 'circle',
   };
   if (loadingData) {
-    const env = envFile.members;
+    const env = envFile.env.members;
     const data = [];
     const dataset = {
       pointStyle: 'circle',

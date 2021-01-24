@@ -50,17 +50,12 @@ class ActionMenu extends Component {
       continuousRun: true,
       continuousRunDisabled: false,
       initLoading: true,
-      // need to check if this is undefined. redirection needs to happen if that is the case
       EXECUTION_KEY: envFile.exec_key,
-      // we need to get the exec key from the ModelDetail component
-      // EXECUTION_KEY: execKey,
     };
     autoBind(this);
   }
 
   async componentDidMount() {
-    // the EXECUTION KEY is correct now, we need to pass it to the get model menu
-    // endpoint
     const { EXECUTION_KEY } = this.state;
     const { location } = this.props;
     const { state } = location;
