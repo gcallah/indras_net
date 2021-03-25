@@ -153,12 +153,14 @@ class ModelDetail extends Component {
     } = this.state;
     const { history } = this.props;
     try {
+      // res gives us back the model returned from put props
       const res = await axios.put(
         apiServer + menuId,
         modelDetails,
       );
       const itemId = menuId;
       const envFile = res.data;
+      const execKey = res.data.exec_key;
       history.push({
         pathname: `/models/menu/${itemId.toString(10)}`,
         state: {
@@ -166,6 +168,7 @@ class ModelDetail extends Component {
           name,
           source,
           graph,
+          execKey,
         },
       });
     } catch (e) {
@@ -184,6 +187,7 @@ class ModelDetail extends Component {
 
   renderSubmitButton = () => {
     const { disabledButton } = this.state;
+    // console.log(this.state);
     return (
       <button
         type="button"

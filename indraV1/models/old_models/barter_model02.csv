@@ -1,8 +1,0 @@
-Albert,cheese,20,10 - .5 * qty,wine,0,10 - .75 * qty,olive oil,0,10 - .5 * qty,bread,0,10 - .5 * qty,figs,0,10 - .5 * qty,gold,0,10 - .9 * qty,honey,0,10 - .5 * qty,sardines,0,10 - .5 * qty
-Beatrice,cheese,0,10 - .75 * qty,wine,20,10 - .5 * qty,olive oil,0,10 - .5 * qty,bread,0,10 - .5 * qty,figs,0,10 - .5 * qty,gold,0,10 - .9 * qty,honey,0,10 - .5 * qty,sardines,0,10 - .5 * qty
-Charles,cheese,0,10 - .5 * qty,wine,0,10 - .5 * qty,olive oil,20,10 - .5 * qty,bread,0,10 - .5 * qty,figs,0,10 - .5 * qty,gold,0,10 - .9 * qty,honey,0,10 - .5 * qty,sardines,0,10 - .5 * qty
-Danielle,cheese,0,10 - .5 * qty,wine,0,10 - .5 * qty,olive oil,0,10 - .5 * qty,bread,20,10 - .5 * qty,figs,0,10 - .5 * qty,gold,0,10 - .9 * qty,honey,0,10 - .5 * qty,sardines,0,10 - .5 * qty
-Edward,cheese,0,10 - .5 * qty,wine,0,10 - .5 * qty,olive oil,0,10 - .5 * qty,bread,0,10 - .5 * qty,figs,20,10 - .5 * qty,gold,0,10 - .9 * qty,honey,0,10 - .5 * qty,sardines,0,10 - .5 * qty
-Faye,cheese,0,10 - .5 * qty,wine,0,10 - .75 * qty,olive oil,0,10 - .5 * qty,bread,0,10 - .5 * qty,figs,0,10 - .5 * qty,gold,0,10 - .9 * qty,honey,20,10 - .5 * qty,sardines,0,10 - .5 * qty
-George,cheese,0,10 - .75 * qty,wine,0,10 - .5 * qty,olive oil,0,10 - .5 * qty,bread,0,10 - .5 * qty,figs,0,10 - .5 * qty,gold,30,10 - .9 * qty,honey,0,10 - .5 * qty,sardines,20,10 - .5 * qty
-Midas,cheese,8,10 - .99 * qty,wine,8,10 - .99 * qty,olive oil,8,10 - .99 * qty,bread,8,10 - .99 * qty,figs,8,10 - .99 * qty,gold,0,10 - .01 * qty,honey,8,10 - .99 * qty,sardines,8,10 - .99 * qty

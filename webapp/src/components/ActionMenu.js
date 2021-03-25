@@ -5,6 +5,7 @@ import autoBind from 'react-autobind';
 import PropTypes from 'prop-types';
 import PageLoader from './PageLoader';
 import PopulationGraph from './PopulationGraph';
+import PopulationBarGraph from './PopulationBarGraph';
 import ScatterPlot from './ScatterPlot';
 import Debugger from './Debugger';
 import ModelStatusBox from './ModelStatusBox';
@@ -14,11 +15,14 @@ import './styles.css';
 import config from '../config';
 import LogsViewer from './LogsViewer';
 
+
 const POP = 2;
 const SCATTER = 3;
-const DATA = 4;
-const SOURCE = 5;
-const LOG = 6;
+const BAR = 4;
+// const DATA = 4;
+const DEBUG = 5;
+const SOURCE = 6;
+const LOG = 7;
 const API_SERVER = `${config.API_URL}models/menu/`;
 const CLEAR_REGISTRY_API = `${config.API_URL}registry/clear/`;
 
@@ -40,10 +44,13 @@ class ActionMenu extends Component {
       loadingDebugger: false,
       loadingPopulation: false,
       loadingScatter: false,
+      loadingBar: false,
       loadingLogs: false,
       activeDisplay: null,
-      // need to check if this is undefined. redirection needs to happen if that is the case
-      EXECUTION_KEY: envFile.execution_key,
+      continuousRun: true,
+      continuousRunDisabled: false,
+      initLoading: true,
+      EXECUTION_KEY: envFile.exec_key,
     };
     autoBind(this);
   }
@@ -57,7 +64,10 @@ class ActionMenu extends Component {
     } = state;
     try {
       document.title = 'Indra | Menu';
+      // you need to pass the execution key that you get from put_props
+      // which is in ModelDetail, the current execution key is undefined
       const m = await axios.get(`${API_SERVER}${EXECUTION_KEY}`);
+      // debugger;
       this.setState({
         menu: m.data,
         name,
@@ -104,6 +114,7 @@ class ActionMenu extends Component {
     // there should be a error reporting mechanism here to notify
     // admins that a particular key was not cleared.
   }
+
 
   viewSource = async () => {
     try {
@@ -153,6 +164,7 @@ class ActionMenu extends Component {
       loadingScatter: false,
       loadingPopulation: false,
       loadingLogs: false,
+      loadingBar: false,
     });
     this.setState({
       activeDisplay: e,
@@ -164,7 +176,7 @@ class ActionMenu extends Component {
       case SCATTER:
         this.setState({ loadingScatter: true });
         break;
-      case DATA:
+      case DEBUG:
         this.setState({ loadingDebugger: true });
         break;
       case SOURCE:
@@ -173,6 +185,9 @@ class ActionMenu extends Component {
       case LOG:
         this.setState({ loadingLogs: true });
         break;
+      case BAR:
+        this.setState({ loadingBar: true });
+        break;
       default:
         break;
     }
@@ -180,7 +195,6 @@ class ActionMenu extends Component {
 
   sendNumPeriods = async () => {
     const { periodNum, envFile, EXECUTION_KEY } = this.state;
-    console.log('Sending execution key', EXECUTION_KEY);
     const envFileWithExecutionKey = { ...envFile, execution_key: EXECUTION_KEY };
     this.setState({ loadingData: true });
     try {
@@ -195,11 +209,47 @@ class ActionMenu extends Component {
         loadingData: false,
         msg: res.data.user.user_msgs,
       });
-      return true;
+      // return true;
     } catch (e) {
-      return false;
+      // return false;
     }
   };
+
+  timeout = (m) => new Promise((r) => setTimeout(r, m))
+
+  continuousRun = async () => {
+    this.setState(
+      {
+        continuousRun: true,
+        continuousRunDisabled: true,
+        periodNum: 1,
+        initLoading: false,
+      },
+    );
+    await this.timeout(200);
+    /* eslint-disable */
+    while (this.state.continuousRun) {
+      // this.setState({periodNum: 1});
+      this.sendNumPeriods();
+      /* eslint-disable */
+      while (this.state.loadingData){
+        await this.timeout(200);
+      /* eslint-disable */
+        console.log('still waiting for data...')
+      }
+      /* eslint-disable */
+      console.log('data arrived!!')
+    }
+  }
+
+  stopRun = () => {
+    this.setState(
+      {
+        continuousRun: false,
+        continuousRunDisabled: false,
+      },
+    );
+  }
 
   renderHeader = () => {
     const { name } = this.state;
@@ -241,12 +291,14 @@ class ActionMenu extends Component {
       loadingPopulation,
       loadingScatter,
       loadingLogs,
+      loadingBar
     } = this.state;
     return (
       <div className="mt-5">
         <Debugger loadingData={loadingDebugger} envFile={envFile} />
         <SourceCodeViewer loadingData={loadingSourceCode} code={sourceCode} />
         <PopulationGraph loadingData={loadingPopulation} envFile={envFile} />
+        <PopulationBarGraph loadingData={loadingBar} envFile={envFile} />
         <ScatterPlot loadingData={loadingScatter} envFile={envFile} />
         <LogsViewer loadingData={loadingLogs} envFile={envFile} />
       </div>
@@ -275,11 +327,14 @@ class ActionMenu extends Component {
 
   render() {
     const {
-      loadingData, msg, disabledButton, errorMessage,
+      loadingData, msg, disabledButton, errorMessage, initLoading, continuousRunDisabled,
     } = this.state;
-    if (loadingData) {
+    if (loadingData && initLoading) {
       return <PageLoader />;
     }
+    // if (loadingData && !initLoading){
+    //   return;
+    // }
     return (
       <div>
         {this.renderHeader()}
@@ -299,6 +354,21 @@ class ActionMenu extends Component {
                 sendNumPeriods={this.sendNumPeriods}
                 handleRunPeriod={this.handleRunPeriod}
               />
+              {/* eslint-disable */}
+              <button
+                onClick={this.continuousRun}
+                disabled={continuousRunDisabled}
+                className="btn btn-success m-2"
+              >
+                Continuous Run
+              </button>
+              {/* eslint-disable */}
+              <button
+                onClick={this.stopRun}
+                className="btn btn-danger m-2"
+              >
+                Stop
+              </button>
               <h3 className="margin-top-50 mb-4">Model Analysis:</h3>
             </div>
           </div>
