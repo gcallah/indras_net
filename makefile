@@ -4,7 +4,6 @@ export TEMPLATE_DIR = templates
 # Set up some variables for directories we'll use:
 BOX_DIR = bigbox
 BOX_DATA = $(BOX_DIR)/data
-BOXPLOTS = $(shell ls $(BOX_DATA)/plot*.pdf)
 DOCKER_DIR = docker
 REQ_DIR = $(DOCKER_DIR)
 REPO = indras_net
@@ -15,14 +14,10 @@ REACT_BUILD = $(REACT_TOP)/build
 REACT_PUBLIC = $(REACT_TOP)/public
 REACT_SRC = $(REACT_TOP)/src
 REACT_MAIN = webapp.html
-REACT_FILES = $(shell ls $(REACT_SRC)/*.js)
-REACT_FILES += $(shell ls $(REACT_SRC)/components/*.js)
-REACT_FILES += $(shell ls $(REACT_SRC)/*.css)
 WEB_STATIC = static
 API_DIR = APIServer
 PYLINT = flake8
 PYLINTFLAGS =
-PYTHONFILES = $(shell ls $(MODELS_DIR)/*.py)
 
 UTILS_DIR = utils
 PTML_DIR = html_src
@@ -30,9 +25,6 @@ INCS = $(TEMPLATE_DIR)/head.txt $(TEMPLATE_DIR)/logo.txt $(TEMPLATE_DIR)/menu.tx
 
 HTMLFILES = $(shell ls $(PTML_DIR)/*.ptml | sed -e 's/.ptml/.html/' | sed -e 's/html_src\///')
 
-MODEL_REGISTRY = registry/models
-MODELJSON_FILES = $(shell ls $(MODELS_DIR)/*.py | sed -e 's/.py/_model.json/' | sed -e 's/$(MODELS_DIR)\//registry\/models\//')
-JSON_DESTINATION = $(MODEL_REGISTRY)/models.json
 
 FORCE:
 
