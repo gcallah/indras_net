@@ -1,9 +1,0 @@
-{
-  "population": {
-    "val": 40,
-    "question": "What is the population of the town?",
-    "atype": "INT",
-    "hival": 500,
-    "lowval": 1
-  }
-}

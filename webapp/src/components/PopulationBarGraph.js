@@ -45,7 +45,6 @@ function PopulationBarGraph(props) {
         return [datum.name, totalSum];
       });
     });
-    console.log(dataset);
     return (
       <CardWrapper title="Population Bar Graph">
         <ColumnChart data={dataset} width="600px" height="600px" />

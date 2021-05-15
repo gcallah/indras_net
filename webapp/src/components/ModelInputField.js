@@ -18,6 +18,8 @@ function ModelInputField(props) {
           {' '}
         </label>
         <input
+          // eslint-disable-next-line jsx-a11y/no-autofocus
+          autoFocus
           id={name}
           type={type}
           className="col-sm-2 col-md-2 col-lg-2"
