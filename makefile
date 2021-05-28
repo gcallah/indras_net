@@ -70,28 +70,13 @@ submods:
 
 # run tests then commit all, then push
 # add notebooks back in as target once debugged!
-prod: local js github
+prod: local github
 
 # run tests then push just what is already committed:
 prod1: tests
 	git push origin master
 
 tests: jstests dockertests
-
-js: jstests webapp 
-	git add $(WEB_STATIC)/js/*js
-	git add $(WEB_STATIC)/js/*map
-	git add $(WEB_STATIC)/css/*
-	git add $(WEB_STATIC)/media/*
-	git add $(REACT_BUILD)/static/js/*js
-	git add $(REACT_BUILD)/static/js/*map
-	git add $(REACT_BUILD)/$(REACT_MAIN)
-	- git commit -a
-	git push origin master
-	cd $(REACT_TOP); npm run deploy
-	
-jstests: FORCE
-	cd webapp; make tests
 
 dockertests:
 	docker build -t gcallah/$(REPO) docker/
