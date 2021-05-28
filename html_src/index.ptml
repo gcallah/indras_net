@@ -19,7 +19,7 @@
     <a href="https://en.wikipedia.org/wiki/Agent-based_model">agent-based modeling</a>
     (ABM) system built using Python,
     Javascript, Awk, Bash, and YAML. The models 
-    are created in Python. Javascript is used to create
+    are created in Python. Javascript (React) is used to create
     a web front-end to the models,
     and the other languages are used as development tools.
   </p>
@@ -45,6 +45,10 @@
 
   <p>
   More on ABM <a href="notebooks/IntroToABM.ipynb">here</a>.
+  </p>
+
+  <p>
+  Source code documentation is <a href="https://tandondevops.github.io/IndraABM/">here</a>. 
   </p>
 
   <p>
