@@ -5,7 +5,7 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.9.8",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bootstrap": "^4.4.1",
     "chart.js": "^2.9.3",
     "chartkick": "^3.2.0",
